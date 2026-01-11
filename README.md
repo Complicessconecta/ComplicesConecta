@@ -107,432 +107,85 @@ Actualmente estoy trabajando en:
   - Null checks agregados en message properties (`currentMsg?.sender_id`, `nextMsg?.created_at`, etc.)
   - Eliminada función `logModelMetrics` no usada
 
-## Guía para continuar y punto de reanudación (operativo)
-
-- **Último directorio COMPLETADO:** `src/pages` (30 dic 2025 22:50, commit: "refactor: completa barrido src/pages - pink-\*→fuchsia, imports type-only, accesibilidad")
-- **Directorio EN CURSO:** `src/services` (iniciar barrido alfabético)
-- **Siguiente directorio al finalizar el actual:** `src/shared`
-- **Acción inmediata:** Iniciar barrido de `src/services` aplicando mismos criterios (pink-\*→fuchsia, alert→toast, imports type-only, TypeScript fixes)
-- **Plan de barrido para src/services:**
-  1. Verificar estructura actual del directorio (subdirectorios por dominio)
-  2. Buscar pink-\* en todos los archivos del directorio
-  3. Reemplazar alert() por toast donde exista
-  4. Convertir imports React a type-only donde aplique
-  5. Corregir errores de TypeScript/lint
-  6. Documentar deudas técnicas sin arreglarlas
-  7. Ejecutar type-check y lint
-  8. Crear commit único del directorio
-  9. Actualizar BARRIDO_SRC_ESTADO.md
-- **Regla de actualización de este archivo:** El resumen y la actualización de `BARRIDO_SRC_ESTADO.md` se realizan SOLO al concluir por completo el directorio en curso. Si el directorio no está completo, completar primero y luego actualizar.
-- **Excepción (handoff operativo):** Si se requiere que otro dev/IA continúe desde un punto intermedio, documentar aquí el estado _sin marcar el directorio como completo_, detallando lo hecho y los pendientes inmediatos.
-- **Criterios del barrido que DEBEN cumplirse en cada archivo:**
-  - Arreglar errores TS/lint y de importación rotos.
-  - Reemplazar clases `pink-*` por `fuchsia/purple/cyan` cuando existan.
-  - Reemplazar `alert()` por sistema `toast`.
-  - Usar imports type-only de React cuando apliquen (tipos como `FC`, `ReactNode`, etc.).
-  - Endurecer null-safety de Supabase si es crítico para no romper ejecución.
-  - Documentar deudas técnicas aquí (casts `as any`, estilos inline, TODOs) sin arreglarlas salvo que bloqueen compilación.
-- **Convención de commits:** Mensajes en español MX con fecha y hora, por bloque (directorio) y cambios relacionados únicamente.
-
-**Marca de progresos:**
-
-- **[Completo/Verificado✅]**
-- **[EnProceso🚧]**
-- **[ADVERTENCIA⚠️]**
-- **[Incompleto❌]**
-
-## Directorios Revisados
-
-### src/pages (COMPLETO ✅)
-
-- **Commit final:** "refactor: completa barrido src/pages - pink-\*→fuchsia, imports type-only, accesibilidad - 30 dic 2025 22:45"
-- **Archivos procesados:** 43 archivos modificados
-- **Cambios principales:**
-  - **pink-_ → fuchsia-_:** Todos los gradientes y colores rosa reemplazados en Dashboard, FAQ, Guidelines, Matches, Privacy, Settings, Shop, Terms, TokensInfo, AIControlCenter, AdminProduction, AdminCareerApplications, AdminDashboard, Donations, Events, Invest, ModeratorRequest, Tokens
-  - **Imports React type-only:** Convertidos componentes a FC type-only en Events, Privacy, Terms, y otros
-  - **Imports corregidos:** AdminNav (default → named), PhoneInput (default → named), ModeratorApplicationForm (named → default)
-  - **Accesibilidad:** Agregados aria-label/title en selects (AdminProduction.tsx)
-  - **Alert → toast:** Reemplazadas llamadas alert() por sistema toast donde aplicaba
-  - **TypeScript fixes:** Corregidos errores de exactOptionalPropertyTypes en ModeratorDashboard, Admin.tsx, BackgroundContext
-  - **Lint/TypeScript:** Corregidos todos los errores de compilación y lint
-- **Correcciones finales aplicadas (30 dic 2025 22:50):**
-  - **ModeratorDashboard.tsx:** Eliminados tipos no usados (\_ModerationLogWithRelations, \_UserSuspensionWithRelations), corregido interface Report para exactOptionalPropertyTypes
-  - **Admin.tsx:** Eliminado React import no usado, corregido mock profile para exactOptionalPropertyTypes (omitido avatar_url)
-  - **BackgroundContext.tsx:** Añadido fallback para backgroundImage para evitar undefined
-- **Deudas técnicas documentadas (sin arreglar):**
-  - CSS inline styles en TokensInfo.tsx (línea 824)
-  - Variables no usadas con prefijo \_ en archivos admin (funciones de manejo no implementadas)
-  - Warnings de lint no bloqueantes (variables \_handle\* en Admin.tsx)
-
-### src/lib (VERIFICADO ✅)
-
-- `safe-storage.ts`: console.warn/error → logger.warn/error. Import de logger.
-- `analytics-metrics.ts`: console._ → logger._. Fix `exactOptionalPropertyTypes` en `trackError` (no pasar `userId` undefined).
-- `asset-loader.ts`: console.warn → logger.warn. Import de logger.
-- `storage.ts`: console.error → logger.error y guards para URL inválida antes de `deleteImage`.
-- `visual-validation.ts`: console.error → logger.error. Import de logger.
-- [Sin cambios] `logger.ts`, `supabase-logger.ts`, `capture-console-errors.ts`, `wallet-silencer.ts` (uso de consola intencional en DEV/instrumentación).
-
-### src/components/navigation (VERIFICADO ✅)
-
-- `ResponsiveNavigation.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/notifications (VERIFICADO ✅)
-
-- `NotificationBell.tsx`: Verificado.
-- `NotificationCenter.tsx`: Verificado.
-- `NotificationSystem.tsx`: Verificado.
-- `PushNotificationSettings.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/onboarding (VERIFICADO ✅)
-
-- `OnboardingFlow.tsx`: Corregido gradiente rosa (`from-pink-500` -> `from-fuchsia-500`).
-- `index.ts`: Verificado.
-
-### src/components/performance (VERIFICADO ✅)
-
-- `CodeSplittingManager.tsx`: Verificado.
-- `ImageOptimizer.tsx`: Verificado.
-- `LazyComponentLoader.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/premium (VERIFICADO ✅)
-
-- `PremiumFeatures.tsx`: Verificado.
-- `PricingPlans.tsx`: Verificado.
-- `PrivateMatches.tsx`: Corregido gradiente rosa (`to-pink-500` -> `to-fuchsia-500`).
-- `VIPEvents.tsx`: Corregido `alert` por `toast` y gradiente rosa.
-- `VirtualGifts.tsx`: Corregido gradiente rosa.
-- `index.ts`: Verificado.
-
-### 1. `src/ai` (VERIFICADO ✅)
-
-- `AIWorker.ts`: Lógica de IA legal y ética. Sin errores.
-- `useLocalAI.ts`: Hook para IA local. Importaciones corregidas.
-
-### src/components/admin (VERIFICADO ✅)
-
-- `AdminBannerPanel.tsx`: Verificado. Gestión de banners.
-- `AdvancedModerationPanel.tsx`: Verificado. Configuración de umbrales.
-- `AlertConfigPanel.tsx`: Verificado. Configuración de alertas.
-- `AnalyticsDashboard.tsx`: Verificado. Importaciones corregidas (`ModerationMetrics`).
-- `AnalyticsPanel.tsx`: Verificado.
-- `DesktopNotificationSettings.tsx`: Verificado.
-- `ExportButton.tsx`: Verificado.
-- `HistoricalCharts.tsx`: Verificado.
-- `ModerationMetrics.tsx`: Renombrado componente a `ModerationMetrics` para coincidir con exportación.
-- `PerformancePanel.tsx`: Verificado.
-- `ReportsManagement.tsx`: Verificado.
-- `SecurityDashboard.tsx`: Verificado.
-- `SecurityPanel.tsx`: Verificado.
-- `TokenSystemPanel.tsx`: Verificado.
-- `UserManagementPanel.tsx`: Verificado.
-- `WebhookConfigPanel.tsx`: Verificado.
-- `dashboard/OverviewPanel.tsx`: Verificado.
-- `dashboard/RecentActivityList.tsx`: Verificado.
-- `dashboard/ReportsPanel.tsx`: Verificado.
-- `dashboard/StatsPanel.tsx`: Verificado.
-- `dashboard/SystemHealthWidget.tsx`: Verificado.
-- `index.ts`: Exportaciones actualizadas.
-
-### src/components/ai (VERIFICADO ✅)
-
-- `ContentModerationModal.tsx`: Verificado.
-- `LegalChatBox.tsx`: Verificado. Re-analizado por `current_problems` y encontrado limpio, sin deuda técnica de tipos.
-- `SmartMatchingModal.tsx`: Colores corregidos (pink -> cyan).
-- `index.ts`: Exportaciones unificadas.
-- **Acciones**: Eliminados archivos duplicados (`MatchingModal.tsx`, `SmartMatchModal.tsx`) para centralizar en `SmartMatchingModal.tsx`.
-
-### 3. `src/components/analytics` (VERIFICADO ✅)
-
-- `AdvancedAnalyticsDashboard.tsx`: Limpieza de código muerto y unused vars.
-- `index.ts`: Importaciones relativas corregidas.
-
-### 4. `src/components/android` (VERIFICADO ✅)
-
-- `AndroidOptimizedApp.tsx`: Verificado.
-- `index.ts`: Exportaciones corregidas.
-
-### 5. `src/components/animations` (VERIFICADO ✅)
-
-- `AnimatedCard.tsx`: Verificado.
-- `AnimatedLoader.tsx`: Gradientes corregidos (pink -> purple/blue).
-- `AnimatedTabs.tsx`: Gradientes corregidos.
-- `AnimationProvider.tsx`: Console.log reemplazado por logger.
-- `AnimationSettings.tsx`: Colores rosa prohibidos reemplazados por purple/blue.
-- `BackgroundControls.tsx`: Colores rosa prohibidos reemplazados por purple/blue/red.
-- `EnhancedComponents.tsx`: Gradientes rosa reemplazados por purple/blue.
-- `GlobalAnimations.tsx`: Verificado.
-- `InteractiveAnimations.tsx`: Verificado.
-- `NotificationSystem.tsx`: Colores rosa prohibidos reemplazados por purple/rose.
-- `PageTransitions.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### 6. `src/components/accessibility` (VERIFICADO ✅)
-
-- `AccessibilityAudit.tsx`: Corregido gradiente rosa prohibido. Lógica de auditoría WCAG 2.1 verificada.
-- `AccessibilityProvider.tsx`: Verificado. Gestión de preferencias correcta.
-- `ContrastFixer.tsx`: Verificado. Auto-fix de contraste correcto.
-- `index.ts`: Verificado.
-
-### src/components/auth (VERIFICADO ✅)
-
-- `AdminRoute.tsx`: Reemplazado color rosa (`pink-900` -> `purple-900`).
-- `DemoSelector.tsx`: Verificado.
-- `EmailValidation.tsx`: Verificado.
-- `EmailVerification.tsx`: Verificado.
-- `InterestsSelector.tsx`: Reemplazado gradiente rosa prohibido.
-- `ModeratorRoute.tsx`: `console.error` reemplazado por `logger.error`.
-- `NicknameValidator.tsx`: Eliminada creación duplicada de cliente Supabase.
-- `PasswordValidator.tsx`: Verificado.
-- `WorldIDButton.tsx`: Verificado.
-- `index.ts`: Corregidas exportaciones default incorrectas.
-
-### src/components/blockchain (VERIFICADO ✅)
-
-- `ConsentModal.tsx`: Verificado.
-- `NFTMintButton.tsx`: Verificado.
-- `StakingWidget.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/cache (VERIFICADO ✅)
-
-- `CacheDashboard.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/cards (VERIFICADO ✅)
-
-- `RequestCard.tsx`: Verificado.
-
-### src/components/chat (VERIFICADO ✅)
-
-- `ChatContainer.tsx`: Verificado.
-- `ChatFab.tsx`: Verificado.
-- `ChatFileUpload.tsx`: Verificado.
-- `ChatInput.tsx`: Verificado.
-- `ChatList.tsx`: Verificado.
-- `ChatRoom.tsx`: Verificado.
-- `ChatWithLocation.tsx`: Verificado.
-- `ConsentIndicator.tsx`: Verificado.
-- `EmojiPicker.tsx`: Verificado.
-- `MessageList.tsx`: Verificado.
-- `MessageReactions.tsx`: Verificado.
-- `SummaryButton.tsx`: Verificado.
-- `SummaryModal.tsx`: Verificado.
-- `TypingIndicator.tsx`: Verificado.
-- `VoiceRecorder.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/clubs (VERIFICADO ✅)
-
-- `PartnerRequestModal.tsx`: Corregidas importaciones UI y reemplazado gradiente rosa prohibido.
-
-### src/components/profiles (VERIFICADO ✅)
-
-- `index.ts`: Verificado.
-- `AdvancedProfileEditor.tsx`: Verificado.
-
-#### src/components/profiles/couple (VERIFICADO ✅)
-
-- `index.ts`: Verificado.
-- `CoupleCard.tsx`: Verificado.
-- `CoupleDashboard.tsx`: Limpieza de estado no usado para evitar warnings.
-- `CoupleDisputeManager.tsx`: Verificado.
-- `CoupleImageGallery.tsx`: Verificado.
-- `CoupleImageUpload.tsx`: Verificado.
-- `CouplePhotoSection.tsx`: Corregidos colores `pink` prohibidos (pink -> fuchsia).
-- `CouplePreNuptialAgreement.tsx`: Verificado (Supabase: tabla `couple_agreements` / columnas asociadas; si difiere, es deuda DB).
-- `CoupleProfileCard.tsx`: Corregido export (named export) + limpieza de imports/helpers no usados.
-- `CoupleProfileHeader.tsx`: Corregido export (named export) para coincidir con barrel.
-- `CoupleRegistrationForm.tsx`: Reemplazado `console.error` por `logger.error`, tipado seguro en `catch`, y gradiente `pink` -> `fuchsia`.
-- `NicknameValidator.tsx`: Verificado (re-export).
-- `PasswordValidator.tsx`: Verificado (re-export).
-- `ProfileCouple.test.tsx`: Verificado.
-- `useCouplePhotos.ts`: Verificado (Supabase: `couple_profiles` / storage `profile-images`; si difiere, es deuda DB).
-
-#### src/components/profiles/single (VERIFICADO ✅)
-
-- `index.ts`: Verificado.
-- `NicknameValidator.tsx`: Verificado (re-export).
-- `PasswordValidator.tsx`: Verificado (re-export).
-- `ProfileSingle.test.tsx`: Corregido color `pink` prohibido (pink -> fuchsia).
-- `SingleCard.tsx`: Verificado.
-- `SingleRegistrationForm.tsx`: Verificado.
-
-#### src/components/profiles/shared (VERIFICADO ✅)
-
-- `index.ts`: Verificado.
-- `AnimatedProfileCard.tsx`: Verificado.
-- `CollapsedUserProfile.tsx`: Verificado.
-- `DiscoverProfileCard.tsx`: Verificado.
-- `EnhancedGallery.tsx`: Corregido gradiente con `pink` prohibido (pink -> fuchsia).
-- `Gallery.tsx`: Corregido conflicto export/definición (GalleryBase + memo), eliminado `error as any` en logger, y gradiente `pink` -> `fuchsia`.
-- `ImageGallery.tsx`: Verificado (Supabase: tablas `images`, `gallery_unlocks`; si difieren, es deuda DB).
-- `ImageModal.tsx`: Verificado.
-- `ImageUpload.tsx`: Verificado.
-- `InterestsSelector.tsx`: Verificado (re-export).
-- `MainProfileCard.tsx`: Verificado.
-- `NFTGalleryManager.tsx`: Verificado.
-- `ParentalControl.tsx`: Verificado.
-- `PrivateImageGallery.tsx`: Verificado.
-- `PrivateImageRequest.tsx`: Verificado.
-- `ProfileAnalytics.tsx`: Verificado.
-- `ProfileDetail.tsx`: Verificado.
-- `ProfileFilters.tsx`: Verificado.
-- `ProfileGrid.tsx`: Verificado.
-- `ProfileLoadingScreen.tsx`: Corregidos colores `pink` prohibidos (pink -> fuchsia).
-- `ProfileNavTabs.tsx`: Corregidos imports sin default export + colores `pink` prohibidos (pink -> fuchsia).
-- `ProfileNavigation.tsx`: Verificado.
-- `ProfileReportButton.tsx`: Verificado.
-- `ProfileReportModal.tsx`: Verificado.
-- `ProfileReportsPanel.test.tsx`: Reemplazado `console.warn` por `testDebugger.logError`.
-- `ProfileReportsPanel.tsx`: Verificado.
-- `ProfileSettings.tsx`: Verificado.
-- `ProfileStats.tsx`: Corregido color `text-pink-400` prohibido (pink -> fuchsia).
-- `ProfileTabs.tsx`: Verificado.
-- `ProfileThemeDemo.tsx`: Verificado.
-- `ProfileThemeShowcase.tsx`: Verificado.
-- `Profiles.tsx`: Verificado (re-export).
-- `ReportProfileDialog.tsx`: Verificado.
-- `ShareProfile.tsx`: Verificado.
-- `UserProfile.tsx`: Verificado.
-- `profile.ts`: Verificado.
-- `useProfileQuery.ts`: Verificado (Supabase: tabla `profiles`; si difiere, es deuda DB).
-
-### Deuda Técnica (DB/Supabase) - [Pendiente Fase 4 ⚠️]
-
-- `src/services/payments/NFTGalleryService.ts`: Tipos de Supabase no incluyen `nft_galleries` / `nft_gallery_images` (errores "No overload matches this call" y columnas como `nft_contract_address`). Requiere alinear schema + regenerar types.
-- `src/components/profiles/couple/CouplePreNuptialAgreement.tsx`: Depende de tabla `couple_agreements` (partner_1_signature, partner_2_signature, signed_at, dispute_deadline, etc.).
-- `src/components/profiles/couple/useCouplePhotos.ts`: Depende de tabla `couple_profiles.couple_images` + bucket `profile-images`.
-
-### src/features/auth (VERIFICADO ✅)
-
-- `useAuth.ts`: Limpieza de imports/tipos no usados y retorno consistente en `useEffect` (evita warning TS).
-
-### src/components/dashboard (VERIFICADO ✅)
-
-- `AnalyticsDashboard.tsx`: Verificado.
-
-### src/components/debug (VERIFICADO ✅)
-
-- `DebugEnv.tsx`: Verificado.
-- `EnvChecker.tsx`: Verificado.
-
-### src/components/dialogs (VERIFICADO ✅)
-
-- `ReportDialog.tsx`: Verificado.
-- `SendRequestDialog.tsx`: Reemplazados colores rosa prohibidos (`bg-pink-500` -> `bg-purple-500`, gradientes).
-- `index.ts`: Verificado.
-
-### src/components/discover (VERIFICADO ✅)
-
-- `AdvancedFilters.tsx`: Verificado.
-- `DiscoverSidebar.tsx`: Verificado.
-- `LocationSelector.tsx`: Verificado.
-- `MatchScore.tsx`: Verificado.
-- `PreferenceSearch.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/feedback (VERIFICADO ✅)
-
-- `UserFeedbackForm.tsx`: Verificado.
-
-### src/components/forms (VERIFICADO ✅)
-
-- `EmailValidationForm.tsx`: Verificado.
-- `ModeratorApplicationForm.tsx`: Verificado. Se corrigieron exports.
-- `PhoneInput.tsx`: Verificado. Se corrigieron exports.
-- `index.ts`: Verificado. Se corrigieron exports.
-
-### src/components/gallery (VERIFICADO ✅)
-
-- `ImageLightbox.tsx`: Verificado. Reemplazados alerts/console por toast/logger.
-
-### src/components/gamification (VERIFICADO ✅)
-
-- `Gamification.tsx`: Corregidos gradientes rosa prohibidos.
-- `RewardsSystem.tsx`: Corregidos gradientes rosa prohibidos.
-- `index.ts`: Verificado.
-
-### src/components/home (VERIFICADO ✅)
-
-- `HomeBenefitsSection.tsx`: Verificado.
-- `HomeModalsManager.tsx`: Verificado. Corregido import de ModeratorApplicationForm.
-- `HomeProfilesSection.tsx`: Verificado.
-
-### src/components/images (VERIFICADO ✅)
-
-- `ImageGallery.tsx`: Corregido uso de `any` y creado `index.ts` faltante.
-- `index.ts`: Creado para consistencia.
-
-### src/components/invitations (VERIFICADO ✅)
-
-- `InvitationDialog.tsx`: Reemplazado `console.error` por `logger.error`.
-- `index.ts`: Creado para consistencia.
-
-### src/components/layout (VERIFICADO ✅)
-
-- `MainLayout.tsx`: Verificado.
-- `ResponsiveLayout.tsx`: Verificado.
-- `index.ts`: Creado para consistencia.
-
-### src/components/lazy (VERIFICADO ✅)
-
-- `index.ts`: Re-exporta de `performance`. Verificado.
-
-### src/components/matches (VERIFICADO ✅)
-
-- `MatchFilters.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/mobile (VERIFICADO ✅)
-
-- `PWAManager.tsx`: Verificado.
-- `TouchGestureManager.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/modals (VERIFICADO ✅)
-
-- `ActionButtonsModal.tsx`: Verificado.
-- `AnimatedModal.tsx`: Verificado.
-- `ComingSoonModal.tsx`: Verificado.
-- `CompatibilityModal.tsx`: Verificado.
-- `ComplianceSignupForm.tsx`: Verificado.
-- `ConsentModal.tsx`: Verificado.
-- `EventsModal.tsx`: Verificado.
-- `FeatureModal.tsx`: Verificado.
-- `ImageModal.tsx`: Verificado. Uso de `prompt` identificado (no crítico).
-- `InstallAppModal.tsx`: Verificado.
-- `PremiumModal.tsx`: Verificado.
-- `SharedTermsModal.tsx`: Verificado.
-- `StakingModal.tsx`: Verificado.
-- `SummaryModal.tsx`: Reemplazado `console.error` por `logger.error`.
-- `SuperLikesModal.tsx`: Verificado.
-- `TermsModalAuth.tsx`: Verificado.
-- `TermsModalCouple.tsx`: Verificado.
-- `TermsModalSingle.tsx`: Verificado.
-- `ThemeInfoModal.tsx`: Corregido color rosa (`bg-pink-500` -> `bg-fuchsia-500`) y exportación.
-- `UnifiedModal.tsx`: Agregado `export` faltante.
-- `VipBookingModal.tsx`: Verificado.
-- `WelcomeModal.tsx`: Verificado.
-- `index.ts`: Verificado.
-
-### src/components/search (VERIFICADO ✅)
-
-- `AdvancedSearch.tsx`: Corregidos 3 `as any` por tipado estricto y eliminado `export default` duplicado.
-- `index.ts`: Corregida ruta de exportación para usar path relativo.
-
-### src/components/security (VERIFICADO ✅)
-
-- `BiometricAuth.tsx`: Eliminado `export default` duplicado.
-- `DynamicWatermark.tsx`: Eliminado `export default` duplicado. [DEUDA TÉCNICA] Se identificó manipulación directa del DOM y casting de tipos (`as Node`, `as HTMLElement`) que deben ser refactorizados en el futuro.
-- `index.ts`: Corregidas rutas de exportación para usar paths relativos y añadida exportación faltante de `useWatermark`.
-- `MediaUploadSecure.tsx`: Eliminado `export default` duplicado. [DEUDA TÉCNICA] La lógica en `handleFileSelect` es compleja y el manejo de wildcards en `acceptedTypes` es frágil.
-- `ProtectedMedia.tsx`: Reemplazadas 3 llamadas a `alert()` por el sistema `toast`. Eliminado `export default` duplicado. [DEUDA TÉCNICA - FASE SB] Documentado uso de `useState<any>` para `permissions` y casting de `Ref` en `useWatermark`.
-
-### src/components/settings (VERIFICADO ✅)
+## 📊 Estado del Proyecto (Enero 10, 2026)
+
+### Directorios Revisados (Resumen)
+
+- ✅ **src/pages** - 43 archivos procesados, gradientes rosa→fuchsia, imports type-only, accesibilidad mejorada
+- ✅ **src/lib** - console.* → logger, mejoras en null-safety
+- ✅ **src/components/** - Múltiples subdirectorios verificados (navigation, notifications, onboarding, performance, premium, admin, ai, analytics, android, animations)
+- ✅ **src/ai** - IA local con WebLLM, sin errores
+- ✅ **src/services/blockchain** - Servicios Web3 completos (Web3Service, Web3WalletService, ContractService)
+
+### Cambios Recientes (Enero 10, 2026)
+
+- **🔗 Web3 Integration**: Servicios completos para conexión con MetaMask y contratos inteligentes
+- **💎 Demo Wallet**: Wallet demo para perfiles demo con NFTs mock y tokens premium
+- **🛡️ Security Hardening v3.8.0**: Implementación completa de medidas de seguridad enterprise
+- **Correcciones de Lint**: Todos los errores de TypeScript y lint corregidos
+
+### Verificaciones
+
+- **Type-check:** ✅ PASADO
+- **Lint:** ✅ PASADO
+- **Build:** ✅ PASADO
+
+### Próximos Pasos
+
+- Continuar refactorización de `src/services` (en curso)
+- Completar barrido de directorios restantes
+- Optimizar consultas a Neo4j
+
+---
+
+## 📅 Bitácora Enero 10, 2026 (v3.8.0)
+
+- **Web3 Integration**: Implementación de servicios Web3 completos
+- **Demo Wallet**: Wallet demo integrada en perfiles demo
+- **Contratos Inteligentes**: CMPX.sol, CoupleNFT.sol, StakingPool.sol implementados
+- **Documentación**: Actualizada con Web3 Integration y Security Hardening
+- **Verificaciones**: Type-check, lint y build pasados sin errores
+- **Capacitor**: Sync completado, Android Studio abierto
+
+💡 Nota para Reclutadores / Reviewers
+
+Este repositorio es un "laboratorio vivo" donde experimento con tecnologías complejas. Si bien la organización del código puede no ser perfecta en todos los módulos, la arquitectura demuestra la capacidad de integrar sistemas dispares (Grafos + SQL + Blockchain) en un producto funcional.
+
+📆 Hito de limpieza de código muerto, comentarios legacy y actualización de la documentación en la raíz: **28 de diciembre de 2025**.
+
+---
+
+## 📚 Documentación Adicional
+
+- [RELEASE NOTES v3.8.0](RELEASE_NOTES_v3.8.0.md) - Notas de versión completas
+- [Security Measures v3.8.0](docs/legal/SECURITY_MEASURES_V3.8.0.md) - Documentación de seguridad
+- [Auditoría de Seguridad](legal/AUDITORIA_SRC_COMPLETA.md) - Auditoría exhaustiva
+- [Política de Proveedores](docs/legal/SUPPLIER_SECURITY_POLICY.md) - Política de seguridad para proveedores
+- [Seguridad para Usuarios](docs/SEGURIDAD_USUARIOS_Enero2026.md) - Información de seguridad para público general
+
+---
+
+## 🚧 Estado del Proyecto
+
+Actualmente estoy trabajando en:
+[ ] Refactorización de la estructura de carpetas en `/src`.
+[ ] Optimización de las consultas a Neo4j.
+[x] Limpieza de código muerto y comentarios legacy (principalmente v3.7.0).
+[x] Implementación de Tests E2E críticos (Completado).
+[x] Correcciones de UI y Privacidad (Completado v3.7.0).
+[x] Hardening completo de seguridad (Completado v3.8.0 - Ene 2026).
+[x] Implementación de servicios Web3 (Completado v3.8.0 - Ene 2026).
+
+## Actualización Enero 10, 2026
+
+- Gating de Chat por Match implementado en Discover.
+- Galería privada con paywall CMPX integrada en Chat (TokenService + comisión registrada).
+- Verificaciones en master: `pnpm run type-check`, `pnpm run lint`, `pnpm run build` → OK.
+- Respaldo de master: rama `back-master-2026-01-02-21-46` y tag `backup-master-2026-01-02-21-46`.
+
+** Hasta que se termine de Refactorizar para la estabilidad del la plataforma se habilitaran los registros , mientras tanto pueden usar los demos para visualizar los avances y contribiur en el FAQ DE ERRORES
+ComplicesConecta les desea un Feliz año Nuevo**
+**🚧Fecha estimanda Enero/26**
 
 - `BiometricSettings.tsx`: Reemplazados 3 `console.error` por `logger.error` y eliminado `export default` duplicado.
 - `ExplicitInterestsEditor.tsx`: Corregido gradiente con color `pink` prohibido en botón.

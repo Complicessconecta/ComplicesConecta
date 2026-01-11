@@ -30,9 +30,44 @@
     - `PushNotificationSettings`: Added robustness with try/catch blocks for test notifications.
     - `HistoricalMetricsService`: Enforced strict types replacing `any[]` usage.
     - `StoryReportDialog`: Added audit logging for user block/hide actions.
+    - `MatchService`: Fixed UUID validation in `getMatchedUserIds` to prevent infinite loops with demo users.
 - **Infrastructure**:
   - Verified `package.json` "type": "module" for correct ES Module handling.
   - Ensured `vite build` compatibility for Vercel deployment.
+
+## 🎨 Visual & UX Improvements (Jan 2026)
+- **Background System**:
+  - UnifiedBackground consolidado para todas las páginas públicas y perfiles demo
+  - Partículas neón visibles en todas las rutas principales
+  - Fondos sólidos reemplazados por transparencia glassmorphism
+- **Authentication Page**:
+  - Card más transparente (`bg-white/5`) para mejor visibilidad del fondo
+  - Botones con gradientes y efectos hover mejorados
+  - Estilos visuales mejorados en tabs y títulos
+- **Discover Page**:
+  - Fondo transparente para mostrar partículas neón
+  - DiscoverProfileCard con glassmorphism más transparente
+- **Profile Cards**:
+  - Botón Me gusta con animación spring y cambio a rojo
+  - Botón Chat con detección de perfiles privados
+  - Botón Visualizar para perfiles públicos/privados
+
+## 🖼 Gallery & NFT System Improvements (Jan 2026)
+- **Private Gallery**:
+  - Sistema de blur/candado con ParentalControl (PIN 1234)
+  - Auto-bloqueo por tiempo (Strict: 60s, Normal: 180s, Soft: 360s)
+  - Carrusel con navegación y expansión de imágenes
+  - Marca de agua mejorada en imágenes privadas
+- **Public Gallery**:
+  - Corregidas imágenes repetidas en galería pública
+  - 3 imágenes diferentes con gradientes únicos
+- **NFT System (Demo)**:
+  - Sistema mock de minteo hasta 4 NFTs
+  - Imágenes aleatorias de `/assets/nfts/`
+  - Rarity aleatoria (Common, Rare, Epic, Legendary)
+  - Valor dinámico (100-5000 CMPX)
+  - Wallet demo completa con tokens y NFTs
+  - TokenDashboard con datos mock para modo demo
 
 ## 📦 New Features
 ### 1. Sistema de Clubs (Geo-fenced)

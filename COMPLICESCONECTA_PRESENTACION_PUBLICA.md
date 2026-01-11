@@ -2,8 +2,17 @@
 
 **Versión:** 3.8.0
 **Fecha:** 20 de Diciembre, 2025
-**Última Actualización:** 26 de Diciembre, 2025
+**Última Actualización:** 10 de Enero, 2026
 **Estado:** ✅ PRODUCTION READY - AI-NATIVE - REFACTORED & STANDARDIZED
+
+### 📅 Bitácora 10 Ene 2026 (v3.8.0)
+
+- **Sistema de Galerías Mejorado:** Implementación completa de galería privada con blur/candado y ParentalControl (PIN 1234). Auto-bloqueo por tiempo configurable (Strict: 60s, Normal: 180s, Soft: 360s). Carrusel con navegación y expansión de imágenes.
+- **Marca de Agua Mejorada:** Imágenes privadas con marca de agua mejorada (badge en esquina + marca grande central rotada).
+- **Sistema de NFTs Demo:** Sistema mock de minteo hasta 4 NFTs con imágenes aleatorias de `/assets/nfts/`, rarity aleatoria (Common, Rare, Epic, Legendary) y valor dinámico (100-5000 CMPX).
+- **Wallet Demo Completa:** TokenDashboard con datos mock para modo demo, mostrando balance de tokens CMPX/GTK y NFTs creados.
+- **Mejoras Visuales y UX:** UnifiedBackground consolidado para todas las páginas, fondos sólidos reemplazados por transparencia glassmorphism, botones de perfil mejorados (Me gusta, Chat, Visualizar) con animaciones spring.
+- **Correcciones Críticas:** Validación de UUID en MatchService para evitar bucles infinitos con demo users, corrección de imágenes repetidas en galería pública, linting sin errores ni advertencias.
 
 ### 📅 Bitácora 26 Dic 2025 (v3.8.0)
 

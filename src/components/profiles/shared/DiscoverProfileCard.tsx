@@ -11,12 +11,6 @@ import {
   MessageCircle,
   User,
 } from "lucide-react";
-import type { Database } from "@/types/supabase-generated";
-
-// Tipos estrictos basados en Supabase
-type Tables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Row"];
-type _ProfileRow = Tables<"profiles">;
 
 // Constantes
 const FALLBACK_IMAGE_URL =

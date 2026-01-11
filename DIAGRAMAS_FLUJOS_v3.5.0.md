@@ -1,12 +1,12 @@
 # 📊 DIAGRAMAS DE FLUJOS v3.8.0 - COMPLICESCONECTA v3.8.0
 
-**Fecha:** 26 Diciembre 2025
+**Fecha:** 10 Enero 2026
 **Versión:** 3.8.0
 **Estado:** ✅ PRIVACY ENHANCED - UI POLISHED - CODE STANDARDIZED
 
 ---
 
-## 🔄 FLUJO COMPLETO DE USUARIO (Actualizado v3.7.0)
+## 🔄 FLUJO COMPLETO DE USUARIO (Actualizado v3.8.0)
 
 ```mermaid
 flowchart TD
@@ -43,6 +43,15 @@ flowchart TD
     Q -->|Comprar Tokens| T[Shop CMPX]
     Q -->|Invertir| U[Donativos /invest]
     Q -->|Mint NFT| N1[NFT Gallery]
+    Q -->|Ver Galería| GAL[Galería Privada]
+
+    GAL --> GC{Tipo Galería}
+    GC -->|Pública| GP[Ver Imágenes]
+    GC -->|Privada| GPC{Control Parental}
+
+    GPC -->|PIN 1234| GPD[Desbloquear]
+    GPD --> GPT[Auto-bloqueo 60-360s]
+    GPT --> GP
 
     S --> V{Verificado?}
     V -->|Sí| W[Reseña 24h después]

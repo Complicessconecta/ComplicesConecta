@@ -37,6 +37,7 @@ flowchart TD
     O --> P
 
     P --> Q{Acción}
+    Q -->|Like| LIKE[Botón Me Gusta]
     Q -->|Match| R[Chat Realtime]
     Q -->|Club Check-in| S[Geoloc 50m]
     Q -->|Billetera| WT[Wallet /tokens]
@@ -44,6 +45,31 @@ flowchart TD
     Q -->|Invertir| U[Donativos /invest]
     Q -->|Mint NFT| N1[NFT Gallery]
     Q -->|Ver Galería| GAL[Galería Privada]
+
+    LIKE --> LK{MatchService.createLike}
+    LK -->|Insert DB| LK1[profile_likes]
+    LK1 --> LK2{Check Match Mutuo}
+    LK2 -->|Sí| LK3[Crear Match]
+    LK2 -->|No| LK4[Notificar Like]
+    LK3 --> R
+    LK4 --> P
+
+    R --> R1{Verificar Match}
+    R1 -->|No Match| R2[Toast: Match requerido]
+    R1 -->|Match OK| R3[Cargar Chat]
+    R2 --> P
+    R3 --> R4{Galería Privada?}
+    R4 -->|Sí| R5[ChatPrivacyService]
+    R4 -->|No| AA[Chat Gratis]
+
+    R5 --> R6{Acceso Aprobado?}
+    R6 -->|No| R7[Solicitar Acceso]
+    R6 -->|Sí| R8[Pago CMPX 90%]
+    R7 --> R9[gallery_access_requests]
+    R8 --> R10[Creador gana 90%]
+    R9 --> R11{Aprobado?}
+    R11 -->|Sí| R8
+    R11 -->|No| R12[Denegado]
 
     GAL --> GC{Tipo Galería}
     GC -->|Pública| GP[Ver Imágenes]

@@ -70,37 +70,42 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
 
   // Load notifications on mount and when user changes
   useEffect(() => {
-    if (user && !(user as any).is_demo) {
-      loadNotifications();
-      // Set up real-time subscription
-      if (!supabase) {
-        logger.error("Supabase no está disponible");
-        return;
-      }
-
-      const subscription = supabase
-        .channel("notifications")
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "notifications",
-            filter: `user_id=eq.${user.id}`,
-          },
-          () => {
-            loadNotifications();
-          },
-        )
-        .subscribe();
-
-      return () => {
-        subscription.unsubscribe();
-      };
-    } else if ((user as any)?.is_demo) {
-      // Cargar notificaciones demo
-      loadDemoNotifications();
+    if (!user) {
+      return;
     }
+
+    if ((user as any).is_demo) {
+      loadDemoNotifications();
+      return;
+    }
+
+    loadNotifications();
+    
+    // Set up real-time subscription
+    if (!supabase) {
+      logger.error("Supabase no está disponible");
+      return;
+    }
+
+    const subscription = supabase
+      .channel("notifications")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          loadNotifications();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [user]);
 
   const loadNotifications = async () => {

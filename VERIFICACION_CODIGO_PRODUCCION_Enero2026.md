@@ -8,316 +8,187 @@
 
 ## 📊 RESUMEN EJECUTIVO
 
-**Estado General:** ⚠️ INFRAESTRUCTURA IMPLEMENTADA, BLOCKCHAIN NO
+**Estado General:** ✅ CONTRATOS INTELIGENTES IMPLEMENTADOS, INTEGRACIÓN PENDIENTE
 
-El proyecto tiene la infraestructura lista para blockchain pero la implementación real de contratos inteligentes y staking en blockchain NO está implementada. Solo está la UI y el almacenamiento en Supabase.
+El proyecto tiene **todos los contratos inteligentes implementados** en Solidity:
+- ✅ CMPX.sol (Token ERC-20)
+- ✅ CoupleNFT.sol (NFT ERC-721 para parejas)
+- ✅ StakingPool.sol (Pool de staking)
+- ✅ Hardhat configurado para Polygon Amoy/Mumbai
+- ⚠️ Integración Web3 con frontend pendiente
+- ⚠️ Scripts de despliegue listos pero no ejecutados
 
 ---
 
-## 1. 🔍 NFTs REALES CON BLOCKCHAIN POLYGON
+## 1. ✅ CONTRATOS INTELIGENTES IMPLEMENTADOS
 
-### Estado: ⚠️ NO IMPLEMENTADO
+### Estado: ✅ IMPLEMENTADO
 
-#### Lo que SÍ está implementado:
+#### Archivos encontrados:
 
-**Archivo:** `src/services/payments/NFTService.ts`
+**Ubicación:** `contracts/`
 
-```typescript
-// ✅ Métodos implementados
-public async mintSingleNFT(userId, name, description, file)
-public async requestCoupleNFT(requesterId, partnerId, name, description, file)
-public async approveCoupleNFT(requestId)
+1. **CMPX.sol** - Token ERC-20 Utility Token
+   - Supply máximo: 1,250,000,000 CMPX (1.25B)
+   - Upgradeable (ERC20Upgradeable)
+   - ReentrancyGuard, Pausable, Ownable
+   - Sistema de blacklist
+   - Mint controlado solo por owner
+   - Pool de tokens para testing (25%)
+
+2. **CoupleNFT.sol** - NFT ERC-721 para Parejas
+   - Consentimiento doble obligatorio
+   - Timeout de 24 horas para aprobación
+   - Dual mint (ambos reciben NFT)
+   - Sistema de cancelación
+   - Metadata IPFS
+   - Costo de mint: 200 CMPX
+
+3. **StakingPool.sol** - Pool de Staking
+   - Staking de NFTs (ERC-721)
+   - Staking de tokens GTK (ERC-20)
+   - Rewards en tokens CMPX
+   - APY 15-35% según duración
+   - Vesting period mínimo 30 días
+   - Penalización por unstake temprano
+   - Boost por rareza de NFTs
+
+#### Configuración Hardhat:
+
+**Archivo:** `hardhat.config.cjs`
+
+```javascript
+module.exports = {
+  solidity: "0.8.25",
+  networks: {
+    hardhat: {},
+    amoy: {
+      url: process.env.AMOY_RPC_URL || "https://rpc-amoy.polygon.technology",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    mumbai: {
+      url: process.env.MUMBAI_RPC_URL || "https://rpc-mumbai.maticvigil.com",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+  },
+  etherscan: {
+    apiKey: {
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      polygon: process.env.POLYGONSCAN_API_KEY,
+    },
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts",
+  },
+};
 ```
 
-**Funcionalidad actual:**
-- ✅ Upload de imágenes a IPFS (Pinata)
-- ✅ Generación de metadata de NFT
-- ✅ Almacenamiento en Supabase (tablas `nfts` y `couple_nft_requests`)
-- ✅ Sistema de consentimiento doble para parejas
-- ✅ Generación de rarity aleatoria (Common, Rare, Epic, Legendary)
+#### Verificación de Despliegue:
 
-#### Lo que NO está implementado:
+**Archivo:** `deployed-contracts/deploy-verification.json`
 
-❌ **Contratos inteligentes de Polygon**
-- No hay archivos de contratos Solidity (.sol)
-- No hay servicios de Web3/Ethers.js
-- No hay integración con Polygon Mainnet o Testnet
-- No hay minteo real de tokens ERC-721
+```json
+{
+  "timestamp": "2025-11-15T10:05:55.760Z",
+  "environmentVariables": {
+    "configured": true,
+    "missing": []
+  },
+  "contracts": {
+    "available": ["CMPX.sol", "CoupleNFT.sol", "StakingPool.sol"]
+  },
+  "hardhatConfig": true,
+  "readyForDeploy": true,
+  "nextSteps": [
+    "Ejecutar: npx hardhat run scripts/deploy-amoy.js --network amoy"
+  ]
+}
+```
 
-❌ **Wallet de blockchain real**
-- Solo existe WalletService para tokens internos (CMPX)
-- No hay conexión a MetaMask o wallets de Web3
+---
+
+## 2. 📊 TABLA RESUMEN
+
+| Funcionalidad | Contratos Solidity | Integración Web3 | Estado |
+|---------------|---------------------|------------------|--------|
+| **NFTs Reales** | ✅ CoupleNFT.sol | ⚠️ Pendiente | ⚠️ Parcial |
+| **Staking Real** | ✅ StakingPool.sol | ⚠️ Pendiente | ⚠️ Parcial |
+| **Tokens GTK** | ✅ CMPX.sol (GTK) | ⚠️ Pendiente | ⚠️ Parcial |
+| **IA Local** | N/A | N/A | ✅ Completo |
+| **Neo4j Matching** | N/A | ✅ Neo4j | ✅ Completo |
+
+---
+
+## 3. ⚠️ LO QUE FALTA PARA PRODUCCIÓN
+
+### Integración Web3 con Frontend:
+
+❌ **Servicios de Web3/Ethers.js**
+- No hay servicio Web3Service en `src/services/`
+- No hay conexión a MetaMask/WalletConnect
 - No hay gestión de private keys o seed phrases
 
-#### Código actual vs Código faltante:
+❌ **Scripts de despliegue**
+- Contratos listos para desplegar
+- Scripts de despliegue no ejecutados
+- No hay direcciones de contratos desplegados
 
-```typescript
-// ✅ CÓDIGO ACTUAL (Solo Supabase)
-public async mintSingleNFT(
-  userId: string,
-  name: string,
-  description: string,
-  file: File
-): Promise<NFTInfo> {
-  // Upload a IPFS
-  const ipfsHash = await this.uploadToPinata(file);
-  
-  // Guardar en Supabase
-  const { data, error } = await this.blockchainClient
-    .from("nfts")
-    .insert({
-      owner_id: userId,
-      metadata_uri: `ipfs://${ipfsHash}`,
-      rarity: this.pickRarity(),
-    });
-  
-  // ❌ NO HAY INTERACCIÓN CON CONTRATOS DE POLYGON
-  // ❌ NO HAY MINTEO REAL DE ERC-721
-}
-
-// ❌ CÓDIGO FALTANTE (Blockchain Polygon)
-public async mintSingleNFTOnChain(
-  userId: string,
-  name: string,
-  description: string,
-  file: File
-): Promise<NFTInfo> {
-  // Upload a IPFS
-  const ipfsHash = await this.uploadToPinata(file);
-  
-  // Conectar a wallet
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  
-  // Interactuar con contrato inteligente
-  const nftContract = new ethers.Contract(
-    CONTRACT_ADDRESS,
-    NFT_ABI,
-    signer
-  );
-  
-  // Mintear NFT en Polygon
-  const tx = await nftContract.mintNFT(
-    await signer.getAddress(),
-    `ipfs://${ipfsHash}`,
-    name,
-    description
-  );
-  
-  await tx.wait();
-  
-  // Guardar en Supabase
-  const tokenId = await nftContract.getTokenCounter();
-  // ...
-}
-```
+❌ **Integración con contratos**
+- NFTService solo usa Supabase (off-chain)
+- No hay llamadas a contratos inteligentes
+- No hay eventos de blockchain
 
 ---
 
-## 2. 🔍 STAKING REAL CON GTK TOKENS
+## 4. ✅ LO QUE SÍ ESTÁ IMPLEMENTADO Y FUNCIONA
 
-### Estado: ⚠️ NO IMPLEMENTADO
-
-#### Lo que SÍ está implementado:
-
-**Archivo:** `src/pages/TokensInfo.tsx`
-
-```typescript
-// ✅ UI de staking implementada
-const stakingOptions = [
-  { duration: 30, apy: 15, minTokens: 100, penalty: 5 },
-  { duration: 90, apy: 20, minTokens: 100, penalty: 5 },
-  { duration: 180, apy: 25, minTokens: 100, penalty: 5 },
-  { duration: 270, apy: 30, minTokens: 100, penalty: 5 },
-  { duration: 365, apy: 35, minTokens: 100, penalty: 5 },
-];
-
-// ✅ Multiplicadores de rareza NFT
-const nftRarityMultipliers = {
-  common: 1.0,
-  rare: 1.5,
-  epic: 2.0,
-  legendary: 3.0,
-};
-```
-
-**Funcionalidad actual:**
-- ✅ UI de staking con opciones de duración
-- ✅ Cálculo de APY con multiplicadores
-- ✅ Gráficos visuales de staking
-- ✅ Estadísticas globales de tokens
-
-#### Lo que NO está implementado:
-
-❌ **Contratos inteligentes de staking**
-- No hay contrato de staking (Solidity)
-- No hay integración con protocolos DeFi (Aave, Compound, etc.)
-- No hay locking de tokens en smart contracts
-- No hay distribución de rewards automáticas
-
-❌ **Tokens GTK en blockchain**
-- No hay contrato ERC-20 de GTK
-- No hay minteo de tokens GTK
-- No hay transferencia de tokens
-- Solo existen tokens CMPX internos (off-chain)
-
-#### Código actual vs Código faltante:
-
-```typescript
-// ✅ CÓDIGO ACTUAL (Solo UI)
-const calculateAPY = (baseAPY: number, nftRarity?: string) => {
-  const multiplier = nftRarity ? nftRarityMultipliers[nftRarity] || 1.0 : 1.0;
-  return baseAPY * multiplier;
-};
-
-// ❌ CÓDIGO FALTANTE (Blockchain Staking)
-public async stakeTokens(
-  amount: number,
-  duration: number,
-  nftRarity?: string
-): Promise<StakeInfo> {
-  // Conectar a wallet
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  
-  // Aprobar tokens
-  const gtkContract = new ethers.Contract(GTK_ADDRESS, ERC20_ABI, signer);
-  await gtkContract.approve(STAKING_CONTRACT_ADDRESS, amount);
-  
-  // Staking en contrato
-  const stakingContract = new ethers.Contract(
-    STAKING_CONTRACT_ADDRESS,
-    STAKING_ABI,
-    signer
-  );
-  
-  const tx = await stakingContract.stake(amount, duration);
-  await tx.wait();
-  
-  // Calcular rewards
-  const apy = calculateAPY(baseAPY, nftRarity);
-  const rewards = (amount * apy * duration) / (365 * 100);
-  
-  // Guardar en Supabase
-  // ...
-}
-```
-
----
-
-## 3. ✅ IA LOCAL FUNCIONA SIN CONFIGURACIÓN
-
-### Estado: ✅ IMPLEMENTADO
-
-#### Lo que está implementado:
-
-**Archivos:**
-- `src/ai/AIWorker.ts` - Motor de IA local
-- `src/ai/useLocalAI.ts` - Hook React para IA local
-- `src/components/ai/LegalChatBox.tsx` - UI de chat
-
-**Funcionalidad:**
+### IA Local - 100% FUNCIONAL
 - ✅ WebLLM con Phi-3-mini
-- ✅ Ejecución 100% local en el navegador
+- ✅ Ejecución 100% local en navegador
 - ✅ Sin enviar datos a la nube
-- ✅ Carga de modelo progresiva
-- ✅ Respuestas en tiempo real
-- ✅ Sin configuración adicional requerida
+- ✅ No requiere configuración adicional
 
-**Confirmación:**
-```typescript
-// ✅ Funciona sin configuración
-const { messages, progress, isReady, sendMessage } = useLocalAI({
-  initialRuntimeState: { hasActivePrenup, relationshipStatus }
-});
-
-// No requiere API keys, variables de entorno o configuración externa
-```
-
----
-
-## 4. ✅ VITE_NEO4J_ENABLED EN CÓDIGO
-
-### Estado: ✅ IMPLEMENTADO
-
-#### Ubicación en código:
-
-**Archivos con verificación:**
-1. `src/services/social/SmartMatchingService.ts` (líneas 154-157, 512-515, 590-594, 757-760)
-2. `src/services/core/graph/Neo4jService.ts` (líneas 89-92, 148-153)
-3. `src/tests/unit/Neo4jService.test.ts` (líneas 35, 48, 84, 100, 161, 215, 281, 346, 372, 388, 413, 434, 493)
-
-**Implementación:**
-```typescript
-// ✅ Verificación en SmartMatchingService
-const isNeo4jEnabled =
-  typeof import.meta !== "undefined" && import.meta.env
-    ? import.meta.env.VITE_NEO4J_ENABLED === "true"
-    : process.env.VITE_NEO4J_ENABLED === "true";
-
-if (isNeo4jEnabled && neo4jService) {
-  // Usar Neo4j para matching
-} else {
-  // Fallback a matching tradicional
-}
-
-// ✅ Verificación en Neo4jService
-this.isEnabled = getViteEnv("NEO4J_ENABLED") === "true";
-
-if (this.isEnabled) {
-  // Inicializar conexión a Neo4j
-} else {
-  logger.warn("Neo4j está deshabilitado. Set VITE_NEO4J_ENABLED=true para habilitar.");
-}
-```
-
-**Estado actual:**
-- ✅ Código de verificación implementado
-- ✅ Fallback a matching tradicional si Neo4j está deshabilitado
-- ✅ Tests condicionales según VITE_NEO4J_ENABLED
-- ⚠️ Requiere configuración de variables de entorno para activar
-
----
-
-## 📊 TABLA RESUMEN
-
-| Funcionalidad | Infraestructura | Blockchain | Estado |
-|---------------|-----------------|------------|--------|
-| **NFTs Reales** | ✅ IPFS + Supabase | ❌ Polygon | ⚠️ Parcial |
-| **Staking Real** | ✅ UI + Cálculos | ❌ GTK Tokens | ⚠️ Parcial |
-| **IA Local** | ✅ WebLLM + Phi-3 | N/A | ✅ Completo |
-| **Neo4j Matching** | ✅ Servicio + Verificación | ✅ Neo4j | ✅ Completo |
+### Neo4j Matching - 100% FUNCIONAL
+- ✅ `VITE_NEO4J_ENABLED` implementado en código
+- ✅ Verificación en SmartMatchingService y Neo4jService
+- ✅ Fallback automático a matching tradicional
+- ✅ Requiere `VITE_NEO4J_ENABLED=true` para activar
 
 ---
 
 ## 🎯 CONCLUSIONES
 
-### ✅ LO QUE ESTÁ LISTO PARA PRODUCCIÓN:
+### ✅ LO QUE ESTÁ LISTO:
 
-1. **IA Local** - 100% funcional sin configuración
-2. **Neo4j Matching** - 100% funcional con VITE_NEO4J_ENABLED=true
-3. **Infraestructura de NFTs** - IPFS + Supabase listos
-4. **UI de Staking** - Interfaz completa con APY competitivo
+1. **Contratos Inteligentes** - 100% implementados
+   - CMPX.sol (Token ERC-20)
+   - CoupleNFT.sol (NFT ERC-721)
+   - StakingPool.sol (Pool de staking)
+   - Hardhat configurado para Polygon
+
+2. **IA Local** - 100% funcional sin configuración
+
+3. **Neo4j Matching** - 100% funcional con VITE_NEO4J_ENABLED=true
 
 ### ⚠️ LO QUE FALTA PARA PRODUCCIÓN BLOCKCHAIN:
 
-1. **Contratos Inteligentes**
-   - Contrato ERC-721 para NFTs
-   - Contrato ERC-20 para GTK tokens
-   - Contrato de staking con rewards
-   - Despliegue en Polygon Mainnet/Testnet
+1. **Despliegue de Contratos**
+   - Ejecutar scripts de despliegue en Polygon Amoy (testnet)
+   - Verificar despliegue exitoso
+   - Obtener direcciones de contratos
 
 2. **Integración Web3**
-   - Conexión a MetaMask/WalletConnect
-   - Gestión de private keys
-   - Transacciones en blockchain
-   - Event listeners de contratos
+   - Crear Web3Service para conectar con MetaMask
+   - Integrar Ethers.js en el frontend
+   - Implementar llamadas a contratos inteligentes
 
-3. **Tokens GTK Reales**
-   - Minteo de tokens GTK
-   - Distribución inicial
-   - Transferencia entre usuarios
-   - Staking en smart contracts
+3. **Actualización de Servicios**
+   - NFTService: Agregar minteo en blockchain
+   - StakingService: Agregar staking en smart contracts
+   - WalletService: Agregar gestión de wallets Web3
 
 ---
 
@@ -328,14 +199,14 @@ if (this.isEnabled) {
 
 ### Para Modo Producción Blockchain:
 ⚠️ Requiere desarrollo adicional:
-1. Desarrollar contratos inteligentes (Solidity)
-2. Integrar Web3/Ethers.js
-3. Desplegar en Polygon Testnet (Mumbai)
-4. Implementar staking en smart contracts
+1. Desplegar contratos en Polygon Amoy (testnet)
+2. Crear Web3Service para integración con MetaMask
+3. Actualizar NFTService para minteo en blockchain
+4. Actualizar StakingService para staking en smart contracts
 5. Testing completo en testnet antes de mainnet
 
 ---
 
 **Fecha de verificación:** Enero 10, 2026  
 **Versión del proyecto:** v3.8.0  
-**Estado:** ⚠️ INFRAESTRUCTURA LISTA, BLOCKCHAIN PENDIENTE
+**Estado:** ✅ CONTRATOS IMPLEMENTADOS, INTEGRACIÓN PENDIENTE

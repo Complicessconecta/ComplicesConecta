@@ -41,47 +41,15 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   }, [loadingTexts.length]);
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-gradient-to-br from-primary via-accent to-secondary overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full animate-float blur-xl"></div>
-        <div className="absolute top-40 right-32 w-24 h-24 bg-white/20 rounded-full animate-pulse blur-lg"></div>
-        <div
-          className="absolute bottom-32 left-40 w-40 h-40 bg-white/5 rounded-full animate-float blur-2xl"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute bottom-20 right-20 w-28 h-28 bg-white/15 rounded-full animate-pulse blur-xl"
-          style={{ animationDelay: "0.5s" }}
-        ></div>
-
-        {/* Floating Hearts - Hidden on mobile */}
-        <Heart
-          className="absolute top-32 left-1/4 w-6 h-6 sm:w-8 sm:h-8 text-white/30 animate-float hidden sm:block"
-          fill="currentColor"
-          style={{ animationDelay: "0.2s" }}
-        />
-        <Heart
-          className="absolute bottom-40 right-1/3 w-4 h-4 sm:w-6 sm:h-6 text-white/40 animate-float hidden sm:block"
-          fill="currentColor"
-          style={{ animationDelay: "1.5s" }}
-        />
-        <Sparkles
-          className="absolute top-1/3 right-1/4 w-5 h-5 sm:w-7 sm:h-7 text-white/35 animate-float hidden sm:block"
-          style={{ animationDelay: "0.8s" }}
-        />
-        <Users
-          className="absolute bottom-1/3 left-1/3 w-7 h-7 sm:w-9 sm:h-9 text-white/25 animate-float hidden sm:block"
-          style={{ animationDelay: "1.2s" }}
-        />
-        <Zap
-          className="absolute top-1/2 left-1/5 w-4 h-4 sm:w-5 sm:h-5 text-white/45 animate-float hidden sm:block"
-          style={{ animationDelay: "0.6s" }}
-        />
-      </div>
+    <div
+      className="fixed inset-0 z-30 flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/assets/loading/load1.jpg')" }}
+    >
+      {/* Overlay oscuro para mejorar legibilidad */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
       {/* Main Loading Content */}
-      <div className="relative z-10 text-center px-4 sm:px-8 max-w-xs sm:max-w-md mx-auto">
+      <div className="relative z-10 text-center px-4 sm:px-8 max-w-xs sm:max-w-md mx-auto flex flex-col items-center justify-center flex-1">
         {/* Logo Animation */}
         <div className="mb-8 relative">
           <div className="relative inline-block">
@@ -135,8 +103,12 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         </div>
       </div>
 
-      {/* Animated Border */}
-      <div className="absolute inset-0 border-4 border-white/20 animate-pulse"></div>
+      {/* Texto animado 'Cargando...' centrado en la parte inferior */}
+      <div className="relative z-10 pb-8 sm:pb-12">
+        <p className="text-white/90 text-lg sm:text-xl font-medium animate-pulse">
+          Cargando...
+        </p>
+      </div>
     </div>
   );
 };

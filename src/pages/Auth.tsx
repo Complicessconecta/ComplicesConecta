@@ -337,8 +337,8 @@ const Auth = () => {
       {/* Background completamente uniforme - sin bloques visibles */}
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Card con glassmorphism mejorado inspirado en las plantillas */}
-        <Card className="bg-white/10 backdrop-blur-xl border-white/30 shadow-2xl rounded-2xl overflow-hidden">
+        {/* Card con glassmorphism mejorado - más transparente para ver fondo */}
+        <Card className="bg-white/5 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-hidden">
           <CardHeader className="text-center">
             <div className="flex justify-between items-center mb-4">
               <Button

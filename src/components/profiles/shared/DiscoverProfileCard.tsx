@@ -116,7 +116,7 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(
 
     return (
       <Card
-        className="group cursor-pointer overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+        className="group cursor-pointer overflow-hidden bg-white/5 backdrop-blur-xl border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
         onClick={handleProfileClick}
       >
         <div className="relative h-60 sm:h-72 lg:h-80 overflow-hidden">

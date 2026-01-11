@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Baby, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -15,6 +15,7 @@ import { usePersistedState } from "@/hooks/usePersistedState";
 import { useToast } from "@/hooks/useToast";
 import { Input } from "@/components/ui/forms/Input";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
+import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReportProfileDialog } from "@/components/profiles/shared/ReportProfileDialog";
 import { ImageModal } from "@/components/profiles/shared/ImageModal";
@@ -222,6 +223,7 @@ const ProfileSingle: FC = () => {
   }, [profilePrivateImages]);
 
   const isGalleryUnlocked =
+    isOwnProfile &&
     !isParentalLocked &&
     (demoPrivateUnlocked || privateImageAccess === "approved");
 
@@ -1466,15 +1468,10 @@ Información del perfil:
                         <Lock className="w-3 h-3" />
                         🔒 Bloqueado (PIN requerido para desbloquear)
                       </>
-                    ) : demoPrivateUnlocked ? (
-                      <>
-                        <Baby className="w-3 h-3" />
-                        Bloquear Ahora
-                      </>
                     ) : (
                       <>
                         <Lock className="w-3 h-3" />
-                        Click en foto para desbloquear
+                        🔒 Bloquear Galería
                       </>
                     )}
                   </Button>
@@ -1504,8 +1501,8 @@ Información del perfil:
                               <div
                                 className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
                                 onClick={() => {
+                                  // Si el control parental está activo, no permitir acceso
                                   if (isParentalLocked) {
-                                    // Parental lock activo: sólo se puede desbloquear usando el PIN en el control parental
                                     return;
                                   }
 
@@ -1516,21 +1513,15 @@ Información del perfil:
                                     return;
                                   }
 
-                                  // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
-                                  if (isDemoMode()) {
-                                    setDemoPrivateUnlocked(true);
-                                    setSelectedImageIndex(idx);
-                                    setShowImageModal(true);
-                                    return;
-                                  }
-
-                                  // En perfil propio (real), pedir autenticación segura y desbloquear
+                                  // CASO 1: Perfil propio (demo o real)
+                                  // Al hacer click, activar el control parental para pedir PIN
                                   if (isOwnProfile) {
-                                    void handleViewPrivatePhotos();
+                                    setIsParentalLocked(true);
                                     return;
                                   }
 
-                                  // En modo real (otros usuarios), disparamos la solicitud de acceso legal
+                                  // CASO 2: Otros usuarios (vista sin acceso)
+                                  // Mostrar modal de solicitud de acceso legal
                                   setShowPrivateImageRequest(true);
                                 }}
                               >
@@ -1558,7 +1549,9 @@ Información del perfil:
                                     <span className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold text-white bg-white/20 border-2 border-white/40 shadow-lg backdrop-blur-md">
                                       {isParentalLocked
                                         ? "🔒 Bloqueado por Control Parental"
-                                        : "👆 Click para desbloquear"}
+                                        : isOwnProfile
+                                          ? "👆 Click para desbloquear (requiere PIN)"
+                                          : "� Contenido privado"}
                                     </span>
                                   </div>
                                 )}
@@ -1614,6 +1607,22 @@ Información del perfil:
               </div>
             </CardContent>
           </Card>
+
+          {/* Gestor de solicitudes de acceso a galería privada (solo para propietario) */}
+          {isOwnProfile && (
+            <div className="mb-6">
+              <PrivateImageRequestsManager
+                profileId={profile?.id || ""}
+                profileName={asString(profile?.["name"], displayName)}
+                onAccessGranted={(requesterId) => {
+                  logger.info("Acceso concedido a galería privada", { requesterId });
+                }}
+                onAccessDenied={(requesterId) => {
+                  logger.info("Acceso denegado a galería privada", { requesterId });
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -1632,24 +1641,26 @@ Información del perfil:
         />
       )}
 
-      {/* Control Parental */}
-      <ParentalControl
-        isLocked={isParentalLocked}
-        onToggle={(locked) => {
-          setIsParentalLocked(locked);
-          // Si se desbloquea, permitir acceso a imágenes privadas
-          if (!locked) {
+      {/* Control Parental - SOLO para perfil propio */}
+      {isOwnProfile && (
+        <ParentalControl
+          isLocked={isParentalLocked}
+          onToggle={(locked) => {
+            setIsParentalLocked(locked);
+            // Si se desbloquea, permitir acceso a imágenes privadas
+            if (!locked) {
+              setDemoPrivateUnlocked(true);
+            } else {
+              // Si se bloquea, ocultar imágenes privadas
+              setDemoPrivateUnlocked(false);
+            }
+          }}
+          onUnlock={() => {
+            // Callback cuando se desbloquea exitosamente con PIN
             setDemoPrivateUnlocked(true);
-          } else {
-            // Si se bloquea, ocultar imágenes privadas
-            setDemoPrivateUnlocked(false);
-          }
-        }}
-        onUnlock={() => {
-          // Callback cuando se desbloquea exitosamente con PIN
-          setDemoPrivateUnlocked(true);
-        }}
-      />
+          }}
+        />
+      )}
 
       {/* Modal de carrusel de imágenes */}
       <ImageModal

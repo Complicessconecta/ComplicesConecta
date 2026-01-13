@@ -9,6 +9,7 @@ import {
   Heart,
   MessageCircle,
   UserPlus,
+  Building,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/shared/lib/cn";
@@ -147,6 +148,16 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
                 title="Tokens y Premium"
               >
                 <Crown className="h-4 w-4 text-white" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/clubs-coming-soon")}
+                className="bg-purple-500/20 hover:bg-purple-500/30 p-2 transition-all duration-300 hover:scale-105"
+                title="Clubs"
+              >
+                <Building className="h-4 w-4 text-purple-400" />
               </Button>
             </>
           ) : (

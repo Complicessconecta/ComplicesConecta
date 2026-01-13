@@ -99,6 +99,7 @@ const AdminPartners = lazyWithDefault(
 
 // Clubs system
 const Clubs = lazyWithDefault(() => import("@/pages/Clubs"));
+const ClubsComingSoon = lazyWithDefault(() => import("@/pages/ClubsComingSoon"));
 
 // Shop CMPX tokens
 const Shop = lazyWithDefault(() => import("@/pages/Shop"));
@@ -394,6 +395,7 @@ const App = () => {
                             />
                             <Route path="/clubs" element={<Clubs />} />
                             <Route path="/clubs/:slug" element={<Clubs />} />
+                            <Route path="/clubs-coming-soon" element={<ClubsComingSoon />} />
                             <Route
                               path="/moderators/dashboard"
                               element={

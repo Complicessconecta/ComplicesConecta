@@ -1,9 +1,21 @@
 # 💖 ComplicesConecta - Presentación Pública
 
-**Versión:** 3.8.0
+**Versión:** 3.8.1
 **Fecha:** 20 de Diciembre, 2025
-**Última Actualización:** 10 de Enero, 2026
+**Última Actualización:** 12 de Enero, 2026
 **Estado:** ✅ PRODUCTION READY - AI-NATIVE - REFACTORED & STANDARDIZED
+
+### 📅 Bitácora 12 Ene 2026 (v3.8.1)
+
+- **🏢 Sistema de Clubs Verificados:** Implementación completa del sistema de registro y verificación de clubs con formulario modal, credenciales de acceso temporal y notificaciones por email.
+- **Credenciales Temporales:** Generación automática de contraseñas temporales (12 caracteres) con expiración de 30 días para dueños de clubs. Al aprobar la solicitud, el dueño puede iniciar sesión con su correo y contraseña temporal.
+- **Flujo de Registro:** Formulario completo con información del propietario, representante (opcional), datos del club, detalles, documentos y URL de archivos legales (Google Drive/Dropbox).
+- **Email Automático:** Template HTML profesional para notificar al admin sobre nuevas solicitudes, incluyendo credenciales de acceso temporal e instrucciones claras.
+- **Base de Datos:** Tabla `club_applications` con campos para credenciales temporales, índices optimizados, trigger para `updated_at` y políticas RLS de seguridad.
+- **Diagramas Consolidados:** Fusión de `DIAGRAMAS_FLUJOS_v3.5.0.md` y `DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md` en un solo documento consolidado. Agregado flujo completo de Club Profiles y flujo de seguridad.
+- **Plan de Desarrollo:** Documento `PLAN_DESARROLLO_CLUB_PROFILES.md` con roadmap de 10 semanas, estructura de base de datos, sistema de descuentos (CMPX, GTK, Premium) y ventajas de vinculación.
+- **Auth.tsx Actualizado:** Botón "Club Demo - Próximamente" agregado, inicio de sesión con correo deshabilitado temporalmente hasta que esté bien estructurado.
+- **TokensInfo.tsx Mejorado:** Gráfico actualizado de CMPX a GTK (token futuro bloqueado), íconos visuales CMPX y GTK creados, sección para creadores de contenido agregada.
 
 ### 📅 Bitácora 10 Ene 2026 (v3.8.0)
 

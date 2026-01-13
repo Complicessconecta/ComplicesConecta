@@ -311,6 +311,19 @@ export const Clubs = () => {
     setSubmitting(true);
 
     try {
+      // Generar contraseña temporal aleatoria (12 caracteres)
+      const generateTempPassword = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        let password = '';
+        for (let i = 0; i < 12; i++) {
+          password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return password;
+      };
+
+      const tempPassword = generateTempPassword();
+      const tempPasswordExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 días
+
       // Guardar en base de datos usando any para evitar error de tipos
       const { data, error } = await supabase!
         .from("club_applications" as any)
@@ -343,6 +356,9 @@ export const Clubs = () => {
             license: clubForm.license,
             status: "pending",
             created_at: new Date().toISOString(),
+            temp_password: tempPassword,
+            temp_password_expires_at: tempPasswordExpiresAt.toISOString(),
+            temp_password_used: false,
           },
         ])
         .select()
@@ -358,6 +374,8 @@ export const Clubs = () => {
             template: 'club-application',
             data: {
               ...clubForm,
+              tempPassword: tempPassword,
+              tempPasswordExpiresAt: tempPasswordExpiresAt.toLocaleString('es-MX', { timeZone: 'America/Mexico_City' }),
               createdAt: new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' }),
             },
           },
@@ -372,7 +390,7 @@ export const Clubs = () => {
 
       toast({
         title: "Solicitud enviada",
-        description: "Tu solicitud ha sido enviada exitosamente. Nos pondremos en contacto pronto.",
+        description: "Tu solicitud ha sido enviada exitosamente. Recibirás un email con tus credenciales de acceso temporal.",
         variant: "default",
       });
 
@@ -955,7 +973,7 @@ export const Clubs = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           title="Registrar Nuevo Club"
-          description="Completa el formulario para solicitar la verificación de tu club"
+          description="Completa el formulario para solicitar la verificación de tu club. Al aprobar tu solicitud, recibirás credenciales de acceso temporal para administrar tu perfil de club en la plataforma."
           className="max-w-4xl max-h-[90vh] overflow-y-auto"
         >
           <form onSubmit={handleClubSubmit} className="space-y-6">

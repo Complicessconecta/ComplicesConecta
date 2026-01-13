@@ -142,7 +142,7 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate("/tokens")}
+                onClick={() => navigate("/tokens-info")}
                 className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
                 title="Tokens y Premium"
               >

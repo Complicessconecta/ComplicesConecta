@@ -65,10 +65,9 @@ const MainProfileCardComponent = ({
   } catch (__error) {
     logger.error("❌ Error validando ProfileCard:", { error: __error });
   }
-  const { getUserOnlineStatus, getLastSeenTime } = useUserOnlineStatus();
+  const { getUserOnlineStatus } = useUserOnlineStatus();
   const profileId = String(profile.id);
-  const _isOnline = profile.isOnline ?? getUserOnlineStatus(profileId);
-  const _lastSeen = profile.lastSeen ?? getLastSeenTime(profileId);
+  const isOnline = profile.isOnline ?? getUserOnlineStatus(profileId);
   const {
     id,
     name,
@@ -136,7 +135,7 @@ const MainProfileCardComponent = ({
   return (
     <div
       className={cn(
-        "group relative rounded-3xl overflow-hidden shadow-card hover:shadow-hover transition-all duration-500 transform hover:scale-105 cursor-pointer border border-white/20 backdrop-blur-sm bg-black/10",
+        "group relative rounded-3xl shadow-card hover:shadow-hover transition-all duration-500 transform hover:scale-105 cursor-pointer border border-white/20 backdrop-blur-sm bg-black/10",
         useThemeBackground
           ? `${themeConfig.backgroundClass} ${themeConfig.textClass}`
           : "bg-card-gradient",
@@ -221,12 +220,14 @@ const MainProfileCardComponent = ({
         )}
 
         {/* Online Status */}
-        <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex items-center space-x-1 sm:space-x-2 bg-white/20 backdrop-blur-md rounded-full px-2 sm:px-3 py-1 border border-white/30">
-          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-emerald-400 rounded-full animate-pulse shadow-sm" />
-          <span className="text-[10px] sm:text-xs font-semibold text-white">
-            En línea
-          </span>
-        </div>
+        {isOnline && (
+          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex items-center space-x-1 sm:space-x-2 bg-white/20 backdrop-blur-md rounded-full px-2 sm:px-3 py-1 border border-white/30">
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-emerald-400 rounded-full animate-pulse shadow-sm" />
+            <span className="text-[10px] sm:text-xs font-semibold text-white">
+              En línea
+            </span>
+          </div>
+        )}
 
         {/* Rating */}
         <div className="absolute top-3 sm:top-4 right-3 sm:right-4 flex items-center space-x-1 bg-white/20 backdrop-blur-md rounded-full px-2 sm:px-3 py-1 border border-white/30">
@@ -285,8 +286,8 @@ const MainProfileCardComponent = ({
         )}
       </div>
 
-      {/* Card Footer */}
-      <div className="p-5 sm:p-6 bg-black/5">
+      {/* Card Footer - Aumentado padding para evitar corte de botones */}
+      <div className="p-6 sm:p-8 bg-black/5">
         <div className="flex items-center justify-between mb-4">
           <h3
             className={cn(
@@ -310,7 +311,7 @@ const MainProfileCardComponent = ({
         </div>
 
         {/* Interests - Corregido para coincidir con imagen */}
-        <div className="flex flex-wrap gap-2 sm:gap-2 mb-5">
+        <div className="flex flex-wrap gap-2 sm:gap-2 mb-6">
           {interests?.slice(0, 3).map((interest: string, index: number) => {
             const colors = [
               "bg-gradient-to-r from-pink-500 to-pink-600 text-white border border-pink-400", // Rosa sólido
@@ -333,34 +334,34 @@ const MainProfileCardComponent = ({
           )}
         </div>
 
-        {/* Action Buttons - Alineados y centrados */}
-        <div className="flex justify-center items-center space-x-3 px-2">
+        {/* Action Buttons - Alineados y centrados con más espacio */}
+        <div className="flex justify-center items-center gap-3 sm:gap-4 px-2 mb-4">
           <Button
             variant="outline"
             size="action"
-            className="flex-1 max-w-[140px] bg-gradient-to-r from-pink-500 to-purple-600 border-2 border-pink-400 text-white hover:from-pink-600 hover:to-purple-700 hover:border-pink-500 font-semibold transition-all duration-300 min-h-[44px] flex items-center justify-center"
+            className="flex-1 max-w-[220px] min-w-[110px] bg-gradient-to-r from-gray-600 to-gray-700 border-2 border-gray-500 text-white hover:from-gray-700 hover:to-gray-800 hover:border-gray-600 font-semibold transition-all duration-300 min-h-[48px] flex items-center justify-center px-3 sm:px-4 hover:scale-105 shadow-lg"
             onClick={handleDislike}
           >
             <X
-              className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 flex-shrink-0"
+              className="w-5 h-5 sm:w-6 sm:h-6 mr-2 flex-shrink-0"
               strokeWidth={2.5}
             />
-            <span className="hidden sm:inline text-sm">Pasar</span>
+            <span className="hidden sm:inline text-sm whitespace-nowrap">Pasar</span>
             <span className="sm:hidden text-sm">✕</span>
           </Button>
           <Button
             variant="love"
             size="action"
-            className="flex-1 max-w-[140px] font-bold min-h-[44px] flex items-center justify-center"
+            className="flex-1 max-w-[220px] min-w-[110px] font-bold min-h-[48px] flex items-center justify-center px-3 sm:px-4 hover:scale-105 shadow-[0_0_20px_rgba(236,72,153,0.5)] transition-all duration-300"
             onClick={handleLike}
             disabled={!onLike}
           >
             <Heart
-              className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 flex-shrink-0"
+              className="w-5 h-5 sm:w-6 sm:h-6 mr-2 flex-shrink-0 text-pink-400 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]"
               strokeWidth={2.5}
               fill="currentColor"
             />
-            <span className="hidden sm:inline text-sm">Me Gusta</span>
+            <span className="hidden sm:inline text-sm whitespace-nowrap">Me Gusta</span>
             <span className="sm:hidden text-sm">♥</span>
           </Button>
         </div>
@@ -371,7 +372,7 @@ const MainProfileCardComponent = ({
             e.stopPropagation();
             handleViewProfile();
           }}
-          className="w-full mt-3 text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 text-sm py-2 rounded-lg font-semibold border border-purple-500 hover:border-purple-600 shadow-md hover:shadow-lg"
+          className="w-full text-white bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-sm py-3 rounded-xl font-semibold border border-pink-500 hover:border-pink-600 shadow-lg hover:shadow-xl hover:scale-105"
         >
           Ver Perfil Completo
         </button>

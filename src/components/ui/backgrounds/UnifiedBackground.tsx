@@ -248,24 +248,31 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     };
   }, [forceNeon, preferences.particlesEnabled]);
 
-  const snowOptions = useMemo(
+  // ======================================================================
+// PARTÍCULAS BLANCAS (NIEVE) - CAMBIADAS A ROSA (#FF69B4)
+// ======================================================================
+// Estas partículas blancas originales se cambiaron a rosa para
+// mantener la consistencia con el tema de la app.
+// NO MODIFICAR: neonOptions y otras partículas de neón se mantienen tal cual.
+// ======================================================================
+const snowOptions = useMemo(
     () => ({
       fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
       fpsLimit: tier === "high" ? 60 : 30,
       particles: {
         number: { value: tier === "high" ? 160 : 90 },
-        color: { value: "#ffffff" },
+        color: { value: "#FF69B4" }, // CAMBIADO: De #ffffff a #FF69B4 (rosa)
         shape: { type: "circle" },
         opacity: { value: 0.8 },
         size: { value: { min: 1, max: 3 } },
         move: {
           enable: true,
           direction: "bottom" as const,
-          speed: tier === "high" ? 0.8 : 0.4,
+          speed: tier === "high" ? 0.4 : 0.2,
           straight: false,
           random: true,
-          drift: 0.35,
+          drift: 0.2,
         },
       },
       interactivity: {
@@ -282,7 +289,13 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     [tier],
   );
 
-  const neonOptions = useMemo(
+// ======================================================================
+// PARTÍCULAS DE NEÓN - MANTENIDAS TAL CUAL (NO MODIFICAR)
+// ======================================================================
+// Estas partículas neón se mantienen con sus colores originales
+// (cyan, magenta, morado) para el efecto de neón lifestyle.
+// ======================================================================
+const neonOptions = useMemo(
     () => ({
       fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
@@ -291,13 +304,13 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
         number: { value: profile?.is_premium ? 120 : 70 },
         color: { value: ["#00FFFF", "#FF00FF", "#AA00FF"] },
         shape: { type: "circle" },
-        opacity: { value: 0.6, random: true },
+        opacity: { value: 0.8, random: true },
         size: { value: { min: 1, max: 4 } },
         links: {
           enable: true,
           distance: 150,
           color: "#00FFFF",
-          opacity: 0.4,
+          opacity: 0.6,
           width: 1,
         },
         move: {

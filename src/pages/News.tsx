@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -7,7 +8,6 @@ import {
 } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import {
   ArrowLeft,
@@ -32,6 +32,10 @@ import { motion } from "framer-motion";
 
 const News: FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // @isActive - página pública
+  const isActive = location.pathname === "/news";
 
   const versionUpdates = [
     {
@@ -241,7 +245,7 @@ const News: FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden ${isActive ? "page-active" : ""}`}>
       {/* Background decorativo */}
       <DecorativeHearts count={8} />
 

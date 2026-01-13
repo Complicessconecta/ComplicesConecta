@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -31,6 +31,10 @@ import { HoverEffect } from "@/components/ui/card-hover-effect";
 
 const NFTs: FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // @isActive - página pública
+  const isActive = location.pathname === "/nfts";
 
   // Información de NFTs desde la documentación
   const nftProcess = [
@@ -202,7 +206,7 @@ const NFTs: FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden ${isActive ? "page-active" : ""}`}>
       {/* Background decorativo */}
       <DecorativeHearts count={10} />
 

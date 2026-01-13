@@ -80,7 +80,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     { name: "Chat", path: "/chat", icon: MessageSquare },
     { name: "Noticias", path: "/news", icon: Bell },
     { name: "Eventos", path: "/events", icon: Calendar },
-    { name: "Tokens", path: "/tokens", icon: DollarSign },
+    { name: "Tokens", path: "/tokens-info", icon: DollarSign },
     { name: "NFTs", path: "/nfts", icon: Image },
   ];
 
@@ -122,6 +122,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     { name: "Términos", path: "/terms", icon: FileText, category: "Legal" },
     { name: "Privacidad", path: "/privacy", icon: Lock, category: "Legal" },
     { name: "Seguridad", path: "/security", icon: Shield, category: "Legal" },
+    { name: "Legal", path: "/legal", icon: Scale, category: "Legal" },
+    { name: "Ley Olimpia", path: "/ley-olimpia", icon: Shield, category: "Legal" },
+    { name: "Directrices", path: "/guidelines", icon: FileText, category: "Legal" },
     {
       name: "Proyecto",
       path: "/project-info",
@@ -216,11 +219,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     }}
                   />
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full animate-pulse shadow-lg shadow-purple-500/50"></div>
-                  {/* Partículas flotantes */}
+                  {/* Partículas flotantes - corazones rosas con animación más lenta */}
                   <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-0 left-0 w-1 h-1 bg-purple-300 rounded-full animate-particle-1"></div>
-                    <div className="absolute top-1 right-0 w-1 h-1 bg-blue-300 rounded-full animate-particle-2"></div>
-                    <div className="absolute bottom-0 left-1 w-1 h-1 bg-purple-400 rounded-full animate-particle-3"></div>
+                    <Heart className="absolute top-0 left-0 w-2 h-2 text-pink-300 animate-heart-particle-1" fill="currentColor" />
+                    <Heart className="absolute top-1 right-0 w-2 h-2 text-pink-400 animate-heart-particle-2" fill="currentColor" />
                   </div>
                 </div>
                 <span className="text-white font-black text-xl lg:text-2xl hidden sm:block bg-gradient-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x">
@@ -312,7 +314,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               <div className="hidden md:flex items-center space-x-1">
                 <button
                   onClick={() => {
-                    handleNavigation("/tokens");
+                    handleNavigation("/tokens-info");
                     logger.info("Tokens icon clicked");
                   }}
                   className="p-2 text-white/70 hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
@@ -577,34 +579,24 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
           animation: heartFloat 3s ease-in-out infinite;
         }
 
-        @keyframes particle-1 {
-          0% { transform: translate(0, 0) scale(0); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translate(-10px, -15px) scale(1); opacity: 0; }
+        @keyframes heart-particle-1 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+          50% { opacity: 0.6; }
+          100% { transform: translate(-8px, -12px) scale(1) rotate(15deg); opacity: 0; }
         }
 
-        @keyframes particle-2 {
-          0% { transform: translate(0, 0) scale(0); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translate(10px, -20px) scale(1); opacity: 0; }
+        @keyframes heart-particle-2 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+          50% { opacity: 0.6; }
+          100% { transform: translate(8px, -16px) scale(1) rotate(-15deg); opacity: 0; }
         }
 
-        @keyframes particle-3 {
-          0% { transform: translate(0, 0) scale(0); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translate(-5px, 15px) scale(1); opacity: 0; }
+        .animate-heart-particle-1 {
+          animation: heart-particle-1 4s ease-in-out infinite;
         }
 
-        .animate-particle-1 {
-          animation: particle-1 2s ease-in-out infinite;
-        }
-
-        .animate-particle-2 {
-          animation: particle-2 2.5s ease-in-out infinite 0.5s;
-        }
-
-        .animate-particle-3 {
-          animation: particle-3 3s ease-in-out infinite 1s;
+        .animate-heart-particle-2 {
+          animation: heart-particle-2 5s ease-in-out infinite 1s;
         }
 
         @keyframes gradient-x {

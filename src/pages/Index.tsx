@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { HeroSection } from "@/components/HeroSection";
 import { Footer } from "@/components/Footer";
 import { BetaBanner } from "@/components/BetaBanner";
@@ -15,6 +15,7 @@ import { useLoading } from "@/contexts/LoadingContext";
 
 const Index = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, profile, isAuthenticated, loading: authLoading } = useAuth();
   const { isLoading, setIsLoading } = useLoading();
   const [showWelcome, setShowWelcome] = useState(false);
@@ -34,6 +35,9 @@ const Index = () => {
   const welcomeModalChecked = useRef(false);
   const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadingInitializedRef = useRef(false);
+
+  // @isActive - página de inicio pública
+  const isActive = location.pathname === "/";
 
   // Iniciar loading al montar Index
   useEffect(() => {
@@ -113,7 +117,7 @@ const Index = () => {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden selection:bg-complices-pink selection:text-white">
+    <div className={`relative min-h-screen w-full overflow-x-hidden selection:bg-complices-pink selection:text-white ${isActive ? "page-active" : ""}`}>
       {/* CAPA 1: CONTENIDO (Hijo Activo) */}
       {/* Z-index positivo para asegurar que el texto sea clickeable */}
       <div className="relative z-10 flex flex-col min-h-screen">

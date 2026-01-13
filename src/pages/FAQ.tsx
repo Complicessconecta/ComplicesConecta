@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
 import {
@@ -43,10 +44,14 @@ import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 
 const FAQ = () => {
+  const location = useLocation();
   const { toast } = useToast();
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
   const [rating, setRating] = useState(0);
+
+  // @isActive - página pública
+  const isActive = location.pathname === "/faq";
 
   // Bug Report Form State
   const [bugReport, setBugReport] = useState({
@@ -296,7 +301,7 @@ Fecha: ${new Date().toLocaleString()}
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className={`min-h-screen relative overflow-hidden ${isActive ? "page-active" : ""}`}>
       {/* Advanced Animated Background */}
       <div className="fixed inset-0 z-0">
         {/* Base Gradient */}

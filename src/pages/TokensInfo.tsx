@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import {
   Card,
@@ -155,6 +156,7 @@ interface TokenGlobalStats {
 }
 
 export default function TokensInfo() {
+  const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated: _isAuthenticated } = useAuth();
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
@@ -164,6 +166,9 @@ export default function TokensInfo() {
   >("general");
   const [globalStats, setGlobalStats] = useState<TokenGlobalStats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
+
+  // @isActive - página pública
+  const isActive = location.pathname === "/tokens-info";
 
   // Cargar estadísticas globales
   useEffect(() => {
@@ -363,20 +368,6 @@ export default function TokensInfo() {
     { duration: 365, apy: 35, minTokens: 100, penalty: 5 },
   ];
 
-  // Multiplicadores de rareza NFT para staking (Actualizado v3.8.0)
-  const nftRarityMultipliers = {
-    common: 1.0,      // 100% (base)
-    rare: 1.5,        // 150% (+50% APY)
-    epic: 2.0,        // 200% (+100% APY)
-    legendary: 3.0,   // 300% (+200% APY)
-  };
-
-  // Función para calcular APY con multiplicador de NFT
-  const calculateAPY = (baseAPY: number, nftRarity?: string) => {
-    const multiplier = nftRarity ? nftRarityMultipliers[nftRarity as keyof typeof nftRarityMultipliers] || 1.0 : 1.0;
-    return baseAPY * multiplier;
-  };
-
   // Distribución de tokens
   const gtkDistribution = [
     {
@@ -418,7 +409,7 @@ export default function TokensInfo() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden ${isActive ? "page-active" : ""}`}>
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/95 to-purple-800/95 backdrop-blur-xl border-b border-white/30 shadow-2xl">
         <div className="container mx-auto px-4 py-4">

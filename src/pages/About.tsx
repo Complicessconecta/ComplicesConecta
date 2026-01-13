@@ -1,13 +1,17 @@
 import { Heart, Users, Shield, Zap, Star, Award, Target, Camera, Play, Eye } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const About = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // @isActive - página pública
+  const isActive = location.pathname === "/about";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden ${isActive ? "page-active" : ""}`}>
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Elementos fantasma deshabilitados para evitar aparición/desaparición */}

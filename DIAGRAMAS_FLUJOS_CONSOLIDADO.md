@@ -1,23 +1,24 @@
 --- BEGIN FILE: DIAGRAMAS_FLUJOS_v3.0.md ---
 
-# 📊 DIAGRAMAS DE FLUJOS v3.7.1 - COMPLICESCONECTA v3.7.1
+# 📊 DIAGRAMAS DE FLUJOS v3.8.0 - COMPLICESCONECTA v3.8.0
 
-#> Actualización 02 Ene 2026 21:59
-#> - Gating de Chat por Match implementado (Discover → Chat) y validado
-#> - Galería Privada con paywall CMPX en Chat implementada y validada
-#> - Respaldo previo al merge: rama back-master-2026-01-02-21-46 y tag# backup-master-2026-01-02-21-46
+#> Actualización 12 Ene 2026 23:17
+#> - Flujo de Seguridad agregado desde v3.5.0
+#> - Flujo completo de Club Profiles agregado
+#> - Documento consolidado con todos los flujos del proyecto
+#> - Eliminados archivos redundantes v3.5.0 y v4.0_DOCUMENTO_MAESTRO_IA.md
 
-#> Este agente opera bajo las reglas del Documento Maestro IA v4.0
+#> Este documento es la fuente única de verdad para todos los flujos del proyecto
 
-**Fecha:** 20 Noviembre 2025
-**Versión:** 3.7.1 (Bajo normativa v4.0)
-**Estado:** ✅ FEATURES AVANZADAS COMPLETADAS - Modal Carrusel + Control Parental + Build Limpio
+**Fecha:** 12 Enero 2026
+**Versión:** 3.8.0 (Consolidado)
+**Estado:** ✅ FLUJOS COMPLETOS - Seguridad + Club Profiles + Usuario + Tokens + NFTs
 
 ---
 
-## 📜 Base Normativa (v4.0)
+## 📜 Base Normativa
 
-Este documento se rige por `DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md`.
+Este documento es la fuente única de verdad para todos los flujos del proyecto ComplicesConecta.
 
 - Todo cambio es acumulativo.
 - Toda lógica es determinista.
@@ -25,7 +26,92 @@ Este documento se rige por `DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md`.
 
 ---
 
-## 🔄 FLUJO COMPLETO DE USUARIO (Actualizado v3.6.4)
+## �️ FLUJO DE SEGURIDAD
+
+```mermaid
+flowchart TD
+    A[Usuario Accede] --> B{Autenticación}
+    B -->|Email/Contraseña| C[Validación Credenciales]
+    B -->|Biometría| D[Face ID / Huella]
+    B -->|OAuth| E[Google/Apple/Facebook]
+
+    C --> F{2FA Activado?}
+    D --> F
+    E --> F
+
+    F -->|Sí| G[Verificación MFA]
+    F -->|No| H[Login Exitoso]
+
+    G --> H
+
+    H --> I{Rate Limit Check}
+    I -->|Excedido| J[Bloqueo Temporal]
+    I -->|OK| K[Acceso Permitido]
+
+    J --> L[Alerta Seguridad]
+    K --> M[Dashboard]
+
+    L --> N[Log Security Event]
+    N --> O[Notificación Admin]
+
+    M --> P{Acceso Datos Sensibles}
+    P -->|Propio| Q[Acceso Permitido]
+    P -->|Ajeno| R{Permisos Admin?}
+    R -->|Sí| S[Acceso Admin]
+    R -->|No| T[Acceso Denegado]
+
+    Q --> U[Datos Enmascarados]
+    S --> U
+    T --> V[Log Intento No Autorizado]
+
+    U --> W[Renderizado Seguro]
+    V --> W
+
+    style A fill:#e0f2fe
+    style H fill:#dcfce7
+    style K fill:#dcfce7
+    style M fill:#dcfce7
+    style J fill:#fee2e2
+    style T fill:#fee2e2
+    style V fill:#fee2e2
+```
+
+### Capas de Seguridad Implementadas
+
+1. **Capa 1: Validación de Input**
+   - Sanitización de todos los inputs de usuario
+   - Validación de formatos (email, UUID)
+   - Eliminación de caracteres peligrosos
+
+2. **Capa 2: Autenticación**
+   - Contraseñas con bcrypt (cost factor 12)
+   - JWT tokens con firma RS256
+   - MFA opcional para usuarios premium
+   - Autenticación biométrica (Face ID, Huella)
+
+3. **Capa 3: Rate Limiting**
+   - 100 requests/minuto por usuario
+   - Bloqueo automático de IPs maliciosas
+   - Tracking de actividad por IP
+
+4. **Capa 4: Protección XSS**
+   - Escapado de HTML en todos los outputs
+   - Content Security Policy configurada
+   - Sanitización de contenido de usuario
+
+5. **Capa 5: Auditoría**
+   - Logging de todos los eventos de seguridad
+   - Auditoría de cambios en datos sensibles
+   - Monitoreo de actividad sospechosa
+
+6. **Capa 6: Control de Acceso**
+   - 65+ políticas RLS activas
+   - Validación de permisos por tipo de dato
+   - Enmascaramiento de datos sensibles en logs
+
+---
+
+## � FLUJO COMPLETO DE USUARIO (Actualizado v3.6.4)
 
 ### ✅ Actualizaciones clave v3.7.2
 
@@ -1054,5 +1140,128 @@ flowchart TD
 - Importado y usado en sección de galería privada
 - Estado `isParentalLocked` sincronizado con localStorage
 - Toggle manual disponible para activar/desactivar control parental
+
+---
+
+## 🏢 FLUJO COMPLETO DE CLUB PROFILES
+
+```mermaid
+flowchart TD
+    A[Club Partner] --> B[Formulario de Registro<br/>/clubs/apply]
+    B --> C[Datos Propietario<br/>Nombre, RFC, Género, Edad]
+    C --> D[Datos Representante<br/>Opcional]
+    D --> E[Datos del Club<br/>Nombre, Dirección, Teléfono]
+    E --> F[Detalles del Club<br/>Descripción, Tipo, Horarios]
+    F --> G[Documentos<br/>URL Google Drive/Dropbox]
+    G --> H{Validación}
+    
+    H -->|Datos Incompletos| B
+    H -->|Datos Completos| I[Guardar en BD<br/>club_applications]
+    I --> J[Enviar Email<br/>complicesconectasw@outlook.es]
+    J --> K[Estado: Pending]
+    
+    K --> L{Revisión Admin}
+    L -->|Aprobar| M[Crear Perfil Demo<br/>/clubs/{slug}]
+    L -->|Rechazar| N[Enviar Razón]
+    L -->|Revisar| O[Solicitar Más Info]
+    
+    M --> P[Perfil Demo Activo]
+    P --> Q[Panel de Administración<br/>Solo Dueño]
+    
+    Q --> R[Editar Perfil]
+    Q --> S[Subir Contenido<br/>Fotos/Videos]
+    Q --> T[Crear Eventos]
+    Q --> U[Gestionar Promociones]
+    Q --> V[Configurar Descuentos]
+    Q --> W[Ver Analytics]
+    
+    V --> X{Tipo de Descuento}
+    X -->|CMPX| Y[10% Entrada<br/>20% Bebidas<br/>15% VIP]
+    X -->|GTK Holders| Z[25% Entrada<br/>30% Bebidas<br/>50% VIP]
+    X -->|Premium| AA[30% Entrada<br/>40% Bebidas<br/>60% VIP]
+    
+    P --> AB[Usuario Visita Perfil]
+    AB --> AC{Acción Usuario}
+    
+    AC -->|Check-in| AD[Geolocalización 50m]
+    AD --> AE{Dentro del Radio?}
+    AE -->|Sí| AF[Check-in Exitoso]
+    AE -->|No| AG[Check-in Rechazado]
+    
+    AF --> AH{Puede Reseñar?}
+    AH -->|24h después| AI[Crear Reseña]
+    AH -->|No| AJ[Esperar 24h]
+    
+    AC -->|Ver Galería| AK[Fotos/Videos]
+    AC -->|Ver Eventos| AL[Calendario]
+    AC -->|Usar Descuento| AM{Tokens Disponibles?}
+    
+    AM -->|Sí| AN[Aplicar Descuento]
+    AM -->|No| AO[Comprar Tokens]
+    
+    AI --> AP[Rating Actualizado]
+    AN --> AQ[Pago con Tokens]
+    AQ --> AR[Transacción Blockchain]
+    
+    P --> AS[NFTs del Club]
+    AS --> AT[Crear NFT]
+    AT --> AU[Mercado Secundario]
+    AU --> AV[Staking de NFTs]
+    
+    W --> AW[Analytics Dashboard]
+    AW --> AX[Visitas por Día]
+    AW --> AY[Check-ins por Semana]
+    AW --> AZ[Engagement]
+    AW --> BA[Demografía Visitantes]
+    
+    style B fill:#8b5cf6
+    style I fill:#10b981
+    style K fill:#f59e0b
+    style M fill:#22c55e
+    style N fill:#ef4444
+    style P fill:#3b82f6
+    style Q fill:#8b5cf6
+    style Y fill:#f59e0b
+    style Z fill:#ec4899
+    style AA fill:#a855f7
+    style AF fill:#22c55e
+    style AG fill:#ef4444
+    style AN fill:#22c55e
+    style AR fill:#8b5cf6
+    style AV fill:#f59e0b
+```
+
+**Componentes Principales:**
+- `/src/pages/clubs/ClubProfile.tsx` - Perfil principal del club
+- `/src/components/clubs/ClubProfileHeader.tsx` - Header con logo y rating
+- `/src/components/clubs/ClubProfileGallery.tsx` - Galería multimedia
+- `/src/components/clubs/ClubProfileEvents.tsx` - Calendario de eventos
+- `/src/components/clubs/ClubProfileReviews.tsx` - Sistema de reseñas
+- `/src/components/clubs/ClubProfileAdmin.tsx` - Panel de administración
+
+**Tablas de Base de Datos:**
+- `club_applications` - Solicitudes de registro
+- `club_profiles` - Perfiles de clubs verificados
+- `club_events` - Eventos del club
+- `club_discounts` - Descuentos ofrecidos
+- `club_check_ins` - Check-ins de usuarios
+- `club_reviews` - Reseñas verificadas
+- `club_nfts` - NFTs del club
+- `club_followers` - Usuarios que siguen clubs
+
+**Flujo de Descuentos:**
+1. Usuario selecciona descuento → Verifica balance de tokens
+2. Club acepta tipo de token → Aplica descuento
+3. Pago procesado → Transacción registrada en blockchain
+4. Usuario recibe confirmación → Descuento aplicado
+
+**Roadmap de Implementación:**
+- Fase 1 (Semana 1-2): Preparación - Tablas y migraciones
+- Fase 2 (Semana 3-4): Perfil Demo - UI básica y check-ins
+- Fase 3 (Semana 5-6): Panel Admin - Edición y gestión
+- Fase 4 (Semana 7-8): Tokens y NFTs - Integración blockchain
+- Fase 5 (Semana 9-10): Testing y Lanzamiento - QA y beta
+
+**Lanzamiento Estimado:** Q2 2026
 
 --- END FILE: DIAGRAMAS_FLUJOS_v3.5.0.md ---

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Solicitud de Club - ComplicesConecta</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h1 style="color: #9D50BB; margin: 0; font-size: 28px;">🏢 Nueva Solicitud de Club</h1>
+      <p style="color: #666; margin: 10px 0 0 0; font-size: 16px;">ComplicesConecta - Sistema de Clubs Verificados</p>
+    </div>
+
+    <!-- Información del Propietario -->
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h2 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #9D50BB; padding-bottom: 10px;">👤 Información del Propietario</h2>
+      <p style="margin: 5px 0; color: #555;"><strong>Nombre:</strong> {{ownerName}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Edad:</strong> {{ownerAge}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Género:</strong> {{ownerGender}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>RFC:</strong> {{ownerRFC}}</p>
+    </div>
+
+    <!-- Información del Representante (si aplica) -->
+    {{#if repName}}
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h2 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">👔 Información del Representante</h2>
+      <p style="margin: 5px 0; color: #555;"><strong>Nombre:</strong> {{repName}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Cargo:</strong> {{repPosition}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Teléfono:</strong> {{repPhone}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Email:</strong> {{repEmail}}</p>
+    </div>
+    {{/if}}
+
+    <!-- Información del Club -->
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h2 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #ef4444; padding-bottom: 10px;">🏢 Información del Club</h2>
+      <p style="margin: 5px 0; color: #555;"><strong>Nombre del Club:</strong> {{clubName}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Dirección:</strong> {{address}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Ciudad:</strong> {{city}}, {{state}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Código Postal:</strong> {{zipCode}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Teléfono:</strong> {{phone}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>WhatsApp:</strong> {{whatsapp}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Email de Contacto:</strong> {{email}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Sitio Web:</strong> {{website}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Usar App como Sitio Web:</strong> {{useAppAsWebsite}}</p>
+    </div>
+
+    <!-- Detalles del Club -->
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h2 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #10b981; padding-bottom: 10px;">✨ Detalles del Club</h2>
+      <p style="margin: 5px 0; color: #555;"><strong>Descripción:</strong></p>
+      <p style="margin: 5px 0 15px 0; color: #666; font-style: italic;">{{description}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Tipo de Club:</strong> {{clubType}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Horarios:</strong> {{hours}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Capacidad:</strong> {{capacity}} personas</p>
+    </div>
+
+    <!-- Documentos -->
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h2 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">📄 Documentos</h2>
+      <p style="margin: 5px 0; color: #555;"><strong>URL de Documentos Legales:</strong> <a href="{{documentsUrl}}" style="color: #9D50BB; text-decoration: none;">Ver Documentos</a></p>
+      <p style="margin: 5px 0; color: #555;"><strong>RFC de la Empresa:</strong> {{companyRFC}}</p>
+      <p style="margin: 5px 0; color: #555;"><strong>Licencia de Operación:</strong> {{license}}</p>
+    </div>
+
+    <!-- Call to Action -->
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background-color: #9D50BB; border-radius: 8px;">
+      <p style="color: #ffffff; margin: 0 0 15px 0; font-size: 16px;">Revisa esta solicitud en el panel de administración</p>
+      <a href="#" style="display: inline-block; background-color: #ffffff; color: #9D50BB; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Ver Solicitud</a>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+      <p style="color: #999; margin: 5px 0; font-size: 14px;">Este email fue enviado automáticamente por ComplicesConecta</p>
+      <p style="color: #999; margin: 5px 0; font-size: 14px;">Fecha: {{createdAt}}</p>
+    </div>
+
+  </div>
+</body>
+</html>

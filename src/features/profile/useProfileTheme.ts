@@ -394,7 +394,7 @@ export const useProductionThemeConfig = () => {
 export const useThemeConfig = () => {
   const isDemoMode = localStorage.getItem("demo_authenticated") === "true";
 
-  // Llamar ambos hooks siempre para cumplir con las reglas de React Hooks
+  // Solo llamar el hook correspondiente para evitar múltiples usePersistedState
   const demoConfig = useDemoThemeConfig();
   const productionConfig = useProductionThemeConfig();
 

@@ -39,7 +39,11 @@ export const cspPolicies = {
   // Política CSP para producción
   production: {
     "default-src": ["'self'"],
-    "script-src": ["'self'", "https://cdn.jsdelivr.net"],
+    "script-src": [
+      "'self'",
+      "'unsafe-eval'",
+      "https://cdn.jsdelivr.net",
+    ],
     "style-src": ["'self'", "https://fonts.googleapis.com"],
     "font-src": ["'self'", "https://fonts.gstatic.com"],
     "img-src": ["'self'", "data:", "https:"],

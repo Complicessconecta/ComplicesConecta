@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
@@ -132,30 +132,30 @@ const ProfileSingle: FC = () => {
   // Estados para modal de carrusel avanzado
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>({
+  const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>(() => ({
     "1": 12,
     "2": 8,
     "3": 15,
-  });
+  }));
   const [imageUserLikes, setImageUserLikes] = useState<{
     [key: string]: boolean;
-  }>({});
-  const [profileStats, setProfileStats] = useState<ProfileStats>({
+  }>(() => ({}));
+  const [profileStats, setProfileStats] = useState<ProfileStats>(() => ({
     totalViews: 0,
     totalLikes: 0,
     totalMatches: 0,
     profileCompleteness: 0,
     lastActive: new Date(),
-    joinDate: new Date(),
+    joinDate: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
     verificationLevel: 0,
-  });
+  }));
 
   // Estados para funcionalidades blockchain
-  const [tokenBalances, setTokenBalances] = useState({
+  const [tokenBalances, setTokenBalances] = useState(() => ({
     cmpx: "0",
     gtk: "0",
     matic: "0",
-  });
+  }));
   const [testnetInfo, setTestnetInfo] = useState<any>(null);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [isClaimingTokens, setIsClaimingTokens] = useState(false);
@@ -163,12 +163,14 @@ const ProfileSingle: FC = () => {
   const isOwnProfile = checkAuth() && user?.id === profile?.id;
 
   // 🎨 Aplicar tema distintivo para perfil demo
-  const isDemoProfile =
-    Boolean(profile?.is_demo) ||
-    (typeof profile?.id === "string" &&
-      profile.id.startsWith("demo")) ||
-    (typeof profile?.user_id === "string" &&
-      profile.user_id.startsWith("demo"));
+  const isDemoProfile = useMemo(
+    () =>
+      Boolean(profile?.is_demo) ||
+      (typeof profile?.id === "string" && profile.id.startsWith("demo")) ||
+      (typeof profile?.user_id === "string" &&
+        profile.user_id.startsWith("demo")),
+    [profile?.is_demo, profile?.id, profile?.user_id],
+  );
   const demoTheme = isDemoProfile ? "demo_premium" : undefined;
   useProfileTheme("single", ["male"], demoTheme);
 
@@ -199,28 +201,23 @@ const ProfileSingle: FC = () => {
   const profilePrivateImagesRaw = profile?.privateImages as
     | (PrivateImageItem | string)[]
     | undefined;
-  const profilePrivateImages = profilePrivateImagesRaw?.filter((img) => {
-    const src = typeof img === "string" ? img : (img.url ?? img.src ?? "");
-    // Evitar que la galería privada repita exactamente el avatar principal
-    return src && src !== profile?.avatar_url;
-  });
+
+  const profilePrivateImages = useMemo(
+    () =>
+      profilePrivateImagesRaw?.filter((img) => {
+        const src = typeof img === "string" ? img : (img.url ?? img.src ?? "");
+        return src && src !== profile?.avatar_url;
+      }),
+    [profilePrivateImagesRaw, profile?.avatar_url],
+  );
+
   const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {
     const source: (PrivateImageItem | string)[] =
       Array.isArray(profilePrivateImages) && profilePrivateImages.length > 0
         ? profilePrivateImages
         : privateImages;
-
-    const shuffled = [...source];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const a = shuffled[i];
-      const b = shuffled[j];
-      if (a === undefined || b === undefined) continue;
-      shuffled[i] = b;
-      shuffled[j] = a;
-    }
-    return shuffled;
-  }, [profilePrivateImages]);
+    return source;
+  }, [profilePrivateImages, privateImages]);
 
   const isGalleryUnlocked =
     isOwnProfile &&
@@ -300,7 +297,7 @@ const ProfileSingle: FC = () => {
   };
 
   // Funciones para cargar datos adicionales
-  const loadProfileStats = async () => {
+  const loadProfileStats = useCallback(async () => {
     try {
       // Estadísticas fijas DEMO
       const mockStats = {
@@ -316,7 +313,7 @@ const ProfileSingle: FC = () => {
     } catch (error) {
       logger.error("Error loading profile stats:", { error: String(error) });
     }
-  };
+  }, []);
 
   const handleShareProfile = async () => {
     try {
@@ -400,7 +397,7 @@ Información del perfil:
   };
 
   // Funciones para blockchain
-  const loadBlockchainData = async (forcedUserId?: string) => {
+  const loadBlockchainData = useCallback(async (forcedUserId?: string) => {
     const targetUserId = forcedUserId || user?.id || null;
 
     try {
@@ -410,21 +407,22 @@ Información del perfil:
       const isDemoActive = isDemoMode() || isDemoAuthActive;
 
       if (targetUserId) {
-        // En DEMO no consultamos provider ni claims para evitar spam de consola.
+        // En DEMO mostrar datos demo para que el usuario vea valores
         if (isDemoActive) {
           const [nfts] = await Promise.all([
             nftService.getUserNFTs(targetUserId).catch(() => []),
           ]);
 
-          setTokenBalances({ cmpx: "0", gtk: "0", matic: "0" });
+          // Datos demo visibles
+          setTokenBalances({ cmpx: "500", gtk: "250", matic: "10" });
           setUserNFTs(nfts);
           setTestnetInfo({
-            remaining: 1000,
+            remaining: 500,
             dailyRemaining: 2500000,
             canClaim: true,
             dailyLimit: 2500000,
             dailyClaimed: 0,
-            claimed: 0,
+            claimed: 500,
             maxClaim: 1000,
           } as any);
           return;
@@ -452,15 +450,15 @@ Información del perfil:
 
       // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
       if (isDemoMode()) {
-        setTokenBalances({ cmpx: "0", gtk: "0", matic: "0" });
+        setTokenBalances({ cmpx: "500", gtk: "250", matic: "10" });
         setUserNFTs([]);
         setTestnetInfo({
-          remaining: 1000,
+          remaining: 500,
           dailyRemaining: 2500000,
           canClaim: true,
           dailyLimit: 2500000,
           dailyClaimed: 0,
-          claimed: 0,
+          claimed: 500,
           maxClaim: 1000,
         } as any);
       }
@@ -469,7 +467,7 @@ Información del perfil:
         error: String(error),
       });
     }
-  };
+  }, []);
 
   const handleClaimTestnetTokens = async () => {
     const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
@@ -516,23 +514,36 @@ Información del perfil:
     setIsClaimingTokens(true);
     try {
       if (isDemoMode()) {
-        // Modo demo - simular reclamo diario
-        const result = await walletService.executeDemoAction(
-          uid,
-          "send_tokens",
-          { amount: 50000 },
-        );
-        logger.info("Tokens diarios reclamados (DEMO):", { result });
+        // Modo demo - simular reclamo diario con datos mock
+        logger.info("Tokens diarios reclamados (DEMO mock)");
 
-        // Actualizar estado local para demo
-        setTestnetInfo((prev: any) => ({
-          ...prev,
-          dailyClaimed: (prev?.dailyClaimed || 0) + 50000,
-          dailyRemaining: Math.max(
-            0,
-            (prev?.dailyRemaining || 2500000) - 50000,
-          ),
+        // Actualizar estado local para demo con datos mock
+        setTestnetInfo((prev: any) => {
+          const newDailyClaimed = (prev?.dailyClaimed || 0) + 50000;
+          const newDailyRemaining = Math.max(0, (prev?.dailyRemaining || 2500000) - 50000);
+          const newClaimed = (prev?.claimed || 0) + 50000;
+          const newRemaining = Math.max(0, (prev?.remaining || 1000) - 500);
+
+          return {
+            ...prev,
+            dailyClaimed: newDailyClaimed,
+            dailyRemaining: newDailyRemaining,
+            claimed: newClaimed,
+            remaining: newRemaining,
+          };
+        });
+
+        // Actualizar balances de tokens demo
+        setTokenBalances((prev) => ({
+          cmpx: String(parseInt(prev.cmpx || "0") + 50000),
+          gtk: prev.gtk,
+          matic: prev.matic,
         }));
+
+        toast({
+          title: "Tokens reclamados (DEMO)",
+          description: "+50,000 CMPX agregados a tu wallet",
+        });
       } else {
         // Modo real - reclamar tokens diarios
         const txHash = await walletService.claimDailyTokens(uid, 50000);
@@ -545,6 +556,11 @@ Información del perfil:
       logger.error("Error reclamando tokens diarios:", {
         error: String(error),
       });
+      toast({
+        title: "Error",
+        description: "No se pudieron reclamar los tokens diarios",
+        variant: "destructive",
+      });
     } finally {
       setIsClaimingTokens(false);
     }
@@ -556,7 +572,7 @@ Información del perfil:
       loadProfileStats();
       loadBlockchainData();
     }
-  }, [profile]);
+  }, [profile?.id, loadProfileStats, loadBlockchainData]);
 
   if (isLoading) {
     return (
@@ -1015,8 +1031,11 @@ Información del perfil:
                           Generar NFT de Perfil
                         </h4>
                         <p className="text-neutral-300 text-sm text-center mb-4">
-                          En modo demo puedes mintear hasta 4 NFTs para probar el
-                          flujo.
+                          En modo demo puedes mintear hasta 4 NFTs para probar el flujo.
+                          <br />
+                          <span className="text-purple-300 font-semibold">
+                            NFTs creados: {userNFTs.length}/4
+                          </span>
                         </p>
                         <div className="text-center">
                           <Button
@@ -1033,38 +1052,56 @@ Información del perfil:
                         </div>
                       </ModalContent>
                       <ModalFooter className="gap-4">
-                        <NFTMintButton
-                          userId={
-                            user?.id ||
-                            asString(currentProfile["user_id"], currentProfile.id)
-                          }
-                          type="single"
-                          nftName={`Profile NFT #${userNFTs.length + 1}`}
-                          nftDescription="NFT demo de perfil"
-                          demoImageUrl={avatarUrl}
-                          buttonText="Confirmar Mint"
-                          onMintSuccess={async () => {
-                            const uid =
-                              user?.id || asOptionalString(currentProfile["user_id"]) || currentProfile.id;
-                            if (!uid) return;
-                            const updated = await nftService
-                              .getUserNFTs(uid)
-                              .catch(() => []);
-                            setUserNFTs(updated);
-                            setIsMintModalOpen(false);
-                            toast({
-                              title: "¡NFT minteado exitosamente!",
-                              description: `Colección: ${Math.min(updated.length, 4)}/4`,
-                            });
-                          }}
-                          className="w-full"
-                        />
-                        <Button
-                          onClick={() => setIsMintModalOpen(false)}
-                          className="bg-white/10 hover:bg-white/20 text-white border border-white/25"
-                        >
-                          Cerrar
-                        </Button>
+                        {userNFTs.length >= 4 ? (
+                          <div className="w-full text-center">
+                            <p className="text-yellow-300 text-sm mb-2">
+                              🎉 Has alcanzado el límite de 4 NFTs en modo demo
+                            </p>
+                            <Button
+                              onClick={() => setIsMintModalOpen(false)}
+                              className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/25"
+                            >
+                              Cerrar
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <NFTMintButton
+                              userId={
+                                user?.id ||
+                                asString(currentProfile["user_id"], currentProfile.id)
+                              }
+                              type="single"
+                              nftName={`Profile NFT #${userNFTs.length + 1}`}
+                              nftDescription="NFT demo de perfil"
+                              demoImageUrl={avatarUrl}
+                              buttonText="Confirmar Mint"
+                              onMintSuccess={async () => {
+                                const uid =
+                                  user?.id || asOptionalString(currentProfile["user_id"]) || currentProfile.id;
+                                if (!uid) return;
+                                const updated = await nftService
+                                  .getUserNFTs(uid)
+                                  .catch(() => []);
+                                setUserNFTs(updated);
+                                toast({
+                                  title: "¡NFT minteado exitosamente!",
+                                  description: `Colección: ${Math.min(updated.length, 4)}/4`,
+                                });
+                                if (updated.length >= 4) {
+                                  setTimeout(() => setIsMintModalOpen(false), 1500);
+                                }
+                              }}
+                              className="w-full"
+                            />
+                            <Button
+                              onClick={() => setIsMintModalOpen(false)}
+                              className="bg-white/10 hover:bg-white/20 text-white border border-white/25"
+                            >
+                              Cerrar
+                            </Button>
+                          </>
+                        )}
                       </ModalFooter>
                     </ModalBody>
                   </Modal>
@@ -1479,7 +1516,7 @@ Información del perfil:
                 {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}
                 <div className="mb-4">
                   <p className="text-white/60 text-xs mb-2">
-                    🔒 Vista sin acceso (otros usuarios):
+                    🔒 Galería Privada (requiere desbloqueo con PIN)
                   </p>
                   <Carousel
                     className="mt-4"
@@ -1500,7 +1537,7 @@ Información del perfil:
                               <div
                                 className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
                                 onClick={() => {
-                                  // Si el control parental está activo, no permitir acceso
+                                  // Si el control parental está bloqueado, activarlo para pedir PIN
                                   if (isParentalLocked) {
                                     return;
                                   }
@@ -1550,7 +1587,7 @@ Información del perfil:
                                         ? "🔒 Bloqueado por Control Parental"
                                         : isOwnProfile
                                           ? "👆 Click para desbloquear (requiere PIN)"
-                                          : "� Contenido privado"}
+                                          : "🔒 Contenido privado"}
                                     </span>
                                   </div>
                                 )}
@@ -1564,45 +1601,6 @@ Información del perfil:
                     <CarouselNext className="hidden md:flex" />
                   </Carousel>
                 </div>
-
-                {/* Mostrar fotos normales si es dueño (para demo) */}
-                {isOwnProfile && !isParentalLocked && (
-                  <div>
-                    <p className="text-white/60 text-xs mb-2">
-                      ✅ Vista con acceso (tu perfil):
-                    </p>
-                    <Carousel
-                      className="mt-4"
-                      opts={{ align: "start", loop: false }}
-                    >
-                      <CarouselContent>
-                        {galleryImages.map((img, idx) => {
-                          const imageSource =
-                            typeof img === "string"
-                              ? img
-                              : (img.url ?? img.src ?? "");
-                          return (
-                            <CarouselItem
-                              key={typeof img === "string" ? `${img}-${idx}` : (img.id ?? idx)}
-                              className="basis-1/2 sm:basis-1/3 md:basis-1/4"
-                            >
-                              <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
-                                <SafeImage
-                                  src={imageSource}
-                                  alt={`Foto privada ${idx + 1}`}
-                                  fallbackType="private"
-                                  className="w-full h-full"
-                                />
-                              </div>
-                            </CarouselItem>
-                          );
-                        })}
-                      </CarouselContent>
-                      <CarouselPrevious className="hidden md:flex" />
-                      <CarouselNext className="hidden md:flex" />
-                    </Carousel>
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>

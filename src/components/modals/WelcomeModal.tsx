@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import {
   X,
   Heart,
@@ -19,8 +20,59 @@ interface WelcomeModalProps {
   onClose: () => void;
 }
 
+// FIX: Estructura de DOM ideal para modales modernos:
+// 1. Modal renderizado fuera del layout principal usando createPortal
+// 2. Overlay fijo que cubre toda la pantalla (inset-0)
+// 3. z-index muy alto (9999) para estar por encima de navbar (z-50)
+// 4. Bloqueo de scroll del body mientras el modal está abierto
+// 5. Manejo de tecla ESC y click en overlay para cerrar
+// 6. Animaciones suaves de entrada/salida (fade + scale)
+
 export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  // FIX: Manejar hidratación correctamente - solo renderizar después del mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // FIX: Bloquear scroll del body cuando el modal está abierto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = "0px"; // Prevenir salto por scrollbar
+      setCurrentStep(0);
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
+
+    // FIX: Limpiar al desmontar
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    };
+  }, [isOpen]);
+
+  // FIX: Manejar tecla ESC para cerrar
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    },
+    [isOpen, onClose],
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, handleKeyDown]);
 
   const welcomeSteps = [
     {
@@ -124,7 +176,16 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
     onClose();
   };
 
-  if (!isOpen) return null;
+  // FIX: Manejar click en overlay para cerrar
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
+  // FIX: No renderizar nada si no está montado (SSR) o no está abierto
+  // FIX: Verificar que document.body existe para evitar error en SSR
+  if (!mounted || !isOpen || typeof document === "undefined" || !document.body) return null;
 
   const firstStep = welcomeSteps[0];
   if (!firstStep) return null;
@@ -132,20 +193,22 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const currentStepData = welcomeSteps[currentStep] ?? firstStep;
   const IconComponent = currentStepData.icon;
 
-  return (
+  // FIX: Usar createPortal para renderizar en document.body
+  // Esto evita que el modal se corte por overflow-hidden de padres
+  return createPortal(
     <div
-      className={`fixed inset-0 z-[9998] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 p-4 sm:p-6 md:p-8 safe-area-inset ${
-        isOpen
-          ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
-      }`}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 md:p-8"
+      onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="welcome-modal-title"
     >
+      {/* FIX: Contenedor del modal con animación de entrada */}
       <div
-        className={`transition-all duration-500 transform w-full max-w-xl ${
-          isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
-        }`}
+        className="w-full max-w-xl animate-modal-in"
+        onClick={(e) => e.stopPropagation()}
       >
-        <Card className="w-full shadow-glow border-0 overflow-visible relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30 rounded-2xl">
+        <Card className="w-full shadow-2xl shadow-purple-500/30 border-0 overflow-visible relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30 rounded-2xl">
           {/* Animated Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 pointer-events-none rounded-lg"></div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 pointer-events-none"></div>
@@ -254,7 +317,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="bg-yellow-400/20 text-yellow-400 border-yellow-400/30 animate-bounce"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500/30 to-orange-500/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🎯 EXPLORA TODO
                 </Badge>
@@ -368,6 +431,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
           <div className="absolute inset-0 border-2 border-purple-500/30 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 rounded-lg animate-pulse opacity-50"></div>
         </Card>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };

@@ -70,5 +70,5 @@ export const useProfileScore = (profile: any): ProfileScore => {
       color,
       icon,
     };
-  }, [profile]);
+  }, [profile?.id, profile?.is_verified, profile?.is_premium, profile?.is_demo]);
 };

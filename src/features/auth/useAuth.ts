@@ -178,7 +178,7 @@ export const useAuth = () => {
       });
       setProfile(null);
     }
-  }, [demoUser]);
+  }, [demoUser?.id]);
 
   useEffect(() => {
     if (initialized.current) return () => {};
@@ -256,7 +256,7 @@ export const useAuth = () => {
       setLoading(false);
       return () => {};
     }
-  }, [loadProfile]);
+  }, []);
 
   const signOut = async () => {
     try {

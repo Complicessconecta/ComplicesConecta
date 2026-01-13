@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { logger } from "@/lib/logger";
 
 /**
@@ -21,9 +21,6 @@ export function usePersistedState<T>(
     }
 
     try {
-      const _keys = Object.keys(localStorage).filter((key: string) =>
-        key.startsWith("demo_"),
-      );
       const item = window.localStorage.getItem(key);
       if (item === null) {
         return defaultValue;
@@ -67,9 +64,8 @@ export function usePersistedState<T>(
   // Función para actualizar estado y localStorage
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
-      try {
-        const valueToStore = value instanceof Function ? value(state) : value;
-        setState(valueToStore);
+      setState((currentState) => {
+        const valueToStore = value instanceof Function ? value(currentState) : value;
 
         // Solo actualizar localStorage en el cliente
         if (typeof window !== "undefined") {
@@ -96,38 +92,39 @@ export function usePersistedState<T>(
             }
           }
         }
-      } catch (_error) {
-        logger.error("Error guardando en localStorage:", {
-          key,
-          error: String(_error),
-        });
-      }
+
+        return valueToStore;
+      });
     },
-    [key, state],
+    [key],
   );
 
   // Sincronizar con cambios externos de localStorage
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  // TEMPORALMENTE DESACTIVADO para evitar bucle infinito
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
 
-    const handleStorageChange = (__e: any) => {
-      if (__e.key === key && __e.newValue !== null) {
-        try {
-          const newValue = JSON.parse(__e.newValue);
-          setState(newValue);
-          logger.info("Estado sincronizado desde storage event:", { key });
-        } catch (_error) {
-          logger.error("Error sincronizando storage event:", {
-            key,
-            error: String(_error),
-          });
-        }
-      }
-    };
+  //   const handleStorageChange = (__e: any) => {
+  //     if (__e.key === key && __e.newValue !== null) {
+  //       try {
+  //         const newValue = JSON.parse(__e.newValue);
+  //         // Solo actualizar si el valor realmente cambió
+  //         if (JSON.stringify(state) !== JSON.stringify(newValue)) {
+  //           setState(newValue);
+  //           logger.info("Estado sincronizado desde storage event:", { key });
+  //         }
+  //       } catch (_error) {
+  //         logger.error("Error sincronizando storage event:", {
+  //           key,
+  //           error: String(_error),
+  //         });
+  //       }
+  //     }
+  //   };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, [key]);
+  //   window.addEventListener("storage", handleStorageChange);
+  //   return () => window.removeEventListener("storage", handleStorageChange);
+  // }, [key, state]);
 
   return [state, setValue];
 }

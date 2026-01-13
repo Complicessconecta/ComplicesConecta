@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,6 @@ import {
   Lock,
   Unlock,
   Trash2,
-  MessageSquare,
   Sparkles,
 } from "lucide-react";
 import { getUserImages, deleteImage, ImageUpload } from "@/lib/images";

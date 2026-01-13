@@ -283,8 +283,8 @@ class PredictiveMatchingService {
    * Calcula similitud de comportamiento entre dos usuarios
    */
   private async calculateBehavioralSimilarity(
-    userId: string,
-    candidateId: string,
+    _userId: string,
+    _candidateId: string,
   ): Promise<number> {
     try {
       if (!supabase) {

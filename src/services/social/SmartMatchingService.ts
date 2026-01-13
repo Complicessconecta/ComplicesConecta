@@ -307,6 +307,7 @@ class SmartMatchingService {
           return [];
         }
 
+        // Obtener matches existentes para excluir usuarios ya matcheados
         const { data: existingMatches } = await supabase
           .from("matches")
           .select("user1_id, user2_id")

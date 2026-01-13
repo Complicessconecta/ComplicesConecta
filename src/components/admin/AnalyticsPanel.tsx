@@ -8,7 +8,7 @@
  * - Integrado con TokenAnalyticsService y Supabase
  */
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -264,7 +264,7 @@ export function AnalyticsPanel() {
         date.setDate(date.getDate() - i);
 
         mockChartData.push({
-          date: date.toISOString().split("T")[0],
+          date: date.toISOString().split("T")[0] || "",
           users: Math.floor(Math.random() * 50) + 20,
           sessions: Math.floor(Math.random() * 100) + 50,
           engagement: Math.floor(Math.random() * 30) + 40,
@@ -303,46 +303,55 @@ export function AnalyticsPanel() {
         { range: "45+", count: 0, percentage: 0 },
       ];
 
-      profiles.forEach((profile) => {
-        if (profile.age) {
-          if (profile.age >= 18 && profile.age <= 24) ageGroups[0].count++;
-          else if (profile.age >= 25 && profile.age <= 34) ageGroups[1].count++;
-          else if (profile.age >= 35 && profile.age <= 44) ageGroups[2].count++;
-          else if (profile.age >= 45) ageGroups[3].count++;
-        }
-      });
+      // NOTA: Las columnas 'age' y 'gender' no existen en la tabla profiles
+      // TODO: Descomentar cuando se agreguen estas columnas
+      // profiles.forEach((profile) => {
+      //   if (profile.age) {
+      //     if (profile.age >= 18 && profile.age <= 24) ageGroups[0].count++;
+      //     else if (profile.age >= 25 && profile.age <= 34) ageGroups[1].count++;
+      //     else if (profile.age >= 35 && profile.age <= 44) ageGroups[2].count++;
+      //     else if (profile.age >= 45) ageGroups[3].count++;
+      //   }
+      // });
 
-      const totalWithAge = ageGroups.reduce(
-        (sum, group) => sum + group.count,
-        0,
-      );
-      ageGroups.forEach((group) => {
-        group.percentage =
-          totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
-      });
+      // const totalWithAge = ageGroups.reduce(
+      //   (sum, group) => sum + group.count,
+      //   0,
+      // );
+      // ageGroups.forEach((group) => {
+      //   group.percentage =
+      //     totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
+      // });
 
       // Process gender distribution
-      const genderCounts = profiles.reduce(
-        (acc, profile) => {
-          const gender = profile.gender || "no_especificado";
-          acc[gender] = (acc[gender] || 0) + 1;
-          return acc;
-        },
-        {} as Record<string, number>,
-      );
+      // const genderCounts = profiles.reduce(
+      //   (acc, profile) => {
+      //     const gender = profile.gender || "no_especificado";
+      //     acc[gender] = (acc[gender] || 0) + 1;
+      //     return acc;
+      //   },
+      //   {} as Record<string, number>,
+      // );
 
-      const genderDistribution = Object.entries(genderCounts).map(
-        ([gender, count]) => ({
-          gender:
-            gender === "male"
-              ? "Masculino"
-              : gender === "female"
-                ? "Femenino"
-                : "No especificado",
-          count,
-          percentage: (count / profiles.length) * 100,
-        }),
-      );
+      // const genderDistribution = Object.entries(genderCounts).map(
+      //   ([gender, count]) => ({
+      //     gender:
+      //       gender === "male"
+      //         ? "Masculino"
+      //         : gender === "female"
+      //           ? "Femenino"
+      //           : "No especificado",
+      //     count,
+      //     percentage: (count / profiles.length) * 100,
+      //   }),
+      // );
+
+      // Usar datos mock mientras las columnas no existen
+      const genderDistribution = [
+        { gender: "Masculino", count: 0, percentage: 0 },
+        { gender: "Femenino", count: 0, percentage: 0 },
+        { gender: "No especificado", count: profiles.length, percentage: 100 },
+      ];
 
       // Mock location data
       const locationDistribution = [

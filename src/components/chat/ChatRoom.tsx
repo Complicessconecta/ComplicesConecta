@@ -257,9 +257,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
 
       setMessages(formattedMessages);
     } catch (error) {
-      logger.error("Error cargando mensajes:", {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      logger.error("Error loading messages:", { error });
     }
   };
 
@@ -350,6 +348,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
           title: "Error",
           description: "No se pudo enviar el mensaje",
         });
+
         return;
       }
 

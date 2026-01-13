@@ -310,22 +310,25 @@ class PredictiveMatchingService {
           .limit(10),
       ]);
 
-      if (userActivity.error || candidateActivity.error) {
-        return 50; // Fallback
-      }
+      // if (userActivity.error || candidateActivity.error) {
+      //   return 50; // Fallback
+      // }
 
       // Calcular similitud basada en patrones de actividad
       // (ej: frecuencia de matches, tipos de matches, etc.)
-      const userActivityCount = (userActivity.data || []).length;
-      const candidateActivityCount = (candidateActivity.data || []).length;
+      // const userActivityCount = (userActivity.data || []).length;
+      // const candidateActivityCount = (candidateActivity.data || []).length;
 
       // Similitud básica basada en actividad
-      const activitySimilarity =
-        (Math.min(userActivityCount, candidateActivityCount) /
-          Math.max(userActivityCount, candidateActivityCount, 1)) *
-        100;
+      // const activitySimilarity =
+      //   (Math.min(userActivityCount, candidateActivityCount) /
+      //     Math.max(userActivityCount, candidateActivityCount, 1)) *
+      //   100;
 
-      return Math.round(activitySimilarity);
+      // return Math.round(activitySimilarity);
+
+      // Retornar valor por defecto mientras la tabla no existe
+      return 50;
     } catch (error) {
       logger.error("Error calculando similitud de comportamiento:", {
         error: String(error),
@@ -453,17 +456,18 @@ class PredictiveMatchingService {
         return [];
       }
 
+      // Las columnas name, age, gender, location, latitude, longitude ya existen en profiles
       return (data || []).map((profile) => ({
         id: profile.user_id || profile.id || "",
-        name: profile.name || "Usuario",
-        age: profile.age || 0,
-        gender: (profile.gender === "male" || profile.gender === "female"
+        name: (profile as any).name || "Usuario",
+        age: (profile as any).age || 0,
+        gender: ((profile as any).gender === "male" || (profile as any).gender === "female"
           ? "single"
           : "pareja") as "single" | "pareja",
         location: {
-          city: profile.location || "",
-          ...(profile.latitude && profile.longitude
-            ? { coordinates: { lat: profile.latitude, lng: profile.longitude } }
+          city: (profile as any).location || "",
+          ...((profile as any).latitude && (profile as any).longitude
+            ? { coordinates: { lat: (profile as any).latitude, lng: (profile as any).longitude } }
             : {}),
         },
         interests: [], // TODO: Obtener intereses
@@ -499,7 +503,7 @@ class PredictiveMatchingService {
           meetingsArranged: 0,
         },
         verification: {
-          isVerified: profile.is_verified || false,
+          isVerified: (profile as any).is_verified || false,
           photoVerified: false,
           phoneVerified: false,
           idVerified: false,

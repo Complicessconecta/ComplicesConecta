@@ -105,7 +105,7 @@ export class NFTGalleryService {
         .insert({
           user_id: userId,
           profile_id: data.profileId || null,
-          gallery_name: data.galleryName,
+          title: data.galleryName,
           description: data.description || null,
           nft_network: "pending", // Aún no mintado
           is_verified: false,
@@ -206,6 +206,7 @@ export class NFTGalleryService {
    * Agrega imagen a galería NFT
    */
   async addImageToGallery(
+    userId: string,
     galleryId: string,
     imageUrl: string,
     metadata?: Record<string, any>,
@@ -219,6 +220,7 @@ export class NFTGalleryService {
       const { data: image, error } = await supabase
         .from("nft_gallery_images")
         .insert({
+          user_id: userId,
           gallery_id: galleryId,
           image_url: imageUrl,
           nft_network: "pending", // Aún no mintado

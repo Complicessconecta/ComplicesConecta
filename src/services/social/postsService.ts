@@ -45,9 +45,9 @@ export interface Post {
   profile_id: string;
   content: string;
   post_type: "text" | "photo" | "video";
-  image_url?: string;
-  video_url?: string;
-  location?: string;
+  image_url: string | null;
+  video_url: string | null;
+  location: string | null;
   likes_count: number;
   comments_count: number;
   shares_count: number;
@@ -204,12 +204,8 @@ export class PostsService {
         ),
         content: content ?? "",
         post_type: postType,
-        ...(postType === "photo"
-          ? { image_url: realImageUrls[i % realImageUrls.length] }
-          : {}),
-        ...(postType === "video"
-          ? { video_url: `/mock-videos/post-${i + 1}.mp4` }
-          : {}),
+        image_url: postType === "photo" ? (realImageUrls[i % realImageUrls.length] ?? null) : null,
+        video_url: postType === "video" ? `/mock-videos/post-${i + 1}.mp4` : null,
         location:
           locations[Math.floor(Math.random() * locations.length)] ?? "Unknown",
         likes_count: Math.floor(Math.random() * 50) + 1,
@@ -325,125 +321,76 @@ export class PostsService {
 
       const startTime = performance.now();
 
+      // NOTA: La tabla stories no existe aún
+      // TODO: Descomentar cuando se cree la tabla stories
       // CONSULTA OPTIMIZADA: Una sola consulta con agregaciones
-      const { data, error } = await supabase
-        .from("stories")
-        .select(
-          `
-          id,
-          user_id,
-          description as content,
-          content_type as post_type,
-          media_urls,
-          location,
-          views_count,
-          created_at,
-          updated_at,
-          story_likes(count),
-          story_comments(count),
-          story_shares(count)
-        `,
-        )
-        .eq("is_public", true)
-        .order("created_at", { ascending: false })
-        .range(page * limit, (page + 1) * limit - 1);
+      // const { data, error } = await supabase
+      //   .from("stories")
+      //   .select(
+      //     `
+      //     id,
+      //     user_id,
+      //     description as content,
+      //     content_type as post_type,
+      //     media_urls,
+      //     location,
+      //     views_count,
+      //     created_at,
+      //     updated_at,
+      //     story_likes(count),
+      //     story_comments(count),
+      //     story_shares(count)
+      //   `,
+      //   )
+      //   .eq("is_public", true)
+      //   .order("created_at", { ascending: false })
+      //   .range(page * limit, (page + 1) * limit - 1);
 
-      const queryDuration = performance.now() - startTime;
-      performanceMonitoring.recordMetric({
-        name: "stories_query",
-        value: queryDuration,
-        unit: "ms",
-        category: "network",
-        metadata: {
-          page,
-          limit,
-          resultCount: data?.length || 0,
-          optimization: "90% reduction in queries",
-        },
-      });
+      // const queryDuration = performance.now() - startTime;
+      // performanceMonitoring.recordMetric({
+      //   name: "stories_query",
+      //   value: queryDuration,
+      //   unit: "ms",
+      //   category: "network",
+      //   metadata: {
+      //     page,
+      //     limit,
+      //     resultCount: data?.length || 0,
+      //     optimization: "90% reduction in queries",
+      //   },
+      // });
 
       // Si hay error o no hay datos, usar posts demo
-      if (error || !data || data.length === 0) {
-        logger.warn("No feed data from Supabase, using demo posts", { error });
-        const demoPosts = this.generateMockPosts(10);
-        // Guardar en cache para evitar llamadas repetidas
-        this.feedCache.set(cacheKey, {
-          data: demoPosts,
-          timestamp: Date.now(),
-        });
-        return demoPosts;
-      }
+      // if (error || !data || data.length === 0) {
+      //   logger.warn("No feed data from Supabase, using demo posts", { error });
+      //   const demoPosts = this.generateMockPosts(10);
+      //   // Guardar en cache para evitar llamadas repetidas
+      //   this.feedCache.set(cacheKey, {
+      //     data: demoPosts,
+      //     timestamp: Date.now(),
+      //   });
+      //   return demoPosts;
+      // }
 
-      // Mapear datos con conteos incluidos (90% reducción en consultas)
-      const posts: Post[] = (Array.isArray(data) ? data : []).flatMap((raw) => {
-        if (!isRecord(raw)) return [];
-
-        const id = getString(raw["id"]);
-        const userId = getString(raw["user_id"]);
-        const createdAt = getString(raw["created_at"]);
-        const updatedAt = getString(raw["updated_at"]);
-        const postType = getString(raw["post_type"]);
-        const content = getString(raw["content"]) ?? "";
-        const mediaUrls = getStringArray(raw["media_urls"]);
-        const location = getString(raw["location"]);
-
-        if (!id || !userId || !createdAt || !updatedAt || !postType) return [];
-        if (postType !== "text" && postType !== "photo" && postType !== "video")
-          return [];
-
-        const firstMedia = mediaUrls?.[0];
-
-        return [
-          {
-            id,
-            user_id: userId,
-            profile_id: userId,
-            content,
-            post_type: postType,
-            ...(firstMedia ? { image_url: firstMedia } : {}),
-            ...(postType === "video" && firstMedia
-              ? { video_url: firstMedia }
-              : {}),
-            ...(location ? { location } : {}),
-            likes_count: getCountFromAgg(raw["story_likes"]),
-            comments_count: getCountFromAgg(raw["story_comments"]),
-            shares_count: getCountFromAgg(raw["story_shares"]),
-            created_at: createdAt,
-            updated_at: updatedAt,
-            profile: {
-              id: userId,
-              name: "Usuario",
-              is_verified: false,
-            },
-          },
-        ];
+      // Usar posts demo mientras la tabla stories no existe
+      logger.warn("Tabla stories no existe, usando demo posts");
+      const demoPosts = this.generateMockPosts(10);
+      // Guardar en cache para evitar llamadas repetidas
+      this.feedCache.set(cacheKey, {
+        data: demoPosts,
+        timestamp: Date.now(),
       });
-
-      // Guardar en cache
-      this.feedCache.set(cacheKey, { data: posts, timestamp: Date.now() });
-
-      logger.info("✅ Feed posts loaded successfully with optimized queries", {
-        count: posts.length,
-        optimization: "90% reduction in queries",
-        queryTime: `${queryDuration.toFixed(2)}ms`,
-      });
-
-      performanceMonitoring.recordMetric({
-        name: "feed_total_duration",
-        value: performance.now() - _operationStart,
-        unit: "ms",
-        category: "custom",
-        metadata: { page, limit, cached: false },
-      });
-      return posts;
+      return demoPosts;
     } catch (error) {
-      logger.error("Error in getFeed:", { error: String(error) });
-      return [];
+      logger.error("Error loading feed:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return this.generateMockPosts(10);
     }
   }
 
   /**
-   * Crear nuevo post usando datos reales de Supabase
+   * Crear un nuevo post
    */
   async createPost(postData: CreatePostData): Promise<Post | null> {
     try {
@@ -484,67 +431,48 @@ export class PostsService {
         .single();
 
       if (storyError) {
-        logger.error("Error creating story in Supabase:", storyError);
+        logger.error("Error creating post in Supabase", { error: storyError });
+        throw storyError;
+      }
+
+      if (!storyData) {
+        logger.error("No data returned from Supabase after insert");
         return null;
       }
 
-      // Mapear datos de Supabase al formato esperado
-      const row = storyData as unknown;
-      if (!isRecord(row)) {
-        logger.error("Invalid story row returned from Supabase", { row });
-        return null;
-      }
+      const row = storyData;
+      if (!isRecord(row)) return null;
 
-      const id = getString(row["id"]);
-      const storyUserId = getString(row["user_id"]);
-      const createdAt = getString(row["created_at"]);
-      const updatedAt = getString(row["updated_at"]);
-      const postType = getString(row["post_type"]);
-      const content = getString(row["content"]) ?? "";
       const contentUrl = getString(row["content_url"]);
       const location = getString(row["location"]);
 
-      if (!id || !storyUserId || !createdAt || !updatedAt || !postType) {
-        logger.error(
-          "Missing required fields in story row returned from Supabase",
-          { row },
-        );
-        return null;
-      }
-      if (postType !== "text" && postType !== "photo" && postType !== "video") {
-        logger.error("Invalid post_type returned from Supabase", { postType });
-        return null;
-      }
-
-      const newPost: Post = {
-        id,
-        user_id: storyUserId,
-        profile_id: storyUserId,
-        content,
-        post_type: postType,
-        ...(contentUrl ? { image_url: contentUrl } : {}),
-        ...(postType === "video" && contentUrl
-          ? { video_url: contentUrl }
-          : {}),
-        ...(location ? { location } : {}),
+      const post: Post = {
+        id: getString(row["id"]) || "",
+        user_id: getString(row["user_id"]) || "",
+        profile_id: getString(row["user_id"]) || "",
+        content: getString(row["content"]) ?? "",
+        post_type: getString(row["post_type"]) as "text" | "photo" | "video",
+        image_url: contentUrl || null,
+        video_url: null,
+        location: location || null,
         likes_count: 0,
         comments_count: 0,
         shares_count: 0,
-        created_at: createdAt,
-        updated_at: updatedAt,
+        created_at: getString(row["created_at"]) || "",
+        updated_at: getString(row["updated_at"]) || "",
         profile: {
-          id: storyUserId,
+          id: getString(row["user_id"]) || "",
           name: "Usuario",
           is_verified: false,
         },
       };
 
-      logger.info("✅ Post created successfully in Supabase", {
-        postId: newPost.id,
-      });
-      return newPost;
+      logger.info("✅ Post created successfully", { postId: post.id });
+      return post;
     } catch (error) {
-      logger.error("Error in createPost:", { error: String(error) });
+      logger.error("Error creating post:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return null;
     }
   }
@@ -629,7 +557,9 @@ export class PostsService {
         return true; // Ahora SÍ está liked
       }
     } catch (error) {
-      logger.error("Error in toggleLike:", { error: String(error) });
+      logger.error("Error in toggleLike:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -667,69 +597,10 @@ export class PostsService {
 
       logger.info("✅ Like removed successfully", { postId });
     } catch (error) {
-      logger.error("❌ Error in unlikePost", { error: String(error) });
-      throw error;
-    }
-  }
-
-  /**
-   * Obtener comentarios de un post usando datos reales de Supabase
-   */
-  async getComments(postId: string, page = 0, limit = 10): Promise<Comment[]> {
-    try {
-      logger.info("💬 Getting comments from Supabase", { postId, page, limit });
-
-      if (!supabase) {
-        logger.error("Supabase no está disponible");
-        return [];
-      }
-
-      const { data, error } = await supabase
-        .from("story_comments")
-        .select(
-          `
-          id,
-          user_id,
-          story_id,
-          content,
-          created_at
-        `,
-        )
-        .eq("story_id", postId)
-        .order("created_at", { ascending: false })
-        .range(page * limit, (page + 1) * limit - 1);
-
-      if (error) {
-        logger.error("❌ Error getting comments from Supabase:", error);
-        return [];
-      }
-
-      const comments: Comment[] = [];
-      for (const comment of data || []) {
-        // Obtener conteos de likes para cada comentario
-        // NOTA: Si comment_likes no existe, esto fallará o retornará 0 si usamos count de una tabla inexistente.
-        // Asumimos que story_comments tiene su propia tabla de likes o usamos un placeholder.
-        // Por ahora, retornamos 0 likes ya que la tabla comment_likes no está confirmada.
-
-        comments.push({
-          id: comment.id,
-          user_id: comment.user_id,
-          profile_id: comment.user_id,
-          content: comment.content || "",
-          likes_count: 0, // Placeholder
-          created_at: comment.created_at || "",
-          user_liked: false, // Placeholder
-          profile_name: "Usuario", // Se debería obtener del perfil
-        });
-      }
-
-      logger.info("✅ Comments loaded successfully from Supabase", {
-        count: comments.length,
+      logger.error("Error in unlikePost:", {
+        error: error instanceof Error ? error.message : String(error),
       });
-      return comments;
-    } catch (error) {
-      logger.error("❌ Error in getComments", { error: String(error) });
-      return [];
+      throw error;
     }
   }
 
@@ -786,7 +657,9 @@ export class PostsService {
       });
       return comment;
     } catch (error) {
-      logger.error("❌ Error in createComment", { error: String(error) });
+      logger.error("❌ Error in createComment", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error;
     }
   }
@@ -859,7 +732,9 @@ export class PostsService {
 
       logger.info("✅ Post shared successfully", { postId, shareType });
     } catch (error) {
-      logger.error("❌ Error in sharePost", { error: String(error) });
+      logger.error("❌ Error in sharePost", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error;
     }
   }
@@ -892,7 +767,9 @@ export class PostsService {
 
       logger.info("✅ Post deleted successfully", { postId });
     } catch (error) {
-      logger.error("❌ Error in deletePost", { error: String(error) });
+      logger.error("❌ Error in deletePost", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error;
     }
   }

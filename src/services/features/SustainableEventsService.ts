@@ -228,8 +228,8 @@ export class SustainableEventsService {
       }
 
       // 3. Verificar capacidad
-      const participants = (event.participants as string[]) || [];
-      if (participants.length >= (event.max_participants || 0)) {
+      const currentParticipants = event.current_participants || 0;
+      if (currentParticipants >= (event.max_participants || 0)) {
         throw new Error("Evento lleno");
       }
 
@@ -239,11 +239,10 @@ export class SustainableEventsService {
         throw new Error("Supabase no está disponible");
       }
 
-      const updatedParticipants = [...participants, userId];
       await supabase
         .from("couple_events")
         .update({
-          participants: updatedParticipants,
+          current_participants: currentParticipants + 1,
         })
         .eq("id", eventId);
 

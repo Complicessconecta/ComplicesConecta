@@ -154,29 +154,34 @@ export const updateSessionMinutes = async (
       throw new Error("Supabase no está disponible");
     }
 
-    const { data: sessionData, error: sessionError } = await supabase
-      .from("moderator_sessions")
-      .select("session_start")
-      .eq("id", sessionId)
-      .single();
+    // NOTA: La tabla moderator_sessions no existe aún
+    // TODO: Descomentar cuando se cree la tabla moderator_sessions
+    // const { data: sessionData, error: sessionError } = await supabase
+    //   .from("moderator_sessions")
+    //   .select("session_start")
+    //   .eq("id", sessionId)
+    //   .single();
 
-    if (sessionError || !sessionData) return;
+    // if (sessionError || !sessionData) return;
 
-    const startTime = new Date(sessionData.session_start);
-    const now = new Date();
-    const minutes = Math.floor((now.getTime() - startTime.getTime()) / 60000);
+    // const startTime = new Date(sessionData.session_start);
+    // const now = new Date();
+    // const minutes = Math.floor((now.getTime() - startTime.getTime()) / 60000);
 
-    const { error } = await supabase
-      .from("moderator_sessions")
-      .update({
-        total_minutes: minutes,
-        reports_reviewed: reportsReviewed,
-        actions_taken: actionsTaken,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", sessionId);
+    // const { error } = await supabase
+    //   .from("moderator_sessions")
+    //   .update({
+    //     total_minutes: minutes,
+    //     reports_reviewed: reportsReviewed,
+    //     actions_taken: actionsTaken,
+    //     updated_at: new Date().toISOString(),
+    //   })
+    //   .eq("id", sessionId);
 
-    if (error) throw error;
+    // if (error) throw error;
+
+    // Retornar sin hacer nada mientras la tabla no existe
+    return;
   } catch (error) {
     logger.error("Error actualizando minutos de sesión:", {
       error: error instanceof Error ? error.message : String(error),

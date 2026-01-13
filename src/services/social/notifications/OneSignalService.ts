@@ -199,19 +199,18 @@ class OneSignalService {
         .single();
 
       if (!deviceToken) {
-        logger.warn("Usuario no tiene token de dispositivo registrado");
+        logger.warn("No se encontró token de dispositivo para el usuario", {
+          userId: userId.substring(0, 8) + "***",
+        });
         return false;
       }
 
-      // Enviar notificación vía OneSignal REST API
-      // NOTA: Esto normalmente se hace desde el backend por seguridad
-      // Por ahora, solo logueamos la acción
-      logger.info("📤 Notificación OneSignal enviada", {
+      // OneSignal no tiene método post directo en el SDK web
+      // Las notificaciones se envían desde el backend usando la API REST
+      // Por ahora, simulamos el envío exitoso
+      logger.info("✅ Notificación enviada exitosamente (simulado)", {
         userId: userId.substring(0, 8) + "***",
-        title,
-        message,
       });
-
       return true;
     } catch (error) {
       logger.error("Error enviando notificación OneSignal", {

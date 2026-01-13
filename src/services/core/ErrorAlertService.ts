@@ -618,18 +618,13 @@ export class ErrorAlertService {
       } = await supabase.auth.getUser();
 
       await supabase.from("error_alerts").insert({
+        error_type: alert.category || "unknown",
         error_message: alert.message,
-        error_stack: alert.stack || null,
-        category: alert.category,
+        stack_trace: alert.stack || null,
         severity: alert.severity,
         resolved: alert.resolved,
-        resolved_at: alert.resolvedAt?.toISOString() || null,
-        resolved_by: null,
         user_id: user?.id || alert.userId || null,
         url: typeof window !== "undefined" ? window.location.href : null,
-        user_agent:
-          typeof navigator !== "undefined" ? navigator.userAgent : null,
-        metadata: alert.metadata || {},
       });
     } catch (error) {
       logger.error("Error persisting alert:", { error: String(error) });

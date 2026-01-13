@@ -93,121 +93,81 @@ export const PerformancePanel = () => {
         return;
       }
 
+      // NOTA: La tabla performance_metrics no existe aún
+      // TODO: Descomentar cuando se cree la tabla performance_metrics
       // Consultar métricas reales de la base de datos
-      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      // const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-      // Usar performance_metrics (la tabla que existe)
-      const { data, error } = await supabase
-        .from("performance_metrics")
-        .select("*")
-        .gte("timestamp", oneHourAgo)
-        .order("timestamp", { ascending: false })
-        .limit(1000);
+      // // Usar performance_metrics (la tabla que existe)
+      // const { data, error } = await supabase
+      //   .from("performance_metrics")
+      //   .select("*")
+      //   .gte("timestamp", oneHourAgo)
+      //   .order("timestamp", { ascending: false })
+      //   .limit(1000);
 
-      if (error) {
-        logger.warn("Error loading metrics from DB, using fallback:", error);
-        generateMockMetrics();
-        return;
-      }
+      // if (error) {
+      //   logger.warn("Error loading metrics from DB, using fallback:", error);
+      //   generateMockMetrics();
+      //   return;
+      // }
 
-      if (!data || data.length === 0) {
-        // No hay datos reales aún, usar mock con advertencia
-        logger.info("No real metrics found in DB, using mock data");
-        generateMockMetrics();
-        return;
-      }
+      // if (!data || data.length === 0) {
+      //   // No hay datos reales aún, usar mock con advertencia
+      //   logger.info("No real metrics found in DB, using mock data");
+      //   generateMockMetrics();
+      //   return;
+      // }
 
-      // Procesar métricas reales de performance_metrics
-      const cpuMetrics = data.filter(
-        (m) =>
-          m.metric_name?.toLowerCase().includes("cpu") ||
-          m.metric_name?.toLowerCase().includes("cpuusage"),
-      );
-      const memoryMetrics = data.filter(
-        (m) =>
-          m.metric_name?.toLowerCase().includes("memory") ||
-          m.metric_name?.toLowerCase().includes("memoryusage"),
-      );
-      const diskMetrics = data.filter(
-        (m) =>
-          m.metric_name?.toLowerCase().includes("disk") ||
-          m.metric_name?.toLowerCase().includes("diskio"),
-      );
-      const networkMetrics = data.filter(
-        (m) =>
-          m.metric_name?.toLowerCase().includes("network") ||
-          m.metric_name?.toLowerCase().includes("networktraffic") ||
-          m.metric_name?.toLowerCase().includes("resourceloadtime"),
-      );
+      // // Procesar métricas reales de performance_metrics
+      // const cpuMetrics = data.filter(
+      //   (m) =>
+      //     m.metric_name?.toLowerCase().includes("cpu") ||
+      //     m.metric_name?.toLowerCase().includes("cpuusage"),
+      // );
+      // const memoryMetrics = data.filter(
+      //   (m) =>
+      //     m.metric_name?.toLowerCase().includes("memory") ||
+      //     m.metric_name?.toLowerCase().includes("memoryusage"),
+      // );
+      // const diskMetrics = data.filter(
+      //   (m) =>
+      //     m.metric_name?.toLowerCase().includes("disk") ||
+      //     m.metric_name?.toLowerCase().includes("diskio"),
+      // );
+      // const networkMetrics = data.filter(
+      //   (m) =>
+      //     m.metric_name?.toLowerCase().includes("network") ||
+      //     m.metric_name?.toLowerCase().includes("networktraffic") ||
+      //     m.metric_name?.toLowerCase().includes("resourceloadtime"),
+      // );
 
-      // Calcular promedios usando 'value' de performance_metrics
-      const avgCpu =
-        cpuMetrics.length > 0
-          ? cpuMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-            cpuMetrics.length
-          : 0;
-      const avgMemory =
-        memoryMetrics.length > 0
-          ? memoryMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-            memoryMetrics.length
-          : 0;
-      const avgDisk =
-        diskMetrics.length > 0
-          ? diskMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-            diskMetrics.length
-          : 0;
-      const avgNetwork =
-        networkMetrics.length > 0
-          ? networkMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-            networkMetrics.length
-          : 0;
+      // // Calcular promedios usando 'value' de performance_metrics
+      // const avgCpu =
+      //   cpuMetrics.length > 0
+      //     ? cpuMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
+      //       cpuMetrics.length
+      //     : 0;
+      // const avgMemory =
+      //   memoryMetrics.length > 0
+      //     ? memoryMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
+      //       memoryMetrics.length
+      //     : 0;
+      // const avgDisk =
+      //   diskMetrics.length > 0
+      //     ? diskMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
+      //       diskMetrics.length
+      //     : 0;
+      // const avgNetwork =
+      //   networkMetrics.length > 0
+      //     ? networkMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
+      //       networkMetrics.length
+      //     : 0;
 
-      // Calcular métricas de performance
-      const responseTimeMetrics = data.filter(
-        (m) =>
-          m.metric_name?.toLowerCase().includes("response") ||
-          m.metric_name === "apiResponseTime",
-      );
-
-      const avgResponseTime =
-        responseTimeMetrics.length > 0
-          ? responseTimeMetrics.reduce(
-              (sum, m) => sum + Number(m.value || 0),
-              0,
-            ) / responseTimeMetrics.length
-          : 150;
-
-      setSystemMetrics({
-        cpu: Math.min(100, Math.max(0, avgCpu)),
-        memory: Math.min(100, Math.max(0, avgMemory)),
-        disk: Math.min(100, Math.max(0, avgDisk)),
-        network: Math.min(100, Math.max(0, avgNetwork)),
-      });
-
-      setPerformanceData({
-        responseTime: Math.round(avgResponseTime),
-        throughput: data.length, // Cantidad de métricas como proxy de throughput
-        errorRate: 0, // Se calcularía de error_alerts si estuviera integrado
-        uptime: 99.9, // Se calcularía del sistema si estuviera disponible
-      });
-
-      // Convertir a formato SystemMetric para uso en tabs
-      // Usando performance_metrics (timestamp, value, unit)
-      const formattedMetrics: SystemMetric[] = data.slice(0, 100).map((m) => ({
-        id: m.id,
-        metric_name: m.metric_name || "Unknown",
-        metric_value: Number(m.value || 0),
-        metric_type:
-          ((m.metadata as Record<string, unknown>)?.category as string) ||
-          "system",
-        metric_unit: m.unit || "%",
-        recorded_at: m.timestamp || m.created_at || new Date().toISOString(),
-        created_at: m.created_at || new Date().toISOString(),
-        metadata: (m.metadata as Record<string, unknown>) || {},
-      }));
-
-      setMetrics(formattedMetrics);
-      setRecentMetrics(formattedMetrics.slice(0, 5));
+      // Usar mock data mientras la tabla no existe
+      logger.info("Tabla performance_metrics no existe, usando mock data");
+      generateMockMetrics();
+      return;
     } catch (error) {
       logger.error("Error loading system metrics:", {
         error: error instanceof Error ? error.message : String(error),
@@ -224,46 +184,57 @@ export const PerformancePanel = () => {
         return;
       }
 
+      // NOTA: La tabla performance_metrics no existe aún
+      // TODO: Descomentar cuando se cree la tabla performance_metrics
       // Cargar métricas más recientes (últimos 10 minutos)
-      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      // const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
 
-      // Usar performance_metrics (la tabla que existe)
-      const { data, error } = await supabase
-        .from("performance_metrics")
-        .select("*")
-        .gte("timestamp", tenMinutesAgo)
-        .order("timestamp", { ascending: false })
-        .limit(50);
+      // // Usar performance_metrics (la tabla que existe)
+      // const { data, error } = await supabase
+      //   .from("performance_metrics")
+      //   .select("*")
+      //   .gte("timestamp", tenMinutesAgo)
+      //   .order("timestamp", { ascending: false })
+      //   .limit(50);
 
-      if (error) {
-        logger.warn(
-          "Error loading recent metrics from DB, using fallback:",
-          error,
-        );
-        generateMockRecentMetrics();
-        return;
-      }
+      // if (error) {
+      //   logger.warn(
+      //     "Error loading recent metrics from DB, using fallback:",
+      //     error,
+      //   );
+      //   generateMockRecentMetrics();
+      //   return;
+      // }
 
-      if (!data || data.length === 0) {
-        generateMockRecentMetrics();
-        return;
-      }
+      // if (!data || data.length === 0) {
+      //   generateMockRecentMetrics();
+      //   return;
+      // }
 
-      // Usando performance_metrics (timestamp, value, unit)
-      const formattedMetrics: SystemMetric[] = data.map((m) => ({
-        id: m.id,
-        metric_name: m.metric_name || "Unknown",
-        metric_value: Number(m.value || 0),
-        metric_type:
-          ((m.metadata as Record<string, unknown>)?.category as string) ||
-          "system",
-        metric_unit: m.unit || "%",
-        recorded_at: m.timestamp || m.created_at || new Date().toISOString(),
-        created_at: m.created_at || new Date().toISOString(),
-        metadata: (m.metadata as Record<string, unknown>) || {},
-      }));
+      // Usar mock data mientras la tabla no existe
+      generateMockRecentMetrics();
+      return;
 
-      setRecentMetrics(formattedMetrics.slice(0, 5));
+      // NOTA: La tabla performance_metrics no existe aún
+      // TODO: Descomentar cuando se cree la tabla performance_metrics
+      // // Usando performance_metrics (timestamp, value, unit)
+      // const formattedMetrics: SystemMetric[] = data.map((m) => ({
+      //   id: m.id,
+      //   metric_name: m.metric_name || "Unknown",
+      //   metric_value: Number(m.value || 0),
+      //   metric_type:
+      //     ((m.metadata as Record<string, unknown>)?.category as string) ||
+      //     "system",
+      //   metric_unit: m.unit || "%",
+      //   recorded_at: m.timestamp || m.created_at || new Date().toISOString(),
+      //   created_at: m.created_at || new Date().toISOString(),
+      //   metadata: (m.metadata as Record<string, unknown>) || {},
+      // }));
+
+      // setRecentMetrics(formattedMetrics.slice(0, 5));
+
+      // Usar mock data mientras la tabla no existe
+      generateMockRecentMetrics();
     } catch (error) {
       logger.error("Error loading recent metrics:", {
         error: error instanceof Error ? error.message : String(error),

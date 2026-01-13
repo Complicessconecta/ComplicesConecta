@@ -162,7 +162,7 @@ export const classifyReportWithAI = async (
       report_id: reportId,
       ai_confidence: result.confidence,
       ai_severity: result.severity,
-      ai_category: result.category ?? null,
+      ai_category: result.category || "unknown",
       ai_tags: result.tags,
       ai_summary: result.summary,
       detected_toxicity: result.detected_toxicity,
@@ -170,7 +170,7 @@ export const classifyReportWithAI = async (
       detected_explicit: result.detected_explicit,
       detected_harassment: result.detected_harassment,
       suggested_priority: result.suggested_priority,
-      suggested_action: result.suggested_action ?? null,
+      suggested_action: result.suggested_action || "",
       ai_model_version: "v1.0",
     });
 

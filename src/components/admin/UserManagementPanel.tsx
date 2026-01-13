@@ -302,12 +302,18 @@ export function UserManagementPanel() {
         });
         if (error) throw error;
       } else if (action === "verify") {
+        // NOTA: La columna is_verified no existe en profiles
+        // TODO: Descomentar cuando se agregue esta columna
         // Direct DB update for simple verify
-        const { error } = await client
-          .from("profiles")
-          .update({ is_verified: true })
-          .eq("id", userId);
-        if (error) throw error;
+        // const { error } = await client
+        //   .from("profiles")
+        //   .update({ is_verified: true })
+        //   .eq("id", userId);
+        // if (error) throw error;
+        toast({
+          title: "Información",
+          description: "La columna is_verified no existe aún en la tabla profiles",
+        });
       }
 
       toast({

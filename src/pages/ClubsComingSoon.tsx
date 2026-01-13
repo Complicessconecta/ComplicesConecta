@@ -1,4 +1,3 @@
-import React from "react";
 import { Building, Clock, Sparkles, Target, Award, Globe, MapPin, Star, Camera } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";

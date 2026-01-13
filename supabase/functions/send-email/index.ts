@@ -11,7 +11,7 @@ const corsHeaders = {
 
 interface EmailRequest {
   to: string;
-  template: "welcome" | "confirmation" | "reset-password" | "match" | "event";
+  template: "welcome" | "confirmation" | "reset-password" | "match" | "event" | "club-application";
   data?: Record<string, unknown>;
 }
 
@@ -71,6 +71,7 @@ function getSubjectByTemplate(template: string): string {
     "reset-password": "Restablecer tu contraseña - ComplicesConecta 🔐",
     match: "¡Tienes un nuevo match! 💕 - ComplicesConecta",
     event: "🌟 Invitación Exclusiva VIP - ComplicesConecta",
+    "club-application": "🏢 Nueva Solicitud de Club - ComplicesConecta",
   };
   return subjects[template as keyof typeof subjects] || "ComplicesConecta";
 }

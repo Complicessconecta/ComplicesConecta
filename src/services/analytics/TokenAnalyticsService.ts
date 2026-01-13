@@ -26,6 +26,10 @@ export interface TokenMetrics {
     activeUsers: number;
     newUsers: number;
   };
+  nftMetrics: {
+    totalNFTs: number;
+    nftHolders: number;
+  };
 }
 
 export interface TokenAnalytics {
@@ -221,8 +225,8 @@ export class TokenAnalyticsService {
           gtk: 5000000, // Supply fijo para GTK
         },
         circulatingSupply: {
-          cmpx: 1000000 - totalCmpxStaked, // Simple calculation
-          gtk: 5000000,
+          cmpx: 0, // Testnet: tokens no están en circulación hasta despliegue oficial
+          gtk: 0, // Testnet: GTK no activo
         },
         transactionVolume: {
           cmpx: transactionVolumeCmpx,
@@ -237,6 +241,10 @@ export class TokenAnalyticsService {
         userMetrics: {
           activeUsers: 100, // Placeholder
           newUsers: newUsers,
+        },
+        nftMetrics: {
+          totalNFTs: 0, // Testnet: aún no se han creado NFTs
+          nftHolders: 0, // Testnet: aún no hay holders de NFTs
         },
       };
 

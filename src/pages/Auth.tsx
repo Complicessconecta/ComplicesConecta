@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Users, ArrowLeft, Sparkles } from "lucide-react";
+import { Shield, Users, ArrowLeft, Sparkles, Building } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
@@ -438,9 +438,12 @@ const Auth = () => {
                         handleInputChange("email", e.target.value)
                       }
                       required
+                      disabled
+                      placeholder="Próximamente disponible"
                       data-testid="email-input"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
+                      className="bg-white/10 border-white/20 text-white/50 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 cursor-not-allowed"
                     />
+                    <p className="text-xs text-white/50 mt-1">Inicio de sesión con correo próximamente disponible</p>
                   </div>
                   <div className="space-y-2">
                     <Label
@@ -458,18 +461,20 @@ const Auth = () => {
                       }
                       required
                       minLength={6}
+                      disabled
+                      placeholder="Próximamente disponible"
                       data-testid="password-input"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
+                      className="bg-white/10 border-white/20 text-white/50 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 cursor-not-allowed"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
-                    disabled={isLoading}
+                    disabled
+                    className="w-full bg-gradient-to-r from-purple-600/50 to-blue-600/50 text-white/50 font-bold shadow-lg transition-all duration-300 cursor-not-allowed"
                     data-testid="login-button"
                     style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
-                    {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                    Iniciar Sesión - Próximamente
                   </Button>
 
                   {/* Demo Login Button con glassmorphism mejorado - Navega a selector */}
@@ -484,6 +489,18 @@ const Auth = () => {
                     <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/0 via-yellow-400/20 to-yellow-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
                     <Sparkles className="w-4 h-4 mr-2 relative z-10 group-hover:animate-spin" />
                     <span className="relative z-10">Acceso Demo</span>
+                  </Button>
+
+                  {/* Club Demo Button - Próximamente */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled
+                    className="w-full border-2 border-purple-400/50 bg-gradient-to-r from-purple-500/20 via-fuchsia-500/20 to-purple-500/20 backdrop-blur-sm text-white/70 font-semibold cursor-not-allowed relative overflow-hidden"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
+                  >
+                    <Building className="w-4 h-4 mr-2" />
+                    <span>Club Demo - Próximamente</span>
                   </Button>
                 </form>
               </TabsContent>

@@ -10,6 +10,9 @@ import {
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/forms/Input";
+import { Modal } from "@/components/ui/Modal";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import {
   MapPin,
@@ -27,6 +30,8 @@ import {
   Building,
   Target,
   Sparkles,
+  User,
+  Users,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -82,6 +87,42 @@ export const Clubs = () => {
     lng: number;
   } | null>(null);
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Formulario de registro de club
+  const [clubForm, setClubForm] = useState({
+    // Propietario
+    ownerName: "",
+    ownerAge: "",
+    ownerGender: "",
+    ownerRFC: "",
+    // Representante
+    repName: "",
+    repPosition: "",
+    repPhone: "",
+    repEmail: "",
+    // Club
+    clubName: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    phone: "",
+    whatsapp: "",
+    website: "",
+    useAppAsWebsite: false,
+    email: "",
+    // Detalles
+    description: "",
+    clubType: "",
+    hours: "",
+    capacity: "",
+    // Documentos
+    documentsUrl: "",
+    companyRFC: "",
+    license: "",
+  });
 
   // Información del sistema de clubs desde la documentación
   const clubSystemInfo = {
@@ -257,6 +298,128 @@ export const Clubs = () => {
 
   const cities = [...new Set(clubs.map((club) => club.city))];
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setClubForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }));
+  };
+
+  const handleClubSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      // Guardar en base de datos usando any para evitar error de tipos
+      const { data, error } = await supabase!
+        .from("club_applications" as any)
+        .insert([
+          {
+            owner_name: clubForm.ownerName,
+            owner_age: parseInt(clubForm.ownerAge),
+            owner_gender: clubForm.ownerGender,
+            owner_rfc: clubForm.ownerRFC,
+            rep_name: clubForm.repName,
+            rep_position: clubForm.repPosition,
+            rep_phone: clubForm.repPhone,
+            rep_email: clubForm.repEmail,
+            club_name: clubForm.clubName,
+            address: clubForm.address,
+            city: clubForm.city,
+            state: clubForm.state,
+            zip_code: clubForm.zipCode,
+            phone: clubForm.phone,
+            whatsapp: clubForm.whatsapp,
+            website: clubForm.website,
+            use_app_as_website: clubForm.useAppAsWebsite,
+            email: clubForm.email,
+            description: clubForm.description,
+            club_type: clubForm.clubType,
+            hours: clubForm.hours,
+            capacity: parseInt(clubForm.capacity),
+            documents_url: clubForm.documentsUrl,
+            company_rfc: clubForm.companyRFC,
+            license: clubForm.license,
+            status: "pending",
+            created_at: new Date().toISOString(),
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Enviar email usando Supabase Edge Function
+      if (supabase) {
+        const { error: emailError } = await supabase.functions.invoke('send-email', {
+          body: {
+            to: 'complicesconectasw@outlook.es',
+            template: 'club-application',
+            data: {
+              ...clubForm,
+              createdAt: new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' }),
+            },
+          },
+        });
+
+        if (emailError) {
+          logger.warn('Email sending failed (non-critical):', emailError);
+        }
+      } else {
+        logger.warn('Supabase client not available for sending email');
+      }
+
+      toast({
+        title: "Solicitud enviada",
+        description: "Tu solicitud ha sido enviada exitosamente. Nos pondremos en contacto pronto.",
+        variant: "default",
+      });
+
+      setIsModalOpen(false);
+      setClubForm({
+        ownerName: "",
+        ownerAge: "",
+        ownerGender: "",
+        ownerRFC: "",
+        repName: "",
+        repPosition: "",
+        repPhone: "",
+        repEmail: "",
+        clubName: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        phone: "",
+        whatsapp: "",
+        website: "",
+        useAppAsWebsite: false,
+        email: "",
+        description: "",
+        clubType: "",
+        hours: "",
+        capacity: "",
+        documentsUrl: "",
+        companyRFC: "",
+        license: "",
+      });
+
+      logger.info("Club application submitted successfully", { clubId: (data as any)?.id });
+    } catch (error) {
+      logger.error("Error submitting club application:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      toast({
+        title: "Error",
+        description: "No se pudo enviar la solicitud. Intenta nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
@@ -403,6 +566,194 @@ export const Clubs = () => {
                     ))}
                   </select>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Ventajas de Vinculación con ComplicesConecta */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-12"
+        >
+          <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+            <CardHeader>
+              <CardTitle className="text-2xl text-white flex items-center gap-3">
+                <Sparkles className="h-6 w-6" />
+                Ventajas de Estar Vinculado con ComplicesConecta
+              </CardTitle>
+              <CardDescription className="text-white/70">
+                Descubre todos los beneficios exclusivos para clubs verificados
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                      <Globe className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Página Pública Profesional</h3>
+                  </div>
+                  <p className="text-white/70 text-sm ml-11">
+                    URL única /clubs/{'{slug}'} con información completa, galería de fotos y calendario de eventos
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
+                      <MapPin className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Check-ins Verificados</h3>
+                  </div>
+                  <p className="text-white/70 text-sm ml-11">
+                    Sistema geolocalizado (radio 50m) con WorldID para verificación auténtica
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                      <Star className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Reseñas Auténticas</h3>
+                  </div>
+                  <p className="text-white/70 text-sm ml-11">
+                    Solo usuarios con check-in real pueden reseñar, garantizando opiniones genuinas
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
+                      <Camera className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Flyers Editables con IA</h3>
+                  </div>
+                  <p className="text-white/70 text-sm ml-11">
+                    Watermark automático, blur en imágenes sensibles y moderación antes de publicar
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg">
+                      <Award className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Publicidad Premium</h3>
+                  </div>
+                  <p className="text-white/70 text-sm ml-11">
+                    Destacado en Discover, banners promocionales y promoción de eventos VIP
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-lg">
+                      <Building className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">Integración con Tokens</h3>
+                  </div>
+                  <p className="text-white/70 text-sm ml-11">
+                    Aceptación de CMPX/GTK como pago, sistema de recompensas y descuentos exclusivos
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Sección Próximamente */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mb-12"
+        >
+          <Card className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 backdrop-blur-xl border-amber-400/30 shadow-2xl">
+            <CardHeader>
+              <CardTitle className="text-2xl text-white flex items-center gap-3">
+                <Target className="h-6 w-6" />
+                🚀 Próximamente en ComplicesConecta
+              </CardTitle>
+              <CardDescription className="text-amber-200/80">
+                Nuevas funcionalidades exclusivas para clubs verificados
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Clubs en Perfiles</h3>
+                      <p className="text-white/70 text-sm">
+                        Los clubs verificados tendrán su propio perfil profesional, similar a los perfiles de usuarios (single/couple), con galería de fotos, videos, eventos y sistema de check-ins
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Sistema de Descuentos Premium</h3>
+                      <p className="text-white/70 text-sm">
+                        Descuentos en entrada con CMPX, beneficios exclusivos para holders de GTK y promociones especiales para usuarios premium
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">NFTs de Clubs</h3>
+                      <p className="text-white/70 text-sm">
+                        Perfiles verificados como NFTs, coleccionables exclusivos de clubs y mercado secundario de NFTs
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Integración con Tokens</h3>
+                      <p className="text-white/70 text-sm">
+                        Aceptación de CMPX como pago, sistema de recompensas y staking de tokens en clubs
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Analytics Avanzados</h3>
+                      <p className="text-white/70 text-sm">
+                        Visitas a la página, check-ins por día/semana/mes, engagement de usuarios y demografía de visitantes
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Panel de Administración</h3>
+                      <p className="text-white/70 text-sm">
+                        Edición completa del perfil, subida de contenido, creación de eventos, gestión de promociones y respuesta a reseñas
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 p-4 bg-amber-500/10 rounded-lg border border-amber-400/30">
+                <p className="text-center text-amber-200">
+                  <strong>📅 Lanzamiento estimado:</strong> Q2 2026
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -589,7 +940,7 @@ export const Clubs = () => {
                 de reseñas auténticas.
               </p>
               <Button
-                onClick={() => navigate("/contact")}
+                onClick={() => setIsModalOpen(true)}
                 className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3"
               >
                 <Building className="h-5 w-5 mr-2" />
@@ -598,6 +949,385 @@ export const Clubs = () => {
             </CardContent>
           </Card>
         </motion.div>
+
+        {/* Modal de Registro de Club */}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Registrar Nuevo Club"
+          description="Completa el formulario para solicitar la verificación de tu club"
+          className="max-w-4xl max-h-[90vh] overflow-y-auto"
+        >
+          <form onSubmit={handleClubSubmit} className="space-y-6">
+            {/* Información del Propietario */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Información del Propietario
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="ownerName">Nombre Completo *</Label>
+                  <Input
+                    id="ownerName"
+                    name="ownerName"
+                    value={clubForm.ownerName}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Juan Pérez"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="ownerAge">Edad *</Label>
+                  <Input
+                    id="ownerAge"
+                    name="ownerAge"
+                    type="number"
+                    value={clubForm.ownerAge}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="25"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="ownerGender">Género *</Label>
+                  <select
+                    id="ownerGender"
+                    name="ownerGender"
+                    value={clubForm.ownerGender}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border rounded-md bg-white dark:bg-gray-800"
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="ownerRFC">RFC del Propietario *</Label>
+                  <Input
+                    id="ownerRFC"
+                    name="ownerRFC"
+                    value={clubForm.ownerRFC}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="XAXX010101000"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Información del Representante (opcional) */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Información del Representante (si aplica)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="repName">Nombre Completo</Label>
+                  <Input
+                    id="repName"
+                    name="repName"
+                    value={clubForm.repName}
+                    onChange={handleInputChange}
+                    placeholder="María García"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="repPosition">Cargo</Label>
+                  <Input
+                    id="repPosition"
+                    name="repPosition"
+                    value={clubForm.repPosition}
+                    onChange={handleInputChange}
+                    placeholder="Gerente"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="repPhone">Teléfono</Label>
+                  <Input
+                    id="repPhone"
+                    name="repPhone"
+                    value={clubForm.repPhone}
+                    onChange={handleInputChange}
+                    placeholder="+52 55 1234 5678"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="repEmail">Email</Label>
+                  <Input
+                    id="repEmail"
+                    name="repEmail"
+                    type="email"
+                    value={clubForm.repEmail}
+                    onChange={handleInputChange}
+                    placeholder="rep@club.com"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Información del Club */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <Building className="h-5 w-5" />
+                Información del Club
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Label htmlFor="clubName">Nombre del Club *</Label>
+                  <Input
+                    id="clubName"
+                    name="clubName"
+                    value={clubForm.clubName}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Club Nocturno XYZ"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="address">Dirección Física *</Label>
+                  <Input
+                    id="address"
+                    name="address"
+                    value={clubForm.address}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Av. Principal #123, Col. Centro"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="city">Ciudad *</Label>
+                  <Input
+                    id="city"
+                    name="city"
+                    value={clubForm.city}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Ciudad de México"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="state">Estado *</Label>
+                  <Input
+                    id="state"
+                    name="state"
+                    value={clubForm.state}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="CDMX"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="zipCode">Código Postal *</Label>
+                  <Input
+                    id="zipCode"
+                    name="zipCode"
+                    value={clubForm.zipCode}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="06000"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Teléfono *</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    value={clubForm.phone}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="+52 55 1234 5678"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="whatsapp">WhatsApp</Label>
+                  <Input
+                    id="whatsapp"
+                    name="whatsapp"
+                    value={clubForm.whatsapp}
+                    onChange={handleInputChange}
+                    placeholder="+52 55 1234 5678"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Email de Contacto *</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={clubForm.email}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="contacto@club.com"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="website">Sitio Web (opcional)</Label>
+                  <Input
+                    id="website"
+                    name="website"
+                    value={clubForm.website}
+                    onChange={handleInputChange}
+                    placeholder="https://www.club.com"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="useAppAsWebsite"
+                    name="useAppAsWebsite"
+                    checked={clubForm.useAppAsWebsite}
+                    onChange={handleInputChange}
+                    className="w-4 h-4"
+                  />
+                  <Label htmlFor="useAppAsWebsite" className="cursor-pointer">
+                    Usar la app como sitio web
+                  </Label>
+                </div>
+              </div>
+            </div>
+
+            {/* Detalles del Club */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                Detalles del Club
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <Label htmlFor="description">Descripción *</Label>
+                  <Textarea
+                    id="description"
+                    name="description"
+                    value={clubForm.description}
+                    onChange={handleInputChange}
+                    required
+                    rows={3}
+                    placeholder="Describe tu club, ambiente, música, etc."
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="clubType">Tipo de Club *</Label>
+                  <select
+                    id="clubType"
+                    name="clubType"
+                    value={clubForm.clubType}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 border rounded-md bg-white dark:bg-gray-800"
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="bar">Bar</option>
+                    <option value="restaurante">Restaurante</option>
+                    <option value="lounge">Lounge</option>
+                    <option value="antro">Antro</option>
+                    <option value="club_nocturno">Club Nocturno</option>
+                    <option value="pub">Pub</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="hours">Horarios de Operación *</Label>
+                  <Input
+                    id="hours"
+                    name="hours"
+                    value={clubForm.hours}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Jue-Dom 21:00 - 06:00"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="capacity">Capacidad Aproximada *</Label>
+                  <Input
+                    id="capacity"
+                    name="capacity"
+                    type="number"
+                    value={clubForm.capacity}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Documentos */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Documentos
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="documentsUrl">URL de Documentos Legales *</Label>
+                  <Input
+                    id="documentsUrl"
+                    name="documentsUrl"
+                    value={clubForm.documentsUrl}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="https://drive.google.com/..."
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Sube tus documentos a Google Drive, Dropbox o similar y pega el enlace
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="companyRFC">RFC de la Empresa (opcional)</Label>
+                  <Input
+                    id="companyRFC"
+                    name="companyRFC"
+                    value={clubForm.companyRFC}
+                    onChange={handleInputChange}
+                    placeholder="XAXX010101000"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="license">Licencia de Operación (opcional)</Label>
+                  <Input
+                    id="license"
+                    name="license"
+                    value={clubForm.license}
+                    onChange={handleInputChange}
+                    placeholder="Número de licencia"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsModalOpen(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="flex-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
+              >
+                {submitting ? (
+                  <>
+                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                    Enviando...
+                  </>
+                ) : (
+                  <>
+                    <Building className="h-4 w-4 mr-2" />
+                    Enviar Solicitud
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Modal>
       </div>
     </div>
   );

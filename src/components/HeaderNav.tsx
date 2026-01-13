@@ -22,6 +22,7 @@ import {
   MoreHorizontal,
   Scale,
   Image,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -74,10 +75,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
   // Items principales - siempre visibles
   const mainNavItems = [
-    { name: "Inicio", path: "/", icon: Heart },
+    { name: "Inicio", path: "/about", icon: Home },
     { name: "Descubrir", path: "/discover", icon: Search },
     { name: "Matches", path: "/matches", icon: Heart },
-    { name: "Chat", path: "/chat", icon: MessageSquare },
+    { name: "Chat", path: "/chat-info", icon: MessageSquare },
     { name: "Noticias", path: "/news", icon: Bell },
     { name: "Eventos", path: "/events", icon: Calendar },
     { name: "Tokens", path: "/tokens-info", icon: DollarSign },

@@ -48,8 +48,6 @@ const TOKEN_CONFIG = {
   RESET_DAY: 1,
 };
 import { useAuth } from "@/features/auth/useAuth";
-import { DecorativeHearts } from "@/components/DecorativeHearts";
-import { motion } from "framer-motion";
 import {
   BarChart,
   Bar,
@@ -66,6 +64,33 @@ import {
   Area,
 } from "recharts";
 import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
+
+// CustomLabel component para PieChart con color blanco
+const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  if (percent < 0.01) return null;
+  
+  const RADIAN = Math.PI / 180;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#ffffff"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={14}
+      fontWeight={600}
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
+import { DecorativeHearts } from "@/components/DecorativeHearts";
+import { motion } from "framer-motion";
 
 // Imágenes actualizadas
 import GraficoFluxEconomia from "@/assets/svg/grafico-flux-economia.svg";
@@ -153,6 +178,11 @@ interface TokenGlobalStats {
   globalStaking: number;
   monthlyRelease: number;
   available: number;
+  totalNFTs: number;
+  nftHolders: number;
+  gtkTotalSupply: number;
+  gtkCirculatingSupply: number;
+  gtkLocked: number;
 }
 
 export default function TokensInfo() {
@@ -185,6 +215,7 @@ export default function TokensInfo() {
           stakingMetrics: { totalStaked: 0, activeStakers: 0, avgDuration: 0 },
           transactionVolume: { cmpx: 0, gtk: 0, count: 0 },
           userMetrics: { activeUsers: 0, newUsers: 0 },
+          nftMetrics: { totalNFTs: 0, nftHolders: 0 },
         };
 
         const stats: TokenGlobalStats = {
@@ -196,6 +227,11 @@ export default function TokensInfo() {
           available:
             tokenMetrics.circulatingSupply.cmpx -
             tokenMetrics.stakingMetrics.totalStaked,
+          totalNFTs: tokenMetrics.nftMetrics.totalNFTs, // NFTs reales creados
+          nftHolders: tokenMetrics.nftMetrics.nftHolders, // Holders reales de NFTs
+          gtkTotalSupply: tokenMetrics.totalSupply.gtk, // Total supply GTK: 5,000,000
+          gtkCirculatingSupply: tokenMetrics.circulatingSupply.gtk, // GTK en circulación: 0
+          gtkLocked: tokenMetrics.totalSupply.gtk - tokenMetrics.circulatingSupply.gtk, // GTK bloqueado: 5,000,000
         };
 
         setGlobalStats(stats);
@@ -208,6 +244,11 @@ export default function TokensInfo() {
           globalStaking: 0,
           monthlyRelease: 0,
           available: 0,
+          totalNFTs: 0,
+          nftHolders: 0,
+          gtkTotalSupply: 5000000,
+          gtkCirculatingSupply: 0,
+          gtkLocked: 5000000,
         });
       } finally {
         setLoadingStats(false);
@@ -409,7 +450,7 @@ export default function TokensInfo() {
   ];
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden ${isActive ? "page-active" : ""}`}>
+    <div className={`min-h-screen relative overflow-hidden ${isActive ? "page-active" : ""}`}>
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/95 to-purple-800/95 backdrop-blur-xl border-b border-white/30 shadow-2xl">
         <div className="container mx-auto px-4 py-4">
@@ -450,15 +491,6 @@ export default function TokensInfo() {
           <div className="flex flex-col items-center justify-center mb-6">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 via-purple-500 to-blue-500 rounded-full mb-6 shadow-2xl">
               <Coins className="h-10 w-10 text-white" />
-            </div>
-
-            {/* Gráfico principal de la App */}
-            <div className="w-full max-w-lg mx-auto mb-8 opacity-90 hover:opacity-100 transition-opacity duration-500">
-              <img
-                src={GraficoTokensApp}
-                alt="Ecosistema de Tokens ComplicesConecta"
-                className="w-full h-auto drop-shadow-2xl"
-              />
             </div>
           </div>
 
@@ -539,10 +571,13 @@ export default function TokensInfo() {
                   globalStats && (
                     <div className="space-y-6">
                       {/* Tarjetas de resumen */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 p-4 rounded-lg border border-purple-400/30">
-                          <div className="text-purple-300 text-sm mb-1">
-                            En Circulación
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="text-purple-300 text-sm">
+                              En Circulación
+                            </div>
+                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.totalCirculation.toLocaleString()}
@@ -552,8 +587,11 @@ export default function TokensInfo() {
                           </div>
                         </div>
                         <div className="bg-gradient-to-r from-red-900/40 to-orange-900/40 p-4 rounded-lg border border-red-400/30">
-                          <div className="text-red-300 text-sm mb-1">
-                            Bloqueados
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="text-red-300 text-sm">
+                              Bloqueados
+                            </div>
+                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.locked.toLocaleString()}
@@ -561,8 +599,11 @@ export default function TokensInfo() {
                           <div className="text-red-200 text-xs mt-1">CMPX</div>
                         </div>
                         <div className="bg-gradient-to-r from-blue-900/40 to-cyan-900/40 p-4 rounded-lg border border-blue-400/30">
-                          <div className="text-blue-300 text-sm mb-1">
-                            Staking Global
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="text-blue-300 text-sm">
+                              Staking Global
+                            </div>
+                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.globalStaking.toLocaleString()}
@@ -570,8 +611,11 @@ export default function TokensInfo() {
                           <div className="text-blue-200 text-xs mt-1">CMPX</div>
                         </div>
                         <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/40 p-4 rounded-lg border border-green-400/30">
-                          <div className="text-green-300 text-sm mb-1">
-                            Liberación Mensual
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="text-green-300 text-sm">
+                              Liberación Mensual
+                            </div>
+                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.monthlyRelease.toLocaleString()}
@@ -580,81 +624,132 @@ export default function TokensInfo() {
                             CMPX
                           </div>
                         </div>
+                        <div className="bg-gradient-to-r from-fuchsia-900/40 to-pink-900/40 p-4 rounded-lg border border-fuchsia-400/30">
+                          <div className="text-fuchsia-300 text-sm mb-1">
+                            Total NFTs Creados
+                          </div>
+                          <div className="text-2xl font-bold text-white">
+                            {globalStats.totalNFTs.toLocaleString()}
+                          </div>
+                          <div className="text-fuchsia-200 text-xs mt-1">
+                            NFTs en Blockchain
+                          </div>
+                        </div>
+                        <div className="bg-gradient-to-r from-amber-900/40 to-yellow-900/40 p-4 rounded-lg border border-amber-400/30">
+                          <div className="text-amber-300 text-sm mb-1">
+                            Holders de NFTs
+                          </div>
+                          <div className="text-2xl font-bold text-white">
+                            {globalStats.nftHolders.toLocaleString()}
+                          </div>
+                          <div className="text-amber-200 text-xs mt-1">
+                            Usuarios con NFTs
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Gráfico de distribución de tokens */}
-                      <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                        <h4 className="text-lg font-semibold text-white mb-4">
-                          Distribución de Tokens CMPX
-                        </h4>
-                        <ResponsiveContainer width="100%" height={300}>
+                      {/* Gráfico de distribución de tokens - Glassmorphism Style */}
+                      <div className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
+                        <div className="flex items-center justify-center gap-3 mb-6">
+                          <img src="/assets/icons/gtk-token.svg" alt="GTK" className="w-10 h-10" />
+                          <h4 className="text-xl font-bold text-white font-sans tracking-tight">
+                            Distribución de Tokens GTK
+                          </h4>
+                        </div>
+                        <ResponsiveContainer width="100%" height={320}>
                           <PieChart>
                             <Pie
                               data={[
                                 {
                                   name: "En Circulación",
-                                  value: globalStats.available,
-                                  color: "#8b5cf6",
-                                },
-                                {
-                                  name: "En Staking",
-                                  value: globalStats.globalStaking,
-                                  color: "#3b82f6",
+                                  value: globalStats.gtkCirculatingSupply,
+                                  color: "#9D50BB",
                                 },
                                 {
                                   name: "Bloqueados",
-                                  value: globalStats.locked,
+                                  value: globalStats.gtkLocked,
                                   color: "#ef4444",
                                 },
                               ]}
                               cx="50%"
-                              cy="50%"
+                              cy="45%"
                               labelLine={false}
-                              label={(entry: any) =>
-                                `${entry.name}: ${((entry.percent || 0) * 100).toFixed(0)}%`
-                              }
-                              outerRadius={100}
+                              label={CustomPieLabel}
+                              outerRadius={110}
+                              innerRadius={60}
                               fill="#8884d8"
                               dataKey="value"
+                              stroke="rgba(255, 255, 255, 0.2)"
+                              strokeWidth={2}
                             >
                               {[
                                 {
                                   name: "En Circulación",
-                                  value: globalStats.available,
-                                  color: "#8b5cf6",
-                                },
-                                {
-                                  name: "En Staking",
-                                  value: globalStats.globalStaking,
-                                  color: "#3b82f6",
+                                  value: globalStats.gtkCirculatingSupply,
+                                  color: "#9D50BB",
                                 },
                                 {
                                   name: "Bloqueados",
-                                  value: globalStats.locked,
+                                  value: globalStats.gtkLocked,
                                   color: "#ef4444",
                                 },
                               ].map((entry, index) => (
                                 <Cell
                                   key={`cell-${index}`}
                                   fill={entry.color}
+                                  style={{
+                                    filter: entry.value > 0 ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))' : 'none',
+                                    transition: 'all 0.3s ease'
+                                  }}
                                 />
                               ))}
                             </Pie>
                             <Tooltip
                               contentStyle={{
-                                backgroundColor: "rgba(30, 30, 60, 0.95)",
-                                border: "1px solid rgba(255, 255, 255, 0.2)",
-                                borderRadius: "8px",
-                                color: "#fff",
+                                backgroundColor: "rgba(15, 15, 35, 0.98)",
+                                border: "1px solid rgba(157, 80, 187, 0.6)",
+                                borderRadius: "12px",
+                                color: "#ffffff",
+                                fontSize: "14px",
+                                fontWeight: 600,
+                                fontFamily: 'Inter, sans-serif',
+                                backdropFilter: "blur(10px)",
+                                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
+                                padding: "12px 16px"
+                              }}
+                              itemStyle={{
+                                color: "#ffffff",
+                                fontSize: "14px",
                               }}
                             />
                             <Legend
-                              wrapperStyle={{ color: "#fff" }}
-                              formatter={(value) => (
-                                <span className="legend-text-white">
-                                  {value}
-                                </span>
-                              )}
+                              verticalAlign="bottom"
+                              height={80}
+                              iconType="circle"
+                              wrapperStyle={{
+                                paddingTop: "20px",
+                                fontSize: "13px",
+                                fontFamily: 'Inter, sans-serif'
+                              }}
+                              formatter={(value: string, _entry: any) => {
+                                const item = [
+                                  {
+                                    name: "En Circulación",
+                                    value: globalStats.gtkCirculatingSupply
+                                  },
+                                  {
+                                    name: "Bloqueados",
+                                    value: globalStats.gtkLocked
+                                  }
+                                ].find(i => i.name === value);
+                                const totalSupply = globalStats.gtkTotalSupply || 5000000; // Total supply fijo de GTK
+                                const percent = item ? ((item.value / totalSupply) * 100).toFixed(1) : '0.0';
+                                return (
+                                  <span className="text-white font-medium">
+                                    {value}: <span className="text-purple-300">{percent}%</span>
+                                  </span>
+                                );
+                              }}
                             />
                           </PieChart>
                         </ResponsiveContainer>
@@ -864,6 +959,24 @@ export default function TokensInfo() {
                           </AreaChart>
                         </ResponsiveContainer>
                       </div>
+
+                      {/* Gráfico del Ecosistema de Tokens */}
+                      <div className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
+                        <div className="flex items-center justify-center gap-3 mb-6">
+                          <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-10 h-10" />
+                          <h4 className="text-xl font-bold text-white font-sans tracking-tight">
+                            Ecosistema de Tokens ComplicesConecta
+                          </h4>
+                          <img src="/assets/icons/gtk-token.svg" alt="GTK" className="w-10 h-10" />
+                        </div>
+                        <div className="w-full max-w-lg mx-auto mb-8 opacity-90 hover:opacity-100 transition-opacity duration-500">
+                          <img
+                            src={GraficoTokensApp}
+                            alt="Ecosistema de Tokens ComplicesConecta"
+                            className="w-full h-auto drop-shadow-2xl"
+                          />
+                        </div>
+                      </div>
                     </div>
                   )
                 )}
@@ -933,7 +1046,7 @@ export default function TokensInfo() {
                       <li className="flex items-start gap-2">
                         <Shield className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
                         <span>
-                          <strong>World ID:</strong> 100 CMPX por verificación
+                          <strong>World ID:</strong> Próximamente
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
@@ -1722,6 +1835,99 @@ export default function TokensInfo() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Sección para Creadores de Contenido */}
+        <Card className="bg-gradient-to-br from-fuchsia-900/40 to-pink-900/40 backdrop-blur-xl border border-fuchsia-400/30 shadow-2xl">
+          <CardHeader>
+            <CardTitle className="text-2xl text-white flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-r from-fuchsia-500 to-pink-600 rounded-lg">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              Para Creadores de Contenido
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-white">
+                  💰 Monetización
+                </h3>
+                <ul className="space-y-2 text-white/80">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Comisiones:</strong> 90% para el creador, 5% fee de la app, 5% treasury
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Retiros:</strong> Semanales (KYC requerido para montos mayores a $1,000 USD)
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Método de pago:</strong> Stripe (fiat) → conversión automática a CMPX
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-white">
+                  🎨 NFTs y Staking
+                </h3>
+                <ul className="space-y-2 text-white/80">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Mint de NFTs:</strong> Gratis o 100 CMPX
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Venta de NFTs:</strong> 5% fee de la app
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Staking de NFTs:</strong> 10% APY en CMPX, vesting de 30 días
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-3">
+                📋 Condiciones Importantes
+              </h3>
+              <ul className="space-y-2 text-white/80 text-sm">
+                <li className="flex items-start gap-2">
+                  <Shield className="h-4 w-4 text-fuchsia-400 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Gas:</strong> Cubierto por la app en testnet, pagado con CMPX en mainnet
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Shield className="h-4 w-4 text-fuchsia-400 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <strong>NFTs internos:</strong> No transferibles fuera de la app, solo uso interno
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Shield className="h-4 w-4 text-fuchsia-400 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Cumplimiento:</strong> Aceptación de términos y condiciones al usar el servicio
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* FAQ Section */}
         <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">

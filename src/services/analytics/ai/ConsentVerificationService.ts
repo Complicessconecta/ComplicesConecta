@@ -192,7 +192,7 @@ export class ConsentVerificationService {
         },
         messageCount: data.message_count || 0,
         isPaused: data.is_paused || false,
-        pauseReason: data.pause_reason || undefined,
+        pauseReason: data.pause_reason || "",
         createdAt: new Date(data.created_at || new Date().toISOString()),
         updatedAt: new Date(data.updated_at || new Date().toISOString()),
       };
@@ -211,7 +211,7 @@ export class ConsentVerificationService {
    * Analiza mensaje nuevo y actualiza score de consentimiento
    */
   private async analyzeMessage(
-    message: string,
+    _message: string,
     senderId: string,
     chatId: string,
     userId1: string,
@@ -304,7 +304,12 @@ Responde SOLO con un JSON válido en este formato exacto:
         max_tokens: 200,
       });
 
-      const response = completion.choices[0].message.content;
+      const choice = completion.choices[0];
+      if (!choice) {
+        throw new Error("No se encontró respuesta de OpenAI");
+      }
+
+      const response = choice.message.content;
       if (!response) {
         throw new Error("Respuesta vacía de OpenAI");
       }
@@ -519,7 +524,7 @@ Responde SOLO con un JSON válido en este formato exacto:
       });
     } else if (newScore.score >= CONSENT_THRESHOLD) {
       verification.isPaused = false;
-      verification.pauseReason = undefined;
+      verification.pauseReason = "";
     }
 
     // Guardar en BD
@@ -542,6 +547,7 @@ Responde SOLO con un JSON válido en este formato exacto:
           chat_id: verification.chatId,
           user_id: verification.userId1,
           recipient_id: verification.userId2,
+          consent_type: "chat_consent",
           consent_level: verification.currentScore.status,
           consent_score: verification.currentScore.score,
           confidence: verification.currentScore.confidence,
@@ -590,7 +596,7 @@ Responde SOLO con un JSON válido en este formato exacto:
     // Reanudar solo si el score actual es >= threshold
     if (verification.currentScore.score >= CONSENT_THRESHOLD) {
       verification.isPaused = false;
-      verification.pauseReason = undefined;
+      verification.pauseReason = "";
       await this.saveVerification(verification);
       return true;
     }

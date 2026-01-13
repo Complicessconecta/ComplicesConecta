@@ -298,6 +298,8 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
           file_type: file.type.includes("image") ? "image" : "other",
           mime_type: file.type,
           is_public: true,
+          type: file.type.includes("image") ? "image" : "other",
+          url: uploadData.path,
         })
         .select()
         .single();

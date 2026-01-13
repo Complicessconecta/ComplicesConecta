@@ -295,20 +295,20 @@ class PredictiveMatchingService {
       }
 
       // Obtener actividad reciente de ambos usuarios
-      const [userActivity, candidateActivity] = await Promise.all([
-        supabase
-          .from("matches")
-          .select("*")
-          .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
-          .order("created_at", { ascending: false })
-          .limit(10),
-        supabase
-          .from("matches")
-          .select("*")
-          .or(`user1_id.eq.${candidateId},user2_id.eq.${candidateId}`)
-          .order("created_at", { ascending: false })
-          .limit(10),
-      ]);
+      // const [userActivity, candidateActivity] = await Promise.all([
+      //   supabase
+      //     .from("matches")
+      //     .select("*")
+      //     .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
+      //     .order("created_at", { ascending: false })
+      //     .limit(10),
+      //   supabase
+      //     .from("matches")
+      //     .select("*")
+      //     .or(`user1_id.eq.${candidateId},user2_id.eq.${candidateId}`)
+      //     .order("created_at", { ascending: false })
+      //     .limit(10),
+      // ]);
 
       // if (userActivity.error || candidateActivity.error) {
       //   return 50; // Fallback

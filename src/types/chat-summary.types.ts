@@ -3,14 +3,12 @@
  * Tipos específicos para tablas de Supabase relacionadas con resúmenes de chat
  */
 
-// NOTA: Las tablas chat_summaries, summary_requests, messages no existen aún
-// TODO: Descomentar cuando se creen las tablas
-// import type { Database } from "@/types/supabase-generated";
-// export type ChatSummaryRow =
-//   Database["public"]["Tables"]["chat_summaries"]["Row"];
-// export type SummaryRequestRow =
-//   Database["public"]["Tables"]["summary_requests"]["Row"];
-// export type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
+import type { Database } from "@/types/supabase-generated";
+
+export type ChatSummaryRow =
+  Database["public"]["Tables"]["chat_summaries"]["Row"];
+export type SummaryRequestRow =
+  Database["public"]["Tables"]["summary_requests"]["Row"];
 
 /**
  * Interfaz para resumen de chat con tipos seguros

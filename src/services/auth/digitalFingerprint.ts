@@ -178,22 +178,26 @@ export const checkFingerprintBanned = async (
       return false;
     }
 
-    const { data, error } = await supabase.rpc("check_fingerprint_banned", {
-      p_canvas_hash: fingerprint.canvasHash,
-      ...(worldIdNullifierHash !== undefined
-        ? { p_worldid_nullifier_hash: worldIdNullifierHash }
-        : {}),
-      p_combined_hash: fingerprint.combinedHash,
-    });
+    // TODO: Crear función RPC check_fingerprint_ban en Supabase
+    // const { data, error } = await supabase.rpc("check_fingerprint_banned", {
+    //   p_canvas_hash: fingerprint.canvasHash,
+    //   ...(worldIdNullifierHash !== undefined
+    //     ? { p_worldid_nullifier_hash: worldIdNullifierHash }
+    //     : {}),
+    //   p_combined_hash: fingerprint.combinedHash,
+    // });
 
-    if (error) {
-      logger.error("Error verificando fingerprint baneado:", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      return false;
-    }
+    // if (error) {
+    //   logger.error("Error verificando fingerprint baneado:", {
+    //     error: error instanceof Error ? error.message : String(error),
+    //   });
+    //   return false;
+    // }
 
-    return data === true;
+    // return data === true;
+
+    // Por ahora, retornar false
+    return false;
   } catch (error) {
     logger.error("Error verificando fingerprint:", {
       error: error instanceof Error ? error.message : String(error),
@@ -218,6 +222,7 @@ export const saveDigitalFingerprint = async (
 
     const { error } = await supabase.from("digital_fingerprints").upsert(
       {
+        fingerprint_hash: fingerprint.combinedHash,
         user_id: userId,
         canvas_hash: fingerprint.canvasHash,
         canvas_data: fingerprint.canvasData,

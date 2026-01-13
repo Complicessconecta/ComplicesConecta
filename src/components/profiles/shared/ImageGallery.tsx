@@ -68,7 +68,7 @@ export function ImageGallery({
       if (error) throw error;
 
       if (data) {
-        setUnlockedProfiles(data.map((item) => item.profile_id));
+        setUnlockedProfiles(data.map((item) => item.profile_id).filter((id): id is string => id !== null));
       }
     } catch (error) {
       logger.error("Error loading unlocked galleries:", { error });
@@ -158,7 +158,11 @@ export function ImageGallery({
         if (supabase) {
           const { error } = await supabase
             .from("gallery_unlocks")
-            .insert({ user_id: user.id, profile_id: profileId });
+            .insert({ 
+              user_id: user.id, 
+              profile_id: profileId,
+              gallery_item_id: profileId 
+            });
           if (error) throw new Error("No se pudo registrar el desbloqueo.");
         }
 

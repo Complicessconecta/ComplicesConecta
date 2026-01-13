@@ -611,7 +611,7 @@ const AdminPartners = () => {
                         onClick={async () => {
                           try {
                             await processClubFlyerImageServer(
-                              flyer.image_url,
+                              flyer.image_url || "",
                               flyer.id,
                             );
                             toast({
@@ -780,7 +780,7 @@ const AdminPartners = () => {
             <div>
               <label className="text-sm font-medium">URL de imagen *</label>
               <Input
-                value={flyerForm.image_url}
+                value={flyerForm.image_url || ""}
                 onChange={(e) =>
                   setFlyerForm({ ...flyerForm, image_url: e.target.value })
                 }

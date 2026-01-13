@@ -197,7 +197,8 @@ export class ChatSummaryService {
         summary_id: summaryId,
         user_id: userId,
         is_helpful: isHelpful,
-        feedback_text:
+        rating: isHelpful ? 5 : 1,
+        feedback:
           feedbackText || (isHelpful ? "Resumen útil" : "Resumen no útil"),
       });
 
@@ -242,7 +243,7 @@ ${messagesText}`;
     });
 
     return (
-      completion.choices[0].message.content || "No se pudo generar resumen"
+      completion.choices[0]?.message?.content || "No se pudo generar resumen"
     );
   }
 
@@ -519,7 +520,7 @@ ${messagesText}`;
     return {
       id: summaryRow.id,
       chatId: summaryRow.chat_id,
-      summary: summaryRow.summary,
+      summary: summaryRow.summary || summaryRow.content || "",
       sentiment: (summaryRow.sentiment || "neutral") as
         | "positive"
         | "neutral"
@@ -576,7 +577,7 @@ ${messagesText}`;
     const { error } = await supabase.from("chat_summaries").insert({
       id: summary.id,
       chat_id: summary.chatId,
-      summary: summary.summary,
+      content: summary.summary,
       sentiment: summary.sentiment,
       topics: summary.topics,
       message_count: summary.messageCount,

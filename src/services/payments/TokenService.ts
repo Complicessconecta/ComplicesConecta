@@ -23,7 +23,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
-import { referralTokensService } from "@/services/payments/ReferralTokensService";
 
 export interface TokenBalance {
   cmpx: number;
@@ -78,11 +77,9 @@ export interface Reward {
 export class TokenService {
   private static instance: TokenService;
   private analyticsService: TokenAnalyticsService;
-  private referralService: typeof referralTokensService;
 
   private constructor() {
     this.analyticsService = TokenAnalyticsService.getInstance();
-    this.referralService = referralTokensService;
   }
 
   /**

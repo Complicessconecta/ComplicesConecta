@@ -457,10 +457,10 @@ export class NotificationService {
       const { error } = await supabase
         .from("notifications")
         .update({
-          is_read: true,
+          read: true,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", parseInt(notificationId))
+        .eq("id", notificationId)
         .eq("user_id", userId);
 
       if (error) {
@@ -492,7 +492,7 @@ export class NotificationService {
       const { error } = await supabase
         .from("notifications")
         .update({
-          is_read: true,
+          read: true,
           updated_at: new Date().toISOString(),
         })
         .eq("user_id", userId)
@@ -527,7 +527,7 @@ export class NotificationService {
       const { error } = await supabase
         .from("notifications")
         .delete()
-        .eq("id", parseInt(notificationId));
+        .eq("id", notificationId);
 
       if (error) {
         logger.error("Error deleting notification:", { error: error.message });
@@ -954,7 +954,7 @@ export class NotificationService {
           await supabase
             .from("notifications")
             .update({
-              is_read: true,
+              read: true,
             })
             .eq("id", notification.id);
         }
@@ -1012,7 +1012,7 @@ export class NotificationService {
 
       const notifications = data || [];
       const totalSent = notifications.length;
-      const totalRead = notifications.filter((n) => n.is_read).length;
+      const totalRead = notifications.filter((n) => n.read).length;
       const totalClicked = notifications.filter((n) => {
         try {
           const notifData = n.data as any;

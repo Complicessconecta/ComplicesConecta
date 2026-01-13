@@ -145,9 +145,9 @@ export const getActiveSession = async (
  * Actualizar minutos trabajados en tiempo real
  */
 export const updateSessionMinutes = async (
-  sessionId: string,
-  reportsReviewed: number,
-  actionsTaken: number,
+  _sessionId: string,
+  _reportsReviewed: number,
+  _actionsTaken: number,
 ): Promise<void> => {
   try {
     if (!supabase) {

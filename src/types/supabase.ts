@@ -101,6 +101,44 @@ export type Database = {
           },
         ]
       }
+      app_logs: {
+        Row: {
+          context: Json | null
+          created_at: string
+          id: string
+          level: string
+          message: string
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: string
+          message: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: string
+          message?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_config: {
         Row: {
           created_at: string
@@ -1656,31 +1694,85 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age: number | null
+          avatar_url: string | null
+          bio: string | null
           created_at: string | null
           display_name: string | null
+          gender: string | null
           id: string
+          interests: string[] | null
+          is_active: boolean
+          is_blocked: boolean
           is_demo: boolean
           is_premium: boolean | null
+          is_verified: boolean
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          minted_with_gtk: number
+          name: string | null
+          network: string | null
+          nft_contract_address: string | null
+          nft_token_id: string | null
+          staking_record_id: string | null
           updated_at: string | null
           user_id: string
+          verified_at: string | null
         }
         Insert: {
+          age?: number | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
           display_name?: string | null
+          gender?: string | null
           id?: string
+          interests?: string[] | null
+          is_active?: boolean
+          is_blocked?: boolean
           is_demo?: boolean
           is_premium?: boolean | null
+          is_verified?: boolean
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          minted_with_gtk?: number
+          name?: string | null
+          network?: string | null
+          nft_contract_address?: string | null
+          nft_token_id?: string | null
+          staking_record_id?: string | null
           updated_at?: string | null
           user_id: string
+          verified_at?: string | null
         }
         Update: {
+          age?: number | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
           display_name?: string | null
+          gender?: string | null
           id?: string
+          interests?: string[] | null
+          is_active?: boolean
+          is_blocked?: boolean
           is_demo?: boolean
           is_premium?: boolean | null
+          is_verified?: boolean
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          minted_with_gtk?: number
+          name?: string | null
+          network?: string | null
+          nft_contract_address?: string | null
+          nft_token_id?: string | null
+          staking_record_id?: string | null
           updated_at?: string | null
-          user_id?: string
+          user_id: string
+          verified_at?: string | null
         }
         Relationships: [
           {
@@ -1801,6 +1893,92 @@ export type Database = {
           {
             foreignKeyName: "reports_resolved_by_fkey"
             columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_suspensions: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          reason: string
+          suspended_at: string | null
+          suspended_by: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          reason: string
+          suspended_at?: string | null
+          suspended_by?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          reason?: string
+          suspended_at?: string | null
+          suspended_by?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_suspensions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_suspensions_suspended_by_fkey"
+            columns: ["suspended_by"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      moderation_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          moderator_id: string | null
+          reason: string | null
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          moderator_id?: string | null
+          reason?: string | null
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          moderator_id?: string | null
+          reason?: string | null
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_logs_moderator_id_fkey"
+            columns: ["moderator_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
             referencedColumns: ["id"]

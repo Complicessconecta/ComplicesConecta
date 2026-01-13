@@ -45,9 +45,9 @@ export interface Post {
   profile_id: string;
   content: string;
   post_type: "text" | "photo" | "video";
-  image_url: string | null;
-  video_url: string | null;
-  location: string | null;
+  image_url?: string;
+  video_url?: string;
+  location?: string;
   likes_count: number;
   comments_count: number;
   shares_count: number;
@@ -204,10 +204,6 @@ export class PostsService {
         ),
         content: content ?? "",
         post_type: postType,
-        image_url: postType === "photo" ? (realImageUrls[i % realImageUrls.length] ?? null) : null,
-        video_url: postType === "video" ? `/mock-videos/post-${i + 1}.mp4` : null,
-        location:
-          locations[Math.floor(Math.random() * locations.length)] ?? "Unknown",
         likes_count: Math.floor(Math.random() * 50) + 1,
         comments_count: Math.floor(Math.random() * 20) + 1,
         shares_count: Math.floor(Math.random() * 10) + 1,
@@ -452,9 +448,6 @@ export class PostsService {
         profile_id: getString(row["user_id"]) || "",
         content: getString(row["content"]) ?? "",
         post_type: getString(row["post_type"]) as "text" | "photo" | "video",
-        image_url: contentUrl || null,
-        video_url: null,
-        location: location || null,
         likes_count: 0,
         comments_count: 0,
         shares_count: 0,
@@ -466,6 +459,14 @@ export class PostsService {
           is_verified: false,
         },
       };
+
+      // Solo agregar propiedades opcionales si existen
+      if (contentUrl) {
+        post.image_url = contentUrl;
+      }
+      if (location) {
+        post.location = location;
+      }
 
       logger.info("✅ Post created successfully", { postId: post.id });
       return post;

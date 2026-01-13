@@ -86,7 +86,6 @@ const getJoinedName = (value: unknown): string | undefined => {
 interface Report extends ReportRow {
   reporter_email: string | undefined;
   reported_user_email: string | undefined;
-  report_type?: ReportType;
 }
 
 interface ModerationLog extends Omit<ModerationLogRow, "action_type"> {
@@ -235,9 +234,9 @@ const ModeratorDashboard = () => {
 
       return {
         ...logRow,
-        action: (logRow.action_type || "unknown") as ModerationAction,
+        action: (logRow.action || "unknown") as ModerationAction,
         moderator_email: moderatorName || logRow.moderator_id || "Moderador",
-        target_user_email: targetUserName || logRow.target_user_id || "Usuario",
+        target_user_email: targetUserName || logRow.target_id || "Usuario",
         ...(moderatorName ? { moderator: { name: moderatorName } } : {}),
         ...(targetUserName ? { target_user: { name: targetUserName } } : {}),
       };
@@ -278,15 +277,15 @@ const ModeratorDashboard = () => {
 
         return {
           ...suspensionRow,
-          suspended_by: suspensionRow.moderator_id,
-          ...(suspensionRow.ends_at
-            ? { suspended_until: suspensionRow.ends_at }
+          suspended_by: suspensionRow.suspended_by || "",
+          ...(suspensionRow.expires_at
+            ? { suspended_until: suspensionRow.expires_at }
             : {}),
-          is_permanent: suspensionRow.suspension_type === "permanent",
+          is_permanent: !suspensionRow.expires_at,
           status: suspensionRow.is_active ? "active" : "lifted",
           user_email: userName || suspensionRow.user_id || "Usuario",
           suspended_by_email:
-            suspendedByName || suspensionRow.moderator_id || "Sistema",
+            suspendedByName || suspensionRow.suspended_by || "Sistema",
           ...(userName ? { user: { name: userName } } : {}),
           ...(suspendedByName
             ? { suspended_by_user: { name: suspendedByName } }
@@ -345,7 +344,7 @@ const ModeratorDashboard = () => {
         .insert([
           {
             moderator_id: session.user.id,
-            action_type: moderationAction,
+            action: moderationAction,
             target_type: "report",
             target_id: reportId,
             target_user_id: report.reported_user_id,
@@ -489,12 +488,10 @@ const ModeratorDashboard = () => {
         await supabase.from("moderation_logs").insert([
           {
             moderator_id: session.user.id,
-            action_type: "suspension_lifted",
+            action: "suspension_lifted",
             target_type: "user",
-            target_id: suspension.user_id,
-            target_user_id: suspension.user_id,
-            description: "Suspensin levantada por moderador",
-            reason: "Suspensin levantada por moderador",
+            target_id: suspension.user_id || "",
+            reason: "Suspensión levantada por moderador",
             created_at: new Date().toISOString(),
           },
         ]);
@@ -699,7 +696,7 @@ const ModeratorDashboard = () => {
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-white flex items-center gap-2">
                         <AlertTriangle className="h-5 w-5 text-yellow-400" />
-                        {getReportTypeLabel(report.report_type || "spam")}
+                        {getReportTypeLabel(report.report_type as ReportType)}
                       </CardTitle>
                       {getStatusBadge(
                         (report.status || "pending") as ReportStatus,
@@ -878,8 +875,8 @@ const ModeratorDashboard = () => {
                     </CardTitle>
                     <CardDescription className="text-white/70">
                       Suspendido el{" "}
-                      {suspension.created_at
-                        ? new Date(suspension.created_at).toLocaleDateString(
+                      {suspension.suspended_at
+                        ? new Date(suspension.suspended_at).toLocaleDateString(
                             "es-ES",
                           )
                         : "Fecha no disponible"}
@@ -1110,7 +1107,7 @@ const ModeratorDashboard = () => {
                             {log.target_user_email || "Email no disponible"}
                           </p>
                           <p className="text-white/60 text-sm">
-                            Razn: {log.description || "Sin razn especificada"}
+                            Razón: {log.reason || "Sin razón especificada"}
                           </p>
                         </div>
                       </div>

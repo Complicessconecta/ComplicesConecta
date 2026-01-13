@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/hooks/useToast";
-import type { Profile, Match } from "@/types/supabase";
+import type { Database } from "@/types/supabase";
+
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 // Interfaces para los datos del dashboard
 export interface DashboardStats {
@@ -92,7 +94,7 @@ export const useAdminDashboard = (dateRange: string) => {
         .select("id, created_at");
       if (matchesError) throw matchesError;
 
-      const matches = (matchesData || []) as Match[];
+      const matches = (matchesData || []) as any[];
       const totalMatches = matches.length;
       const matchesToday = matches.filter(
         (m) => m.created_at && new Date(m.created_at) >= today,
@@ -133,7 +135,7 @@ export const useAdminDashboard = (dateRange: string) => {
 
       const { data: recentUsers, error: recentUsersError } = await supabase
         .from("profiles")
-        .select("id, full_name, created_at, updated_at")
+        .select("id, display_name, created_at, updated_at")
         .order("updated_at", { ascending: false })
         .limit(10);
 
@@ -142,7 +144,7 @@ export const useAdminDashboard = (dateRange: string) => {
         setUserActivity(
           recentProfiles.map((u) => ({
             ...u,
-            full_name: u.full_name || "Usuario",
+            full_name: u.display_name || "Usuario",
             email: "", // Email is not available on the profiles table
             is_active: u.updated_at ? new Date(u.updated_at) >= weekAgo : false,
           })),

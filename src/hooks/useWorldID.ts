@@ -46,9 +46,6 @@ export const useWorldID = () => {
         setStatus({
           isVerified: false,
           isLoading: false,
-          nullifierHash: undefined,
-          verifiedAt: undefined,
-          verificationLevel: undefined,
         });
         return;
       }
@@ -71,9 +68,6 @@ export const useWorldID = () => {
           setStatus({
             isVerified: false,
             isLoading: false,
-            nullifierHash: undefined,
-            verifiedAt: undefined,
-            verificationLevel: undefined,
           });
           return;
         }
@@ -89,9 +83,6 @@ export const useWorldID = () => {
         setStatus({
           isVerified: false,
           isLoading: false,
-          nullifierHash: undefined,
-          verifiedAt: undefined,
-          verificationLevel: undefined,
         });
         return;
       }
@@ -106,8 +97,8 @@ export const useWorldID = () => {
         isVerified: true,
         isLoading: false,
         nullifierHash: data.nullifier_hash,
-        verifiedAt: data.verified_at || undefined,
-        verificationLevel: data.verification_level || undefined,
+        ...(data.verified_at && { verifiedAt: data.verified_at }),
+        ...(data.verification_level && { verificationLevel: data.verification_level }),
       });
     } catch (err) {
       logger.error("Error checking verification status:", {
@@ -149,8 +140,7 @@ export const useWorldID = () => {
       // Obtener recompensas de worldid_rewards
       const { data: rewardsData, error: rewardsError } = await supabase
         .from("worldid_rewards")
-        .select("reward_amount")
-        .eq("claimed", false);
+        .select("amount");
 
       if (rewardsError) {
         logger.warn("Error fetching WorldID rewards:", {
@@ -159,12 +149,12 @@ export const useWorldID = () => {
       }
 
       interface WorldIDReward {
-        reward_amount: number;
+        amount: number;
       }
 
       const totalRewards =
         (rewardsData as WorldIDReward[] | null)?.reduce(
-          (sum, r) => sum + (Number(r.reward_amount) || 0),
+          (sum, r) => sum + (Number(r.amount) || 0),
           0,
         ) || 0;
       const currentMonth = new Date().toISOString().slice(0, 7);
@@ -221,18 +211,15 @@ export const useWorldID = () => {
       }
 
       const { data, error } = await supabase
-        .from("referral_rewards")
+        .from("referral_transactions")
         .select(
           `
           amount,
-          reward_type,
-          verification_method,
-          worldid_proof,
+          transaction_type,
           created_at
         `,
         )
         .eq("user_id", user.id)
-        .eq("verification_method", "worldid")
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -261,7 +248,7 @@ export const useWorldID = () => {
       const currentMonth = new Date().toISOString().slice(0, 7) + "-01";
 
       const { data, error } = await supabase
-        .from("referral_rewards")
+        .from("referral_transactions")
         .select("amount")
         .eq("user_id", user.id)
         .gte("created_at", currentMonth);

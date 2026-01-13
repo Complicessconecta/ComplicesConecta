@@ -195,8 +195,8 @@ export class HistoricalMetricsService {
       const { data, error } = await supabase
         .from("web_vitals_history")
         .select("*")
-        .gte("timestamp", startTime.toISOString())
-        .order("timestamp", { ascending: true });
+        .gte("created_at", startTime.toISOString())
+        .order("created_at", { ascending: true });
 
       if (error) {
         logger.error("Error fetching web vitals trends:", {
@@ -213,11 +213,11 @@ export class HistoricalMetricsService {
       const grouped = this.groupByInterval(data, interval);
 
       return {
-        lcp: this.extractMetric(grouped, "lcp"),
-        fid: this.extractMetric(grouped, "fid"),
-        cls: this.extractMetric(grouped, "cls"),
-        fcp: this.extractMetric(grouped, "fcp"),
-        ttfb: this.extractMetric(grouped, "ttfb"),
+        lcp: this.extractMetricFromLongTable(grouped, "lcp"),
+        fid: this.extractMetricFromLongTable(grouped, "fid"),
+        cls: this.extractMetricFromLongTable(grouped, "cls"),
+        fcp: this.extractMetricFromLongTable(grouped, "fcp"),
+        ttfb: this.extractMetricFromLongTable(grouped, "ttfb"),
       };
     } catch (error) {
       logger.error("Error processing web vitals trends:", {

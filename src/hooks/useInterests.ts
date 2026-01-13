@@ -7,9 +7,9 @@ import { logger } from "@/lib/logger";
 // Interfaces actualizadas para coincidir con el schema de Supabase
 
 export interface Interest {
-  id: number; // SERIAL en la BD
+  id: string; // UUID en la BD
   name: string;
-  category: string;
+  category: string | null;
   description?: string | null;
   is_explicit?: boolean | null;
   is_active?: boolean | null;
@@ -18,7 +18,7 @@ export interface Interest {
 }
 
 export interface UserInterest {
-  interest_id: number; // INTEGER en la BD
+  interest_id: string; // TEXT en la BD
   interest: Interest;
   created_at: string | null;
 }
@@ -112,14 +112,9 @@ export const useInterests = () => {
           return;
         }
 
-        const numericId =
-          typeof interestId === "string"
-            ? parseInt(interestId, 10)
-            : interestId;
-
         const { error } = await supabase.from("user_interests").insert({
           user_id: user.id,
-          interest_id: numericId,
+          interest_id: String(interestId),
         });
 
         if (error) throw error;
@@ -161,16 +156,11 @@ export const useInterests = () => {
           return;
         }
 
-        const numericId =
-          typeof interestId === "string"
-            ? parseInt(interestId, 10)
-            : interestId;
-
         const { error } = await supabase
           .from("user_interests")
           .delete()
           .eq("user_id", user.id)
-          .eq("interest_id", numericId);
+          .eq("interest_id", String(interestId));
 
         if (error) throw error;
 
@@ -198,9 +188,8 @@ export const useInterests = () => {
   // Verificar si el usuario tiene un interés específico
   const hasInterest = useCallback(
     (interestId: string | number) => {
-      const numericId =
-        typeof interestId === "string" ? parseInt(interestId, 10) : interestId;
-      return userInterests.some((ui) => ui.interest_id === numericId);
+      const stringId = String(interestId);
+      return userInterests.some((ui) => ui.interest_id === stringId);
     },
     [userInterests],
   );
@@ -231,7 +220,7 @@ export const useInterests = () => {
         (interest) =>
           interest.name.toLowerCase().includes(lowercaseQuery) ||
           interest.description?.toLowerCase().includes(lowercaseQuery) ||
-          interest.category.toLowerCase().includes(lowercaseQuery),
+          (interest.category && interest.category.toLowerCase().includes(lowercaseQuery)),
       );
     },
     [interests],
@@ -268,12 +257,12 @@ export const useInterests = () => {
               return interest
                 ? {
                     user_id: user.id,
-                    interest_id: interest.id, // Ya es número
+                    interest_id: String(interest.id),
                   }
                 : null;
             })
             .filter(
-              (item): item is { user_id: string; interest_id: number } =>
+              (item): item is { user_id: string; interest_id: string } =>
                 item !== null,
             ); // Type guard
 

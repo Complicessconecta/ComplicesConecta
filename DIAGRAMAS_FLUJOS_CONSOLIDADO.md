@@ -1,6 +1,15 @@
 --- BEGIN FILE: DIAGRAMAS_FLUJOS_v3.0.md ---
 
-# 📊 DIAGRAMAS DE FLUJOS v3.8.0 - COMPLICESCONECTA v3.8.0
+# 📊 DIAGRAMAS DE FLUJOS v3.8.3 - COMPLICESCONECTA v3.8.3
+
+#> Actualización 16 Ene 2026 05:35
+#> - Corrección completa de errores de TypeScript y warnings en 27 archivos
+#> - Creación de tablas faltantes: media, gallery_unlocks, summary_feedback
+#> - Regeneración de tipos de Supabase con nuevas columnas
+#> - Corrección de tipo JSONB en couple_images (useCouplePhotos.ts)
+#> - Corrección de exactOptionalPropertyTypes en interfaces Post y SummaryFeedback
+#> - Instalación de @types/uuid para resolver errores en node_modules
+#> - Build exitoso: npm run build:check pasa sin errores (25.28s)
 
 #> Actualización 12 Ene 2026 23:17
 #> - Flujo de Seguridad agregado desde v3.5.0
@@ -10,9 +19,9 @@
 
 #> Este documento es la fuente única de verdad para todos los flujos del proyecto
 
-**Fecha:** 12 Enero 2026
-**Versión:** 3.8.0 (Consolidado)
-**Estado:** ✅ FLUJOS COMPLETOS - Seguridad + Club Profiles + Usuario + Tokens + NFTs
+**Fecha:** 16 Enero 2026
+**Versión:** 3.8.3 (Consolidado)
+**Estado:** ✅ FLUJOS COMPLETOS - TypeScript Clean - Seguridad + Club Profiles + Usuario + Tokens + NFTs
 
 ---
 

@@ -74,6 +74,14 @@ Plataforma social AI-Native diseñada para comunidades privadas, integrando veri
 - [Auditoría de Seguridad](AUDITORIA_SRC_COMPLETA.md) - Auditoría exhaustiva de código y base de datos
 - [Política de Proveedores](docs/legal/SUPPLIER_SECURITY_POLICY.md) - Política de seguridad para proveedores
 
+## Actualización 16 Ene 2026 05:35
+
+- Corrección completa de errores de TypeScript y warnings en 27 archivos
+- Creación de tablas faltantes: `media`, `gallery_unlocks`, `summary_feedback`
+- Regeneración de tipos de Supabase con nuevas columnas
+- Corrección de tipo JSONB en `couple_images` (useCouplePhotos.ts)
+- Corrección de exactOptionalPropertyTypes en interfaces Post y SummaryFeedback
+
 ## Actualización 02 Ene 2026 21:47
 
 - Gating de Chat por Match implementado en Discover.

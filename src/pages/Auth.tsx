@@ -353,7 +353,7 @@ const Auth = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {
+                onClick={async () => {
                   // Toggle entre modo normal y admin
                   const isAdminMode = formData.email.includes(
                     "complicesconectasw@outlook.es",
@@ -361,9 +361,42 @@ const Auth = () => {
                   if (!isAdminMode) {
                     setFormData((prev) => ({
                       ...prev,
-                      email: "complicesconectasw@outlook.es",
-                      password: "admin123",
+                      email: import.meta.env.VITE_ADMIN_EMAIL || "",
+                      password: import.meta.env.VITE_ADMIN_PASSWORD || "",
                     }));
+                    
+                    // Iniciar sesión automáticamente como admin
+                    setIsLoading(true);
+                    setShowLoginLoading(true);
+                    
+                    try {
+                      const result = await signIn(
+                        import.meta.env.VITE_ADMIN_EMAIL || "",
+                        import.meta.env.VITE_ADMIN_PASSWORD || "",
+                        "single",
+                      );
+
+                      if (result && result.user) {
+                        toast({
+                          title: "Inicio de sesión exitoso",
+                          description: "Bienvenido al panel de administración",
+                        });
+                        
+                        // Redirigir a selección de dashboard
+                        setTimeout(() => {
+                          navigate("/admin");
+                        }, 1000);
+                      }
+                    } catch (error) {
+                      toast({
+                        title: "Error",
+                        description: "No se pudo iniciar sesión como admin",
+                        variant: "destructive",
+                      });
+                    } finally {
+                      setIsLoading(false);
+                      setShowLoginLoading(false);
+                    }
                   } else {
                     setFormData((prev) => ({
                       ...prev,

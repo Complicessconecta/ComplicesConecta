@@ -89,6 +89,7 @@ const AIControlCenter = lazyWithDefault(
 
 // Admin pages - separate chunk
 const Admin = lazyWithDefault(() => import("@/pages/admin/Admin"));
+const AdminSelectDashboard = lazyWithDefault(() => import("@/pages/admin/AdminSelectDashboard"));
 const AdminProduction = lazyWithDefault(
   () => import("@/pages/admin/AdminProduction"),
 );
@@ -312,6 +313,14 @@ const App = () => {
                             />
                             <Route
                               path="/admin"
+                              element={
+                                <AdminRoute>
+                                  <AdminSelectDashboard />
+                                </AdminRoute>
+                              }
+                            />
+                            <Route
+                              path="/admin/dashboard"
                               element={
                                 <AdminRoute>
                                   <Admin />

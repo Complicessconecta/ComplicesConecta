@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, MessageSquare, ThumbsUp, ThumbsDown, User, Calendar } from "lucide-react";
+import { Star, MessageSquare, ThumbsUp, User } from "lucide-react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";

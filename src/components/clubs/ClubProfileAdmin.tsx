@@ -33,13 +33,11 @@ interface ClubAnalytics {
 }
 
 interface ClubProfileAdminProps {
-  clubId: string;
   analytics: ClubAnalytics;
   onSave?: (data: any) => void;
 }
 
 export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
-  clubId,
   analytics,
   onSave,
 }) => {

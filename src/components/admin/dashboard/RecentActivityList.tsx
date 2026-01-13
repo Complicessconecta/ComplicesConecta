@@ -34,7 +34,7 @@ export const RecentActivityList = ({ activity }: RecentActivityListProps) => {
             />
             <div>
               <p className="text-white font-medium">
-                {user.full_name || user.email}
+                {user.display_name || user.email}
               </p>
               <p className="text-white/60 text-sm">
                 Último acceso:{" "}

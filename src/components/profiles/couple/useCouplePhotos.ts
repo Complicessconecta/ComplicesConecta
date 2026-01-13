@@ -54,14 +54,14 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       if (fetchError) throw fetchError;
 
       const photosWithUrls =
-        data?.couple_images?.map((url, index) => ({
+        (data?.couple_images as string[] | null || []).map((url: string, index: number) => ({
           id: `${data.id}-${index}`,
           url: url,
           partner: (index % 2 === 0 ? "el" : "ella") as "el" | "ella",
           isMain: index === 0,
           profileId: data.id,
           uploadedAt: new Date(data.created_at || new Date()),
-        })) || [];
+        }));
 
       setPhotos(photosWithUrls);
     } catch (err) {
@@ -127,7 +127,7 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
 
       // Agregar la nueva imagen al array
       const updatedImages = [
-        ...(currentProfile.couple_images || []),
+        ...(currentProfile.couple_images as string[] || []),
         publicUrl,
       ];
 
@@ -199,9 +199,9 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
 
       // Eliminar de la base de datos (remover de array)
       const updatedImages =
-        currentProfile.couple_images?.filter(
-          (url) => url !== photoToDeleteUrl,
-        ) || [];
+        (currentProfile.couple_images as string[] | null || []).filter(
+          (url: string) => url !== photoToDeleteUrl,
+        );
       const { error: dbError } = await supabase
         .from("couple_profiles")
         .update({ couple_images: updatedImages })
@@ -245,9 +245,9 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       if (!photoToMove) throw new Error("Foto no encontrada");
 
       const updatedImages =
-        currentProfile.couple_images?.filter(
-          (url) => url !== photoToMove.url,
-        ) || [];
+        (currentProfile.couple_images as string[] | null || []).filter(
+          (url: string) => url !== photoToMove.url,
+        );
       updatedImages.unshift(photoToMove.url);
 
       // Actualizar el perfil

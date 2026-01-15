@@ -322,8 +322,17 @@ const Auth = () => {
                       ...prev,
                       password: "",
                     }));
-                    setActiveTab("signin"); // Cambiar a pestaña de login
+                    
+                    // Forzar cambio de pestaña de login
+                    setActiveTab("signin");
                     console.log("setActiveTab('signin') llamado");
+                    
+                    // Forzar re-renderizado con un pequeño delay
+                    setTimeout(() => {
+                      setActiveTab("signin");
+                      console.log("setActiveTab('signin') llamado en timeout");
+                    }, 10);
+                    
                     toast({
                       title: "Modo Admin Activado",
                       description: "Ingresa tu email de administrador para continuar",

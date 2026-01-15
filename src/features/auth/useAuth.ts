@@ -4,14 +4,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  getAppConfig,
-  DEMO_CREDENTIALS,
-  getDemoPassword,
-  handleDemoAuth,
-  clearDemoAuth,
-  isProductionAdmin,
-} from "@/lib/app-config";
+import { getAppConfig, DEMO_CREDENTIALS, getDemoPassword, handleDemoAuth, clearDemoAuth, isProductionAdmin, } from "@/lib/app-config";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";

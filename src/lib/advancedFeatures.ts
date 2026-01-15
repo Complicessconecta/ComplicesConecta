@@ -269,13 +269,13 @@ export class AdvancedFeaturesService {
     const common = interests1.filter((interest) =>
       interests2.includes(interest),
     );
-    const _total = new Set([...interests1, ...interests2]).size;
 
     return common.length / Math.max(interests1.length, interests2.length);
   }
 
   /**
    * Calculate location compatibility
+   * @deprecated Disponible para uso futuro cuando latitude/longitude estén disponibles
    */
   private static calculateLocationCompatibility(
     location1: string | null,

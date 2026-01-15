@@ -509,15 +509,20 @@ export class IntelligentAutomationService {
     const userId = triggerData.user_id || triggerData.id;
     if (!userId) return;
 
-    await NotificationService.createNotification({
+    const notificationData: any = {
       userId: String(userId),
       title: typeof config.title === "string" ? config.title : "",
       type: "system",
       message: typeof config.message === "string" ? config.message : "",
-      actionUrl:
-        typeof config.action_url === "string" ? config.action_url : undefined,
       metadata: { automation: true, trigger_data: triggerData },
-    });
+    };
+
+    // Solo agregar actionUrl si existe
+    if (typeof config.action_url === "string" && config.action_url) {
+      notificationData.actionUrl = config.action_url;
+    }
+
+    await NotificationService.createNotification(notificationData);
   }
 
   /**
@@ -740,15 +745,19 @@ export class IntelligentAutomationService {
 
     if (ruleIndex === -1) return null;
 
+    const existingRule = this.rules[ruleIndex];
+    if (!existingRule) return null;
+
     this.rules[ruleIndex] = {
-      ...this.rules[ruleIndex],
+      ...existingRule,
       ...updates,
+      id: existingRule.id, // Asegurar que id siempre está presente
       updated_at: new Date().toISOString(),
     };
 
     logger.info("Automation rule updated:", this.rules[ruleIndex]);
 
-    return this.rules[ruleIndex];
+    return this.rules[ruleIndex] || null;
   }
 
   /**

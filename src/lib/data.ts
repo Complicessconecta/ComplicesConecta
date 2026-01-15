@@ -395,16 +395,16 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     partner1: {
       name: nombreF,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
-      profession: profesiones[Math.floor(Math.random() * profesiones.length)],
-      bio: `Me encanta explorar nuevas experiencias junto a mi pareja. Soy ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()} y disfruto de la vida al máximo.`,
+      profession: profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional",
+      bio: `Me encanta explorar nuevas experiencias junto a mi pareja. Soy ${(profesiones[Math.floor(Math.random() * profesiones.length)] || "profesional").toLowerCase()} y disfruto de la vida al máximo.`,
       avatar: femaleImages[Math.floor(Math.random() * femaleImages.length)],
       interests: intereses.slice(0, 3 + Math.floor(Math.random() * 3)), // 3-5 intereses
     },
     partner2: {
       name: nombreM,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
-      profession: profesiones[Math.floor(Math.random() * profesiones.length)],
-      bio: `Aventurero y respetuoso, busco junto a mi pareja vivir experiencias únicas. Trabajo como ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()}.`,
+      profession: profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional",
+      bio: `Aventurero y respetuoso, busco junto a mi pareja vivir experiencias únicas. Trabajo como ${(profesiones[Math.floor(Math.random() * profesiones.length)] || "profesional").toLowerCase()}.`,
       avatar: maleImages[Math.floor(Math.random() * maleImages.length)],
       interests: intereses.slice(5, 8 + Math.floor(Math.random() * 3)), // 3-5 intereses diferentes
     },

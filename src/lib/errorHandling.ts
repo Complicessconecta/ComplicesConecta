@@ -262,7 +262,7 @@ export const ErrorUtils = {
 
     // Extraer códigos comunes
     const match = error.message.match(/\[(\w+)\]/);
-    return match ? match[1] : "UNKNOWN_ERROR";
+    return match?.[1] || "UNKNOWN_ERROR";
   },
 
   /**

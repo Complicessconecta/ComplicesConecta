@@ -64,7 +64,7 @@ export function suppressWalletErrors() {
     originalWarn.apply(console, args);
   };
 
-  const handleErrorEvent = (e: ErrorEvent) => {
+  const handleErrorEvent = (e: ErrorEvent): boolean => {
     const msg = String(e.message || "").toLowerCase();
     const stack = String(e.error?.stack || "").toLowerCase();
     if (patterns.some((p) => msg.includes(p) || stack.includes(p))) {
@@ -72,6 +72,7 @@ export function suppressWalletErrors() {
       e.preventDefault();
       return false;
     }
+    return true;
   };
 
   const handleRejectionEvent = (e: PromiseRejectionEvent) => {

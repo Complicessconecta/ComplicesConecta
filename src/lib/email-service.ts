@@ -89,7 +89,11 @@ export class EmailService {
     userName?: string,
   ) {
     logger.info(`Enviando email de bienvenida`, { to, userName });
-    return this.sendEmail("welcome", to, { confirmationUrl, userName });
+    const data: TemplateData = { confirmationUrl };
+    if (userName) {
+      data.userName = userName;
+    }
+    return this.sendEmail("welcome", to, data);
   }
 
   static async sendConfirmationEmail(

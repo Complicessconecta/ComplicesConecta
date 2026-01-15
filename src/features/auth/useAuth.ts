@@ -173,6 +173,12 @@ export const useAuth = () => {
     }
   }, [demoUser?.id]);
 
+  // Función auxiliar para determinar si usar Supabase real
+  const shouldUseRealSupabase = () => {
+    const sessionFlags = StorageManager.getSessionFlags();
+    return !sessionFlags.demo_authenticated;
+  };
+
   useEffect(() => {
     if (initialized.current) return () => {};
     initialized.current = true;
@@ -304,39 +310,7 @@ export const useAuth = () => {
       setLoading(true);
       logger.info("🔐 Intentando iniciar sesión", { email, mode: config.mode });
 
-      // Verificar si es credencial de producción (complicesconectasw@outlook.es)
-      if (isProductionAdmin(email)) {
-        logger.info(
-          "🏢 Credencial de producción detectada - limpiando demo y usando Supabase real",
-        );
-
-        // IMPORTANTE: Limpiar cualquier sesión demo antes de autenticar producción
-        clearDemoAuth();
-
-        if (!supabase) {
-          logger.error("❌ Supabase no está disponible");
-          setLoading(false);
-          throw new Error("Supabase no está disponible");
-        }
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-          setUser(data.user);
-          setSession(data.session);
-          await loadProfile(data.user.id);
-          logger.info("✅ Sesión de producción iniciada", { email });
-        }
-
-        return data;
-      }
-
-      // Verificar si es una credencial demo
+      // Verificar si es una credencial demo (antes de intentar Supabase)
       if (DEMO_CREDENTIALS.includes(email)) {
         logger.info("🎭 Credencial demo detectada");
         const demoPassword = getDemoPassword(email);
@@ -373,8 +347,40 @@ export const useAuth = () => {
         }
       }
 
-      // Intentar con Supabase para usuarios reales (siempre en producción)
-      logger.info("🔗 Intentando autenticación real con Supabase", { email });
+      // Verificar si es credencial de producción (admin)
+      if (isProductionAdmin(email)) {
+        logger.info(
+          "🏢 Credencial de producción detectada - limpiando demo y usando Supabase real",
+        );
+
+        // IMPORTANTE: Limpiar cualquier sesión demo antes de autenticar producción
+        clearDemoAuth();
+
+        if (!supabase) {
+          logger.error("❌ Supabase no está disponible");
+          setLoading(false);
+          throw new Error("Supabase no está disponible");
+        }
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        if (data.user) {
+          setUser(data.user);
+          setSession(data.session);
+          await loadProfile(data.user.id);
+          logger.info("✅ Sesión de producción iniciada", { email });
+        }
+
+        return data;
+      }
+
+      // Usuario real (no demo, no admin especial) - intentar autenticación con Supabase
+      logger.info("🔗 Usuario real detectado - intentando autenticación con Supabase", { email });
 
       // Limpiar cualquier sesión demo antes de autenticar
       clearDemoAuth();
@@ -553,10 +559,6 @@ export const useAuth = () => {
     return sessionFlags.demo_authenticated;
   };
 
-  const shouldUseRealSupabase = () => {
-    const sessionFlags = StorageManager.getSessionFlags();
-    return !sessionFlags.demo_authenticated;
-  };
 
   return {
     user: effectiveUser,

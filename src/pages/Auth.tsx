@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
@@ -76,6 +76,11 @@ const Auth = () => {
   const [__showThemeModal, _setShowThemeModal] = useState(false);
   const [__showTermsModal, _setShowTermsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
+  
+  // Depurar cambio de activeTab
+  useEffect(() => {
+    console.log("activeTab cambió:", activeTab);
+  }, [activeTab]);
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",

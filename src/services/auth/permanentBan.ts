@@ -39,12 +39,10 @@ export const createPermanentBan = async (
     }
 
     // Generar huella digital
-    const _fingerprint = await generateDigitalFingerprint(
-      banData.worldIdNullifierHash,
-    );
-
-    // Crear baneo usando función SQL
     // TODO: Crear función RPC create_permanent_ban en Supabase
+    // const fingerprint = await generateDigitalFingerprint(
+    //   banData.worldIdNullifierHash,
+    // );
     // const rpcPayload: Record<string, unknown> = {
     //   p_user_id: banData.userId,
     //   p_canvas_hash: fingerprint.canvasHash,

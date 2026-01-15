@@ -7,18 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-// import { Database } from '@/types/supabase';
-
-interface Invitation {
-  id: string;
-  from_profile: string;
-  to_profile: string;
-  message: string;
-  type: string;
-  status: string;
-  created_at: string;
-  decided_at: string | null;
-}
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -42,74 +30,20 @@ import {
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
-
 import { logger } from "@/lib/logger";
+import {
+  type AdminProfile,
+  type AdminAppStats,
+  type AdminInvitation,
+  type NotificationStats,
+  type SystemAlert,
+  type FAQItem,
+} from "./types";
 
-interface Profile {
-  id: string;
-  display_name: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  age: number | null;
-  location: string | null;
-  email: string;
-  is_verified: boolean;
-  is_premium: boolean;
-  created_at: string;
-  last_seen: string | null;
-  avatar_url: string | null;
-  bio: string | null;
-  relationship_type: "single" | "couple" | null;
-  gender: string | null;
-  interested_in: string | null;
-}
-
-interface AppStats {
-  totalUsers: number;
-  activeUsers: number;
-  premiumUsers: number;
-  totalMatches: number;
-  apkDownloads: number;
-  dailyVisits: number;
-  totalTokens: number;
-  stakedTokens: number;
-  worldIdVerified: number;
-  rewardsDistributed: number;
-  totalNotifications: number;
-  unreadNotifications: number;
-  systemAlerts: number;
-  moderationQueue: number;
-}
-
-interface NotificationStats {
-  id: string;
-  type: string;
-  title: string;
-  message: string;
-  user_id: string;
-  read: boolean;
-  created_at: string;
-  user_email?: string;
-}
-
-interface SystemAlert {
-  id: string;
-  type: "error" | "warning" | "info";
-  title: string;
-  message: string;
-  severity: "low" | "medium" | "high" | "critical";
-  resolved: boolean;
-  created_at: string;
-}
-
-interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
-  category: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-}
+// Tipos importados desde ./types.ts
+// interface Profile -> AdminProfile
+// interface AppStats -> AdminAppStats
+// interface Invitation -> AdminInvitation
 
 const AdminProduction = () => {
   const {
@@ -122,8 +56,8 @@ const AdminProduction = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [stats, setStats] = useState<AppStats>({
+  const [profiles, setProfiles] = useState<AdminProfile[]>([]);
+  const [stats, setStats] = useState<AdminAppStats>({
     totalUsers: 0,
     activeUsers: 0,
     premiumUsers: 0,
@@ -140,9 +74,9 @@ const AdminProduction = () => {
     moderationQueue: 0,
   });
   const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [invitations, setInvitations] = useState<AdminInvitation[]>([]);
   const [__dataLoading, setDataLoading] = useState(true);
-  const [__selectedProfile, _setSelectedProfile] = useState<Profile | null>(
+  const [__selectedAdminProfile, _setSelectedAdminProfile] = useState<AdminProfile | null>(
     null,
   );
   const [newFaq, setNewFaq] = useState({
@@ -236,7 +170,7 @@ const AdminProduction = () => {
     logger.info("✅ Acceso autorizado - cargando panel producción");
 
     // Cargar datos del panel
-    loadRealProfiles();
+    loadRealAdminProfiles();
     loadRealStats();
     loadRealFAQ();
     loadRealInvitations();
@@ -246,7 +180,7 @@ const AdminProduction = () => {
     setDataLoading(true);
     try {
       await Promise.all([
-        loadRealProfiles(),
+        loadRealAdminProfiles(),
         loadRealStats(),
         loadRealFAQ(),
         loadRealInvitations(),
@@ -266,7 +200,7 @@ const AdminProduction = () => {
     }
   };
 
-  const loadRealProfiles = async () => {
+  const loadRealAdminProfiles = async () => {
     try {
       if (!supabase) {
         logger.error("Supabase no est disponible");
@@ -284,8 +218,8 @@ const AdminProduction = () => {
         return;
       }
 
-      // Mapear los datos de Supabase al tipo Profile local
-      const mappedProfiles: Profile[] = (data || []).map((profile: any) => ({
+      // Mapear los datos de Supabase al tipo AdminProfile local
+      const mappedAdminProfiles: AdminProfile[] = (data || []).map((profile: any) => ({
         id: profile.id,
         display_name: profile.name || "Usuario",
         first_name: profile.name?.split(" ")[0] || "Usuario",
@@ -304,9 +238,9 @@ const AdminProduction = () => {
         relationship_type: "single", // Default value
       }));
 
-      setProfiles(mappedProfiles);
+      setProfiles(mappedAdminProfiles);
     } catch (_error) {
-      logger.error("Error in loadRealProfiles:", { error: String(_error) });
+      logger.error("Error in loadRealAdminProfiles:", { error: String(_error) });
     }
   };
 
@@ -445,7 +379,7 @@ const AdminProduction = () => {
         return;
       }
 
-      const mappedInvitations: Invitation[] = (data || []).map((inv: any) => ({
+      const mappedInvitations: AdminInvitation[] = (data || []).map((inv: any) => ({
         id: inv.id,
         from_profile: inv.from_profile || "unknown",
         to_profile: inv.to_profile || "unknown",
@@ -466,7 +400,7 @@ const AdminProduction = () => {
     }
   };
 
-  const handleDeleteProfile = async (profileId: string) => {
+  const handleDeleteAdminProfile = async (profileId: string) => {
     try {
       if (!supabase) {
         logger.error("Supabase no est disponible");
@@ -485,7 +419,7 @@ const AdminProduction = () => {
 
       if (error) throw error;
 
-      setProfiles(profiles.filter((p: Profile) => p.id !== profileId));
+      setProfiles(profiles.filter((p: AdminProfile) => p.id !== profileId));
       toast({
         title: "Perfil Eliminado",
         description: "El perfil ha sido eliminado exitosamente",
@@ -522,7 +456,7 @@ const AdminProduction = () => {
       if (error) throw error;
 
       setProfiles(
-        profiles.map((p: Profile) =>
+        profiles.map((p: AdminProfile) =>
           p.id === profileId ? { ...p, is_verified: !p.is_verified } : p,
         ),
       );
@@ -810,7 +744,7 @@ const AdminProduction = () => {
                           )}
                         </Button>
                         <Button
-                          onClick={() => handleDeleteProfile(profile.id)}
+                          onClick={() => handleDeleteAdminProfile(profile.id)}
                           className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm"
                         >
                           <Trash2 className="w-4 h-4" />

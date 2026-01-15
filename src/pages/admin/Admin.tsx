@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,71 +11,27 @@ import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { AdminNav } from "@/components/AdminNav";
 import { safeGetItem } from "@/lib/safe-storage";
+import { Users, Shield, BarChart3, Plus, Trash2, Settings, Crown } from "lucide-react";
 import {
-  Users,
-  Shield,
-  BarChart3,
-  Plus,
-  Trash2,
-  Settings,
-  Crown,
-} from "lucide-react";
+  type AdminProfile,
+  type AdminAppStats,
+  type AdminInvitation,
+  type FAQItem,
+} from "./types";
 
-// Types
-interface Profile {
-  id: string;
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  display_name?: string;
-  bio?: string;
-  avatar_url?: string;
-  is_verified?: boolean;
-  is_premium?: boolean;
-  created_at: string;
-  last_seen?: string;
-}
-
-interface AppStats {
-  totalUsers: number;
-  activeUsers: number;
-  premiumUsers: number;
-  totalMatches: number;
-  apkDownloads: number;
-  dailyVisits: number;
-  totalTokens: number;
-  stakedTokens: number;
-  worldIdVerified: number;
-  rewardsDistributed: number;
-}
-
-interface Invitation {
-  id: string;
-  from_profile: string;
-  to_profile: string;
-  type: "profile" | "gallery" | "chat";
-  message: string;
-  status: "pending" | "accepted" | "rejected" | "revoked";
-  created_at: string;
-  decided_at?: string;
-}
-
-interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-  priority: number;
-  created_at: string;
-}
+// Tipos importados desde ./types.ts
+// interface Profile -> AdminProfile
+// interface AppStats -> AdminAppStats
+// interface Invitation -> AdminInvitation
+// interface FAQItem -> FAQItem
 
 export const Admin = () => {
   const { isAdmin, isAuthenticated, user: _user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const [_profiles, setProfiles] = useState<Profile[]>([]);
-  const [_stats, setStats] = useState<AppStats>({
+  const [profiles, setProfiles] = useState<AdminProfile[]>([]);
+  const [stats, setStats] = useState<AdminAppStats>({
     totalUsers: 0,
     activeUsers: 0,
     premiumUsers: 0,
@@ -93,9 +44,9 @@ export const Admin = () => {
     rewardsDistributed: 0,
   });
   const [_faqs, _setFaqs] = useState<FAQItem[]>([]);
-  const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [invitations, setInvitations] = useState<AdminInvitation[]>([]);
   const [_loading, setLoading] = useState(true);
-  const [_selectedProfile, _setSelectedProfile] = useState<Profile | null>(
+  const [_selectedProfile, _setSelectedProfile] = useState<AdminProfile | null>(
     null,
   );
   const [_error, _setError] = useState<string | null>(null);
@@ -190,7 +141,7 @@ export const Admin = () => {
   const loadProfiles = async () => {
     try {
       // Use mock data for demo mode to avoid infinite loops
-      const mockProfiles: Profile[] = [
+      const mockProfiles: AdminProfile[] = [
         {
           id: "demo-1",
           display_name: "Usuario Demo",
@@ -201,7 +152,13 @@ export const Admin = () => {
           is_premium: false,
           created_at: new Date().toISOString(),
           last_seen: new Date().toISOString(),
-          bio: "Perfil de demostracin",
+          bio: "Perfil de demostración",
+          age: 25,
+          location: "Ciudad de México",
+          avatar_url: null,
+          relationship_type: "single",
+          gender: "male",
+          interested_in: "female",
         },
       ];
 
@@ -216,7 +173,7 @@ export const Admin = () => {
   const _loadStats = async () => {
     try {
       // Mock stats for now - replace with actual queries
-      const mockStats: AppStats = {
+      const mockStats: AdminAppStats = {
         totalUsers: 1250,
         activeUsers: 890,
         premiumUsers: 156,
@@ -260,7 +217,7 @@ export const Admin = () => {
   const _loadInvitations = async () => {
     try {
       // Mock invitations for now
-      const mockInvitations: Invitation[] = [
+      const mockInvitations: AdminInvitation[] = [
         {
           id: "1",
           from_profile: "user1@example.com",
@@ -269,6 +226,7 @@ export const Admin = () => {
           message: "Me gustara conectar contigo",
           status: "pending",
           created_at: new Date().toISOString(),
+          decided_at: null,
         },
       ];
       setInvitations(mockInvitations);
@@ -397,7 +355,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-blue-600">
-                    {_stats.totalUsers}
+                    {stats.totalUsers}
                   </p>
                 </CardContent>
               </Card>
@@ -411,7 +369,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-green-600">
-                    {_stats.activeUsers}
+                    {stats.activeUsers}
                   </p>
                 </CardContent>
               </Card>
@@ -425,7 +383,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-purple-600">
-                    {_stats.premiumUsers}
+                    {stats.premiumUsers}
                   </p>
                 </CardContent>
               </Card>
@@ -439,7 +397,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-red-600">
-                    {_stats.totalMatches}
+                    {stats.totalMatches}
                   </p>
                 </CardContent>
               </Card>
@@ -453,7 +411,7 @@ export const Admin = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {_profiles.map((profile: any) => (
+                  {profiles.map((profile: any) => (
                     <div
                       key={profile.id}
                       className="flex items-center justify-between p-4 border rounded-lg"
@@ -540,13 +498,13 @@ export const Admin = () => {
                       <div className="flex justify-between">
                         <span>Total en circulacin:</span>
                         <span className="font-bold">
-                          {_stats.totalTokens.toLocaleString()}
+                          {stats.totalTokens.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Total bloqueado:</span>
                         <span className="font-bold">
-                          {_stats.stakedTokens.toLocaleString()}
+                          {stats.stakedTokens.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -558,13 +516,13 @@ export const Admin = () => {
                       <div className="flex justify-between">
                         <span>WorldID verificados:</span>
                         <span className="font-bold">
-                          {_stats.worldIdVerified.toLocaleString()}
+                          {stats.worldIdVerified.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Recompensas distribuidas:</span>
                         <span className="font-bold">
-                          {_stats.rewardsDistributed.toLocaleString()}
+                          {stats.rewardsDistributed.toLocaleString()}
                         </span>
                       </div>
                     </div>

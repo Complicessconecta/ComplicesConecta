@@ -274,41 +274,6 @@ export class AdvancedFeaturesService {
   }
 
   /**
-   * Calculate location compatibility
-   * @deprecated Disponible para uso futuro cuando latitude/longitude estén disponibles
-   */
-  private static calculateLocationCompatibility(
-    location1: string | null,
-    location2: string | null,
-    _maxDistance: number,
-  ): number {
-    if (!location1 || !location2) return 0.5;
-
-    // Simple string comparison for location compatibility
-    // In a real app, you would parse coordinates and calculate actual distance
-    if (location1 === location2) return 1.0;
-
-    // Check if locations are similar (same city/region)
-    const loc1Parts = location1.toLowerCase().split(",");
-    const loc2Parts = location2.toLowerCase().split(",");
-
-    let commonParts = 0;
-    for (const part1 of loc1Parts) {
-      for (const part2 of loc2Parts) {
-        if (part1.trim() === part2.trim()) {
-          commonParts++;
-          break;
-        }
-      }
-    }
-
-    return Math.min(
-      1.0,
-      commonParts / Math.max(loc1Parts.length, loc2Parts.length),
-    );
-  }
-
-  /**
    * Calculate age compatibility
    */
   private static calculateAgeCompatibility(

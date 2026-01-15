@@ -328,8 +328,11 @@ export function DemoWallet() {
               <button
                 onClick={() => setShowPolygonModal(false)}
                 className="text-white/60 hover:text-white transition-colors"
+                aria-label="Cerrar modal"
+                title="Cerrar modal"
               >
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6" aria-hidden="true" />
+                <span className="sr-only">Cerrar</span>
               </button>
             </div>
             <div className="space-y-4">

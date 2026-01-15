@@ -101,13 +101,6 @@ const getPasswordFromEnv = (email: string): string | null => {
   return envPassword || DEFAULT_DEMO_PASSWORDS[email] || null;
 };
 
-// Lista de emails admin para verificación rápida - CORREGIDA
-const _ADMIN_EMAILS = [
-  "admin", // Admin demo solamente
-  "djwacko28@gmail.com", // Admin DEMO (no producción)
-  "complicesconectasw@outlook.es", // ÚNICO admin producción REAL
-];
-
 // Configuración de credenciales para modo producción - MIGRADO A VARIABLES DE ENTORNO
 // Fallback a valor por defecto solo para desarrollo
 export const productionCredentials = {
@@ -176,8 +169,6 @@ export const handleDemoAuth = (
   email: string,
   accountType: string = "single",
 ) => {
-  const _config = getAppConfig();
-
   if (!isDemoCredential(email)) {
     logger.info("❌ Email no es credencial demo:", { email });
     return null;

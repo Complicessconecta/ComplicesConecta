@@ -265,11 +265,14 @@ export const useBiometricAuth = () => {
       if (isBiometricEnabled && biometricConfig?.isAvailable) {
         const biometricResult = await authenticateBiometric(username);
         if (biometricResult.success) {
-          return {
+          const result: any = {
             success: true,
-            method: "biometric",
-            token: biometricResult.token,
+            method: "biometric" as const,
           };
+          if (biometricResult.token) {
+            result.token = biometricResult.token;
+          }
+          return result;
         }
         // Si la biometría falla, el toast de error ya se mostró. No hacemos nada y dejamos que la UI pida el PIN.
       }

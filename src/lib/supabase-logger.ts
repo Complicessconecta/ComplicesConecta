@@ -120,29 +120,6 @@ export class SupabaseLogger {
   debug(message: string, metadata?: Record<string, unknown>) {
     this.log("debug", message, metadata);
   }
-
-  private getCurrentUserIdSync(): string | undefined {
-    try {
-      // Try to get user ID from session storage or other sync source
-      const sessionData = sessionStorage.getItem("supabase.auth.token");
-      if (sessionData) {
-        const parsed = JSON.parse(sessionData);
-        return parsed?.user?.id;
-      }
-      return undefined;
-    } catch {
-      return undefined;
-    }
-  }
-
-  private getSessionId(): string {
-    let sessionId = sessionStorage.getItem("app-session-id");
-    if (!sessionId) {
-      sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
-      sessionStorage.setItem("app-session-id", sessionId);
-    }
-    return sessionId;
-  }
 }
 
 // Export singleton instance

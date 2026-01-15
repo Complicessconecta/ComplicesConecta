@@ -9,7 +9,6 @@ export { ReportsPanel } from "@/components/admin/panels/ReportsPanel";
 export { UserManagementPanel } from "@/components/admin/UserManagementPanel";
 export { TokenSystemPanel } from "@/components/admin/TokenSystemPanel";
 export { AnalyticsPanel } from "@/components/admin/AnalyticsPanel";
-
 export { PerformancePanel } from "@/components/admin/PerformancePanel";
 export { SecurityPanel } from "@/components/admin/SecurityPanel";
 

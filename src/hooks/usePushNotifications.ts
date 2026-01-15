@@ -302,14 +302,19 @@ export const usePushNotifications = ({
       if (!isSupported || permission !== "granted") return;
 
       try {
-        const notification = new Notification(payload.title, {
+        const options: any = {
           body: payload.body,
           icon: payload.icon || "/compliceslogo.png",
           badge: payload.badge || "/compliceslogo.png",
           data: payload.data,
-          tag: payload.tag,
           requireInteraction: payload.requireInteraction || false,
-        });
+        };
+
+        if (payload.tag) {
+          options.tag = payload.tag;
+        }
+
+        const notification = new Notification(payload.title, options);
 
         notification.onclick = () => {
           window.focus();
@@ -392,7 +397,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
   let binary = "";
   for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
+    binary += String.fromCharCode(bytes[i] || 0);
   }
   return window.btoa(binary);
 }

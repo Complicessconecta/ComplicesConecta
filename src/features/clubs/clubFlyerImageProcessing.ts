@@ -92,9 +92,9 @@ const applyGaussianBlur = (
             ny < imageData.height
           ) {
             const idx = (ny * imageData.width + nx) * 4;
-            r += tempData[idx];
-            g += tempData[idx + 1];
-            b += tempData[idx + 2];
+            r += tempData[idx] || 0;
+            g += tempData[idx + 1] || 0;
+            b += tempData[idx + 2] || 0;
             count++;
           }
         }

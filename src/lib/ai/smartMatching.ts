@@ -98,8 +98,6 @@ class SmartMatchingEngine {
   };
 
   private readonly DISTANCE_DECAY_FACTOR = 0.1; // Decaimiento por distancia
-  private readonly ACTIVITY_BOOST_FACTOR = 1.2; // Boost por actividad reciente
-  private readonly VERIFICATION_BONUS = 15; // Bonus por verificación
 
   /**
    * Calcula compatibilidad entre dos usuarios
@@ -287,7 +285,7 @@ class SmartMatchingEngine {
    * Calcula score de actividad y engagement
    */
   private calculateActivityScore(
-    user1: UserProfile,
+    _user1: UserProfile,
     user2: UserProfile,
   ): number {
     const activity2 = user2.activity;
@@ -315,7 +313,7 @@ class SmartMatchingEngine {
    * Calcula score de verificación y confiabilidad
    */
   private calculateVerificationScore(
-    user1: UserProfile,
+    _user1: UserProfile,
     user2: UserProfile,
   ): number {
     const verification = user2.verification;
@@ -377,8 +375,8 @@ class SmartMatchingEngine {
    * Aplica modificadores contextuales
    */
   private getContextModifier(
-    user1: UserProfile,
-    user2: UserProfile,
+    _user1: UserProfile,
+    _user2: UserProfile,
     context?: MatchingContext,
   ): number {
     if (!context) return 1.0;
@@ -505,7 +503,7 @@ class SmartMatchingEngine {
   /**
    * Calcula confianza en el match basada en completitud de datos
    */
-  private calculateConfidence(user1: UserProfile, user2: UserProfile): number {
+  private calculateConfidence(_user1: UserProfile, user2: UserProfile): number {
     let confidence = 0;
 
     // Factores que aumentan confianza

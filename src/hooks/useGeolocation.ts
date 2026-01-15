@@ -75,8 +75,7 @@ export const useGeolocation = () => {
           });
         }
 
-        setState({
-          location: {
+        const location: any = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             accuracy: position.coords.accuracy,
@@ -84,13 +83,21 @@ export const useGeolocation = () => {
             altitudeAccuracy: position.coords.altitudeAccuracy,
             heading: position.coords.heading,
             speed: position.coords.speed,
-            s2CellId,
-            s2Level,
-          },
-          error: null,
-          isLoading: false,
-          lastUpdated: new Date(),
-        });
+          };
+
+          if (s2CellId) {
+            location.s2CellId = s2CellId;
+          }
+          if (s2Level) {
+            location.s2Level = s2Level;
+          }
+
+          setState({
+            location,
+            error: null,
+            isLoading: false,
+            lastUpdated: new Date(),
+          });
       },
       (error) => {
         let errorMessage = "Error desconocido";
@@ -155,9 +162,7 @@ export const useGeolocation = () => {
           });
         }
 
-        setState((prev) => ({
-          ...prev,
-          location: {
+        const location: any = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             accuracy: position.coords.accuracy,
@@ -165,9 +170,18 @@ export const useGeolocation = () => {
             altitudeAccuracy: position.coords.altitudeAccuracy,
             heading: position.coords.heading,
             speed: position.coords.speed,
-            s2CellId,
-            s2Level,
-          },
+          };
+
+          if (s2CellId) {
+            location.s2CellId = s2CellId;
+          }
+          if (s2Level) {
+            location.s2Level = s2Level;
+          }
+
+        setState((prev) => ({
+          ...prev,
+          location,
           error: null,
           isLoading: false,
           lastUpdated: new Date(),
@@ -290,13 +304,18 @@ export const useGeolocation = () => {
             user.location.longitude,
           );
 
-          return {
+          const nearbyUser: any = {
             id: user.id,
             name: user.name,
             distance,
             location: user.location,
-            lastSeen: user.lastSeen,
           };
+
+          if (user.lastSeen) {
+            nearbyUser.lastSeen = user.lastSeen;
+          }
+
+          return nearbyUser;
         })
         .filter((user) => user.distance <= radius)
         .sort((a, b) => a.distance - b.distance);

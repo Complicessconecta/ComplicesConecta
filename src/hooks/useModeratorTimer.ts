@@ -1,13 +1,7 @@
 // Hook para timer de conexión automático
 import { useState, useEffect } from "react";
 import { useAuth } from "@/features/auth/useAuth";
-import {
-  startModeratorSession,
-  endModeratorSession,
-  getActiveSession,
-  updateSessionMinutes,
-  ModeratorSession,
-} from "@/services/moderatorTimer";
+import { startModeratorSession, endModeratorSession, getActiveSession, updateSessionMinutes, ModeratorSession } from "@/services/moderatorTimer";
 
 export const useModeratorTimer = () => {
   const { user } = useAuth();

@@ -35,13 +35,16 @@ class Logger {
     message: string,
     context?: LogContext,
   ): LogEntry {
-    return {
+    const entry: LogEntry = {
       level,
       message,
-      context,
       timestamp: new Date().toISOString(),
       source: "ComplicesConecta",
     };
+    if (context) {
+      entry.context = context;
+    }
+    return entry;
   }
 
   private shouldLog(level: LogLevel): boolean {

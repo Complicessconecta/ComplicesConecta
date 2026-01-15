@@ -41,30 +41,6 @@ const SIZE_LIMITS = {
   default: 5 * 1024 * 1024, // 5MB por defecto
 } as const;
 
-// Firmas de archivos (magic numbers) para verificación de contenido
-const _FILE_SIGNATURES = {
-  // Imágenes
-  "image/jpeg": [
-    [0xff, 0xd8, 0xff], // JPEG
-    [0xff, 0xd8, 0xff, 0xe0], // JPEG/JFIF
-    [0xff, 0xd8, 0xff, 0xe1], // JPEG/EXIF
-  ],
-  "image/png": [
-    [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], // PNG
-  ],
-  "image/gif": [
-    [0x47, 0x49, 0x46, 0x38, 0x37, 0x61], // GIF87a
-    [0x47, 0x49, 0x46, 0x38, 0x39, 0x61], // GIF89a
-  ],
-  "image/webp": [
-    [0x52, 0x49, 0x46, 0x46], // RIFF (WebP container)
-  ],
-  // PDFs
-  "application/pdf": [
-    [0x25, 0x50, 0x44, 0x46], // %PDF
-  ],
-} as const;
-
 interface ValidationResult {
   isValid: boolean;
   errors: string[];
@@ -102,7 +78,6 @@ export class FileValidator {
         size: file.size,
         type: file.type,
         extension: this.getFileExtension(file.name),
-        category,
       },
       securityChecks: {
         mimeTypeValid: false,
@@ -112,6 +87,10 @@ export class FileValidator {
         nameValid: false,
       },
     };
+
+    if (category) {
+      result.fileInfo.category = category;
+    }
 
     try {
       // 1. Validar nombre del archivo

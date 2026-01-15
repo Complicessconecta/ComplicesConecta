@@ -173,14 +173,20 @@ class RateLimiter {
     const remaining = Math.max(0, config.maxRequests - entry.count);
     const allowed = entry.count <= config.maxRequests;
 
-    const result = {
+    const result: {
+      allowed: boolean;
+      remaining: number;
+      resetTime: number;
+      retryAfter?: number;
+    } = {
       allowed,
       remaining,
       resetTime: entry.resetTime,
-      retryAfter: allowed
-        ? undefined
-        : Math.ceil((entry.resetTime - now) / 1000),
     };
+
+    if (!allowed) {
+      result.retryAfter = Math.ceil((entry.resetTime - now) / 1000);
+    }
 
     // Log de rate limiting
     if (!allowed) {
@@ -221,7 +227,9 @@ class RateLimiter {
 
     for (const key of this.store.keys()) {
       const endpoint = key.split(":")[0];
-      endpoints[endpoint] = (endpoints[endpoint] || 0) + 1;
+      if (endpoint) {
+        endpoints[endpoint!] = (endpoints[endpoint!] || 0) + 1;
+      }
     }
 
     return {

@@ -1,16 +1,4 @@
-import {
-  Heart,
-  Users,
-  Shield,
-  Calendar,
-  MessageCircle,
-  Search,
-  UserPlus,
-  Crown,
-  BarChart3,
-  Settings,
-  Bell,
-} from "lucide-react";
+import { Heart, Users, Shield, Calendar, MessageCircle, Search, UserPlus, Crown, BarChart3, Settings, Bell } from "lucide-react";
 
 export const mainNavItems = [
   { title: "Descubrir", url: "/discover", icon: Search, badge: "Nuevo" },
@@ -88,18 +76,7 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
     "Sánchez",
     "Ramírez",
   ];
-  const _ubicaciones = [
-    "CDMX",
-    "Guadalajara",
-    "Monterrey",
-    "Puebla",
-    "Tijuana",
-    "León",
-    "Querétaro",
-    "Cancún",
-    "Playa del Carmen",
-    "Mérida",
-  ];
+
   const profesiones = [
     "Ingeniero/a",
     "Médico/a",
@@ -249,16 +226,7 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     "Patricia",
     "Isabel",
   ];
-  const apellidos = [
-    "García",
-    "Rodríguez",
-    "López",
-    "Martínez",
-    "González",
-    "Pérez",
-    "Sánchez",
-    "Ramírez",
-  ];
+
   const _ubicaciones = [
     "CDMX",
     "Guadalajara",
@@ -271,6 +239,7 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     "Playa del Carmen",
     "Mérida",
   ];
+
   const profesiones = [
     "Ingeniero/a",
     "Médico/a",
@@ -348,7 +317,6 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
 
   const nombreM = nombresM[Math.floor(Math.random() * nombresM.length)];
   const nombreF = nombresF[Math.floor(Math.random() * nombresF.length)];
-  const _apellido = apellidos[Math.floor(Math.random() * apellidos.length)];
 
   // Imágenes reales de Unsplash para parejas demo
   const coupleImages = [
@@ -395,16 +363,16 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     partner1: {
       name: nombreF,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
-      profession: profesiones[Math.floor(Math.random() * profesiones.length)],
-      bio: `Me encanta explorar nuevas experiencias junto a mi pareja. Soy ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()} y disfruto de la vida al máximo.`,
+      profession: profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional",
+      bio: `Me encanta explorar nuevas experiencias junto a mi pareja. Soy ${(profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional").toLowerCase()} y disfruto de la vida al máximo.`,
       avatar: femaleImages[Math.floor(Math.random() * femaleImages.length)],
       interests: intereses.slice(0, 3 + Math.floor(Math.random() * 3)), // 3-5 intereses
     },
     partner2: {
       name: nombreM,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
-      profession: profesiones[Math.floor(Math.random() * profesiones.length)],
-      bio: `Aventurero y respetuoso, busco junto a mi pareja vivir experiencias únicas. Trabajo como ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()}.`,
+      profession: profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional",
+      bio: `Aventurero y respetuoso, busco junto a mi pareja vivir experiencias únicas. Trabajo como ${(profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional").toLowerCase()}.`,
       avatar: maleImages[Math.floor(Math.random() * maleImages.length)],
       interests: intereses.slice(5, 8 + Math.floor(Math.random() * 3)), // 3-5 intereses diferentes
     },

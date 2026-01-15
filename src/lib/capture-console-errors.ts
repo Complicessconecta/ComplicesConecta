@@ -15,37 +15,15 @@ interface ConsoleError {
   column?: number;
 }
 
-interface ResourceError {
-  url: string;
-  type: "chunk" | "stylesheet" | "font" | "image" | "script" | "other";
-  status: number;
-  statusText: string;
-  timestamp: string;
-}
-
-interface PerformanceIssue {
-  type: "slow-load" | "large-chunk" | "missing-resource" | "cors-error";
-  message: string;
-  details: any;
-  timestamp: string;
-}
-
 class ConsoleErrorCapture {
   private errors: ConsoleError[] = [];
-  private resourceErrors: ResourceError[] = [];
-  private performanceIssues: PerformanceIssue[] = [];
   private originalError: typeof console.error;
   private originalWarn: typeof console.warn;
-  private originalLog: typeof console.log;
   private errorHandler: ((event: ErrorEvent) => void) | null = null;
-  private rejectionHandler: ((event: PromiseRejectionEvent) => void) | null =
-    null;
-  private resourceErrorHandler: ((event: Event) => void) | null = null;
 
   constructor() {
     this.originalError = console.error;
     this.originalWarn = console.warn;
-    this.originalLog = console.log;
   }
 
   startCapture(): void {

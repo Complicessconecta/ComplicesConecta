@@ -1,9 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/types/supabase-generated";
 
 // Tipos estrictos basados en Supabase
-type _ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type _InvitationRow = Database["public"]["Tables"]["invitations"]["Row"];
 type InvitationStatus = "pending" | "accepted" | "declined";
 type InvitationType = "profile" | "chat" | "gallery" | "event";
 

@@ -59,14 +59,6 @@ export class MultimediaSecurityService {
     autoModeration: true,
   };
 
-  private static readonly BIOMETRIC_CONFIG: BiometricConfig = {
-    enabled: true,
-    methods: ["fingerprint", "face"],
-    fallbackToPassword: true,
-    sessionTimeout: 30,
-    requireForSensitiveActions: true,
-  };
-
   /**
    * Validate and secure multimedia file
    */
@@ -627,7 +619,7 @@ export class MultimediaSecurityService {
    * Store encryption key securely
    */
   private static async storeEncryptionKey(
-    keyBuffer: ArrayBuffer,
+    _keyBuffer: ArrayBuffer,
     userId: string,
   ): Promise<string> {
     const keyId = crypto.randomUUID();

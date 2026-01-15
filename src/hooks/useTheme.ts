@@ -41,7 +41,7 @@ export const useTheme = () => {
 
     if (shouldSkip) {
       setLoading(false);
-      return;
+      return undefined;
     }
 
     // Fetch desde Supabase (solo si hay cliente y user.id)
@@ -149,6 +149,8 @@ export const useTheme = () => {
         }
       };
     }
+
+    return undefined;
   }, [user, isDemo, setPrefs]);
 
   // Defaults basados en preferencias por defecto si no custom

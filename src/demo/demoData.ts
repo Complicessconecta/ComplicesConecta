@@ -4,12 +4,7 @@
  */
 
 import { v4 as uuidv4 } from "uuid";
-import {
-  pickProfileImage,
-  resetImageCounters,
-  type ProfileType,
-  type Gender,
-} from "@/lib/media";
+import { pickProfileImage, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
 import { getAutoInterests } from "@/lib/lifestyle-interests";
 
 export interface DemoProfile {
@@ -118,23 +113,27 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
     // Generar intereses automáticos apropiados para el lifestyle swinger
     const interests = getAutoInterests(profileType, experienceLevel, gender);
 
-    return {
+    const selectedName = nombres[Math.floor(Math.random() * nombres.length)];
+    const selectedLocation = ubicaciones[Math.floor(Math.random() * ubicaciones.length)];
+    const selectedBio = bios[Math.floor(Math.random() * bios.length)];
+
+    const profile: any = {
       id: uuidv4(),
-      name: nombres[Math.floor(Math.random() * nombres.length)],
+      name: selectedName ?? "Usuario",
       age: Math.floor(Math.random() * 20) + 25,
-      location: ubicaciones[Math.floor(Math.random() * ubicaciones.length)],
+      location: selectedLocation ?? "Ubicación no especificada",
       distance: Math.floor(Math.random() * 50) + 1,
       interests,
       image: pickProfileImage(
         {
           id: uuidv4(),
-          name: nombres[Math.floor(Math.random() * nombres.length)],
+          name: selectedName ?? "Usuario",
           type: profileType,
           gender,
         },
         new Set(),
       ),
-      bio: bios[Math.floor(Math.random() * bios.length)],
+      bio: selectedBio ?? "Sin bio disponible",
       isOnline: Math.random() > 0.3,
       lastActive: `Hace ${Math.floor(Math.random() * 60)} min`,
       isVerified: Math.random() > 0.4,
@@ -143,10 +142,15 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
       matchScore: Math.floor(Math.random() * 30) + 70,
       profileType,
       gender,
-      partnerGender: profileType === "couple" ? partnerGender : undefined,
       theme: Math.random() > 0.5 ? "romantic" : "adventurous",
       isDemo: true as const,
     };
+
+    if (profileType === "couple") {
+      profile.partnerGender = partnerGender;
+    }
+
+    return profile;
   });
 };
 

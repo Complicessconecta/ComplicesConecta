@@ -145,6 +145,8 @@ export const useScreenshotProtection = (
 
         return false;
       }
+
+      return true;
     },
     [enabled, logAttempts, showWarningModal, onAttemptDetected],
   );
@@ -195,6 +197,8 @@ export const useScreenshotProtection = (
         event.preventDefault();
         return false;
       }
+
+      return true;
     },
     [enabled],
   );

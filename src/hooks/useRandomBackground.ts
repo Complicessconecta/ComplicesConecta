@@ -84,7 +84,7 @@ const BACKGROUND_PRESETS: BackgroundConfig[] = [
 export const useRandomBackground = (): BackgroundConfig => {
   return useMemo(() => {
     const randomIndex = Math.floor(Math.random() * BACKGROUND_PRESETS.length);
-    return BACKGROUND_PRESETS[randomIndex];
+    return BACKGROUND_PRESETS[randomIndex]!;
   }, []);
 };
 
@@ -93,5 +93,5 @@ export const getBackgroundByPath = (pathname: string): BackgroundConfig => {
     .split("")
     .reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const index = pathHash % BACKGROUND_PRESETS.length;
-  return BACKGROUND_PRESETS[index];
+  return BACKGROUND_PRESETS[index]!;
 };

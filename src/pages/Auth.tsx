@@ -307,6 +307,8 @@ const Auth = () => {
                   const isAdminMode = formData.email.includes(
                     "complicesconectasw@outlook.es",
                   );
+                  
+                  // Siempre cambiar a pestaña de login cuando se activa modo Admin
                   if (!isAdminMode) {
                     // NO prellenar email - dejar que el usuario lo ingrese manualmente
                     setFormData((prev) => ({

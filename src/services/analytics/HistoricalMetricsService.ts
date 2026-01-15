@@ -314,30 +314,6 @@ export class HistoricalMetricsService {
     return grouped;
   }
 
-  private extractMetric<T extends Record<string, unknown>>(
-    grouped: Map<string, T[]>,
-    metricName: keyof T,
-  ): TimeSeriesDataPoint[] {
-    const result: TimeSeriesDataPoint[] = [];
-
-    grouped.forEach((items, timestamp) => {
-      const values = items
-        .map((item) => item[metricName] as unknown)
-        .filter((v): v is number => typeof v === "number" && !isNaN(v));
-
-      if (values.length > 0) {
-        const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
-        result.push({
-          timestamp,
-          value: Math.round(avg * 100) / 100,
-          label: this.formatTimestamp(timestamp),
-        });
-      }
-    });
-
-    return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
-  }
-
   private extractMetricFromLongTable(
     grouped: Map<string, Array<{ metric_name?: string; value?: number }>>,
     targetMetricName: string,

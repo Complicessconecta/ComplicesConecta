@@ -312,12 +312,20 @@ const Auth = () => {
                       ...prev,
                       password: "",
                     }));
+                    toast({
+                      title: "Modo Admin Activado",
+                      description: "Ingresa tu email de administrador para continuar",
+                    });
                   } else {
                     setFormData((prev) => ({
                       ...prev,
                       email: "",
                       password: "",
                     }));
+                    toast({
+                      title: "Modo Normal Activado",
+                      description: "Ingresa tus credenciales de usuario",
+                    });
                   }
                 }}
                 className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"

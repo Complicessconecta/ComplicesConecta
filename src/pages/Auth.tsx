@@ -307,9 +307,9 @@ const Auth = () => {
                     "complicesconectasw@outlook.es",
                   );
                   if (!isAdminMode) {
+                    // NO prellenar email - dejar que el usuario lo ingrese manualmente
                     setFormData((prev) => ({
                       ...prev,
-                      email: import.meta.env.VITE_ADMIN_EMAIL || "",
                       password: "",
                     }));
                   } else {

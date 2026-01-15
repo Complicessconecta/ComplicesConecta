@@ -75,6 +75,7 @@ const Auth = () => {
   const [__autoLocationRequested, _setAutoLocationRequested] = useState(false);
   const [__showThemeModal, _setShowThemeModal] = useState(false);
   const [__showTermsModal, _setShowTermsModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -312,6 +313,7 @@ const Auth = () => {
                       ...prev,
                       password: "",
                     }));
+                    setActiveTab("signin"); // Cambiar a pestaña de login
                     toast({
                       title: "Modo Admin Activado",
                       description: "Ingresa tu email de administrador para continuar",
@@ -358,7 +360,7 @@ const Auth = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "signin" | "signup")} className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg">
                 <TabsTrigger 
                   value="signin" 

@@ -308,6 +308,8 @@ const Auth = () => {
                     "complicesconectasw@outlook.es",
                   );
                   
+                  console.log("Botón Admin clickeado:", { isAdminMode, activeTab });
+                  
                   // Siempre cambiar a pestaña de login cuando se activa modo Admin
                   if (!isAdminMode) {
                     // NO prellenar email - dejar que el usuario lo ingrese manualmente
@@ -316,6 +318,7 @@ const Auth = () => {
                       password: "",
                     }));
                     setActiveTab("signin"); // Cambiar a pestaña de login
+                    console.log("setActiveTab('signin') llamado");
                     toast({
                       title: "Modo Admin Activado",
                       description: "Ingresa tu email de administrador para continuar",
@@ -362,7 +365,7 @@ const Auth = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "signin" | "signup")} className="w-full">
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "signin" | "signup")} className="w-full" key={activeTab}>
               <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg">
                 <TabsTrigger 
                   value="signin" 

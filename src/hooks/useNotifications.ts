@@ -188,7 +188,7 @@ export function useNotifications(
  * Hook simplificado solo para el contador
  */
 export function useUnreadCount(userId?: string): number {
-  const { unreadCount } = useNotifications({ userId, autoLoad: true });
+  const { unreadCount } = useNotifications(userId ? { userId, autoLoad: true } : { autoLoad: false });
   return unreadCount;
 }
 
@@ -199,9 +199,9 @@ export function useNotificationsByType(
   userId?: string,
   type?: NotificationType,
 ) {
-  return useNotifications({
-    userId,
-    autoLoad: true,
-    filter: { type },
-  });
+  const filter: any = {};
+  if (type) {
+    filter.type = type;
+  }
+  return useNotifications(userId ? { userId, autoLoad: true, filter } : { autoLoad: false });
 }

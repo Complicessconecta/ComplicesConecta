@@ -84,8 +84,8 @@ export const useGeolocation = () => {
             altitudeAccuracy: position.coords.altitudeAccuracy,
             heading: position.coords.heading,
             speed: position.coords.speed,
-            s2CellId,
-            s2Level,
+            ...(s2CellId && { s2CellId }),
+            ...(s2Level && { s2Level }),
           },
           error: null,
           isLoading: false,
@@ -165,8 +165,8 @@ export const useGeolocation = () => {
             altitudeAccuracy: position.coords.altitudeAccuracy,
             heading: position.coords.heading,
             speed: position.coords.speed,
-            s2CellId,
-            s2Level,
+            ...(s2CellId && { s2CellId }),
+            ...(s2Level && { s2Level }),
           },
           error: null,
           isLoading: false,
@@ -290,13 +290,19 @@ export const useGeolocation = () => {
             user.location.longitude,
           );
 
-          return {
+          const nearbyUser: any = {
             id: user.id,
             name: user.name,
             distance,
             location: user.location,
-            lastSeen: user.lastSeen,
           };
+
+          // Solo agregar lastSeen si existe
+          if (user.lastSeen) {
+            nearbyUser.lastSeen = user.lastSeen;
+          }
+
+          return nearbyUser;
         })
         .filter((user) => user.distance <= radius)
         .sort((a, b) => a.distance - b.distance);

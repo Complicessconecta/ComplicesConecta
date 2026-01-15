@@ -5,7 +5,6 @@
  * Permite a los usuarios explorar la aplicación sin crear una cuenta
  */
 
-import React from "react";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import DemoSelector from "@/components/auth/DemoSelector";
 

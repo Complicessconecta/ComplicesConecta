@@ -242,7 +242,7 @@ export class ReferralTokensService {
 
   /**
    * Crear recompensa de referido usando transacciones de Supabase
-   * NOTA: La tabla referral_rewards no existe, usamos referral_transactions
+   * NOTA: La tabla referral_rewards existe, pero usamos referral_transactions para mejor trazabilidad
    */
   async createReferralReward(
     rewardData: CreateReferralRewardData,

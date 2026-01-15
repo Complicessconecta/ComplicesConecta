@@ -13,7 +13,7 @@ DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 -- 2. Crear función auxiliar para determinar si usuario es demo sin recursión
-CREATE OR REPLACE FUNCTION auth.is_demo_user()
+CREATE OR REPLACE FUNCTION public.is_demo_user()
 RETURNS boolean
 LANGUAGE sql
 SECURITY DEFINER
@@ -22,7 +22,7 @@ AS $$
   -- Usar metadata del JWT para determinar si es demo
   -- Esto evita consultar la tabla profiles y previene recursión
   SELECT COALESCE(
-    (auth.jwt() ->> 'user_metadata' ->> 'is_demo')::boolean,
+    (auth.jwt() -> 'user_metadata' ->> 'is_demo')::boolean,
     false
   );
 $$;
@@ -32,18 +32,18 @@ ON profiles
 FOR SELECT
 USING (
   -- Solo mostrar perfiles demo si el usuario es demo
-  (auth.is_demo_user() = true AND is_demo = true)
+  (public.is_demo_user() = true AND is_demo = true)
   OR
   -- O si es el propio perfil del usuario
   (user_id = auth.uid())
 );
--- 4. Política simplificada para usuarios REALES - Sin recursión  
+-- 4. Política simplificada para usuarios REALES - Sin recursión
 CREATE POLICY "Real users see real profiles only"
 ON profiles
 FOR SELECT
 USING (
   -- Solo mostrar perfiles reales si el usuario NO es demo
-  (auth.is_demo_user() = false AND is_demo = false)
+  (public.is_demo_user() = false AND is_demo = false)
   OR
   -- O si es el propio perfil del usuario
   (user_id = auth.uid())
@@ -92,6 +92,6 @@ BEGIN
   END IF;
 END $$;
 -- 10. Comentarios para documentación
-COMMENT ON FUNCTION auth.is_demo_user() IS 'Determina si el usuario actual es demo usando JWT metadata, evitando recursión RLS';
+COMMENT ON FUNCTION public.is_demo_user() IS 'Determina si el usuario actual es demo usando JWT metadata, evitando recursión RLS';
 COMMENT ON POLICY "Demo users see demo profiles only" ON profiles IS 'Usuarios demo solo ven perfiles demo, sin recursión';
 COMMENT ON POLICY "Real users see real profiles only" ON profiles IS 'Usuarios reales solo ven perfiles reales, sin recursión';

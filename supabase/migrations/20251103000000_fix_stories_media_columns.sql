@@ -64,7 +64,8 @@ BEGIN
         WHERE table_schema = 'public' AND table_name = 'stories'
     ) THEN
         DROP TRIGGER IF EXISTS sync_stories_media_url_trigger ON stories;
-        DROP TRIGGER IF EXISTS CREATE TRIGGER ON sync_stories_media_url_trigger
+
+        CREATE TRIGGER sync_stories_media_url_trigger
             BEFORE INSERT OR UPDATE ON stories
             FOR EACH ROW
             EXECUTE FUNCTION sync_stories_media_url();

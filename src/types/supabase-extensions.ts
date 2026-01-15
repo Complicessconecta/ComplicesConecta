@@ -9,10 +9,8 @@ export type Enums<T extends keyof DB["public"]["Enums"]> =
 // Exported table types
 export type Profile = Tables<"profiles">;
 export type CoupleProfile = Tables<"couple_profiles">;
-// NOTA: Las siguientes tablas no existen aún
-// TODO: Descomentar cuando se creen las tablas
-// export type Match = Tables<"matches">;
-// export type Message = Tables<"messages">;
+export type Match = Tables<"matches">;
+export type Message = Tables<"messages">;
 export type Report = Tables<"reports">;
 export type UserRole = Tables<"user_roles">;
 // export type CareerApplication = Tables<"career_applications">;

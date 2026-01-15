@@ -57,6 +57,7 @@ USING (
   user_id = auth.uid()
 );
 -- 6. Política para INSERT - Usuarios pueden crear su propio perfil
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 CREATE POLICY "Users can insert own profile"
 ON profiles
 FOR INSERT
@@ -66,6 +67,7 @@ WITH CHECK (
   user_id = auth.uid()
 );
 -- 7. Política para UPDATE - Usuarios pueden actualizar su propio perfil
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile"
 ON profiles
 FOR UPDATE
@@ -82,9 +84,19 @@ WITH CHECK (
 -- 8. Crear índices para optimizar las consultas RLS
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id_is_demo 
 ON profiles(user_id, is_demo);
-CREATE INDEX IF NOT EXISTS idx_profiles_is_demo_active 
-ON profiles(is_demo, is_active) 
-WHERE is_active = true;
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'profiles' 
+        AND column_name = 'is_active'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_profiles_is_demo_active 
+        ON profiles(is_demo, is_active) 
+        WHERE is_active = true;
+    END IF;
+END $$;
 -- 9. Comentarios para documentación
 COMMENT ON POLICY "Real users only see real profiles" ON profiles IS 
 'Política de seguridad: Usuarios reales (is_demo=false) solo pueden ver otros perfiles reales. Previene que usuarios reales vean perfiles demo.';

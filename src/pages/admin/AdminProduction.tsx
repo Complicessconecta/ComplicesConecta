@@ -340,14 +340,13 @@ const AdminProduction = () => {
 
       // Intentar cargar métricas adicionales - tablas podrían no existir
       let apkDownloadsResponse = { count: 0 };
-      let __appMetrics = null;
       let tokenData = null;
 
       // Tabla apk_downloads no existe en el esquema actual
       apkDownloadsResponse = { count: 0 };
 
       // Tabla app_metrics no existe en el esquema actual
-      __appMetrics = null;
+      // __appMetrics = null;
 
       try {
         if (!supabase) {
@@ -382,9 +381,18 @@ const AdminProduction = () => {
         apkDownloads: apkDownloadsResponse.count || 0,
       });
 
-      // Tabla notifications no existe en el esquema actual
-      const totalNotifications = 0;
-      const unreadNotifications = 0;
+      // La tabla notifications existe con columna read
+      const { count: totalCount } = await supabase
+        .from("notifications")
+        .select("*", { count: "exact", head: true });
+
+      const { count: unreadCount } = await supabase
+        .from("notifications")
+        .select("*", { count: "exact", head: true })
+        .eq("read", false);
+
+      const totalNotifications = totalCount || 0;
+      const unreadNotifications = unreadCount || 0;
 
       setStats({
         totalUsers: totalUsers || 0,

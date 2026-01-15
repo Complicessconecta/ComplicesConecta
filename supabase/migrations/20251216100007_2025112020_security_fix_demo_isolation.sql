@@ -61,6 +61,7 @@ BEGIN
     );
 
     -- 5. Política para que usuarios puedan ver su propio perfil
+    DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
     CREATE POLICY "Users can view own profile"
     ON profiles
     FOR SELECT
@@ -71,6 +72,7 @@ BEGIN
     );
 
     -- 6. Política para INSERT - Usuarios pueden crear su propio perfil
+    DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
     CREATE POLICY "Users can insert own profile"
     ON profiles
     FOR INSERT
@@ -81,6 +83,7 @@ BEGIN
     );
 
     -- 7. Política para UPDATE - Usuarios pueden actualizar su propio perfil
+    DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
     CREATE POLICY "Users can update own profile"
     ON profiles
     FOR UPDATE

@@ -8,7 +8,7 @@
 DROP TRIGGER IF EXISTS update_story_comments_updated_at ON story_comments;
 
 -- Recrear trigger correctamente
-DROP TRIGGER IF EXISTS CREATE TRIGGER ON update_story_comments_updated_at 
+CREATE TRIGGER update_story_comments_updated_at 
     BEFORE UPDATE ON story_comments 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -36,7 +36,7 @@ BEGIN
             SELECT 1 FROM pg_trigger 
             WHERE tgname = 'trigger_gallery_commissions_updated_at'
         ) THEN 
-            DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_gallery_commissions_updated_at 
+            CREATE TRIGGER trigger_gallery_commissions_updated_at 
                 BEFORE UPDATE ON gallery_commissions 
                 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column(); 
             RAISE NOTICE '✅ Trigger trigger_gallery_commissions_updated_at creado'; 
@@ -58,7 +58,7 @@ BEGIN
             SELECT 1 FROM pg_trigger 
             WHERE tgname = 'trigger_invitation_statistics_updated_at'
         ) THEN 
-            DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_invitation_statistics_updated_at 
+            CREATE TRIGGER trigger_invitation_statistics_updated_at 
                 BEFORE UPDATE ON invitation_statistics 
                 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column(); 
             RAISE NOTICE '✅ Trigger trigger_invitation_statistics_updated_at creado'; 

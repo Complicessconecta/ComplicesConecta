@@ -50,6 +50,19 @@ interface SystemMetric {
   metadata?: Record<string, unknown>;
 }
 
+// Componente helper para progress bar sin estilos inline
+const ProgressBar = ({ value, color }: { value: number; color: string }) => {
+  const percentage = Math.min(value, 100);
+  return (
+    <div className="w-full bg-white/20 rounded-full h-2">
+      <div
+        className={`${color} h-2 rounded-full transition-all duration-300`}
+        style={{ width: `${percentage}%` }}
+      ></div>
+    </div>
+  );
+};
+
 export const PerformancePanel = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(false);
@@ -93,81 +106,81 @@ export const PerformancePanel = () => {
         return;
       }
 
-      // NOTA: La tabla performance_metrics no existe aún
-      // TODO: Descomentar cuando se cree la tabla performance_metrics
       // Consultar métricas reales de la base de datos
-      // const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-      // // Usar performance_metrics (la tabla que existe)
-      // const { data, error } = await supabase
-      //   .from("performance_metrics")
-      //   .select("*")
-      //   .gte("timestamp", oneHourAgo)
-      //   .order("timestamp", { ascending: false })
-      //   .limit(1000);
+      // Usar performance_metrics (la tabla existe con RLS habilitado)
+      const { data, error } = await supabase
+        .from("performance_metrics")
+        .select("*")
+        .gte("timestamp", oneHourAgo)
+        .order("timestamp", { ascending: false })
+        .limit(1000);
 
-      // if (error) {
-      //   logger.warn("Error loading metrics from DB, using fallback:", error);
-      //   generateMockMetrics();
-      //   return;
-      // }
+      if (error) {
+        logger.warn("Error loading metrics from DB, using fallback:", error);
+        generateMockMetrics();
+        return;
+      }
 
-      // if (!data || data.length === 0) {
-      //   // No hay datos reales aún, usar mock con advertencia
-      //   logger.info("No real metrics found in DB, using mock data");
-      //   generateMockMetrics();
-      //   return;
-      // }
+      if (!data || data.length === 0) {
+        // No hay datos reales aún, usar mock con advertencia
+        logger.info("No real metrics found in DB, using mock data");
+        generateMockMetrics();
+        return;
+      }
 
-      // // Procesar métricas reales de performance_metrics
-      // const cpuMetrics = data.filter(
-      //   (m) =>
-      //     m.metric_name?.toLowerCase().includes("cpu") ||
-      //     m.metric_name?.toLowerCase().includes("cpuusage"),
-      // );
-      // const memoryMetrics = data.filter(
-      //   (m) =>
-      //     m.metric_name?.toLowerCase().includes("memory") ||
-      //     m.metric_name?.toLowerCase().includes("memoryusage"),
-      // );
-      // const diskMetrics = data.filter(
-      //   (m) =>
-      //     m.metric_name?.toLowerCase().includes("disk") ||
-      //     m.metric_name?.toLowerCase().includes("diskio"),
-      // );
-      // const networkMetrics = data.filter(
-      //   (m) =>
-      //     m.metric_name?.toLowerCase().includes("network") ||
-      //     m.metric_name?.toLowerCase().includes("networktraffic") ||
-      //     m.metric_name?.toLowerCase().includes("resourceloadtime"),
-      // );
+      // Procesar métricas reales de performance_metrics
+      const cpuMetrics = data.filter(
+        (m) =>
+          m.metric_name?.toLowerCase().includes("cpu") ||
+          m.metric_name?.toLowerCase().includes("cpuusage"),
+      );
+      const memoryMetrics = data.filter(
+        (m) =>
+          m.metric_name?.toLowerCase().includes("memory") ||
+          m.metric_name?.toLowerCase().includes("memoryusage"),
+      );
+      const diskMetrics = data.filter(
+        (m) =>
+          m.metric_name?.toLowerCase().includes("disk") ||
+          m.metric_name?.toLowerCase().includes("diskio"),
+      );
+      const networkMetrics = data.filter(
+        (m) =>
+          m.metric_name?.toLowerCase().includes("network") ||
+          m.metric_name?.toLowerCase().includes("networktraffic") ||
+          m.metric_name?.toLowerCase().includes("resourceloadtime"),
+      );
 
-      // // Calcular promedios usando 'value' de performance_metrics
-      // const avgCpu =
-      //   cpuMetrics.length > 0
-      //     ? cpuMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-      //       cpuMetrics.length
-      //     : 0;
-      // const avgMemory =
-      //   memoryMetrics.length > 0
-      //     ? memoryMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-      //       memoryMetrics.length
-      //     : 0;
-      // const avgDisk =
-      //   diskMetrics.length > 0
-      //     ? diskMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-      //       diskMetrics.length
-      //     : 0;
-      // const avgNetwork =
-      //   networkMetrics.length > 0
-      //     ? networkMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
-      //       networkMetrics.length
-      //     : 0;
+      // Calcular promedios usando 'metric_value' de performance_metrics
+      const avgCpu =
+        cpuMetrics.length > 0
+          ? cpuMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+            cpuMetrics.length
+          : 0;
+      const avgMemory =
+        memoryMetrics.length > 0
+          ? memoryMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+            memoryMetrics.length
+          : 0;
+      const avgDisk =
+        diskMetrics.length > 0
+          ? diskMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+            diskMetrics.length
+          : 0;
+      const avgNetwork =
+        networkMetrics.length > 0
+          ? networkMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+            networkMetrics.length
+          : 0;
 
-      // Usar mock data mientras la tabla no existe
-      logger.info("Tabla performance_metrics no existe, usando mock data");
-      generateMockMetrics();
-      return;
+      setSystemMetrics({
+        cpu: avgCpu,
+        memory: avgMemory,
+        disk: avgDisk,
+        network: avgNetwork,
+      });
     } catch (error) {
       logger.error("Error loading system metrics:", {
         error: error instanceof Error ? error.message : String(error),
@@ -184,57 +197,46 @@ export const PerformancePanel = () => {
         return;
       }
 
-      // NOTA: La tabla performance_metrics no existe aún
-      // TODO: Descomentar cuando se cree la tabla performance_metrics
       // Cargar métricas más recientes (últimos 10 minutos)
-      // const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
 
-      // // Usar performance_metrics (la tabla que existe)
-      // const { data, error } = await supabase
-      //   .from("performance_metrics")
-      //   .select("*")
-      //   .gte("timestamp", tenMinutesAgo)
-      //   .order("timestamp", { ascending: false })
-      //   .limit(50);
+      // Usar performance_metrics (la tabla existe con RLS)
+      const { data, error } = await supabase
+        .from("performance_metrics")
+        .select("*")
+        .gte("created_at", tenMinutesAgo)
+        .order("created_at", { ascending: false })
+        .limit(50);
 
-      // if (error) {
-      //   logger.warn(
-      //     "Error loading recent metrics from DB, using fallback:",
-      //     error,
-      //   );
-      //   generateMockRecentMetrics();
-      //   return;
-      // }
+      if (error) {
+        logger.warn(
+          "Error loading recent metrics from DB, using fallback:",
+          error,
+        );
+        generateMockRecentMetrics();
+        return;
+      }
 
-      // if (!data || data.length === 0) {
-      //   generateMockRecentMetrics();
-      //   return;
-      // }
+      if (!data || data.length === 0) {
+        generateMockRecentMetrics();
+        return;
+      }
 
-      // Usar mock data mientras la tabla no existe
-      generateMockRecentMetrics();
-      return;
+      // Usando performance_metrics (created_at, value, unit)
+      const formattedMetrics: SystemMetric[] = data.map((m: any) => ({
+        id: m.id,
+        metric_name: m.metric_name || "Unknown",
+        metric_value: Number(m.value || 0),
+        metric_type:
+          ((m.metadata as Record<string, unknown>)?.category as string) ||
+          "system",
+        metric_unit: m.unit || "%",
+        recorded_at: m.created_at || new Date().toISOString(),
+        created_at: m.created_at || new Date().toISOString(),
+        metadata: m.metadata as Record<string, unknown> || {},
+      }));
 
-      // NOTA: La tabla performance_metrics no existe aún
-      // TODO: Descomentar cuando se cree la tabla performance_metrics
-      // // Usando performance_metrics (timestamp, value, unit)
-      // const formattedMetrics: SystemMetric[] = data.map((m) => ({
-      //   id: m.id,
-      //   metric_name: m.metric_name || "Unknown",
-      //   metric_value: Number(m.value || 0),
-      //   metric_type:
-      //     ((m.metadata as Record<string, unknown>)?.category as string) ||
-      //     "system",
-      //   metric_unit: m.unit || "%",
-      //   recorded_at: m.timestamp || m.created_at || new Date().toISOString(),
-      //   created_at: m.created_at || new Date().toISOString(),
-      //   metadata: (m.metadata as Record<string, unknown>) || {},
-      // }));
-
-      // setRecentMetrics(formattedMetrics.slice(0, 5));
-
-      // Usar mock data mientras la tabla no existe
-      generateMockRecentMetrics();
+      setRecentMetrics(formattedMetrics.slice(0, 5));
     } catch (error) {
       logger.error("Error loading recent metrics:", {
         error: error instanceof Error ? error.message : String(error),
@@ -441,12 +443,7 @@ export const PerformancePanel = () => {
                   <Cpu className="w-8 h-8 text-blue-400" />
                 </div>
                 <div className="mt-2">
-                  <div className="w-full bg-white/20 rounded-full h-2">
-                    <div
-                      className="bg-blue-400 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${Math.min(systemMetrics.cpu, 100)}%` }}
-                    ></div>
-                  </div>
+                  <ProgressBar value={systemMetrics.cpu} color="bg-blue-400" />
                 </div>
               </CardContent>
             </Card>
@@ -463,14 +460,7 @@ export const PerformancePanel = () => {
                   <Server className="w-8 h-8 text-green-400" />
                 </div>
                 <div className="mt-2">
-                  <div className="w-full bg-white/20 rounded-full h-2">
-                    <div
-                      className="bg-green-400 h-2 rounded-full transition-all duration-300"
-                      style={{
-                        width: `${Math.min(systemMetrics.memory, 100)}%`,
-                      }}
-                    ></div>
-                  </div>
+                  <ProgressBar value={systemMetrics.memory} color="bg-green-400" />
                 </div>
               </CardContent>
             </Card>
@@ -487,12 +477,7 @@ export const PerformancePanel = () => {
                   <HardDrive className="w-8 h-8 text-purple-400" />
                 </div>
                 <div className="mt-2">
-                  <div className="w-full bg-white/20 rounded-full h-2">
-                    <div
-                      className="bg-purple-400 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${Math.min(systemMetrics.disk, 100)}%` }}
-                    ></div>
-                  </div>
+                  <ProgressBar value={systemMetrics.disk} color="bg-purple-400" />
                 </div>
               </CardContent>
             </Card>
@@ -509,14 +494,7 @@ export const PerformancePanel = () => {
                   <Wifi className="w-8 h-8 text-orange-400" />
                 </div>
                 <div className="mt-2">
-                  <div className="w-full bg-white/20 rounded-full h-2">
-                    <div
-                      className="bg-orange-400 h-2 rounded-full transition-all duration-300"
-                      style={{
-                        width: `${Math.min(systemMetrics.network, 100)}%`,
-                      }}
-                    ></div>
-                  </div>
+                  <ProgressBar value={systemMetrics.network} color="bg-orange-400" />
                 </div>
               </CardContent>
             </Card>

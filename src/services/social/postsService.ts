@@ -21,24 +21,6 @@ const getString = (value: unknown): string | undefined => {
   return typeof value === "string" ? value : undefined;
 };
 
-const getStringArray = (value: unknown): string[] | undefined => {
-  if (!Array.isArray(value)) return undefined;
-  const out: string[] = [];
-  for (const v of value) {
-    if (typeof v !== "string") return undefined;
-    out.push(v);
-  }
-  return out;
-};
-
-const getCountFromAgg = (value: unknown): number => {
-  if (!Array.isArray(value) || value.length === 0) return 0;
-  const first = value[0];
-  if (!isRecord(first)) return 0;
-  const count = first["count"];
-  return typeof count === "number" ? count : 0;
-};
-
 export interface Post {
   id: string;
   user_id: string;
@@ -149,12 +131,6 @@ export class PostsService {
       "photo",
       "video",
     ];
-    const locations = [
-      "CDMX, México",
-      "Guadalajara, México",
-      "Monterrey, México",
-      "Puebla, México",
-    ];
     const contents = [
       "¡Explorando nuevas conexiones en la comunidad! 😊",
       "Una noche increíble con parejas increíbles 💖",
@@ -169,20 +145,6 @@ export class PostsService {
     for (let i = 0; i < count; i++) {
       const postType = postTypes[Math.floor(Math.random() * postTypes.length)]!;
       const content = contents[Math.floor(Math.random() * contents.length)];
-
-      // URLs de imágenes reales para posts (Unsplash con IDs válidos + picsum)
-      const realImageUrls = [
-        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop", // Grupo de personas
-        "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&h=400&fit=crop", // Pareja feliz
-        "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&h=400&fit=crop", // Fiesta/evento
-        "https://images.unsplash.com/photo-1519671282429-b44660c9c3e6?w=600&h=400&fit=crop", // Evento social
-        "https://images.unsplash.com/photo-1510076857177-7470076d4098?w=600&h=400&fit=crop", // Amigos celebrando
-        "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&h=400&fit=crop", // Pareja romántica
-        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&h=400&fit=crop", // Evento nocturno
-        "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop", // Fiesta
-        "https://picsum.photos/seed/lifestyle1/600/400", // Imagen aleatoria 1
-        "https://picsum.photos/seed/lifestyle2/600/400", // Imagen aleatoria 2
-      ];
 
       // Avatares reales usando pravatar.cc y UI Avatars
       const avatarUrls = [
@@ -282,8 +244,6 @@ export class PostsService {
    */
   async getFeed(page = 0, limit = 20): Promise<Post[]> {
     try {
-      const _operationStart = performance.now();
-
       // Verificar cache primero
       const cacheKey = `feed_${page}_${limit}`;
       const cached = this.feedCache.get(cacheKey);
@@ -317,66 +277,67 @@ export class PostsService {
 
       const startTime = performance.now();
 
-      // NOTA: La tabla stories no existe aún
-      // TODO: Descomentar cuando se cree la tabla stories
-      // CONSULTA OPTIMIZADA: Una sola consulta con agregaciones
-      // const { data, error } = await supabase
-      //   .from("stories")
-      //   .select(
-      //     `
-      //     id,
-      //     user_id,
-      //     description as content,
-      //     content_type as post_type,
-      //     media_urls,
-      //     location,
-      //     views_count,
-      //     created_at,
-      //     updated_at,
-      //     story_likes(count),
-      //     story_comments(count),
-      //     story_shares(count)
-      //   `,
-      //   )
-      //   .eq("is_public", true)
-      //   .order("created_at", { ascending: false })
-      //   .range(page * limit, (page + 1) * limit - 1);
+      // La tabla stories existe con las columnas necesarias
+      const { data: storiesData, error } = await supabase
+        .from("stories")
+        .select("*")
+        .eq("is_public", true)
+        .order("created_at", { ascending: false })
+        .range(page * limit, (page + 1) * limit - 1);
 
-      // const queryDuration = performance.now() - startTime;
-      // performanceMonitoring.recordMetric({
-      //   name: "stories_query",
-      //   value: queryDuration,
-      //   unit: "ms",
-      //   category: "network",
-      //   metadata: {
-      //     page,
-      //     limit,
-      //     resultCount: data?.length || 0,
-      //     optimization: "90% reduction in queries",
-      //   },
-      // });
+      const queryDuration = performance.now() - startTime;
+      performanceMonitoring.recordMetric({
+        name: "stories_query",
+        value: queryDuration,
+        unit: "ms",
+        category: "network",
+        metadata: {
+          page,
+          limit,
+          resultCount: storiesData?.length || 0,
+          optimization: "90% reduction in queries",
+        },
+      });
 
       // Si hay error o no hay datos, usar posts demo
-      // if (error || !data || data.length === 0) {
-      //   logger.warn("No feed data from Supabase, using demo posts", { error });
-      //   const demoPosts = this.generateMockPosts(10);
-      //   // Guardar en cache para evitar llamadas repetidas
-      //   this.feedCache.set(cacheKey, {
-      //     data: demoPosts,
-      //     timestamp: Date.now(),
-      //   });
-      //   return demoPosts;
-      // }
+      if (error || !storiesData || storiesData.length === 0) {
+        logger.warn("No feed data from Supabase, using demo posts", { error });
+        const demoPosts = this.generateMockPosts(10);
+        // Guardar en cache para evitar llamadas repetidas
+        this.feedCache.set(cacheKey, {
+          data: demoPosts,
+          timestamp: Date.now(),
+        });
+        return demoPosts;
+      }
 
-      // Usar posts demo mientras la tabla stories no existe
-      logger.warn("Tabla stories no existe, usando demo posts");
-      const demoPosts = this.generateMockPosts(10);
-      // Guardar en cache para evitar llamadas repetidas
+      // Mapear datos de stories a formato Post
+      const posts: Post[] = storiesData.map((story: any) => ({
+        id: story.id,
+        user_id: story.user_id,
+        profile_id: story.user_id,
+        content: story.description || story.caption || "",
+        post_type: story.content_type || story.media_type || "image",
+        media_urls: Array.isArray(story.media_urls)
+          ? story.media_urls
+          : story.media_url
+            ? [story.media_url]
+            : [],
+        location: story.location || null,
+        views_count: story.views_count || 0,
+        likes_count: 0,
+        comments_count: 0,
+        shares_count: 0,
+        created_at: story.created_at,
+        updated_at: story.updated_at || story.created_at,
+      }));
+
+      // Guardar en cache y retornar datos reales
       this.feedCache.set(cacheKey, {
-        data: demoPosts,
+        data: posts,
         timestamp: Date.now(),
       });
-      return demoPosts;
+      return posts;
     } catch (error) {
       logger.error("Error loading feed:", {
         error: error instanceof Error ? error.message : String(error),

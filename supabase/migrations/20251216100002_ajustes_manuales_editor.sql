@@ -5,10 +5,24 @@
 -- =====================================================
 
 -- PASO 1: ELIMINAR TODOS LOS TRIGGERS PROBLEMÁTICOS
-DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
-DROP TRIGGER IF EXISTS trigger_couple_nft_requests_updated_at ON couple_nft_requests;
-DROP TRIGGER IF EXISTS trigger_user_nfts_updated_at ON user_nfts;
-DROP TRIGGER IF EXISTS trigger_user_wallets_updated_at ON user_wallets;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'club_reviews' AND table_schema = 'public') THEN
+        DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'couple_nft_requests' AND table_schema = 'public') THEN
+        DROP TRIGGER IF EXISTS trigger_couple_nft_requests_updated_at ON couple_nft_requests;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_nfts' AND table_schema = 'public') THEN
+        DROP TRIGGER IF EXISTS trigger_user_nfts_updated_at ON user_nfts;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_wallets' AND table_schema = 'public') THEN
+        DROP TRIGGER IF EXISTS trigger_user_wallets_updated_at ON user_wallets;
+    END IF;
+END $$;
 -- PASO 2: CREAR TABLAS BLOCKCHAIN SI NO EXISTEN
 
 -- Tabla: couple_nft_requests

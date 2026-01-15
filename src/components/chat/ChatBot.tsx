@@ -227,13 +227,17 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                     }`}>
                       {formatTime(message.timestamp)}
                     </p>
-                    {message.metadata?.model && typeof message.metadata.model === 'string' && (
-                      <p className={`text-xs mt-1 ${
-                        message.role === 'user' ? 'text-purple-200' : 'text-gray-500'
-                      }`}>
-                        Model: {String(message.metadata.model)}
-                      </p>
-                    )}
+                    {(() => {
+                      const model = message.metadata?.model;
+                      if (!model) return null;
+                      return (
+                        <p className={`text-xs mt-1 ${
+                          message.role === 'user' ? 'text-purple-200' : 'text-gray-500'
+                        }`}>
+                          Model: {String(model)}
+                        </p>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>

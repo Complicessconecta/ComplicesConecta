@@ -301,6 +301,140 @@ export const useAuth = () => {
     }
   };
 
+  // ============================================
+  // FUNCIONES DEDICADAS DE AUTENTICACIÓN
+  // ============================================
+
+  /**
+   * Maneja el flujo de autenticación demo
+   * @param email - Email del usuario
+   * @param password - Contraseña del usuario
+   * @param accountType - Tipo de cuenta (single/couple/admin)
+   * @returns Datos de sesión demo o null
+   */
+  const handleDemoAuthFlow = async (
+    email: string,
+    password: string,
+    accountType: string = "single",
+  ) => {
+    if (!DEMO_CREDENTIALS.includes(email)) {
+      return null;
+    }
+
+    logger.info("🎭 Credencial demo detectada");
+    const demoPassword = getDemoPassword(email);
+
+    if (password !== demoPassword) {
+      throw new Error("Contraseña incorrecta para usuario demo");
+    }
+
+    // Manejar autenticación demo
+    const demoAuth = handleDemoAuth(email, accountType);
+    if (demoAuth) {
+      // CRÍTICO: Persistir demo_user antes de loadProfile
+      const mockUser: User = {
+        ...(demoAuth.user as object),
+        app_metadata: { provider: 'email', providers: ['email'] },
+        user_metadata: {},
+        aud: 'authenticated',
+      } as User;
+
+      const mockSession: Session = {
+        ...(demoAuth.session as object),
+        user: mockUser,
+        expires_in: 3600,
+        token_type: 'bearer',
+        refresh_token: 'demo-refresh-token',
+      } as Session;
+
+      _setDemoUser(mockUser as unknown as Profile);
+      setUser(mockUser);
+      setSession(mockSession);
+      await loadProfile(demoAuth.user.id);
+      logger.info("✅ Sesión demo iniciada", { email });
+      return { user: demoAuth.user, session: demoAuth.session };
+    }
+
+    return null;
+  };
+
+  /**
+   * Maneja el flujo de autenticación real con Supabase
+   * @param email - Email del usuario
+   * @param password - Contraseña del usuario
+   * @returns Datos de sesión real o null
+   */
+  const handleRealAuthFlow = async (
+    email: string,
+    password: string,
+  ) => {
+    if (!supabase) {
+      throw new Error("Supabase no está disponible");
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      logger.error("❌ Error de autenticación Supabase", {
+        error: error.message,
+      });
+      throw error;
+    }
+
+    if (data.user) {
+      logger.info("✅ Usuario autenticado con Supabase", {
+        email: data.user.email,
+      });
+      setUser(data.user);
+      setSession(data.session);
+      await loadProfile(data.user.id);
+      logger.info("✅ Sesión real iniciada", { email });
+    }
+
+    return data;
+  };
+
+  /**
+   * Verifica si un usuario es admin o moderador
+   * Basado en email, role y flags de sesión
+   * @returns true si es admin o moderador
+   */
+  const isAdminOrModerator = (): boolean => {
+    const sessionFlags = StorageManager.getSessionFlags();
+
+    // Verificar demo admin/moderator
+    if (sessionFlags.demo_authenticated && demoUser) {
+      const parsedDemoUser =
+        typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
+      const role = parsedDemoUser?.role?.toLowerCase();
+      return role === "admin" || role === "moderator";
+    }
+
+    // Verificar admin/moderator real basado en email
+    const userEmail = user?.email?.toLowerCase();
+    const adminEmails = [
+      "admin",
+      "complicesconectasw@outlook.es",
+      "djwacko28@gmail.com",
+    ];
+
+    // PRIORIDAD: Email de autenticación determina admin status
+    const isAdminByEmail = userEmail && adminEmails.includes(userEmail);
+
+    // SECUNDARIO: Role del perfil (solo si email no es admin)
+    const profileRole = profile?.role?.toLowerCase();
+    const isAdminByRole =
+      !isAdminByEmail && (profileRole === "admin" || profileRole === "moderator");
+
+    return isAdminByEmail || isAdminByRole;
+  };
+
+  // ============================================
+  // FUNCIÓN PRINCIPAL DE SIGN IN
+  // ============================================
   const signIn = async (
     email: string,
     password: string,
@@ -310,110 +444,35 @@ export const useAuth = () => {
       setLoading(true);
       logger.info("🔐 Intentando iniciar sesión", { email, mode: config.mode });
 
-      // Verificar si es una credencial demo (antes de intentar Supabase)
-      if (DEMO_CREDENTIALS.includes(email)) {
-        logger.info("🎭 Credencial demo detectada");
-        const demoPassword = getDemoPassword(email);
-
-        if (password !== demoPassword) {
-          throw new Error("Contraseña incorrecta para usuario demo");
-        }
-
-        // Manejar autenticación demo
-        const demoAuth = handleDemoAuth(email, accountType);
-        if (demoAuth) {
-          // CRÍTICO: Persistir demo_user antes de loadProfile para que loadProfile entre en la rama demo
-          const mockUser: User = {
-            ...(demoAuth.user as object),
-            app_metadata: { provider: 'email', providers: ['email'] },
-            user_metadata: {},
-            aud: 'authenticated',
-          } as User;
-
-          const mockSession: Session = {
-            ...(demoAuth.session as object),
-            user: mockUser,
-            expires_in: 3600,
-            token_type: 'bearer',
-            refresh_token: 'demo-refresh-token',
-          } as Session;
-
-          _setDemoUser(mockUser as unknown as Profile);
-          setUser(mockUser);
-          setSession(mockSession);
-          await loadProfile(demoAuth.user.id);
-          logger.info("✅ Sesión demo iniciada", { email });
-          return { user: demoAuth.user, session: demoAuth.session };
-        }
+      // 1. Verificar si es credencial demo (prioridad más alta)
+      const demoResult = await handleDemoAuthFlow(email, password, accountType);
+      if (demoResult) {
+        return demoResult;
       }
 
-      // Verificar si es credencial de producción (admin)
+      // 2. Verificar si es credencial de producción (admin)
       if (isProductionAdmin(email)) {
         logger.info(
           "🏢 Credencial de producción detectada - limpiando demo y usando Supabase real",
         );
-
-        // IMPORTANTE: Limpiar cualquier sesión demo antes de autenticar producción
         clearDemoAuth();
-
-        if (!supabase) {
-          logger.error("❌ Supabase no está disponible");
-          setLoading(false);
-          throw new Error("Supabase no está disponible");
-        }
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-          setUser(data.user);
-          setSession(data.session);
-          await loadProfile(data.user.id);
+        const realResult = await handleRealAuthFlow(email, password);
+        if (realResult) {
           logger.info("✅ Sesión de producción iniciada", { email });
+          return realResult;
         }
-
-        return data;
       }
 
-      // Usuario real (no demo, no admin especial) - intentar autenticación con Supabase
+      // 3. Usuario real (no demo, no admin especial)
       logger.info("🔗 Usuario real detectado - intentando autenticación con Supabase", { email });
-
-      // Limpiar cualquier sesión demo antes de autenticar
       clearDemoAuth();
-
-      if (!supabase) {
-        logger.error("❌ Supabase no está disponible");
-        setLoading(false);
-        throw new Error("Supabase no está disponible");
-      }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        logger.error("❌ Error de autenticación Supabase", {
-          error: error.message,
-        });
-        throw error;
-      }
-
-      if (data.user) {
-        logger.info("✅ Usuario autenticado con Supabase", {
-          email: data.user.email,
-        });
-        setUser(data.user);
-        setSession(data.session);
-        await loadProfile(data.user.id);
+      const realResult = await handleRealAuthFlow(email, password);
+      if (realResult) {
         logger.info("✅ Sesión real iniciada", { email });
+        return realResult;
       }
 
-      return data;
+      return null;
     } catch (error) {
       logger.error("❌ Error signing in", {
         error: error instanceof Error ? error.message : String(error),
@@ -575,6 +634,7 @@ export const useAuth = () => {
     shouldUseProductionAdmin,
     isDemoMode,
     shouldUseRealSupabase,
+    isAdminOrModerator,
     appMode: "production" as const,
   };
 };

@@ -456,7 +456,7 @@ export class ContentProtectionService {
   async checkContentAccess(
     userId: string,
     contentId: string,
-    contentType: string,
+    _contentType: string,
     isPrivate: boolean,
   ): Promise<boolean> {
     if (!isPrivate) return true;
@@ -503,7 +503,7 @@ export class ContentProtectionService {
   /**
    * Reportar violación
    */
-  private async handleProtectionViolation(type: string): Promise<void> {
+  private async _handleProtectionViolation(type: string): Promise<void> {
     logger.error("[ContentProtection] VIOLATION DETECTED", { type });
 
     await this.logContentAccess({

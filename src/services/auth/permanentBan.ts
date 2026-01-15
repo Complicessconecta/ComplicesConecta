@@ -29,7 +29,7 @@ export interface BanCheckResult {
  */
 export const createPermanentBan = async (
   banData: PermanentBanData,
-  bannedBy: string,
+  _bannedBy: string,
 ): Promise<string> => {
   try {
     logger.info("🚫 Creando baneo permanente", { userId: banData.userId });
@@ -39,7 +39,7 @@ export const createPermanentBan = async (
     }
 
     // Generar huella digital
-    const fingerprint = await generateDigitalFingerprint(
+    const _fingerprint = await generateDigitalFingerprint(
       banData.worldIdNullifierHash,
     );
 

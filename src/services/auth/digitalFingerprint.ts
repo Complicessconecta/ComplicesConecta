@@ -169,8 +169,8 @@ export const generateDigitalFingerprint = async (
  * Verificar si la huella digital está baneada
  */
 export const checkFingerprintBanned = async (
-  fingerprint: DigitalFingerprint,
-  worldIdNullifierHash?: string,
+  _fingerprint: DigitalFingerprint,
+  _worldIdNullifierHash?: string,
 ): Promise<boolean> => {
   try {
     if (!supabase) {

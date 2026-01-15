@@ -1,9 +1,23 @@
 # 💖 ComplicesConecta - Presentación Pública
 
-**Versión:** 3.9.1
+**Versión:** 3.9.2
 **Fecha:** 15 de Enero, 2026
 **Última Actualización:** 15 de Enero, 2026
-**Estado:** ✅ PRODUCTION READY - AI INTEGRATION COMPLETE - TYPESCRIPT CLEAN - MODERATION REFACTORED
+**Estado:** ✅ PRODUCTION READY - AI INTEGRATION COMPLETE - TYPESCRIPT CLEAN - MODERATION REFACTORED - ADVANCED FEATURES UPDATED
+
+### 📅 Bitácora 15 Ene 2026 (v3.9.2)
+
+- **🔧 Advanced Features Actualizado:** Descomentado código usando columnas existentes en Supabase
+  - Location compatibility: usando latitude y longitude
+  - Gender compatibility: usando interested_in
+  - Account type compatibility: usando account_type e interested_in
+  - Location-based starters: usando latitude y longitude
+- **📦 Import Actualizado:** Cambiado a supabase-updated.ts con columnas completas
+- **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores
+- **🔧 Refactorización ContentModeration:** Separación de patrones y listas en archivos modulares
+- **📁 Nuevos Archivos de Patrones:** Creación de `src/lib/moderation/patterns/` con 5 archivos especializados
+- **🔐 Security Hardening:** Aumentado iteraciones PBKDF2 a 600000 (NIST 2025+)
+- **♿ Accesibilidad:** Corrección de problemas en BackgroundControls.tsx (aria-label en botones)
 
 ### 📅 Bitácora 15 Ene 2026 (v3.9.1)
 

@@ -1,13 +1,31 @@
-# RELEASE NOTES v3.9.1
+# RELEASE NOTES v3.9.2
 
 ## 🚀 Highlights
-- **🔧 Refactorización ContentModeration:** Separación de patrones y listas en archivos modulares para mejor mantenibilidad
-- **📁 Nuevos Archivos de Patrones:** Creación de `src/lib/moderation/patterns/` con 5 archivos especializados
-- **🎯 Mejoras de Mantenibilidad:** Reducción de 496 líneas en contentModeration.ts, código más modular y escalable
+- **🔧 Advanced Features Actualizado:** Descomentado código usando columnas existentes en Supabase
+- **📦 Import Actualizado:** Cambiado a supabase-updated.ts con columnas completas
 - **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores
+- **🔧 Refactorización ContentModeration:** Separación de patrones y listas en archivos modulares
+- **📁 Nuevos Archivos de Patrones:** Creación de `src/lib/moderation/patterns/` con 5 archivos especializados
+- **🔐 Security Hardening:** Aumentado iteraciones PBKDF2 a 600000 (NIST 2025+)
 - **♿ Accesibilidad:** Corrección de problemas en BackgroundControls.tsx (aria-label en botones)
 
-## 📅 Bitácora 15 Ene 2026 (v3.9.1)
+## 📅 Bitácora 15 Ene 2026 (v3.9.2)
+
+### Advanced Features Actualizado
+
+#### Columnas Descomentadas
+- **Location compatibility:** usando latitude y longitude de la tabla profiles
+- **Gender compatibility:** usando interested_in de la tabla profiles
+- **Account type compatibility:** usando account_type e interested_in de la tabla profiles
+- **Location-based starters:** usando latitude y longitude de la tabla profiles
+
+#### Import Actualizado
+- Cambiado de `@/types/supabase-generated.ts` a `@/types/supabase-updated.ts`
+- Ahora usa columnas completas: account_type, interested_in, latitude, longitude
+
+#### Errores Corregidos
+- Variable no usada `calculateLocationCompatibility` - ahora se usa en calculateAdvancedCompatibility
+- Variable no usada `_total` - eliminada
 
 ### Refactorización ContentModeration
 

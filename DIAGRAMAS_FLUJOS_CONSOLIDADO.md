@@ -1,6 +1,15 @@
 --- BEGIN FILE: DIAGRAMAS_FLUJOS_v3.0.md ---
 
-# 📊 DIAGRAMAS DE FLUJOS v3.9.1 - COMPLICESCONECTA v3.9.1
+# 📊 DIAGRAMAS DE FLUJOS v3.9.2 - COMPLICESCONECTA v3.9.2
+
+#> Actualización 15 Ene 2026 04:27
+#> - Advanced Features Actualizado: Descomentado código usando columnas existentes en Supabase
+#> - Location compatibility: usando latitude y longitude
+#> - Gender compatibility: usando interested_in
+#> - Account type compatibility: usando account_type e interested_in
+#> - Location-based starters: usando latitude y longitude
+#> - Import actualizado a supabase-updated.ts con columnas completas
+#> - Type-check pasa exitosamente sin errores
 
 #> Actualización 15 Ene 2026 04:16
 #> - Refactorización ContentModeration: Separación de patrones y listas en archivos modulares

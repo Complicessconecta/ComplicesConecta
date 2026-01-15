@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { NotificationService } from "@/lib/notifications";
-import type { Database } from "@/types/supabase-generated";
+import type { Database } from "@/types/supabase-updated";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -165,8 +165,12 @@ export class AdvancedFeaturesService {
       );
     }
 
-    // Location compatibility - usar valores por defecto ya que latitude/longitude no existen en la tabla
-    const locationScore = 0.5; // Score por defecto
+    // Location compatibility - latitude y longitude existen en la tabla
+    const locationScore = this.calculateLocationCompatibility(
+      `${user1.latitude || 0},${user1.longitude || 0}`,
+      `${user2.latitude || 0},${user2.longitude || 0}`,
+      config.filters.maxDistance
+    );
     scores.location = locationScore;
     if (locationScore > 0.8) {
       reasons.push("Ubicaciones ideales para encuentros discretos");
@@ -183,24 +187,24 @@ export class AdvancedFeaturesService {
       reasons.push("Rango de edad ideal para conexión");
     }
 
-    // Gender compatibility - usar valores por defecto ya que interested_in no existe en la tabla
+    // Gender compatibility - interested_in existe en la tabla
     const genderScore = this.calculateGenderCompatibility(
       user1.gender,
-      null, // interested_in no existe en la tabla
+      user1.interested_in,
       user2.gender,
-      null, // interested_in no existe en la tabla
+      user2.interested_in,
     );
     scores.gender = genderScore;
     if (genderScore > 0.8) {
       reasons.push("Preferencias de género compatibles");
     }
 
-    // Account type compatibility - usar valores por defecto ya que account_type no existe en la tabla
+    // Account type compatibility - account_type e interested_in existen en la tabla
     const accountTypeScore = this.calculateAccountTypeCompatibility(
-      "single", // account_type no existe en la tabla
-      null, // interested_in no existe en la tabla
-      "single", // account_type no existe en la tabla
-      null, // interested_in no existe en la tabla
+      user1.account_type || "single",
+      user1.interested_in,
+      user2.account_type || "single",
+      user2.interested_in,
     );
     scores.accountType = accountTypeScore;
     if (accountTypeScore > 0.8) {
@@ -1063,17 +1067,16 @@ export class AdvancedFeaturesService {
         starters.push(...complementaryStarters);
       }
 
-      // Add location-based starters - latitude/longitude no existen en la tabla
-      // TODO: Implementar cuando latitude/longitude estén disponibles en la tabla profiles
-      // if (user.latitude && user.longitude && match.latitude && match.longitude) {
-      //   starters.push({
-      //     id: crypto.randomUUID(),
-      //     category: 'interests',
-      //     text: '¿Conoces buenos lugares discretos para encuentros?',
-      //     context_tags: ['location', 'recommendations', 'discretion'],
-      //     success_rate: 0.70
-      //   });
-      // }
+      // Add location-based starters - latitude y longitude existen en la tabla
+      if (userProfile.latitude && userProfile.longitude && matchProfile.latitude && matchProfile.longitude) {
+        starters.push({
+          id: crypto.randomUUID(),
+          category: "interests",
+          text: "¿Conoces buenos lugares discretos para encuentros?",
+          context_tags: ["location", "recommendations", "discretion"],
+          success_rate: 0.7,
+        });
+      }
 
       // Sort by success rate and return top starters
       return starters

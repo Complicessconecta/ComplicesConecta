@@ -1,9 +1,18 @@
 # Esquema Faltante en `couple_disputes` para `CoupleDissolutionService`
 
 **Última Actualización:** 15 de Enero, 2026  
-**Versión:** v3.9.1
+**Versión:** v3.9.2
 
 El servicio `src/services/legal/CoupleDissolutionService.ts` utiliza columnas y lógica que no coinciden con la tabla `couple_disputes` actual en `types.ts`.
+
+## 📅 Actualización v3.9.2 (15 Ene 2026)
+
+### Advanced Features Actualizado
+- **🔧 Advanced Features Actualizado:** Descomentado código usando columnas existentes en Supabase
+- **📦 Import Actualizado:** Cambiado a supabase-updated.ts con columnas completas
+- **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores
+- **🔧 Refactorización ContentModeration:** Separación de patrones y listas en archivos modulares
+- **🔐 Security Hardening:** Aumentado iteraciones PBKDF2 a 600000 (NIST 2025+)
 
 ## 📅 Actualización v3.9.1 (15 Ene 2026)
 

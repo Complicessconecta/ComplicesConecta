@@ -9,43 +9,17 @@
  */
 
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  BarChart3,
-  Users,
-  Activity,
-  UserPlus,
-  TrendingUp,
-  Download,
-  RefreshCw,
-  Eye,
-  Heart,
-  MessageCircle,
-  DollarSign as CurrencyDollarIcon,
-} from "lucide-react";
+import { BarChart3, Users, Activity, UserPlus, TrendingUp, Download, RefreshCw, Eye, Heart, MessageCircle, DollarSign as CurrencyDollarIcon } from "lucide-react";
 
 // Importaciones para analytics de tokens
-import {
-  TokenAnalyticsService,
-  type TokenMetrics,
-} from "@/services/TokenAnalyticsService";
+import { TokenAnalyticsService, type TokenMetrics } from "@/services/TokenAnalyticsService";
 import { analyticsMetrics } from "@/lib/analytics-metrics";
 
 type AnalyticsData = {

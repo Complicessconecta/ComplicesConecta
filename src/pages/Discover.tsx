@@ -1002,7 +1002,6 @@ export const Discover = () => {
                     <CoupleProfileCard
                       profile={coupleProfile}
                       onLike={() => handleLike(coupleProfile.id)}
-                      _onMessage={() => handleMessage(coupleProfile.id)}
                       onOpenModal={() => {
                         toast({
                           title: "Acción requerida",

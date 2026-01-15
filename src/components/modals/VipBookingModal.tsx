@@ -37,6 +37,7 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({
             <button
               type="button"
               onClick={onClose}
+              aria-label="Cerrar modal"
               className="absolute right-4 top-4 text-zinc-400 hover:text-white"
             >
               <X className="w-5 h-5" />

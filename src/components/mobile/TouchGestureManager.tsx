@@ -130,23 +130,30 @@ export class TouchGestureManager {
 
     if (touches.length === 1) {
       // Gesto con un dedo
-      this.touchStart = this.getTouchPoint(touches[0]);
-      this.touchCurrent = this.touchStart;
+      const touch = touches[0];
+      if (touch) {
+        this.touchStart = this.getTouchPoint(touch);
+        this.touchCurrent = this.touchStart;
 
-      // Iniciar timer para long press
-      if (this.callbacks.onLongPress) {
-        this.longPressTimer = setTimeout(() => {
-          if (this.touchStart && !this.isDragging) {
-            this.callbacks.onLongPress!(this.touchStart);
-            logger.info("👆 Long press detectado");
-          }
-        }, this.config.longPressDelay);
+        // Iniciar timer para long press
+        if (this.callbacks.onLongPress) {
+          this.longPressTimer = setTimeout(() => {
+            if (this.touchStart && !this.isDragging) {
+              this.callbacks.onLongPress!(this.touchStart);
+              logger.info("👆 Long press detectado");
+            }
+          }, this.config.longPressDelay);
+        }
       }
     } else if (touches.length === 2) {
       // Gesto con dos dedos (pinch)
-      this.initialDistance = this.getDistance(touches[0], touches[1]);
-      this.currentScale = 1;
-      this.clearLongPressTimer();
+      const touch0 = touches[0];
+      const touch1 = touches[1];
+      if (touch0 && touch1) {
+        this.initialDistance = this.getDistance(touch0, touch1);
+        this.currentScale = 1;
+        this.clearLongPressTimer();
+      }
     }
   };
 
@@ -157,7 +164,10 @@ export class TouchGestureManager {
 
     if (touches.length === 1 && this.touchStart) {
       // Movimiento con un dedo
-      const currentPoint = this.getTouchPoint(touches[0]);
+      const touch = touches[0];
+      if (!touch) return;
+
+      const currentPoint = this.getTouchPoint(touch);
       const delta = {
         x: currentPoint.x - this.touchCurrent!.x,
         y: currentPoint.y - this.touchCurrent!.y,
@@ -189,11 +199,15 @@ export class TouchGestureManager {
       }
     } else if (touches.length === 2 && this.callbacks.onPinch) {
       // Gesto pinch
-      const currentDistance = this.getDistance(touches[0], touches[1]);
+      const touch0 = touches[0];
+      const touch1 = touches[1];
+      if (!touch0 || !touch1) return;
+
+      const currentDistance = this.getDistance(touch0, touch1);
       const scale = currentDistance / this.initialDistance;
 
       if (Math.abs(scale - this.currentScale) > this.config.pinchThreshold) {
-        const center = this.getCenter(touches[0], touches[1]);
+        const center = this.getCenter(touch0, touch1);
 
         this.callbacks.onPinch({
           scale,

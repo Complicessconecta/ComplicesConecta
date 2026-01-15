@@ -1,16 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
-import {
-  X,
-  Heart,
-  Sparkles,
-  Gift,
-  Star,
-  Zap,
-  HelpCircle,
-  Globe,
-  Shield,
-} from "lucide-react";
+import { X, Heart, Sparkles, Gift, Star, Zap, HelpCircle, Globe, Shield } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";

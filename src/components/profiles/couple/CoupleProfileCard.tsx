@@ -18,70 +18,17 @@ interface CoupleProfileWithPartners extends ServiceCoupleProfileWithPartners {
 interface CoupleProfileCardProps {
   profile: CoupleProfileWithPartners;
   onLike?: (id: string) => void;
-  _onSuperLike?: (profile: CoupleProfileWithPartners) => void;
-  _onMessage?: () => void;
   onOpenModal: () => void;
-  _showActions?: boolean;
-  _showInviteButton?: boolean;
   // Nueva prop para habilitar temas visuales sincronizada con MainProfileCard
   useThemeBackground?: boolean;
-}
-
-// Get theme colors based on relationship type
-const _getRelationshipTheme = (__relationshipType: any) => {
-  switch (__relationshipType) {
-    case "man-man":
-      return {
-        gradient: "from-blue-500 to-indigo-600",
-        badge: "bg-blue-500",
-        border: "border-blue-300",
-        text: "text-blue-600",
-        hover: "hover:bg-blue-50",
-        accent: "bg-gradient-to-r from-blue-400 to-indigo-500",
-      };
-    case "woman-woman":
-      return {
-        gradient: "from-pink-500 to-purple-600",
-        badge: "bg-pink-500",
-        border: "border-pink-300",
-        text: "text-pink-600",
-        hover: "hover:bg-pink-50",
-        accent: "bg-gradient-to-r from-pink-400 to-purple-500",
-      };
-    case "man-woman":
-    default:
-      return {
-        gradient: "from-purple-500 to-pink-600",
-        badge: "bg-purple-500",
-        border: "border-purple-300",
-        text: "text-purple-600",
-        hover: "hover:bg-purple-50",
-        _accent: "bg-gradient-to-r from-purple-400 to-pink-500",
-      };
-  }
-};
-
-// Get relationship type display name
-const getRelationshipDisplayName = (_relationshipType: any) => {
-  switch (_relationshipType) {
-    case "man-man":
-      return "Pareja Masculina";
-    case "woman-woman":
-      return "Pareja Femenina";
-    case "man-woman":
-    default:
-      return "Pareja Mixta";
-  }
+  onSuperLike?: (id: string) => void;
+  onDislike?: (id: string) => void;
 };
 
 const CoupleProfileCard = ({
   profile,
   onLike,
-  _onSuperLike,
-  _onMessage,
   onOpenModal,
-  _showActions = true,
-  _showInviteButton = true,
   useThemeBackground = false,
 }: CoupleProfileCardProps) => {
   const {
@@ -99,11 +46,6 @@ const CoupleProfileCard = ({
 
   // Obtener configuración de tema usando el hook unificado
   const themeConfig = useProfileTheme("couple", genders);
-
-  const _isCouple = profile.relationship_type;
-  const _relationshipDisplayName = getRelationshipDisplayName(
-    profile.relationship_type,
-  );
 
   // Use couple images if available, otherwise use placeholder
   const partner1Avatar =

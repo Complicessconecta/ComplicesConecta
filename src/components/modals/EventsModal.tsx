@@ -1,21 +1,8 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/Modal";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Calendar,
-  MapPin,
-  Users,
-  Crown,
-  Shield,
-  Clock,
-  Star,
-} from "lucide-react";
+import { Calendar, MapPin, Users, Crown, Shield, Clock, Star } from "lucide-react";
 
 interface EventsModalProps {
   isOpen: boolean;

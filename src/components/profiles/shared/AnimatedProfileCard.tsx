@@ -5,11 +5,7 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { cn } from "@/shared/lib/cn";
-import {
-  isTouchDevice,
-  getAnimationConfig,
-  addTouchSupport,
-} from "@/utils/mobile";
+import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
 
 interface ProfileCardProps {
   id: number;

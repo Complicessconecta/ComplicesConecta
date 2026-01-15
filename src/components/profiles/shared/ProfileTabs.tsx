@@ -1,24 +1,8 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  User,
-  Users,
-  Heart,
-  MessageCircle,
-  Image as ImageIcon,
-  Settings,
-  MapPin,
-  Star,
-  Eye,
-  Calendar,
-} from "lucide-react";
+import { User, Users, Heart, MessageCircle, Image as ImageIcon, Settings, MapPin, Star, Eye, Calendar } from "lucide-react";
 import { EnhancedGallery } from "@/components/profiles/shared/EnhancedGallery";
 import { cn } from "@/shared/lib/cn";
 

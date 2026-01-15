@@ -13,18 +13,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface ImageGalleryProps {
   images: string[];
-  _onImageClick?: (index: number) => void;
-  _showUpload?: boolean;
-  _onUpload?: (file: File) => void;
   profileId?: string;
   isOwner?: boolean;
 }
 
 export function ImageGallery({
   images: _images,
-  _onImageClick,
-  _showUpload = false,
-  _onUpload,
   profileId = "",
   isOwner = false,
 }: ImageGalleryProps) {

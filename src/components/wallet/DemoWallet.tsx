@@ -7,17 +7,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Wallet,
-  Coins,
-  Image as ImageIcon,
-  Crown,
-  Sparkles,
-  TrendingUp,
-  Lock,
-  ExternalLink,
-  X,
-} from "lucide-react";
+import { Wallet, Coins, Image as ImageIcon, Crown, Sparkles, TrendingUp, Lock, ExternalLink, X } from "lucide-react";
 
 /**
  * Interfaz para NFT mock

@@ -3,25 +3,11 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  TrendingUp,
-  Download,
-  Users,
-  Heart,
-  AlertTriangle,
-} from "lucide-react";
-import type {
-  DashboardStats,
-  SystemReport,
-} from "@/app/(admin)/hooks/useAdminDashboard";
+import { TrendingUp, Download, Users, Heart, AlertTriangle } from "lucide-react";
+import type { DashboardStats, SystemReport } from "@/app/(admin)/hooks/useAdminDashboard";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";

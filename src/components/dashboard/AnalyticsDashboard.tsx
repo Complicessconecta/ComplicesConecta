@@ -10,22 +10,9 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  TrendingUp,
-  Users,
-  Heart,
-  Eye,
-  MessageCircle,
-  Star,
-  Award,
-} from "lucide-react";
+import { TrendingUp, Users, Heart, Eye, MessageCircle, Star, Award } from "lucide-react";
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 
 interface AnalyticsDashboardProps {
   userId: string;

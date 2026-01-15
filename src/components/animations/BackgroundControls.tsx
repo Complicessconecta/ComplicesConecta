@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Sparkles, Zap, RotateCcw, Layers } from "lucide-react";
-import {
-  useBackgroundPreferences,
-  type BackgroundMode,
-} from "@/hooks/useBackgroundPreferences";
+import { useBackgroundPreferences, type BackgroundMode } from "@/hooks/useBackgroundPreferences";
 
 // Fallback si el hook no está disponible
 const _useBackgroundPreferencesFallback = () => ({
@@ -120,6 +117,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
           </div>
           <button
             onClick={handleParticlesToggle}
+            title={localPrefs.particlesEnabled ? "Desactivar partículas" : "Activar partículas"}
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.particlesEnabled
                 ? "bg-gradient-to-r from-purple-600 to-pink-600"
@@ -157,6 +155,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
           </div>
           <button
             onClick={handleTransparenciesToggle}
+            title={localPrefs.transparenciesEnabled ? "Desactivar transparencias" : "Activar transparencias"}
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.transparenciesEnabled
                 ? "bg-gradient-to-r from-blue-600 to-cyan-600"

@@ -1,20 +1,8 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Target,
-  TrendingUp,
-  Users,
-  Heart,
-  Eye,
-  MessageCircle,
-} from "lucide-react";
+import { Target, TrendingUp, Users, Heart, Eye, MessageCircle } from "lucide-react";
 
 // Mock analytics data
 const mockAnalytics = {

@@ -122,8 +122,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
         {/* Botón de envío */}
         <motion.div
-          whileHover={enableAnimations ? { scale: 1.05 } : undefined}
-          whileTap={enableAnimations ? { scale: 0.95 } : undefined}
+          {...(enableAnimations && {
+            whileHover: { scale: 1.05 },
+            whileTap: { scale: 0.95 },
+          })}
         >
           <Button
             type="submit"

@@ -1,16 +1,6 @@
 import { useState } from "react";
 import type { FC } from "react";
-import {
-  Video,
-  VideoOff,
-  Mic,
-  MicOff,
-  Phone,
-  PhoneOff,
-  Maximize2,
-  Minimize2,
-  Settings,
-} from "lucide-react";
+import { Video, VideoOff, Mic, MicOff, Phone, PhoneOff, Maximize2, Minimize2, Settings, } from "lucide-react";
 import { useVideoChat } from "@/features/chat/useVideoChat";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";

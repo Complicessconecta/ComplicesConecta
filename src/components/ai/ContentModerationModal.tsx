@@ -4,40 +4,14 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  Shield,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Eye,
-  Flag,
-  MessageSquare,
-  Image,
-  FileText,
-} from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/Modal";
+import { Shield, AlertTriangle, CheckCircle, XCircle, Eye, Flag, MessageSquare, Image, FileText } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  useContentModeration,
-  type ModerationResult,
-  type ContentToModerate,
-} from "@/lib/ai/contentModeration";
+import { useContentModeration, type ModerationResult, type ContentToModerate } from "@/lib/ai/contentModeration";
 import { logger } from "@/lib/logger";
 
 interface ContentModerationModalProps {

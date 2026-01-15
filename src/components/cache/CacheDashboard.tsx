@@ -1,26 +1,10 @@
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Activity,
-  Zap,
-  Database,
-  TrendingUp,
-  Settings,
-  Trash2,
-  RefreshCw,
-  BarChart3,
-  Cpu,
-  HardDrive,
-} from "lucide-react";
+import { Activity, Zap, Database, TrendingUp, Settings, Trash2, RefreshCw, BarChart3, Cpu, HardDrive } from "lucide-react";
 import { useCacheStats, useCacheConfig } from "@/hooks/useAdvancedCache";
 import { logger } from "@/lib/logger";
 

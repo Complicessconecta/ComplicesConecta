@@ -3,13 +3,7 @@ import { MapPin, Navigation, Search } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/hooks/useToast";
@@ -60,7 +54,7 @@ export const LocationSelector = ({
         lat: location.latitude,
         lng: location.longitude,
         address: address || "Ubicación actual",
-        radius: radius[0],
+        radius: radius[0] ?? 10,
       });
     }
   }, [location, radius, address, onLocationChange]);
@@ -91,7 +85,7 @@ export const LocationSelector = ({
         lat: city.lat,
         lng: city.lng,
         address: cityName,
-        radius: radius[0],
+        radius: radius[0] ?? 10,
       });
     }
   };
@@ -107,7 +101,7 @@ export const LocationSelector = ({
       lat: fallbackLocation.lat,
       lng: fallbackLocation.lng,
       address: address,
-      radius: radius[0],
+      radius: radius[0] ?? 10,
     });
 
     toast({
@@ -202,7 +196,7 @@ export const LocationSelector = ({
                 lat: currentLat,
                 lng: currentLng,
                 address: address || selectedCity || "Ubicación actual",
-                radius: value[0],
+                radius: value[0] ?? 10,
               });
             }
           }}

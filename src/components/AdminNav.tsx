@@ -2,21 +2,7 @@ import { useState } from "react";
 import type { FC } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Shield,
-  Users,
-  BarChart3,
-  Settings,
-  FileText,
-  UserCheck,
-  LogOut,
-  Menu,
-  X,
-  Home,
-  Briefcase,
-  AlertTriangle,
-  Activity,
-} from "lucide-react";
+import { Shield, Users, BarChart3, Settings, FileText, UserCheck, LogOut, Menu, X, Home, Briefcase, AlertTriangle, Activity } from "lucide-react";
 
 interface AdminNavProps {
   className?: string;

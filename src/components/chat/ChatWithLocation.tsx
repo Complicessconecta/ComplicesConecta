@@ -2,12 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MapPin, Send, Share2 } from "lucide-react";
@@ -71,23 +66,27 @@ export const ChatWithLocation = ({
 
       if (error) throw error;
 
-      const formattedMessages = data.map((msg: any) => ({
-        id: msg.id,
-        content: msg.content,
-        sender_id: msg.sender_id,
-        sender_name:
-          `${msg.sender?.first_name || ""} ${msg.sender?.last_name || ""}`.trim() ||
-          "Usuario",
-        created_at: msg.created_at,
-        location:
-          msg.location_latitude && msg.location_longitude
-            ? {
-                latitude: msg.location_latitude,
-                longitude: msg.location_longitude,
-                address: msg.location_address || undefined,
-              }
-            : undefined,
-      }));
+      const formattedMessages = data.map((msg: any) => {
+        const message: any = {
+          id: msg.id,
+          content: msg.content,
+          sender_id: msg.sender_id,
+          sender_name:
+            `${msg.sender?.first_name || ""} ${msg.sender?.last_name || ""}`.trim() ||
+            "Usuario",
+          created_at: msg.created_at,
+        };
+
+        if (msg.location_latitude && msg.location_longitude) {
+          message.location = {
+            latitude: msg.location_latitude,
+            longitude: msg.location_longitude,
+            address: msg.location_address || undefined,
+          };
+        }
+
+        return message;
+      });
 
       setMessages(formattedMessages);
     } catch (error) {

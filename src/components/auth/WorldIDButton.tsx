@@ -2,11 +2,7 @@
 // Fecha: 2025-01-06
 
 import React, { useState } from "react";
-import {
-  IDKitWidget,
-  VerificationLevel,
-  ISuccessResult,
-} from "@worldcoin/idkit";
+import { IDKitWidget, VerificationLevel, ISuccessResult } from "@worldcoin/idkit";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth/useAuth";

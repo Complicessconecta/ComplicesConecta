@@ -5,14 +5,7 @@
 
 import type { DashboardStats } from "@/app/(admin)/hooks/useAdminDashboard";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import {
-  Users,
-  UserCheck,
-  Heart,
-  MessageSquare,
-  Mail,
-  Shield,
-} from "lucide-react";
+import { Users, UserCheck, Heart, MessageSquare, Mail, Shield } from "lucide-react";
 
 interface StatsPanelProps {
   stats: DashboardStats;

@@ -50,8 +50,10 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
 
   // Actualizar timer cada segundo
   useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    
     if (currentStatus === "FROZEN_DISPUTE" && disputeStatus) {
-      const interval = setInterval(async () => {
+      interval = setInterval(async () => {
         try {
           const updated = await CoupleDissolutionService.getDisputeStatus(
             disputeStatus.id,
@@ -61,9 +63,11 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
           logger.error("Error actualizando timer", { error });
         }
       }, 1000);
-
-      return () => clearInterval(interval);
     }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [currentStatus, disputeStatus?.id]);
 
   // Cargar estado de disputa si existe

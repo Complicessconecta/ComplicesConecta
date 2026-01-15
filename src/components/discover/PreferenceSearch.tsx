@@ -1,26 +1,10 @@
 import { useState, useEffect } from "react";
 import { Database } from "@/types/supabase-generated";
-
-interface _UserPreferences {
-  interests: string[];
-  // Define other preferences fields here if they exist
-}
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Search, MapPin } from "lucide-react";
@@ -330,7 +314,7 @@ export const PreferenceSearch = ({
           <Label>Distancia máxima: {filters.maxDistance} km</Label>
           <Slider
             value={[filters.maxDistance]}
-            onValueChange={(value) => updateFilter("maxDistance", value[0])}
+            onValueChange={(value) => updateFilter("maxDistance", value[0] ?? 50)}
             min={1}
             max={200}
             step={1}

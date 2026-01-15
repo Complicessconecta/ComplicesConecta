@@ -13,13 +13,7 @@ import React, { useState, useEffect } from "react";
 import { Bell, BellOff, Volume2, VolumeX, TestTube } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Switch } from "@/components/ui/switch";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
 import { desktopNotificationService } from "@/services/DesktopNotificationService";
@@ -272,6 +266,7 @@ export const DesktopNotificationSettings: React.FC = () => {
               handleConfigChange("frequency", Number(e.target.value))
             }
             disabled={!config.enabled}
+            title="Frecuencia de notificaciones"
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white disabled:opacity-50"
           >
             <option value={30000}>30 segundos</option>

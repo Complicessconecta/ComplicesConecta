@@ -1,27 +1,9 @@
 import React, { useState } from "react";
-import {
-  motion,
-  AnimatePresence,
-  type Variants,
-  type Transition,
-} from "framer-motion";
+import { motion, AnimatePresence, type Variants, type Transition } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Home,
-  Search,
-  Heart,
-  MessageCircle,
-  User,
-  Menu,
-  X,
-  Bell,
-  Settings,
-  LogOut,
-  Crown,
-  Sparkles,
-} from "lucide-react";
+import { Home, Search, Heart, MessageCircle, User, Menu, X, Bell, Settings, LogOut, Crown, Sparkles } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";

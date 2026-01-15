@@ -1,11 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  AdvancedAnalyticsService,
-  AdvancedAnalyticsConfig,
-  AnalyticsDashboard,
-  PredictiveInsights,
-  AnalyticsAlert,
-} from "@/services/analytics/AdvancedAnalyticsService";
+import { AdvancedAnalyticsService, AdvancedAnalyticsConfig, AnalyticsDashboard, PredictiveInsights, AnalyticsAlert } from "@/services/analytics/AdvancedAnalyticsService";
 import { logger } from "@/lib/logger";
 
 // Instance

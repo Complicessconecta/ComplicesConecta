@@ -1,29 +1,12 @@
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import {
-  Activity,
-  Server,
-  Database,
-  Wifi,
-  Cpu,
-  HardDrive,
-  RefreshCw,
-  AlertTriangle,
-  CheckCircle,
-  TrendingUp,
-  BarChart3,
-} from "lucide-react";
+import { Activity, Server, Database, Wifi, Cpu, HardDrive, RefreshCw, AlertTriangle, CheckCircle, TrendingUp, BarChart3 } from "lucide-react";
 
 interface SystemMetrics {
   cpu: number;

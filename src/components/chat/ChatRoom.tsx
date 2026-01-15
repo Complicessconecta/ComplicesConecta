@@ -11,17 +11,7 @@
  */
 
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Send,
-  Video,
-  MapPin,
-  Image,
-  Lock,
-  UserPlus,
-  Check,
-  X,
-  AlertCircle,
-} from "lucide-react";
+import { Send, Video, MapPin, Image, Lock, UserPlus, Check, X, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,10 +21,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/features/auth/useAuth";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/hooks/useToast";
-import {
-  chatPrivacyService,
-  type ChatRequest,
-} from "@/services/chat/ChatPrivacyService";
+import { chatPrivacyService, type ChatRequest } from "@/services/chat/ChatPrivacyService";
 import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { supabase } from "@/integrations/supabase/client";

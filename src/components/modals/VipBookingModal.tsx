@@ -38,6 +38,7 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({
               type="button"
               onClick={onClose}
               className="absolute right-4 top-4 text-zinc-400 hover:text-white"
+              title="Cerrar modal"
             >
               <X className="w-5 h-5" />
             </button>

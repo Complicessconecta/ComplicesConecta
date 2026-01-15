@@ -1,24 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  EyeOff,
-  Crown,
-  Lock,
-  Heart,
-  MessageCircle,
-  Star,
-  Shield,
-  Zap,
-  Users,
-} from "lucide-react";
+import { EyeOff, Crown, Lock, Heart, MessageCircle, Star, Shield, Zap, Users } from "lucide-react";
 import { useFeatures } from "@/hooks/useFeatures";
 import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,7 +26,7 @@ interface PrivateMatch {
     id: string;
     first_name: string;
     last_name?: string;
-    age?: number;
+    age: number;
     location?: string;
     avatar_url?: string;
     bio?: string;
@@ -130,7 +115,7 @@ const mockPrivateMatches: PrivateMatch[] = [
       privacy_level: "ultra",
     },
   },
-] as const;
+];
 
 // Check if user is in demo mode
 const isDemoMode = (): boolean => {
@@ -234,10 +219,9 @@ export const PrivateMatches: React.FC = () => {
             ...(invitation.matched_user?.last_name
               ? { last_name: invitation.matched_user.last_name }
               : {}),
-            age: invitation.matched_user?.age,
+            age: invitation.matched_user?.age ?? 0,
             location: `${invitation.matched_user?.first_name ?? "Usuario"} Premium`,
-            avatar_url: undefined, // Campo no existe en schema profiles
-            bio: invitation.matched_user?.bio ?? undefined,
+            bio: invitation.matched_user?.bio ?? "",
             interests: [],
             is_premium: invitation.matched_user?.is_premium ?? false,
             is_verified: invitation.matched_user?.is_verified ?? false,
@@ -247,7 +231,7 @@ export const PrivateMatches: React.FC = () => {
             match_reason: "Compatibilidad premium detectada",
             privacy_level: "high" as const,
           },
-        };
+        } as PrivateMatch;
       });
       setMatches(mappedMatches);
     } catch (error) {

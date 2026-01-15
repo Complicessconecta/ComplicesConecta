@@ -9,20 +9,9 @@
 
 import React from "react";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
-import {
-  AlertCircle,
-  CheckCircle2,
-  AlertTriangle,
-  PauseCircle,
-} from "lucide-react";
+import { AlertCircle, CheckCircle2, AlertTriangle, PauseCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Progress } from "@/components/ui/progress";
 import { logger } from "@/lib/logger";
 

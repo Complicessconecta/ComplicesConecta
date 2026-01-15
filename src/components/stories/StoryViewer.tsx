@@ -3,18 +3,7 @@ import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { useToast } from "@/hooks/useToast";
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  Eye,
-  X,
-  Send,
-  Trash2,
-  MapPin,
-  Globe,
-  Lock,
-} from "lucide-react";
+import { Heart, MessageCircle, Share2, Eye, X, Send, Trash2, MapPin, Globe, Lock } from "lucide-react";
 import { Story } from "./StoryTypes";
 import { storyService } from "./StoryService";
 

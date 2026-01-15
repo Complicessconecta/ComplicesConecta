@@ -521,18 +521,21 @@ export const useNotificationHelpers = () => {
       message: string,
       actionUrl?: string,
     ) => {
-      addNotification({
+      const notification: any = {
         type: "email",
         title,
         message,
         duration: 6000,
-        action: actionUrl
-          ? {
-              label: "Ver detalles",
-              onClick: () => (window.location.href = actionUrl),
-            }
-          : undefined,
-      });
+      };
+
+      if (actionUrl) {
+        notification.action = {
+          label: "Ver detalles",
+          onClick: () => (window.location.href = actionUrl),
+        };
+      }
+
+      addNotification(notification);
     },
 
     showNewRequest: (senderName: string, requestId: string) => {
@@ -558,18 +561,21 @@ export const useNotificationHelpers = () => {
     },
 
     showAlert: (title: string, message: string, actionUrl?: string) => {
-      addNotification({
+      const notification: any = {
         type: "alert",
         title,
         message,
         duration: 0, // Persistent until dismissed
-        action: actionUrl
-          ? {
-              label: "Resolver",
-              onClick: () => (window.location.href = actionUrl),
-            }
-          : undefined,
-      });
+      };
+
+      if (actionUrl) {
+        notification.action = {
+          label: "Resolver",
+          onClick: () => (window.location.href = actionUrl),
+        };
+      }
+
+      addNotification(notification);
     },
   };
 };

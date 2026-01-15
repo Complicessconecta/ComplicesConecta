@@ -10,16 +10,7 @@
  */
 
 import React, { useState } from "react";
-import {
-  ChevronRight,
-  ChevronLeft,
-  Check,
-  Sparkles,
-  Heart,
-  Users,
-  Shield,
-  X,
-} from "lucide-react";
+import { ChevronRight, ChevronLeft, Check, Sparkles, Heart, Users, Shield, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/buttons/Button";

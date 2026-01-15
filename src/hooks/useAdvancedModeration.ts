@@ -1,8 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  contentModerationService,
-  ModerationResult,
-} from "@/services/ContentModerationService";
+import { contentModerationService, ModerationResult } from "@/services/ContentModerationService";
 import { logger } from "@/lib/logger";
 
 export interface ModerationQueueItem {

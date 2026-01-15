@@ -1,38 +1,12 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Activity,
-  TrendingUp,
-  TrendingDown,
-  Users,
-  Eye,
-  Zap,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Brain,
-  Target,
-  Cpu,
-  HardDrive,
-  Bell,
-} from "lucide-react";
-import {
-  useAdvancedAnalytics,
-  useAnalyticsMetrics,
-  usePredictiveInsights,
-  useAnalyticsAlerts,
-  usePerformanceMetrics,
-} from "@/hooks/useAdvancedAnalytics";
+import { Activity, TrendingUp, TrendingDown, Users, Eye, Zap, AlertTriangle, CheckCircle, Clock, Brain, Target, Cpu, HardDrive, Bell } from "lucide-react";
+import { useAdvancedAnalytics, useAnalyticsMetrics, usePredictiveInsights, useAnalyticsAlerts, usePerformanceMetrics } from "@/hooks/useAdvancedAnalytics";
 import { logger } from "@/lib/logger";
 
 export function AdvancedAnalyticsDashboard() {

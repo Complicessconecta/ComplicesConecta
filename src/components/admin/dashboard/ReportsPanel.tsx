@@ -4,12 +4,7 @@
 // ------------------------------------------------------------------
 
 import type { SystemReport } from "@/app/(admin)/hooks/useAdminDashboard";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle } from "lucide-react";

@@ -1,21 +1,6 @@
 import { useState } from "react";
-import {
-  Crown,
-  Zap,
-  Eye,
-  Target,
-  BarChart3,
-  Globe,
-  MessageCircle,
-  Heart,
-  Lock,
-} from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Crown, Zap, Eye, Target, BarChart3, Globe, MessageCircle, Heart, Lock } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Progress } from "@/components/ui/progress";
@@ -113,8 +98,6 @@ const premiumFeatures = [
     requiredPlan: "premium",
   },
 ];
-
-const _planHierarchy = ["free", "basic", "silver", "gold", "premium"];
 
 export const PremiumFeatures = () => {
   const [currentPlan] = useState(mockUserSubscription.plan);

@@ -1,4 +1,5 @@
 // Couple Profile Components
+// Algunos componentes usan export default, otros usan named exports
 export { default as CoupleCard } from "@/components/profiles/couple/CoupleCard";
 export { CoupleDashboard } from "@/components/profiles/couple/CoupleDashboard";
 export { CoupleImageGallery } from "@/components/profiles/couple/CoupleImageGallery";

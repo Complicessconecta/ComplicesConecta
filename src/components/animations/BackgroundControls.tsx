@@ -5,19 +5,6 @@ import {
   type BackgroundMode,
 } from "@/hooks/useBackgroundPreferences";
 
-// Fallback si el hook no está disponible
-const _useBackgroundPreferencesFallback = () => ({
-  preferences: {
-    backgroundMode: "random" as const,
-    particlesEnabled: true,
-    transparenciesEnabled: true,
-  },
-  setBackgroundMode: () => {},
-  setParticlesEnabled: () => {},
-  setTransparenciesEnabled: () => {},
-  resetPreferences: () => {},
-});
-
 interface BackgroundControlsProps {
   onClose?: () => void;
 }
@@ -120,6 +107,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
           </div>
           <button
             onClick={handleParticlesToggle}
+            aria-label={localPrefs.particlesEnabled ? "Desactivar partículas" : "Activar partículas"}
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.particlesEnabled
                 ? "bg-gradient-to-r from-purple-600 to-pink-600"
@@ -157,6 +145,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
           </div>
           <button
             onClick={handleTransparenciesToggle}
+            aria-label={localPrefs.transparenciesEnabled ? "Desactivar transparencias" : "Activar transparencias"}
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.transparenciesEnabled
                 ? "bg-gradient-to-r from-blue-600 to-cyan-600"
@@ -224,6 +213,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
                       : "border-transparent"
                   }`}
                   style={{ backgroundColor: color }}
+                  aria-label={`Seleccionar color ${color}`}
                   title={color}
                 />
               ))}

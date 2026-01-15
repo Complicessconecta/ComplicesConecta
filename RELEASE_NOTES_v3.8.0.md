@@ -1,4 +1,71 @@
-# RELEASE NOTES v3.8.0
+# RELEASE NOTES v3.9.1
+
+## 🚀 Highlights
+- **🔧 Refactorización ContentModeration:** Separación de patrones y listas en archivos modulares para mejor mantenibilidad
+- **📁 Nuevos Archivos de Patrones:** Creación de `src/lib/moderation/patterns/` con 5 archivos especializados
+- **🎯 Mejoras de Mantenibilidad:** Reducción de 496 líneas en contentModeration.ts, código más modular y escalable
+- **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores
+- **♿ Accesibilidad:** Corrección de problemas en BackgroundControls.tsx (aria-label en botones)
+
+## 📅 Bitácora 15 Ene 2026 (v3.9.1)
+
+### Refactorización ContentModeration
+
+#### Archivos Creados
+- `src/lib/moderation/patterns/inappropriateWords.ts` - Lista robusta de palabras prohibidas (400+ términos)
+- `src/lib/moderation/patterns/personalInfoPatterns.ts` - Patrones regex para información personal (CURP, RFC, tarjetas, teléfonos, emails, direcciones)
+- `src/lib/moderation/patterns/explicitTerms.ts` - Términos explícitos para contenido sexual (contexto swinger-appropriate)
+- `src/lib/moderation/patterns/harassmentPatterns.ts` - Patrones de acoso, insistencia y amenazas (650+ regexes)
+- `src/lib/moderation/patterns/spamPatterns.ts` - Patrones de spam y contenido comercial (1090+ regexes)
+
+#### Mejoras Implementadas
+- **Modularización:** Separación de listas estáticas y patrones regex en archivos dedicados
+- **Mantenibilidad:** Código más fácil de mantener y extender
+- **Escalabilidad:** Facilita agregar nuevos patrones sin modificar el archivo principal
+- **Type-Safe:** TypeScript estricto con interfaces explícitas
+
+#### Estadísticas
+- **3737 líneas** agregadas en archivos de patrones separados
+- **496 líneas** eliminadas de contentModeration.ts
+- **2 commits** atómicos realizados
+- **Type-check** pasa exitosamente sin errores
+
+### Correcciones de Accesibilidad
+
+#### BackgroundControls.tsx
+- Agregado `aria-label` a botones sin texto discernible (líneas 121, 158)
+- Agregado `aria-label` a botones de selección de color (línea 229)
+- Eliminada variable no usada `_useBackgroundPreferencesFallback`
+
+## 📅 Bitácora 16 Dic 2025 (v3.9.0)
+
+### Integración IA Avanzada
+- **🤖 Phi-3 y Llama-3:** Modelos de lenguaje local con inferencia en browser
+- **🧠 ChatBot Inteligente:** Componente con moderación de toxicidad y contexto de Neo4j
+- **🔮 Predicción de Tokens:** TokenService.ts para análisis Web3
+- **📚 Q&A con RAG:** RAGService.ts con embeddings locales
+- **🌐 Neo4j Service:** Matching AI-driven y grafos de conocimiento
+- **🔧 Correcciones TypeScript:** Limpieza completa de errores en servicios de IA
+
+## 📅 Bitácora 16 Ene 2026 (v3.8.3)
+
+### TypeScript Clean
+- **✅ TypeScript Clean:** Corrección completa de errores de TypeScript y warnings en 27 archivos
+- **🗄️ Base de Datos:** Creación de tablas faltantes: `media`, `gallery_unlocks`, `summary_feedback`
+- **🔄 Tipos Supabase:** Regeneración de tipos con nuevas columnas y tablas
+- **🏗️ Build Exitoso:** `npm run build:check` pasa sin errores (25.28s)
+
+## 📅 Bitácora 12 Ene 2026 (v3.8.1)
+
+### Sistema de Clubs Verificados
+- **🏢 Sistema de Clubs Verificados:** Implementación completa del sistema de registro y verificación de clubs
+- **Credenciales Temporales:** Generación automática de contraseñas temporales (12 caracteres) con expiración de 30 días
+- **Flujo de Registro:** Formulario completo con información del propietario, representante, datos del club, detalles, documentos
+- **Email Automático:** Template HTML profesional para notificar al admin sobre nuevas solicitudes
+- **Base de Datos:** Tabla `club_applications` con credenciales temporales, índices optimizados, trigger para `updated_at`
+- **Diagramas Consolidados:** Fusión de diagramas de flujos en un solo documento consolidado
+
+## 📅 Bitácora 10 Ene 2026 (v3.8.0)
 
 ## 🚀 Highlights
 - **Producción Enterprise Ready**: Refactorización completa con arquitectura modular.

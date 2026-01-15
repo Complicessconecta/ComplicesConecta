@@ -1,6 +1,13 @@
 --- BEGIN FILE: DIAGRAMAS_FLUJOS_v3.0.md ---
 
-# 📊 DIAGRAMAS DE FLUJOS v3.8.3 - COMPLICESCONECTA v3.8.3
+# 📊 DIAGRAMAS DE FLUJOS v3.9.1 - COMPLICESCONECTA v3.9.1
+
+#> Actualización 15 Ene 2026 04:16
+#> - Refactorización ContentModeration: Separación de patrones y listas en archivos modulares
+#> - Creación de src/lib/moderation/patterns/ con 5 archivos especializados
+#> - Reducción de 496 líneas en contentModeration.ts, código más modular y escalable
+#> - Type-check pasa exitosamente sin errores
+#> - Corrección de accesibilidad en BackgroundControls.tsx (aria-label en botones)
 
 #> Actualización 16 Ene 2026 05:35
 #> - Corrección completa de errores de TypeScript y warnings en 27 archivos

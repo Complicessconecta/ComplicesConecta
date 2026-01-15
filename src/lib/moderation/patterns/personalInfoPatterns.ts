@@ -319,7 +319,7 @@ export const PERSONAL_INFO_PATTERNS = [
   /\b(?:firma|signature|sign)\s*[A-Za-záéíóúñÁÉÍÓÚÑ\s]+/i,
   
   // Patrones de sello
-  /\b(?:sello|stamp)\s*[A-Za-z0-9_\-\.]+/i,
+  /\b(?:sello|stamp)\s*[A-Za-z0-9_\-.]+/i,
   
   // Patrones de fecha de nacimiento
   /\b(?:fecha de nacimiento|nacimiento|birth date|dob|fecha nac\.|nac\.|nac)\s*(?:0[1-9]|[12]\d|3[01])[-/](?:0[1-9]|1[0-2])[-/]\d{4}\b/i,

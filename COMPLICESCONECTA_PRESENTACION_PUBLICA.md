@@ -1,9 +1,23 @@
 # 💖 ComplicesConecta - Presentación Pública
 
-**Versión:** 3.9.0
-**Fecha:** 16 de Diciembre, 2025
-**Última Actualización:** 16 de Diciembre, 2025
-**Estado:** ✅ PRODUCTION READY - AI INTEGRATION COMPLETE - TYPESCRIPT CLEAN
+**Versión:** 3.9.1
+**Fecha:** 15 de Enero, 2026
+**Última Actualización:** 15 de Enero, 2026
+**Estado:** ✅ PRODUCTION READY - AI INTEGRATION COMPLETE - TYPESCRIPT CLEAN - MODERATION REFACTORED
+
+### 📅 Bitácora 15 Ene 2026 (v3.9.1)
+
+- **🔧 Refactorización ContentModeration:** Separación de patrones y listas en archivos modulares para mejor mantenibilidad
+- **📁 Nuevos Archivos de Patrones:** Creación de `src/lib/moderation/patterns/` con 5 archivos especializados:
+  - `inappropriateWords.ts` - Lista robusta de palabras prohibidas (400+ términos)
+  - `personalInfoPatterns.ts` - Patrones regex para información personal (CURP, RFC, tarjetas, teléfonos, emails, direcciones)
+  - `explicitTerms.ts` - Términos explícitos para contenido sexual (contexto swinger-appropriate)
+  - `harassmentPatterns.ts` - Patrones de acoso, insistencia y amenazas (650+ regexes)
+  - `spamPatterns.ts` - Patrones de spam y contenido comercial (1090+ regexes)
+- **🎯 Mejoras de Mantenibilidad:** Reducción de 496 líneas en contentModeration.ts, código más modular y escalable
+- **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores
+- **♿ Accesibilidad:** Corrección de problemas en BackgroundControls.tsx (aria-label en botones)
+- **📊 Estadísticas:** 3737 líneas agregadas en archivos de patrones separados, 2 commits atómicos realizados
 
 ### 📅 Bitácora 16 Dic 2025 (v3.9.0)
 

@@ -559,7 +559,7 @@ export const SPAM_PATTERNS = [
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
   
   // Patrones de caracteres especiales excesivos
-  /[!@#$%^&*()_+=\[\]{};:\"\\|,.<>\/?]{5,}/,
+  /[!@#$%^&*()_+=[\]{};:"\\|,.<>/?]{5,}/,
   
   // Patrones de emojis excesivos
   /[\u{1F600}-\u{1F64F}]{3,}/u,
@@ -1093,4 +1093,5 @@ export const SPAM_PATTERNS = [
   /pactado\s*\d+/i,
   /tratado\s*\d+/i,
 ];
+
 

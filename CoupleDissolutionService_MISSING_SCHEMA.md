@@ -1,6 +1,16 @@
 # Esquema Faltante en `couple_disputes` para `CoupleDissolutionService`
 
+**Última Actualización:** 15 de Enero, 2026  
+**Versión:** v3.9.1
+
 El servicio `src/services/legal/CoupleDissolutionService.ts` utiliza columnas y lógica que no coinciden con la tabla `couple_disputes` actual en `types.ts`.
+
+## 📅 Actualización v3.9.1 (15 Ene 2026)
+
+### Refactorización ContentModeration
+- **🔧 Modulación de Patrones:** Separación de patrones y listas en archivos modulares para mejor mantenibilidad
+- **📁 Nuevos Archivos:** Creación de `src/lib/moderation/patterns/` con 5 archivos especializados
+- **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores
 
 ## Columnas Faltantes / Discrepancias
 

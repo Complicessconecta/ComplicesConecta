@@ -471,7 +471,12 @@ export class ContentProtectionService {
       .eq("content_id", contentId)
       .single();
 
-    if (error || !data) return false;
+    if (error || !data) {
+      // Reportar violación de acceso
+      await this._handleProtectionViolation("unauthorized_access_attempt");
+      return false;
+    }
+
     return true;
   }
 

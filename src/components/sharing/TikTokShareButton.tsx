@@ -41,11 +41,21 @@ export const TikTokShareButton: React.FC<TikTokShareButtonProps> = ({
   const handleShare = async () => {
     setIsSharing(true);
     try {
-      const success = await shareToTikTok({
+      const options: any = {
         url: url || window.location.href,
-        text,
-        hashtags,
-      });
+      };
+
+      // Solo agregar text si existe
+      if (text) {
+        options.text = text;
+      }
+
+      // Solo agregar hashtags si existe
+      if (hashtags) {
+        options.hashtags = hashtags;
+      }
+
+      const success = await shareToTikTok(options);
 
       if (success) {
         logger.info("✅ Contenido compartido en TikTok");

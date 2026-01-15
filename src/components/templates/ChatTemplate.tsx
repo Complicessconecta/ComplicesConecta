@@ -128,19 +128,6 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
 
   const handleSendMessage = () => {
     if (newMessage.trim() && selectedContactId) {
-      // Message object for future use
-      const _message: ChatMessage = {
-        id: `msg-${Date.now()}`,
-        content: newMessage,
-        senderId: currentUserId,
-        senderName: "Tú",
-        timestamp: new Date().toLocaleTimeString("es-ES", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isOwn: true,
-      };
-
       onSendMessage?.(newMessage);
       setNewMessage("");
     }

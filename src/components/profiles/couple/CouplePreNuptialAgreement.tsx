@@ -14,16 +14,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  FileText,
-  AlertTriangle,
-  Users,
-  Shield,
-  Clock,
-  DollarSign,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
+import {  FileText, AlertTriangle, Users, Shield, Clock, DollarSign, CheckCircle2, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";

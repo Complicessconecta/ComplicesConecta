@@ -8,20 +8,10 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  AlertTriangle,
-  Snowflake,
-  Users,
-  DollarSign,
-  CheckCircle,
-  XCircle,
-  Timer,
-} from "lucide-react";
+import { AlertTriangle, Snowflake, Users, DollarSign, CheckCircle, XCircle, Timer } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
-import CoupleDissolutionService, {
-  DisputeStatus,
-} from "@/services/legal/CoupleDissolutionService";
+import CoupleDissolutionService, { DisputeStatus } from "@/services/legal/CoupleDissolutionService";
 import { logger } from "@/lib/logger";
 
 interface CoupleDisputeManagerProps {
@@ -64,6 +54,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
 
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [currentStatus, disputeStatus?.id]);
 
   // Cargar estado de disputa si existe

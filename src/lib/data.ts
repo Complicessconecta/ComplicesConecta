@@ -88,18 +88,6 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
     "Sánchez",
     "Ramírez",
   ];
-  const _ubicaciones = [
-    "CDMX",
-    "Guadalajara",
-    "Monterrey",
-    "Puebla",
-    "Tijuana",
-    "León",
-    "Querétaro",
-    "Cancún",
-    "Playa del Carmen",
-    "Mérida",
-  ];
   const profesiones = [
     "Ingeniero/a",
     "Médico/a",
@@ -249,16 +237,6 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     "Patricia",
     "Isabel",
   ];
-  const apellidos = [
-    "García",
-    "Rodríguez",
-    "López",
-    "Martínez",
-    "González",
-    "Pérez",
-    "Sánchez",
-    "Ramírez",
-  ];
   const _ubicaciones = [
     "CDMX",
     "Guadalajara",
@@ -348,7 +326,6 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
 
   const nombreM = nombresM[Math.floor(Math.random() * nombresM.length)];
   const nombreF = nombresF[Math.floor(Math.random() * nombresF.length)];
-  const _apellido = apellidos[Math.floor(Math.random() * apellidos.length)];
 
   // Imágenes reales de Unsplash para parejas demo
   const coupleImages = [

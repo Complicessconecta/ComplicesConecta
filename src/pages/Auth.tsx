@@ -13,9 +13,7 @@ import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
 import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
 import { Theme } from "@/features/profile/useProfileTheme";
-import { usePersistedState } from "@/hooks/usePersistedState";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
-import { safeSetItem } from "@/lib/safe-storage";
 import { PhoneInput } from "@/components/forms/PhoneInput";
 
 interface FormData {
@@ -71,12 +69,6 @@ const Auth = () => {
     appMode: _appMode,
   } = useAuth();
 
-  // Estado persistente para autenticacin demo
-  const [_demoUser, _setDemoUser] = usePersistedState<any>("demo_user", null);
-  const [_demoAuthenticated, _setDemoAuthenticated] =
-    usePersistedState<boolean>("demo_authenticated", false);
-  const [_userType, _setUserType] = usePersistedState<string>("userType", "");
-
   const [isLoading, setIsLoading] = useState(false);
   const [__showResetPassword, _setShowResetPassword] = useState(false);
   const [__resetEmail, _setResetEmail] = useState("");
@@ -124,51 +116,12 @@ const Auth = () => {
     }));
   };
 
-  const demoCredentials = {
-    email: "demo@complicesconecta.com",
-    password: "demo123",
-  };
-
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setShowLoginLoading(true);
 
     try {
-      // ✅ Detectar credenciales demo y manejarlas directamente
-      if (
-        (e.nativeEvent as any).isDemo ||
-        (formData.email === demoCredentials.email &&
-          formData.password === demoCredentials.password)
-      ) {
-        // Configurar estado de autenticación demo
-        _setDemoAuthenticated(true);
-        _setDemoUser({ email: formData.email, password: formData.password });
-        _setUserType(formData.accountType || "single");
-
-        // Configurar localStorage para demo
-        safeSetItem("demo_authenticated", "true", { validate: true });
-        safeSetItem(
-          "demo_user",
-          { email: formData.email, id: "demo-user-id" },
-          { validate: false, sanitize: true },
-        );
-        safeSetItem("userType", formData.accountType || "single", {
-          validate: false,
-        });
-
-        toast({
-          title: "Inicio de sesión exitoso",
-          description: "Bienvenido al modo demo de ComplicesConecta",
-        });
-
-        setTimeout(() => {
-          navigate("/feed");
-        }, 3000);
-
-        return;
-      }
-
       // Usar el método signIn del hook useAuth que maneja correctamente demo y producción
       const result = await signIn(
         formData.email,
@@ -358,41 +311,8 @@ const Auth = () => {
                     setFormData((prev) => ({
                       ...prev,
                       email: import.meta.env.VITE_ADMIN_EMAIL || "",
-                      password: import.meta.env.VITE_ADMIN_PASSWORD || "",
+                      password: "",
                     }));
-                    
-                    // Iniciar sesión automáticamente como admin
-                    setIsLoading(true);
-                    setShowLoginLoading(true);
-                    
-                    try {
-                      const result = await signIn(
-                        import.meta.env.VITE_ADMIN_EMAIL || "",
-                        import.meta.env.VITE_ADMIN_PASSWORD || "",
-                        "single",
-                      );
-
-                      if (result && result.user) {
-                        toast({
-                          title: "Inicio de sesión exitoso",
-                          description: "Bienvenido al panel de administración",
-                        });
-                        
-                        // Redirigir a selección de dashboard
-                        setTimeout(() => {
-                          navigate("/admin");
-                        }, 1000);
-                      }
-                    } catch (error) {
-                      toast({
-                        title: "Error",
-                        description: "No se pudo iniciar sesión como admin",
-                        variant: "destructive",
-                      });
-                    } finally {
-                      setIsLoading(false);
-                      setShowLoginLoading(false);
-                    }
                   } else {
                     setFormData((prev) => ({
                       ...prev,
@@ -452,6 +372,7 @@ const Auth = () => {
               <TabsContent value="signin">
                 <form
                   onSubmit={handleSignIn}
+                  autoComplete="off"
                   className="space-y-4"
                   data-testid="login-form"
                 >
@@ -461,6 +382,7 @@ const Auth = () => {
                     </Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) =>
@@ -468,6 +390,7 @@ const Auth = () => {
                       }
                       required
                       placeholder="tu@email.com"
+                      autoComplete="email"
                       data-testid="email-input"
                       className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
@@ -481,6 +404,7 @@ const Auth = () => {
                     </Label>
                     <Input
                       id="password"
+                      name="password"
                       type="password"
                       value={formData.password}
                       onChange={(e) =>
@@ -489,6 +413,7 @@ const Auth = () => {
                       required
                       minLength={6}
                       placeholder="Tu contraseña"
+                      autoComplete="current-password"
                       data-testid="password-input"
                       className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
@@ -531,7 +456,7 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="signup" data-testid="register-form">
-                <form onSubmit={handleSignUp} className="space-y-4">
+                <form onSubmit={handleSignUp} autoComplete="off" className="space-y-4">
                   {/* Tipo de Cuenta */}
                   <div className="space-y-2">
                     <Label className="text-white font-medium">
@@ -967,6 +892,7 @@ const Auth = () => {
                     </Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) =>
@@ -974,6 +900,7 @@ const Auth = () => {
                       }
                       required
                       placeholder="tu@email.com"
+                      autoComplete="email"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
                     />
                   </div>
@@ -987,6 +914,7 @@ const Auth = () => {
                     </Label>
                     <Input
                       id="password"
+                      name="password"
                       type="password"
                       value={formData.password}
                       onChange={(e) =>
@@ -995,6 +923,7 @@ const Auth = () => {
                       required
                       minLength={6}
                       placeholder="Mnimo 6 caracteres"
+                      autoComplete="new-password"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
                     />
                   </div>

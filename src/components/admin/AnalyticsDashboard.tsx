@@ -127,6 +127,7 @@ export const AnalyticsDashboard: React.FC = () => {
       const interval = setInterval(loadMetrics, refreshInterval);
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [autoRefresh, refreshInterval]);
 
   // =====================================================

@@ -3,36 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  UserPlus,
-  Coins,
-  Shield,
-  Gift,
-  TrendingUp,
-  Lock,
-  ChevronDown,
-  ChevronUp,
-  Star,
-  Zap,
-  Users,
-  Calendar,
-  FileText,
-  Scale,
-  Globe,
-  DollarSign,
-  Rocket,
-  Building2,
-  Target,
-  BarChart3,
-  Heart,
-  Video,
-  MessageSquare,
-  Crown,
-  Ticket,
-  Sparkles,
-  CheckCircle2,
-} from "lucide-react";
+import { ArrowLeft, UserPlus, Coins, Shield, Gift, TrendingUp, Lock, ChevronDown, ChevronUp, Star, Zap, Users, Calendar, FileText, Scale, Globe, DollarSign, Rocket, Building2, Target, BarChart3, Heart, Video, MessageSquare, Crown, Ticket, Sparkles, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 // import { TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado - usar src/services/TokenService.ts
 // Mock TOKEN_CONFIG para compatibilidad

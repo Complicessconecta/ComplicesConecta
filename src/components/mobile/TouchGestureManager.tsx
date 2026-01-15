@@ -439,7 +439,7 @@ export const PinchZoomGallery: React.FC<{
       setPosition({ x: 0, y: 0 });
     },
 
-    onDrag: (point, delta) => {
+    onDrag: (_point, delta) => {
       if (scale > 1) {
         setPosition((prev) => ({
           x: prev.x + delta.x,

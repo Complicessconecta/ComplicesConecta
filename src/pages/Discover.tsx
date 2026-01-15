@@ -4,17 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import {
-  Heart,
-  Flame,
-  RefreshCw,
-  Filter,
-  Star,
-  Home,
-  User,
-  Search,
-  Sliders,
-} from "lucide-react";
+import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from "lucide-react";
 import SuperLikesModal from "@/components/modals/SuperLikesModal";
 import PremiumModal from "@/components/modals/PremiumModal";
 import CompatibilityModal from "@/components/modals/CompatibilityModal";
@@ -22,18 +12,9 @@ import EventsModal from "@/components/modals/EventsModal";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import {
-  pickProfileImage,
-  inferProfileKind,
-  resetImageCounters,
-  type ProfileType,
-  type Gender,
-} from "@/lib/media";
+import { pickProfileImage, inferProfileKind, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
 import { calculateDistance, getLocationDisplay } from "@/lib/distance-utils";
-import {
-  type CoupleProfileWithPartners,
-  getAllCoupleProfiles,
-} from "@/services/social/couple/CoupleProfilesService";
+import { type CoupleProfileWithPartners, getAllCoupleProfiles } from "@/services/social/couple/CoupleProfilesService";
 import { generateDemoProfiles, type DemoProfile } from "@/demo/demoData";
 import { safeGetItem } from "@/lib/safe-storage";
 import { generateFilterDemoCards, type FilterDemoCard } from "@/lib/infoCards";

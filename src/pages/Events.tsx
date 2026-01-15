@@ -1,11 +1,6 @@
 import type { FC } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Calendar, MapPin, Users, ArrowRight } from "lucide-react";
 

@@ -144,7 +144,7 @@ export function TokenSystemPanel() {
           "spend_boost",
           "spend_premium",
           "admin_adjustment",
-        ][Math.floor(Math.random() * 5)],
+        ][Math.floor(Math.random() * 5)] || "unknown",
         description: "Transacción de prueba",
         created_at: new Date(
           Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,

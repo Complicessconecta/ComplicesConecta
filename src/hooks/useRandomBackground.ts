@@ -83,15 +83,33 @@ const BACKGROUND_PRESETS: BackgroundConfig[] = [
 
 export const useRandomBackground = (): BackgroundConfig => {
   return useMemo(() => {
+    if (BACKGROUND_PRESETS.length === 0) {
+      return {
+        gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        particleColor: "#667eea",
+        particleOpacity: 0.5,
+        particleCount: 50,
+        animationSpeed: 2,
+      };
+    }
     const randomIndex = Math.floor(Math.random() * BACKGROUND_PRESETS.length);
-    return BACKGROUND_PRESETS[randomIndex];
+    return BACKGROUND_PRESETS[randomIndex] || BACKGROUND_PRESETS[0];
   }, []);
 };
 
 export const getBackgroundByPath = (pathname: string): BackgroundConfig => {
+  if (BACKGROUND_PRESETS.length === 0) {
+    return {
+      gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      particleColor: "#667eea",
+      particleOpacity: 0.5,
+      particleCount: 50,
+      animationSpeed: 2,
+    };
+  }
   const pathHash = pathname
     .split("")
     .reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const index = pathHash % BACKGROUND_PRESETS.length;
-  return BACKGROUND_PRESETS[index];
+  return BACKGROUND_PRESETS[index] || BACKGROUND_PRESETS[0];
 };

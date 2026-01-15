@@ -41,11 +41,11 @@ export const useTheme = () => {
 
     if (shouldSkip) {
       setLoading(false);
-      return;
+      return undefined;
     }
 
     // Fetch desde Supabase (solo si hay cliente y user.id)
-    const fetchTheme = async () => {
+    const fetchTheme = async (): Promise<void> => {
       if (!supabase) {
         setLoading(false);
         return;
@@ -149,7 +149,9 @@ export const useTheme = () => {
         }
       };
     }
-  }, [user, isDemo, setPrefs]);
+
+    return undefined;
+  }, [user, isDemo, setPrefs, prefs.enableGlassUI]);
 
   // Defaults basados en preferencias por defecto si no custom
   const getDefaultBg = () => {

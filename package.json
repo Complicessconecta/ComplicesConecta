@@ -52,7 +52,8 @@
     "security:progress": "node scripts/security-progress-check.js",
     "token:verify": "node scripts/verify-token.js",
     "security:scan": "node scripts/security-check.js",
-    "prepare": "echo 'Husky prepare script disabled for deployment compatibility'"
+    "prepare": "echo 'Husky prepare script disabled for deployment compatibility'",
+    "ai:performance": "tsx scripts/generate-ai-performance-report.ts"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
@@ -116,6 +117,7 @@
     "@supabase/supabase-js": "^2.87.1",
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-query": "^5.90.12",
+    "@tensorflow-models/toxicity": "^1.2.2",
     "@tensorflow/tfjs": "^4.22.0",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/react": "^3.0.0",

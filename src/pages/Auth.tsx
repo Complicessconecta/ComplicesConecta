@@ -471,12 +471,10 @@ const Auth = () => {
                         handleInputChange("email", e.target.value)
                       }
                       required
-                      disabled
-                      placeholder="Próximamente disponible"
+                      placeholder="tu@email.com"
                       data-testid="email-input"
-                      className="bg-white/10 border-white/20 text-white/50 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 cursor-not-allowed"
+                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
-                    <p className="text-xs text-white/50 mt-1">Inicio de sesión con correo próximamente disponible</p>
                   </div>
                   <div className="space-y-2">
                     <Label
@@ -494,20 +492,18 @@ const Auth = () => {
                       }
                       required
                       minLength={6}
-                      disabled
-                      placeholder="Próximamente disponible"
+                      placeholder="Tu contraseña"
                       data-testid="password-input"
-                      className="bg-white/10 border-white/20 text-white/50 placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 cursor-not-allowed"
+                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
                   </div>
                   <Button
                     type="submit"
-                    disabled
-                    className="w-full bg-gradient-to-r from-purple-600/50 to-blue-600/50 text-white/50 font-bold shadow-lg transition-all duration-300 cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold shadow-lg transition-all duration-300 hover:from-purple-700 hover:to-blue-700 hover:scale-105"
                     data-testid="login-button"
                     style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
-                    Iniciar Sesión - Próximamente
+                    Iniciar Sesión
                   </Button>
 
                   {/* Demo Login Button con glassmorphism mejorado - Navega a selector */}

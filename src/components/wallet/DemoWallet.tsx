@@ -338,6 +338,7 @@ export function DemoWallet() {
               <button
                 onClick={() => setShowPolygonModal(false)}
                 className="text-white/60 hover:text-white transition-colors"
+                aria-label="Cerrar modal"
               >
                 <X className="w-6 h-6" />
               </button>

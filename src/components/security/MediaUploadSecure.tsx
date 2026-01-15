@@ -10,23 +10,8 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import {
-  Upload,
-  Shield,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  FileImage,
-  FileVideo,
-  FileAudio,
-  Lock,
-  Eye,
-  Trash2,
-} from "lucide-react";
-import {
-  MultimediaSecurityService,
-  MediaValidationResult,
-} from "@/lib/multimediaSecurity";
+import { Upload, Shield, CheckCircle, XCircle, AlertTriangle, FileImage, FileVideo, FileAudio, Lock, Eye, Trash2 } from "lucide-react";
+import { MultimediaSecurityService, MediaValidationResult } from "@/lib/multimediaSecurity";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 

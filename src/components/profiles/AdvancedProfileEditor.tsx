@@ -16,12 +16,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 
 interface AdvancedProfileEditorProps {
   userId: string;

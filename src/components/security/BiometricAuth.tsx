@@ -1,26 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Fingerprint,
-  Eye,
-  Shield,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-} from "lucide-react";
-import {
-  BiometricAuthService,
-  BiometricAuthResult,
-} from "@/lib/multimediaSecurity";
+import { Fingerprint, Eye, Shield, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { BiometricAuthService, BiometricAuthResult } from "@/lib/multimediaSecurity";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { safeGetItem } from "@/lib/safe-storage";

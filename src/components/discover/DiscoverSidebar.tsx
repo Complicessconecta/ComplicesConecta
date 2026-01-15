@@ -1,16 +1,8 @@
 import type { FC } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent,  CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Heart, Flame, Crown, Filter, RefreshCw } from "lucide-react";
-import {
-  AdvancedFilters,
-  FilterState,
-} from "@/components/discover/AdvancedFilters";
+import { AdvancedFilters, FilterState } from "@/components/discover/AdvancedFilters";
 
 interface DiscoverSidebarProps {
   filters: FilterState;

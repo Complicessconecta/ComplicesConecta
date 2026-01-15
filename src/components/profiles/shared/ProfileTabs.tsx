@@ -113,7 +113,6 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
   const renderOverviewTab = () => {
     if (profileType === "single") {
-      const _singleProfile = profile as SingleProfile;
       return (
         <div className="space-y-6">
           {/* Basic Info */}
@@ -192,7 +191,6 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
         </div>
       );
     } else {
-      const _coupleProfile = profile as CoupleProfile;
       return (
         <div className="space-y-6">
           {/* Couple Info */}

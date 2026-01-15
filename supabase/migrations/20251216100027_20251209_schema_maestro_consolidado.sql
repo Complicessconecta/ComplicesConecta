@@ -583,15 +583,32 @@ CREATE TABLE IF NOT EXISTS couple_agreements (
 -- Tabla: couple_disputes
 CREATE TABLE IF NOT EXISTS couple_disputes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    couple_profile_id UUID NOT NULL REFERENCES couple_profiles(id) ON DELETE CASCADE,
-    dispute_type TEXT NOT NULL,
-    description TEXT,
-    status TEXT DEFAULT 'open',
-    resolution TEXT,
-    resolved_at TIMESTAMPTZ,
+    couple_agreement_id UUID NOT NULL REFERENCES couple_agreements(id) ON DELETE CASCADE,
+    couple_id UUID NOT NULL REFERENCES couple_profiles(id) ON DELETE CASCADE,
+    initiated_by UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    dispute_reason TEXT NOT NULL,
+    tokens_in_dispute JSONB,
+    nfts_in_dispute JSONB,
+    resolution_type TEXT,
+    deadline_at TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '72 hours',
+    status TEXT NOT NULL DEFAULT 'PENDING_AGREEMENT',
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'couple_disputes'
+          AND column_name = 'initiated_by'
+    ) THEN
+        ALTER TABLE public.couple_disputes
+            ADD COLUMN initiated_by UUID REFERENCES public.profiles(id);
+    END IF;
+END $$;
 -- Tabla: frozen_assets
 CREATE TABLE IF NOT EXISTS frozen_assets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

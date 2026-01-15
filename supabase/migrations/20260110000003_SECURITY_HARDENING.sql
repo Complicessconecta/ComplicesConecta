@@ -8,13 +8,15 @@
 -- PASO 1: CREAR VISTAS SEGUURAS PARA EVITAR EXPOSICIÓN DE DATOS SENSIBLES
 -- ============================================================================
 
+DROP VIEW IF EXISTS public.profiles_safe;
+DROP VIEW IF EXISTS public.users_safe;
+
 -- Vista segura de profiles (sin datos sensibles)
 CREATE OR REPLACE VIEW public.profiles_safe AS
-SELECT 
+SELECT
     id,
     user_id,
     display_name,
-    profile_type,
     is_verified,
     is_premium,
     created_at,

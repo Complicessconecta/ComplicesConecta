@@ -30,15 +30,17 @@ CREATE TABLE IF NOT EXISTS public.couple_agreements (
 -- Crear tabla couple_disputes si no existe
 CREATE TABLE IF NOT EXISTS public.couple_disputes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    agreement_id UUID NOT NULL,
-    initiator_id UUID NOT NULL,
-    reason TEXT NOT NULL,
-    status TEXT DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'RESOLVED', 'ESCALATED')),
-    resolution_notes TEXT,
+    couple_agreement_id UUID NOT NULL REFERENCES public.couple_agreements(id) ON DELETE CASCADE,
+    couple_id UUID NOT NULL REFERENCES public.couple_profiles(id) ON DELETE CASCADE,
+    initiated_by UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    dispute_reason TEXT NOT NULL,
+    tokens_in_dispute JSONB,
+    nfts_in_dispute JSONB,
+    resolution_type TEXT,
+    deadline_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() + INTERVAL '72 hours',
+    status TEXT DEFAULT 'PENDING_AGREEMENT' CHECK (status IN ('PENDING_AGREEMENT', 'RESOLVED_TRANSFERRED', 'EXPIRED_FORFEITED')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    resolved_at TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT fk_agreement FOREIGN KEY (agreement_id) REFERENCES public.couple_agreements(id) ON DELETE CASCADE,
-    CONSTRAINT fk_initiator FOREIGN KEY (initiator_id) REFERENCES public.profiles(id) ON DELETE CASCADE
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 -- Crear tabla frozen_assets si no existe
 CREATE TABLE IF NOT EXISTS public.frozen_assets (
@@ -119,11 +121,35 @@ CREATE INDEX IF NOT EXISTS idx_couple_agreements_partner_1 ON public.couple_agre
 CREATE INDEX IF NOT EXISTS idx_couple_agreements_partner_2 ON public.couple_agreements(partner_2_id);
 CREATE INDEX IF NOT EXISTS idx_couple_agreements_status ON public.couple_agreements(status);
 CREATE INDEX IF NOT EXISTS idx_couple_agreements_dispute_deadline ON public.couple_agreements(dispute_deadline);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'couple_disputes'
+          AND column_name = 'initiated_by'
+    ) THEN
+        ALTER TABLE public.couple_disputes
+            ADD COLUMN initiated_by UUID REFERENCES public.profiles(id);
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'couple_disputes'
+          AND column_name = 'initiated_by'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_couple_disputes_initiated_by ON public.couple_disputes(initiated_by);
+    END IF;
+END $$;
+
 -- Índices para couple_disputes
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON public.couple_disputes(agreement_id);
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_initiator_id ON public.couple_disputes(initiator_id);
+CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON public.couple_disputes(couple_agreement_id);
+CREATE INDEX IF NOT EXISTS idx_couple_disputes_couple_id ON public.couple_disputes(couple_id);
 CREATE INDEX IF NOT EXISTS idx_couple_disputes_status ON public.couple_disputes(status);
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_created_at ON public.couple_disputes(created_at);
+CREATE INDEX IF NOT EXISTS idx_couple_disputes_created_at ON public.couple_disputes(deadline_at, status);
 -- Índices para frozen_assets
 CREATE INDEX IF NOT EXISTS idx_frozen_assets_dispute_id ON public.frozen_assets(dispute_id);
 CREATE INDEX IF NOT EXISTS idx_frozen_assets_asset_type ON public.frozen_assets(asset_type);

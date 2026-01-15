@@ -1,37 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/useToast";
-import {
-  advancedCoupleService,
-  CoupleProfile,
-  CoupleEvent,
-  CoupleMatch,
-} from "@/services/couple/AdvancedCoupleService";
-import {
-  Users,
-  Heart,
-  Calendar,
-  Star,
-  TrendingUp,
-  MessageCircle,
-  Eye,
-  Gift,
-  Plus,
-  Search,
-  RefreshCw,
-  AlertTriangle,
-  CheckCircle,
-} from "lucide-react";
+import { advancedCoupleService, CoupleProfile, CoupleEvent, CoupleMatch } from "@/services/couple/AdvancedCoupleService";
+import { Users, Heart, Calendar, Star, TrendingUp, MessageCircle, Eye, Gift, Plus, Search, RefreshCw, AlertTriangle, CheckCircle } from "lucide-react";
 
 export const CoupleDashboard: React.FC = () => {
   const [coupleProfile, setCoupleProfile] = useState<CoupleProfile | null>(

@@ -121,12 +121,22 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
 
     try {
       setIsCreating(true);
-      const newGallery = await nftGalleryService.createGallery(userId, {
+      const galleryData: {
+        galleryName: string;
+        description?: string;
+        isPublic?: boolean;
+        profileId?: string;
+      } = {
         galleryName: galleryName.trim(),
         description: galleryDescription.trim(),
         isPublic,
-        profileId,
-      });
+      };
+
+      if (profileId !== undefined) {
+        galleryData.profileId = profileId;
+      }
+
+      const newGallery = await nftGalleryService.createGallery(userId, galleryData);
 
       setGalleries((prev) => [newGallery, ...prev]);
       setShowCreateDialog(false);

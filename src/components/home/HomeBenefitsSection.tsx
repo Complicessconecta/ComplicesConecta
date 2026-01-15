@@ -6,17 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Info,
-  Briefcase,
-  UserCheck,
-  DollarSign,
-  Heart,
-  Shield,
-  Users,
-  Zap,
-  Smartphone as Android,
-} from "lucide-react";
+import { Info, Briefcase, UserCheck, DollarSign, Heart, Shield, Users, Zap, Smartphone as Android } from "lucide-react";
 
 interface HomeBenefitsSectionProps {
   onOpenModeratorForm: () => void;

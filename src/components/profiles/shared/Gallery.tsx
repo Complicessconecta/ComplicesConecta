@@ -3,17 +3,7 @@ import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-  Lock,
-  Eye,
-  Heart,
-  MessageCircle,
-  X,
-  Plus,
-  Globe,
-  EyeOff,
-  UserPlus,
-} from "lucide-react";
+import { Lock, Eye, Heart, MessageCircle, X, Plus, Globe, EyeOff, UserPlus } from "lucide-react";
 import { invitationService } from "@/lib/invitations";
 import { useAuth } from "@/features/auth/useAuth";
 import { InvitationDialog } from "@/components/invitations/InvitationDialog";

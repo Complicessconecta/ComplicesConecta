@@ -1,16 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Heart,
-  Flame,
-  CheckCircle,
-  Crown,
-  Star,
-  MapPin,
-  MessageCircle,
-  User,
-} from "lucide-react";
+import { Heart, Flame, CheckCircle, Crown, Star, MapPin, MessageCircle, User } from "lucide-react";
 
 // Constantes
 const FALLBACK_IMAGE_URL =

@@ -1,14 +1,6 @@
 import { useRef, useState, useEffect, type TouchEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  MessageCircle,
-  Send,
-  Lock,
-} from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Send, Lock } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 

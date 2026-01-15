@@ -4,40 +4,14 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  Shield,
-  AlertTriangle,
-  CheckCircle,
-  XCircle,
-  Eye,
-  Flag,
-  MessageSquare,
-  Image,
-  FileText,
-} from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/Modal";
+import { Shield, AlertTriangle, CheckCircle, XCircle, Eye, Flag, MessageSquare, Image, FileText } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  useContentModeration,
-  type ModerationResult,
-  type ContentToModerate,
-} from "@/lib/ai/contentModeration";
+import { useContentModeration, type ModerationResult, type ContentToModerate } from "@/lib/ai/contentModeration";
 import { logger } from "@/lib/logger";
 
 interface ContentModerationModalProps {
@@ -224,19 +198,6 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
       case "profile":
       case "bio":
         return <FileText className="h-4 w-4" />;
-    }
-  };
-
-  const _getSeverityColor = (severity: ModerationResult["severity"]) => {
-    switch (severity) {
-      case "critical":
-        return "text-red-700 bg-red-100 border-red-300";
-      case "high":
-        return "text-orange-700 bg-orange-100 border-orange-300";
-      case "medium":
-        return "text-yellow-700 bg-yellow-100 border-yellow-300";
-      default:
-        return "text-blue-700 bg-blue-100 border-blue-300";
     }
   };
 

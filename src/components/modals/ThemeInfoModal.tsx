@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Palette, Heart, Sparkles, Users, User } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
-import { Gender, Theme } from "@/features/profile/useProfileTheme";
+import { Gender } from "@/features/profile/useProfileTheme";
 
 interface ThemeInfoModalProps {
   isOpen: boolean;
@@ -23,7 +23,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
   const demoProfileProps = {
     id: "demo-theme",
     name: userType === "single" ? "Tu Perfil" : "Vuestro Perfil",
-    age: userType === "single" ? 28 : undefined,
+    age: userType === "single" ? 28 : 0,
     location: "Ciudad de México",
     distance: 0,
     images: ["/logo.jpg"],

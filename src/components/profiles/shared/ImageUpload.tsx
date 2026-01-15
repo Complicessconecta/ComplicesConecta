@@ -159,6 +159,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         onChange={handleFileChange}
         className="hidden"
         disabled={disabled || isUploading}
+        aria-label="Subir imagen"
       />
 
       {currentImage ? (

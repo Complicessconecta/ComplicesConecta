@@ -2,19 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/Modal";
-import {
-  Eye,
-  Lock,
-  Unlock,
-  Trash2,
-  Sparkles,
-} from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import { Eye, Lock, Unlock, Trash2, Sparkles } from "lucide-react";
 import { getUserImages, deleteImage, ImageUpload } from "@/lib/images";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";

@@ -8,21 +8,8 @@ import {
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/Modal";
-import {
-  Eye,
-  Lock,
-  Trash2,
-  Heart,
-  MessageCircle,
-  Globe,
-  UserPlus,
-} from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import { Eye, Lock, Trash2, Heart, MessageCircle, Globe, UserPlus } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";

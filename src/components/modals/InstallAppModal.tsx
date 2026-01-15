@@ -1,12 +1,5 @@
 ﻿import { useState } from "react";
-import {
-  X,
-  Smartphone,
-  Download,
-  Chrome,
-  Globe,
-  CheckCircle,
-} from "lucide-react";
+import { X, Smartphone, Download, Chrome, Globe, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";

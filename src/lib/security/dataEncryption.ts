@@ -1,42 +1,40 @@
 /**
  * Sistema de encriptación para datos sensibles en localStorage y Supabase
  * Protege información crítica sin modificar lógica de autenticación existente
+ * 
+ * Mejoras de seguridad 2025-2026:
+ * - Iteraciones PBKDF2 aumentadas a 600000 (recomendado NIST 2025+)
+ * - Password base mejorado con constante de aplicación + userId
+ * - IV único y aleatorio garantizado por cada encrypt
+ * - Validación extra en decrypt
+ * - Logging mejorado sin exponer datos sensibles
+ * 
+ * NOTA DE SEGURIDAD CRÍTICA:
+ * - Client-side encryption NO protege contra XSS, malware o acceso físico al dispositivo
+ * - Solo mitiga exposición en reposo si el atacante no tiene la sesión activa
+ * - Para protección real, usar encriptación del lado del servidor + TLS
  */
 
 import { logger } from "@/lib/logger";
+import {
+  ENCRYPTION_CONFIG,
+  SENSITIVE_DATA_TYPES,
+  ENCRYPTION_VERSION,
+  ENCRYPTION_FALLBACK_VERSION,
+} from "./encryptionConfig";
+import {
+  checkCryptoSupport,
+  getEncryptionKey,
+  reconstructEncryptionKey,
+  validateEncryptionVersion,
+  type EncryptionKey,
+} from "./keyDerivation";
+import { arrayBufferToBase64, base64ToArrayBuffer } from "./utils/cryptoUtils";
 
-// Configuración de encriptación
-const ENCRYPTION_CONFIG = {
-  algorithm: "AES-GCM",
-  keyLength: 256,
-  ivLength: 12,
-  tagLength: 16,
-  iterations: 100000, // PBKDF2 iterations
-  saltLength: 16,
-} as const;
-
-// Tipos de datos que requieren encriptación
-const SENSITIVE_DATA_TYPES = {
-  // Datos de perfil sensibles
-  PROFILE_PRIVATE: "profile_private",
-  CONTACT_INFO: "contact_info",
-  LOCATION_DATA: "location_data",
-
-  // Datos de tokens y transacciones
-  TOKEN_BALANCE: "token_balance",
-  TRANSACTION_HISTORY: "transaction_history",
-  STAKING_INFO: "staking_info",
-
-  // Datos de chat y comunicación
-  CHAT_MESSAGES: "chat_messages",
-  PRIVATE_NOTES: "private_notes",
-
-  // Configuraciones sensibles
-  USER_PREFERENCES: "user_preferences",
-  SECURITY_SETTINGS: "security_settings",
-} as const;
-
-interface EncryptedData {
+/**
+ * Datos encriptados con metadata
+ */
+export interface EncryptedData {
   data: string; // Datos encriptados en base64
   iv: string; // Vector de inicialización
   salt: string; // Salt para derivación de clave
@@ -45,17 +43,17 @@ interface EncryptedData {
   version: string; // Versión del algoritmo
 }
 
-interface EncryptionKey {
-  key: CryptoKey;
-  salt: Uint8Array;
-}
-
+/**
+ * Clase principal de encriptación
+ * 
+ * Implementa singleton pattern para cache de claves
+ */
 class DataEncryption {
   private keyCache = new Map<string, EncryptionKey>();
   private isSupported: boolean;
 
   constructor() {
-    this.isSupported = this.checkCryptoSupport();
+    this.isSupported = checkCryptoSupport();
 
     if (!this.isSupported) {
       logger.warn("⚠️ Web Crypto API no soportada, usando fallback");
@@ -63,84 +61,17 @@ class DataEncryption {
   }
 
   /**
-   * Verifica soporte de Web Crypto API
-   */
-  private checkCryptoSupport(): boolean {
-    return (
-      typeof window !== "undefined" &&
-      window.crypto &&
-      window.crypto.subtle !== undefined
-    );
-  }
-
-  /**
-   * Genera una clave de encriptación derivada de contraseña
-   */
-  private async deriveKey(
-    password: string,
-    salt: Uint8Array,
-  ): Promise<CryptoKey> {
-    if (!this.isSupported) {
-      throw new Error("Encriptación no soportada en este navegador");
-    }
-
-    const encoder = new TextEncoder();
-    const passwordBuffer = encoder.encode(password);
-
-    // Importar contraseña como clave base
-    const baseKey = await window.crypto.subtle.importKey(
-      "raw",
-      passwordBuffer,
-      "PBKDF2",
-      false,
-      ["deriveKey"],
-    );
-
-    // Derivar clave final usando PBKDF2
-    const key = await window.crypto.subtle.deriveKey(
-      {
-        name: "PBKDF2",
-        salt: new Uint8Array(salt),
-        iterations: 100000,
-        hash: "SHA-256",
-      },
-      baseKey,
-      { name: "AES-GCM", length: 256 },
-      false,
-      ["encrypt", "decrypt"],
-    );
-
-    return key;
-  }
-
-  /**
-   * Obtiene o genera una clave de encriptación
-   */
-  private async getEncryptionKey(userId: string): Promise<EncryptionKey> {
-    // Verificar cache
-    if (this.keyCache.has(userId)) {
-      return this.keyCache.get(userId)!;
-    }
-
-    // Generar salt único por usuario
-    const salt = window.crypto.getRandomValues(
-      new Uint8Array(ENCRYPTION_CONFIG.saltLength),
-    );
-
-    // Usar ID de usuario como base para la contraseña
-    // En producción, esto debería combinarse con datos adicionales del usuario
-    const password = `complices_${userId}_encryption_key`;
-
-    const key = await this.deriveKey(password, salt);
-
-    const encryptionKey = { key, salt };
-    this.keyCache.set(userId, encryptionKey);
-
-    return encryptionKey;
-  }
-
-  /**
    * Encripta datos sensibles
+   * 
+   * Mejoras de seguridad:
+   * - IV único y aleatorio por cada encrypt
+   * - Validación de tipo de dato
+   * - Logging sin exponer datos sensibles
+   * 
+   * @param data - Datos a encriptar
+   * @param userId - ID del usuario
+   * @param dataType - Tipo de dato (debe estar en SENSITIVE_DATA_TYPES)
+   * @returns Datos encriptados con metadata
    */
   public async encryptData(
     data: any,
@@ -163,9 +94,9 @@ class DataEncryption {
         };
       }
 
-      const { key, salt } = await this.getEncryptionKey(userId);
+      const { key, salt } = await getEncryptionKey(userId, this.keyCache);
 
-      // Generar IV aleatorio
+      // Generar IV aleatorio único para cada encrypt
       const iv = window.crypto.getRandomValues(
         new Uint8Array(ENCRYPTION_CONFIG.ivLength),
       );
@@ -185,12 +116,12 @@ class DataEncryption {
       );
 
       const result: EncryptedData = {
-        data: this.arrayBufferToBase64(encryptedBuffer),
-        iv: this.arrayBufferToBase64(iv.buffer as ArrayBuffer),
-        salt: this.arrayBufferToBase64(salt.buffer as ArrayBuffer),
+        data: arrayBufferToBase64(encryptedBuffer),
+        iv: arrayBufferToBase64(iv.buffer as ArrayBuffer),
+        salt: arrayBufferToBase64(salt.buffer as ArrayBuffer),
         type: dataType,
         timestamp: Date.now(),
-        version: "1.0",
+        version: ENCRYPTION_VERSION,
       };
 
       logger.info("🔐 Datos encriptados exitosamente", {
@@ -214,8 +145,15 @@ class DataEncryption {
     userId: string,
   ): Promise<T> {
     try {
+      // Validar versión
+      if (!validateEncryptionVersion(encryptedData.version)) {
+        throw new Error(
+          `Versión de encriptación no soportada: ${encryptedData.version}`,
+        );
+      }
+
       // Manejar fallback
-      if (encryptedData.version === "fallback") {
+      if (encryptedData.version === ENCRYPTION_FALLBACK_VERSION) {
         const jsonString = atob(encryptedData.data);
         return JSON.parse(jsonString);
       }
@@ -225,13 +163,12 @@ class DataEncryption {
       }
 
       // Reconstruir clave usando el salt almacenado
-      const saltBuffer = this.base64ToArrayBuffer(encryptedData.salt);
-      const password = `complices_${userId}_encryption_key`;
-      const key = await this.deriveKey(password, new Uint8Array(saltBuffer));
+      const saltBuffer = base64ToArrayBuffer(encryptedData.salt);
+      const key = await reconstructEncryptionKey(userId, saltBuffer);
 
       // Reconstruir IV y datos
-      const ivBuffer = this.base64ToArrayBuffer(encryptedData.iv);
-      const dataBuffer = this.base64ToArrayBuffer(encryptedData.data);
+      const ivBuffer = base64ToArrayBuffer(encryptedData.iv);
+      const dataBuffer = base64ToArrayBuffer(encryptedData.data);
 
       // Desencriptar datos
       const iv = new Uint8Array(ivBuffer);
@@ -259,30 +196,6 @@ class DataEncryption {
       });
       throw error;
     }
-  }
-
-  /**
-   * Convierte ArrayBuffer a string Base64
-   */
-  private arrayBufferToBase64(buffer: ArrayBuffer): string {
-    const bytes = new Uint8Array(buffer);
-    let binary = "";
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i] || 0);
-    }
-    return btoa(binary);
-  }
-
-  /**
-   * Convierte string Base64 a ArrayBuffer
-   */
-  private base64ToArrayBuffer(base64: string): ArrayBuffer {
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    return bytes.buffer;
   }
 
   /**
@@ -445,6 +358,7 @@ export {
   dataEncryption,
   SENSITIVE_DATA_TYPES,
   ENCRYPTION_CONFIG,
-  type EncryptedData,
+  ENCRYPTION_VERSION,
+  ENCRYPTION_FALLBACK_VERSION,
 };
 export default DataEncryption;

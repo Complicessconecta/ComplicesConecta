@@ -167,14 +167,6 @@ export class AdvancedFeaturesService {
 
     // Location compatibility - usar valores por defecto ya que latitude/longitude no existen en la tabla
     const locationScore = 0.5; // Score por defecto
-    // TODO: Implementar cuando latitude/longitude estén disponibles en la tabla profiles
-    // if (user1.latitude && user1.longitude && user2.latitude && user2.longitude) {
-    //   locationScore = this.calculateLocationCompatibility(
-    //     `${user1.latitude},${user1.longitude}`,
-    //     `${user2.latitude},${user2.longitude}`,
-    //     config.filters.maxDistance
-    //   );
-    // }
     scores.location = locationScore;
     if (locationScore > 0.8) {
       reasons.push("Ubicaciones ideales para encuentros discretos");
@@ -269,7 +261,6 @@ export class AdvancedFeaturesService {
     const common = interests1.filter((interest) =>
       interests2.includes(interest),
     );
-    const _total = new Set([...interests1, ...interests2]).size;
 
     return common.length / Math.max(interests1.length, interests2.length);
   }
@@ -487,11 +478,6 @@ export class AdvancedFeaturesService {
       }
     }
 
-    // Account type compatibility - account_type no existe en la tabla
-    // TODO: Implementar cuando account_type esté disponible en la tabla profiles
-    // if (user1.account_type === user2.account_type) {
-    //   compatibility += 0.2;
-    // }
     compatibility += 0.2; // Siempre compatible por defecto
 
     return Math.min(1.0, compatibility);

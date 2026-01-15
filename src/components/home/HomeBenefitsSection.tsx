@@ -1,10 +1,5 @@
 import { Link } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Info, Briefcase, UserCheck, DollarSign, Heart, Shield, Users, Zap, Smartphone as Android } from "lucide-react";
 

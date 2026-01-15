@@ -286,7 +286,7 @@ export const ProfileAnalytics = () => {
                           <Progress
                             value={
                               maxWeeklyViews > 0
-                                ? (mockAnalytics.weekly.views[index] /
+                                ? ((mockAnalytics.weekly.views[index] || 0) /
                                     maxWeeklyViews) *
                                   100
                                 : 0

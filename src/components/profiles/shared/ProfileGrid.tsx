@@ -75,7 +75,7 @@ export const ProfileGrid = ({
                 image: profile.image,
                 interests: profile.interests,
                 rating: profile.rating,
-                isOnline: profile.isOnline,
+                ...(profile.isOnline !== undefined && { isOnline: profile.isOnline }),
               }}
               onOpenModal={() => {}}
             />

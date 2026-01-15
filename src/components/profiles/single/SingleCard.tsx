@@ -1,14 +1,7 @@
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Heart,
-  MessageCircle,
-  MapPin,
-  Verified,
-  Crown,
-  UserPlus,
-} from "lucide-react";
+import { Heart, MessageCircle, MapPin, Verified, Crown, UserPlus } from "lucide-react";
 import { InvitationDialog } from "@/components/invitations/InvitationDialog";
 import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";

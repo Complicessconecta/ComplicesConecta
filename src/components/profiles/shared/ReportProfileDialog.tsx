@@ -5,13 +5,7 @@ import { profileReportService } from "@/features/profile/ProfileReportService";
 import { toast } from "@/hooks/useToast"; // Changed from useToast to use-toast based on typical shadcn structure, or check if useToast exists
 import { logger } from "@/lib/logger";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 // Check useToast path. If it fails lint, I will fix.

@@ -69,13 +69,28 @@ class AIIntegrationService {
   private async initializeModels() {
     try {
       // Inicializar WebLLM
-      this.webLLM = new CreateMLCEngine();
+      try {
+        this.webLLM = await CreateMLCEngine("Phi-3-mini-4k-instruct-q4f16_1-MLC");
+      } catch (webLLMError) {
+        logger.warn('WebLLM no disponible, usando fallback:', webLLMError as Error);
+        this.webLLM = null;
+      }
       
       // Inicializar modelo de Hugging Face para Q&A
-      this.hfPipeline = await pipeline('question-answering', 'distilbert-base-uncased-distilled-squad');
+      try {
+        this.hfPipeline = await pipeline('question-answering', 'distilbert-base-uncased-distilled-squad');
+      } catch (hfError) {
+        logger.warn('HuggingFace pipeline no disponible, usando fallback:', hfError as Error);
+        this.hfPipeline = null;
+      }
       
       // Inicializar modelo de toxicidad para moderación
-      this.toxicityModel = await toxicity.load(0.9);
+      try {
+        this.toxicityModel = await toxicity.load(0.9, ['toxicity', 'severe_toxicity', 'identity_attack', 'insult', 'profanity', 'threat']);
+      } catch (toxicityError) {
+        logger.warn('Modelo de toxicidad no disponible, usando fallback:', toxicityError as Error);
+        this.toxicityModel = null;
+      }
       
       logger.info('✅ Modelos de IA inicializados correctamente');
     } catch (error) {
@@ -149,7 +164,7 @@ class AIIntegrationService {
       const predictions = await this.toxicityModel.classify(message);
       return predictions.some((prediction: any) => prediction.results[0].match);
     } catch (error) {
-      logger.error('Error verificando toxicidad:', error);
+      logger.error('Error verificando toxicidad:', error as Error);
       return false; // Por seguridad, si falla el modelo, permitimos el mensaje
     }
   }

@@ -53,11 +53,11 @@ interface SystemMetric {
 // Componente helper para progress bar sin estilos inline
 const ProgressBar = ({ value, color }: { value: number; color: string }) => {
   const percentage = Math.min(value, 100);
+  const dynamicWidth = `w-[${percentage}%]`;
   return (
     <div className="w-full bg-white/20 rounded-full h-2">
       <div
-        className={`${color} h-2 rounded-full transition-all duration-300`}
-        style={{ width: `${percentage}%` }}
+        className={`${color} h-2 rounded-full transition-all duration-300 progress-bar-fill ${dynamicWidth}`}
       ></div>
     </div>
   );

@@ -1,6 +1,6 @@
 /**
- * RAG Service - Retrieval Augmented Generation para Q&A
- * Servicio para preguntas y respuestas con embeddings locales y documentos del proyecto
+ * RAG (Retrieval-Augmented Generation) Service for CómplicesConecta
+ * Servicio para preguntas y respuestas con documentos del proyecto
  */
 
 import { logger } from '@/lib/logger';
@@ -16,7 +16,7 @@ export interface DocumentChunk {
     page?: number;
     relevance?: number;
   };
-  embedding?: number[];
+  embedding: number[];
 }
 
 export interface SearchResult {
@@ -28,9 +28,7 @@ export interface SearchResult {
 export interface QARequest {
   question: string;
   userId: string;
-  maxResults?: number;
-  minRelevance?: number;
-  context?: string[];
+  context?: string;
 }
 
 export interface QAResponse {
@@ -48,51 +46,51 @@ class RAGService {
   private isInitialized = false;
 
   constructor() {
-    this.initializeDocuments();
+    this.initialize();
   }
 
   /**
-   * Inicializar documentos del proyecto
+   * Inicializar el servicio RAG
    */
-  private async initializeDocuments() {
+  private async initialize(): Promise<void> {
     try {
-      // Cargar documentos clave del proyecto
       await this.loadProjectDocuments();
-      
-      // Generar embeddings para todos los documentos
       await this.generateEmbeddings();
-      
       this.isInitialized = true;
-      logger.info('✅ RAG Service inicializado con documentos del proyecto');
+      logger.info('✅ RAG Service inicializado correctamente');
     } catch (error: any) {
-      logger.error('Error inicializando RAG Service:', error);
+      logger.error('❌ Error inicializando RAG Service:', error as Error);
+      this.isInitialized = false;
     }
   }
 
   /**
-   * Procesar pregunta con RAG
+   * Procesar pregunta del usuario
    */
   async processQuestion(request: QARequest): Promise<QAResponse> {
     const startTime = performance.now();
 
     try {
       if (!this.isInitialized) {
-        await this.initializeDocuments();
+        return {
+          answer: 'El servicio RAG no está inicializado. Por favor, intenta más tarde.',
+          confidence: 0.1,
+          sources: [],
+          relatedQuestions: [],
+          processingTime: performance.now() - startTime,
+          chunksUsed: 0
+        };
       }
 
       // 1. Generar embedding para la pregunta
-      const questionEmbedding = await this.generateEmbedding(request.question);
+      const queryEmbedding = await this.generateEmbedding(request.question);
 
       // 2. Buscar documentos relevantes
-      const searchResults = await this.searchDocuments(
-        questionEmbedding,
-        request.maxResults || 5,
-        request.minRelevance || 0.7
-      );
+      const searchResults = await this.searchDocuments(queryEmbedding, 5, 0.6);
 
       if (searchResults.length === 0) {
         return {
-          answer: 'No encontré información relevante para tu pregunta. Intenta reformularla o contacta a soporte.',
+          answer: 'No encontré información relevante para tu pregunta en la documentación disponible.',
           confidence: 0.1,
           sources: [],
           relatedQuestions: [],
@@ -121,7 +119,7 @@ class RAGService {
         chunksUsed: searchResults.length
       };
     } catch (error: any) {
-      logger.error('Error procesando pregunta RAG:', error);
+      logger.error('Error procesando pregunta RAG:', error as Error);
       throw error;
     }
   }
@@ -220,12 +218,17 @@ class RAGService {
       }
     ];
 
-    this.documents = projectDocs.map(doc => ({
-      ...doc,
-      id: doc.id,
-      content: doc.content.trim(),
-      embedding: undefined as number[] | undefined
-    }));
+    this.documents = projectDocs.map(doc => {
+      const chunk: DocumentChunk = {
+        id: doc.id,
+        content: doc.content.trim(),
+        source: doc.source,
+        metadata: doc.metadata,
+        embedding: (doc as any).embedding || []
+      };
+      
+      return chunk as DocumentChunk;
+    });
 
     logger.info(`Cargados ${this.documents.length} documentos del proyecto`);
   }
@@ -240,13 +243,13 @@ class RAGService {
           // Simular generación de embedding
           // En producción, usaríamos sentence-transformers o API de embeddings
           const embedding = await this.generateEmbedding(doc.content);
-          doc.embedding = embedding;
+          (doc as any).embedding = embedding;
           this.embeddingsCache.set(doc.id, embedding);
         }
       }
       logger.info('Embeddings generados para todos los documentos');
     } catch (error: any) {
-      logger.error('Error guardando embeddings:', error);
+      logger.error('Error guardando embeddings:', error as Error);
     }
   }
 
@@ -289,24 +292,26 @@ class RAGService {
 
     // Ordenar por score y limitar resultados
     return results
-      .sort((a, b) => b.score - a.score)
+      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
       .slice(0, maxResults);
   }
 
   /**
    * Calcular similitud coseno entre dos embeddings
    */
-  private cosineSimilarity(a: number[], b: number[]): number {
-    if (a.length !== b.length) return 0;
+  private cosineSimilarity(a: number[] | undefined, b: number[] | undefined): number {
+    if (!a || !b || a.length !== b.length) return 0;
 
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
 
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      const aVal = a[i] ?? 0;
+      const bVal = b[i] ?? 0;
+      dotProduct += aVal * bVal;
+      normA += aVal * aVal;
+      normB += bVal * bVal;
     }
 
     normA = Math.sqrt(normA);
@@ -364,7 +369,7 @@ class RAGService {
         confidence: aiResponse.confidence
       };
     } catch (error: any) {
-      logger.error('Error generando respuesta:', error);
+      logger.error('Error generando respuesta:', error as Error);
       return {
         answer: 'No pude generar una respuesta basada en la documentación disponible.',
         confidence: 0.1

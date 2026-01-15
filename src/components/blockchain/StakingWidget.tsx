@@ -325,6 +325,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
                 onChange={(e) => setSelectedNFT(e.target.value)}
                 className="w-full p-2 bg-white/10 border border-white/20 rounded text-white text-sm"
                 disabled={isLoading}
+                aria-label="Seleccionar NFT para staking"
               >
                 <option value="">Seleccionar NFT...</option>
                 {availableNFTs.map((nft) => (
@@ -345,6 +346,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
               onChange={(e) => setVestingPeriod(Number(e.target.value))}
               className="w-full p-2 bg-white/10 border border-white/20 rounded text-white text-sm"
               disabled={isLoading}
+              aria-label="Seleccionar período de vesting"
             >
               <option value={30}>30 días (10% APY)</option>
               <option value={90}>90 días (12% APY)</option>

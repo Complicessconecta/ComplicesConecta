@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/forms/Input";
@@ -14,25 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import {
-  MapPin,
-  Star,
-  CheckCircle,
-  FileText,
-  Shield,
-  Search,
-  Globe,
-  Camera,
-  Award,
-  Verified,
-  Navigation,
-  Eye,
-  Building,
-  Target,
-  Sparkles,
-  User,
-  Users,
-} from "lucide-react";
+import { MapPin, Star, CheckCircle, FileText, Shield, Search, Globe, Camera, Award, Verified, Navigation, Eye, Building, Target, Sparkles, User, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
@@ -1016,6 +992,7 @@ export const Clubs = () => {
                     onChange={handleInputChange}
                     required
                     className="w-full p-2 border rounded-md bg-white dark:bg-gray-800"
+                    aria-label="Seleccionar género del propietario"
                   >
                     <option value="">Seleccionar</option>
                     <option value="M">Masculino</option>
@@ -1199,10 +1176,11 @@ export const Clubs = () => {
                     name="useAppAsWebsite"
                     checked={clubForm.useAppAsWebsite}
                     onChange={handleInputChange}
-                    className="w-4 h-4"
+                    className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                    aria-label="Usar aplicación como sitio web"
                   />
-                  <Label htmlFor="useAppAsWebsite" className="cursor-pointer">
-                    Usar la app como sitio web
+                  <Label htmlFor="useAppAsWebsite" className="text-sm text-gray-700">
+                    Usar aplicación como sitio web
                   </Label>
                 </div>
               </div>
@@ -1236,6 +1214,7 @@ export const Clubs = () => {
                     onChange={handleInputChange}
                     required
                     className="w-full p-2 border rounded-md bg-white dark:bg-gray-800"
+                    aria-label="Seleccionar tipo de club"
                   >
                     <option value="">Seleccionar</option>
                     <option value="bar">Bar</option>

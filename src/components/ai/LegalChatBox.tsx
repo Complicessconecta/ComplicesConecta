@@ -23,7 +23,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
       hasActivePrenup !== undefined && relationshipStatus
         ? { hasActivePrenup, relationshipStatus }
         : undefined,
-  });
+  } as any);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -69,7 +69,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
         <div className="flex items-center gap-3 text-[11px] text-white/70">
           <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
             <div
-              className={`h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 transition-all duration-300 ${
+              className={`h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 transition-all duration-300 progress-bar-fill ${
                 isLoadingModel ? "animate-pulse" : ""
               }`}
               style={{ width: `${progress.percent || (isReady ? 100 : 10)}%` }}

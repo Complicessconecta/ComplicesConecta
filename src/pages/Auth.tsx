@@ -5,17 +5,10 @@ import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Users, ArrowLeft, Sparkles, Building } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
-
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
 import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
@@ -218,9 +211,12 @@ const Auth = () => {
             "Error de configuracin. Por favor, contacta al soporte.";
         } else if (
           error.message.includes("Invalid login credentials") ||
-          error.message.includes("Invalid credentials")
+          error.message.includes("Invalid credentials") ||
+          error.message.includes("Invalid login") ||
+          error.message.includes("Invalid password") ||
+          error.message.includes("Authentication failed")
         ) {
-          errorMessage = "Correo electrnico o contrasea incorrectos";
+          errorMessage = "Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e intenta nuevamente.";
         } else if (error.message.includes("Email not confirmed")) {
           errorMessage =
             "Por favor, confirma tu correo electrnico antes de iniciar sesin";

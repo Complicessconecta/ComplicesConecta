@@ -48,7 +48,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
   // Inicializar modelo de toxicidad
   const initToxicityModel = async () => {
     try {
-      const model = await toxicity.load(0.9, undefined); // Corregir argumentos de toxicity
+      const model = await toxicity.load(0.9, ['toxicity', 'severe_toxicity', 'identity_attack', 'insult', 'profanity', 'threat']); // Corregir argumentos de toxicity
       setToxicityModel(model);
       logger.info('✅ Modelo de toxicidad inicializado');
     } catch (error: any) { // Corregir tipo de error
@@ -227,11 +227,11 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                     }`}>
                       {formatTime(message.timestamp)}
                     </p>
-                    {message.metadata?.model && (
+                    {message.metadata?.model && typeof message.metadata.model === 'string' && (
                       <p className={`text-xs mt-1 ${
                         message.role === 'user' ? 'text-purple-200' : 'text-gray-500'
                       }`}>
-                        {message.metadata.model}
+                        Model: {String(message.metadata.model)}
                       </p>
                     )}
                   </div>
@@ -247,32 +247,24 @@ export const ChatBot: React.FC<ChatBotProps> = ({
               <div className="flex items-center space-x-2">
                 <Bot className="w-4 h-4" />
                 <div className="flex space-x-1">
-                  <div 
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" 
-                    style={{ animationDelay: '0.1s' }}
-                  />
-                  <div 
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" 
-                    style={{ animationDelay: '0.2s' }}
-                  />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100" />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200" />
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-400" />
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Error */}
-      {state.error && (
-        <div className="mx-4 mb-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-center space-x-2">
+        {state.error && (
+          <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg">
             <AlertCircle className="w-4 h-4 text-red-600" />
             <p className="text-sm text-red-800">{state.error}</p>
           </div>
-        </div>
-      )}
+        )}
+
+        <div ref={messagesEndRef} />
+      </div>
 
       {/* Input */}
       <div className="p-4 border-t border-gray-200">
@@ -291,8 +283,11 @@ export const ChatBot: React.FC<ChatBotProps> = ({
           <button
             onClick={sendMessage}
             disabled={state.isLoading || !inputValue.trim()}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+            aria-label="Enviar mensaje"
+            title="Enviar mensaje"
           >
+            <span>{state.isLoading ? 'Enviando...' : 'Enviar'}</span>
             <Send className="w-4 h-4" />
           </button>
         </div>

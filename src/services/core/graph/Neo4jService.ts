@@ -79,7 +79,11 @@ export class Neo4jService {
   private driver: Driver | null = null;
   private config: Neo4jConfig;
   private isEnabled: boolean;
-  private initialized: boolean = false;
+  private _initialized: boolean = false;
+
+  get initialized(): boolean {
+    return this._initialized;
+  }
 
   constructor() {
     this.config = {
@@ -156,12 +160,12 @@ export class Neo4jService {
 
     if (this.isEnabled) {
       this.initializeDriver();
-      this.initialized = true;
+      this._initialized = true;
     } else {
       logger.warn(
         "Neo4j está deshabilitado. Set VITE_NEO4J_ENABLED=true para habilitar.",
       );
-      this.initialized = false;
+      this._initialized = false;
     }
   }
 
@@ -182,7 +186,7 @@ export class Neo4jService {
 
       logger.info("✅ Neo4j driver inicializado", {
         uri: this.config.uri.replace(/:[^:]*@/, ":****@"),
-        database: this.config.database,
+        database: this.config.database || 'neo4j',
       });
     } catch (error) {
       logger.error("❌ Error inicializando Neo4j driver:", {
@@ -201,7 +205,9 @@ export class Neo4jService {
     }
 
     try {
-      const session = this.driver.session({ database: this.config.database });
+      const session = this.driver.session({ 
+        database: this.config.database || 'neo4j'
+      });
       const result = await session.run("RETURN 1 as test");
       await session.close();
       return result.records.length > 0;
@@ -225,7 +231,7 @@ export class Neo4jService {
       return;
     }
 
-    const session = this.driver.session({ database: this.config.database });
+    const session = this.driver.session({ database: this.config.database || 'neo4j' });
     try {
       // Aplanar metadata para Neo4j (no soporta objetos anidados)
       const flatMetadata: Record<string, unknown> = {
@@ -288,7 +294,7 @@ export class Neo4jService {
       return;
     }
 
-    const session = this.driver.session({ database: this.config.database });
+    const session = this.driver.session({ database: this.config.database || 'neo4j' });
     try {
       await session.run(
         `
@@ -335,7 +341,7 @@ export class Neo4jService {
       return;
     }
 
-    const session = this.driver.session({ database: this.config.database });
+    const session = this.driver.session({ database: this.config.database || 'neo4j' });
     try {
       await session.run(
         `
@@ -378,7 +384,7 @@ export class Neo4jService {
       return [];
     }
 
-    const session = this.driver.session({ database: this.config.database });
+    const session = this.driver.session({ database: this.config.database || 'neo4j' });
     try {
       const result = await session.run(
         `
@@ -424,7 +430,7 @@ export class Neo4jService {
       return [];
     }
 
-    const session = this.driver.session({ database: this.config.database });
+    const session = this.driver.session({ database: this.config.database || 'neo4j' });
     try {
       const excludeClause = excludeMatched
         ? "AND NOT (u)-[:MATCHED_WITH]-(fof)"
@@ -477,7 +483,7 @@ export class Neo4jService {
       return null;
     }
 
-    const session = this.driver.session({ database: this.config.database });
+    const session = this.driver.session({ database: this.config.database || 'neo4j' });
     try {
       const result = await session.run(
         `
@@ -493,7 +499,12 @@ export class Neo4jService {
         return null;
       }
 
-      const path = result.records[0].get("path") as string[];
+      const record = result.records[0];
+      if (!record) {
+        return null;
+      }
+
+      const path = record.get("path") as string[];
       return path;
     } catch (error) {
       logger.error("❌ Error obteniendo shortest path:", {
@@ -531,16 +542,21 @@ export class Neo4jService {
         ? `${profileData.first_name} ${profileData.last_name}`
         : profileData.first_name || profileData.last_name || null);
 
-    await this.createUser(userId, {
-      name: displayName || undefined,
-      email: profileData.email || undefined, // email puede no existir en la tabla
-      createdAt: profileData.created_at,
-      metadata: {
-        age: profileData.age,
-        location: profileData.location,
-        gender: profileData.gender,
-      },
-    });
+    const userData: Partial<UserNode> = {};
+      if (displayName !== undefined && displayName !== null) userData.name = displayName;
+      if (profileData.email !== undefined) userData.email = profileData.email;
+      if (profileData.created_at !== undefined) userData.createdAt = profileData.created_at;
+      
+      const metadata: { age?: number; location?: string; gender?: string } = {};
+      if (profileData.age !== undefined) metadata.age = profileData.age;
+      if (profileData.location !== undefined) metadata.location = profileData.location;
+      if (profileData.gender !== undefined) metadata.gender = profileData.gender;
+      
+      if (Object.keys(metadata).length > 0) {
+        userData.metadata = metadata;
+      }
+
+    await this.createUser(userId, userData);
   }
 
   /**
@@ -557,9 +573,9 @@ export class Neo4jService {
     },
   ): Promise<void> {
     await this.createMatch(user1Id, user2Id, {
-      match_id: matchData.id,
-      created_at: matchData.created_at,
-      score: matchData.score,
+      ...(matchData.id !== undefined && { match_id: matchData.id }),
+      ...(matchData.created_at !== undefined && { created_at: matchData.created_at }),
+      ...(matchData.score !== undefined && { score: matchData.score }),
     });
   }
 
@@ -592,7 +608,7 @@ export class Neo4jService {
       };
     }
 
-    const session = this.driver.session({ database: this.config.database });
+    const session = this.driver.session({ database: this.config.database || 'neo4j' });
     try {
       // Query optimizado para obtener estadísticas
       const result = await session.run(
@@ -622,6 +638,15 @@ export class Neo4jService {
       }
 
       const record = result.records[0];
+      if (!record) {
+        return {
+          userCount: 0,
+          matchCount: 0,
+          likeCount: 0,
+          friendCount: 0,
+        };
+      }
+      
       return {
         userCount: Number(record.get("userCount")),
         matchCount: Number(record.get("matchCount")),

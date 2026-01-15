@@ -96,6 +96,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
             value={sortBy}
             onChange={(e) => setSort(e.target.value as any)}
             className="bg-white/10 border border-white/20 text-white rounded-lg px-3 py-2 text-sm"
+            aria-label="Ordenar reseñas por"
           >
             <option value="recent">Más recientes</option>
             <option value="highest">Mejor calificadas</option>
@@ -126,7 +127,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
                   <span className="text-white/60 text-sm w-12">{star} ★</span>
                   <div className="flex-1 bg-white/10 rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-gradient-to-r from-yellow-500 to-orange-500 h-full rounded-full transition-all"
+                      className="bg-gradient-to-r from-yellow-500 to-orange-500 h-full rounded-full transition-all rating-bar-fill"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>

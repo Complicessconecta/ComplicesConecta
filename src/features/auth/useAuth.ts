@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { getAppConfig, DEMO_CREDENTIALS, getDemoPassword, handleDemoAuth, clearDemoAuth, isProductionAdmin, } from "@/lib/app-config";
+import { getAppConfig, DEMO_CREDENTIALS, getDemoPassword, handleDemoAuth, clearDemoAuth, isProductionAdmin } from "@/lib/app-config";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -503,15 +503,8 @@ export const useAuth = () => {
     // CRÍTICO: Verificar admin basado en EMAIL DE AUTENTICACIÓN, no perfil
     const userEmail = user?.email?.toLowerCase();
 
-    // Lista de emails admin - INCLUIR djwacko28@gmail.com
-    const adminEmails = [
-      "admin", // Admin demo solamente
-      "complicesconectasw@outlook.es", // Admin principal
-      "djwacko28@gmail.com", // Admin secundario
-    ];
-
-    // PRIORIDAD: Email de autenticación determina admin status
-    const isAdminByEmail = userEmail && adminEmails.includes(userEmail);
+    // PRIORIDAD: Email de autenticación determina admin status (admins de producción vienen de ENV)
+    const isAdminByEmail = Boolean(userEmail && isProductionAdmin(userEmail));
 
     // SECUNDARIO: Role del perfil (solo si email no es admin)
     const profileRole = profile?.role;

@@ -65,24 +65,11 @@ export const getAppConfig = (): AppConfig => {
   return cachedConfig;
 };
 
-// Credenciales demo permitidas (INCLUIR djwacko28@gmail.com)
+// Credenciales demo permitidas (SOLO para demo)
 export const DEMO_CREDENTIALS = [
   "single@outlook.es",
   "pareja@outlook.es",
-  "admin",
-  "djwacko28@gmail.com", // Admin DEMO - usa datos demo
-  "demo@complicesconecta.com", // Demo genérico desde DemoSelector
 ];
-
-// Contraseñas demo por email - MIGRADO A VARIABLES DE ENTORNO
-// Fallback a valores por defecto solo para desarrollo
-const DEFAULT_DEMO_PASSWORDS: Record<string, string> = {
-  "single@outlook.es": "123456",
-  "pareja@outlook.es": "123456",
-  admin: "123456",
-  "djwacko28@gmail.com": "Magy_Wacko_nala28", // Admin DEMO
-  "demo@complicesconecta.com": "demo123", // Demo genérico
-};
 
 // Función auxiliar para obtener contraseña desde env o fallback
 const getPasswordFromEnv = (email: string): string | null => {
@@ -97,17 +84,26 @@ const getPasswordFromEnv = (email: string): string | null => {
   // Buscar en variables de entorno primero
   const envPassword = import.meta.env[`VITE_DEMO_PASSWORD_${envKey}`];
 
-  // Si no existe en env, usar fallback (solo desarrollo)
-  return envPassword || DEFAULT_DEMO_PASSWORDS[email] || null;
+  // Si no existe en env, NO usar fallback por seguridad
+  return envPassword || null;
 };
 
-// Configuración de credenciales para modo producción - MIGRADO A VARIABLES DE ENTORNO
-// Fallback a valor por defecto solo para desarrollo
-export const productionCredentials = {
-  email: "complicesconectasw@outlook.es",
-  password:
-    import.meta.env.VITE_PROD_PASSWORD_COMPLICESCONECTASW ||
-    "Magy_Wacko_nala28", // Fallback
+export const getProductionAdminEmails = (): string[] => {
+  const envList = (import.meta.env.VITE_PROD_ADMIN_EMAILS as string | undefined)
+    ?.split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (envList && envList.length > 0) return envList;
+
+  const primary = (import.meta.env.VITE_ADMIN_EMAIL as string | undefined)
+    ?.trim()
+    .toLowerCase();
+  const secondary = (import.meta.env.VITE_PROD_ADMIN_EMAIL_2 as string | undefined)
+    ?.trim()
+    .toLowerCase();
+
+  return [primary, secondary].filter((e): e is string => Boolean(e));
 };
 
 // Función para verificar si es credencial demo
@@ -126,15 +122,13 @@ export const isDemoCredential = (email: string): boolean => {
 // Función para verificar si es admin de producción
 export const isProductionAdmin = (email: string): boolean => {
   const normalizedEmail = email.toLowerCase().trim();
-  return normalizedEmail === "complicesconectasw@outlook.es";
+  return getProductionAdminEmails().includes(normalizedEmail);
 };
 
 // Función para verificar si es admin demo (admin Y djwacko28@gmail.com)
 export const isDemoAdmin = (email: string): boolean => {
-  const normalizedEmail = email.toLowerCase().trim();
-  return (
-    normalizedEmail === "admin" || normalizedEmail === "djwacko28@gmail.com"
-  );
+  void email;
+  return false;
 };
 
 // Función para obtener contraseña demo - USA VARIABLES DE ENTORNO
@@ -154,17 +148,12 @@ export const getDemoPassword = (email: string): string | null => {
 // Función para obtener contraseña de producción - USA VARIABLES DE ENTORNO
 export const getProductionPassword = (email: string): string | null => {
   const normalizedEmail = email.toLowerCase().trim();
-  if (normalizedEmail === "complicesconectasw@outlook.es") {
-    // Prioridad: variable de entorno, luego fallback
-    return (
-      import.meta.env.VITE_PROD_PASSWORD_COMPLICESCONECTASW ||
-      "Magy_Wacko_nala28"
-    );
-  }
+  if (!isProductionAdmin(normalizedEmail)) return null;
+  return import.meta.env.VITE_PROD_PASSWORD_COMPLICESCONECTASW || null;
   return null;
 };
 
-// Función centralizada para manejar autenticación demo (SIN complicesconectasw@outlook.es)
+// Función centralizada para manejar autenticación demo (SIN )
 export const handleDemoAuth = (
   email: string,
   accountType: string = "single",
@@ -174,31 +163,25 @@ export const handleDemoAuth = (
     return null;
   }
 
-  // Bloquear complicesconectasw@outlook.es en modo demo
-  if (email.toLowerCase().trim() === "complicesconectasw@outlook.es") {
-    logger.info(
-      "🚫 complicesconectasw@outlook.es es SOLO para producción real",
-    );
+  // Bloquear admins de producción en modo demo
+  if (isProductionAdmin(email)) {
+    logger.info("🚫 Credencial de producción bloqueada en modo demo");
     return null;
   }
 
   // Configurar accountType específico para admins
-  const finalAccountType = isDemoAdmin(email) ? "admin" : accountType;
+  const finalAccountType = accountType;
 
   const demoUser = {
     id: generateDemoUserUUID(email),
     email: email.toLowerCase().trim(),
-    role: isDemoAdmin(email) ? "admin" : "user",
+    role: "user",
     accountType: finalAccountType,
     first_name:
-      email === "admin"
-        ? "Admin Demo"
-        : email === "single@outlook.es"
+      email === "single@outlook.es"
           ? "Sofía"
           : email === "pareja@outlook.es"
             ? "Carmen & Roberto"
-            : email === "djwacko28@gmail.com"
-              ? "DJ Wacko"
               : email.split("@")[0],
     is_demo: true,
     created_at: new Date().toISOString(),
@@ -298,10 +281,6 @@ export const appConfig = getAppConfig();
 logger.info("🚀 ComplicesConecta iniciado", { modo: appConfig.mode });
 if (appConfig.mode === "demo") {
   logger.info("🎭 Modo demo activo - credenciales de prueba habilitadas");
-  logger.info("📝 Credenciales demo:", DEMO_CREDENTIALS);
 } else {
   logger.info("🔐 Modo producción activo - autenticación real requerida");
-  logger.info("🏢 Credenciales producción:", {
-    email: "complicesconectasw@outlook.es",
-  });
 }

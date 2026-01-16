@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,17 +11,9 @@ import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { AdminNav } from "@/components/AdminNav";
 import { safeGetItem } from "@/lib/safe-storage";
-import {
-  Users,
-  Shield,
-  BarChart3,
-  Plus,
-  Trash2,
-  Settings,
-  Crown,
-} from "lucide-react";
+import { Users,Shield, BarChart3, Plus, Trash2, Settings, Crown } from "lucide-react";
 
-// Types
+// Types 
 interface Profile {
   id: string;
   email: string;
@@ -196,7 +183,7 @@ export const Admin = () => {
           display_name: "Usuario Demo",
           first_name: "Usuario",
           last_name: "Demo",
-          email: "demo@complicesconecta.com",
+          email: "single@outlook.es",
           is_verified: true,
           is_premium: false,
           created_at: new Date().toISOString(),

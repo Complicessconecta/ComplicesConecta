@@ -49,7 +49,11 @@ export const DemoProvider: FC<DemoProviderProps> = ({ children }) => {
     login: async (email: string, _password: string) => {
       logger.info("Demo login attempt:", { email });
 
-      if (email.includes("demo") || email.includes("test")) {
+      const normalizedEmail = email.toLowerCase().trim();
+      if (
+        normalizedEmail === "single@outlook.es" ||
+        normalizedEmail === "pareja@outlook.es"
+      ) {
         return {
           success: true,
           user: {
@@ -70,7 +74,7 @@ export const DemoProvider: FC<DemoProviderProps> = ({ children }) => {
     getCurrentUser: async () => {
       return {
         id: "demo-user-1",
-        email: "demo@complicesconecta.com",
+        email: "single@outlook.es",
         profile: demoProfiles[0],
       };
     },

@@ -7,9 +7,9 @@ const Blog = () => {
   const blogPosts = [
     {
       id: 1,
-      title: "Gua Completa para Conexiones Seguras en el Lifestyle - v3.5.0",
+      title: "Guia Completa para Conexiones Seguras en el Lifestyle - v3.8.0",
       excerpt:
-        "Aprende las mejores prcticas para conectar de manera segura y discreta en la comunidad lifestyle. Conoce las nuevas features: Verificador IA de Consentimiento, Galeras NFT-Verificadas, Matching Predictivo con Neo4j y Eventos Virtuales Sostenibles.",
+        "Aprende las mejores prcticas para conectar de manera segura y discreta en la comunidad lifestyle. Conoce las nuevas features: Verificador IA de Consentimiento, Galerias NFT-Verificadas, Matching Predictivo con Neo4j y Eventos Virtuales Sostenibles.",
       author: "Equipo ComplicesConecta",
       date: "2025-11-05",
       category: "Seguridad",
@@ -18,7 +18,7 @@ const Blog = () => {
     },
     {
       id: 2,
-      title: "Cmo Crear un Perfil Atractivo y Autntico",
+      title: "Como Crear un Perfil Atractivo y Autentico",
       excerpt:
         "Tips y consejos para destacar en la plataforma manteniendo tu autenticidad.",
       author: "Mara Gonzlez",
@@ -29,7 +29,7 @@ const Blog = () => {
     },
     {
       id: 3,
-      title: "Eventos Exclusivos: Qu Esperar y Cmo Participar",
+      title: "Eventos Exclusivos: Qué Esperar y Cómo Participar",
       excerpt:
         "Todo lo que necesitas saber sobre nuestros eventos presenciales y virtuales.",
       author: "Carlos Ruiz",
@@ -58,8 +58,8 @@ const Blog = () => {
             Blog ComplicesConecta
           </h1>
           <p className="text-xl text-white/90 max-w-2xl">
-            Consejos, guas y novedades para aprovechar al mximo tu experiencia
-            en la comunidad lifestyle ms exclusiva.
+            Consejos, guias y novedades para aprovechar al maximo tu experiencia
+            en la comunidad lifestyle mas exclusiva.
           </p>
         </div>
       </div>
@@ -110,7 +110,7 @@ const Blog = () => {
                   className="w-full border-white/30 text-white font-semibold hover:bg-white/20 hover:border-white/40 shadow-lg hover:shadow-xl transition-all duration-300"
                   onClick={() => navigate(`/blog/${post.id}`)}
                 >
-                  Leer ms
+                  Leer mas
                 </Button>
               </div>
             </article>
@@ -120,10 +120,10 @@ const Blog = () => {
         {/* Newsletter Subscription */}
         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-8 mt-16 text-center">
           <h3 className="text-2xl font-bold mb-4 text-white">
-            Suscrbete a nuestro newsletter
+            Subscríbete a nuestro newsletter
           </h3>
           <p className="text-white/90 mb-6 max-w-2xl mx-auto">
-            Recibe los ltimos artculos, consejos exclusivos y novedades
+            Recibe los últimos artículos, consejos exclusivos y novedades
             directamente en tu email.
           </p>
 

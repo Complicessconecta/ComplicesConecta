@@ -119,6 +119,9 @@ const Chat = () => {
 
       const ids = Array.isArray(data) ? data.map((r: any) => String(r.profile_id)) : [];
       setUnlockedGalleries(new Set(ids));
+
+      // Mantener un espejo en estado legacy (compatibilidad/telemetría)
+      _setRealRooms((prev) => prev);
     } catch (error) {
       logger.warn("No se pudieron cargar desbloqueos de galerías", {
         error: error instanceof Error ? error.message : String(error),
@@ -169,6 +172,24 @@ const Chat = () => {
         logger.error("Error en chat en tiempo real:", { error: String(error) });
       },
     });
+
+  // Mantener espejo de mensajes en estado legacy (compatibilidad)
+  useEffect(() => {
+    if (!isProduction) return;
+    if (!Array.isArray(realtimeMessages)) return;
+
+    const mapped: SimpleChatMessage[] = realtimeMessages.map((m: any) => ({
+      id: String(m.id),
+      sender_id: String(m.sender_id),
+      sender_name: "", 
+      room_id: String(activeRoomId ?? ""),
+      content: String(m.content ?? ""),
+      created_at: String(m.created_at ?? new Date().toISOString()),
+      message_type: "text",
+    }));
+
+    _setRealMessages(mapped);
+  }, [realtimeMessages, isProduction, activeRoomId]);
 
   const handleUnlockGallery = async () => {
     if (!user || !selectedChat) return;
@@ -536,6 +557,60 @@ const Chat = () => {
   ];
 
   useEffect(() => {
+    const sourceChats = activeTab === "private" ? privateChats : publicChats;
+    const mappedRooms: SimpleChatRoom[] = sourceChats.map((chat) => ({
+      id: String(chat.id),
+      name: chat.name,
+      type: chat.roomType,
+      last_message: chat.lastMessage,
+      updated_at: new Date().toISOString(),
+    }));
+    _setRooms(mappedRooms);
+    if (isProduction) {
+      _setRealRooms(mappedRooms);
+      logger.info("Rooms sync", { count: mappedRooms.length });
+    }
+  }, [activeTab, privateChats, publicChats]);
+
+  useEffect(() => {
+    if (!selectedChat) {
+      _setSelectedRoom(null);
+      return;
+    }
+
+    _setSelectedRoom({
+      id: String(selectedChat.id),
+      name: selectedChat.name,
+      type: selectedChat.roomType,
+      last_message: selectedChat.lastMessage,
+      updated_at: new Date().toISOString(),
+    });
+  }, [selectedChat]);
+
+  useEffect(() => {
+    if (!hasActiveSession) {
+      _setIsConnected(false);
+      _setConnectionStatus("disconnected");
+      return;
+    }
+
+    if (!isProduction) {
+      _setIsConnected(true);
+      _setConnectionStatus("connected");
+      return;
+    }
+
+    if (!activeRoomId) {
+      _setIsConnected(false);
+      _setConnectionStatus("connecting");
+      return;
+    }
+
+    _setIsConnected(true);
+    _setConnectionStatus("connected");
+  }, [hasActiveSession, isProduction, activeRoomId]);
+
+  useEffect(() => {
     if (selectedChat) {
       if (isProduction) {
         loadRealMessages(selectedChat.id.toString());
@@ -577,7 +652,7 @@ const Chat = () => {
   const handleSendMessage = () => {
     if (!selectedChat || !newMessage.trim()) return;
 
-    // Bloquear envo si el chat est pausado por bajo consenso
+    // Bloquear envio si el chat est pausado por bajo consenso
     if (isPaused) {
       toast({
         variant: "destructive",

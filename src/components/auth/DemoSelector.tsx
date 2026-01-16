@@ -54,10 +54,20 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
     setSelectedType(type);
 
     try {
+      const demoEmail = type === "couple" ? "pareja@outlook.es" : "single@outlook.es";
+      const demoPassword =
+        type === "couple"
+          ? import.meta.env.VITE_DEMO_PASSWORD_PAREJA_OUTLOOK_ES
+          : import.meta.env.VITE_DEMO_PASSWORD_SINGLE_OUTLOOK_ES;
+
+      if (!demoPassword) {
+        throw new Error("Credenciales demo no configuradas");
+      }
+
       // Configurar credenciales demo según el tipo
       const demoCredentials = {
-        email: "demo@complicesconecta.com",
-        password: "demo123",
+        email: demoEmail,
+        password: demoPassword,
         accountType: type,
         displayName: type === "single" ? "Demo User" : "Demo Pareja",
         first_name: type === "single" ? "Demo" : "Demo Pareja",
@@ -65,7 +75,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
       };
 
       // Usar el método signIn del hook useAuth
-      await signIn("demo@complicesconecta.com", "demo123", type);
+      await signIn(demoEmail, demoPassword, type);
 
       // Establecer estado demo SOLO si signIn fue exitoso
       setDemoAuthenticated(true);

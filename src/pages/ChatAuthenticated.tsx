@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  Send,
-  Users,
-  Lock,
-  MessageCircle,
-  Check,
-  X,
-  UserPlus,
-} from "lucide-react";
+import { ArrowLeft, Send, Users, Lock, MessageCircle, Check, X, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Card, CardContent } from "@/components/ui/cards/Card";
@@ -70,7 +61,7 @@ export const ChatAuthenticated = () => {
       senderId: "user2",
       senderName: "Ana",
       senderAvatar: "/placeholder.svg",
-      message: "Nosotros organizamos una reunin privada el sbado ??",
+      message: "Nosotros organizamos una reunion privada el sábado ??",
       timestamp: new Date(Date.now() - 180000),
       isPrivate: false,
     },
@@ -83,7 +74,7 @@ export const ChatAuthenticated = () => {
       {
         id: "p1",
         senderId: "user1",
-        senderName: "Mara & Carlos",
+        senderName: "Maria & Carlos",
         senderAvatar: "/placeholder.svg",
         message: "Hola, nos gust mucho su perfil. Les interesa conocernos?",
         timestamp: new Date(Date.now() - 3600000),
@@ -118,7 +109,7 @@ export const ChatAuthenticated = () => {
   const [onlineUsers, _setOnlineUsers] = useState<User[]>([
     {
       id: "user1",
-      name: "Mara & Carlos",
+      name: "Maria & Carlos",
       avatar: "/placeholder.svg",
       isOnline: true,
     },

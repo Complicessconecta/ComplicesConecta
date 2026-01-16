@@ -53,11 +53,10 @@ export const useWorldID = () => {
       const { data, error } = await supabase
         .from("worldid_verifications")
         .select(
-          "id, nullifier_hash, verified_at, verification_level, is_active, expires_at",
+          "id, nullifier_hash, verification_level, status, created_at",
         )
         .eq("user_id", user.id)
-        .eq("is_active", true)
-        .order("verified_at", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(1)
         .single();
 
@@ -74,12 +73,13 @@ export const useWorldID = () => {
         throw error;
       }
 
-      // Verificar si la verificación no ha expirado
-      const isExpired =
-        data.expires_at && new Date(data.expires_at) < new Date();
+      const normalizedStatus = String(data.status || "").toLowerCase();
+      const isVerified =
+        normalizedStatus === "verified" ||
+        normalizedStatus === "success" ||
+        normalizedStatus === "completed";
 
-      if (isExpired) {
-        logger.debug("Verificación World ID expirada");
+      if (!isVerified) {
         setStatus({
           isVerified: false,
           isLoading: false,
@@ -96,8 +96,8 @@ export const useWorldID = () => {
       setStatus({
         isVerified: true,
         isLoading: false,
-        nullifierHash: data.nullifier_hash,
-        ...(data.verified_at && { verifiedAt: data.verified_at }),
+        ...(data.nullifier_hash ? { nullifierHash: data.nullifier_hash } : {}),
+        ...(data.created_at && { verifiedAt: data.created_at }),
         ...(data.verification_level && { verificationLevel: data.verification_level }),
       });
     } catch (err) {

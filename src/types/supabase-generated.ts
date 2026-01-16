@@ -4566,31 +4566,40 @@ export type Database = {
       }
       worldid_verifications: {
         Row: {
-          expires_at: string | null
+          action: string
+          created_at: string | null
           id: string
-          is_active: boolean
-          nullifier_hash: string
+          nullifier_hash: string | null
+          proof: Json | null
+          signal: string | null
+          status: string | null
           user_id: string | null
           verification_level: string | null
-          verified_at: string
+          world_id: string | null
         }
         Insert: {
-          expires_at?: string | null
+          action: string
+          created_at?: string | null
           id?: string
-          is_active?: boolean
-          nullifier_hash: string
+          nullifier_hash?: string | null
+          proof?: Json | null
+          signal?: string | null
+          status?: string | null
           user_id?: string | null
           verification_level?: string | null
-          verified_at?: string
+          world_id?: string | null
         }
         Update: {
-          expires_at?: string | null
+          action?: string
+          created_at?: string | null
           id?: string
-          is_active?: boolean
-          nullifier_hash?: string
+          nullifier_hash?: string | null
+          proof?: Json | null
+          signal?: string | null
+          status?: string | null
           user_id?: string | null
           verification_level?: string | null
-          verified_at?: string
+          world_id?: string | null
         }
         Relationships: [
           {
@@ -4601,6 +4610,89 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      legal_consents: {
+        Row: {
+          accepted_at: string
+          created_at: string
+          device_info: Json | null
+          document_slug: string
+          document_version: string
+          evidence_encrypted: string | null
+          id: string
+          ip: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string
+          created_at?: string
+          device_info?: Json | null
+          document_slug: string
+          document_version: string
+          evidence_encrypted?: string | null
+          id?: string
+          ip?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string
+          created_at?: string
+          device_info?: Json | null
+          document_slug?: string
+          document_version?: string
+          evidence_encrypted?: string | null
+          id?: string
+          ip?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_consents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_documents: {
+        Row: {
+          content_sha256: string | null
+          created_at: string
+          effective_date: string | null
+          id: string
+          jurisdiction: string | null
+          slug: string
+          source_path: string | null
+          title: string
+          version: string
+        }
+        Insert: {
+          content_sha256?: string | null
+          created_at?: string
+          effective_date?: string | null
+          id?: string
+          jurisdiction?: string | null
+          slug: string
+          source_path?: string | null
+          title: string
+          version: string
+        }
+        Update: {
+          content_sha256?: string | null
+          created_at?: string
+          effective_date?: string | null
+          id?: string
+          jurisdiction?: string | null
+          slug?: string
+          source_path?: string | null
+          title?: string
+          version?: string
+        }
+        Relationships: []
       }
     }
     Views: {

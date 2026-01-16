@@ -120,11 +120,11 @@ export const UNVERIFIED_SINGLE_USER: TestUser = {
 export const DEMO_CREDENTIALS = {
   single: {
     email: "single@outlook.es",
-    password: "demo123",
+    password: "demo_password",
   },
   couple: {
     email: "pareja@outlook.es",
-    password: "demo123",
+    password: "demo_password",
   },
 };
 

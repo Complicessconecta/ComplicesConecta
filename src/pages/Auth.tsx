@@ -15,6 +15,7 @@ import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
 import { Theme } from "@/features/profile/useProfileTheme";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { PhoneInput } from "@/components/forms/PhoneInput";
+import { logger } from "@/lib/logger";
 
 interface FormData {
   email: string;
@@ -70,12 +71,12 @@ const Auth = () => {
   } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [__showResetPassword, _setShowResetPassword] = useState(false);
-  const [_resetEmail, _setResetEmail] = useState("");
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
   const [showLoginLoading, setShowLoginLoading] = useState(false);
-  const [__autoLocationRequested, _setAutoLocationRequested] = useState(false);
-  const [__showThemeModal, _setShowThemeModal] = useState(false);
-  const [__showTermsModal, _setShowTermsModal] = useState(false);
+  const [autoLocationRequested, setAutoLocationRequested] = useState(false);
+  const [showThemeModal, setShowThemeModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -118,6 +119,81 @@ const Auth = () => {
     }));
   };
 
+  const getDeviceInfo = (): {
+    userAgent: string;
+    platform: string;
+    language: string;
+    screenResolution: string;
+  } => {
+    const ua = navigator.userAgent;
+
+    return {
+      userAgent: ua,
+      platform: navigator.platform,
+      language: navigator.language,
+      screenResolution: `${window.screen.width}x${window.screen.height}`,
+    };
+  };
+
+  const encodeEvidenceBase64 = (data: unknown): string => {
+    try {
+      const jsonString = JSON.stringify(data);
+      return btoa(unescape(encodeURIComponent(jsonString)));
+    } catch (error) {
+      logger.error("Error al codificar evidencia:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return "";
+    }
+  };
+
+  const saveTermsAcceptanceEvidence = async (params: {
+    userId: string;
+    documentSlug: string;
+    documentVersion: string;
+  }) => {
+    try {
+      const deviceInfo = getDeviceInfo();
+      const acceptedAt = new Date().toISOString();
+
+      const evidence = {
+        userId: params.userId,
+        deviceInfo,
+        acceptedAt,
+        documentSlug: params.documentSlug,
+        documentVersion: params.documentVersion,
+        location: formData.location || null,
+      };
+
+      const evidenceEncoded = encodeEvidenceBase64(evidence);
+
+      if (supabase) {
+        const { error } = await supabase.from("legal_consents").insert({
+          user_id: params.userId,
+          document_slug: params.documentSlug,
+          document_version: params.documentVersion,
+          accepted_at: acceptedAt,
+          ip: null,
+          user_agent: deviceInfo.userAgent,
+          device_info: deviceInfo,
+          evidence_encrypted: evidenceEncoded,
+        });
+
+        if (error) {
+          logger.error("Error al guardar evidencia de aceptación:", {
+            error: error.message,
+          });
+        } else {
+          logger.info("Evidencia de aceptación guardada exitosamente");
+        }
+      }
+    } catch (error) {
+      logger.error("Error al guardar evidencia de aceptación:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  };
+
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -133,7 +209,7 @@ const Auth = () => {
 
       if (result && result.user) {
         toast({
-          title: "Inicio de sesin exitoso",
+          title: "Inicio de sesion exitoso",
           description: "Bienvenido de vuelta a ComplicesConecta",
         });
 
@@ -163,7 +239,7 @@ const Auth = () => {
       if (error?.message) {
         if (error.message.includes("Invalid API key")) {
           errorMessage =
-            "Error de configuracin. Por favor, contacta al soporte.";
+            "Error de configuracion. Por favor, contacta al soporte.";
         } else if (
           error.message.includes("Invalid login credentials") ||
           error.message.includes("Invalid credentials") ||
@@ -174,9 +250,9 @@ const Auth = () => {
           errorMessage = "Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e intenta nuevamente.";
         } else if (error.message.includes("Email not confirmed")) {
           errorMessage =
-            "Por favor, confirma tu correo electrnico antes de iniciar sesin";
+            "Por favor, confirma tu correo electronico antes de iniciar sesion";
         } else if (error.message.includes("User not found")) {
-          errorMessage = "Usuario no encontrado. Verifica tu correo electrnico";
+          errorMessage = "Usuario no encontrado. Verifica tu correo electronico";
         } else {
           errorMessage = error.message;
         }
@@ -184,7 +260,7 @@ const Auth = () => {
 
       toast({
         variant: "destructive",
-        title: "Error al iniciar sesin",
+        title: "Error al iniciar sesion",
         description: errorMessage,
       });
     } finally {
@@ -212,15 +288,15 @@ const Auth = () => {
         formData.partnerAge &&
         parseInt(formData.partnerAge) < 18
       ) {
-        throw new Error("Tu pareja debe ser mayor de 18 aos");
+        throw new Error("Tu pareja debe ser mayor de 18 años");
       }
 
       // Crear usuario en Supabase
       if (!supabase) {
-        throw new Error("Supabase no est disponible");
+        throw new Error("Supabase no esta disponible");
       }
 
-      const { data: _authData, error: authError } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -250,6 +326,14 @@ const Auth = () => {
       });
 
       if (authError) throw authError;
+
+      if (authData?.user && formData.acceptTerms) {
+        await saveTermsAcceptanceEvidence({
+          userId: authData.user.id,
+          documentSlug: "terminos_y_condiciones",
+          documentVersion: "1.0",
+        });
+      }
 
       toast({
         title: "Cuenta creada exitosamente!",
@@ -374,7 +458,7 @@ const Auth = () => {
                 >
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-white font-medium">
-                      Correo electrnico
+                      Correo electrónico
                     </Label>
                     <Input
                       id="email"
@@ -388,7 +472,7 @@ const Auth = () => {
                       onFocus={() => setIsEmailFocused(true)}
                       onBlur={() => setIsEmailFocused(false)}
                       required
-                      placeholder={isAdminMode ? "complicesconectasw@outlook.es" : "tu@email.com"}
+                      placeholder="tu@email.com"
                       autoComplete="off"
                       readOnly={!isEmailFocused}
                       onClick={() => setIsEmailFocused(true)}
@@ -401,7 +485,7 @@ const Auth = () => {
                       htmlFor="password"
                       className="text-white font-medium"
                     >
-                      Contrasea
+                      Contraseña
                     </Label>
                     <Input
                       id="password"
@@ -427,6 +511,15 @@ const Auth = () => {
                   >
                     Iniciar Sesión
                   </Button>
+
+                  {/* ¿Olvidaste tu contraseña? */}
+                  <button
+                    type="button"
+                    onClick={() => setShowResetPassword(true)}
+                    className="w-full text-sm text-purple-300 hover:text-purple-200 underline transition-colors"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
                 </form>
               </TabsContent>
 
@@ -469,7 +562,7 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  {/* Informacin Bsica */}
+                  {/* Información Básica */}
                   <div className="space-y-2">
                     <Label
                       htmlFor="firstName"
@@ -636,7 +729,7 @@ const Auth = () => {
                       className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
                     >
                       <option value="" className="bg-purple-900 text-white">
-                        Selecciona tu inters
+                        Selecciona tu interes
                       </option>
                       <option value="male" className="bg-purple-900 text-white">
                         Hombres
@@ -659,12 +752,12 @@ const Auth = () => {
                     </select>
                   </div>
 
-                  {/* Informacin de Pareja - Solo si es pareja */}
+                  {/* Información de Pareja - Solo si es pareja */}
                   {formData.accountType === "couple" && (
                     <>
                       <div className="border-t border-white/20 pt-4">
                         <h4 className="text-white font-medium mb-4">
-                          Informacin de tu Pareja
+                          Información de tu Pareja
                         </h4>
 
                         <div className="space-y-2">
@@ -775,7 +868,7 @@ const Auth = () => {
                               value=""
                               className="bg-purple-900 text-white"
                             >
-                              Selecciona el gnero
+                              Selecciona el genero
                             </option>
                             <option
                               value="male"
@@ -828,7 +921,7 @@ const Auth = () => {
                               value=""
                               className="bg-purple-900 text-white"
                             >
-                              Selecciona el inters
+                              Selecciona el interes
                             </option>
                             <option
                               value="male"
@@ -860,10 +953,10 @@ const Auth = () => {
                     </>
                   )}
 
-                  {/* Informacin Adicional */}
+                  {/* Información Adicional */}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-white font-medium">
-                      Correo electrnico
+                      Correo electrónico
                     </Label>
                     <Input
                       id="email"
@@ -885,7 +978,7 @@ const Auth = () => {
                       htmlFor="password"
                       className="text-white font-medium"
                     >
-                      Contrasea
+                      Contraseña
                     </Label>
                     <Input
                       id="password"
@@ -905,7 +998,7 @@ const Auth = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="bio" className="text-white font-medium">
-                      Biografa
+                      Biografia
                     </Label>
                     <textarea
                       id="bio"
@@ -960,7 +1053,7 @@ const Auth = () => {
                           to="/terms"
                           className="text-purple-300 hover:underline"
                         >
-                          Trminos y Condiciones
+                          Terminos y Condiciones
                         </Link>{" "}
                         y la{" "}
                         <Link
@@ -980,16 +1073,28 @@ const Auth = () => {
                         id="shareLocation"
                         aria-label="Compartir mi ubicación"
                         checked={formData.shareLocation}
-                        onChange={(e) =>
-                          handleInputChange("shareLocation", e.target.checked)
-                        }
+                        onChange={(e) => {
+                          handleInputChange("shareLocation", e.target.checked);
+                          if (e.target.checked && !autoLocationRequested && _location) {
+                            setFormData((prev) => ({
+                              ...prev,
+                              location: `${_location.latitude},${_location.longitude}`,
+                            }));
+                            setAutoLocationRequested(true);
+                            toast({
+                              title: "Ubicación obtenida",
+                              description: "Tu ubicación ha sido obtenida exitosamente",
+                              variant: "default",
+                            });
+                          }
+                        }}
                         className="rounded"
                       />
                       <Label
                         htmlFor="shareLocation"
                         className="text-sm text-white/80"
                       >
-                        Compartir mi ubicacin para mejorar las coincidencias
+                        Compartir mi ubicación para mejorar las coincidencias
                       </Label>
                     </div>
                   </div>
@@ -1006,6 +1111,180 @@ const Auth = () => {
               </TabsContent>
             </Tabs>
           </CardContent>
+
+          {/* Modal de Restablecer Contraseña */}
+          {showResetPassword && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-6 max-w-md w-full mx-4">
+                <h3 className="text-xl font-bold text-white mb-4">
+                  Restablecer Contraseña
+                </h3>
+                <p className="text-white/80 mb-4">
+                  Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.
+                </p>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="reset-email" className="text-white font-medium">
+                      Correo Electrónico
+                    </Label>
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      placeholder="tu@email.com"
+                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
+                    />
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setShowResetPassword(false);
+                        setResetEmail("");
+                      }}
+                      className="flex-1 border-white/20 text-white hover:bg-white/10"
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={async () => {
+                        if (resetEmail && supabase) {
+                          try {
+                            const { error } = await supabase.auth.resetPasswordForEmail(
+                              resetEmail,
+                              {
+                                redirectTo: `${window.location.origin}/auth/reset-password`,
+                              }
+                            );
+
+                            if (error) throw error;
+
+                            toast({
+                              title: "Correo enviado",
+                              description: `Se ha enviado un correo a ${resetEmail} con instrucciones para restablecer tu contraseña.`,
+                              variant: "default",
+                            });
+                            setShowResetPassword(false);
+                            setResetEmail("");
+                          } catch (error: any) {
+                            toast({
+                              variant: "destructive",
+                              title: "Error al enviar correo",
+                              description: error.message || "No se pudo enviar el correo de recuperación",
+                            });
+                          }
+                        }
+                      }}
+                      className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+                    >
+                      Enviar
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal de Tema */}
+          {showThemeModal && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-6 max-w-md w-full mx-4">
+                <h3 className="text-xl font-bold text-white mb-4">
+                  Elegir Tema
+                </h3>
+                <p className="text-white/80 mb-4">
+                  Selecciona el tema preferido para tu perfil.
+                </p>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant={formData.preferredTheme === "dark" ? "default" : "outline"}
+                      onClick={() => {
+                        handleInputChange("preferredTheme", "dark");
+                        setShowThemeModal(false);
+                      }}
+                      className={formData.preferredTheme === "dark" ? "bg-purple-600 text-white" : "bg-white/20 text-white border-white/30"}
+                    >
+                      🌙 Oscuro
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={formData.preferredTheme === "light" ? "default" : "outline"}
+                      onClick={() => {
+                        handleInputChange("preferredTheme", "light");
+                        setShowThemeModal(false);
+                      }}
+                      className={formData.preferredTheme === "light" ? "bg-purple-600 text-white" : "bg-white/20 text-white border-white/30"}
+                    >
+                      ☀️ Claro
+                    </Button>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowThemeModal(false)}
+                    className="w-full border-white/20 text-white hover:bg-white/10"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal de Términos */}
+          {showTermsModal && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+                <h3 className="text-xl font-bold text-white mb-4">
+                  Términos y Condiciones
+                </h3>
+                <div className="text-white/80 space-y-4 mb-6">
+                  <p>
+                    Al usar ComplicesConecta, aceptas los siguientes términos:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2">
+                    <li>Debes ser mayor de 18 años para usar esta plataforma</li>
+                    <li>Toda la información proporcionada debe ser verídica</li>
+                    <li>Respetarás la privacidad y seguridad de otros usuarios</li>
+                    <li>No compartirás contenido inapropiado o ilegal</li>
+                    <li>Reportarás cualquier comportamiento sospechoso</li>
+                    <li>La plataforma no se hace responsable de encuentros fuera de la plataforma</li>
+                    <li>La información personal será tratada según nuestra Política de Privacidad</li>
+                  </ul>
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowTermsModal(false)}
+                    className="flex-1 border-white/20 text-white hover:bg-white/10"
+                  >
+                    Cerrar
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      handleInputChange("acceptTerms", true);
+                      setShowTermsModal(false);
+                      toast({
+                        title: "Términos aceptados",
+                        description: "Has aceptado los Términos y Condiciones",
+                        variant: "default",
+                      });
+                    }}
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+                  >
+                    Aceptar
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </Card>
       </div>
     </ResponsiveContainer>

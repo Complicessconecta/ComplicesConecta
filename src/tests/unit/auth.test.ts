@@ -71,7 +71,7 @@ vi.mock("@/features/auth/useAuth", () => ({
 vi.mock("@/lib/app-config", () => ({
   getAppConfig: vi.fn(() => ({ mode: "production" })),
   DEMO_CREDENTIALS: ["demo@test.com"],
-  getDemoPassword: vi.fn(() => "demo123"),
+  getDemoPassword: vi.fn(() => "demo_password"),
   handleDemoAuth: vi.fn(),
   clearDemoAuth: vi.fn(),
   checkDemoSession: vi.fn(() => null),

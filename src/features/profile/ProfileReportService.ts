@@ -2,9 +2,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import type { Database } from "@/types/supabase-generated";
 
-// Force TypeScript to reload types
-type _ReportsTableCheck = Database["public"]["Tables"]["reports"];
-
 // Tipos de Supabase - Actualizados según esquema real
 type ReportsTable = Database["public"]["Tables"]["reports"];
 type ProfilesTable = Database["public"]["Tables"]["profiles"];

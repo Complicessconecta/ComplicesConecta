@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Users, ArrowLeft, Sparkles, Building } from "lucide-react";
+import { Shield, Users, ArrowLeft, Sparkles } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
@@ -71,11 +71,13 @@ const Auth = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [__showResetPassword, _setShowResetPassword] = useState(false);
-  const [__resetEmail, _setResetEmail] = useState("");
+  const [_resetEmail, _setResetEmail] = useState("");
   const [showLoginLoading, setShowLoginLoading] = useState(false);
   const [__autoLocationRequested, _setAutoLocationRequested] = useState(false);
   const [__showThemeModal, _setShowThemeModal] = useState(false);
   const [__showTermsModal, _setShowTermsModal] = useState(false);
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -302,30 +304,24 @@ const Auth = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={async () => {
+                onClick={() => {
                   // Toggle entre modo normal y admin
-                  const isAdminMode = formData.email.includes(
-                    "complicesconectasw@outlook.es",
-                  );
-                  if (!isAdminMode) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      email: import.meta.env.VITE_ADMIN_EMAIL || "",
-                      password: "",
-                    }));
-                  } else {
-                    setFormData((prev) => ({
-                      ...prev,
-                      email: "",
-                      password: "",
-                    }));
-                  }
+                  setIsAdminMode(!isAdminMode);
+                  setFormData((prev) => ({
+                    ...prev,
+                    email: "",
+                    password: "",
+                  }));
                 }}
-                className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
+                className={`bg-gradient-to-r hover:scale-105 transition-all duration-300 hover:shadow-lg ${
+                  isAdminMode
+                    ? "from-green-600/20 to-emerald-600/40 hover:from-green-600/40 hover:to-emerald-600/60 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm hover:shadow-green-500/30"
+                    : "from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm hover:shadow-purple-500/30"
+                }`}
                 data-testid="toggle-auth-mode"
               >
                 <Shield className="h-4 w-4 mr-2" />
-                Admin
+                {isAdminMode ? "Admin" : "Normal"}
               </Button>
             </div>
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
@@ -383,14 +379,19 @@ const Auth = () => {
                     <Input
                       id="email"
                       name="email"
-                      type="email"
+                      type="text"
+                      inputMode="email"
                       value={formData.email}
                       onChange={(e) =>
                         handleInputChange("email", e.target.value)
                       }
+                      onFocus={() => setIsEmailFocused(true)}
+                      onBlur={() => setIsEmailFocused(false)}
                       required
-                      placeholder="tu@email.com"
-                      autoComplete="email"
+                      placeholder={isAdminMode ? "complicesconectasw@outlook.es" : "tu@email.com"}
+                      autoComplete="off"
+                      readOnly={!isEmailFocused}
+                      onClick={() => setIsEmailFocused(true)}
                       data-testid="email-input"
                       className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
@@ -425,32 +426,6 @@ const Auth = () => {
                     style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
                     Iniciar Sesión
-                  </Button>
-
-                  {/* Demo Login Button con glassmorphism mejorado - Navega a selector */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full border-2 border-yellow-400/50 bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-yellow-500/20 backdrop-blur-sm text-white font-semibold hover:from-yellow-500/40 hover:via-amber-500/40 hover:to-yellow-500/40 hover:border-yellow-400 hover:text-white hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 active:scale-95 relative overflow-hidden group"
-                    onClick={() => navigate("/demo")}
-                    data-testid="demo-login-button"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/0 via-yellow-400/20 to-yellow-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
-                    <Sparkles className="w-4 h-4 mr-2 relative z-10 group-hover:animate-spin" />
-                    <span className="relative z-10">Acceso Demo</span>
-                  </Button>
-
-                  {/* Club Demo Button - Próximamente */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled
-                    className="w-full border-2 border-purple-400/50 bg-gradient-to-r from-purple-500/20 via-fuchsia-500/20 to-purple-500/20 backdrop-blur-sm text-white/70 font-semibold cursor-not-allowed relative overflow-hidden"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
-                  >
-                    <Building className="w-4 h-4 mr-2" />
-                    <span>Club Demo - Próximamente</span>
                   </Button>
                 </form>
               </TabsContent>

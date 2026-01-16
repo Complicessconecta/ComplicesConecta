@@ -26,14 +26,14 @@ const ProfileDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Verificar autenticación demo
   const demoAuth = localStorage.getItem("demo_authenticated");
   const demoUser = localStorage.getItem("demo_user");
 
   // Allow access in demo mode or if user is authenticated
-  if (demoAuth !== "true" && !demoUser) {
+  if (demoAuth !== "true" && !demoUser && !isAuthenticated()) {
     // Only redirect to auth if not in demo mode
     const isDemoMode =
       window.location.hostname === "localhost" ||

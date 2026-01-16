@@ -1,10 +1,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/shared/lib/cn";
-import {
-  GlobalSearchService,
-  type GlobalSearchResult,
-} from "@/services/GlobalSearchService";
+import { GlobalSearchService, type GlobalSearchResult } from "@/services/GlobalSearchService";
 import { logger } from "@/lib/logger";
 
 interface VanishSearchInputProps {

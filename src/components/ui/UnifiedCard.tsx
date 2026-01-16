@@ -1,14 +1,7 @@
 import type { FC, ReactNode } from "react";
 import { motion } from "framer-motion";
 import type { HTMLMotionProps } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { cn } from "@/shared/lib/cn";
 
 interface UnifiedCardProps {

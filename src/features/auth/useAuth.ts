@@ -42,8 +42,6 @@ export const useAuth = () => {
       return;
     }
 
-    // Cache deshabilitado - cargar siempre desde Supabase
-
     // CRÍTICO: Verificar modo demo PRIMERO antes de cargar perfil
     const sessionFlags = StorageManager.getSessionFlags();
     if (sessionFlags.demo_authenticated && demoUser) {
@@ -68,6 +66,9 @@ export const useAuth = () => {
 
         logger.info("🎭 Perfil demo cargado en useAuth:", {
           displayName: demoProfile.display_name,
+          email: demoProfile.email,
+          role: demoProfile.role,
+          accountType: demoProfile.profile_type,
         });
         setProfile(demoProfile);
         profileLoaded.current = true;
@@ -86,6 +87,28 @@ export const useAuth = () => {
     //   profileLoaded.current = true;
     //   return;
     // }
+
+    // CRÍTICO: NO intentar cargar desde Supabase si es usuario demo
+    // Ya verificado arriba, pero doble verificación por seguridad
+    if (sessionFlags.demo_authenticated) {
+      logger.info("🎭 Usuario demo - evitando carga desde Supabase", { userId });
+      return;
+    }
+
+    // CRÍTICO: Verificar si el userId es un UUID demo generado
+    // Los UUIDs demo tienen formato específico que no existen en Supabase
+    // Verificar si el userId está en la lista de usuarios demo conocidos
+    const demoUUIDs = [
+      "0830e194-17e3-417e-a300-00017e3eb04f", // djwacko28@gmail.com
+      // Agregar más UUIDs demo según sea necesario
+    ];
+    const isDemoUUID = userId.startsWith("demo-") ||
+                      userId.includes("demo") ||
+                      demoUUIDs.includes(userId);
+    if (isDemoUUID) {
+      logger.info("🎭 UUID demo detectado - evitando carga desde Supabase", { userId });
+      return;
+    }
 
     try {
       logger.info("🔍 Iniciando verificación de autenticación", { userId });
@@ -171,7 +194,7 @@ export const useAuth = () => {
       });
       setProfile(null);
     }
-  }, [demoUser?.id]);
+  }, [demoUser?.id, demoUser]);
 
   // Función auxiliar para determinar si usar Supabase real
   const shouldUseRealSupabase = () => {
@@ -432,13 +455,12 @@ export const useAuth = () => {
     if (sessionFlags.demo_authenticated && demoUser) {
       const parsedDemoUser =
         typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
-      logger.info("🎭 Demo admin check:", {
+      logger.info("🎭 Demo authenticated check:", {
         email: parsedDemoUser?.email,
         accountType: parsedDemoUser?.accountType,
         role: parsedDemoUser?.role,
-        isDemoAdmin:
-          parsedDemoUser?.email === "complicesconectasw@outlook.es" &&
-          parsedDemoUser?.role === "admin",
+        isAdmin: parsedDemoUser?.accountType === "admin" ||
+                parsedDemoUser?.role === "admin",
       });
       return true;
     }

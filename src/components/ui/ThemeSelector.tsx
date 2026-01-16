@@ -2,11 +2,7 @@ import type { FC } from "react";
 import { motion } from "framer-motion";
 import { Check, Palette } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-import {
-  Theme,
-  getAvailableThemes,
-  getThemeDisplayName,
-} from "@/features/profile/useProfileTheme";
+import { Theme, getAvailableThemes, getThemeDisplayName } from "@/features/profile/useProfileTheme";
 import { Badge } from "@/components/ui/badge";
 import { validateThemeSelector } from "@/lib/zod-schemas";
 import { logger } from "@/lib/logger";

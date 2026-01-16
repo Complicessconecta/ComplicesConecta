@@ -1,23 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
-import {
-  Coins,
-  Gift,
-  Users,
-  TrendingUp,
-  Copy,
-  Check,
-  Sparkles,
-  Image as ImageIcon,
-} from "lucide-react";
+import { Coins, Gift, Users, TrendingUp, Copy, Check, Sparkles, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { useNavigate } from "react-router-dom";
 // import { getUserTokenBalance, processReferralReward, validateReferralCode, TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado

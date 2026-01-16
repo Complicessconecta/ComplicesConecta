@@ -60,60 +60,104 @@ export const UnifiedInput = forwardRef<HTMLInputElement, UnifiedInputProps>(
           </Label>
         )}
 
-        <motion.div
-          variants={animated ? inputVariants : undefined}
-          animate={error ? "error" : isFocused ? "focus" : "initial"}
-          transition={{ duration: 0.2 }}
-          className="relative"
-        >
-          {leftIcon && (
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-              {leftIcon}
-            </div>
-          )}
-
-          <Input
-            ref={ref}
-            type={inputType}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            className={cn(
-              "transition-all duration-200",
-              leftIcon && "pl-10",
-              (rightIcon || isPassword) && "pr-10",
-              glass && [
-                "bg-white/80 backdrop-blur-sm border-white/30",
-                "focus:bg-white/90 focus:border-white/50",
-              ],
-              error && "border-red-300 focus:border-red-500 focus:ring-red-200",
-              success &&
-                "border-green-300 focus:border-green-500 focus:ring-green-200",
-              isFocused && "shadow-md",
-              className,
+        {animated ? (
+          <motion.div
+            variants={inputVariants}
+            animate={error ? "error" : isFocused ? "focus" : "initial"}
+            transition={{ duration: 0.2 }}
+            className="relative"
+          >
+            {leftIcon && (
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                {leftIcon}
+              </div>
             )}
-            {...props}
-          />
 
-          {isPassword && (
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
+            <Input
+              ref={ref}
+              type={inputType}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              className={cn(
+                "transition-all duration-200",
+                leftIcon && "pl-10",
+                (rightIcon || isPassword) && "pr-10",
+                glass && [
+                  "bg-white/80 backdrop-blur-sm border-white/30",
+                  "focus:bg-white/90 focus:border-white/50",
+                ],
+                error && "border-red-300 focus:border-red-500 focus:ring-red-200",
+                success &&
+                  "border-green-300 focus:border-green-500 focus:ring-green-200",
+                isFocused && "shadow-md",
+                className,
               )}
-            </button>
-          )}
+              {...props}
+            />
 
-          {rightIcon && !isPassword && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-              {rightIcon}
-            </div>
-          )}
-        </motion.div>
+            {rightIcon && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                {rightIcon}
+              </div>
+            )}
+
+            {isPassword && (
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            )}
+          </motion.div>
+        ) : (
+          <div className="relative">
+            {leftIcon && (
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                {leftIcon}
+              </div>
+            )}
+
+            <Input
+              ref={ref}
+              type={inputType}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              className={cn(
+                "transition-all duration-200",
+                leftIcon && "pl-10",
+                (rightIcon || isPassword) && "pr-10",
+                glass && [
+                  "bg-white/80 backdrop-blur-sm border-white/30",
+                  "focus:bg-white/90 focus:border-white/50",
+                ],
+                error && "border-red-300 focus:border-red-500 focus:ring-red-200",
+                success &&
+                  "border-green-300 focus:border-green-500 focus:ring-green-200",
+                isFocused && "shadow-md",
+                className,
+              )}
+              {...props}
+            />
+
+            {rightIcon && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                {rightIcon}
+              </div>
+            )}
+
+            {isPassword && (
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            )}
+          </div>
+        )}
 
         {error && (
           <motion.p

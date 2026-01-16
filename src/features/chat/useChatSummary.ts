@@ -7,10 +7,7 @@
  */
 
 import { useState } from "react";
-import {
-  chatSummaryService,
-  type ChatSummary,
-} from "@/features/chat/ChatSummaryService";
+import { chatSummaryService, type ChatSummary } from "@/features/chat/ChatSummaryService";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 

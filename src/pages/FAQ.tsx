@@ -50,17 +50,17 @@ const FAQ = () => {
 
   const faqCategories = {
     verificacion: {
-      title: "Verificacin KYC",
+      title: "Verificación KYC",
       icon: UserCheck,
       color: "text-blue-500",
       faqs: [
         {
-          question: "Cmo funciona la verificacin KYC?",
+          question: "¿Cómo funciona la verificación KYC?",
           answer:
-            "Utilizamos tecnologa blockchain avanzada y verificacin de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificacin de documentos oficiales, selfie biomtrica y verificacin telefnica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
+            "Utilizamos tecnologa blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
         },
         {
-          question: "Qu documentos necesito para verificarme?",
+          question: "¿Qué documentos necesito para verificarme?",
           answer:
             "Necesitas una identificacin oficial vigente (INE, pasaporte o cdula profesional) y una selfie clara. El proceso es completamente seguro y tus datos estn protegidos.",
         },
@@ -99,14 +99,14 @@ const FAQ = () => {
       color: "text-purple-500",
       faqs: [
         {
-          question: "Cmo funcionan las galeras privadas?",
+          question: "Como funcionan las galeras privadas?",
           answer:
             "Las galeras privadas te permiten compartir fotos ntimas solo con personas que hayas autorizado. Tienes control total sobre quin puede acceder. Adems, puedes crear Galeras NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificacin de tus galeras.",
         },
         {
-          question: "Cmo envo una invitacin de galera?",
+          question: "Como envio una invitacion de galera?",
           answer:
-            "Desde cualquier perfil, puedes enviar una invitacin para acceder a tu galera privada. La persona debe aceptar la invitacin para ver tu contenido privado.",
+            "Desde cualquier perfil, puedes enviar una invitacion para acceder a tu galera privada. La persona debe aceptar la invitacion para ver tu contenido privado.",
         },
         {
           question: "Puedo revocar el acceso a mi galera?",
@@ -121,12 +121,12 @@ const FAQ = () => {
       color: "text-fuchsia-500",
       faqs: [
         {
-          question: "Cmo funcionan las invitaciones?",
+          question: "Como funcionan las invitaciones?",
           answer:
             "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos.",
         },
         {
-          question: "Qu tipos de invitaciones existen?",
+          question: "Que tipos de invitaciones existen?",
           answer:
             "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadas) y de chat (para conversaciones privadas).",
         },
@@ -143,12 +143,12 @@ const FAQ = () => {
       color: "text-yellow-500",
       faqs: [
         {
-          question: "Qu son los eventos VIP?",
+          question: "Como son los eventos VIP?",
           answer:
             "Son fiestas privadas y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas ntimas y experiencias nicas para la comunidad swinger.",
         },
         {
-          question: "Cmo puedo acceder a eventos VIP?",
+          question: "Como puedo acceder a eventos VIP?",
           answer:
             "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias.",
         },
@@ -165,12 +165,12 @@ const FAQ = () => {
       color: "text-orange-500",
       faqs: [
         {
-          question: "Qu son los tokens?",
+          question: "Como son los tokens?",
           answer:
             "Los tokens son nuestra moneda virtual que puedes usar para enviar regalos, destacar tu perfil y acceder a funciones premium especiales.",
         },
         {
-          question: "Cmo obtengo tokens?",
+          question: "Como obtengo tokens?",
           answer:
             "Puedes comprar tokens o ganarlos completando tu perfil, verificndote, siendo activo en la comunidad y recibiendo valoraciones positivas.",
         },
@@ -187,12 +187,12 @@ const FAQ = () => {
       color: "text-red-500",
       faqs: [
         {
-          question: "Cmo puedo reportar un perfil?",
+          question: "Como puedo reportar un perfil?",
           answer:
             "Puedes reportar cualquier perfil sospechoso directamente desde su pgina. Nuestro equipo de moderacin revisa todos los reportes en menos de 24 horas.",
         },
         {
-          question: "Qu hago si alguien me acosa?",
+          question: "Que hago si alguien me acosa?",
           answer:
             "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rpidas para proteger a nuestra comunidad.",
         },
@@ -209,14 +209,14 @@ const FAQ = () => {
       color: "text-cyan-500",
       faqs: [
         {
-          question: "Encontraste un error en la versin Beta?",
+          question: "Encontraste un error en la version Beta?",
           answer:
             "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores ms abajo para ayudarnos a identificar y corregir cualquier problema que encuentres.",
         },
         {
-          question: "Problemas con la aplicacin mvil?",
+          question: "Problemas con la aplicacion movil?",
           answer:
-            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app mvil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
+            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app movil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
         },
         {
           question: "Problemas con pagos o suscripciones?",
@@ -265,7 +265,7 @@ Fecha: ${new Date().toLocaleString()}
     toast({
       title: "Reporte enviado!",
       description:
-        "Se abri tu cliente de email con el reporte. Envalo para que podamos ayudarte.",
+        "Se abrió tu cliente de email con el reporte. Envalo para que podamos ayudarte.",
     });
 
     // Reset form
@@ -398,7 +398,7 @@ Fecha: ${new Date().toLocaleString()}
                     Reporte de Errores Beta
                   </CardTitle>
                   <p className="text-white/90">
-                    Aydanos a mejorar reportando errores, bugs o problemas que
+                    Ayudanos a mejorar reportando errores, bugs o problemas que
                     encuentres
                   </p>
                 </CardHeader>
@@ -452,7 +452,7 @@ Fecha: ${new Date().toLocaleString()}
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="critical">
-                          Crtico - La app no funciona
+                          Critico - La app no funciona
                         </SelectItem>
                         <SelectItem value="high">
                           Alto - Funcionalidad importante rota
@@ -500,7 +500,7 @@ Fecha: ${new Date().toLocaleString()}
                   {/* Description */}
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
-                      Descripcin del Problema
+                      Descripción del Problema
                     </label>
                     <Textarea
                       placeholder="Describe detalladamente qu error encontraste..."
@@ -532,7 +532,7 @@ Fecha: ${new Date().toLocaleString()}
                   {/* Contact Email */}
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
-                      Email de Contacto
+                      E-mail de Contacto
                     </label>
                     <Input
                       type="email"
@@ -571,7 +571,7 @@ Fecha: ${new Date().toLocaleString()}
                     💬 Comentarios Generales
                   </CardTitle>
                   <p className="text-white/90">
-                    Tu opinin nos ayuda a crear la mejor experiencia swinger
+                    Tu opinión nos ayuda a crear la mejor experiencia swinger
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">

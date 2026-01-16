@@ -257,3 +257,5 @@ const Dashboard = () => {
     </ErrorBoundary>
   );
 };
+
+export default Dashboard;

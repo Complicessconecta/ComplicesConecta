@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Construction } from "lucide-react";
@@ -24,4 +23,4 @@ const ConstructionPage = () => {
   );
 };
 
-// Removed default export to support tree-shaking and named imports consistency
+export default ConstructionPage;

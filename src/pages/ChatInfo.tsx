@@ -45,7 +45,7 @@ export const ChatInfo = () => {
             </h1>
             <p className="mt-4 text-base text-zinc-300">
               La red de mensajera cifrada del lifestyle. Privacidad total,
-              moderacin humana 24/7 y control absoluto de tus conexiones.
+              moderación humana 24/7 y control absoluto de tus conexiones.
             </p>
           </div>
 
@@ -62,12 +62,12 @@ export const ChatInfo = () => {
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-zinc-200">
                 <p>
-                  Conversaciones ntimas con verificado KYC, encriptadas punto a
+                  Conversaciones intimas con verificado KYC, encriptadas punto a
                   punto y con filtros de privacidad dinámicos.
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm">
                   <li className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-emerald-400" /> Encriptacin
+                    <Shield className="h-4 w-4 text-emerald-400" /> Encriptación
                     militar AES-256
                   </li>
                   <li className="flex items-center gap-2">
@@ -76,7 +76,7 @@ export const ChatInfo = () => {
                   </li>
                   <li className="flex items-center gap-2">
                     <Eye className="h-4 w-4 text-purple-400" /> Control de
-                    capturas y reenvos
+                    capturas y reenvios
                   </li>
                 </ul>
               </CardContent>
@@ -86,7 +86,7 @@ export const ChatInfo = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-xl">
                   <Globe className="h-6 w-6 text-cyan-300" />
-                  Salas Pblicas
+                  Salas Publicas
                   <Badge className="bg-cyan-500/20 text-cyan-100 border-cyan-400/30">
                     24/7
                   </Badge>
@@ -94,7 +94,7 @@ export const ChatInfo = () => {
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-zinc-200">
                 <p>
-                  Temticas regionales, filtros por ciudad y moderacin humana
+                  Temáticas regionales, filtros por ciudad y moderación humana
                   para mantener la experiencia segura.
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm">
@@ -174,7 +174,7 @@ export const ChatInfo = () => {
               <div className="grid gap-6 sm:grid-cols-3 text-center text-sm text-zinc-200">
                 <div>
                   <Lock className="mx-auto mb-2 h-8 w-8 text-purple-300" />
-                  Encriptacin E2E
+                  Encriptación E2E
                 </div>
                 <div>
                   <UserCheck className="mx-auto mb-2 h-8 w-8 text-blue-300" />

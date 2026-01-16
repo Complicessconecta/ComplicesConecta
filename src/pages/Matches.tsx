@@ -51,7 +51,7 @@ const Matches = () => {
     },
     {
       id: 2,
-      name: "Sofa",
+      name: "Sofia",
       age: 29,
       image:
         "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=600&fit=crop&crop=face&v=2",
@@ -81,12 +81,12 @@ const Matches = () => {
     },
     {
       id: 4,
-      name: "Ral",
+      name: "Raul",
       age: 26,
       image:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face",
       compatibility: 89,
-      mutualInterests: ["Single Masculino", "Experiencias ntimas", "Aventuras"],
+      mutualInterests: ["Single Masculino", "Experiencias Nuevas", "Aventuras"],
       distance: 2.1,
       matchedAt: "Hace 1 semana",
       hasUnreadMessage: false,

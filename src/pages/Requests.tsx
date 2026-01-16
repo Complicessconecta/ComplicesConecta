@@ -59,11 +59,11 @@ const Requests = () => {
       {
         id: "demo-inv-1",
         from_profile: "Anabella & Julio",
-        to_profile: "Sofa",
+        to_profile: "Sofia",
         type: "chat",
         status: "pending",
         message:
-          "Hola! Nos encantara conocerte mejor. Te gustara chatear con nosotros?",
+          "Hola! Nos encantaria conocerte mejor. Te gustaria chatear con nosotros?",
         created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrs
         decided_at: null,
       },
@@ -74,7 +74,7 @@ const Requests = () => {
         type: "gallery",
         status: "pending",
         message:
-          "Hola guapa, nos gust mucho tu perfil. Nos permites ver tu galera privada?",
+          "Hola guapa, nos gusta mucho tu perfil. Nos permites ver tu galera privada?",
         created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 horas atrs
         decided_at: null,
       },
@@ -84,7 +84,7 @@ const Requests = () => {
         to_profile: "Sofa",
         type: "profile",
         status: "accepted",
-        message: "Qu tal si nos conocemos mejor?",
+        message: "Que tal si nos conocemos mejor?",
         created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 da atrs
         decided_at: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
       },
@@ -94,11 +94,11 @@ const Requests = () => {
     const demoSent: Invitation[] = [
       {
         id: "demo-sent-1",
-        from_profile: "Sofa",
+        from_profile: "Sofia",
         to_profile: "Miguel & Laura",
         type: "chat",
         status: "accepted",
-        message: "Hola, me encant su perfil. Les gustara platicar?",
+        message: "Hola, me encanta su perfil. Les gustaria platicar?",
         created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 horas atrs
         decided_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
       },
@@ -155,13 +155,13 @@ const Requests = () => {
     try {
       if (!isAuthenticated()) {
         logger.info(
-          "? Usuario no autenticado en Requests, redirigiendo a /auth",
+          "Usuario no autenticado en Requests, redirigiendo a /auth",
         );
         navigate("/auth");
         return;
       }
     } catch (error) {
-      logger.error("? Error verificando autenticación en Requests:", { error });
+      logger.error("Error verificando autenticación en Requests:", { error });
       toast({
         title: "Advertencia",
         description:
@@ -171,7 +171,7 @@ const Requests = () => {
     }
 
     if (!user?.id) {
-      logger.info("? No se pudo obtener userId, redirigiendo a /auth");
+      logger.info("No se pudo obtener userId, redirigiendo a /auth");
       navigate("/auth");
     }
   }, [isDemoMode, isAuthenticated, navigate, toast, user?.id]);
@@ -197,8 +197,8 @@ const Requests = () => {
         );
 
         toast({
-          title: `Invitacin ${action === "accept" ? "aceptada" : "rechazada"}`,
-          description: `La invitacin ha sido procesada correctamente (modo demo).`,
+          title: `Invitación ${action === "accept" ? "aceptada" : "rechazada"}`,
+          description: `La invitación ha sido procesada correctamente (modo demo).`,
         });
 
         logger.info("✅ Acción demo en invitación:", { invitationId, action });
@@ -208,14 +208,14 @@ const Requests = () => {
       // Modo real
       await invitationService.respondInvitation(invitationId, action);
       toast({
-        title: `Invitacin ${action === "accept" ? "aceptada" : "rechazada"}`,
-        description: `La invitacin ha sido procesada correctamente.`,
+        title: `Invitación ${action === "accept" ? "aceptada" : "rechazada"}`,
+        description: `La invitación ha sido procesada correctamente.`,
       });
       loadInvitations(); // Refresh the list
     } catch {
       toast({
         title: "Error",
-        description: "No se pudo procesar la solicitud. Intntalo de nuevo.",
+        description: "No se pudo procesar la solicitud. Intentalo de nuevo.",
         variant: "destructive",
       });
     }
@@ -264,6 +264,8 @@ const Requests = () => {
             Revocada
           </Badge>
         );
+      default:
+        return null;
     }
   };
 
@@ -279,9 +281,9 @@ const Requests = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
         <Card className="p-8 text-center bg-card/80 backdrop-blur-sm">
           <UserX className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-xl font-semibold mb-2">Funcin no disponible</h2>
+          <h2 className="text-xl font-semibold mb-2">Función no disponible</h2>
           <p className="text-muted-foreground">
-            Las solicitudes de conexin no estn habilitadas en esta versin.
+            Las solicitudes de conexion no estn habilitadas en esta version.
           </p>
         </Card>
       </div>
@@ -308,6 +310,13 @@ const Requests = () => {
             <p className="text-white/80 text-lg">
               Gestiona tus invitaciones recibidas y enviadas
             </p>
+            {_acceptedCount > 0 && (
+              <div className="mt-3">
+                <Badge className="bg-green-500/20 text-green-100 border border-green-400/30">
+                  Aceptadas: {_acceptedCount}
+                </Badge>
+              </div>
+            )}
           </div>
 
           <div className="bg-gradient-to-br from-purple-900/40 via-purple-800/30 to-blue-900/40 backdrop-blur-sm rounded-xl border border-white/10 p-6">
@@ -328,6 +337,12 @@ const Requests = () => {
                   {receivedInvitations.length > 0 && (
                     <Badge className="bg-red-500 text-white text-xs">
                       {receivedInvitations.length}
+                    </Badge>
+                  )}
+                  {_pendingReceivedCount > 0 && (
+                    <Badge className="bg-yellow-500/20 text-yellow-100 border border-yellow-400/30 text-xs">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {_pendingReceivedCount}
                     </Badge>
                   )}
                 </TabsTrigger>
@@ -354,7 +369,7 @@ const Requests = () => {
                         No hay invitaciones recibidas
                       </h3>
                       <p className="text-white/70">
-                        Cuando alguien te enve una invitacin, aparecer aqu.
+                        Cuando alguien te envie una invitación, aparecer aqui.
                       </p>
                     </Card>
                   ) : (
@@ -368,7 +383,7 @@ const Requests = () => {
                             <div className="flex items-center text-sm text-white/80">
                               {getInvitationTypeIcon(inv.type)}
                               <span>
-                                Invitacin de <strong>{inv.from_profile}</strong>
+                                Invitación de <strong>{inv.from_profile}</strong>
                               </span>
                             </div>
                             {getStatusBadge(inv.status)}
@@ -420,7 +435,7 @@ const Requests = () => {
                         No has enviado invitaciones
                       </h3>
                       <p className="text-white/70">
-                        Explora perfiles y enva invitaciones para conectar.
+                        Explora perfiles y envia invitaciones para conectar.
                       </p>
                     </Card>
                   ) : (
@@ -433,7 +448,7 @@ const Requests = () => {
                           <div className="flex items-center text-sm text-white/80">
                             {getInvitationTypeIcon(inv.type)}
                             <span>
-                              Invitacin para <strong>{inv.to_profile}</strong>
+                              Invitación para <strong>{inv.to_profile}</strong>
                             </span>
                           </div>
                           {getStatusBadge(inv.status)}

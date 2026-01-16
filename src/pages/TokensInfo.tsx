@@ -16,6 +16,7 @@ const TOKEN_CONFIG = {
 import { useAuth } from "@/features/auth/useAuth";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
+import { TokensSubnav } from "@/components/TokensSubnav";
 
 // CustomLabel component para PieChart con color blanco
 const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
@@ -403,6 +404,7 @@ export default function TokensInfo() {
 
   return (
     <div className={`min-h-screen relative overflow-hidden ${isActive ? "page-active" : ""}`}>
+      <TokensSubnav />
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/95 to-purple-800/95 backdrop-blur-xl border-b border-white/30 shadow-2xl">
         <div className="container mx-auto px-4 py-4">

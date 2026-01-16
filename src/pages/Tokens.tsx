@@ -21,6 +21,7 @@ import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
+import { TokensSubnav } from "@/components/TokensSubnav";
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
@@ -437,6 +438,7 @@ export default function Tokens() {
 
   return (
     <div className="min-h-screen relative overflow-hidden pb-20">
+      <TokensSubnav />
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />
 

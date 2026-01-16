@@ -200,7 +200,9 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
-                            <Route path="/demo" element={<Demo />} />
+                            {!import.meta.env.PROD && (
+                              <Route path="/demo" element={<Demo />} />
+                            )}
                             <Route path="/faq" element={<FAQ />} />
                             <Route path="/feed" element={<Feed />} />
                             <Route path="/profiles" element={<Profiles />} />
@@ -353,10 +355,12 @@ const App = () => {
                               path="/ley-olimpia"
                               element={<LeyOlimpia />}
                             />
-                            <Route
-                              path="/construction"
-                              element={<Construction />}
-                            />
+                            {!import.meta.env.PROD && (
+                              <Route
+                                path="/construction"
+                                element={<Construction />}
+                              />
+                            )}
                             <Route path="/video-chat" element={<VideoChat />} />
                             <Route path="/vip-events" element={<VIPEvents />} />
                             <Route
@@ -428,10 +432,12 @@ const App = () => {
                             />
                             <Route path="/donations" element={<Donations />} />
                             <Route path="/invest" element={<Invest />} />
-                            <Route
-                              path="/template-demo"
-                              element={<TemplateDemo />}
-                            />
+                            {!import.meta.env.PROD && (
+                              <Route
+                                path="/template-demo"
+                                element={<TemplateDemo />}
+                              />
+                            )}
                             <Route path="/news" element={<News />} />
                             <Route
                               path="/notifications"

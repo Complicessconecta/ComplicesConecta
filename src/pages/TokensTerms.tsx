@@ -2,12 +2,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { ArrowLeft, FileText, AlertTriangle, Shield, Coins, Users, Scale } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { TokensSubnav } from "@/components/TokensSubnav";
 
 export default function TokensTerms() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-hero-gradient">
+      <TokensSubnav />
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/90 to-purple-800/90 backdrop-blur-md border-b border-white/20">
         <div className="container mx-auto px-4 py-4">

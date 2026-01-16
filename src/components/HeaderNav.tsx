@@ -23,6 +23,8 @@ import {
   Scale,
   Image,
   Home,
+  BookOpen,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -73,88 +75,57 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Items principales - siempre visibles
+  const hasSession =
+    typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : Boolean(isAuthenticated);
+
+  const chatPath = hasSession ? "/chat" : "/chat-info";
+
+  // C) Menú principal (máximo 7 items)
   const mainNavItems = [
-    { name: "Inicio", path: "/about", icon: Home },
+    { name: "Inicio", path: "/", icon: Home },
     { name: "Descubrir", path: "/discover", icon: Search },
-    { name: "Matches", path: "/matches", icon: Heart },
-    { name: "Chat", path: "/chat-info", icon: MessageSquare },
-    { name: "Noticias", path: "/news", icon: Bell },
+    { name: "Chat", path: chatPath, icon: MessageSquare },
     { name: "Eventos", path: "/events", icon: Calendar },
-    { name: "Tokens", path: "/tokens-info", icon: DollarSign },
-    { name: "NFTs", path: "/nfts", icon: Image },
+    { name: "Clubs", path: "/clubs", icon: Building2 },
+    { name: "Tokens", path: "/tokens", icon: DollarSign },
+    { name: "Marketplace", path: "/marketplace", icon: ShoppingBag },
   ];
 
-  // Items secundarios - en menú desplegable
+  // D) Dropdown "Más" con categorías exactas (Contenido & Empresa, Legal, Ayuda, Explorar)
   const secondaryNavItems = [
-    { name: "Perfiles", path: "/profiles", icon: User, category: "Comunidad" },
-    // Feed removido: tiene su propio navegador y es exclusivo para perfiles demo/producción
-    { name: "Premium", path: "/premium", icon: Crown, category: "Servicios" },
-    {
-      name: "Marketplace",
-      path: "/marketplace",
-      icon: ShoppingBag,
-      category: "Servicios",
-    },
-    { name: "Blog", path: "/blog", icon: FileText, category: "Contenido" },
-    { name: "Noticias", path: "/news", icon: Bell, category: "Contenido" },
-    {
-      name: "Inversores",
-      path: "/investors",
-      icon: DollarSign,
-      category: "Acerca de",
-    },
-    { name: "Empresa", path: "/about", icon: Building2, category: "Acerca de" },
-    {
-      name: "Carreras",
-      path: "/careers",
-      icon: Building2,
-      category: "Acerca de",
-    },
-    {
-      name: "Donaciones",
-      path: "/donations",
-      icon: DollarSign,
-      category: "Acerca de",
-    },
+    // Contenido & Empresa
+    { name: "Blog", path: "/blog", icon: BookOpen, category: "Contenido & Empresa" },
+    { name: "Noticias", path: "/news", icon: FileText, category: "Contenido & Empresa" },
+    { name: "Carreras", path: "/careers", icon: Building2, category: "Contenido & Empresa" },
+    { name: "Invest", path: "/invest", icon: DollarSign, category: "Contenido & Empresa" },
+    { name: "Inversores", path: "/investors", icon: DollarSign, category: "Contenido & Empresa" },
+    { name: "Donaciones", path: "/donations", icon: DollarSign, category: "Contenido & Empresa" },
+    { name: "Moderadores", path: "/moderators", icon: Users, category: "Contenido & Empresa" },
+    { name: "Proyecto", path: "/project-info", icon: FileText, category: "Contenido & Empresa" },
+
+    // Explorar
+    { name: "Stories", path: "/stories", icon: Image, category: "Explorar" },
+    { name: "Feed", path: "/feed", icon: Heart, category: "Explorar" },
+    { name: "Info", path: "/info", icon: Info, category: "Explorar" },
+    { name: "About", path: "/about", icon: Building2, category: "Explorar" },
+    { name: "NFTs", path: "/nfts", icon: Image, category: "Explorar" },
+    { name: "Premium", path: "/premium", icon: Crown, category: "Explorar" },
+    { name: "Shop", path: "/shop", icon: ShoppingBag, category: "Explorar" },
+
+    // Ayuda
     { name: "FAQ", path: "/faq", icon: HelpCircle, category: "Ayuda" },
-    { name: "Información", path: "/info", icon: Info, category: "Ayuda" },
     { name: "Soporte", path: "/support", icon: HelpCircle, category: "Ayuda" },
+    { name: "Chat (Info)", path: "/chat-info", icon: MessageSquare, category: "Ayuda" },
+
+    // Legal
+    { name: "Legal (Hub)", path: "/legal", icon: Scale, category: "Legal" },
     { name: "Términos", path: "/terms", icon: FileText, category: "Legal" },
     { name: "Privacidad", path: "/privacy", icon: Lock, category: "Legal" },
     { name: "Seguridad", path: "/security", icon: Shield, category: "Legal" },
-    { name: "Legal", path: "/legal", icon: Scale, category: "Legal" },
-    { name: "Ley Olimpia", path: "/ley-olimpia", icon: Shield, category: "Legal" },
     { name: "Directrices", path: "/guidelines", icon: FileText, category: "Legal" },
-    {
-      name: "Proyecto",
-      path: "/project-info",
-      icon: FileText,
-      category: "Legal",
-    },
-    // Documentación interna de tokens - Solo para usuarios autenticados
-    ...(isAuthenticated()
-      ? [
-          {
-            name: "Tokens - Términos",
-            path: "/tokens-terms",
-            icon: FileText,
-            category: "Legal",
-          },
-          {
-            name: "Tokens - Privacidad",
-            path: "/tokens-privacy",
-            icon: Lock,
-            category: "Legal",
-          },
-          {
-            name: "Tokens - Legal",
-            path: "/tokens-legal",
-            icon: Scale,
-            category: "Legal",
-          },
-        ]
-      : []),
+    { name: "Ley Olimpia", path: "/ley-olimpia", icon: Shield, category: "Legal" },
   ];
 
   const isActive = (path: string) => {
@@ -272,6 +243,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     {[
                       "Comunidad",
                       "Servicios",
+                      "Tokens",
                       "Contenido",
                       "Acerca de",
                       "Ayuda",
@@ -315,7 +287,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               <div className="hidden md:flex items-center space-x-1">
                 <button
                   onClick={() => {
-                    handleNavigation("/tokens-info");
+                    handleNavigation("/tokens");
                     logger.info("Tokens icon clicked");
                   }}
                   className="p-2 text-white/70 hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
@@ -477,10 +449,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
                     {/* Secondary Links Grouped by Category */}
                     {[
-                      "Comunidad",
-                      "Servicios",
-                      "Contenido",
-                      "Acerca de",
+                      "Contenido & Empresa",
+                      "Explorar",
                       "Ayuda",
                       "Legal",
                     ].map((category) => {

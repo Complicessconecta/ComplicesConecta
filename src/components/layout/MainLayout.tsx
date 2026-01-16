@@ -33,40 +33,34 @@ export const MainLayout = () => {
       : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
 
-  const isAuthPage = location.pathname === "/auth";
+  const pathname = location.pathname;
+
+  // Lista explícita de rutas donde NO debe aparecer HeaderNav
+  const HIDE_HEADER_EXACT = new Set<string>(["/auth"]);
+  const HIDE_HEADER_PREFIXES: string[] = [
+    "/profile",
+    "/profile-single",
+    "/profile-couple",
+    "/edit-profile-",
+    "/profile/",
+  ];
+
+  const shouldHideHeader =
+    HIDE_HEADER_EXACT.has(pathname) ||
+    HIDE_HEADER_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+
+  const showHeaderNav = !shouldHideHeader;
+
+  const showBottomNavigation = hasSession;
+
   const isProfileRoute =
-    location.pathname === "/profile" ||
-    location.pathname === "/profile-single" ||
-    location.pathname === "/profile-couple" ||
-    location.pathname.startsWith("/profile/") ||
-    location.pathname.startsWith("/edit-profile-");
+    pathname === "/profile" ||
+    pathname === "/profile-single" ||
+    pathname === "/profile-couple" ||
+    pathname.startsWith("/profile/") ||
+    pathname.startsWith("/edit-profile-");
 
-  const showHeaderNav = !isAuthPage && !isProfileRoute;
-  const showBottomNavigation = hasSession; // visible también en perfiles
   const showChatFab = !isProfileRoute;
-
-  // Ocultar el encabezado en la página de autenticación si lo deseamos o conservarlo. App.tsx tenía lógica:
-  // {!hasSession && <HeaderNav />} -> ¿Esto implica que HeaderNav es SÓLO para usuarios que no son de sesión?
-  // Pero HeaderNav tiene lógica para el usuario "Iniciado sesión" (mostrando el botón de perfil).
-  // Veamos App.tsx nuevamente:
-  // {!hasSession && <HeaderNav />}
-  // ¿Esto significa que HeaderNav estaba OCULTO cuando el usuario tenía sesión?
-  // Pero la navegación (abajo) se MUESTRA cuando el usuario tiene sesión.
-  // El mensaje del usuario dice: "Diseño persistente: ... Encabezado y BottomNav deben ser fijos."
-  // Entonces, el encabezado probablemente debería estar visible SIEMPRE, pero ¿quizás contenido diferente?
-  // HeaderNav tiene lógica para que `isAuthenticated()` muestre el menú de perfil.
-  // Entonces parece que DEBERÍA mostrarse. ¿El código anterior en App.tsx podría haberlo ocultado intencionalmente para los usuarios que iniciaron sesión en favor de otra cosa?
-  // O tal vez fue un error en App.tsx.
-  // "Lógica de Iniciar sesión: Si hay sesión en Supabase, cambia el botón 'Iniciar sesión' por el nombre del usuario o su avatar."
-  // Esto implica que el encabezado SE utiliza cuando se inicia sesión.
-  // Así que siempre renderizaré HeaderNav (excepto quizás páginas específicas como Auth si es necesario, pero normalmente Header es bueno).
-
-  // Comprobando App.tsx nuevamente:
-  // {!hasSession && <HeaderNav />}
-  // Esto definitivamente ocultó el encabezado al iniciar sesión.
-  // Pero HeaderNav.tsx tiene: `const handleLogin = ...` y `{isAuthenticated() ? (...) : (...)}`
-  // Entonces HeaderNav ESTÁ diseñado para manejar el estado de inicio de sesión.
-  //Lo habilitaré para todos.
 
   return (
     <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
@@ -85,7 +79,7 @@ export const MainLayout = () => {
         )}
 
         {/* Main Content */}
-        <main className={!isAuthPage && showHeaderNav ? "" : ""}>
+        <main className={showHeaderNav ? "" : ""}>
           <div className={showHeaderNav ? "-mt-[1px]" : ""}>
             <PageTransitionWrapper>
               <PageBackground>

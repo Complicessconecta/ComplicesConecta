@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { ArrowLeft, Scale, Sparkles } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
+import { TokensSubnav } from "@/components/TokensSubnav";
 
 export default function TokensLegal() {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export default function TokensLegal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+      <TokensSubnav />
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-4 py-4">

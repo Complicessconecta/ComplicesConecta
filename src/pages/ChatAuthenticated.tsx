@@ -365,7 +365,7 @@ export const ChatAuthenticated = () => {
                         className="data-[state=active]:bg-fuchsia-500 data-[state=active]:text-white"
                       >
                         <Users className="h-4 w-4 mr-2" />
-                        Chat Pblico
+                        Chat Publico
                       </TabsTrigger>
                       <TabsTrigger
                         value="private"
@@ -436,7 +436,7 @@ export const ChatAuthenticated = () => {
                                     }
                                   </p>
                                   <p className="text-green-400 text-sm">
-                                    En lnea
+                                    En linea
                                   </p>
                                 </div>
                               </div>

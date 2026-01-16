@@ -304,7 +304,7 @@ const ModeratorDashboard = () => {
     if (!actionReason.trim()) {
       toast({
         title: "Error",
-        description: "Por favor proporciona una razn para esta accin",
+        description: "Por favor proporciona una razon para esta accion",
         variant: "destructive",
       });
       return;
@@ -394,7 +394,7 @@ const ModeratorDashboard = () => {
       logger.error("Error handling report action", { error });
       toast({
         title: "Error",
-        description: "Error al procesar la accin",
+        description: "Error al procesar la accion",
         variant: "destructive",
       });
     }
@@ -498,15 +498,15 @@ const ModeratorDashboard = () => {
       }
 
       toast({
-        title: "xito",
-        description: "Suspensin levantada exitosamente",
+        title: "Exito",
+        description: "Suspension levantada exitosamente",
       });
       fetchData();
     } catch (error) {
       logger.error("Error lifting suspension", { error });
       toast({
         title: "Error",
-        description: "Error al levantar la suspensin",
+        description: "Error al levantar la suspension",
         variant: "destructive",
       });
     }
@@ -519,7 +519,7 @@ const ModeratorDashboard = () => {
       spam: "Spam",
       fake_profile: "Perfil falso",
       underage: "Menor de edad",
-      terms_violation: "Violacin de trminos",
+      terms_violation: "Violacion de terminos",
     };
     return labels[type] || type;
   };
@@ -572,7 +572,7 @@ const ModeratorDashboard = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-2">
             <Shield className="h-8 w-8" />
-            Panel de Moderacin
+            Panel de Moderacion
           </h1>
           <p className="text-white/80">
             Gestiona reportes de usuarios y mantn la comunidad segura

@@ -68,12 +68,13 @@ Al finalizar: si todo funciona → merge a master; si no → crear .md con detal
 
 
 2. REGLAS DE IA PARA DESARROLLO
+
 Eficiencia y Comunicación
 
 CERO verborrea → respuestas directas, sin saludos innecesarios
 NO reescribir archivos completos → usar bloques modificados o "Search & Replace"
 Respuestas cortas → listas con bullet points
-leer los archivos completos antes de modificarlos
+Leer los archivos completos antes de modificarlos
  
 
 TypeScript y Código Limpio
@@ -119,9 +120,12 @@ Herramientas de Desarrollo
 Consola: PowerShell (Windows) – nunca Linux
 Idioma: Español MX UTF-8
 Dudas → PREGUNTAR ANTES de proceder
-proteger  los archivos con caractes " ` " para que no se corrompan
-ejemplo: "copílot" correcto , incorrecto "coplot" 
-durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
+Proteger  los archivos con caractes " ` " para que no se corrompan
+Ejemplo: "copílot" correcto , incorrecto "coplot" 
+Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
+Si se detecta comentarios en el archivo en ingles cambialos a español ES-MX UTF-8
+
+
 MPC y Audio (Music Production)
 
 Proteger procesos MPC y controladores MIDI

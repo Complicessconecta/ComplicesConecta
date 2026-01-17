@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, TrendingUp, Shield, RefreshCw, AlertTriangle, CheckCircle2, Wallet, Activity, DollarSign, BarChart3, PieChart, Users, Globe, Zap, Clock, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Coins, TrendingUp, Shield, RefreshCw, AlertTriangle, CheckCircle2, Wallet, Activity, DollarSign, BarChart3, PieChart, Users, Zap, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import "@/styles/TokenSystemPanel.css";
 import {
   Tabs, TabsContent, TabsList, TabsTrigger
@@ -25,7 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/forms/Input";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
-import { Settings, Plus, Minus, Gift, History as HistoryIcon, CheckCircle, AlertCircle } from "lucide-react";
+import { Settings, Plus, Minus, Gift, History as HistoryIcon } from "lucide-react";
 
 interface TokenTransaction {
   id: string;

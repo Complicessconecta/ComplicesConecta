@@ -12,6 +12,9 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { faceRecognitionService } from "@/services/verification/FaceRecognitionService";
+import { ocrService } from "@/services/verification/OCRService";
+import { smsService } from "@/services/verification/SMSService";
 
 export interface VerificationResult {
   success: boolean;
@@ -199,11 +202,14 @@ export class UserVerificationService {
         .getPublicUrl(selfieFileName);
 
       // 3. Comparación básica (para producción, usar ML/AI)
-      // Por ahora, marcamos como verificado si la imagen se subió correctamente
-      // TODO: Integrar servicio de reconocimiento facial (Face Recognition API, AWS Rekognition, etc.)
+      // Usar servicio de reconocimiento facial
+      const comparisonResult = await faceRecognitionService.compareFaces(
+        selfieFileName,
+        selfieData.profilePhotoUrl,
+      );
 
-      const confidence = 70; // Confianza media hasta integrar ML
-      const verified = confidence >= 70;
+      const verified = comparisonResult.match && comparisonResult.faceDetected;
+      const confidence = comparisonResult.confidence;
 
       if (verified) {
         await this.updateVerificationStatus(userId, "selfie", {
@@ -288,37 +294,50 @@ export class UserVerificationService {
       }
 
       // 2. Extraer información del documento (OCR)
-      // TODO: Integrar servicio de OCR (Google Cloud Vision, AWS Textract, etc.)
-      // Por ahora, marcamos como pendiente de revisión manual
+      // Usar servicio de OCR
+      const ocrResult = await ocrService.extractDocumentData(
+        documentFileName,
+        documentData.documentType,
+      );
 
-      // Simulación básica de validación
-      const ageVerified = true; // TODO: Extraer edad del documento y validar >= 18
-      const documentValid = true; // TODO: Validar que documento sea válido
+      if (!ocrResult.success || !ocrResult.data) {
+        return {
+          success: false,
+          method: "document",
+          verified: false,
+          error: ocrResult.error || "Error extrayendo información del documento",
+        };
+      }
 
-      if (ageVerified && documentValid) {
+      // Validar documento
+      const documentValid = await ocrService.validateDocument(ocrResult.data);
+      const ageVerified = ocrResult.data.isAdult || false;
+
+      if (documentValid && ageVerified) {
         await this.updateVerificationStatus(userId, "document", {
           verificationLevel: "high",
-          documentType: documentData.documentType,
-          ageVerified: true,
+          documentType: ocrResult.data.documentType,
+          ageVerified,
         });
       }
 
-      logger.info("✅ Documento recibido, requiere revisión manual", {
+      logger.info("✅ Documento verificado", {
         userId: userId.substring(0, 8) + "***",
         type: documentData.documentType,
+        confidence: ocrResult.confidence,
       });
 
       return {
         success: true,
         method: "document",
-        verified: ageVerified && documentValid,
-        confidence: 85, // Alta confianza después de revisión manual
-        ...(ageVerified && documentValid
+        verified: documentValid && ageVerified,
+        confidence: ocrResult.confidence,
+        ...(documentValid && ageVerified
           ? { verifiedAt: new Date().toISOString() }
           : {}),
         metadata: {
           verificationLevel: "high",
-          documentType: documentData.documentType,
+          documentType: ocrResult.data.documentType,
           ageVerified,
         },
       };
@@ -339,22 +358,56 @@ export class UserVerificationService {
    * Verifica teléfono (SMS)
    */
   async verifyPhone(
-    _userId: string,
-    _phoneNumber: string,
-    _code: string,
+    userId: string,
+    phoneNumber: string,
+    code: string,
   ): Promise<VerificationResult> {
     try {
-      // TODO: Implementar verificación por SMS
-      // Por ahora, retornar como no implementado
-      logger.warn("Verificación por teléfono no implementada aún");
+      logger.info("📱 Verificando teléfono", {
+        userId: userId.substring(0, 8) + "***",
+        phone: phoneNumber.substring(0, 5) + "***",
+      });
+
+      // Validar formato de número de teléfono
+      if (!smsService.validatePhoneNumber(phoneNumber)) {
+        return {
+          success: false,
+          method: "phone",
+          verified: false,
+          error: "Número de teléfono inválido",
+        };
+      }
+
+      // Verificar código SMS
+      const smsResult = await smsService.verifyCode(userId, code);
+
+      if (smsResult.verified) {
+        // Actualizar estado de verificación
+        await this.updateVerificationStatus(userId, "phone");
+
+        logger.info("✅ Verificación por teléfono exitosa", {
+          userId: userId.substring(0, 8) + "***",
+        });
+
+        return {
+          success: true,
+          method: "phone",
+          verified: true,
+          confidence: 90,
+          verifiedAt: new Date().toISOString(),
+        };
+      }
 
       return {
-        success: false,
+        success: smsResult.success,
         method: "phone",
         verified: false,
-        error: "Verificación por teléfono no implementada",
+        error: smsResult.error ?? "Error verificando código SMS",
       };
     } catch (error) {
+      logger.error("Error verificando teléfono:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return {
         success: false,
         method: "phone",

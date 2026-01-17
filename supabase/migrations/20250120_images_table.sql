@@ -24,7 +24,17 @@ ALTER TABLE public.images ENABLE ROW LEVEL SECURITY;
 
 -- Crear políticas RLS
 DO $$
+DECLARE
+  user_role_exists BOOLEAN;
 BEGIN
+  -- Verificar si la tabla profiles tiene la columna user_role antes de crear políticas de admin
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'profiles' 
+    AND column_name = 'user_role'
+  ) INTO user_role_exists;
+
   -- Política para que los usuarios puedan ver sus propias imágenes
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies 
@@ -75,8 +85,8 @@ BEGIN
     USING (is_public = true);
   END IF;
 
-  -- Política para que los admins puedan ver todas las imágenes
-  IF NOT EXISTS (
+  -- Política para que los admins puedan ver todas las imágenes (solo si user_role existe)
+  IF user_role_exists AND NOT EXISTS (
     SELECT 1 FROM pg_policies 
     WHERE schemaname = 'public' AND tablename = 'images' AND policyname = 'admins_can_view_all_images'
   ) THEN

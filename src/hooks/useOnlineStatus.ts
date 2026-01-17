@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 export const useOnlineStatus = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -50,14 +50,6 @@ export const useUserOnlineStatus = (_userId?: string) => {
 
     return () => clearInterval(interval);
   }, [systemOnline]);
-
-  const _updateOnlineStatus = useCallback(
-    async (_userId: string, _isOnline: boolean) => {
-      if (!systemOnline) return false;
-      return userOnlineStatus[_userId] ?? Math.random() > 0.3; // Por defecto 70% online
-    },
-    [systemOnline, userOnlineStatus],
-  );
 
   const getUserOnlineStatus = (userId: string): boolean => {
     if (!systemOnline) return false;

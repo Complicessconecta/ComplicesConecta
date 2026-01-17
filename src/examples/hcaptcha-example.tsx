@@ -4,12 +4,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { XCircle, CheckCircle, Shield } from "lucide-react";
 import { logger } from "@/lib/logger";
 
@@ -28,7 +23,9 @@ export const HCaptchaExample: React.FC = () => {
     import.meta.env.VITE_HCAPTCHA_SITE_KEY ||
     "10000000-ffff-ffff-ffff-000000000001";
 
-  const _handleVerify = (captchaToken: string, isValid: boolean) => {
+  // Handlers para hCaptcha (se llamarán cuando el componente esté instalado)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleVerify = (captchaToken: string, isValid: boolean) => {
     logger.info("Verificación hCaptcha:", {
       token: captchaToken.substring(0, 10) + "...",
       valid: isValid,
@@ -45,18 +42,20 @@ export const HCaptchaExample: React.FC = () => {
     }
   };
 
-  const _handleError = (errorMessage: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleError = (errorMessage: string) => {
     logger.error("Error hCaptcha:", { error: errorMessage });
     setError(`Error: ${errorMessage}`);
     setIsVerified(false);
     setToken("");
   };
 
-  const _handleExpire = () => {
-    logger.info("hCaptcha expirado", {});
-    setIsVerified(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleExpire = () => {
+    logger.info("hCaptcha expirado");
     setToken("");
-    setError("La verificación ha expirado. Por favor, verifica nuevamente.");
+    setIsVerified(false);
+    setError("hCaptcha expirado, por favor resuelve");
   };
 
   const handleSubmit = async () => {

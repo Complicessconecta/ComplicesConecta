@@ -143,8 +143,9 @@ export function ImageGallery({
             .insert({ 
               user_id: user.id, 
               profile_id: profileId,
+              target_profile_id: profileId,
               gallery_item_id: profileId 
-            });
+            } as any);
           if (error) throw new Error("No se pudo registrar el desbloqueo.");
         }
 

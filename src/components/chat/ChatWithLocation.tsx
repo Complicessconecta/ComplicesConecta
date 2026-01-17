@@ -2,12 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MapPin, Send, Share2 } from "lucide-react";
@@ -79,14 +74,13 @@ export const ChatWithLocation = ({
           `${msg.sender?.first_name || ""} ${msg.sender?.last_name || ""}`.trim() ||
           "Usuario",
         created_at: msg.created_at,
-        location:
-          msg.location_latitude && msg.location_longitude
-            ? {
-                latitude: msg.location_latitude,
-                longitude: msg.location_longitude,
-                address: msg.location_address || undefined,
-              }
-            : undefined,
+        ...(msg.location_latitude && msg.location_longitude ? {
+          location: {
+            latitude: msg.location_latitude,
+            longitude: msg.location_longitude,
+            address: msg.location_address || undefined,
+          }
+        } : {}),
       }));
 
       setMessages(formattedMessages);

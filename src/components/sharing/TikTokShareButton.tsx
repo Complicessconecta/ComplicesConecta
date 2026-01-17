@@ -43,8 +43,8 @@ export const TikTokShareButton: React.FC<TikTokShareButtonProps> = ({
     try {
       const success = await shareToTikTok({
         url: url || window.location.href,
-        text,
-        hashtags,
+        ...(text ? { text } : {}),
+        ...(hashtags ? { hashtags } : {}),
       });
 
       if (success) {

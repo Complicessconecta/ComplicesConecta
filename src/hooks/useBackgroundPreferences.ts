@@ -75,6 +75,7 @@ export const useBackgroundPreferences = () => {
         return () => clearTimeout(timer);
       } else {
         setIsLoaded(true);
+        return undefined;
       }
     } catch (error) {
       console.error("Error loading background preferences:", error);

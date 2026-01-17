@@ -2,9 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/hooks/useToast";
-import type { Database } from "@/types/supabase";
-
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 // Interfaces para los datos del dashboard
 export interface DashboardStats {
@@ -20,10 +17,17 @@ export interface DashboardStats {
   moderatorRequests: number;
 }
 
-export interface UserActivity extends Profile {
-  is_active: boolean;
+export interface UserActivity {
+  id: string;
+  display_name: string | null;
+  name: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  full_name: string;
   email?: string;
+  is_active: boolean;
 }
+
 
 // NOTE: This is simulated data and does not match the 'reports' table schema.
 // Keeping it as a local type for now.
@@ -137,16 +141,23 @@ export const useAdminDashboard = (dateRange: string) => {
 
       const { data: recentUsers, error: recentUsersError } = await supabase
         .from("profiles")
-        .select("id, display_name, created_at, updated_at")
+
+
+        .select("*")
         .order("updated_at", { ascending: false })
         .limit(10);
 
-      if (!recentUsersError && recentUsers) {
-        const recentProfiles = (recentUsers || []) as Profile[];
+
+
+        if (!recentUsersError && recentUsers) {
         setUserActivity(
-          recentProfiles.map((u) => ({
+
+
+          recentUsers.map((u) => ({
             ...u,
-            full_name: u.display_name || "Usuario",
+
+
+            full_name: u.display_name || u.name || "Usuario",
             email: "", // Email is not available on the profiles table
             is_active: u.updated_at ? new Date(u.updated_at) >= weekAgo : false,
           })),

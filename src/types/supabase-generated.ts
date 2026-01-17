@@ -372,6 +372,54 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          chat_room_id: string
+          content: string
+          created_at: string | null
+          id: string
+          is_deleted: boolean | null
+          metadata: Json | null
+          sender_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          chat_room_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          metadata?: Json | null
+          sender_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          chat_room_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          metadata?: Json | null
+          sender_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_chat_room_id_fkey"
+            columns: ["chat_room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_rooms: {
         Row: {
           created_at: string | null
@@ -415,25 +463,46 @@ export type Database = {
       }
       chat_summaries: {
         Row: {
-          chat_room_id: string
+          chat_id: string
+          content: string | null
           created_at: string | null
           id: string
           key_points: string[] | null
+          message_count: number
+          method: string | null
+          model_version: string | null
+          sentiment: string | null
           summary: string | null
+          topics: Json | null
+          updated_at: string | null
         }
         Insert: {
-          chat_room_id: string
+          chat_id: string
+          content?: string | null
           created_at?: string | null
           id?: string
           key_points?: string[] | null
+          message_count?: number
+          method?: string | null
+          model_version?: string | null
+          sentiment?: string | null
           summary?: string | null
+          topics?: Json | null
+          updated_at?: string | null
         }
         Update: {
-          chat_room_id?: string
+          chat_id?: string
+          content?: string | null
           created_at?: string | null
           id?: string
           key_points?: string[] | null
+          message_count?: number
+          method?: string | null
+          model_version?: string | null
+          sentiment?: string | null
           summary?: string | null
+          topics?: Json | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -1192,6 +1261,7 @@ export type Database = {
           couple_availability: string | null
           couple_body_type: string | null
           couple_height_range: string | null
+          couple_images: Json | null
           couple_interests: string[] | null
           couple_lifestyle: string | null
           created_at: string | null
@@ -1238,6 +1308,7 @@ export type Database = {
           couple_availability?: string | null
           couple_body_type?: string | null
           couple_height_range?: string | null
+          couple_images?: Json | null
           couple_interests?: string[] | null
           couple_lifestyle?: string | null
           created_at?: string | null
@@ -1284,6 +1355,7 @@ export type Database = {
           couple_availability?: string | null
           couple_body_type?: string | null
           couple_height_range?: string | null
+          couple_images?: Json | null
           couple_interests?: string[] | null
           couple_lifestyle?: string | null
           created_at?: string | null
@@ -1744,6 +1816,67 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_unlocks: {
+        Row: {
+          expires_at: string | null
+          gallery_item_id: string | null
+          id: string
+          is_active: boolean | null
+          metadata: Json | null
+          profile_id: string
+          reason: string | null
+          target_profile_id: string
+          unlocked_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          expires_at?: string | null
+          gallery_item_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          profile_id: string
+          reason?: string | null
+          target_profile_id: string
+          unlocked_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          expires_at?: string | null
+          gallery_item_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          profile_id?: string
+          reason?: string | null
+          target_profile_id?: string
+          unlocked_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_unlocks_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gallery_unlocks_target_profile_id_fkey"
+            columns: ["target_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gallery_unlocks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       images: {
         Row: {
           created_at: string | null
@@ -1986,6 +2119,7 @@ export type Database = {
           created_at: string | null
           from_profile: string | null
           id: string
+          message: string | null
           status: string | null
           to_profile: string | null
           type: string | null
@@ -1995,6 +2129,7 @@ export type Database = {
           created_at?: string | null
           from_profile?: string | null
           id?: string
+          message?: string | null
           status?: string | null
           to_profile?: string | null
           type?: string | null
@@ -2004,6 +2139,7 @@ export type Database = {
           created_at?: string | null
           from_profile?: string | null
           id?: string
+          message?: string | null
           status?: string | null
           to_profile?: string | null
           type?: string | null
@@ -2031,6 +2167,59 @@ export type Database = {
           user2_id?: string
         }
         Relationships: []
+      }
+      media: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_private: boolean | null
+          is_public: boolean | null
+          is_verified: boolean | null
+          metadata: Json | null
+          profile_id: string
+          title: string | null
+          type: string
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          metadata?: Json | null
+          profile_id: string
+          title?: string | null
+          type: string
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          metadata?: Json | null
+          profile_id?: string
+          title?: string | null
+          type?: string
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -3387,6 +3576,50 @@ export type Database = {
         }
         Relationships: []
       }
+      security_logs: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          event_name: string
+          event_type: string
+          id: string
+          ip_address: string | null
+          severity: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          event_name: string
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          severity?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          event_name?: string
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          severity?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       staking_records: {
         Row: {
           amount: number
@@ -3685,6 +3918,42 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      swinger_interests: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          metadata: Json | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          name?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -4522,10 +4791,103 @@ export type Database = {
         }
         Relationships: []
       }
+      worldid_rewards: {
+        Row: {
+          claimed_at: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_claimed: boolean | null
+          metadata: Json | null
+          reward_type: string
+          reward_value: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_claimed?: boolean | null
+          metadata?: Json | null
+          reward_type: string
+          reward_value: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_claimed?: boolean | null
+          metadata?: Json | null
+          reward_type?: string
+          reward_value?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worldid_rewards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      worldid_statistics: {
+        Row: {
+          failed_verifications: number | null
+          id: string
+          last_verification_at: string | null
+          metadata: Json | null
+          successful_verifications: number | null
+          total_verifications: number | null
+          user_id: string
+          verification_level: number
+          verified_at: string | null
+        }
+        Insert: {
+          failed_verifications?: number | null
+          id?: string
+          last_verification_at?: string | null
+          metadata?: Json | null
+          successful_verifications?: number | null
+          total_verifications?: number | null
+          user_id: string
+          verification_level?: number
+          verified_at?: string | null
+        }
+        Update: {
+          failed_verifications?: number | null
+          id?: string
+          last_verification_at?: string | null
+          metadata?: Json | null
+          successful_verifications?: number | null
+          total_verifications?: number | null
+          user_id?: string
+          verification_level?: number
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worldid_statistics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       worldid_verifications: {
         Row: {
           created_at: string | null
           id: string
+          nullifier_hash: string | null
+          status: string | null
           updated_at: string | null
           user_id: string
           verification_level: string | null
@@ -4535,6 +4897,8 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string
+          nullifier_hash?: string | null
+          status?: string | null
           updated_at?: string | null
           user_id: string
           verification_level?: string | null
@@ -4544,6 +4908,8 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string
+          nullifier_hash?: string | null
+          status?: string | null
           updated_at?: string | null
           user_id?: string
           verification_level?: string | null

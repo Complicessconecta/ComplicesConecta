@@ -1,23 +1,7 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Info as InfoIcon,
-  ArrowLeft,
-  Shield,
-  Users,
-  Heart,
-  Star,
-  Globe,
-  Lock,
-  CheckCircle,
-} from "lucide-react";
+import { Info as InfoIcon, ArrowLeft, Shield, Users, Heart, Star, Globe, Lock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 
 const Info = () => {
   const navigate = useNavigate();

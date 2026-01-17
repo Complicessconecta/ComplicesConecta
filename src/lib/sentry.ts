@@ -76,7 +76,7 @@ export const setUserContext = (user: {
 }) => {
   Sentry.setUser({
     id: user.id,
-    email: user.email,
-    role: user.role,
+    ...(user.email ? { email: user.email } : {}),
+    ...(user.role ? { role: user.role } : {}),
   });
 };

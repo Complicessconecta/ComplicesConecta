@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { advancedCacheService } from "@/services/core/AdvancedCacheService";
-import type { Database, Json } from "@/types/supabase";
+import type { Json } from "@/types/supabase";
 
 type AnalyticsEventInsert = {
   user_id: string;
@@ -367,16 +367,15 @@ export class AdvancedAnalyticsService {
 
           // Validar evento antes de insertar
           if (validateAnalyticsEvent(analyticsEvent)) {
-            const insertRow: Database["public"]["Tables"]["app_logs"]["Insert"] =
-              {
-                message: analyticsEvent.event_name,
-                level: "info",
-                user_id: analyticsEvent.user_id,
-              };
+            const insertRow = {
+              level: "info" as const,
+              message: analyticsEvent.event_name,
+              user_id: analyticsEvent.user_id,
+            };
 
             const jsonMetadata = toJsonOrNull(analyticsEvent.properties);
             if (jsonMetadata !== null) {
-              insertRow.metadata = jsonMetadata;
+              (insertRow as any).metadata = jsonMetadata;
             }
 
             await supabase.from("app_logs").insert(insertRow);

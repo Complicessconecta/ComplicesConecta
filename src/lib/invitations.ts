@@ -128,7 +128,6 @@ export const invitationService = {
       // Mapear datos de Supabase al formato esperado
       const mappedData = {
         ...data,
-        message: data.message || "Invitación",
       };
 
       return mappedData;

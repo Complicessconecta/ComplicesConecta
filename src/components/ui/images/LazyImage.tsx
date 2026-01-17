@@ -3,7 +3,7 @@
  * Optimizado para dispositivos Android y performance móvil
  */
 
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/shared/lib/cn";
 
@@ -45,7 +45,7 @@ export function LazyImage({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           setIsInView(true);
           observer.disconnect();
         }

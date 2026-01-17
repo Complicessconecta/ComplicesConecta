@@ -312,7 +312,9 @@ export const useScrollAnimation = (threshold: number = 0.1) => {
   React.useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsVisible(entry.isIntersecting);
+        if (entry?.isIntersecting) {
+          setIsVisible(true);
+        }
       },
       { threshold },
     );

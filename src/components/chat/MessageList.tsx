@@ -68,10 +68,10 @@ export const MessageList: React.FC<MessageListProps> = ({
         const showAvatar =
           !isOwn &&
           (index === 0 ||
-            messages[index - 1].sender_id !== message.sender_id ||
-            new Date(message.created_at).getTime() -
-              new Date(messages[index - 1].created_at).getTime() >
-              300000); // 5 minutos
+            messages[index - 1]?.sender_id !== message.sender_id ||
+            (new Date(message.created_at).getTime() -
+              new Date(messages[index - 1]?.created_at || message.created_at).getTime() >
+              300000)); // 5 minutos
 
         const timeAgo = formatDistanceToNow(new Date(message.created_at), {
           addSuffix: true,

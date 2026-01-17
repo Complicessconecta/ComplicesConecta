@@ -281,7 +281,7 @@ class AIIntegrationService {
       const appContext = await this.getApplicationContext(question);
 
       // Buscar en base de conocimiento interna
-      const internalResults = await this.searchInternalKnowledge(question);
+      const internalResults = await this.searchInternalKnowledge();
 
       // Procesar con Hugging Face si es necesario
       let hfAnswer = null;
@@ -500,8 +500,8 @@ class AIIntegrationService {
     return {
       avgDailyUsage,
       currentBalance,
-      usagePattern: this.detectUsagePattern(recentUsage),
-      riskProfile: this.calculateRiskProfile(recentUsage),
+      usagePattern: this.detectUsagePattern(),
+      riskProfile: this.calculateRiskProfile(),
     };
   }
 
@@ -523,11 +523,11 @@ class AIIntegrationService {
     // Obtener contexto relevante de la aplicación
     return {
       appSection: this.detectAppSection(question),
-      relevantFeatures: await this.getRelevantFeatures(question),
+      relevantFeatures: await this.getRelevantFeatures(),
     };
   }
 
-  private async searchInternalKnowledge(question: string): Promise<{
+  private async searchInternalKnowledge(): Promise<{
     answer: string;
     confidence: number;
     sources: string[];
@@ -607,12 +607,12 @@ class AIIntegrationService {
     return recommendations;
   }
 
-  private detectUsagePattern(usage: any[]): string {
+  private detectUsagePattern(): string {
     // Detectar patrones de uso
     return 'regular'; // Placeholder
   }
 
-  private calculateRiskProfile(usage: any[]): string {
+  private calculateRiskProfile(): string {
     // Calcular perfil de riesgo
     return 'medium'; // Placeholder
   }
@@ -625,7 +625,7 @@ class AIIntegrationService {
     return 'general';
   }
 
-  private async getRelevantFeatures(question: string): Promise<string[]> {
+  private async getRelevantFeatures(): Promise<string[]> {
     // Obtener características relevantes basadas en la pregunta
     return ['profiles', 'matching', 'chat']; // Placeholder
   }

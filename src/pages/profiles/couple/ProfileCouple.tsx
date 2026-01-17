@@ -13,7 +13,7 @@ import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
-import { walletService } from "@/services/payments/WalletService";
+import { WalletService, walletService } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
 import type { CoupleNFTRequest } from "@/types/blockchain";
 import { cn } from "@/shared/lib/cn";
@@ -207,7 +207,7 @@ function ProfileCouple() {
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleNFTRequest[]>([]);
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
-  const [isDemoMode] = useState(walletService.isDemoMode);
+  const [isDemoMode] = useState(WalletService.isDemoMode);
 
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = coupleNFTs.length > 0;

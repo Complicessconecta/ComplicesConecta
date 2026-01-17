@@ -21,33 +21,6 @@ interface AnimatedTabsProps {
   onTabChange?: (tabId: string) => void;
 }
 
-const _tabVariants = {
-  default: {
-    active: "bg-primary text-primary-foreground shadow-sm",
-    inactive: "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-  },
-  pills: {
-    active: "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg",
-    inactive: "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-  },
-  underline: {
-    active: "text-primary border-b-2 border-primary",
-    inactive:
-      "text-muted-foreground hover:text-foreground border-b-2 border-transparent",
-  },
-  cards: {
-    active: "bg-card text-card-foreground shadow-md border-primary/20",
-    inactive:
-      "text-muted-foreground hover:text-foreground hover:bg-muted/30 border-transparent",
-  },
-};
-
-const _sizeVariants = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2 text-sm",
-  lg: "px-6 py-3 text-base",
-};
-
 export const AnimatedTabs = ({
   tabs,
   defaultTab,

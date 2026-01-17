@@ -64,13 +64,6 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     setIsScrolledToBottom(isAtBottom);
   };
 
-  const _formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString("es-ES", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
     <motion.div
       initial={enableAnimations ? { opacity: 0, scale: 0.95 } : false}
@@ -173,7 +166,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         {/* Indicador de escritura */}
         <AnimatePresence>
           {isTyping && (
-            <TypingIndicator username={chat.name} avatar={chat.avatar} />
+            <TypingIndicator username={chat.name} avatar={chat.avatar ?? ""} />
           )}
         </AnimatePresence>
 

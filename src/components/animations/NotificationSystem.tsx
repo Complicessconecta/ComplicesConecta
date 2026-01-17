@@ -1,16 +1,6 @@
 import React, { createContext } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import {
-  Heart,
-  MessageCircle,
-  Trophy,
-  AlertCircle,
-  CheckCircle,
-  X,
-  Mail,
-  Bell,
-  UserPlus,
-} from "lucide-react";
+import { Heart, MessageCircle, Trophy, AlertCircle, CheckCircle, X, Mail, Bell, UserPlus } from "lucide-react";
 
 // Notification types - Extended for v3.1
 export type NotificationType =
@@ -526,12 +516,12 @@ export const useNotificationHelpers = () => {
         title,
         message,
         duration: 6000,
-        action: actionUrl
-          ? {
-              label: "Ver detalles",
-              onClick: () => (window.location.href = actionUrl),
-            }
-          : undefined,
+        ...(actionUrl ? {
+          action: {
+            label: "Ver detalles",
+            onClick: () => (window.location.href = actionUrl),
+          }
+        } : {}),
       });
     },
 
@@ -563,12 +553,12 @@ export const useNotificationHelpers = () => {
         title,
         message,
         duration: 0, // Persistent until dismissed
-        action: actionUrl
-          ? {
-              label: "Resolver",
-              onClick: () => (window.location.href = actionUrl),
-            }
-          : undefined,
+        ...(actionUrl ? {
+          action: {
+            label: "Resolver",
+            onClick: () => (window.location.href = actionUrl),
+          }
+        } : {}),
       });
     },
   };

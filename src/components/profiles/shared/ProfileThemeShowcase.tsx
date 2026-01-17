@@ -187,7 +187,7 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
 
             {/* Selector de Tema */}
             <ThemeSelector
-              selectedTheme={selectedTheme}
+              {...(selectedTheme ? { selectedTheme } : {})}
               onThemeChange={setSelectedTheme}
               showPreview={true}
             />
@@ -197,14 +197,10 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
           <div className="space-y-4">
             <h4 className="font-medium text-gray-900">Vista Previa</h4>
             <ThemePreviewCard
-              theme={selectedTheme}
+              {...(selectedTheme ? { theme: selectedTheme } : {})}
               gender={selectedGender}
               accountType={selectedProfileType}
-              partnerGender={
-                selectedProfileType === "couple"
-                  ? selectedPartnerGender
-                  : undefined
-              }
+              {...(selectedProfileType === "couple" && selectedPartnerGender ? { partnerGender: selectedPartnerGender } : {})}
               name={selectedProfileType === "couple" ? "Ana & Carlos" : "María"}
               className="w-full"
             />

@@ -12,7 +12,7 @@ import { logger } from "@/lib/logger";
  * Uso en servidor Express o similar:
  * app.use(cspMiddleware);
  */
-export const cspMiddleware = (req: any, res: any, next: any) => {
+export const cspMiddleware = (_req: any, res: any, next: any) => {
   const isDevelopment = process.env.NODE_ENV !== "production";
   const cspHeader = getCSPHeader(isDevelopment);
 

@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -224,10 +219,10 @@ export const PrivateMatches: React.FC = () => {
             ...(invitation.matched_user?.last_name
               ? { last_name: invitation.matched_user.last_name }
               : {}),
-            age: invitation.matched_user?.age,
+            age: invitation.matched_user?.age ?? 0,
             location: `${invitation.matched_user?.first_name ?? "Usuario"} Premium`,
-            avatar_url: undefined, // Campo no existe en schema profiles
-            bio: invitation.matched_user?.bio ?? undefined,
+            avatar_url: "", // Campo no existe en schema profiles
+            bio: invitation.matched_user?.bio ?? "",
             interests: [],
             is_premium: invitation.matched_user?.is_premium ?? false,
             is_verified: invitation.matched_user?.is_verified ?? false,

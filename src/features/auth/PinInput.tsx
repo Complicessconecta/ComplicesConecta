@@ -30,6 +30,7 @@ export const PinInput: FC<PinInputProps> = ({
       }, 1000);
       return () => clearTimeout(timeout);
     }
+    return undefined;
   }, [error, length, onReset]);
 
   const handleChange = (index: number, value: string) => {

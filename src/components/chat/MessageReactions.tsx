@@ -37,7 +37,6 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
   reactions = [],
   onReactionAdd,
   onReactionRemove,
-  _currentUserId,
   className = "",
 }) => {
   const [showPicker, setShowPicker] = useState(false);

@@ -1,11 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  useSpring,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
 
 // Magnetic button effect
 interface MagneticButtonProps {
@@ -376,6 +370,7 @@ export const Typewriter: React.FC<TypewriterProps> = ({
       return () => clearTimeout(timer);
     } else {
       onComplete?.();
+      return undefined;
     }
   }, [currentIndex, text, speed, onComplete]);
 

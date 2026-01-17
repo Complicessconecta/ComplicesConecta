@@ -198,7 +198,7 @@ export class ReportService {
   /**
    * Verificar si el contenido está bloqueado
    */
-  async isContentBlocked(contentId: string, contentType: string): Promise<{ success: boolean; blocked: boolean }> {
+  async isContentBlocked(): Promise<{ success: boolean; blocked: boolean }> {
     // Mock check
     return { success: true, blocked: false };
   }

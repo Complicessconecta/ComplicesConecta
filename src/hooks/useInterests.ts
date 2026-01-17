@@ -18,8 +18,9 @@ export interface Interest {
 }
 
 export interface UserInterest {
-  interest_id: string; // TEXT en la BD
-  interest: Interest;
+  id: string;
+  interest_id: string;
+  user_id: string;
   created_at: string | null;
 }
 
@@ -77,13 +78,7 @@ export const useInterests = () => {
 
       const { data, error } = await supabase
         .from("user_interests")
-        .select(
-          `
-          interest_id,
-          created_at,
-          interest:swinger_interests(id, name, category, description)
-        `,
-        )
+        .select("id, interest_id, user_id, created_at")
         .eq("user_id", user.id);
 
       if (error) throw error;

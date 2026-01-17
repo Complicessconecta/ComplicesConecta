@@ -15,7 +15,6 @@ import { datadogRum } from "@datadog/browser-rum";
 import { datadogLogs } from "@datadog/browser-logs";
 
 // Configuración de entorno
-const _isDev = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
 
 /**

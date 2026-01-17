@@ -22,12 +22,9 @@
  */
 
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/types/supabase";
 import { logger } from "@/lib/logger";
 import type { CompatibilityFeatures, AIConfig, AIScore } from "@/services/analytics/ai/types";
 import { calculateDistance } from "@/services/analytics/ai/utils";
-
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 /**
  * AILayerService - Servicio principal de capa AI
@@ -159,8 +156,12 @@ export class AILayerService {
       throw new Error("Could not fetch profiles for feature extraction");
     }
 
-    const p1 = profiles.find((p) => p.id === userId1) as Profile;
-    const p2 = profiles.find((p) => p.id === userId2) as Profile;
+    const p1 = profiles.find((p) => p.id === userId1);
+    const p2 = profiles.find((p) => p.id === userId2);
+
+    if (!p1 || !p2) {
+      throw new Error("Could not find profiles for feature extraction");
+    }
 
     // 2. Calcular distancia
     const distance = calculateDistance(

@@ -31,7 +31,7 @@ export const useModeratorTimer = () => {
 
       // Actualizar cada minuto
       interval = setInterval(async () => {
-        if (currentSession) {
+        if (currentSession && currentSession.session_start) {
           const startTime = new Date(currentSession.session_start);
           const now = new Date();
           const minutes = Math.floor(

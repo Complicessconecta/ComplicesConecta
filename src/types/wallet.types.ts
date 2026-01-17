@@ -43,7 +43,7 @@ export interface WindowWithWallets extends Window {
  * Tipo helper para verificar si window tiene wallets
  */
 export function isWindowWithWallets(
-  window: Window,
-): window is WindowWithWallets {
+  _window: Window,
+): _window is WindowWithWallets {
   return true; // Type guard básico
 }

@@ -78,7 +78,7 @@ export const EnhancedButton: React.FC<EnhancedButtonProps> = ({
         animate={pulse ? "animate" : "idle"}
         whileHover="hover"
         whileTap="tap"
-        onClick={onClick}
+        {...(onClick ? { onClick } : {})}
         className={className}
       >
         <Button variant={variant} size={size} className="w-full h-full">
@@ -267,7 +267,7 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
                 <EnhancedButton
                   variant="destructive"
                   size="sm"
-                  onClick={onPass}
+                  {...(onPass ? { onClick: onPass } : {})}
                   ripple
                   className="bg-red-500 hover:bg-red-600"
                 >
@@ -276,7 +276,7 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
                 <EnhancedButton
                   variant="love"
                   size="sm"
-                  onClick={onSuperLike}
+                  {...(onSuperLike ? { onClick: onSuperLike } : {})}
                   magnetic
                   glow
                   pulse
@@ -287,7 +287,7 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
                 <EnhancedButton
                   variant="secondary"
                   size="sm"
-                  onClick={onLike}
+                  {...(onLike ? { onClick: onLike } : {})}
                   ripple
                   className="bg-green-500 hover:bg-green-600"
                 >
@@ -338,6 +338,7 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
       return () => clearInterval(typingInterval);
     } else {
       setDisplayText(message.content);
+      return undefined;
     }
   }, [message.content, showTyping]);
 

@@ -72,6 +72,7 @@ export function suppressWalletErrors() {
       e.preventDefault();
       return false;
     }
+    return undefined;
   };
 
   const handleRejectionEvent = (e: PromiseRejectionEvent) => {

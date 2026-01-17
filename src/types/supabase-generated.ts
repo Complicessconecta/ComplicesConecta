@@ -469,6 +469,54 @@ export type Database = {
           },
         ]
       }
+      cmpx_purchases: {
+        Row: {
+          bonus_cmpx: number
+          cmpx_amount: number
+          created_at: string
+          id: number
+          package_id: number
+          package_name: string
+          payment_method: string | null
+          price_mxn: number
+          price_usd: number
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bonus_cmpx?: number
+          cmpx_amount?: number
+          created_at?: string
+          id?: number
+          package_id: number
+          package_name: string
+          payment_method?: string | null
+          price_mxn?: number
+          price_usd?: number
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bonus_cmpx?: number
+          cmpx_amount?: number
+          created_at?: string
+          id?: number
+          package_id?: number
+          package_name?: string
+          payment_method?: string | null
+          price_mxn?: number
+          price_usd?: number
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       cmpx_shop_packages: {
         Row: {
           bonus_cmpx: number

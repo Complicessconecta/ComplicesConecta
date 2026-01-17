@@ -16,7 +16,6 @@ CREATE OR REPLACE VIEW public.profiles_safe AS
 SELECT
     id,
     user_id,
-    display_name,
     is_verified,
     is_premium,
     created_at,
@@ -172,11 +171,7 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 BEGIN
-    -- Sanitizar campos de texto
-    IF NEW.display_name IS NOT NULL THEN
-        NEW.display_name := sanitize_input(NEW.display_name);
-    END IF;
-    
+    -- Sanitizar campos de texto (solo si existen)
     IF NEW.first_name IS NOT NULL THEN
         NEW.first_name := sanitize_input(NEW.first_name);
     END IF;
@@ -553,7 +548,6 @@ BEGIN
                 'old_email', mask_email(OLD.email),
                 'new_email', mask_email(NEW.email),
                 'changes', jsonb_build_object(
-                    'display_name', OLD.display_name IS DISTINCT FROM NEW.display_name,
                     'is_verified', OLD.is_verified IS DISTINCT FROM NEW.is_verified
                 )
             ),
@@ -571,8 +565,7 @@ BEGIN
             'PROFILE_CREATED',
             'profiles',
             jsonb_build_object(
-                'email', mask_email(NEW.email),
-                'display_name', NEW.display_name
+                'email', mask_email(NEW.email)
             ),
             'info'
         );

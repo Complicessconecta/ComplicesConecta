@@ -390,29 +390,31 @@ export class AdvancedCacheService {
    * Registra estadísticas del cache en la base de datos
    * @private
    * NOTA: La tabla 'cache_statistics' ya existe en Supabase (creada en migration create_cache_statistics_table.sql)
+   * TEMPORALMENTE DESHABILITADO hasta que los tipos de Supabase se regeneren para incluir cache_statistics
    */
   private async logCacheStatistics(stats: CacheStats): Promise<void> {
-    try {
-      const { supabase } = await import('@/integrations/supabase/client');
-      if (!supabase) return;
+    // TODO: Habilitar cuando los tipos de Supabase se regeneren para incluir cache_statistics
+    // try {
+    //   const { supabase } = await import('@/integrations/supabase/client');
+    //   if (!supabase) return;
 
-      await supabase
-        .from('cache_statistics')
-        .insert({
-          hit_rate: stats.hitRate,
-          miss_rate: stats.missRate,
-          total_hits: stats.totalHits,
-          total_misses: stats.totalMisses,
-          average_access_time_ms: stats.averageAccessTime,
-          memory_entries: stats.memoryEntries,
-          memory_size_bytes: stats.memorySize,
-          compression_ratio: stats.compressionRatio,
-          performance_score: stats.performanceScore,
-          timestamp: new Date().toISOString(),
-        });
-    } catch (error) {
-      logger.debug('Failed to log cache statistics:', { error: String(error) });
-    }
+    //   await supabase
+    //     .from('cache_statistics')
+    //     .insert({
+    //       hit_rate: stats.hitRate,
+    //       miss_rate: stats.missRate,
+    //       total_hits: stats.totalHits,
+    //       total_misses: stats.totalMisses,
+    //       average_access_time_ms: stats.averageAccessTime,
+    //       memory_entries: stats.memoryEntries,
+    //       memory_size_bytes: stats.memorySize,
+    //       compression_ratio: stats.compressionRatio,
+    //       performance_score: stats.performanceScore,
+    //       timestamp: new Date().toISOString(),
+    //     });
+    // } catch (error) {
+    //   logger.debug('Failed to log cache statistics:', { error: String(error) });
+    // }
   }
 
   /**

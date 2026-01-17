@@ -382,7 +382,7 @@ export class LoadBalancingService {
 
     const server = healthyServers[this.currentIndex % healthyServers.length];
     this.currentIndex++;
-    return server;
+    return server || null;
   }
 
   private weightedRoundRobinSelection(): Server | null {
@@ -436,7 +436,7 @@ export class LoadBalancingService {
       ? sessionId.split("").reduce((a, b) => a + b.charCodeAt(0), 0)
       : Math.floor(Math.random() * 1000);
 
-    return healthyServers[hash % healthyServers.length];
+    return healthyServers[hash % healthyServers.length] || null;
   }
 
   /**

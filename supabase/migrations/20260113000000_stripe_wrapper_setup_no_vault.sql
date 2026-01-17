@@ -298,7 +298,7 @@ CREATE EXTENSION IF NOT EXISTS wrappers WITH SCHEMA extensions;
 -- PASO 6: TABLA LOCAL PARA MAPEAR USUARIOS → STRIPE CUSTOMERS
 -- ============================================================================
 
-CREATE TABLE public.user_stripe_customers (
+CREATE TABLE IF NOT EXISTS public.user_stripe_customers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   stripe_customer_id TEXT NOT NULL UNIQUE,

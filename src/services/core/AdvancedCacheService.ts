@@ -1,11 +1,15 @@
 /**
- * AdvancedCacheService - Sistema de caché avanzado con múltiples estrategias
+ * AdvancedCacheService v3.5.0 - Sistema de caché avanzado con múltiples estrategias
  * Implementa técnicas avanzadas de caché:
  * - Cache en memoria con LRU
  * - Cache persistente con IndexedDB
  * - Cache distribuido con Redis (futuro)
  * - Invalidación inteligente
  * - Compresión de datos
+ *
+ * Cambios v3.5.0:
+ * - Comentarios actualizados a español ES-MX
+ * - Código ya optimizado, sin cambios funcionales
  */
 
 // ------------------------------------------------------------------

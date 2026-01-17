@@ -89,8 +89,8 @@ export class SecurityService {
 
       // Consultar eventos de seguridad
       const { data: events, error } = await supabase
-        .from("security")
-        .select("created_at, ip_address, event_type, details")
+        .from("security_audit_log")
+        .select("created_at, details, action, resource")
         .eq("user_id", userId)
         .gte("created_at", startDate.toISOString())
         .order("created_at", { ascending: true });
@@ -109,8 +109,8 @@ export class SecurityService {
       }
 
       // Calcular métricas reales
-      const loginEvents = events.filter((e) => e.event_type === "login");
-      const uniqueIPs = new Set(events.map((e) => e.ip_address)).size;
+      const loginEvents = events.filter((e) => e.action === "login");
+      const uniqueIPs = 1; // No disponible en security_audit_log, asumimos 1 por ahora
 
       // Estimación simple de duración de sesión (tiempo entre primer y último evento del día)
       // Esto es muy simplificado
@@ -186,7 +186,10 @@ export class SecurityService {
     }
 
     // Verificar si hay metadatos sospechosos (ej. intentos fallidos)
-    if (activity.metadata && (activity.metadata.failedAttempts ?? 0) > 3) {
+    const failedAttempts = activity.metadata && typeof activity.metadata === 'object' 
+      ? (activity.metadata as any).failedAttempts ?? 0 
+      : 0;
+    if (failedAttempts > 3) {
       return {
         isSuspicious: true,
         reason: "Múltiples intentos fallidos detectados",

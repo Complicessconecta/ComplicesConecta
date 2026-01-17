@@ -1,15 +1,21 @@
 /**
- * AnalyticsPanel v3.4.0 - CONSOLIDADO
+ * AnalyticsPanel v3.5.0 - REFACTORIZADO
  *
  * Panel de analytics completo que combina:
  * - Analytics generales de usuarios y engagement
  * - Analytics avanzados del sistema de tokens
  * - Métricas en tiempo real
  * - Integrado con TokenAnalyticsService y Supabase
+ *
+ * Cambios v3.5.0:
+ * - Refactorización modular con funciones helper
+ * - Error handling robusto con logger
+ * - Performance optimizado con useCallback
+ * - Tipado fuerte mejorado
  */
 
 import "@/styles/AnalyticsPanel.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -18,11 +24,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Users, Activity, UserPlus, TrendingUp, Download, RefreshCw, Eye, Heart, MessageCircle, DollarSign as CurrencyDollarIcon } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 // Importaciones para analytics de tokens
 import { TokenAnalyticsService, type TokenMetrics } from "@/services/TokenAnalyticsService";
 import { analyticsMetrics } from "@/lib/analytics-metrics";
 
+// Tipos de datos para analytics
 type AnalyticsData = {
   totalUsers: number;
   activeUsers: number;
@@ -51,7 +59,48 @@ type DemographicData = {
   }[];
 };
 
+// Tipo para perfil de Supabase
+type ProfileRow = {
+  id: string;
+  created_at: string | null;
+  is_premium: boolean | null;
+  age?: number | null;
+};
+
+// Constantes para valores mock
+const MOCK_ANALYTICS: AnalyticsData = {
+  totalUsers: 1250,
+  activeUsers: 375,
+  newUsersToday: 12,
+  newUsersWeek: 89,
+  retentionRate: 75.5,
+  engagementRate: 68.2,
+  averageSessionTime: 12.5,
+  profileCompletionRate: 82.3,
+};
+
+const MOCK_DEMOGRAPHICS: DemographicData = {
+  ageGroups: [
+    { range: "18-24", count: 312, percentage: 25 },
+    { range: "25-34", count: 500, percentage: 40 },
+    { range: "35-44", count: 312, percentage: 25 },
+    { range: "45+", count: 126, percentage: 10 },
+  ],
+  genderDistribution: [
+    { gender: "Femenino", count: 650, percentage: 52 },
+    { gender: "Masculino", count: 550, percentage: 44 },
+    { gender: "No especificado", count: 50, percentage: 4 },
+  ],
+  locationDistribution: [
+    { location: "Ciudad de México", count: 375, percentage: 30 },
+    { location: "Guadalajara", count: 250, percentage: 20 },
+    { location: "Monterrey", count: 188, percentage: 15 },
+    { location: "Otras ciudades", count: 437, percentage: 35 },
+  ],
+};
+
 export function AnalyticsPanel() {
+  // Estados principales
   const [isLoading, setIsLoading] = useState(false);
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
     totalUsers: 0,
@@ -81,101 +130,53 @@ export function AnalyticsPanel() {
   const [tokenError, setTokenError] = useState<string | null>(null);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
-  // Helper function to convert percentage to CSS class
-  const getWidthClass = (percentage: number): string => {
-    const rounded = Math.round(percentage / 5) * 5; // Round to nearest 5
+  // Helper: Convertir porcentaje a clase CSS
+  const getWidthClass = useCallback((percentage: number): string => {
+    const rounded = Math.round(percentage / 5) * 5; // Redondear al múltiplo de 5 más cercano
     return `w-${Math.min(100, Math.max(0, rounded))}`;
-  };
+  }, []);
 
-  useEffect(() => {
-    loadAnalyticsData();
-    loadTokenMetrics();
-    loadRealTimeMetrics();
-
-    // Actualizar métricas en tiempo real cada 30 segundos
-    const interval = setInterval(() => {
-      loadRealTimeMetrics();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [timeRange]);
-
-  const loadAnalyticsData = async () => {
-    setIsLoading(true);
-    try {
-      await Promise.all([
-        loadUserAnalytics(),
-        loadChartData(),
-        loadDemographicData(),
-      ]);
-      setLastUpdate(new Date());
-    } catch (error) {
-      console.error("Error loading analytics:", error);
-      generateMockData();
-    } finally {
-      setIsLoading(false);
+  // Helper: Generar datos mock de gráficos
+  const generateMockChartData = useCallback((days: number): ChartDataPoint[] => {
+    const mockChartData: ChartDataPoint[] = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      mockChartData.push({
+        date: date.toISOString().split("T")[0] || "",
+        users: Math.floor(Math.random() * 50) + 20,
+        sessions: Math.floor(Math.random() * 100) + 50,
+        engagement: Math.floor(Math.random() * 30) + 40,
+      });
     }
-  };
+    return mockChartData;
+  }, []);
 
-  // Funciones para analytics de tokens
-  const loadTokenMetrics = async () => {
-    try {
-      setTokenLoading(true);
-      const response =
-        await TokenAnalyticsService.getInstance().generateCurrentMetrics();
+  // Helper: Generar datos mock de analytics
+  const generateMockAnalytics = useCallback(() => {
+    logger.info("📊 Generando datos mock de analytics");
+    setAnalyticsData(MOCK_ANALYTICS);
+  }, []);
 
-      if (response.success && response.metrics) {
-        setTokenMetrics(response.metrics);
-      } else {
-        setTokenError(response.error || "Error cargando métricas de tokens");
-      }
-    } catch {
-      setTokenError("Error inesperado cargando métricas de tokens");
-    } finally {
-      setTokenLoading(false);
-    }
-  };
+  // Helper: Generar datos mock de demografía
+  const generateMockDemographics = useCallback(() => {
+    logger.info("👥 Generando datos mock de demografía");
+    setDemographicData(MOCK_DEMOGRAPHICS);
+  }, []);
 
-  const loadRealTimeMetrics = async () => {
-    try {
-      const rtMetrics = analyticsMetrics.getRealTimeMetrics();
-      const sysMetrics = analyticsMetrics.getSystemMetrics();
+  // Helper: Generar todos los datos mock
+  const generateMockData = useCallback(() => {
+    generateMockAnalytics();
+    generateMockDemographics();
+    const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
+    setChartData(generateMockChartData(days));
+  }, [timeRange, generateMockAnalytics, generateMockDemographics, generateMockChartData]);
 
-      setRealTimeMetrics(rtMetrics);
-      setSystemMetrics(sysMetrics);
-    } catch (err) {
-      console.error("Error cargando métricas en tiempo real:", err);
-    }
-  };
-
-  const generateTokenReport = async () => {
-    try {
-      setIsGeneratingReport(true);
-      const response =
-        await TokenAnalyticsService.getInstance().generateAutomaticReport(
-          "daily",
-        );
-
-      if (response.success && response.report) {
-        console.log("Reporte generado:", response.report);
-        toast({
-          title: "Reporte generado",
-          description: "El reporte de tokens ha sido generado exitosamente",
-        });
-      } else {
-        setTokenError(response.error || "Error generando reporte");
-      }
-    } catch {
-      setTokenError("Error inesperado generando reporte");
-    } finally {
-      setIsGeneratingReport(false);
-    }
-  };
-
-  const loadUserAnalytics = async () => {
+  // Cargar analytics de usuarios
+  const loadUserAnalytics = useCallback(async () => {
     try {
       if (!supabase) {
-        console.error("Supabase no está disponible");
+        logger.warn("⚠️ Supabase no está disponible");
         generateMockAnalytics();
         return;
       }
@@ -186,7 +187,7 @@ export function AnalyticsPanel() {
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("Error loading user analytics:", error);
+        logger.error("❌ Error cargando analytics de usuarios:", error);
         generateMockAnalytics();
         return;
       }
@@ -195,23 +196,15 @@ export function AnalyticsPanel() {
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-      type ProfileRow = {
-        id: string;
-        created_at: string | null;
-        is_premium: boolean | null;
-      };
-
       const totalUsers = profiles?.length || 0;
-      const newUsersToday =
-        (profiles as ProfileRow[])?.filter(
-          (p) => p.created_at && new Date(p.created_at) >= today,
-        ).length || 0;
-      const newUsersWeek =
-        (profiles as ProfileRow[])?.filter(
-          (p) => p.created_at && new Date(p.created_at) >= weekAgo,
-        ).length || 0;
+      const newUsersToday = (profiles as ProfileRow[])?.filter(
+        (p) => p.created_at && new Date(p.created_at) >= today,
+      ).length || 0;
+      const newUsersWeek = (profiles as ProfileRow[])?.filter(
+        (p) => p.created_at && new Date(p.created_at) >= weekAgo,
+      ).length || 0;
 
-      // Mock calculations for complex metrics
+      // Cálculos mock para métricas complejas
       const activeUsers = Math.floor(totalUsers * 0.3);
       const retentionRate = 75.5;
       const engagementRate = 68.2;
@@ -229,39 +222,26 @@ export function AnalyticsPanel() {
         profileCompletionRate,
       });
     } catch (error) {
-      console.error("Error processing user analytics:", error);
+      logger.error("❌ Error procesando analytics de usuarios:", { error: String(error) });
       generateMockAnalytics();
     }
-  };
+  }, [generateMockAnalytics]);
 
-  const loadChartData = async () => {
+  // Cargar datos de gráficos
+  const loadChartData = useCallback(() => {
     try {
-      // Generate mock chart data for the selected time range
       const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
-      const mockChartData: ChartDataPoint[] = [];
-
-      for (let i = days - 1; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-
-        mockChartData.push({
-          date: date.toISOString().split("T")[0] || "",
-          users: Math.floor(Math.random() * 50) + 20,
-          sessions: Math.floor(Math.random() * 100) + 50,
-          engagement: Math.floor(Math.random() * 30) + 40,
-        });
-      }
-
-      setChartData(mockChartData);
+      setChartData(generateMockChartData(days));
     } catch (error) {
-      console.error("Error loading chart data:", error);
+      logger.error("❌ Error cargando datos de gráficos:", { error: String(error) });
     }
-  };
+  }, [timeRange, generateMockChartData]);
 
-  const loadDemographicData = async () => {
+  // Cargar datos demográficos
+  const loadDemographicData = useCallback(async () => {
     try {
       if (!supabase) {
-        console.error("Supabase no está disponible");
+        logger.warn("⚠️ Supabase no está disponible");
         generateMockDemographics();
         return;
       }
@@ -272,11 +252,12 @@ export function AnalyticsPanel() {
         .not("age", "is", null);
 
       if (error || !profiles) {
+        logger.warn("⚠️ Error o sin datos demográficos, usando mock");
         generateMockDemographics();
         return;
       }
 
-      // Process age groups
+      // Procesar grupos de edad
       const ageGroups = [
         { range: "18-24", count: 0, percentage: 0 },
         { range: "25-34", count: 0, percentage: 0 },
@@ -284,7 +265,7 @@ export function AnalyticsPanel() {
         { range: "45+", count: 0, percentage: 0 },
       ];
 
-      // Process age distribution
+      // Procesar distribución de edad
       profiles.forEach((profile) => {
         if (profile.age !== undefined && profile.age !== null) {
           if (profile.age >= 18 && profile.age <= 24 && ageGroups[0]) ageGroups[0].count++;
@@ -294,39 +275,12 @@ export function AnalyticsPanel() {
         }
       });
 
-      const totalWithAge = ageGroups.reduce(
-        (sum, group) => sum + group.count,
-        0,
-      );
+      const totalWithAge = ageGroups.reduce((sum, group) => sum + group.count, 0);
       ageGroups.forEach((group) => {
-        group.percentage =
-          totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
+        group.percentage = totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
       });
 
-      // Process gender distribution - Comentado ya que la columna gender no existe en profiles
-      // const genderCounts = profiles.reduce(
-      //   (acc, profile) => {
-      //     const gender = profile.gender || "no_especificado";
-      //     acc[gender] = (acc[gender] || 0) + 1;
-      //     return acc;
-      //   },
-      //   {} as Record<string, number>,
-      // );
-
-      // const genderDistribution = Object.entries(genderCounts).map(
-      //   ([gender, count]) => ({
-      //     gender:
-      //       gender === "male"
-      //         ? "Masculino"
-      //         : gender === "female"
-      //           ? "Femenino"
-      //           : "No especificado",
-      //     count,
-      //     percentage: (count / profiles.length) * 100,
-      //   }),
-      // );
-
-      // Mock gender distribution ya que la columna gender no existe en profiles
+      // Mock de distribución de género (columna gender no existe en profiles)
       const genderDistribution = [
         {
           gender: "Masculino",
@@ -345,7 +299,7 @@ export function AnalyticsPanel() {
         },
       ];
 
-      // Mock location data
+      // Mock de datos de ubicación
       const locationDistribution = [
         {
           location: "Ciudad de México",
@@ -375,86 +329,141 @@ export function AnalyticsPanel() {
         locationDistribution,
       });
     } catch (error) {
-      console.error("Error loading demographic data:", error);
+      logger.error("❌ Error cargando datos demográficos:", { error: String(error) });
       generateMockDemographics();
     }
-  };
+  }, [generateMockDemographics]);
 
-  const generateMockData = () => {
-    generateMockAnalytics();
-    generateMockDemographics();
-    loadChartData();
-  };
+  // Cargar todos los datos de analytics
+  const loadAnalyticsData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await Promise.all([
+        loadUserAnalytics(),
+        loadChartData(),
+        loadDemographicData(),
+      ]);
+      setLastUpdate(new Date());
+    } catch (error) {
+      logger.error("❌ Error cargando analytics:", { error: String(error) });
+      generateMockData();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [loadUserAnalytics, loadChartData, loadDemographicData, generateMockData]);
 
-  const generateMockAnalytics = () => {
-    setAnalyticsData({
-      totalUsers: 1250,
-      activeUsers: 375,
-      newUsersToday: 12,
-      newUsersWeek: 89,
-      retentionRate: 75.5,
-      engagementRate: 68.2,
-      averageSessionTime: 12.5,
-      profileCompletionRate: 82.3,
-    });
-  };
+  // Cargar métricas de tokens
+  const loadTokenMetrics = useCallback(async () => {
+    try {
+      setTokenLoading(true);
+      const response = await TokenAnalyticsService.getInstance().generateCurrentMetrics();
 
-  const generateMockDemographics = () => {
-    setDemographicData({
-      ageGroups: [
-        { range: "18-24", count: 312, percentage: 25 },
-        { range: "25-34", count: 500, percentage: 40 },
-        { range: "35-44", count: 312, percentage: 25 },
-        { range: "45+", count: 126, percentage: 10 },
-      ],
-      genderDistribution: [
-        { gender: "Femenino", count: 650, percentage: 52 },
-        { gender: "Masculino", count: 550, percentage: 44 },
-        { gender: "No especificado", count: 50, percentage: 4 },
-      ],
-      locationDistribution: [
-        { location: "Ciudad de México", count: 375, percentage: 30 },
-        { location: "Guadalajara", count: 250, percentage: 20 },
-        { location: "Monterrey", count: 188, percentage: 15 },
-        { location: "Otras ciudades", count: 437, percentage: 35 },
-      ],
-    });
-  };
+      if (response.success && response.metrics) {
+        setTokenMetrics(response.metrics);
+        logger.info("✅ Métricas de tokens cargadas");
+      } else {
+        setTokenError(response.error || "Error cargando métricas de tokens");
+        logger.warn("⚠️ Error cargando métricas de tokens:", { error: response.error });
+      }
+    } catch (error) {
+      setTokenError("Error inesperado cargando métricas de tokens");
+      logger.error("❌ Error inesperado cargando métricas de tokens:", { error: String(error) });
+    } finally {
+      setTokenLoading(false);
+    }
+  }, []);
 
-  const exportData = () => {
-    const dataToExport = {
-      analytics: analyticsData,
-      demographics: demographicData,
-      chartData,
-      exportDate: new Date().toISOString(),
-    };
+  // Cargar métricas en tiempo real
+  const loadRealTimeMetrics = useCallback(() => {
+    try {
+      const rtMetrics = analyticsMetrics.getRealTimeMetrics();
+      const sysMetrics = analyticsMetrics.getSystemMetrics();
+      setRealTimeMetrics(rtMetrics);
+      setSystemMetrics(sysMetrics);
+    } catch (error) {
+      logger.error("❌ Error cargando métricas en tiempo real:", { error: String(error) });
+    }
+  }, []);
 
-    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
-      type: "application/json",
-    });
+  // Generar reporte de tokens
+  const generateTokenReport = useCallback(async () => {
+    try {
+      setIsGeneratingReport(true);
+      const response = await TokenAnalyticsService.getInstance().generateAutomaticReport("daily");
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a") as HTMLAnchorElement;
-    a.href = url;
-    a.download = `analytics-${new Date().toISOString().split("T")[0]}.json`;
-    document.body.appendChild(a as Node);
-    a.click();
-    document.body.removeChild(a as Node);
-    URL.revokeObjectURL(url);
+      if (response.success && response.report) {
+        logger.info("✅ Reporte de tokens generado:", response.report);
+        toast({
+          title: "Reporte generado",
+          description: "El reporte de tokens ha sido generado exitosamente",
+        });
+      } else {
+        setTokenError(response.error || "Error generando reporte");
+        logger.warn("⚠️ Error generando reporte:", { error: response.error });
+      }
+    } catch (error) {
+      setTokenError("Error inesperado generando reporte");
+      logger.error("❌ Error inesperado generando reporte:", { error: String(error) });
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  }, [toast]);
 
-    toast({
-      title: "Datos exportados",
-      description: "Los datos de analytics han sido descargados exitosamente",
-    });
-  };
+  // Exportar datos
+  const exportData = useCallback(() => {
+    try {
+      const dataToExport = {
+        analytics: analyticsData,
+        demographics: demographicData,
+        chartData,
+        exportDate: new Date().toISOString(),
+      };
 
-  const refreshData = async () => {
+      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
+        type: "application/json",
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a") as HTMLAnchorElement;
+      a.href = url;
+      a.download = `analytics-${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a as Node);
+      a.click();
+      document.body.removeChild(a as Node);
+      URL.revokeObjectURL(url);
+
+      logger.info("✅ Datos exportados exitosamente");
+      toast({
+        title: "Datos exportados",
+        description: "Los datos de analytics han sido descargados exitosamente",
+      });
+    } catch (error) {
+      logger.error("❌ Error exportando datos:", { error: String(error) });
+    }
+  }, [analyticsData, demographicData, chartData, toast]);
+
+  // Refrescar datos
+  const refreshData = useCallback(async () => {
     await loadAnalyticsData();
     toast({
       title: "Datos actualizados",
       description: "Los datos de analytics han sido actualizados",
     });
-  };
+  }, [loadAnalyticsData, toast]);
+
+  // Efecto: Cargar datos iniciales y configurar actualización en tiempo real
+  useEffect(() => {
+    loadAnalyticsData();
+    loadTokenMetrics();
+    loadRealTimeMetrics();
+
+    // Actualizar métricas en tiempo real cada 30 segundos
+    const interval = setInterval(() => {
+      loadRealTimeMetrics();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [loadAnalyticsData, loadTokenMetrics, loadRealTimeMetrics]);
 
   return (
     <div className="space-y-6">

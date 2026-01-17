@@ -151,7 +151,7 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
     * - Comunicación segura
     * - Análisis de comportamiento lifestyle
     * - Notificaciones discretas
-    */
+    
 
     // FIX: Estructura de DOM ideal para modales modernos:
     // 1. Modal renderizado fuera del layout principal usando createPortal

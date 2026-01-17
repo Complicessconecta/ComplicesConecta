@@ -296,7 +296,7 @@ export class QueryOptimizationService {
 
       // Usar consulta directa para agregaciones complejas
       const { data, error } = await supabase
-        .from("token_analytics")
+        .from("analytics_events")
         .select("*")
         .gte("created_at", dateRange.start)
         .lte("created_at", dateRange.end);

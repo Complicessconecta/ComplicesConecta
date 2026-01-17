@@ -68,8 +68,8 @@ BEGIN
     FOR SELECT
     USING (
       EXISTS (
-        SELECT 1 FROM public.profiles 
-        WHERE user_id = auth.uid() AND user_role = 'admin'
+        SELECT 1 FROM public.user_roles 
+        WHERE user_id = auth.uid() AND role = 'admin'
       )
     );
   END IF;
@@ -104,4 +104,7 @@ END $$;
 -- Comentarios
 COMMENT ON TABLE public.two_factor_auth IS 'Configuración de autenticación de dos factores de usuarios';
 
-RAISE NOTICE '✅ Tabla two_factor_auth creada exitosamente';
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Tabla two_factor_auth creada exitosamente';
+END $$;

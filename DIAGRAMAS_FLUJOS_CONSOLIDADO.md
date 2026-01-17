@@ -1297,6 +1297,78 @@ flowchart TD
 **Roadmap de Implementación:**
 - Fase 1 (Semana 1-2): Preparación - Tablas y migraciones
 - Fase 2 (Semana 3-4): Perfil Demo - UI básica y check-ins
+
+---
+
+## 💔 FLUJO DE DISOLUCIÓN DE PAREJAS (NUEVO - v3.9.2)
+
+```mermaid
+flowchart TD
+    A[Usuario Solicita Disolución] --> B{Tipo de Disolución}
+    B -->|Amistosa| C[Propuesta Mutua Acuerdo]
+    B -->|Contenciosa| D[Disputa Formal]
+    
+    C --> E[Crear couple_disputes<br/>status: pending]
+    D --> E
+    
+    E --> F{Propuesta de Resolución}
+    F -->|Usuario A Propone| G[proposed_winner_id = A<br/>proposed_at = NOW]
+    F -->|Usuario B Propone| H[proposed_winner_id = B<br/>proposed_at = NOW]
+    
+    G --> I{Usuario B Acepta?}
+    H --> J{Usuario A Acepta?}
+    
+    I -->|Sí| K[winner_accepted_by = B<br/>accepted_at = NOW<br/>status: resolved]
+    I -->|No| L[Rechazo<br/>Continuar disputa]
+    
+    J -->|Sí| K
+    J -->|No| L
+    
+    K --> M[Congelar Activos<br/>frozen_assets_snapshot]
+    K --> N[Dividir Tokens CMPX/GTK]
+    K --> O[Finalizar Acuerdo]
+    
+    L --> P{Nueva Propuesta}
+    P --> F
+    
+    style E fill:#f59e0b
+    style K fill:#10b981
+    style M fill:#ef4444
+    style O fill:#3b82f6
+```
+
+### 📋 Tablas Requeridas para Disolución de Parejas
+
+#### Tabla: couple_disputes
+- **id** (uuid, primary key)
+- **couple_id** (uuid, NOT NULL, foreign key → couples)
+- **initiated_by** (uuid, NOT NULL, foreign key → profiles)
+- **status** (text, NOT NULL) - 'pending', 'proposed', 'resolved', 'rejected'
+- **dispute_reason** (text, NOT NULL)
+- **frozen_assets_snapshot** (jsonb) - Snapshot de activos al congelar
+- **proposed_winner_id** (uuid, nullable) - Usuario propuesto como ganador
+- **proposed_at** (timestamp, nullable) - Fecha de propuesta
+- **winner_accepted_by** (uuid, nullable) - Usuario que acepta
+- **accepted_at** (timestamp, nullable) - Fecha de aceptación
+- **couple_agreement_id** (uuid, nullable) - Referencia al acuerdo
+- **created_at** (timestamp, NOT NULL)
+- **updated_at** (timestamp, NOT NULL)
+
+#### Tablas relacionadas (Stripe):
+- **user_stripe_customers** - Mapeo de usuarios a clientes Stripe
+- **stripe_webhook_events** - Eventos webhook de Stripe
+- **stripe_product_mapping** - Mapeo de productos Stripe a tokens CMPX
+
+### 🔐 Seguridad RLS para couple_disputes
+- **SELECT**: Solo usuarios de la pareja pueden ver sus disputas
+- **INSERT**: Solo usuarios de la pareja pueden crear disputas
+- **UPDATE**: Solo usuarios de la pareja pueden actualizar sus disputas
+- **DELETE**: Restringido (solo admin)
+
+### ⚠️ Notas Importantes
+- **Columnas agregadas v3.9.2**: frozen_assets_snapshot, proposed_winner_id, proposed_at, winner_accepted_by, accepted_at
+- **Impacto crítico**: Sin estas columnas, el protocolo de disolución fallará
+- **Preservación de datos**: Scripts idempotentes, no eliminan datos existentes
 - Fase 3 (Semana 5-6): Panel Admin - Edición y gestión
 - Fase 4 (Semana 7-8): Tokens y NFTs - Integración blockchain
 - Fase 5 (Semana 9-10): Testing y Lanzamiento - QA y beta

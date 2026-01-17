@@ -1,4 +1,4 @@
-##                **Cómplices Conecta (Beta v3.8.2) 🚀:**
+##                **Cómplices Conecta (Beta v3.9.2) 🚀:**
 ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase BETA activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama main para la versión más estable 
 
 
@@ -73,6 +73,16 @@ Plataforma social AI-Native diseñada para comunidades privadas, integrando veri
 - [Medidas de Seguridad v3.8.0](docs/legal/SECURITY_MEASURES_V3.8.0.md) - Documentación completa de seguridad
 - [Auditoría de Seguridad](AUDITORIA_SRC_COMPLETA.md) - Auditoría exhaustiva de código y base de datos
 - [Política de Proveedores](docs/legal/SUPPLIER_SECURITY_POLICY.md) - Política de seguridad para proveedores
+
+## Actualización 17 Ene 2026 05:30
+
+- ✅ Migración de schema couple_disputes v3.9.2 completada exitosamente
+- ✅ Scripts migrados a PostgreSQL 17 usando DO blocks (idempotente)
+- ✅ Tablas creadas: couple_disputes, user_stripe_customers, stripe_webhook_events, stripe_product_mapping
+- ✅ 5 columnas nuevas en couple_disputes (frozen_assets_snapshot, proposed_winner_id, proposed_at, winner_accepted_by, accepted_at)
+- ✅ 6 foreign keys, 14 índices, 5 políticas RLS, 3 triggers creados
+- ✅ RLS habilitado en tablas existentes (matches, predictive_match_scores)
+- ✅ Vendor-agnostic Metrics API setup configurado (Prometheus + Grafana + Alertmanager)
 
 ## Actualización 16 Ene 2026 05:35
 

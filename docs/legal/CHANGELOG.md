@@ -5,6 +5,41 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.9.2] - 2026-01-17
+
+### 🗄️ Migración de Schema Couple Disputes
+
+- ✅ Migración completada exitosamente a PostgreSQL 17
+- ✅ Scripts migrados a DO blocks para idempotencia (compatible con PostgreSQL 17)
+- ✅ Tablas creadas: couple_disputes, user_stripe_customers, stripe_webhook_events, stripe_product_mapping
+- ✅ 5 columnas nuevas en couple_disputes:
+  - frozen_assets_snapshot (jsonb, nullable)
+  - proposed_winner_id (uuid, nullable)
+  - proposed_at (timestamp, nullable)
+  - winner_accepted_by (uuid, nullable)
+  - accepted_at (timestamp, nullable)
+- ✅ 6 foreign keys creados con DO blocks
+- ✅ 14 índices creados
+- ✅ 5 políticas RLS creadas con DO blocks
+- ✅ 3 triggers creados para updated_at automático
+- ✅ RLS habilitado en tablas existentes (matches, predictive_match_scores)
+- ✅ Tablas base creadas: profiles, couples, couple_agreements
+
+### 📊 Vendor-agnostic Metrics API Setup
+
+- ✅ Prometheus configurado para scraping de Supabase Metrics API
+- ✅ Grafana provisioning automático con datasource Prometheus
+- ✅ Alertmanager configurado con 20+ alertas predefinidas
+- ✅ Node Exporter para métricas de host
+- ✅ Docker Compose setup completo para stack de monitoreo
+- ✅ Alertas configuradas: CPU, Memory, Connections, Storage, Performance, Availability
+
+### 🛡️ Correcciones de Seguridad
+
+- ✅ Scripts de migración corregidos para PostgreSQL 17 (DO blocks en lugar de CREATE POLICY IF NOT EXISTS)
+- ✅ RLS policies ajustadas según schema real de tablas existentes
+- ✅ Eliminadas referencias a tablas inexistentes (fingerprint_bans, blocked_fingerprints, smart_matches, predictive_matching, sustainable_events)
+
 ## [v3.8.3] - 2026-01-03
 
 ### 🧩 ProfileSingle + Blockchain (Demo/Real)

@@ -1,0 +1,163 @@
+# ============================================================================
+# PROMETHEUS ALERT RULES - Supabase Metrics API
+# ComplicesConecta v3.9.2
+# ============================================================================
+
+groups:
+  - name: supabase_database_alerts
+    interval: 60s
+    rules:
+      # CPU Usage Alerts
+      - alert: SupabaseHighCPUUsage
+        expr: supabase_cpu_usage_percent > 80
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Supabase CPU usage is high"
+          description: "CPU usage is {{ $value }}% for project {{ $labels.project }}"
+
+      - alert: SupabaseCriticalCPUUsage
+        expr: supabase_cpu_usage_percent > 95
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Supabase CPU usage is critical"
+          description: "CPU usage is {{ $value }}% for project {{ $labels.project }}"
+
+      # Memory Usage Alerts
+      - alert: SupabaseHighMemoryUsage
+        expr: supabase_memory_usage_percent > 80
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Supabase memory usage is high"
+          description: "Memory usage is {{ $value }}% for project {{ $labels.project }}"
+
+      # Connection Alerts
+      - alert: SupabaseHighConnections
+        expr: supabase_database_connections_used / supabase_database_connections_max > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Supabase database connections are high"
+          description: "{{ $value | humanizePercentage }} of max connections used"
+
+      - alert: SupabaseCriticalConnections
+        expr: supabase_database_connections_used / supabase_database_connections_max > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Supabase database connections are critical"
+          description: "{{ $value | humanizePercentage }} of max connections used"
+
+      # Storage Alerts
+      - alert: SupabaseStorageUsageHigh
+        expr: supabase_storage_usage_percent > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Supabase storage usage is high"
+          description: "Storage usage is {{ $value }}% for project {{ $labels.project }}"
+
+      # WAL Alerts
+      - alert: SupabaseWALSizeHigh
+        expr: supabase_wal_size_bytes > 10737418240
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Supabase WAL size is high"
+          description: "WAL size is {{ $value | humanize }} for project {{ $labels.project }}"
+
+      # Replication Lag Alerts (si aplica)
+      - alert: SupabaseReplicationLagHigh
+        expr: supabase_replication_lag_seconds > 30
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Supabase replication lag is high"
+          description: "Replication lag is {{ $value }}s for project {{ $labels.project }}"
+
+      - alert: SupabaseReplicationLagCritical
+        expr: supabase_replication_lag_seconds > 300
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Supabase replication lag is critical"
+          description: "Replication lag is {{ $value }}s for project {{ $labels.project }}"
+
+  - name: supabase_performance_alerts
+    interval: 60s
+    rules:
+      # Query Performance Alerts
+      - alert: SupabaseSlowQueries
+        expr: rate(supabase_query_duration_seconds_sum[5m]) / rate(supabase_query_duration_seconds_count[5m]) > 1
+        for: 10m
+        labels:
+          severity: warning
+          component: performance
+        annotations:
+          summary: "Supabase slow queries detected"
+          description: "Average query duration is {{ $value }}s for project {{ $labels.project }}"
+
+      - alert: SupabaseVerySlowQueries
+        expr: rate(supabase_query_duration_seconds_sum[5m]) / rate(supabase_query_duration_seconds_count[5m]) > 5
+        for: 5m
+        labels:
+          severity: critical
+          component: performance
+        annotations:
+          summary: "Supabase very slow queries detected"
+          description: "Average query duration is {{ $value }}s for project {{ $labels.project }}"
+
+      # Cache Hit Ratio Alerts
+      - alert: SupabaseLowCacheHitRatio
+        expr: supabase_cache_hit_ratio < 0.9
+        for: 15m
+        labels:
+          severity: warning
+          component: performance
+        annotations:
+          summary: "Supabase cache hit ratio is low"
+          description: "Cache hit ratio is {{ $value | humanizePercentage }} for project {{ $labels.project }}"
+
+  - name: supabase_availability_alerts
+    interval: 60s
+    rules:
+      # Availability Alerts
+      - alert: SupabaseMetricsScrapeFailed
+        expr: up{job="supabase-complicesconecta"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: availability
+        annotations:
+          summary: "Supabase metrics scrape failed"
+          description: "Cannot scrape metrics from Supabase for project {{ $labels.project }}"
+
+      - alert: SupabaseAPIErrorRateHigh
+        expr: rate(supabase_api_errors_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: availability
+        annotations:
+          summary: "Supabase API error rate is high"
+          description: "API error rate is {{ $value }} errors/sec for project {{ $labels.project }}"

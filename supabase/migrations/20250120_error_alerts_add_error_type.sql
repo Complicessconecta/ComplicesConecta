@@ -81,4 +81,8 @@ END $$;
 COMMENT ON COLUMN public.error_alerts.error_type IS 'Tipo de error (ej. network, auth, validation)';
 COMMENT ON TABLE public.error_alerts IS 'Alertas de error para monitoreo y debugging';
 
-RAISE NOTICE '✅ Migración completada exitosamente';
+-- Notificación final
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Migración completada exitosamente';
+END $$;

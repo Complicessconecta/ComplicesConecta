@@ -579,10 +579,10 @@ COMMENT ON SCHEMA private IS 'Schema privado para materialized views y funciones
 
 COMMENT ON TABLE public.user_stripe_customers IS 'Mapeo entre usuarios de Supabase Auth y customers de Stripe';
 
-COMMENT ON MATERIALIZED VIEW private.stripe_products IS 'Materialized view de productos de Stripe para performance (refresh manual)';
-COMMENT ON MATERIALIZED VIEW private.stripe_prices IS 'Materialized view de precios de Stripe para performance (refresh manual)';
+-- COMMENT ON MATERIALIZED VIEW private.stripe_products IS 'Materialized view de productos de Stripe para performance (refresh manual)';
+-- COMMENT ON MATERIALIZED VIEW private.stripe_prices IS 'Materialized view de precios de Stripe para performance (refresh manual)';
 
-COMMENT ON FUNCTION public.create_stripe_customer IS 'Crea un Stripe customer para un usuario y lo mapea en user_stripe_customers';
+-- COMMENT ON FUNCTION public.create_stripe_customer IS 'Crea un Stripe customer para un usuario y lo mapea en user_stripe_customers';
 
 -- ============================================================================
 -- FIN DEL SCRIPT

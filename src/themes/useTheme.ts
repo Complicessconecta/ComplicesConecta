@@ -53,7 +53,7 @@ export const useTheme = () => {
 
       try {
         const { data, error } = await supabase
-          .from("user_themes" as any)
+          .from("user_themes")
           .select("*")
           .eq("user_id", user.id)
           .maybeSingle();
@@ -110,7 +110,7 @@ export const useTheme = () => {
             schema: "public",
             table: "user_themes",
             filter: `user_id=eq.${user.id}`,
-          } as any,
+          },
           (payload: any) => {
             const theme = payload.new as {
               bg_url?: string;

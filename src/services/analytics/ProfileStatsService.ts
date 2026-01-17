@@ -123,7 +123,7 @@ export class ProfileStatsService {
         .from("app_metrics")
         .select("*", { count: "exact", head: true })
         .eq("metric_name", "profile_views")
-        .contains("metadata", { profile_id: profileId } as any);
+        .filter("tags", "cs", `{\"profile_id\":\"${profileId}\"}`);
 
       if (viewsError) {
         logger.warn("[ProfileStatsService] Supabase views count error:", {
@@ -136,7 +136,7 @@ export class ProfileStatsService {
         .from("app_metrics")
         .select("*", { count: "exact", head: true })
         .eq("metric_name", "profile_likes")
-        .contains("metadata", { profile_id: profileId } as any);
+        .filter("tags", "cs", `{\"profile_id\":\"${profileId}\"}`);
 
       if (likesError) {
         logger.warn("[ProfileStatsService] Supabase likes count error:", {

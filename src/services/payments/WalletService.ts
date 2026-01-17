@@ -3,15 +3,7 @@
 // Descripción: Servicio de wallet interna con Supabase + Ethers.js + AES-256
 // Funcionalidades: Crear wallet, encriptar claves, transacciones, balance
 
-import {
-  ethers,
-  JsonRpcProvider,
-  Wallet,
-  isAddress,
-  formatEther,
-  formatUnits,
-  parseUnits,
-} from "ethers";
+import { ethers, JsonRpcProvider,  Wallet, isAddress, formatEther, formatUnits, parseUnits } from "ethers";
 import CryptoJS from "crypto-js";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";

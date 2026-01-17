@@ -130,7 +130,7 @@ export class MFAService {
       const backupCodes = generateBackupCodes(10);
 
       // Guardar en base de datos
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("mfa_settings")
         .insert({
           user_id: userId,
@@ -145,7 +145,13 @@ export class MFAService {
       if (error) throw error;
 
       logger.info("Configuración MFA iniciada", { userId });
-      return data as unknown as MFASetup;
+      return {
+        userId,
+        secret,
+        backupCodes,
+        enabled: false,
+        createdAt: new Date().toISOString(),
+      };
     } catch (error) {
       logger.error("Error iniciando configuración MFA", { error, userId });
       throw error;
@@ -174,11 +180,8 @@ export class MFAService {
         throw new Error("Configuración MFA no encontrada");
       }
 
-      // Type assertion para evitar errores de TypeScript
-      const settings = mfaSettings as any;
-
       // Verificar código TOTP
-      const isValid = verifyTOTPCode(settings.secret, code);
+      const isValid = verifyTOTPCode(mfaSettings.secret, code);
 
       if (!isValid) {
         logger.warn("Código TOTP inválido", { userId });
@@ -226,29 +229,26 @@ export class MFAService {
         throw new Error("Configuración MFA no encontrada");
       }
 
-      // Type assertion para evitar errores de TypeScript
-      const settings = mfaSettings as any;
-
       // Verificar si MFA está habilitado
-      if (!settings.enabled) {
+      if (!mfaSettings.enabled) {
         logger.warn("MFA no habilitado para usuario", { userId });
         return true;
       }
 
       // Verificar código TOTP
-      const isValid = verifyTOTPCode(settings.secret, code);
+      const isValid = verifyTOTPCode(mfaSettings.secret, code);
 
       if (!isValid) {
         // Verificar backup code
         const isValidBackup = verifyBackupCode(
-          settings.backup_codes as string[],
+          mfaSettings.backup_codes,
           code
         );
 
         if (isValidBackup) {
           // Eliminar backup code usado
           const newBackupCodes = removeBackupCode(
-            settings.backup_codes as string[],
+            mfaSettings.backup_codes,
             code
           );
 
@@ -320,14 +320,14 @@ export class MFAService {
         return { enabled: false };
       }
 
-      if (!data || !(data as any).enabled) {
+      if (!data || !data.enabled) {
         return { enabled: false };
       }
 
       // Generar URL de código QR
       const user = await supabase.auth.getUser();
       const email = user.data.user?.email || "";
-      const qrCodeURL = generateQRCodeURL(email, (data as any).secret);
+      const qrCodeURL = generateQRCodeURL(email, data.secret);
 
       return { enabled: true, qrCodeURL };
     } catch (error) {

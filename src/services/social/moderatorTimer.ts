@@ -14,8 +14,8 @@ import { logger } from "@/lib/logger";
 export interface ModeratorSession {
   id: string;
   moderator_id: string;
-  session_start: string;
-  session_end?: string;
+  session_start: string | null;
+  session_end?: string | null;
   is_active: boolean;
   total_minutes: number;
   reports_reviewed: number;
@@ -163,7 +163,7 @@ export const updateSessionMinutes = async (
 
     if (sessionError || !sessionData) return;
 
-    const startTime = new Date(sessionData.session_start);
+    const startTime = new Date(sessionData.session_start || "");
     const now = new Date();
     const minutes = Math.floor((now.getTime() - startTime.getTime()) / 60000);
 

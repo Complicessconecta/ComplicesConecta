@@ -317,7 +317,7 @@ export class PostsService {
         user_id: story.user_id,
         profile_id: story.user_id,
         content: story.description || story.caption || "",
-        post_type: story.content_type || story.media_type || "image",
+        post_type: story.content_type || story.media_type || "photo",
         media_urls: Array.isArray(story.media_urls)
           ? story.media_urls
           : story.media_url
@@ -365,18 +365,16 @@ export class PostsService {
         .from("stories")
         .insert({
           user_id: userId,
-          description: postData.content,
-          content_type: postData.post_type,
-          content_url: postData.image_url || postData.video_url || "",
-          location: postData.location || null,
+          caption: postData.content,
+          media_url: postData.image_url || postData.video_url || "",
+          media_type: postData.post_type === "photo" ? "photo" : "video",
           is_public: true,
-          views_count: 0,
         })
         .select(
           `
           id,
           user_id,
-          description as content,
+          caption as content,
           content_type as post_type,
           content_url,
           location,

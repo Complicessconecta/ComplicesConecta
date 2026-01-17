@@ -1507,6 +1507,39 @@ export type Database = {
         }
         Relationships: []
       }
+      mfa_settings: {
+        Row: {
+          id: string
+          user_id: string
+          secret: string
+          backup_codes: string[]
+          enabled: boolean
+          verified_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          secret: string
+          backup_codes?: string[]
+          enabled?: boolean
+          verified_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          secret?: string
+          backup_codes?: string[]
+          enabled?: boolean
+          verified_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           chat_room_id: string

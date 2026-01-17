@@ -7,7 +7,7 @@ export interface PermanentBanData {
   userId: string;
   banReason: string;
   severity: "low" | "medium" | "high" | "critical";
-  evidence?: Record<string, any>;
+  evidence?: Record<string, unknown>;
   worldIdNullifierHash?: string;
   moderationLogId?: string;
 }
@@ -38,29 +38,29 @@ export const createPermanentBan = async (
     const fingerprint = await generateDigitalFingerprint(
       banData.worldIdNullifierHash,
     );
-    const rpcPayload: Record<string, unknown> = {
-      p_user_id: banData.userId,
-      p_canvas_hash: fingerprint.canvasHash,
-      p_combined_hash: fingerprint.combinedHash,
-      p_ban_reason: banData.banReason,
-      p_banned_by: _bannedBy,
-      p_severity: banData.severity,
-      p_evidence: banData.evidence || {},
-    };
-    if (banData.worldIdNullifierHash) {
-      rpcPayload.p_worldid_nullifier_hash = banData.worldIdNullifierHash;
-    }
 
-    const { data, error } = await supabase.rpc(
-      "create_permanent_ban" as any,
-      rpcPayload as any,
-    );
+    const { data, error } = await supabase
+      .from("permanent_bans")
+      .insert({
+        user_id: banData.userId,
+        combined_hash: fingerprint.combinedHash,
+        ban_reason: banData.banReason,
+        banned_by: _bannedBy,
+        details: {
+          canvas_hash: fingerprint.canvasHash,
+          severity: banData.severity,
+          evidence: banData.evidence || {},
+          worldid_nullifier_hash: banData.worldIdNullifierHash,
+        },
+      })
+      .select("id")
+      .single();
 
     if (error) throw error;
 
-    logger.info("✅ Baneo permanente creado", { banId: data });
+    logger.info("✅ Baneo permanente creado", { banId: data.id });
 
-    return data as string;
+    return data.id;
   } catch (error) {
     logger.error("Error creando baneo permanente:", {
       error: error instanceof Error ? error.message : String(error),
@@ -179,16 +179,10 @@ export const liftPermanentBan = async (
         .in("id", ban.fingerprint_ids);
     }
 
-    // Desbloquear usuario
+    // Desbloquear usuario - las columnas is_blocked no existen en profiles
+    // El baneo se maneja a través de la tabla permanent_bans
     if (ban.user_id) {
-      await supabase
-        .from("profiles")
-        .update({
-          is_blocked: false,
-          blocked_at: null,
-          blocked_reason: null,
-        })
-        .eq("id", ban.user_id);
+      logger.info("Usuario desbaneado", { userId: ban.user_id });
     }
 
     logger.info("✅ Baneo permanente levantado", { banId });

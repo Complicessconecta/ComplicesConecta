@@ -14,21 +14,22 @@
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { tokenService } from "@/services/payments/TokenService";
+import type { Json } from "@/types/supabase-generated";
 
 export interface NFTGallery {
   id: string;
   userId: string;
-  profileId?: string;
+  profileId?: string | undefined;
   galleryName: string;
-  description?: string;
-  nftContractAddress?: string;
-  nftTokenId?: string;
+  description?: string | undefined;
+  nftContractAddress?: string | undefined;
+  nftTokenId?: string | undefined;
   nftNetwork: "ethereum" | "polygon" | "pending";
-  mintedWithGtk?: number;
+  mintedWithGtk?: number | undefined;
   mintedAt?: Date;
   isVerified: boolean;
   isPublic: boolean;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown> | Record<string, never> | {};
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,15 +38,15 @@ export interface NFTGalleryImage {
   id: string;
   galleryId: string;
   imageUrl: string;
-  imageHash?: string;
-  nftContractAddress?: string;
-  nftTokenId?: string;
+  imageHash: string | undefined;
+  nftContractAddress: string | undefined;
+  nftTokenId: string | undefined;
   nftNetwork: "ethereum" | "polygon" | "pending";
-  mintedWithGtk?: number;
-  mintedAt?: Date;
+  mintedWithGtk: number | undefined;
+  mintedAt: Date | undefined;
   isVerified: boolean;
-  sortOrder: number;
-  metadata: Record<string, any>;
+  sortOrder: number | undefined;
+  metadata: Record<string, unknown> | Record<string, never> | {};
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,7 +57,7 @@ export interface MintNFTRequest {
   imageId?: string;
   gtkAmount: number;
   network: "ethereum" | "polygon";
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export class NFTGalleryService {
@@ -209,7 +210,7 @@ export class NFTGalleryService {
     userId: string,
     galleryId: string,
     imageUrl: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): Promise<NFTGalleryImage> {
     try {
       if (!supabase) {
@@ -226,7 +227,7 @@ export class NFTGalleryService {
           nft_network: "pending", // Aún no mintado
           is_verified: false,
           sort_order: 0,
-          metadata: metadata || {},
+          metadata: (metadata || {}) as Json,
         })
         .select()
         .single();
@@ -403,51 +404,51 @@ export class NFTGalleryService {
   /**
    * Mapea datos de BD a NFTGallery
    */
-  private mapToNFTGallery(data: any): NFTGallery {
+  private mapToNFTGallery(data: Record<string, unknown>): NFTGallery {
     return {
-      id: data.id,
-      userId: data.user_id,
-      profileId: data.profile_id,
-      galleryName: data.gallery_name,
-      description: data.description,
-      nftContractAddress: data.nft_contract_address,
-      nftTokenId: data.nft_token_id,
+      id: data.id as string,
+      userId: data.user_id as string,
+      profileId: data.profile_id as string | undefined,
+      galleryName: data.gallery_name as string,
+      description: data.description as string | undefined,
+      nftContractAddress: data.nft_contract_address as string | undefined,
+      nftTokenId: data.nft_token_id as string | undefined,
       nftNetwork: (data.nft_network || "pending") as
         | "ethereum"
         | "polygon"
         | "pending",
-      mintedWithGtk: data.minted_with_gtk,
-      mintedAt: data.minted_at ? new Date(data.minted_at) : new Date(), // Fallback a fecha actual
-      isVerified: data.is_verified || false,
-      isPublic: data.is_public || false,
-      metadata: data.metadata || {},
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
+      mintedWithGtk: data.minted_with_gtk as number | undefined,
+      mintedAt: data.minted_at ? new Date(data.minted_at as string) : new Date(),
+      isVerified: (data.is_verified as boolean | undefined) || false,
+      isPublic: (data.is_public as boolean | undefined) || false,
+      metadata: (data.metadata || Object.freeze({})) as Record<string, unknown>,
+      createdAt: new Date(data.created_at as string),
+      updatedAt: new Date(data.updated_at as string),
     };
   }
 
   /**
    * Mapea datos de BD a NFTGalleryImage
    */
-  private mapToNFTGalleryImage(data: any): NFTGalleryImage {
+  private mapToNFTGalleryImage(data: Record<string, unknown>): NFTGalleryImage {
     return {
-      id: data.id,
-      galleryId: data.gallery_id,
-      imageUrl: data.image_url,
-      imageHash: data.image_hash,
-      nftContractAddress: data.nft_contract_address,
-      nftTokenId: data.nft_token_id,
+      id: data.id as string,
+      galleryId: data.gallery_id as string,
+      imageUrl: data.image_url as string,
+      imageHash: data.image_hash as string | undefined,
+      nftContractAddress: data.nft_contract_address as string | undefined,
+      nftTokenId: data.nft_token_id as string | undefined,
       nftNetwork: (data.nft_network || "pending") as
         | "ethereum"
         | "polygon"
         | "pending",
-      mintedWithGtk: data.minted_with_gtk,
-      mintedAt: data.minted_at ? new Date(data.minted_at) : new Date(), // Fallback a fecha actual
-      isVerified: data.is_verified || false,
-      sortOrder: data.sort_order || 0,
-      metadata: data.metadata || {},
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
+      mintedWithGtk: data.minted_with_gtk as number | undefined,
+      mintedAt: data.minted_at ? new Date(data.minted_at as string) : new Date(),
+      isVerified: (data.is_verified as boolean | undefined) || false,
+      sortOrder: data.sort_order as number | undefined,
+      metadata: (data.metadata || Object.freeze({})) as Record<string, unknown>,
+      createdAt: new Date(data.created_at as string),
+      updatedAt: new Date(data.updated_at as string),
     };
   }
 

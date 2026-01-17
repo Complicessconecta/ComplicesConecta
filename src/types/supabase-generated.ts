@@ -67,6 +67,42 @@ export type Database = {
         }
         Relationships: []
       }
+      app_metrics: {
+        Row: {
+          id: string
+          user_id: string
+          metric_name: string
+          metric_value: number
+          metric_type: "counter" | "gauge" | "histogram"
+          tags: Json | null
+          timestamp: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          metric_name: string
+          metric_value: number
+          metric_type: "counter" | "gauge" | "histogram"
+          tags?: Json | null
+          timestamp?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          metric_name?: string
+          metric_value?: number
+          metric_type?: "counter" | "gauge" | "histogram"
+          tags?: Json | null
+          timestamp?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       anti_cheat_log: {
         Row: {
           actions_taken: Json | null
@@ -784,6 +820,7 @@ export type Database = {
           couple_id: string
           created_at: string | null
           created_by: string | null
+          current_participants: number | null
           date: string | null
           description: string | null
           event_date: string | null
@@ -802,6 +839,7 @@ export type Database = {
           couple_id: string
           created_at?: string | null
           created_by?: string | null
+          current_participants?: number | null
           date?: string | null
           description?: string | null
           event_date?: string | null
@@ -820,6 +858,7 @@ export type Database = {
           couple_id?: string
           created_at?: string | null
           created_by?: string | null
+          current_participants?: number | null
           date?: string | null
           description?: string | null
           event_date?: string | null
@@ -1214,6 +1253,7 @@ export type Database = {
           created_at: string | null
           error_message: string
           error_stack: string | null
+          error_type: string | null
           id: string
           metadata: Json | null
           resolved: boolean | null
@@ -1229,6 +1269,7 @@ export type Database = {
           created_at?: string | null
           error_message: string
           error_stack?: string | null
+          error_type?: string | null
           id?: string
           metadata?: Json | null
           resolved?: boolean | null
@@ -1244,6 +1285,7 @@ export type Database = {
           created_at?: string | null
           error_message?: string
           error_stack?: string | null
+          error_type?: string | null
           id?: string
           metadata?: Json | null
           resolved?: boolean | null
@@ -1468,6 +1510,33 @@ export type Database = {
         }
         Relationships: []
       }
+      images: {
+        Row: {
+          id: string
+          profile_id: string
+          url: string
+          is_public: boolean
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          url: string
+          is_public?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          url?: string
+          is_public?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       legal_access_audit: {
         Row: {
           accessed_at: string
@@ -1597,6 +1666,39 @@ export type Database = {
           id?: string
           user1_id?: string
           user2_id?: string
+        }
+        Relationships: []
+      }
+      mfa_settings: {
+        Row: {
+          id: string
+          user_id: string
+          secret: string
+          backup_codes: string[]
+          enabled: boolean
+          verified_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          secret: string
+          backup_codes?: string[]
+          enabled?: boolean
+          verified_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          secret?: string
+          backup_codes?: string[]
+          enabled?: boolean
+          verified_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1816,6 +1918,114 @@ export type Database = {
         }
         Relationships: []
       }
+      nft_galleries: {
+        Row: {
+          id: string
+          user_id: string
+          profile_id: string | null
+          title: string
+          description: string | null
+          nft_network: "ethereum" | "polygon" | "pending"
+          nft_contract_address: string | null
+          nft_token_id: string | null
+          minted_with_gtk: number | null
+          minted_at: string | null
+          is_verified: boolean
+          is_public: boolean
+          metadata: Json | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          profile_id?: string | null
+          title: string
+          description?: string | null
+          nft_network?: "ethereum" | "polygon" | "pending"
+          nft_contract_address?: string | null
+          nft_token_id?: string | null
+          minted_with_gtk?: number | null
+          minted_at?: string | null
+          is_verified?: boolean
+          is_public?: boolean
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          profile_id?: string | null
+          title?: string
+          description?: string | null
+          nft_network?: "ethereum" | "polygon" | "pending"
+          nft_contract_address?: string | null
+          nft_token_id?: string | null
+          minted_with_gtk?: number | null
+          minted_at?: string | null
+          is_verified?: boolean
+          is_public?: boolean
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      nft_gallery_images: {
+        Row: {
+          id: string
+          user_id: string
+          gallery_id: string
+          image_url: string
+          image_hash: string | null
+          nft_network: "ethereum" | "polygon" | "pending"
+          nft_contract_address: string | null
+          nft_token_id: string | null
+          minted_with_gtk: number | null
+          minted_at: string | null
+          is_verified: boolean
+          sort_order: number
+          metadata: Json | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          gallery_id: string
+          image_url: string
+          image_hash?: string | null
+          nft_network?: "ethereum" | "polygon" | "pending"
+          nft_contract_address?: string | null
+          nft_token_id?: string | null
+          minted_with_gtk?: number | null
+          minted_at?: string | null
+          is_verified?: boolean
+          sort_order?: number
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          gallery_id?: string
+          image_url?: string
+          image_hash?: string | null
+          nft_network?: "ethereum" | "polygon" | "pending"
+          nft_contract_address?: string | null
+          nft_token_id?: string | null
+          minted_with_gtk?: number | null
+          minted_at?: string | null
+          is_verified?: boolean
+          sort_order?: number
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       nft_verifications: {
         Row: {
           created_at: string
@@ -1935,34 +2145,40 @@ export type Database = {
           ban_reason: string
           banned_at: string | null
           banned_by: string | null
+          combined_hash: string
           fingerprint_ids: string[] | null
           id: string
           is_active: boolean | null
           metadata: Json | null
           updated_at: string | null
           user_id: string
+          worldid_nullifier_hash: string | null
         }
         Insert: {
           ban_reason: string
           banned_at?: string | null
           banned_by?: string | null
+          combined_hash: string
           fingerprint_ids?: string[] | null
           id?: string
           is_active?: boolean | null
           metadata?: Json | null
           updated_at?: string | null
           user_id: string
+          worldid_nullifier_hash?: string | null
         }
         Update: {
           ban_reason?: string
           banned_at?: string | null
           banned_by?: string | null
+          combined_hash?: string
           fingerprint_ids?: string[] | null
           id?: string
           is_active?: boolean | null
           metadata?: Json | null
           updated_at?: string | null
           user_id?: string
+          worldid_nullifier_hash?: string | null
         }
         Relationships: []
       }
@@ -2052,6 +2268,8 @@ export type Database = {
           account_type: string | null
           age: number | null
           agreement_id: string | null
+          avatar_url: string | null
+          bio: string | null
           consent_status: string | null
           created_at: string | null
           display_name: string | null
@@ -2059,12 +2277,17 @@ export type Database = {
           email_verified_at: string | null
           first_name: string | null
           full_name: string | null
+          gender: string | null
           id: string
+          interests: string[] | null
+          is_blocked: boolean
           is_demo: boolean
           is_online: boolean | null
           is_premium: boolean | null
+          is_verified: boolean
           last_name: string | null
           latitude: number | null
+          location: string | null
           longitude: number | null
           name: string | null
           phone_verified_at: string | null
@@ -2073,11 +2296,15 @@ export type Database = {
           s2_level: number | null
           updated_at: string | null
           user_id: string
+          blocked_at: string | null
+          blocked_reason: string | null
         }
         Insert: {
           account_type?: string | null
           age?: number | null
           agreement_id?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           consent_status?: string | null
           created_at?: string | null
           display_name?: string | null
@@ -2085,12 +2312,17 @@ export type Database = {
           email_verified_at?: string | null
           first_name?: string | null
           full_name?: string | null
+          gender?: string | null
           id?: string
+          interests?: string[] | null
+          is_blocked?: boolean
           is_demo?: boolean
           is_online?: boolean | null
           is_premium?: boolean | null
+          is_verified?: boolean
           last_name?: string | null
           latitude?: number | null
+          location?: string | null
           longitude?: number | null
           name?: string | null
           phone_verified_at?: string | null
@@ -2099,11 +2331,15 @@ export type Database = {
           s2_level?: number | null
           updated_at?: string | null
           user_id: string
+          blocked_at?: string | null
+          blocked_reason?: string | null
         }
         Update: {
           account_type?: string | null
           age?: number | null
           agreement_id?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           consent_status?: string | null
           created_at?: string | null
           display_name?: string | null
@@ -2111,12 +2347,17 @@ export type Database = {
           email_verified_at?: string | null
           first_name?: string | null
           full_name?: string | null
+          gender?: string | null
           id?: string
+          interests?: string[] | null
+          is_blocked?: boolean
           is_demo?: boolean
           is_online?: boolean | null
           is_premium?: boolean | null
+          is_verified?: boolean
           last_name?: string | null
           latitude?: number | null
+          location?: string | null
           longitude?: number | null
           name?: string | null
           phone_verified_at?: string | null
@@ -2125,6 +2366,8 @@ export type Database = {
           s2_level?: number | null
           updated_at?: string | null
           user_id?: string
+          blocked_at?: string | null
+          blocked_reason?: string | null
         }
         Relationships: [
           {
@@ -2439,6 +2682,99 @@ export type Database = {
           status?: string | null
           user_agent?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      security_audit_log: {
+        Row: {
+          id: string
+          user_id: string
+          action: string
+          resource: string | null
+          details: Json | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          action: string
+          resource?: string | null
+          details?: Json | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          action?: string
+          resource?: string | null
+          details?: Json | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      security: {
+        Row: {
+          id: string
+          user_id: string
+          event_type: string
+          details: Json | null
+          ip_address: string
+          risk_level: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          event_type: string
+          details?: Json | null
+          ip_address?: string
+          risk_level?: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          event_type?: string
+          details?: Json | null
+          ip_address?: string
+          risk_level?: string
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      security_audit_logs: {
+        Row: {
+          id: string
+          user_id: string
+          action: string
+          resource: string
+          details: Json | null
+          ip_address: string
+          user_agent: string
+          created_at: string | null
+          risk_score: number
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          action: string
+          resource?: string
+          details?: Json | null
+          ip_address?: string
+          user_agent?: string
+          created_at?: string | null
+          risk_score?: number
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          action?: string
+          resource?: string
+          details?: Json | null
+          ip_address?: string
+          user_agent?: string
+          created_at?: string | null
+          risk_score?: number
         }
         Relationships: []
       }
@@ -2788,6 +3124,42 @@ export type Database = {
           token_type?: string
           transaction_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      two_factor_auth: {
+        Row: {
+          id: string
+          user_id: string
+          method: "2fa_app" | "sms" | "email"
+          secret: string | null
+          backup_codes: string[]
+          is_enabled: boolean
+          verified_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          method: "2fa_app" | "sms" | "email"
+          secret?: string | null
+          backup_codes?: string[]
+          is_enabled?: boolean
+          verified_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          method?: "2fa_app" | "sms" | "email"
+          secret?: string | null
+          backup_codes?: string[]
+          is_enabled?: boolean
+          verified_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -3200,6 +3572,42 @@ export type Database = {
           network?: string
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_themes: {
+        Row: {
+          id: string
+          user_id: string
+          theme_name: string
+          bg_url: string | null
+          primary_color: string
+          secondary_color: string
+          text_color: string
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          theme_name?: string
+          bg_url?: string | null
+          primary_color?: string
+          secondary_color?: string
+          text_color?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          theme_name?: string
+          bg_url?: string | null
+          primary_color?: string
+          secondary_color?: string
+          text_color?: string
+          created_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -3679,6 +4087,16 @@ export type Database = {
       wasm_fdw_validator: {
         Args: { catalog: unknown; options: string[] }
         Returns: undefined
+      }
+      record_gallery_commission: {
+        Args: {
+          p_gallery_id: string
+          p_creator_id: string
+          p_transaction_type: string
+          p_amount_cmpx: number
+          p_commission_percentage: number
+        }
+        Returns: string
       }
     }
     Enums: {

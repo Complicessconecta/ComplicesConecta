@@ -116,8 +116,8 @@ export class SecurityService {
       // Esto es muy simplificado
       const sessionDuration =
         events.length > 1 && events[0] && events[events.length - 1]
-          ? (new Date(events[events.length - 1]!.created_at).getTime() -
-              new Date(events[0]!.created_at).getTime()) /
+          ? (new Date(events[events.length - 1]!.created_at || "").getTime() -
+              new Date(events[0]!.created_at || "").getTime()) /
             (1000 * 60)
           : 0;
 
@@ -187,7 +187,7 @@ export class SecurityService {
 
     // Verificar si hay metadatos sospechosos (ej. intentos fallidos)
     const failedAttempts = activity.metadata && typeof activity.metadata === 'object' 
-      ? (activity.metadata as any).failedAttempts ?? 0 
+      ? (activity.metadata as Record<string, unknown>).failedAttempts as number ?? 0 
       : 0;
     if (failedAttempts > 3) {
       return {

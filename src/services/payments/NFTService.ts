@@ -11,10 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { safeGetItem } from "@/utils/safeLocalStorage";
 import { WalletService } from "@/services/payments/WalletService";
-import type {
-  CoupleNFTRequest,
-  BlockchainSupabaseClient,
-} from "@/types/blockchain";
+import type {CoupleNFTRequest,BlockchainSupabaseClient} from "@/types/blockchain";
 import { safeBlockchainCast } from "@/types/blockchain";
 
 const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;

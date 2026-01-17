@@ -15,10 +15,11 @@ import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { tokenService } from "@/services/payments/TokenService";
 import { AdvancedCoupleService } from "@/services/social/couple/AdvancedCoupleService";
+import type { Json } from "@/types/supabase-generated";
 
 export interface SustainableEvent {
   id: string;
-  coupleId: string;
+  coupleId: string | null;
   title: string;
   description: string;
   eventType:
@@ -26,9 +27,10 @@ export interface SustainableEvent {
     | "virtual_meetup"
     | "eco_challenge"
     | "sustainable_workshop"
-    | "other";
+    | "other"
+    | null;
   location: string; // Virtual o físico
-  date: string;
+  date: string | null;
   maxParticipants: number;
   participants: string[];
   isPublic: boolean;
@@ -68,15 +70,6 @@ export class SustainableEventsService {
     eco_challenge: 100, // 100 CMPX por completar desafío ecológico
     sustainable_workshop: 75, // 75 CMPX por workshop sostenible
     other: 25, // 25 CMPX por otros eventos
-  };
-
-  // Costos de carbono estimados (kg CO2 ahorrado vs evento físico)
-  private readonly CARBON_SAVINGS = {
-    virtual_party: 50, // 50 kg CO2 ahorrado (vs fiesta física)
-    virtual_meetup: 30, // 30 kg CO2 ahorrado
-    eco_challenge: 20, // 20 kg CO2 ahorrado
-    sustainable_workshop: 40, // 40 kg CO2 ahorrado
-    other: 15, // 15 kg CO2 ahorrado
   };
 
   constructor() {
@@ -122,9 +115,7 @@ export class SustainableEventsService {
       logger.info("🌱 Creando evento virtual sostenible", { coupleId });
 
       // Calcular impacto ambiental
-      const _carbonFootprint = this.CARBON_SAVINGS[data.eventType] || 15;
       const sustainabilityScore = this.calculateSustainabilityScore(data);
-      const _cmpxReward = this.CMPX_REWARDS[data.eventType] || 25;
 
       // Crear evento usando AdvancedCoupleService
       const event = await this.coupleService.createCoupleEvent({
@@ -291,7 +282,7 @@ export class SustainableEventsService {
   async getSustainableEvents(
     filters?: {
       location?: string;
-      eventType?: string;
+      eventType?: "other" | "meetup" | "party" | "dinner" | "travel" | null;
       isVirtual?: boolean;
       minSustainabilityScore?: number;
     },
@@ -431,13 +422,13 @@ export class SustainableEventsService {
     couple_id: string | null;
     title: string;
     description?: string | null;
-    event_type: string;
+    event_type: string | null;
     location?: string | null;
-    date: string;
+    date: string | null;
     max_participants?: number | null;
     participants?: string[] | null;
     is_public?: boolean | null;
-    metadata?: Record<string, unknown> | null;
+    metadata?: Json | null;
     created_at: string | null;
     updated_at: string | null;
   }): SustainableEvent {
@@ -445,10 +436,10 @@ export class SustainableEventsService {
 
     return {
       id: data.id,
-      coupleId: data.couple_id || "",
+      coupleId: data.couple_id || null,
       title: data.title,
       description: data.description || "",
-      eventType: this.mapEventTypeFromDB(data.event_type),
+      eventType: data.event_type ? this.mapEventTypeFromDB(data.event_type) : null,
       location: data.location || "",
       date: data.date,
       maxParticipants: data.max_participants || 0,

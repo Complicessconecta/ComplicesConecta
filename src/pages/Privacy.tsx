@@ -1,11 +1,6 @@
 import type { FC } from "react";
 import { Shield, Eye, Database, Cookie, Mail, Lock } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 
 const Privacy: FC = () => {

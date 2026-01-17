@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Heart, Sparkles, Users, UserCheck, Shield } from "lucide-react";
+import "@/styles/LoginLoadingScreen.css";
 
 export interface LoginLoadingScreenProps {
   onComplete: () => void;
@@ -23,6 +24,17 @@ export const LoginLoadingScreen = ({
 }: LoginLoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
   const [currentText, setCurrentText] = useState(0);
+
+  // Helper function to convert progress to CSS class
+  const getWidthClass = (percentage: number): string => {
+    const rounded = Math.round(percentage / 5) * 5; // Round to nearest 5
+    return `w-${Math.min(100, Math.max(0, rounded))}`;
+  };
+
+  // Helper function to get animation delay class
+  const getDelayClass = (delay: number): string => {
+    return `animate-delay-${Math.min(5, Math.max(0, delay))}`;
+  };
 
   // Función para obtener el nombre personalizado
   const getPersonalizedName = () => {
@@ -128,11 +140,8 @@ export const LoginLoadingScreen = ({
 
         {/* Progress Bar */}
         <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3">
-          <div className="w-full bg-white/20 rounded-full h-3 backdrop-blur-sm">
-            <div
-              className="bg-gradient-to-r from-fuchsia-500 to-red-500 h-3 rounded-full transition-all duration-300 ease-out relative overflow-hidden"
-              style={{ width: `${progress}%` }}
-            >
+          <div className="progress-bar-container">
+            <div className={`progress-bar progress-bar-gradient ${getWidthClass(progress)}`}>
               <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
             </div>
           </div>
@@ -143,16 +152,10 @@ export const LoginLoadingScreen = ({
         <div className="absolute top-10 left-10 animate-float hidden sm:block">
           <Sparkles className="w-6 h-6 text-fuchsia-300/60" />
         </div>
-        <div
-          className="absolute bottom-10 right-10 animate-float hidden sm:block"
-          style={{ animationDelay: "1s" }}
-        >
+        <div className={`absolute bottom-10 right-10 animate-float hidden sm:block ${getDelayClass(1)}`}>
           <Heart className="w-8 h-8 text-red-300/60" />
         </div>
-        <div
-          className="absolute top-1/3 right-20 animate-float hidden sm:block"
-          style={{ animationDelay: "2s" }}
-        >
+        <div className={`absolute top-1/3 right-20 animate-float hidden sm:block ${getDelayClass(2)}`}>
           <Users className="w-5 h-5 text-purple-300/60" />
         </div>
       </div>

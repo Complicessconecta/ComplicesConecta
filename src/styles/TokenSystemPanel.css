@@ -1,0 +1,5 @@
+/* TokenSystemPanel Component Styles */
+
+.token-progress {
+  width: var(--progress-width, 0%);
+}

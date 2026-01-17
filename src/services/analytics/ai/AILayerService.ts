@@ -24,11 +24,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/types/supabase";
 import { logger } from "@/lib/logger";
-import type {
-  CompatibilityFeatures,
-  AIConfig,
-  AIScore,
-} from "@/services/analytics/ai/types";
+import type { CompatibilityFeatures, AIConfig, AIScore } from "@/services/analytics/ai/types";
 import { calculateDistance } from "@/services/analytics/ai/utils";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];

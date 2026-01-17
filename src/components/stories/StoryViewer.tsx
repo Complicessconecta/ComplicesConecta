@@ -3,20 +3,10 @@ import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { useToast } from "@/hooks/useToast";
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  Eye,
-  X,
-  Send,
-  Trash2,
-  MapPin,
-  Globe,
-  Lock,
-} from "lucide-react";
+import { X, Heart, MessageCircle, Share2, Eye, Send, Trash2, MapPin, Globe, Lock } from "lucide-react";
 import { Story } from "./StoryTypes";
 import { storyService } from "./StoryService";
+import "@/styles/StoryViewer.css";
 
 interface StoryViewerProps {
   story: Story;
@@ -188,8 +178,8 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
         <div className="absolute top-4 left-4 right-4 z-10">
           <div className="w-full h-1 bg-white/30 rounded-full">
             <div
-              className="h-full bg-white rounded-full transition-all duration-100 ease-linear"
-              style={{ width: `${progress}%` }}
+              className="h-full bg-white rounded-full transition-all duration-100 ease-linear progress-bar"
+              style={{ '--progress-width': `${progress}%` } as React.CSSProperties}
             />
           </div>
         </div>

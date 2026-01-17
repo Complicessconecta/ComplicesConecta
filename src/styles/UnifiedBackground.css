@@ -1,0 +1,6 @@
+/* UnifiedBackground Component Styles */
+
+.particle {
+  animation-delay: var(--animation-delay, 0s);
+  animation-duration: var(--animation-duration, 6s);
+}

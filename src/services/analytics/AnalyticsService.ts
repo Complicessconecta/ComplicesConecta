@@ -4,10 +4,7 @@
  */
 
 import { logger } from "@/lib/logger";
-import type {
-  AnalyticsProperties,
-  BrowserPerformanceMemory,
-} from "@/types/analytics.types";
+import type { AnalyticsProperties, BrowserPerformanceMemory } from "@/types/analytics.types";
 
 // Tipos de eventos
 interface AnalyticsEvent {

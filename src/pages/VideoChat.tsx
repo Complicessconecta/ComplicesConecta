@@ -10,7 +10,7 @@ const VideoChat = () => {
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
-  const [_participants, _setParticipants] = useState([
+  const [participants, setParticipants] = useState([
     {
       id: 1,
       name: "Mara Elena",
@@ -52,6 +52,15 @@ const VideoChat = () => {
 
   const startCall = () => {
     setIsCallActive(true);
+    // Agregar nuevo participante al iniciar la llamada
+    setParticipants([...participants, {
+      id: participants.length + 1,
+      name: "Nuevo Participante",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
+      isVideoOn: true,
+      isMicOn: true,
+      isHost: false,
+    }]);
     // En produccin aqu se iniciara la llamada WebRTC
   };
 
@@ -190,7 +199,7 @@ const VideoChat = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {_participants.map((participant: any) => (
+                    {participants.map((participant: any) => (
                       <div
                         key={participant.id}
                         className="flex items-center space-x-4 p-3 bg-gray-800/50 rounded-lg"
@@ -243,7 +252,7 @@ const VideoChat = () => {
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    {_participants.map((participant: any) => (
+                    {participants.map((participant: any) => (
                       <div
                         key={participant.id}
                         className="relative bg-gray-800 rounded-lg aspect-video"

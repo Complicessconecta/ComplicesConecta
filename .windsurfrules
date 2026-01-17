@@ -13,13 +13,16 @@ Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compli
 1. REGLAS INQUEBRANTABLES DEL PROYECTO
 1.1 Lógica de Negocio y Flujos Críticos
 
-NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, moderación con IA)
-NO romper flujos principales: registro → discover → match → chat → check-in
-NO crear ni eliminar archivos sin verificar existencia previa
-NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
-NO romper la logica de los perfiles "demo"
-No romper el flujo ni logica de los perfiles de produccion
-Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones correctas
+- NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, moderación con IA)
+- NO romper flujos principales: registro → discover → match → chat → check-in
+- NO crear ni eliminar archivos sin verificar existencia previa
+- NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
+- NO romper la logica de los perfiles "demo"
+- No romper el flujo ni logica de los perfiles de produccion
+- Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones correctas
+- No crear ni eliminar archivos sin verificar existencia previa
+- No eliminr variables , implementar variables que no estan declaradas
+- No eliminar variables que estan declaradas, agregar variables que no estan declaradas
 
 **Marca de progreso:**
 * **[Completo/Verificado✅]** 
@@ -30,7 +33,7 @@ Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones c
 1.2 Gestión de Ramas y Commits
 
 Rama master = PRODUCCIÓN (desplegada en Vercel)
-Trabajo activo en feature/desarrollo-actual (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA.
+Trabajo activo en   refact-inteligente-Tra-2025-12-26 (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA CAMBIAR DE RAMA  o TRABAJR EN LA ACTUAL 
 
 Commits en español MX con fecha y hora:
 feat: agrega check-in clubs - 16 Dic 2025 14:30
@@ -50,10 +53,13 @@ CHANGELOG.md
 
 1.4 Supabase, Docker y Base de Datos
 
-Verificar Docker en línea y login a Supabase antes de cambios
+Verificar Docker en línea  de lo contrario indicarle al usuario iniciar para hacer 
+y login a Supabase antes de cambios
 Alinear tablas locales/remotas antes de modificar
 Notificar tablas faltantes antes de crearlas
-
+al finalizar el uso de Doker-Desktop verificar que todo esta en orden
+y hacer kill para sair 
+|
 1.5 Cambios Grandes
 
 Trabajar en rama separada (solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA
@@ -67,6 +73,8 @@ Eficiencia y Comunicación
 CERO verborrea → respuestas directas, sin saludos innecesarios
 NO reescribir archivos completos → usar bloques modificados o "Search & Replace"
 Respuestas cortas → listas con bullet points
+leer los archivos completos antes de modificarlos
+ 
 
 TypeScript y Código Limpio
 
@@ -77,6 +85,7 @@ logger para todos los logs (nunca console.log en producción)
 Validar inputs y manejar errores con try-catch
 Early returns para reducir anidación
 Event handlers tipados
+Si se corrompe el archivo restaurar y volver a corregir
 
 Optimización
 
@@ -86,10 +95,12 @@ Optimizar imágenes antes de subir
 React.memo para componentes estables
 Debounce en búsquedas y filtros
 Code splitting y chunks optimizados
+verifiar que los placeholders esten correctamente implementados
 
 Seguridad y Cumplimiento
 
 Nunca exponer API keys
+ni datos sensibles
 Validar y sanitizar inputs del usuario
 Verificar permisos antes de operaciones sensibles
 Cumplimiento total con Ley Olimpia (consentimiento explícito en chat)
@@ -108,7 +119,9 @@ Herramientas de Desarrollo
 Consola: PowerShell (Windows) – nunca Linux
 Idioma: Español MX UTF-8
 Dudas → PREGUNTAR ANTES de proceder
-
+proteger  los archivos con caractes " ` " para que no se corrompan
+ejemplo: "copílot" correcto , incorrecto "coplot" 
+durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
 MPC y Audio (Music Production)
 
 Proteger procesos MPC y controladores MIDI
@@ -135,5 +148,5 @@ npm run lint sin errores ni warnings
 
 ¡ESTAS REGLAS SON INQUEBRANTABLES!
 Cualquier desviación debe justificarse y aprobarse explícitamente.
-Proyecto listo para escalar a producción enterprise y monetización premium.
-¡Vamos por los $10k/mes! 💜🚀9,1sFast
+
+

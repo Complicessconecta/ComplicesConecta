@@ -1,34 +1,11 @@
 import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import {
-  Shield,
-  Users,
-  CheckCircle,
-  Star,
-  Clock,
-  DollarSign,
-  Award,
-  Timer,
-  Calendar,
-  UserCheck,
-  Eye,
-  MessageSquare,
-  Settings,
-  BarChart3,
-  Zap,
-  Crown,
-  Sparkles,
-} from "lucide-react";
+import { Shield, Users, CheckCircle, Star, Clock, DollarSign, Award, Timer, Calendar, UserCheck, Eye, MessageSquare, Settings, BarChart3, Zap, Crown, Sparkles } from "lucide-react";
 
 const Moderators: FC = () => {
   const navigate = useNavigate();

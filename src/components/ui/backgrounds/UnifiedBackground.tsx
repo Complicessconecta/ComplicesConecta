@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import "@/styles/UnifiedBackground.css";
 import type { FC, ReactNode } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
@@ -443,11 +444,11 @@ const neonOptions = useMemo(
             return (
               <div
                 key={i}
-                className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls}`}
+                className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls} particle`}
                 style={{
-                  animationDelay: `${i * 0.1}s`,
-                  animationDuration: `${6 + Math.random() * 4}s`,
-                }}
+                  '--animation-delay': `${i * 0.1}s`,
+                  '--animation-duration': `${6 + Math.random() * 4}s`,
+                } as React.CSSProperties}
               />
             );
           })}

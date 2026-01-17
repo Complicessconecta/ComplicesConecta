@@ -361,7 +361,8 @@ export class CDNService {
       });
 
       if (response.ok) {
-        return {
+        const etagValue = response.headers.get("etag");
+        const asset: CDNAsset = {
           id: `cdn_${Date.now()}`,
           url,
           type: this.getAssetType(assetPath),
@@ -371,8 +372,11 @@ export class CDNService {
           lastModified: new Date(
             response.headers.get("last-modified") || Date.now(),
           ),
-          etag: response.headers.get("etag") || undefined,
         };
+        if (etagValue) {
+          asset.etag = etagValue;
+        }
+        return asset;
       }
     } catch (error) {
       logger.warn("⚠️ CDN fetch failed, trying fallback", {

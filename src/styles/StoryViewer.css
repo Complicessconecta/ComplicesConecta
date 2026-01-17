@@ -1,0 +1,6 @@
+/* StoryViewer Component Styles */
+
+.progress-bar {
+  width: var(--progress-width, 0%);
+  transition: width 100ms linear;
+}

@@ -2,7 +2,8 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, Crown, Shield, Clock, Star } from "lucide-react";
+import { Calendar, MapPin, Users, Clock, Star, Crown, Shield } from "lucide-react";
+import "@/styles/EventsModal.css";
 
 interface EventsModalProps {
   isOpen: boolean;
@@ -154,10 +155,8 @@ const EventsModal: React.FC<EventsModalProps> = ({
                   <div className="mt-2">
                     <div className="w-full bg-white/20 rounded-full h-1.5">
                       <div
-                        className="h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-blue-400"
-                        style={{
-                          width: `${(event.attendees / event.maxAttendees) * 100}%`,
-                        }}
+                        className="h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 attendee-progress"
+                        style={{ '--progress-width': `${(event.attendees / event.maxAttendees) * 100}%` } as React.CSSProperties}
                       ></div>
                     </div>
                   </div>

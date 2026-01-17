@@ -1,23 +1,7 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
-import {
-  Camera,
-  Clock,
-  Eye,
-  Heart,
-  Users,
-  Zap,
-  Shield,
-  Star,
-} from "lucide-react";
+import { Card,  CardContent,  CardDescription, CardHeader,  CardTitle } from "@/components/ui/cards/Card";
+import { Camera, Clock,  Eye,  Heart,  Users,  Zap, Shield, Star } from "lucide-react";
 
 const StoriesInfo = () => {
   const navigate = useNavigate();

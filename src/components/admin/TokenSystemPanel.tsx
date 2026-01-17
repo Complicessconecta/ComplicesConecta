@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/forms/Input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Coins, TrendingUp, Shield, RefreshCw, AlertTriangle, CheckCircle2, Wallet, Activity, DollarSign, BarChart3, PieChart, Users, Globe, Zap, Clock, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import "@/styles/TokenSystemPanel.css";
+import {
+  Tabs, TabsContent, TabsList, TabsTrigger
+} from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -24,23 +22,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/forms/Input";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
-import {
-  Coins,
-  TrendingUp,
-  Users,
-  Gift,
-  ArrowUpRight,
-  ArrowDownLeft,
-  RefreshCw,
-  Plus,
-  Minus,
-  History,
-  Settings,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
+import { Settings, Plus, Minus, Gift, History as HistoryIcon, CheckCircle, AlertCircle } from "lucide-react";
 
 interface TokenTransaction {
   id: string;
@@ -516,7 +501,7 @@ export function TokenSystemPanel() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <History className="w-5 h-5" />
+                <HistoryIcon className="w-5 h-5" />
                 Historial de Transacciones
               </CardTitle>
             </CardHeader>
@@ -654,10 +639,8 @@ export function TokenSystemPanel() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
-                        className="bg-yellow-600 h-3 rounded-full"
-                        style={{
-                          width: `${(tokenStats.circulatingCMPX / tokenStats.totalCMPX) * 100}%`,
-                        }}
+                        className="bg-yellow-600 h-3 rounded-full token-progress"
+                        style={{ '--progress-width': `${(tokenStats.circulatingCMPX / tokenStats.totalCMPX) * 100}%` } as React.CSSProperties}
                       ></div>
                     </div>
                   </div>
@@ -674,10 +657,8 @@ export function TokenSystemPanel() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
-                        className="bg-purple-600 h-3 rounded-full"
-                        style={{
-                          width: `${(tokenStats.circulatingGTK / tokenStats.totalGTK) * 100}%`,
-                        }}
+                        className="bg-purple-600 h-3 rounded-full token-progress"
+                        style={{ '--progress-width': `${(tokenStats.circulatingGTK / tokenStats.totalGTK) * 100}%` } as React.CSSProperties}
                       ></div>
                     </div>
                   </div>

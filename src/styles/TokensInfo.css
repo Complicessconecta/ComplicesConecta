@@ -1,0 +1,6 @@
+/* TokensInfo Component Styles */
+
+.progress-bar {
+  width: var(--progress-width, 0%);
+  transition: width 1s ease-in-out;
+}

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, UserPlus, Coins, Shield, Gift, TrendingUp, Lock, ChevronDown, ChevronUp, Star, Zap, Users, Calendar, FileText, Scale, Globe, DollarSign, Rocket, Building2, Target, BarChart3, Heart, Video, MessageSquare, Crown, Ticket, Sparkles, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import "@/styles/TokensInfo.css";
 // import { TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado - usar src/services/TokenService.ts
 // Mock TOKEN_CONFIG para compatibilidad
 const TOKEN_CONFIG = {
@@ -1361,8 +1362,8 @@ export default function TokensInfo() {
                             Referencia: https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
                           */}
                           <div
-                            className="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-1000"
-                            style={{ width: `${item.percentage}%` }}
+                            className="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-1000 progress-bar"
+                            style={{ '--progress-width': `${item.percentage}%` } as React.CSSProperties}
                           ></div>
                         </div>
                       </motion.div>

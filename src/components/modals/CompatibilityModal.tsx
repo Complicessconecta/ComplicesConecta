@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Target, Brain, Star, Zap, MapPin, Shield, Sparkles } from "lucide-react";
+import "@/styles/CompatibilityModal.css";
 
 interface CompatibilityModalProps {
   isOpen: boolean;
@@ -26,6 +27,12 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
   reasons = [],
   breakdown,
 }) => {
+  // Helper function to convert score to CSS class
+  const getWidthClass = (percentage: number): string => {
+    const rounded = Math.round(percentage / 5) * 5; // Round to nearest 5
+    return `w-${Math.min(100, Math.max(0, rounded))}`;
+  };
+
   // Default factors if breakdown is not provided
   const defaultFactors = [
     {
@@ -180,8 +187,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
                               : factor.score >= 60
                                 ? "from-orange-400 to-orange-500"
                                 : "from-red-400 to-red-500"
-                        }`}
-                        style={{ width: `${factor.score}%` }}
+                        } ${getWidthClass(factor.score)}`}
                       ></div>
                     </div>
                   </div>

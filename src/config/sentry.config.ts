@@ -51,7 +51,7 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
   Sentry.init({
     dsn: finalConfig.dsn,
     environment: finalConfig.environment,
-    release: finalConfig.release,
+    ...(finalConfig.release ? { release: finalConfig.release } : {}),
 
     // Integrations
     integrations: [
@@ -162,14 +162,17 @@ export function captureError(
   context?: Record<string, any>,
 ): void {
   if (typeof error === "string") {
-    Sentry.captureMessage(error, {
-      level: "error",
-      contexts: context ? { custom: context } : undefined,
-    });
+    const captureContext: any = { level: "error" as const };
+    if (context) {
+      captureContext.contexts = { custom: context };
+    }
+    Sentry.captureMessage(error, captureContext);
   } else {
-    Sentry.captureException(error, {
-      contexts: context ? { custom: context } : undefined,
-    });
+    const captureContext: any = {};
+    if (context) {
+      captureContext.contexts = { custom: context };
+    }
+    Sentry.captureException(error, captureContext);
   }
 }
 
@@ -182,12 +185,15 @@ export function addBreadcrumb(
   level: "debug" | "info" | "warning" | "error" = "info",
   data?: Record<string, any>,
 ): void {
-  Sentry.addBreadcrumb({
+  const breadcrumb: any = {
     message,
     category,
     level,
-    data,
-  });
+  };
+  if (data) {
+    breadcrumb.data = data;
+  }
+  Sentry.addBreadcrumb(breadcrumb);
 }
 
 /**
@@ -199,16 +205,19 @@ export function setUserContext(user: {
   email?: string;
   [key: string]: any;
 }): void {
-  Sentry.setUser({
+  const sentryUser: any = {
     id: user.id,
-    username: user.username,
-    // NO incluir email por privacidad
-    ...Object.fromEntries(
-      Object.entries(user).filter(
-        ([key]) => !["email", "password"].includes(key),
-      ),
+  };
+  if (user.username) {
+    sentryUser.username = user.username;
+  }
+  // NO incluir email por privacidad
+  Object.assign(sentryUser, Object.fromEntries(
+    Object.entries(user).filter(
+      ([key]) => !["email", "password", "username"].includes(key),
     ),
-  });
+  ));
+  Sentry.setUser(sentryUser);
 }
 
 /**

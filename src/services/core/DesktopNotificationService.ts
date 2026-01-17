@@ -197,6 +197,9 @@ export class DesktopNotificationService {
       logger.info("✅ Notification shown:", { title: options.title });
     } catch (error) {
       logger.error("Error showing notification:", { error: String(error) });
+      // Agregar a la cola de notificaciones para intentar más tarde
+      this.notificationQueue.push(options);
+      logger.debug("Notification queued:", { queueSize: this.notificationQueue.length });
     }
   }
 

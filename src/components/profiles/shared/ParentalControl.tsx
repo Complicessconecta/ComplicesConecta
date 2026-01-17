@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Unlock, Baby, Clock, Shield } from "lucide-react";
-import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/buttons/Button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/shared/lib/cn";
-import { ThemeConfig } from "@/themes/ThemeConfig";
+import { Badge } from "@/components/ui/badge";
+import { Baby, Lock, Unlock, Shield, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
+import "@/styles/ParentalControl.css";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { toast } from "@/hooks/useToast";
 
@@ -162,12 +162,12 @@ export const ParentalControl = ({
   const restrictionGradient = (level: RestrictionLevel) => {
     switch (level) {
       case "soft":
-        return cn("bg-gradient-to-r", ThemeConfig.statusGradients.soft);
+        return "bg-gradient-to-r from-green-500/20 to-emerald-500/20";
       case "medium":
-        return cn("bg-gradient-to-r", ThemeConfig.statusGradients.normal);
+        return "bg-gradient-to-r from-yellow-500/20 to-orange-500/20";
       case "strict":
       default:
-        return cn("bg-gradient-to-r", ThemeConfig.statusGradients.strict);
+        return "bg-gradient-to-r from-red-500/20 to-rose-500/20";
     }
   };
 
@@ -178,19 +178,12 @@ export const ParentalControl = ({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className={cn(
-            "fixed inset-0 z-[100] flex items-center justify-center p-4",
-            ThemeConfig.blurClasses.lockedOverlay,
-          )}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
           <Card className="w-full max-w-sm bg-gradient-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
             <CardHeader className="text-center pb-4">
               <div
-                className="mx-auto mb-4 p-3 rounded-full w-fit border-2 border-red-500/40"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(239,68,68,0.3), rgba(249,115,22,0.3))",
-                }}
+                className="mx-auto mb-4 p-3 rounded-full w-fit border-2 border-red-500/40 parental-control-icon"
               >
                 <Baby className="h-6 w-6 text-red-400" />
               </div>
@@ -228,10 +221,7 @@ export const ParentalControl = ({
               {!showPinInput ? (
                 <Button
                   onClick={() => setShowPinInput(true)}
-                  className={cn(
-                    "w-full text-white font-semibold py-3 rounded-2xl backdrop-blur-sm border border-white/20 shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-r",
-                    ThemeConfig.palette.glassGradient,
-                  )}
+                  className="w-full text-white font-semibold py-3 rounded-2xl backdrop-blur-sm border border-white/20 shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-r from-purple-600 to-blue-600"
                 >
                   <Unlock className="h-4 w-4 mr-2" />
                   🔓 Desbloquear
@@ -275,11 +265,7 @@ export const ParentalControl = ({
                       className={cn(
                         "flex-1 rounded-xl py-2.5 text-xs font-semibold transition-all duration-300",
                         pin.length === 4
-                          ? [
-                              "bg-gradient-to-r",
-                              ThemeConfig.statusGradients.soft,
-                              "text-white shadow-lg hover:scale-105",
-                            ]
+                          ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:scale-105"
                           : "bg-white/5 text-white/50 cursor-not-allowed backdrop-blur-sm border border-white/20",
                       )}
                     >
@@ -302,10 +288,7 @@ export const ParentalControl = ({
   // Panel de configuración cuando está desbloqueado
   return (
     <div
-      className={cn(
-        "w-full space-y-6 p-6 rounded-3xl shadow-2xl",
-        ThemeConfig.blurClasses.glassPanel,
-      )}
+      className="w-full space-y-6 p-6 rounded-3xl shadow-2xl bg-white/5 backdrop-blur-sm border border-white/10"
     >
       {/* Encabezado */}
       <div className="flex items-center justify-between">

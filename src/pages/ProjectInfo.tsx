@@ -1,29 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/Modal";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  ArrowLeft,
-  FileText,
-  GitBranch,
-  Shield,
-  Users,
-  Send,
-  Info,
-  Lock,
-  Code,
-  Smartphone,
-} from "lucide-react";
+import { ArrowLeft, FileText, GitBranch, Shield, Users, Send, Info, Lock, Code, Smartphone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";

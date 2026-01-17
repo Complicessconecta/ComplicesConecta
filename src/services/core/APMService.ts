@@ -459,24 +459,26 @@ export class APMService {
   private checkSystemAlerts(): void {
     // Check error rate
     const errorRate = this.calculateErrorRate();
-    if (errorRate > this.config.alertThresholds.errorRate) {
+    const errorRateThreshold = this.config.alertThresholds.errorRate;
+    if (errorRateThreshold !== undefined && errorRate > errorRateThreshold) {
       this.createAlert(
         "high_error_rate",
         "High error rate detected",
         "critical",
-        this.config.alertThresholds.errorRate,
+        errorRateThreshold,
         errorRate,
       );
     }
 
     // Check response time
     const avgResponseTime = this.calculateAverageResponseTime();
-    if (avgResponseTime > this.config.alertThresholds.responseTime) {
+    const responseTimeThreshold = this.config.alertThresholds.responseTime;
+    if (responseTimeThreshold !== undefined && avgResponseTime > responseTimeThreshold) {
       this.createAlert(
         "slow_response_time",
         "Slow response time detected",
         "medium",
-        this.config.alertThresholds.responseTime,
+        responseTimeThreshold,
         avgResponseTime,
       );
     }
@@ -691,7 +693,7 @@ export class APMService {
       );
       report += `### ${category.charAt(0).toUpperCase() + category.slice(1)} Metrics\n`;
       report += `- Count: ${metrics.length}\n`;
-      if (metrics.length > 0) {
+      if (metrics.length > 0 && metrics[0]) {
         report += `- Latest: ${metrics[0].name} = ${metrics[0].value} ${metrics[0].unit}\n`;
       }
       report += "\n";

@@ -1,5 +1,6 @@
+import { FC } from "react";
 import { Heart } from "lucide-react";
-import type { FC } from "react";
+import "@/styles/DecorativeHearts.css";
 
 interface DecorativeHeartsProps {
   count?: number;
@@ -59,31 +60,35 @@ export const DecorativeHearts: FC<DecorativeHeartsProps> = ({
 
   return (
     <div
-      className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
+      className={`absolute inset-0 overflow-hidden pointer-events-none ${className} hearts-container`}
       style={{ willChange: "transform" }}
     >
       {hearts.map((heart) => (
         <Heart
           key={heart.id}
-          className="absolute text-white animate-float-heart-slow"
+          className="absolute text-white animate-float-heart-slow heart-position"
           style={{
-            ...(heart.top && { top: heart.top }),
-            ...(heart.left && { left: heart.left }),
-            ...(heart.right && { right: heart.right }),
-            ...(heart.bottom && { bottom: heart.bottom }),
-            width: `${heart.size}px`,
-            height: `${heart.size}px`,
-            opacity: heart.opacity,
-            animationDelay: `${heart.delay}s`,
-            animationDuration: `${heart.duration}s`,
-            filter: "drop-shadow(0 4px 12px rgba(255,255,255,0.6))",
-            willChange: "transform, opacity",
-            transform: "translateZ(0)", // Force hardware acceleration
-          }}
-          fill="currentColor"
-          stroke="rgba(255,255,255,0.5)"
-          strokeWidth="1.5"
-        />
+            '--top': heart.top || undefined,
+            '--left': heart.left || undefined,
+            '--right': heart.right || undefined,
+            '--bottom': heart.bottom || undefined,
+          } as React.CSSProperties}
+        >
+          <style>
+            {`
+              .heart-position {
+                width: ${heart.size}px;
+                height: ${heart.size}px;
+                opacity: ${heart.opacity};
+                animation-delay: ${heart.delay}s;
+                animation-duration: ${heart.duration}s;
+                filter: drop-shadow(0 4px 12px rgba(255,255,255,0.6));
+                will-change: transform, opacity;
+                transform: translateZ(0); /* Force hardware acceleration */
+              }
+            `}
+          </style>
+        </Heart>
       ))}
     </div>
   );

@@ -7,12 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import * as speakeasy from "speakeasy";
 import * as QRCode from "qrcode";
-import type {
-  ActivityPattern,
-  UserActivity,
-  ActivityMetadata,
-  AuditEventDetails,
-} from "@/types/security.types";
+import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails } from "@/types/security.types";
 import type { Json } from "@/types/supabase-generated";
 
 export interface SecurityAnalysis {

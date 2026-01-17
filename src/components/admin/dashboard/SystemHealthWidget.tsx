@@ -3,12 +3,7 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Settings, Shield, Users, RefreshCw } from "lucide-react";

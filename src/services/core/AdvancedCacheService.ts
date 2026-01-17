@@ -300,6 +300,45 @@ export class AdvancedCacheService {
   }
 
   /**
+   * Invalida cache basado en reglas predefinidas
+   */
+  async invalidateByRules(trigger: string): Promise<void> {
+    try {
+      const keysToDelete: string[] = [];
+
+      for (const rule of this.invalidationRules) {
+        if (trigger.startsWith(rule.pattern)) {
+          // Buscar claves que coincidan con el patrón de la regla
+          if (rule.strategy === "prefix") {
+            for (const key of this.memoryCache.keys()) {
+              if (key.startsWith(rule.pattern)) {
+                keysToDelete.push(key);
+              }
+            }
+          }
+        }
+      }
+
+      // Eliminar claves encontradas
+      for (const key of keysToDelete) {
+        await this.delete(key);
+      }
+
+      if (keysToDelete.length > 0) {
+        logger.info("📋 Cache invalidated by rules", {
+          trigger,
+          keysDeleted: keysToDelete.length,
+        });
+      }
+    } catch (error) {
+      logger.error("❌ Cache invalidation by rules error", {
+        trigger,
+        error: String(error),
+      });
+    }
+  }
+
+  /**
    * Obtiene estadísticas del cache
    */
   getStats(): CacheStats {
@@ -511,6 +550,15 @@ export class AdvancedCacheService {
 
     this.memoryCache.set(key, entry);
 
+    // Ajustar TTL adaptativo si está habilitado
+    if (this.config.enableAdaptiveTTL) {
+      const adjustedTTL = this.adjustTTL(entry);
+      if (adjustedTTL !== entry.ttl) {
+        entry.ttl = adjustedTTL;
+        this.memoryCache.set(key, entry);
+      }
+    }
+
     // Verificar límite de tamaño y limpiar si es necesario
     this.enforceMemoryLimit();
   }
@@ -718,26 +766,13 @@ export class AdvancedCacheService {
    */
   private enforceMemoryLimit(): void {
     const maxSizeBytes = this.config.maxMemorySize * 1024 * 1024;
-    let currentSize = this.calculateMemorySize();
+    const currentSize = this.calculateMemorySize();
 
     if (currentSize > maxSizeBytes) {
-      // Ordenar por frecuencia de acceso y eliminar los menos usados
-      const entries = Array.from(this.memoryCache.entries()).sort(
-        ([, a], [, b]) => a.accessCount - b.accessCount,
-      );
-
-      for (const [key, entry] of entries) {
-        this.memoryCache.delete(key);
-        currentSize -= entry.size;
-
-        if (currentSize <= maxSizeBytes * 0.8) {
-          // Mantener 80% del límite
-          break;
-        }
-      }
+      // Usar política de evicción adaptativa
+      this.evictEntries();
 
       logger.info("🧹 Memory cache cleaned due to size limit", {
-        entriesRemoved: entries.length,
         newSize: this.calculateMemorySize(),
       });
     }
@@ -913,7 +948,7 @@ export class AdvancedCacheService {
     if (!this.config.enableAdaptiveTTL) return entry.ttl;
 
     const now = Date.now();
-    const _timeSinceLastAccess = now - entry.lastAccessed;
+    const timeSinceLastAccess = now - entry.lastAccessed;
     const accessFrequency =
       entry.accessCount / ((now - entry.timestamp) / 1000);
 
@@ -926,6 +961,11 @@ export class AdvancedCacheService {
     } else if (accessFrequency < 0.01) {
       // Acceso esporádico
       newTTL = Math.max(entry.ttl * 0.5, 60); // Reducir TTL mínimo 1 minuto
+    }
+
+    // Ajustar TTL basado en tiempo desde último acceso
+    if (timeSinceLastAccess > 3600000) { // Más de 1 hora sin acceso
+      newTTL = Math.max(newTTL * 0.8, 60); // Reducir TTL
     }
 
     if (newTTL !== entry.ttl) {

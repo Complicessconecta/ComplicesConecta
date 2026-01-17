@@ -1,33 +1,10 @@
 import type { FC } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
-import {
-  ArrowLeft,
-  Calendar,
-  Star,
-  Zap,
-  Shield,
-  Users,
-  Database,
-  Palette,
-  BarChart3,
-  Bell,
-  MessageSquare,
-  Brain,
-  TrendingUp,
-  Rocket,
-  CheckCircle2,
-  Sparkles,
-  Eye,
-} from "lucide-react";
+import { ArrowLeft, Calendar, Star, Zap, Shield, Users, Database, Palette, BarChart3, Bell, MessageSquare, Brain, TrendingUp, Rocket, CheckCircle2, Sparkles, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 
 const News: FC = () => {

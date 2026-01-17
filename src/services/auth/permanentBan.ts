@@ -1,11 +1,7 @@
 // Servicio de Baneo Permanente con Huella Digital
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import {
-  generateDigitalFingerprint,
-  DigitalFingerprint,
-  checkFingerprintBanned,
-} from "@/services/auth/digitalFingerprint";
+import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from "@/services/auth/digitalFingerprint";
 
 export interface PermanentBanData {
   userId: string;

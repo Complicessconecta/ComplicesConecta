@@ -1,0 +1,12 @@
+/* DecorativeHearts Component Styles */
+
+.hearts-container {
+  will-change: transform;
+}
+
+.heart-position {
+  top: var(--top);
+  left: var(--left);
+  right: var(--right);
+  bottom: var(--bottom);
+}

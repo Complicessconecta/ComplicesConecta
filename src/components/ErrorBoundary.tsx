@@ -2,13 +2,7 @@ import React from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { logger } from "@/lib/logger";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent,  CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 
 interface ErrorBoundaryState {
   hasError: boolean;

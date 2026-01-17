@@ -7,11 +7,7 @@
 // ------------------------------------------------------------------
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  LocalLegalAIWorker,
-  type LegalRuntimeState,
-  type LoadProgress,
-} from "./AIWorker";
+import {  LocalLegalAIWorker, type LegalRuntimeState, type LoadProgress } from "./AIWorker";
 
 export interface LocalMessage {
   id: string;

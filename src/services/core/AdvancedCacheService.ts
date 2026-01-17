@@ -389,32 +389,30 @@ export class AdvancedCacheService {
   /**
    * Registra estadísticas del cache en la base de datos
    * @private
-   * NOTA: La tabla 'cache_statistics' no existe en el schema actual de Supabase
-   * Esta función está deshabilitada hasta que se cree la tabla correspondiente
+   * NOTA: La tabla 'cache_statistics' ya existe en Supabase (creada en migration create_cache_statistics_table.sql)
    */
-  private async logCacheStatistics(_stats: CacheStats): Promise<void> {
-    // TODO: Implementar cuando la tabla cache_statistics esté disponible en Supabase
-    // try {
-    //   const { supabase } = await import('@/integrations/supabase/client');
-    //   if (!supabase) return;
-    //
-    //   await supabase
-    //     .from('cache_statistics')
-    //     .insert({
-    //       hit_rate: stats.hitRate,
-    //       miss_rate: stats.missRate,
-    //       total_hits: stats.totalHits,
-    //       total_misses: stats.totalMisses,
-    //       average_access_time_ms: stats.averageAccessTime,
-    //       memory_entries: stats.memoryEntries,
-    //       memory_size_bytes: stats.memorySize,
-    //       compression_ratio: stats.compressionRatio,
-    //       performance_score: stats.performanceScore,
-    //       timestamp: new Date().toISOString(),
-    //     });
-    // } catch (error) {
-    //   logger.debug('Failed to log cache statistics:', { error: String(error) });
-    // }
+  private async logCacheStatistics(stats: CacheStats): Promise<void> {
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      if (!supabase) return;
+
+      await supabase
+        .from('cache_statistics')
+        .insert({
+          hit_rate: stats.hitRate,
+          miss_rate: stats.missRate,
+          total_hits: stats.totalHits,
+          total_misses: stats.totalMisses,
+          average_access_time_ms: stats.averageAccessTime,
+          memory_entries: stats.memoryEntries,
+          memory_size_bytes: stats.memorySize,
+          compression_ratio: stats.compressionRatio,
+          performance_score: stats.performanceScore,
+          timestamp: new Date().toISOString(),
+        });
+    } catch (error) {
+      logger.debug('Failed to log cache statistics:', { error: String(error) });
+    }
   }
 
   /**

@@ -462,7 +462,7 @@ export function TokenSystemPanel() {
             <CardTitle className="text-sm font-medium">
               Transacciones Hoy
             </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -479,7 +479,7 @@ export function TokenSystemPanel() {
             <CardTitle className="text-sm font-medium">
               Tasa de Conversión
             </CardTitle>
-            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <TrendingUp className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -622,7 +622,10 @@ export function TokenSystemPanel() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Distribución de Tokens</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <PieChart className="w-5 h-5" />
+                  Distribución de Tokens
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -668,14 +671,17 @@ export function TokenSystemPanel() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Actividad Reciente</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Actividad Reciente
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Transacciones completadas:</span>
                     <div className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <CheckCircle2 className="w-4 h-4 text-green-600" />
                       <span className="font-semibold">
                         {
                           transactions.filter((t) => t.status === "completed")
@@ -687,7 +693,7 @@ export function TokenSystemPanel() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Transacciones pendientes:</span>
                     <div className="flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4 text-yellow-600" />
+                      <AlertTriangle className="w-4 h-4 text-yellow-600" />
                       <span className="font-semibold">
                         {
                           transactions.filter((t) => t.status === "pending")
@@ -699,7 +705,7 @@ export function TokenSystemPanel() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Transacciones fallidas:</span>
                     <div className="flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4 text-red-600" />
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
                       <span className="font-semibold">
                         {
                           transactions.filter((t) => t.status === "failed")
@@ -715,11 +721,15 @@ export function TokenSystemPanel() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Estadísticas de Uso</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Estadísticas de Uso
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
                 <div className="text-center">
+                  <Wallet className="w-8 h-8 mx-auto mb-2 text-green-600" />
                   <div className="text-2xl font-bold text-green-600">
                     {
                       transactions.filter((t) =>
@@ -730,6 +740,7 @@ export function TokenSystemPanel() {
                   <p className="text-sm text-gray-600">Tokens Ganados</p>
                 </div>
                 <div className="text-center">
+                  <DollarSign className="w-8 h-8 mx-auto mb-2 text-red-600" />
                   <div className="text-2xl font-bold text-red-600">
                     {
                       transactions.filter((t) =>
@@ -740,6 +751,7 @@ export function TokenSystemPanel() {
                   <p className="text-sm text-gray-600">Tokens Gastados</p>
                 </div>
                 <div className="text-center">
+                  <Shield className="w-8 h-8 mx-auto mb-2 text-blue-600" />
                   <div className="text-2xl font-bold text-blue-600">
                     {
                       transactions.filter(

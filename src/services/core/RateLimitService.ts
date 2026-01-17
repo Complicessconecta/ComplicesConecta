@@ -146,7 +146,7 @@ export class RateLimitService {
       allowed,
       remaining,
       resetTime,
-      retryAfter,
+      retryAfter: retryAfter || 0,
     };
   }
 
@@ -207,7 +207,6 @@ export class RateLimitService {
    * Reset rate limit para un usuario específico
    */
   resetRateLimit(action: string, userId: string): void {
-    const _key = `${action}:${userId}`;
     this.rateLimiter.reset(userId, action);
     logger.info(`Rate limit reset for ${action}:`, { userId, action });
   }

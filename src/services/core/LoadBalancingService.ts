@@ -404,11 +404,11 @@ export class LoadBalancingService {
     for (const server of healthyServers) {
       random -= server.weight;
       if (random <= 0) {
-        return server;
+        return server || null;
       }
     }
 
-    return healthyServers[0]; // Fallback
+    return healthyServers[0] || null; // Fallback
   }
 
   private leastConnectionsSelection(): Server | null {
@@ -451,7 +451,6 @@ export class LoadBalancingService {
   }
 
   private cleanupExpiredSessions(): void {
-    const _now = Date.now();
     let cleanedCount = 0;
 
     for (const [sessionId, _serverId] of this.sessionMap.entries()) {

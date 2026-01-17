@@ -11,11 +11,7 @@
  */
 
 import { logger } from "@/lib/logger";
-import type {
-  GtagParameters,
-  MessagePayload,
-  NotificationData,
-} from "@/types/google.types";
+import type { GtagParameters, MessagePayload, NotificationData } from "@/types/google.types";
 
 // Configuración de servicios de Google
 interface GoogleServicesConfig {
@@ -134,31 +130,6 @@ const initializeMessaging = async (): Promise<void> => {
       },
     };
   }
-};
-
-/**
- * Solicitar permisos de notificación (Web Push API)
- */
-const _requestNotificationPermission = async (): Promise<string | null> => {
-  try {
-    const permission = await Notification.requestPermission();
-
-    if (permission === "granted") {
-      logger.info("Permisos de notificación concedidos");
-
-      // Obtener token de push
-      if (messaging) {
-        const token = await getPushToken();
-        return token;
-      }
-    } else {
-      logger.warn("Permisos de notificación denegados");
-    }
-  } catch (error) {
-    logger.error("Error solicitando permisos", { error });
-  }
-
-  return null;
 };
 
 /**
@@ -340,7 +311,7 @@ const showCustomNotification = (notification: NotificationData): void => {
     if ("Notification" in window && Notification.permission === "granted") {
       // Configuración discreta para notificaciones
       const notificationOptions = {
-        body: notification.body,
+        body: notification.body || "",
         icon: "/favicon.ico",
         badge: "/favicon.ico",
         tag: "complices-notification", // Evita múltiples notificaciones

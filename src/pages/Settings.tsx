@@ -1,29 +1,10 @@
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ArrowLeft,
-  Users,
-  Calendar,
-  MessageSquare,
-  Heart,
-  Crown,
-  Shield,
-  Zap,
-  Star,
-  MapPin,
-  Lock,
-  Settings as SettingsIcon,
-} from "lucide-react";
+import { ArrowLeft, Users, Calendar, MessageSquare, Heart, Crown, Shield, Zap, Star, MapPin, Lock, Settings as SettingsIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { PrivacySettings } from "@/components/settings/PrivacySettings";
 import { LocationSettings } from "@/components/settings/LocationSettings";

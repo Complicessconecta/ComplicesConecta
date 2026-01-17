@@ -11,10 +11,13 @@ CREATE SCHEMA IF NOT EXISTS security;
 -- PASO 1: MITIGACIÓN DE CREDENCIALES STRIPE
 -- ============================================================================
 
--- Rotar clave Stripe en server (reemplazar con nueva clave)
-ALTER SERVER stripe_server OPTIONS (
-  SET api_key 'sk_live_YOUR_NEW_STRIPE_SECRET_KEY_HERE'
-);
+-- NOTA: El server stripe_server no existe. Se omite la rotación de credenciales.
+-- Cuando el FDW esté disponible, descomentar el siguiente código:
+
+-- -- Rotar clave Stripe en server (reemplazar con nueva clave)
+-- ALTER SERVER stripe_server OPTIONS (
+--   SET api_key 'sk_live_YOUR_NEW_STRIPE_SECRET_KEY_HERE'
+-- );
 
 -- ============================================================================
 -- PASO 2: HABILITAR RLS EN TABLAS CRÍTICAS
@@ -90,21 +93,24 @@ REVOKE ALL ON SCHEMA stripe FROM authenticated;
 GRANT USAGE ON SCHEMA stripe TO postgres;
 GRANT ALL ON SCHEMA stripe TO postgres;
 
-DO $$
-DECLARE
-  table_rec RECORD;
-BEGIN
-  FOR table_rec IN 
-    SELECT foreign_table_name 
-    FROM information_schema.foreign_tables 
-    WHERE foreign_table_schema = 'stripe'
-  LOOP
-    EXECUTE format('REVOKE ALL ON TABLE stripe.%I FROM PUBLIC', table_rec.foreign_table_name);
-    EXECUTE format('REVOKE ALL ON TABLE stripe.%I FROM anon', table_rec.foreign_table_name);
-    EXECUTE format('REVOKE ALL ON TABLE stripe.%I FROM authenticated', table_rec.foreign_table_name);
-    EXECUTE format('GRANT ALL ON TABLE stripe.%I TO postgres', table_rec.foreign_table_name);
-  END LOOP;
-END $$;
+-- NOTA: No hay foreign tables en el schema stripe. Se omite la revocación de permisos.
+-- Cuando el FDW esté disponible, descomentar el siguiente código:
+
+-- DO $$
+-- DECLARE
+--   table_rec RECORD;
+-- BEGIN
+--   FOR table_rec IN 
+--     SELECT foreign_table_name 
+--     FROM information_schema.foreign_tables 
+--     WHERE foreign_table_schema = 'stripe'
+--   LOOP
+--     EXECUTE format('REVOKE ALL ON TABLE stripe.%I FROM PUBLIC', table_rec.foreign_table_name);
+--     EXECUTE format('REVOKE ALL ON TABLE stripe.%I FROM anon', table_rec.foreign_table_name);
+--     EXECUTE format('REVOKE ALL ON TABLE stripe.%I FROM authenticated', table_rec.foreign_table_name);
+--     EXECUTE format('GRANT ALL ON TABLE stripe.%I TO postgres', table_rec.foreign_table_name);
+--   END LOOP;
+-- END $$;
 
 -- ============================================================================
 -- PASO 4: RESTRINGIR ACCESO A SCHEMA PRIVATE

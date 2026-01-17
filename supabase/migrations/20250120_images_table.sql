@@ -133,4 +133,8 @@ COMMENT ON COLUMN public.images.profile_id IS 'ID del perfil del usuario';
 COMMENT ON COLUMN public.images.url IS 'URL de la imagen';
 COMMENT ON COLUMN public.images.is_public IS 'Indica si la imagen es pública';
 
-RAISE NOTICE '✅ Tabla images creada exitosamente';
+-- Notificación final
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Tabla images creada exitosamente';
+END $$;

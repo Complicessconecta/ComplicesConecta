@@ -392,7 +392,7 @@ export class AdvancedCacheService {
    * NOTA: La tabla 'cache_statistics' ya existe en Supabase (creada en migration create_cache_statistics_table.sql)
    * TEMPORALMENTE DESHABILITADO hasta que los tipos de Supabase se regeneren para incluir cache_statistics
    */
-  private async logCacheStatistics(stats: CacheStats): Promise<void> {
+  private async logCacheStatistics(_stats: CacheStats): Promise<void> {
     // TODO: Habilitar cuando los tipos de Supabase se regeneren para incluir cache_statistics
     // try {
     //   const { supabase } = await import('@/integrations/supabase/client');

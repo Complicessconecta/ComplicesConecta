@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BarChart3, RefreshCw, ArrowLeft, Users, AlertTriangle, Activity } from "lucide-react";
-import { useAdminDashboard } from "./useAdminDashboard";
+import { useAdminDashboard } from "@/pages/admin/useAdminDashboard";
 import { StatsPanel } from "@/components/admin/dashboard/StatsPanel";
 import { OverviewPanel } from "@/components/admin/dashboard/OverviewPanel";
 import { RecentActivityList } from "@/components/admin/dashboard/RecentActivityList";

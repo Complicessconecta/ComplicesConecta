@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Heart } from "lucide-react";
-import { FeatureCards } from "./FeatureCards";
+import { FeatureCards } from "@/components/ui/FeatureCards";
 import { cn } from "@/shared/lib/cn";
 
 interface WhyChooseSectionProps {

@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Play, Eye, Plus, Crown, Clock, Heart, MessageCircle, Share2, Lock, Globe } from "lucide-react";
 import { useFeatures } from "@/hooks/useFeatures";
-import { Story } from "./StoryTypes";
-import { storyService } from "./StoryService";
+import { Story } from "@/components/stories/StoryTypes";
+import { storyService } from "@/components/stories/StoryService";
 import { safeGetItem } from "@/lib/safe-storage";
-import { CreateStory } from "./CreateStory";
-import { StoryViewer } from "./StoryViewer";
+import { CreateStory } from "@/components/stories/CreateStory";
+import { StoryViewer } from "@/components/stories/StoryViewer";
 import { logger } from "@/lib/logger";
 
 const StoriesContainer: React.FC = () => {

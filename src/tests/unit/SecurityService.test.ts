@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { SecurityService } from "../../services/auth/SecurityService";
-import { supabase } from "../../integrations/supabase/client";
+import { SecurityService } from "@/services/auth/SecurityService";
+import { supabase } from "@/integrations/supabase/client";
 import * as speakeasy from "speakeasy";
 
 // Mocks

@@ -123,7 +123,7 @@ export class ProfileStatsService {
         .from("app_metrics")
         .select("*", { count: "exact", head: true })
         .eq("metric_name", "profile_views")
-        .filter("tags", "cs", `{\"profile_id\":\"${profileId}\"}`);
+        .filter("tags", "cs", `{"profile_id":"${profileId}"}`);
 
       if (viewsError) {
         logger.warn("[ProfileStatsService] Supabase views count error:", {
@@ -136,7 +136,7 @@ export class ProfileStatsService {
         .from("app_metrics")
         .select("*", { count: "exact", head: true })
         .eq("metric_name", "profile_likes")
-        .filter("tags", "cs", `{\"profile_id\":\"${profileId}\"}`);
+        .filter("tags", "cs", `{"profile_id":"${profileId}"}`);
 
       if (likesError) {
         logger.warn("[ProfileStatsService] Supabase likes count error:", {
@@ -444,10 +444,12 @@ export class ProfileStatsService {
       logger.info("[ProfileStatsService] Incrementing views:", { profileId });
       if (!supabase) return;
       const { error } = await supabase.from("app_metrics").insert({
+        user_id: profileId,
         metric_name: "profile_views",
         metric_value: 1,
-        recorded_at: new Date().toISOString(),
-        metadata: { profile_id: profileId },
+        metric_type: "counter",
+        timestamp: new Date().toISOString(),
+        tags: { profile_id: profileId },
       } as any);
       if (error) {
         logger.warn("[ProfileStatsService] Failed to record view metric:", {
@@ -469,10 +471,12 @@ export class ProfileStatsService {
       logger.info("[ProfileStatsService] Incrementing likes:", { profileId });
       if (!supabase) return;
       const { error } = await supabase.from("app_metrics").insert({
+        user_id: profileId,
         metric_name: "profile_likes",
         metric_value: 1,
-        recorded_at: new Date().toISOString(),
-        metadata: { profile_id: profileId },
+        metric_type: "counter",
+        timestamp: new Date().toISOString(),
+        tags: { profile_id: profileId },
       } as any);
       if (error) {
         logger.warn("[ProfileStatsService] Failed to record like metric:", {

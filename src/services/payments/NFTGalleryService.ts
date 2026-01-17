@@ -29,7 +29,7 @@ export interface NFTGallery {
   mintedAt?: Date;
   isVerified: boolean;
   isPublic: boolean;
-  metadata: Record<string, unknown> | Record<string, never> | {};
+  metadata: Record<string, unknown> | Record<string, never>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,7 +46,7 @@ export interface NFTGalleryImage {
   mintedAt: Date | undefined;
   isVerified: boolean;
   sortOrder: number | undefined;
-  metadata: Record<string, unknown> | Record<string, never> | {};
+  metadata: Record<string, unknown> | Record<string, never>;
   createdAt: Date;
   updatedAt: Date;
 }

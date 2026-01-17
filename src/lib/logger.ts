@@ -5,7 +5,7 @@
  * with structured, configurable logging for production use.
  */
 
-import { isDevelopment, isProduction } from "./env-utils";
+import { isDevelopment, isProduction } from "@/lib/env-utils";
 
 type LogLevel = "debug" | "info" | "warn" | "error";
 

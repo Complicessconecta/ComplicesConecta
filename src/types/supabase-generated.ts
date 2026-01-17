@@ -633,6 +633,57 @@ export type Database = {
           },
         ]
       }
+      consent_verifications: {
+        Row: {
+          id: string
+          chat_id: string
+          user_id: string
+          user_id1: string
+          user_id2: string
+          consent_score: number | null
+          confidence: number | null
+          status: string | null
+          reasoning: string | null
+          message_count: number | null
+          is_paused: boolean | null
+          pause_reason: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          chat_id: string
+          user_id: string
+          user_id1: string
+          user_id2: string
+          consent_score?: number | null
+          confidence?: number | null
+          status?: string | null
+          reasoning?: string | null
+          message_count?: number | null
+          is_paused?: boolean | null
+          pause_reason?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          chat_id?: string
+          user_id?: string
+          user_id1?: string
+          user_id2?: string
+          consent_score?: number | null
+          confidence?: number | null
+          status?: string | null
+          reasoning?: string | null
+          message_count?: number | null
+          is_paused?: boolean | null
+          pause_reason?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       content_activities: {
         Row: {
           base_points: number | null
@@ -647,7 +698,7 @@ export type Database = {
           total_points: number | null
           updated_at: string | null
           user_id: string
-          viral_bonus: number | null
+          viral_bonus?: number | null
         }
         Insert: {
           base_points?: number | null
@@ -678,6 +729,69 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           viral_bonus?: number | null
+        }
+        Relationships: []
+      }
+      clubs: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          location: string | null
+          latitude: number | null
+          longitude: number | null
+          rating_average: number | null
+          rating_count: number | null
+          is_featured: boolean | null
+          is_active: boolean | null
+          image_url: string | null
+          website_url: string | null
+          phone: string | null
+          email: string | null
+          opening_hours: Json | null
+          amenities: Json | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          location?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          rating_average?: number | null
+          rating_count?: number | null
+          is_featured?: boolean | null
+          is_active?: boolean | null
+          image_url?: string | null
+          website_url?: string | null
+          phone?: string | null
+          email?: string | null
+          opening_hours?: Json | null
+          amenities?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          location?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          rating_average?: number | null
+          rating_count?: number | null
+          is_featured?: boolean | null
+          is_active?: boolean | null
+          image_url?: string | null
+          website_url?: string | null
+          phone?: string | null
+          email?: string | null
+          opening_hours?: Json | null
+          amenities?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1492,6 +1606,8 @@ export type Database = {
           from_profile: string | null
           id: string
           to_profile: string | null
+          type: string | null
+          status: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1499,6 +1615,8 @@ export type Database = {
           from_profile?: string | null
           id?: string
           to_profile?: string | null
+          type?: string | null
+          status?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1506,6 +1624,41 @@ export type Database = {
           from_profile?: string | null
           id?: string
           to_profile?: string | null
+          type?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      invitation_statistics: {
+        Row: {
+          id: string
+          user_id: string
+          total_sent: number | null
+          total_accepted: number | null
+          total_rejected: number | null
+          total_pending: number | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          total_sent?: number | null
+          total_accepted?: number | null
+          total_rejected?: number | null
+          total_pending?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          total_sent?: number | null
+          total_accepted?: number | null
+          total_rejected?: number | null
+          total_pending?: number | null
+          created_at?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1873,6 +2026,81 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_logs: {
+        Row: {
+          id: string
+          moderator_id: string
+          action: string
+          target_type: string
+          target_id: string
+          reason: string | null
+          metadata: Json | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          moderator_id: string
+          action: string
+          target_type: string
+          target_id: string
+          reason?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          moderator_id?: string
+          action?: string
+          target_type?: string
+          target_id?: string
+          reason?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      user_suspensions: {
+        Row: {
+          id: string
+          user_id: string
+          suspended_by: string
+          reason: string
+          suspended_at: string | null
+          lifted_at: string | null
+          lifted_by: string | null
+          lift_reason: string | null
+          metadata: Json | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          suspended_by: string
+          reason: string
+          suspended_at?: string | null
+          lifted_at?: string | null
+          lifted_by?: string | null
+          lift_reason?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          suspended_by?: string
+          reason?: string
+          suspended_at?: string | null
+          lifted_at?: string | null
+          lifted_by?: string | null
+          lift_reason?: string | null
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       nft_staking: {
         Row: {
           id: string
@@ -2146,6 +2374,7 @@ export type Database = {
           banned_at: string | null
           banned_by: string | null
           combined_hash: string
+          details: Json | null
           fingerprint_ids: string[] | null
           id: string
           is_active: boolean | null
@@ -2159,6 +2388,7 @@ export type Database = {
           banned_at?: string | null
           banned_by?: string | null
           combined_hash: string
+          details?: Json | null
           fingerprint_ids?: string[] | null
           id?: string
           is_active?: boolean | null
@@ -2172,6 +2402,7 @@ export type Database = {
           banned_at?: string | null
           banned_by?: string | null
           combined_hash?: string
+          details?: Json | null
           fingerprint_ids?: string[] | null
           id?: string
           is_active?: boolean | null
@@ -2950,6 +3181,33 @@ export type Database = {
         }
         Relationships: []
       }
+      summary_requests: {
+        Row: {
+          id: string
+          user_id: string
+          chat_id: string
+          status: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          chat_id: string
+          status?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          chat_id?: string
+          status?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       stripe_product_mapping: {
         Row: {
           bonus_tokens: number | null
@@ -3124,6 +3382,63 @@ export type Database = {
           token_type?: string
           transaction_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      token_analytics: {
+        Row: {
+          id: string
+          period_type: string
+          period_start: string
+          period_end: string
+          total_cmpx_supply: number
+          total_gtk_supply: number
+          circulating_cmpx: number
+          circulating_gtk: number
+          transaction_count: number
+          transaction_volume_cmpx: number
+          transaction_volume_gtk: number
+          total_staked_cmpx: number
+          active_stakers: number
+          metadata: Json | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          period_type: string
+          period_start: string
+          period_end: string
+          total_cmpx_supply: number
+          total_gtk_supply: number
+          circulating_cmpx: number
+          circulating_gtk: number
+          transaction_count: number
+          transaction_volume_cmpx: number
+          transaction_volume_gtk: number
+          total_staked_cmpx: number
+          active_stakers: number
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          period_type?: string
+          period_start?: string
+          period_end?: string
+          total_cmpx_supply?: number
+          total_gtk_supply?: number
+          circulating_cmpx?: number
+          circulating_gtk?: number
+          transaction_count?: number
+          transaction_volume_cmpx?: number
+          transaction_volume_gtk?: number
+          total_staked_cmpx?: number
+          active_stakers?: number
+          metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -3606,6 +3921,81 @@ export type Database = {
           primary_color?: string
           secondary_color?: string
           text_color?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      event_participations: {
+        Row: {
+          id: string
+          event_id: string
+          user_id: string
+          participated_at: string | null
+          cmpx_rewarded: number | null
+          co2_saved: number | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          user_id: string
+          participated_at?: string | null
+          cmpx_rewarded?: number | null
+          co2_saved?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          user_id?: string
+          participated_at?: string | null
+          cmpx_rewarded?: number | null
+          co2_saved?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_device_tokens: {
+        Row: {
+          id: string
+          user_id: string
+          device_token: string
+          device_type: string | null
+          device_os: string | null
+          device_model: string | null
+          app_version: string | null
+          is_active: boolean | null
+          last_used_at: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          device_token: string
+          device_type?: string | null
+          device_os?: string | null
+          device_model?: string | null
+          app_version?: string | null
+          is_active?: boolean | null
+          last_used_at?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          device_token?: string
+          device_type?: string | null
+          device_os?: string | null
+          device_model?: string | null
+          app_version?: string | null
+          is_active?: boolean | null
+          last_used_at?: string | null
           created_at?: string | null
           updated_at?: string | null
         }
@@ -4100,7 +4490,7 @@ export type Database = {
       }
     }
     Enums: {
-      event_type: "meetup" | "party" | "dinner" | "travel" | "other"
+      event_type: "meetup" | "party" | "dinner" | "travel" | "other" | "virtual"
       match_status: "pending" | "accepted" | "rejected" | "blocked"
       report_status: "pending" | "reviewing" | "resolved" | "dismissed"
       transaction_type:

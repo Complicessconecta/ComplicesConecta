@@ -37,11 +37,7 @@ export function getRandomCoupleProfile() {
   return generateMockCouple();
 }
 
-import {
-  getRandomProfileImage,
-  getRandomMexicanCoordinates,
-  getRandomProfileImages,
-} from "./imageService";
+import { getRandomProfileImage, getRandomMexicanCoordinates, getRandomProfileImages } from "@/lib/imageService";
 
 // Generador de perfiles mock aleatorios
 export const generateMockSingle = (includeOnlineStatus = true) => {

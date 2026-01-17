@@ -3,7 +3,7 @@
 // Fecha: 10 Ene 2026 | Autor: Ing. Juan Carlos Méndez Nataren
 // Descripción: Servicio para gestión de wallet Web3 interna
 
-import { web3Service } from "./Web3Service";
+import { web3Service } from "@/services/blockchain/Web3Service";
 import { logger } from "@/lib/logger";
 
 /**

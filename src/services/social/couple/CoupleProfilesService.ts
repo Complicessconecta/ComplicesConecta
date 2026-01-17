@@ -11,7 +11,7 @@
 // ------------------------------------------------------------------
 
 import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
-import { advancedCoupleService } from "./AdvancedCoupleService";
+import { advancedCoupleService } from "@/services/social/couple/AdvancedCoupleService";
 
 export type RelationshipType = "man-woman" | "man-man" | "woman-woman";
 

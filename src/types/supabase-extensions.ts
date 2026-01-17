@@ -1,4 +1,4 @@
-﻿import type { Database as DB } from "./supabase-generated";
+﻿import type { Database as DB } from "@/types/supabase-generated";
 
 // Helper types
 export type Tables<T extends keyof DB["public"]["Tables"]> =
@@ -16,7 +16,7 @@ export type UserRole = Tables<"user_roles">;
 // export type CareerApplication = Tables<"career_applications">;
 // export type ModeratorRequest = Tables<"moderator_requests">;
 // export type Story = Tables<"stories">;
-export type Club = Tables<"clubs">;
+// export type Club = Tables<"clubs">;
 
 // Extended or custom types can be defined here as well.
 // For example, if a profile needs to be combined with user data:

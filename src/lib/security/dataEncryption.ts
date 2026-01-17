@@ -16,20 +16,9 @@
  */
 
 import { logger } from "@/lib/logger";
-import {
-  ENCRYPTION_CONFIG,
-  SENSITIVE_DATA_TYPES,
-  ENCRYPTION_VERSION,
-  ENCRYPTION_FALLBACK_VERSION,
-} from "./encryptionConfig";
-import {
-  checkCryptoSupport,
-  getEncryptionKey,
-  reconstructEncryptionKey,
-  validateEncryptionVersion,
-  type EncryptionKey,
-} from "./keyDerivation";
-import { arrayBufferToBase64, base64ToArrayBuffer } from "./utils/cryptoUtils";
+import { ENCRYPTION_CONFIG, SENSITIVE_DATA_TYPES, ENCRYPTION_VERSION, ENCRYPTION_FALLBACK_VERSION } from "@/lib/security/encryptionConfig";
+import { checkCryptoSupport, getEncryptionKey,  reconstructEncryptionKey, validateEncryptionVersion, type EncryptionKey } from "@/lib/security/keyDerivation";
+import { arrayBufferToBase64, base64ToArrayBuffer } from "@/lib/security/utils/cryptoUtils";
 
 /**
  * Datos encriptados con metadata

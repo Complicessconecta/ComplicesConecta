@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { ContentProtectionService } from "../../services/auth/ContentProtectionService";
-import { supabase } from "../../integrations/supabase/client";
+import { ContentProtectionService } from "@/services/auth/ContentProtectionService";
+import { supabase } from "@/integrations/supabase/client";
 
 // Mock de Supabase
-vi.mock("../../integrations/supabase/client", () => ({
+vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     from: vi.fn(() => ({
       select: vi.fn().mockReturnThis(),

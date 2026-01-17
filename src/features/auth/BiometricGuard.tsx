@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { FC, ReactNode } from "react";
 import { NativeBiometric } from "@capgo/capacitor-native-biometric";
 import { Capacitor } from "@capacitor/core";
-import { PinInput } from "./PinInput";
+import { PinInput } from "@/features/auth/PinInput";
 import { Shield, Lock, Fingerprint } from "lucide-react";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";

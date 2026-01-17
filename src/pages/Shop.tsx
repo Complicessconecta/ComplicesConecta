@@ -304,7 +304,7 @@ const Shop = () => {
                         ? "bg-yellow-500 hover:bg-yellow-600 text-black font-bold"
                         : "bg-white text-purple-600 hover:bg-white/90"
                     }`}
-                    onClick={() => handlePurchase(pkg.id)}
+                    onClick={() => handlePurchase(pkg.id.toString())}
                     disabled={processing}
                   >
                     {processing ? (

@@ -11,7 +11,7 @@
  */
 
 import { logger } from "@/lib/logger";
-import { ENCRYPTION_CONFIG, APP_ENCRYPTION_SALT } from "./encryptionConfig";
+import { ENCRYPTION_CONFIG, APP_ENCRYPTION_SALT } from "@/lib/security/encryptionConfig";
 
 /**
  * Interfaz para clave de encriptación derivada

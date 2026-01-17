@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { ButtonHTMLAttributes, FC, ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
-import { useAdaptiveBackground } from "./backgrounds/AdaptiveBackground";
+import { useAdaptiveBackground } from "@/components/ui/backgrounds/AdaptiveBackground";
 
 /**
  * GlassContainer Component

@@ -4,7 +4,7 @@
  */
 
 import React, { ComponentType } from "react";
-import { createLazyComponent, LazyComponentLoader, PageLoader } from "./LazyComponentLoader";
+import { createLazyComponent, LazyComponentLoader, PageLoader } from "@/components/performance/LazyComponentLoader";
 import { logger } from "@/lib/logger";
 
 // Tipos para configuración de splitting

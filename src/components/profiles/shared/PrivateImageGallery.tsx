@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Lock, Unlock, Check, X } from "lucide-react";
-import { PrivateImageRequest } from "./PrivateImageRequest";
+import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { ImageWithFallback } from "@/components/ui";
 
 interface PrivateImage {

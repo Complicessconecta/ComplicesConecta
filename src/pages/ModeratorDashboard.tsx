@@ -1,55 +1,19 @@
 ﻿import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import {  Card,  CardContent, CardDescription,  CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNav } from "@/components/AdminNav";
 import { logger } from "@/lib/logger";
-import {
-  Shield,
-  AlertTriangle,
-  Users,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Eye,
-  Ban,
-  MessageSquare,
-  User,
-  Fingerprint,
-  Globe,
-} from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/Modal";
+import { Shield, AlertTriangle, Users, Clock, CheckCircle, XCircle, Eye, Ban, MessageSquare, User, Fingerprint, Globe } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem,SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { ReportType, ReportStatus, ModerationAction } from "@/lib/roles";
-import {
-  createPermanentBan,
-  getPermanentBans,
-  liftPermanentBan,
-  type PermanentBanData,
-} from "@/services/auth/permanentBan";
+import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from "@/services/auth/permanentBan";
 import { Database } from "@/types/supabase-generated";
 
 type BanSeverity = "low" | "medium" | "high" | "critical";
@@ -81,6 +45,12 @@ const getJoinedName = (value: unknown): string | undefined => {
   if (!isRecord(value)) return undefined;
   const name = value["name"];
   return typeof name === "string" ? name : undefined;
+};
+
+// Type guard para verificar que details es un objeto con propiedades específicas
+const isBanDetails = (value: unknown): value is { severity?: string; canvas_hash?: string; evidence?: Record<string, unknown>; worldid_nullifier_hash?: string } => {
+  if (!isRecord(value)) return false;
+  return true;
 };
 
 interface Report extends ReportRow {
@@ -278,11 +248,11 @@ const ModeratorDashboard = () => {
         return {
           ...suspensionRow,
           suspended_by: suspensionRow.suspended_by || "",
-          ...(suspensionRow.expires_at
-            ? { suspended_until: suspensionRow.expires_at }
+          ...(suspensionRow.lifted_at
+            ? { suspended_until: suspensionRow.lifted_at }
             : {}),
-          is_permanent: !suspensionRow.expires_at,
-          status: suspensionRow.is_active ? "active" : "lifted",
+          is_permanent: !suspensionRow.lifted_at,
+          status: suspensionRow.lifted_at ? "lifted" : "active",
           user_email: userName || suspensionRow.user_id || "Usuario",
           suspended_by_email:
             suspendedByName || suspensionRow.suspended_by || "Sistema",
@@ -369,14 +339,16 @@ const ModeratorDashboard = () => {
           .from("user_suspensions")
           .insert([
             {
-              user_id: report.reported_user_id,
-              moderator_id: session.user.id,
+              user_id: report.reported_user_id || "",
+              suspended_by: session.user.id,
               reason: actionReason,
-              ends_at: suspendedUntil,
-              suspension_type: suspensionDays === 0 ? "permanent" : "temporary",
-              duration_days: suspensionDays > 0 ? suspensionDays : null,
-              is_active: true,
-              created_at: new Date().toISOString(),
+              suspended_at: new Date().toISOString(),
+              lifted_at: suspendedUntil || null,
+              lift_reason: null,
+              metadata: {
+                suspension_type: suspensionDays === 0 ? "permanent" : "temporary",
+                duration_days: suspensionDays > 0 ? suspensionDays : null,
+              },
             },
           ]);
 
@@ -415,12 +387,11 @@ const ModeratorDashboard = () => {
         throw new Error("Supabase no est disponible");
       }
 
-      // Obtener WorldID nullifier hash si est disponible
+      // Obtener WorldID si está disponible
       const { data: worldIdData } = await supabase
         .from("worldid_verifications")
-        .select("nullifier_hash")
+        .select("world_id")
         .eq("user_id", userId)
-        .eq("is_active", true)
         .single();
 
       const banData: PermanentBanData = {
@@ -433,8 +404,8 @@ const ModeratorDashboard = () => {
         },
       };
 
-      if (worldIdData?.nullifier_hash) {
-        banData.worldIdNullifierHash = worldIdData.nullifier_hash;
+      if (worldIdData?.world_id) {
+        banData.worldIdNullifierHash = worldIdData.world_id;
       }
 
       await createPermanentBan(banData, user.id);
@@ -632,6 +603,7 @@ const ModeratorDashboard = () => {
                     {
                       moderationLogs.filter(
                         (log) =>
+                          log.created_at &&
                           new Date(log.created_at).toDateString() ===
                           new Date().toDateString(),
                       ).length
@@ -968,16 +940,18 @@ const ModeratorDashboard = () => {
                       Baneo Permanente
                       <Badge
                         className={`ml-auto ${
-                          ban.severity === "critical"
-                            ? "bg-red-600"
-                            : ban.severity === "high"
-                              ? "bg-orange-600"
-                              : ban.severity === "medium"
-                                ? "bg-yellow-600"
-                                : "bg-gray-600"
+                          isBanDetails(ban.details) && ban.details.severity && isBanSeverity(ban.details.severity)
+                            ? ban.details.severity === "critical"
+                              ? "bg-red-600"
+                              : ban.details.severity === "high"
+                                ? "bg-orange-600"
+                                : ban.details.severity === "medium"
+                                  ? "bg-yellow-600"
+                                  : "bg-gray-600"
+                            : "bg-gray-600"
                         }`}
                       >
-                        {ban.severity}
+                        {isBanDetails(ban.details) && ban.details.severity ? ban.details.severity : "unknown"}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="text-white/70">
@@ -1019,7 +993,7 @@ const ModeratorDashboard = () => {
                           </span>
                         </div>
                       )}
-                      {ban.canvas_hash && (
+                      {isBanDetails(ban.details) && ban.details.canvas_hash && (
                         <div className="flex items-center gap-2">
                           <Fingerprint className="h-4 w-4 text-purple-400" />
                           <span className="text-white/70 text-sm">

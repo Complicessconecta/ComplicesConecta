@@ -5,7 +5,7 @@
  */
 
 import { logger } from '@/lib/logger';
-import { neo4jService } from '../neo4j/Neo4jService';
+import { neo4jService } from "@/services/neo4j/Neo4jService";
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { pipeline } from '@huggingface/transformers';
 import * as toxicity from '@tensorflow-models/toxicity';

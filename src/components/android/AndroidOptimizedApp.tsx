@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { AndroidThemeProvider } from "./AndroidThemeProvider";
+import { AndroidThemeProvider } from "@/components/android/AndroidThemeProvider";
 import { cn } from "@/shared/lib/cn";
 import "@/styles/android-grid.css";
 

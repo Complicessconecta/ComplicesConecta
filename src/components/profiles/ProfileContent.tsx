@@ -14,7 +14,7 @@ import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { useSmartMatching,  type UserProfile, type PersonalityTraits, type MatchingPreferences, type ActivityMetrics, type VerificationStatus } from "@/lib/ai/smartMatching";
-import { ProfileNavTabs, type TabType } from "./ProfileNavTabs";
+import { ProfileNavTabs, type TabType } from "@/components/profiles/ProfileNavTabs";
 
 // Mock Data Generators for AI Matching
 const createMockPersonality = (): PersonalityTraits => ({

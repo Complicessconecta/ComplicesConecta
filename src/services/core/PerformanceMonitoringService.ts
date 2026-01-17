@@ -252,11 +252,13 @@ export class PerformanceMonitoringService {
       if (!user) return;
 
       await supabase.from("monitoring_sessions").insert({
-        session_id: this.sessionId,
         user_id: user.id,
+        session_type: "performance",
         start_time: metric.timestamp.toISOString(),
-        url: window.location.href,
-        user_agent: navigator.userAgent,
+        metrics: {
+          url: window.location.href,
+          user_agent: navigator.userAgent,
+        },
       });
     } catch (error) {
       logger.debug("Failed to log monitoring session:", {
@@ -495,11 +497,13 @@ export class PerformanceMonitoringService {
         data: { user },
       } = await supabase.auth.getUser();
 
-      await supabase.from("performance_metrics").insert({
+      await supabase.from("app_metrics").insert({
+        user_id: user?.id || "00000000-0000-0000-0000-000000000000",
         metric_name: metric.name,
         metric_value: metric.value,
-        metric_type: metric.unit || "number",
-        user_id: user?.id || null,
+        metric_type: "counter",
+        timestamp: new Date().toISOString(),
+        tags: { unit: metric.unit || "number" },
       });
     } catch (error) {
       logger.error("Error persisting performance metric:", {
@@ -525,62 +529,21 @@ export class PerformanceMonitoringService {
         data: { user },
       } = await supabase.auth.getUser();
 
-      // Insertar cada métrica individualmente
-      if (vitals.lcp) {
-        await supabase.from("web_vitals_history").insert({
-          session_id: this.sessionId,
-          metric_name: "lcp",
-          metric_value: vitals.lcp,
-          metric_type: "ms",
-          user_id: user?.id || null,
-          url: window.location.href,
-          user_agent: navigator.userAgent,
-        });
-      }
-      if (vitals.fcp) {
-        await supabase.from("web_vitals_history").insert({
-          session_id: this.sessionId,
-          metric_name: "fcp",
-          metric_value: vitals.fcp,
-          metric_type: "ms",
-          user_id: user?.id || null,
-          url: window.location.href,
-          user_agent: navigator.userAgent,
-        });
-      }
-      if (vitals.fid) {
-        await supabase.from("web_vitals_history").insert({
-          session_id: this.sessionId,
-          metric_name: "fid",
-          metric_value: vitals.fid,
-          metric_type: "ms",
-          user_id: user?.id || null,
-          url: window.location.href,
-          user_agent: navigator.userAgent,
-        });
-      }
-      if (vitals.cls) {
-        await supabase.from("web_vitals_history").insert({
-          session_id: this.sessionId,
-          metric_name: "cls",
-          metric_value: vitals.cls,
-          metric_type: "score",
-          user_id: user?.id || null,
-          url: window.location.href,
-          user_agent: navigator.userAgent,
-        });
-      }
-      if (vitals.ttfb) {
-        await supabase.from("web_vitals_history").insert({
-          session_id: this.sessionId,
-          metric_name: "ttfb",
-          metric_value: vitals.ttfb,
-          metric_type: "ms",
-          user_id: user?.id || null,
-          url: window.location.href,
-          user_agent: navigator.userAgent,
-        });
-      }
+      // Insertar métricas web vitals en la tabla web_vitals_history
+      await supabase.from("web_vitals_history").insert({
+        lcp: vitals.lcp || null,
+        fcp: vitals.fcp || null,
+        fid: vitals.fid || null,
+        cls: vitals.cls || null,
+        ttfb: vitals.ttfb || null,
+        url: window.location.href,
+        user_agent: navigator.userAgent,
+        user_id: user?.id || null,
+        metadata: {
+          sessionId: this.sessionId,
+          timestamp: new Date().toISOString(),
+        },
+      });
 
       logger.info("✅ Web Vitals persisted to database");
     } catch (error) {
@@ -605,14 +568,16 @@ export class PerformanceMonitoringService {
       } = await supabase.auth.getUser();
 
       const metricsToInsert = this.metrics.map((metric) => ({
+        user_id: user?.id || "00000000-0000-0000-0000-000000000000",
         metric_name: metric.name,
         metric_value: metric.value,
-        metric_type: metric.unit || "number",
-        user_id: user?.id || null,
+        metric_type: "counter" as const,
+        timestamp: new Date().toISOString(),
+        tags: { unit: metric.unit || "number" },
       }));
 
       if (metricsToInsert.length > 0) {
-        await supabase.from("performance_metrics").insert(metricsToInsert);
+        await supabase.from("app_metrics").insert(metricsToInsert);
         logger.info(
           `✅ ${metricsToInsert.length} metrics persisted to database`,
         );

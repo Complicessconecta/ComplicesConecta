@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Upload, X, MapPin, Globe, Lock, Loader2, Image as ImageIcon } from "lucide-react";
-import { storyService } from "./StoryService";
-import { CreateStoryData } from "./StoryTypes";
+import { storyService } from "@/components/stories/StoryService";
+import { CreateStoryData } from "@/components/stories/StoryTypes";
 import { safeGetItem } from "@/lib/safe-storage";
 import { logger } from "@/lib/logger";
 

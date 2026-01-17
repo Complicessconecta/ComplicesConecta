@@ -336,33 +336,39 @@ export type Database = {
       };
       app_metrics: {
         Row: {
-          created_at: string | null;
-          id: number;
-          metadata: Json | null;
-          metric_name: string;
-          metric_type: string | null;
-          metric_value: number;
-          recorded_at: string | null;
-        };
+          id: string
+          user_id: string
+          metric_name: string
+          metric_value: number
+          metric_type: "counter" | "gauge" | "histogram"
+          tags: Json | null
+          timestamp: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
         Insert: {
-          created_at?: string | null;
-          id?: number;
-          metadata?: Json | null;
-          metric_name: string;
-          metric_type?: string | null;
-          metric_value: number;
-          recorded_at?: string | null;
-        };
+          id?: string
+          user_id: string
+          metric_name: string
+          metric_value: number
+          metric_type: "counter" | "gauge" | "histogram"
+          tags?: Json | null
+          timestamp?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
         Update: {
-          created_at?: string | null;
-          id?: number;
-          metadata?: Json | null;
-          metric_name?: string;
-          metric_type?: string | null;
-          metric_value?: number;
-          recorded_at?: string | null;
-        };
-        Relationships: [];
+          id?: string
+          user_id?: string
+          metric_name?: string
+          metric_value?: number
+          metric_type?: "counter" | "gauge" | "histogram"
+          tags?: Json | null
+          timestamp?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       };
       audit_logs: {
         Row: {

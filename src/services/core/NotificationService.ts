@@ -257,8 +257,19 @@ export class NotificationService {
     if (!this.audioContext) return;
 
     try {
-      // Por ahora usar beep simple
-      // TODO: Cargar sonidos personalizados por tipo
+      // Intentar usar sonido personalizado si está cargado
+      if (this.sounds.has(type)) {
+        const buffer = this.sounds.get(type);
+        if (buffer) {
+          const source = this.audioContext.createBufferSource();
+          source.buffer = buffer;
+          source.connect(this.audioContext.destination);
+          source.start();
+          return;
+        }
+      }
+
+      // Fallback: usar beep simple si no hay sonido personalizado
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
 
@@ -272,6 +283,25 @@ export class NotificationService {
       oscillator.stop(this.audioContext.currentTime + 0.2);
     } catch (error) {
       logger.warn("[NotificationService] Sound playback error:", { error });
+    }
+  }
+
+  /**
+   * Cargar sonido personalizado para un tipo de notificación
+   */
+  async loadSound(type: NotificationType, audioUrl: string): Promise<void> {
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+
+    try {
+      const response = await fetch(audioUrl);
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+      this.sounds.set(type, audioBuffer);
+      logger.info("[NotificationService] Sound loaded:", { type, audioUrl });
+    } catch (error) {
+      logger.error("[NotificationService] Error loading sound:", { error, type, audioUrl });
     }
   }
 

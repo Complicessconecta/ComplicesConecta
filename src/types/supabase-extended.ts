@@ -1,4 +1,4 @@
-import { Database as GeneratedDatabase } from "./supabase-generated";
+import { Database as GeneratedDatabase } from "@/types/supabase-generated";
 
 // Definición de las nuevas tablas
 export interface Like {

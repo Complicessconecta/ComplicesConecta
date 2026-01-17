@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { useToast } from "@/hooks/useToast";
 import { X, Heart, MessageCircle, Share2, Eye, Send, Trash2, MapPin, Globe, Lock } from "lucide-react";
-import { Story } from "./StoryTypes";
-import { storyService } from "./StoryService";
+import { Story } from "@/components/stories/StoryTypes";
+import { storyService } from "@/components/stories/StoryService";
 import "@/styles/StoryViewer.css";
 
 interface StoryViewerProps {

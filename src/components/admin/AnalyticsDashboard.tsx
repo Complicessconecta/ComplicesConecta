@@ -9,28 +9,16 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  ChartBarIcon,
-  ExclamationTriangleIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  ServerIcon,
-  SignalIcon,
-  ShieldCheckIcon,
-} from "@heroicons/react/24/outline";
-
+import { ChartBarIcon, ExclamationTriangleIcon, CheckCircleIcon, ClockIcon, ServerIcon, SignalIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { performanceMonitoring } from "@/services/PerformanceMonitoringService";
-import {
-  errorAlertService,
-  type ErrorAlert,
-} from "@/services/core/ErrorAlertService";
+import { errorAlertService, type ErrorAlert } from "@/services/core/ErrorAlertService";
 import { logger } from "@/lib/logger";
-import { AlertConfigPanel } from "./AlertConfigPanel";
-import { ExportButton } from "./ExportButton";
-import { DesktopNotificationSettings } from "./DesktopNotificationSettings";
-import { ModerationMetricsPanel } from "./ModerationMetrics";
-import { HistoricalCharts } from "./HistoricalCharts";
-import { WebhookConfigPanel } from "./WebhookConfigPanel";
+import { AlertConfigPanel } from "@/components/admin/AlertConfigPanel";
+import { ExportButton } from "@/components/admin/ExportButton";
+import { DesktopNotificationSettings } from "@/components/admin/DesktopNotificationSettings";
+import { ModerationMetricsPanel } from "@/components/admin/ModerationMetrics";
+import { HistoricalCharts } from "@/components/admin/HistoricalCharts";
+import { WebhookConfigPanel } from "@/components/admin/WebhookConfigPanel";
 // ExportData se usa como tipo en props de ExportButton, no necesita import directo
 
 // =====================================================

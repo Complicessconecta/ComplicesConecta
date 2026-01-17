@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useTokens } from "@/hooks/useTokens";
 import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from "lucide-react";
-import { TokenAiChat } from "./TokenAiChat";
+import { TokenAiChat } from "@/components/tokens/TokenAiChat";
 
 // Imágenes de NFTs mock para modo demo
 const MOCK_NFT_IMAGES = [

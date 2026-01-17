@@ -1,4 +1,4 @@
-import { Story, CreateStoryData, StoryLike, StoryComment } from "./StoryTypes";
+import { Story, CreateStoryData, StoryLike, StoryComment } from "@/components/stories/StoryTypes";
 import { getRandomProfileImage } from "@/lib/imageService";
 import { logger } from "@/lib/logger";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";

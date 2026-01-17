@@ -213,11 +213,11 @@ export class HistoricalMetricsService {
       const grouped = this.groupByInterval(data, interval);
 
       return {
-        lcp: this.extractMetricFromLongTable(grouped, "lcp"),
-        fid: this.extractMetricFromLongTable(grouped, "fid"),
-        cls: this.extractMetricFromLongTable(grouped, "cls"),
-        fcp: this.extractMetricFromLongTable(grouped, "fcp"),
-        ttfb: this.extractMetricFromLongTable(grouped, "ttfb"),
+        lcp: this.extractWebVitalsMetric(grouped, "lcp"),
+        fid: this.extractWebVitalsMetric(grouped, "fid"),
+        cls: this.extractWebVitalsMetric(grouped, "cls"),
+        fcp: this.extractWebVitalsMetric(grouped, "fcp"),
+        ttfb: this.extractWebVitalsMetric(grouped, "ttfb"),
       };
     } catch (error) {
       logger.error("Error processing web vitals trends:", {
@@ -324,6 +324,30 @@ export class HistoricalMetricsService {
       const values = items
         .filter((item) => item?.metric_name === targetMetricName)
         .map((item) => item?.value)
+        .filter((v): v is number => typeof v === "number" && !isNaN(v));
+
+      if (values.length > 0) {
+        const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
+        result.push({
+          timestamp,
+          value: Math.round(avg * 100) / 100,
+          label: this.formatTimestamp(timestamp),
+        });
+      }
+    });
+
+    return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  }
+
+  private extractWebVitalsMetric(
+    grouped: Map<string, Array<Record<string, unknown>>>,
+    targetMetricName: string,
+  ): TimeSeriesDataPoint[] {
+    const result: TimeSeriesDataPoint[] = [];
+
+    grouped.forEach((items, timestamp) => {
+      const values = items
+        .map((item) => item[targetMetricName])
         .filter((v): v is number => typeof v === "number" && !isNaN(v));
 
       if (values.length > 0) {

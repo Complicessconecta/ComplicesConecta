@@ -267,6 +267,7 @@ export const DesktopNotificationSettings: React.FC = () => {
             Intervalo mínimo entre notificaciones
           </p>
           <select
+            title="Intervalo de frecuencia de notificaciones"
             value={config.frequency}
             onChange={(e) =>
               handleConfigChange("frequency", Number(e.target.value))

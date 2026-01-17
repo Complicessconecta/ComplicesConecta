@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Flag } from "lucide-react";
-import { ProfileReportModal } from "./ProfileReportModal";
+import { ProfileReportModal } from "@/components/profiles/shared/ProfileReportModal";
 import { profileReportService } from "@/features/profile/ProfileReportService";
 import { toast } from "sonner";
 

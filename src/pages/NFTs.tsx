@@ -1,32 +1,11 @@
 import type { FC } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import {
-  Shield,
-  CheckCircle,
-  ArrowRight,
-  Sparkles,
-  TrendingUp,
-  Award,
-  Lock,
-  Users,
-  Eye,
-  Camera,
-  Palette,
-  Gem,
-  Database,
-  Verified,
-  DollarSign,
-} from "lucide-react";
+import { Shield, CheckCircle, ArrowRight, Sparkles, TrendingUp, Award, Lock, Users, Eye, Camera, Palette, Gem, Database, Verified, DollarSign } from "lucide-react";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 
 const NFTs: FC = () => {

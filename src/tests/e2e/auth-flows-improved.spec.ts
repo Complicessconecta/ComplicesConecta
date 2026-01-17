@@ -1,12 +1,6 @@
 import { test, expect, Page, BrowserContext } from "@playwright/test";
-import { EnhancedAuthHelper } from "./helpers/EnhancedAuthHelper";
-import {
-  SINGLE_TEST_USER,
-  COUPLE_TEST_USER,
-  ADMIN_TEST_USER,
-  DEMO_CREDENTIALS,
-  TEST_CONFIGS,
-} from "./fixtures/auth-fixtures";
+import { EnhancedAuthHelper } from "@/tests/e2e/helpers/EnhancedAuthHelper";
+import { SINGLE_TEST_USER, COUPLE_TEST_USER, ADMIN_TEST_USER, DEMO_CREDENTIALS, TEST_CONFIGS } from "@/tests/e2e/fixtures/auth-fixtures";
 
 /**
  * Suite mejorada de tests E2E para flujos de autenticación

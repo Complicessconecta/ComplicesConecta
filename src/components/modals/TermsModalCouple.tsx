@@ -1,5 +1,5 @@
 import React from "react";
-import { SharedTermsModal } from "./SharedTermsModal";
+import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 
 interface TermsModalCoupleProps {
   isOpen: boolean;

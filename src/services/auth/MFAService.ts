@@ -276,7 +276,7 @@ export class MFAService {
   /**
    * Deshabilitar MFA
    */
-  static async disableMFA(userId: string, password: string): Promise<boolean> {
+  static async disableMFA(userId: string): Promise<boolean> {
     try {
       logger.info("Deshabilitando MFA", { userId });
 
@@ -284,8 +284,7 @@ export class MFAService {
         throw new Error("Supabase no está disponible");
       }
 
-      // Verificar contraseña (implementar verificación real)
-      // Por ahora, solo deshabilitar MFA
+      // Deshabilitar MFA
       
       const { error } = await supabase
         .from("mfa_settings")

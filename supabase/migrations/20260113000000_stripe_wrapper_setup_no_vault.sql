@@ -315,18 +315,21 @@ CREATE INDEX IF NOT EXISTS idx_user_stripe_customers_stripe_id ON public.user_st
 ALTER TABLE public.user_stripe_customers ENABLE ROW LEVEL SECURITY;
 
 -- Política: Solo el usuario puede ver su propio customer
+DROP POLICY IF EXISTS "Users can view their own stripe customer" ON public.user_stripe_customers;
 CREATE POLICY "Users can view their own stripe customer"
 ON public.user_stripe_customers
 FOR SELECT
 USING (auth.uid() = user_id);
 
 -- Política: Solo el usuario puede insertar su customer
+DROP POLICY IF EXISTS "Users can insert their own stripe customer" ON public.user_stripe_customers;
 CREATE POLICY "Users can insert their own stripe customer"
 ON public.user_stripe_customers
 FOR INSERT
 WITH CHECK (auth.uid() = user_id);
 
 -- Política: Solo el usuario puede actualizar su customer
+DROP POLICY IF EXISTS "Users can update their own stripe customer" ON public.user_stripe_customers;
 CREATE POLICY "Users can update their own stripe customer"
 ON public.user_stripe_customers
 FOR UPDATE

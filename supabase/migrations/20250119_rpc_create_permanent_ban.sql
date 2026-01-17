@@ -5,6 +5,10 @@
 -- Descripción: Función RPC para crear baneos permanentes
 -- ============================================================================
 
+-- Eliminar función existente si existe
+DROP FUNCTION IF EXISTS public.create_permanent_ban(UUID, TEXT, TEXT, TEXT, UUID, TEXT, JSONB, TEXT);
+
+-- Crear función RPC
 CREATE OR REPLACE FUNCTION public.create_permanent_ban(
   p_user_id UUID,
   p_canvas_hash TEXT,
@@ -81,4 +85,8 @@ COMMENT ON FUNCTION public.create_permanent_ban IS 'Función RPC para crear bane
 -- Otorgar permisos de ejecución a usuarios autenticados
 GRANT EXECUTE ON FUNCTION public.create_permanent_ban TO authenticated;
 
-RAISE NOTICE '✅ Función RPC create_permanent_ban creada exitosamente';
+-- Notificación final
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Función RPC create_permanent_ban creada exitosamente';
+END $$;

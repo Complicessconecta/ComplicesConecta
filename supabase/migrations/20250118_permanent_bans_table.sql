@@ -25,7 +25,19 @@ CREATE TABLE IF NOT EXISTS public.permanent_bans (
 CREATE INDEX IF NOT EXISTS idx_permanent_bans_combined_hash ON public.permanent_bans(combined_hash);
 CREATE INDEX IF NOT EXISTS idx_permanent_bans_user_id ON public.permanent_bans(user_id);
 CREATE INDEX IF NOT EXISTS idx_permanent_bans_banned_at ON public.permanent_bans(banned_at);
-CREATE INDEX IF NOT EXISTS idx_permanent_bans_lifted_at ON public.permanent_bans(lifted_at);
+
+-- Crear índice para lifted_at solo si la columna existe
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'permanent_bans' 
+    AND column_name = 'lifted_at'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_permanent_bans_lifted_at ON public.permanent_bans(lifted_at);
+  END IF;
+END $$;
 
 -- Habilitar RLS
 ALTER TABLE public.permanent_bans ENABLE ROW LEVEL SECURITY;

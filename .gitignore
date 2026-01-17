@@ -255,6 +255,8 @@ audit-files/
 backups/
 2025-01-22/
 dev-scripts/
+.bck
+._backup
 
 # Archivos de documentación y análisis (root only)
 /ANALISIS_*.md

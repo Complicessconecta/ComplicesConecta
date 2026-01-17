@@ -5,8 +5,8 @@
 -- Descripción: Función RPC para crear baneos permanentes
 -- ============================================================================
 
--- Eliminar función existente si existe
-DROP FUNCTION IF EXISTS public.create_permanent_ban(UUID, TEXT, TEXT, TEXT, UUID, TEXT, JSONB, TEXT);
+-- Eliminar todas las versiones de la función existente
+DROP FUNCTION IF EXISTS public.create_permanent_ban CASCADE;
 
 -- Crear función RPC
 CREATE OR REPLACE FUNCTION public.create_permanent_ban(

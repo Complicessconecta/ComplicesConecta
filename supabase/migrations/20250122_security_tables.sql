@@ -93,7 +93,21 @@ CREATE TABLE IF NOT EXISTS public.security_audit_logs (
 CREATE INDEX IF NOT EXISTS idx_security_audit_logs_user_id ON public.security_audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_security_audit_logs_action ON public.security_audit_logs(action);
 CREATE INDEX IF NOT EXISTS idx_security_audit_logs_created_at ON public.security_audit_logs(created_at);
-CREATE INDEX IF NOT EXISTS idx_security_audit_logs_resource ON public.security_audit_logs(resource_type, resource_id);
+
+-- Crear índice para resource_type y resource_id solo si las columnas existen
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'security_audit_logs' 
+    AND column_name IN ('resource_type', 'resource_id')
+    GROUP BY table_name
+    HAVING COUNT(*) = 2
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_security_audit_logs_resource ON public.security_audit_logs(resource_type, resource_id);
+  END IF;
+END $$;
 
 -- Habilitar RLS
 ALTER TABLE public.security_audit_logs ENABLE ROW LEVEL SECURITY;

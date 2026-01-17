@@ -86,6 +86,8 @@ ALTER TABLE public.couple_profiles ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Users can view couple profiles" ON public.couple_profiles;
 DROP POLICY IF EXISTS "Users can view accessible couple profiles" ON public.couple_profiles;
+DROP POLICY IF EXISTS "Users can insert own couple profile" ON public.couple_profiles;
+DROP POLICY IF EXISTS "Users can update own couple profile" ON public.couple_profiles;
 
 CREATE POLICY "Users can view accessible couple profiles" ON public.couple_profiles
     FOR SELECT

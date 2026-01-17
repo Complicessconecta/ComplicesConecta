@@ -182,7 +182,7 @@ AS $$
 BEGIN
   RETURN QUERY
   SELECT 
-    s.srvname::TEXT as server_name,
+    s.srvname as server_name,
     CASE 
       WHEN s.srvoptions::text LIKE '%api_key=%sk_%' THEN true
       ELSE false

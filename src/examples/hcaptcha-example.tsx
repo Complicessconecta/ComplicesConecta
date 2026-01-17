@@ -24,39 +24,36 @@ export const HCaptchaExample: React.FC = () => {
     "10000000-ffff-ffff-ffff-000000000001";
 
   // Handlers para hCaptcha (se llamarán cuando el componente esté instalado)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleVerify = (captchaToken: string, isValid: boolean) => {
-    logger.info("Verificación hCaptcha:", {
-      token: captchaToken.substring(0, 10) + "...",
-      valid: isValid,
-    });
+const handleVerify = (captchaToken: string, isValid: boolean) => {
+  logger.info("Verificación hCaptcha:", {
+    token: captchaToken.substring(0, 10) + "...",
+    valid: isValid,
+  });
 
-    if (isValid) {
-      setToken(captchaToken);
-      setIsVerified(true);
-      setError("");
-    } else {
-      setToken("");
-      setIsVerified(false);
-      setError("Verificación de hCaptcha falló");
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleError = (errorMessage: string) => {
-    logger.error("Error hCaptcha:", { error: errorMessage });
-    setError(`Error: ${errorMessage}`);
-    setIsVerified(false);
-    setToken("");
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleExpire = () => {
-    logger.info("hCaptcha expirado");
+  if (isValid) {
+    setToken(captchaToken);
+    setIsVerified(true);
+    setError("");
+  } else {
     setToken("");
     setIsVerified(false);
-    setError("hCaptcha expirado, por favor resuelve");
-  };
+    setError("Verificación de hCaptcha falló");
+  }
+};
+
+const handleError = (errorMessage: string) => {
+  logger.error("Error hCaptcha:", { error: errorMessage });
+  setError(`Error: ${errorMessage}`);
+  setIsVerified(false);
+  setToken("");
+};
+
+const handleExpire = () => {
+  logger.info("hCaptcha expirado");
+  setToken("");
+  setIsVerified(false);
+  setError("hCaptcha expirado, por favor resuelve");
+};
 
   const handleSubmit = async () => {
     if (!isVerified || !token) {

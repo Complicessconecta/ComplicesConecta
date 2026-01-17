@@ -21,10 +21,9 @@ export const ReportsManagement: React.FC = () => {
   const [selectedReport, setSelectedReport] =
     useState<ReportWithDetails | null>(null);
   const [showResolveDialog, setShowResolveDialog] = useState(false);
-  const [resolutionAction, setResolutionAction] = useState
-  <
+  const [resolutionAction, setResolutionAction] = useState<
     "warning" | "suspension" | "ban" | "dismiss"
-  > ("dismiss");
+  >("dismiss");
   const [resolutionNotes, setResolutionNotes] = useState("");
   const [isResolving, setIsResolving] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>("all");

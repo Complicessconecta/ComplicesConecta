@@ -27,7 +27,7 @@ BEGIN
   END IF;
 END $$;
 
--- Index for faster lookups (solo si la columna existe)
+-- Index for faster lookups (solo si las columnas existen)
 DO $$
 BEGIN
   IF EXISTS (
@@ -38,8 +38,16 @@ BEGIN
   ) THEN
     CREATE INDEX IF NOT EXISTS idx_swinger_interests_profile_id ON public.swinger_interests(profile_id);
   END IF;
+  
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'swinger_interests' 
+    AND column_name = 'interest'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_swinger_interests_interest ON public.swinger_interests(interest);
+  END IF;
 END $$;
-CREATE INDEX IF NOT EXISTS idx_swinger_interests_interest ON public.swinger_interests(interest);
 
 -- ============================================================================
 -- 2. Table: couple_profile_likes

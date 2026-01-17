@@ -240,7 +240,6 @@ apply-migrations.js
 
 # SQL temporales
 step*.sql
-*_create_*.sql
 *_policies*.sql
 *_insert_*.sql
 

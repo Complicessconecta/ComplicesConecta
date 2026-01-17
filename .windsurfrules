@@ -123,34 +123,46 @@ Dudas → PREGUNTAR ANTES de proceder
 Proteger  los archivos con caractes " ` " para que no se corrompan
 Ejemplo: "copílot" correcto , incorrecto "coplot" 
 Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
-Si se detecta comentarios en el archivo en ingles cambialos a español ES-MX UTF-8
-Al crear archivos verificar que no existan, si existen preguntar al usuario si desea sobreescribirlos, si no desea sobreescribirlos preguntar al usuario si desea crear un nuevo archivo con un nombre diferente justificando la necesidad de crear un nuevo archivo , se agrega comentario general del archivo y su uso por ejemplo 
 
-" /**
- * Google Services Integration - ComplicesConecta v3.3.0
- * Servicios de Google (Analytics, Push Notifications) - Sin Firebase
- * Nota: Este proyecto usa Supabase, no Firebase
- *
- * Servicios optimizados para plataforma swinger con enfoque en:
- * - Discreción y privacidad
- * - Comunicación segura
- * - Análisis de comportamiento lifestyle
- * - Notificaciones discretas
- */
-
-// FIX: Estructura de DOM ideal para modales modernos:
-// 1. Modal renderizado fuera del layout principal usando createPortal
-// 2. Overlay fijo que cubre toda la pantalla (inset-0)
-// 3. z-index muy alto (9999) para estar por encima de navbar (z-50)
-// 4. Bloqueo de scroll del body mientras el modal está abierto
-// 5. Manejo de tecla ESC y click en overlay para cerrar
-// 6. Animaciones suaves de entrada/salida (fade + scale)"
-
-si al abrir el archivo no cuenta con el comentario general del archivo y su uso agregarlo
- 
 
  
 
+ Comentarios y su uso
+
+ Ageragr comentarios a los archivos que no cuenten con ellos
+ y en donde se requiera y sea importante para justificacr que accion se realiza por ejemplo "
+    for (const [sessionId, _serverId] of this.sessionMap.entries()) {
+      // Simple cleanup based on session timeout
+      // In a real implementation, you'd track session creation time
+      if (Math.random() < 0.1) {
+        // 10% chance to clean up (simulate expired sessions)
+        this.sessionMap.delete(sessionId);
+        cleanedCount++;"
+
+    Si se detecta comentarios en el archivo en ingles cambialos a español ES-MX UTF-8
+    Al crear archivos verificar que no existan, si existen preguntar al usuario si desea sobreescribirlos, si no desea sobreescribirlos preguntar al usuario si desea crear un nuevo archivo con un nombre diferente justificando la necesidad de crear un nuevo archivo , se agrega comentario general del archivo y su uso por ejemplo: 
+   " /**
+   * Google Services Integration - ComplicesConecta v3.3.0
+    * Servicios de Google (Analytics, Push Notifications) - Sin Firebase
+    * Nota: Este proyecto usa Supabase, no Firebase
+    *
+    * Servicios optimizados para plataforma swinger con enfoque en:
+    * - Discreción y privacidad
+    * - Comunicación segura
+    * - Análisis de comportamiento lifestyle
+    * - Notificaciones discretas
+    */
+
+    // FIX: Estructura de DOM ideal para modales modernos:
+    // 1. Modal renderizado fuera del layout principal usando createPortal
+    // 2. Overlay fijo que cubre toda la pantalla (inset-0)
+    // 3. z-index muy alto (9999) para estar por encima de navbar (z-50)
+    // 4. Bloqueo de scroll del body mientras el modal está abierto
+    // 5. Manejo de tecla ESC y click en overlay para cerrar
+    // 6. Animaciones suaves de entrada/salida (fade + scale)"
+ 
+    
+        
 MPC y Audio (Music Production)
 
 Proteger procesos MPC y controladores MIDI

@@ -576,14 +576,14 @@ const AdminProduction = () => {
 
       const { error } = await supabase
         .from("profiles")
-        .update({ is_verified: !profile.is_verified })
+        .update({ is_premium: !profile.is_premium })
         .eq("id", profileId);
 
       if (error) throw error;
 
       setProfiles(
         profiles.map((p: Profile) =>
-          p.id === profileId ? { ...p, is_verified: !p.is_verified } : p,
+          p.id === profileId ? { ...p, is_premium: !p.is_premium } : p,
         ),
       );
       toast({

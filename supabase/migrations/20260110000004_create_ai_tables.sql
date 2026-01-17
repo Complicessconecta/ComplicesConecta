@@ -60,9 +60,27 @@ CREATE TABLE IF NOT EXISTS public.couple_profile_likes (
     UNIQUE(from_couple_id, to_couple_id)
 );
 
--- Index for faster lookups
-CREATE INDEX IF NOT EXISTS idx_couple_profile_likes_from ON public.couple_profile_likes(from_couple_id);
-CREATE INDEX IF NOT EXISTS idx_couple_profile_likes_to ON public.couple_profile_likes(to_couple_id);
+-- Index for faster lookups (solo si las columnas existen)
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'couple_profile_likes' 
+    AND column_name = 'from_couple_id'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_couple_profile_likes_from ON public.couple_profile_likes(from_couple_id);
+  END IF;
+  
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'couple_profile_likes' 
+    AND column_name = 'to_couple_id'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_couple_profile_likes_to ON public.couple_profile_likes(to_couple_id);
+  END IF;
+END $$;
 
 -- ============================================================================
 -- 3. RLS Policies

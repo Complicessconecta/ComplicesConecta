@@ -45,6 +45,15 @@ ALTER TABLE public.permanent_bans ENABLE ROW LEVEL SECURITY;
 -- Crear políticas RLS
 DO $$
 BEGIN
+  -- Verificar si la tabla profiles tiene la columna user_role antes de crear políticas de admin
+  DECLARE user_role_exists BOOLEAN;
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'profiles' 
+    AND column_name = 'user_role'
+  ) INTO user_role_exists;
+
   -- Política para que los usuarios puedan ver sus propios baneos
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies 
@@ -55,8 +64,8 @@ BEGIN
     USING (auth.uid() = user_id);
   END IF;
 
-  -- Política para que los admins puedan ver todos los baneos
-  IF NOT EXISTS (
+  -- Política para que los admins puedan ver todos los baneos (solo si user_role existe)
+  IF user_role_exists AND NOT EXISTS (
     SELECT 1 FROM pg_policies 
     WHERE schemaname = 'public' AND tablename = 'permanent_bans' AND policyname = 'admins_can_view_all_bans'
   ) THEN
@@ -70,8 +79,8 @@ BEGIN
     );
   END IF;
 
-  -- Política para que los admins puedan insertar baneos
-  IF NOT EXISTS (
+  -- Política para que los admins puedan insertar baneos (solo si user_role existe)
+  IF user_role_exists AND NOT EXISTS (
     SELECT 1 FROM pg_policies 
     WHERE schemaname = 'public' AND tablename = 'permanent_bans' AND policyname = 'admins_can_insert_bans'
   ) THEN
@@ -85,8 +94,8 @@ BEGIN
     );
   END IF;
 
-  -- Política para que los admins puedan actualizar baneos
-  IF NOT EXISTS (
+  -- Política para que los admins puedan actualizar baneos (solo si user_role existe)
+  IF user_role_exists AND NOT EXISTS (
     SELECT 1 FROM pg_policies 
     WHERE schemaname = 'public' AND tablename = 'permanent_bans' AND policyname = 'admins_can_update_bans'
   ) THEN

@@ -131,7 +131,7 @@ export class MFAService {
 
       // Guardar en base de datos
       const { data, error } = await supabase
-        .from("mfa_settings" as any)
+        .from("mfa_settings")
         .insert({
           user_id: userId,
           secret: secret,
@@ -165,7 +165,7 @@ export class MFAService {
 
       // Obtener configuración MFA
       const { data: mfaSettings, error } = await supabase
-        .from("mfa_settings" as any)
+        .from("mfa_settings")
         .select("*")
         .eq("user_id", userId)
         .single();
@@ -187,7 +187,7 @@ export class MFAService {
 
       // Habilitar MFA
       const { error: updateError } = await supabase
-        .from("mfa_settings" as any)
+        .from("mfa_settings")
         .update({
           enabled: true,
           verified_at: new Date().toISOString(),
@@ -217,7 +217,7 @@ export class MFAService {
 
       // Obtener configuración MFA
       const { data: mfaSettings, error } = await supabase
-        .from("mfa_settings" as any)
+        .from("mfa_settings")
         .select("*")
         .eq("user_id", userId)
         .single();
@@ -253,7 +253,7 @@ export class MFAService {
           );
 
           await supabase
-            .from("mfa_settings" as any)
+            .from("mfa_settings")
             .update({ backup_codes: newBackupCodes })
             .eq("user_id", userId);
 
@@ -288,7 +288,7 @@ export class MFAService {
       // Por ahora, solo deshabilitar MFA
       
       const { error } = await supabase
-        .from("mfa_settings" as any)
+        .from("mfa_settings")
         .update({ enabled: false })
         .eq("user_id", userId);
 
@@ -312,7 +312,7 @@ export class MFAService {
       }
 
       const { data, error } = await supabase
-        .from("mfa_settings" as any)
+        .from("mfa_settings")
         .select("enabled, secret")
         .eq("user_id", userId)
         .single();

@@ -119,6 +119,10 @@ export class MFAService {
     try {
       logger.info("Iniciando configuración MFA", { userId });
 
+      if (!supabase) {
+        throw new Error("Supabase no está disponible");
+      }
+
       // Generar secreto TOTP
       const secret = this.generateSecret();
       
@@ -127,7 +131,7 @@ export class MFAService {
 
       // Guardar en base de datos
       const { data, error } = await supabase
-        .from("mfa_settings")
+        .from("mfa_settings" as any)
         .insert({
           user_id: userId,
           secret: secret,
@@ -141,7 +145,7 @@ export class MFAService {
       if (error) throw error;
 
       logger.info("Configuración MFA iniciada", { userId });
-      return data as MFASetup;
+      return data as unknown as MFASetup;
     } catch (error) {
       logger.error("Error iniciando configuración MFA", { error, userId });
       throw error;
@@ -155,9 +159,13 @@ export class MFAService {
     try {
       logger.info("Verificando y habilitando MFA", { userId });
 
+      if (!supabase) {
+        throw new Error("Supabase no está disponible");
+      }
+
       // Obtener configuración MFA
       const { data: mfaSettings, error } = await supabase
-        .from("mfa_settings")
+        .from("mfa_settings" as any)
         .select("*")
         .eq("user_id", userId)
         .single();
@@ -166,8 +174,11 @@ export class MFAService {
         throw new Error("Configuración MFA no encontrada");
       }
 
+      // Type assertion para evitar errores de TypeScript
+      const settings = mfaSettings as any;
+
       // Verificar código TOTP
-      const isValid = verifyTOTPCode(mfaSettings.secret, code);
+      const isValid = verifyTOTPCode(settings.secret, code);
 
       if (!isValid) {
         logger.warn("Código TOTP inválido", { userId });
@@ -176,7 +187,7 @@ export class MFAService {
 
       // Habilitar MFA
       const { error: updateError } = await supabase
-        .from("mfa_settings")
+        .from("mfa_settings" as any)
         .update({
           enabled: true,
           verified_at: new Date().toISOString(),
@@ -200,9 +211,13 @@ export class MFAService {
     try {
       logger.info("Verificando código MFA", { userId });
 
+      if (!supabase) {
+        throw new Error("Supabase no está disponible");
+      }
+
       // Obtener configuración MFA
       const { data: mfaSettings, error } = await supabase
-        .from("mfa_settings")
+        .from("mfa_settings" as any)
         .select("*")
         .eq("user_id", userId)
         .single();
@@ -211,31 +226,34 @@ export class MFAService {
         throw new Error("Configuración MFA no encontrada");
       }
 
+      // Type assertion para evitar errores de TypeScript
+      const settings = mfaSettings as any;
+
       // Verificar si MFA está habilitado
-      if (!mfaSettings.enabled) {
+      if (!settings.enabled) {
         logger.warn("MFA no habilitado para usuario", { userId });
         return true;
       }
 
       // Verificar código TOTP
-      const isValid = verifyTOTPCode(mfaSettings.secret, code);
+      const isValid = verifyTOTPCode(settings.secret, code);
 
       if (!isValid) {
         // Verificar backup code
         const isValidBackup = verifyBackupCode(
-          mfaSettings.backup_codes as string[],
+          settings.backup_codes as string[],
           code
         );
 
         if (isValidBackup) {
           // Eliminar backup code usado
           const newBackupCodes = removeBackupCode(
-            mfaSettings.backup_codes as string[],
+            settings.backup_codes as string[],
             code
           );
 
           await supabase
-            .from("mfa_settings")
+            .from("mfa_settings" as any)
             .update({ backup_codes: newBackupCodes })
             .eq("user_id", userId);
 
@@ -262,11 +280,15 @@ export class MFAService {
     try {
       logger.info("Deshabilitando MFA", { userId });
 
+      if (!supabase) {
+        throw new Error("Supabase no está disponible");
+      }
+
       // Verificar contraseña (implementar verificación real)
       // Por ahora, solo deshabilitar MFA
       
       const { error } = await supabase
-        .from("mfa_settings")
+        .from("mfa_settings" as any)
         .update({ enabled: false })
         .eq("user_id", userId);
 
@@ -285,8 +307,12 @@ export class MFAService {
    */
   static async getMFAStatus(userId: string): Promise<{ enabled: boolean; qrCodeURL?: string }> {
     try {
+      if (!supabase) {
+        throw new Error("Supabase no está disponible");
+      }
+
       const { data, error } = await supabase
-        .from("mfa_settings")
+        .from("mfa_settings" as any)
         .select("enabled, secret")
         .eq("user_id", userId)
         .single();
@@ -295,14 +321,14 @@ export class MFAService {
         return { enabled: false };
       }
 
-      if (!data.enabled) {
+      if (!data || !(data as any).enabled) {
         return { enabled: false };
       }
 
       // Generar URL de código QR
       const user = await supabase.auth.getUser();
       const email = user.data.user?.email || "";
-      const qrCodeURL = generateQRCodeURL(email, data.secret);
+      const qrCodeURL = generateQRCodeURL(email, (data as any).secret);
 
       return { enabled: true, qrCodeURL };
     } catch (error) {

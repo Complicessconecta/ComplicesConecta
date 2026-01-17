@@ -1,5 +1,7 @@
 import { logger } from "@/lib/logger";
 import { generateDemoUserUUID } from "@/lib/demo-uuid";
+import { z } from "zod";
+
 // Configuración de la aplicación - Separación Demo vs Producción
 export interface AppConfig {
   mode: "demo" | "production";
@@ -20,8 +22,6 @@ export interface AppConfig {
 
 // Cache para evitar múltiples llamadas y logs repetitivos
 let cachedConfig: AppConfig | null = null;
-
-import { z } from "zod";
 
 // Obtener configuración desde variables de entorno
 export const getAppConfig = (): AppConfig => {

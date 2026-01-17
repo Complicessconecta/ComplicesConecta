@@ -182,7 +182,7 @@ AS $$
 BEGIN
   RETURN QUERY
   SELECT 
-    s.srvname as server_name,
+    text(srvname) as server_name,
     CASE 
       WHEN s.srvoptions::text LIKE '%api_key=%sk_%' THEN true
       ELSE false
@@ -214,8 +214,8 @@ AS $$
 BEGIN
   RETURN QUERY
   SELECT 
-    n.nspname::TEXT as schema_name,
-    n.nspowner::regrole::text as schema_owner,
+    text(n.nspname) as schema_name,
+    text(n.nspowner::regrole) as schema_owner,
     CASE 
       WHEN n.nspacl IS NULL THEN false
       WHEN n.nspacl::text LIKE '%PUBLIC%' THEN true

@@ -109,8 +109,8 @@ export class SecurityService {
       }
 
       // Calcular métricas reales
-      const loginEvents = events.filter((e: any) => e.event_type === "login");
-      const uniqueIPs = new Set(events.map((e: any) => e.ip_address)).size;
+      const loginEvents = events.filter((e) => e.event_type === "login");
+      const uniqueIPs = new Set(events.map((e) => e.ip_address)).size;
 
       // Estimación simple de duración de sesión (tiempo entre primer y último evento del día)
       // Esto es muy simplificado
@@ -186,7 +186,7 @@ export class SecurityService {
     }
 
     // Verificar si hay metadatos sospechosos (ej. intentos fallidos)
-    if (activity.metadata && (activity.metadata as any).failedAttempts > 3) {
+    if (activity.metadata && (activity.metadata.failedAttempts ?? 0) > 3) {
       return {
         isSuspicious: true,
         reason: "Múltiples intentos fallidos detectados",
@@ -305,16 +305,18 @@ export class SecurityService {
         return { success: false, error: "Supabase no está disponible" };
       }
 
-      const { error } = await supabase.from("two_factor_auth" as any).upsert({
-        user_id: userId,
-        method,
-        secret: setup.secret || null,
-        backup_codes: backupCodes,
-        is_enabled: false,
-        verified_at: null,
-        updated_at: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-      } as any);
+      const { error } = await supabase
+        .from("two_factor_auth")
+        .upsert({
+          user_id: userId,
+          method,
+          secret: setup.secret || null,
+          backup_codes: backupCodes,
+          is_enabled: false,
+          verified_at: null,
+          updated_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+        });
 
       if (error) {
         logger.error("Error setting up 2FA:", { error: error.message });
@@ -363,7 +365,7 @@ export class SecurityService {
 
       // Obtener configuración 2FA del usuario
       const { data: settings, error } = await supabase
-        .from("two_factor_auth" as any)
+        .from("two_factor_auth")
         .select("*")
         .eq("user_id", userId)
         .eq("is_enabled", true)
@@ -375,15 +377,15 @@ export class SecurityService {
 
       // Verificación real con TOTP usando speakeasy
       const isValidCode = speakeasy.totp.verify({
-        secret: (settings as any).secret ?? "",
+        secret: settings.secret ?? "",
         encoding: "base32",
         token: code,
         window: 2, // Permitir ventana de ±2 períodos de tiempo
       });
 
       // Verificar si es un código de respaldo
-      const isBackupCode = (settings as any)?.backup_codes
-        ? ((settings as any).backup_codes as string[]).includes(code)
+      const isBackupCode = settings.backup_codes
+        ? settings.backup_codes.includes(code)
         : false;
 
       if (!isValidCode && !isBackupCode) {
@@ -397,17 +399,15 @@ export class SecurityService {
       }
 
       // Si usó backup code, removerlo de la lista
-      if (isBackupCode && (settings as any).backup_codes) {
+      if (isBackupCode && settings.backup_codes) {
         if (!supabase) {
           logger.error("Supabase no está disponible");
           return { success: false, error: "Supabase no está disponible" };
         }
 
-        const updatedCodes = (
-          (settings as any).backup_codes as string[]
-        ).filter((c: string) => c !== code);
+        const updatedCodes = settings.backup_codes.filter((c: string) => c !== code);
         await supabase
-          .from("two_factor_auth" as any)
+          .from("two_factor_auth")
           .update({ backup_codes: updatedCodes })
           .eq("user_id", userId);
       }
@@ -555,7 +555,7 @@ export class SecurityService {
         ip_address: ipAddress || "unknown",
         risk_level:
           riskScore > 0.7 ? "critical" : riskScore > 0.4 ? "high" : "medium",
-      } as any);
+      });
 
       if (error) {
         logger.error("Error logging security event to Supabase:", {

@@ -106,9 +106,13 @@ const Auth = () => {
   };
 
   const demoCredentials = {
-    email: import.meta.env.VITE_DEMO_EMAIL || 'demo@complicesconecta.com',
-    password: import.meta.env.VITE_DEMO_PASSWORD || 'demo123'
+    email: import.meta.env.VITE_DEMO_EMAIL,
+    password: import.meta.env.VITE_DEMO_PASSWORD
   };
+
+  if (!demoCredentials.email || !demoCredentials.password) {
+    throw new Error('Credenciales demo no configuradas. Contacte al administrador.');
+  }
 
   const _handleDemoLogin = () => {
     const event = new Event('submit') as any;
@@ -152,7 +156,7 @@ const Auth = () => {
 
       if (result && result.user) {
         toast({
-          title: "Inicio de sesin exitoso",
+          title: "Inicio de sesión exitoso",
           description: "Bienvenido de vuelta a ComplicesConecta",
         });
 
@@ -176,7 +180,7 @@ const Auth = () => {
       }
     } catch (error: any) {
       // Mejorar mensajes de error
-      let errorMessage = 'Error al iniciar sesin';
+      let errorMessage = 'Error al iniciar sesión';
       
       if (error?.message) {
         if (error.message.includes('Invalid API key')) {

@@ -9,6 +9,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { safeGetItem } from "@/utils/safeLocalStorage";
 import { WalletService } from "@/services/payments/WalletService";
 import type {
   CoupleNFTRequest,
@@ -253,7 +254,7 @@ export class NFTService {
     try {
       const isDemoAuthActive =
         typeof window !== "undefined" &&
-        window.localStorage.getItem("demo_authenticated") === "true";
+        safeGetItem("demo_authenticated") === "true";
       if (WalletService.isDemoMode() || isDemoAuthActive) {
         return readDemoNFTs(userId);
       }

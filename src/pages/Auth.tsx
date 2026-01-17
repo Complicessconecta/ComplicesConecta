@@ -106,8 +106,8 @@ const Auth = () => {
   };
 
   const demoCredentials = {
-    email: 'demo@complicesconecta.com',
-    password: 'demo123'
+    email: import.meta.env.VITE_DEMO_EMAIL || 'demo@complicesconecta.com',
+    password: import.meta.env.VITE_DEMO_PASSWORD || 'demo123'
   };
 
   const _handleDemoLogin = () => {

@@ -26,12 +26,14 @@ CREATE SCHEMA IF NOT EXISTS security;
 -- Tabla: app_config
 ALTER TABLE public.app_config ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "Service role can manage app config"
+DROP POLICY IF EXISTS "Service role can manage app config" ON public.app_config;
+CREATE POLICY "Service role can manage app config"
 ON public.app_config
 FOR ALL
 USING (auth.role() = 'service_role');
 
-CREATE POLICY IF NOT EXISTS "Authenticated users can read app config"
+DROP POLICY IF EXISTS "Authenticated users can read app config" ON public.app_config;
+CREATE POLICY "Authenticated users can read app config"
 ON public.app_config
 FOR SELECT
 USING (auth.role() = 'authenticated');
@@ -39,7 +41,8 @@ USING (auth.role() = 'authenticated');
 -- Tabla: invitation_templates
 ALTER TABLE public.invitation_templates ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "Admin can view invitation templates"
+DROP POLICY IF EXISTS "Admin can view invitation templates" ON public.invitation_templates;
+CREATE POLICY "Admin can view invitation templates"
 ON public.invitation_templates
 FOR SELECT
 USING (
@@ -49,7 +52,8 @@ USING (
   )
 );
 
-CREATE POLICY IF NOT EXISTS "Admin can manage invitation templates"
+DROP POLICY IF EXISTS "Admin can manage invitation templates" ON public.invitation_templates;
+CREATE POLICY "Admin can manage invitation templates"
 ON public.invitation_templates
 FOR ALL
 USING (
@@ -62,12 +66,14 @@ USING (
 -- Tabla: user_roles
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY IF NOT EXISTS "Users can view their own roles"
+DROP POLICY IF EXISTS "Users can view their own roles" ON public.user_roles;
+CREATE POLICY "Users can view their own roles"
 ON public.user_roles
 FOR SELECT
 USING (user_id = auth.uid());
 
-CREATE POLICY IF NOT EXISTS "Admin can view all roles"
+DROP POLICY IF EXISTS "Admin can view all roles" ON public.user_roles;
+CREATE POLICY "Admin can view all roles"
 ON public.user_roles
 FOR SELECT
 USING (
@@ -77,7 +83,8 @@ USING (
   )
 );
 
-CREATE POLICY IF NOT EXISTS "Service role can manage user roles"
+DROP POLICY IF EXISTS "Service role can manage user roles" ON public.user_roles;
+CREATE POLICY "Service role can manage user roles"
 ON public.user_roles
 FOR ALL
 USING (auth.role() = 'service_role');

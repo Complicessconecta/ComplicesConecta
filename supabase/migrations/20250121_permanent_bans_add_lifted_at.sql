@@ -40,4 +40,8 @@ END $$;
 -- Comentarios
 COMMENT ON COLUMN public.permanent_bans.lifted_at IS 'Fecha en que el baneo fue levantado';
 
-RAISE NOTICE '✅ Migración completada exitosamente';
+-- Notificación final
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Migración completada exitosamente';
+END $$;

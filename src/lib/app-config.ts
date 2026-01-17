@@ -21,6 +21,8 @@ export interface AppConfig {
 // Cache para evitar múltiples llamadas y logs repetitivos
 let cachedConfig: AppConfig | null = null;
 
+import { z } from "zod";
+
 // Obtener configuración desde variables de entorno
 export const getAppConfig = (): AppConfig => {
   if (cachedConfig) {
@@ -108,15 +110,16 @@ export const getProductionAdminEmails = (): string[] => {
 
 // Función para verificar si es credencial demo
 export const isDemoCredential = (email: string): boolean => {
-  const normalizedEmail = email
-    .toLowerCase()
-    .trim()
-    .replace("@otlook.es", "@outlook.es")
-    .replace("@outllok.es", "@outlook.es")
-    .replace("@outlok.es", "@outlook.es")
-    .replace("@outook.es", "@outlook.es");
-
-  return DEMO_CREDENTIALS.includes(normalizedEmail);
+  try {
+    // Validar formato de email con Zod
+    const emailSchema = z.string().email();
+    emailSchema.parse(email);
+    
+    const normalizedEmail = email.toLowerCase().trim();
+    return DEMO_CREDENTIALS.includes(normalizedEmail);
+  } catch (error) {
+    return false;
+  }
 };
 
 // Función para verificar si es admin de producción

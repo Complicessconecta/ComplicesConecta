@@ -140,4 +140,8 @@ END $$;
 -- Comentarios
 COMMENT ON TABLE public.permanent_bans IS 'Baneos permanentes de usuarios por huella digital';
 
-RAISE NOTICE '✅ Tabla permanent_bans creada exitosamente';
+-- Notificación final
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Tabla permanent_bans creada exitosamente';
+END $$;

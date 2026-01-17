@@ -27,7 +27,17 @@ ALTER TABLE public.security ENABLE ROW LEVEL SECURITY;
 
 -- Crear políticas RLS
 DO $$
+DECLARE
+  user_role_exists BOOLEAN;
 BEGIN
+  -- Verificar si la tabla profiles tiene la columna user_role antes de crear políticas de admin
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'profiles' 
+    AND column_name = 'user_role'
+  ) INTO user_role_exists;
+
   -- Política para que los usuarios puedan ver sus propios eventos de seguridad
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies 
@@ -48,8 +58,8 @@ BEGIN
     WITH CHECK (auth.uid() = user_id);
   END IF;
 
-  -- Política para que los admins puedan ver todos los eventos de seguridad
-  IF NOT EXISTS (
+  -- Política para que los admins puedan ver todos los eventos de seguridad (solo si user_role existe)
+  IF user_role_exists AND NOT EXISTS (
     SELECT 1 FROM pg_policies 
     WHERE schemaname = 'public' AND tablename = 'security' AND policyname = 'admins_can_view_all_security_events'
   ) THEN
@@ -90,7 +100,17 @@ ALTER TABLE public.security_audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- Crear políticas RLS
 DO $$
+DECLARE
+  user_role_exists BOOLEAN;
 BEGIN
+  -- Verificar si la tabla profiles tiene la columna user_role antes de crear políticas de admin
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'profiles' 
+    AND column_name = 'user_role'
+  ) INTO user_role_exists;
+
   -- Política para que los usuarios puedan ver sus propios logs de auditoría
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies 
@@ -101,8 +121,8 @@ BEGIN
     USING (auth.uid() = user_id);
   END IF;
 
-  -- Política para que los admins puedan ver todos los logs de auditoría
-  IF NOT EXISTS (
+  -- Política para que los admins puedan ver todos los logs de auditoría (solo si user_role existe)
+  IF user_role_exists AND NOT EXISTS (
     SELECT 1 FROM pg_policies 
     WHERE schemaname = 'public' AND tablename = 'security_audit_logs' AND policyname = 'admins_can_view_all_audit_logs'
   ) THEN

@@ -17,6 +17,7 @@ DROP POLICY IF EXISTS "Users can view public profiles" ON public.profiles;
 DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can view public and own profiles" ON public.profiles;
 
 -- Crear políticas seguras
 -- Usuarios ven perfiles públicos y su propio perfil, admins ven todos

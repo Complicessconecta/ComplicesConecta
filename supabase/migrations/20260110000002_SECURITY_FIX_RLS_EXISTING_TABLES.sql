@@ -177,6 +177,10 @@ CREATE POLICY "Users can update own consents" ON public.user_consents
 
 ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own reports" ON public.reports;
+DROP POLICY IF EXISTS "Users can insert reports" ON public.reports;
+DROP POLICY IF EXISTS "Admins can update reports" ON public.reports;
+
 CREATE POLICY "Users can view own reports" ON public.reports
     FOR SELECT
     USING (

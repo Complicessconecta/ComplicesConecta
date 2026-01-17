@@ -85,6 +85,7 @@ CREATE POLICY "Users can update their own wallets" ON public.user_wallets
 ALTER TABLE public.couple_profiles ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Users can view couple profiles" ON public.couple_profiles;
+DROP POLICY IF EXISTS "Users can view accessible couple profiles" ON public.couple_profiles;
 
 CREATE POLICY "Users can view accessible couple profiles" ON public.couple_profiles
     FOR SELECT

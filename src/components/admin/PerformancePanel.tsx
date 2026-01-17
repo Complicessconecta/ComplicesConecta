@@ -11,19 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import {
-  Activity,
-  Server,
-  Database,
-  Wifi,
-  Cpu,
-  HardDrive,
-  RefreshCw,
-  AlertTriangle,
-  CheckCircle,
-  TrendingUp,
-  BarChart3,
-} from "lucide-react";
+import { Activity, Server, Database, Wifi, Cpu, HardDrive, RefreshCw, AlertTriangle, CheckCircle, TrendingUp, BarChart3 } from "lucide-react";
 
 interface SystemMetrics {
   cpu: number;
@@ -153,25 +141,25 @@ export const PerformancePanel = () => {
           m.metric_name?.toLowerCase().includes("resourceloadtime"),
       );
 
-      // Calcular promedios usando 'metric_value' de performance_metrics
+      // Calcular promedios usando 'value' de performance_metrics
       const avgCpu =
         cpuMetrics.length > 0
-          ? cpuMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+          ? cpuMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
             cpuMetrics.length
           : 0;
       const avgMemory =
         memoryMetrics.length > 0
-          ? memoryMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+          ? memoryMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
             memoryMetrics.length
           : 0;
       const avgDisk =
         diskMetrics.length > 0
-          ? diskMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+          ? diskMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
             diskMetrics.length
           : 0;
       const avgNetwork =
         networkMetrics.length > 0
-          ? networkMetrics.reduce((sum, m) => sum + Number(m.metric_value || 0), 0) /
+          ? networkMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) /
             networkMetrics.length
           : 0;
 

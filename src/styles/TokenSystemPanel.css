@@ -2,4 +2,23 @@
 
 .token-progress {
   width: var(--progress-width, 0%);
+  transition: width 0.5s ease-in-out;
+}
+
+.token-progress.animate {
+  transition: width 0.5s ease-in-out;
+}
+
+/* Animación para barras de progreso */
+@keyframes progressAnimation {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--progress-width, 0%);
+  }
+}
+
+.token-progress.animate {
+  animation: progressAnimation 0.5s ease-in-out;
 }

@@ -9,21 +9,8 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  ShieldCheckIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
-  CheckCircleIcon,
-  // XCircleIcon - preparado para uso futuro
-  UserGroupIcon,
-  ChartBarIcon,
-  FlagIcon,
-} from "@heroicons/react/24/outline";
-
-import {
-  moderationMetricsService,
-  type ModerationMetrics,
-} from "@/services/analytics/ModerationMetricsService";
+import { ShieldCheckIcon, ClockIcon, ExclamationTriangleIcon, CheckCircleIcon, UserGroupIcon, ChartBarIcon, FlagIcon } from "@heroicons/react/24/outline";
+import { moderationMetricsService, type ModerationMetrics } from "@/services/analytics/ModerationMetricsService";
 import { logger } from "@/lib/logger";
 import { Progress } from "@/components/ui/progress";
 

@@ -4,23 +4,9 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Coins, TrendingUp, Shield, RefreshCw, AlertTriangle, CheckCircle2, Wallet, Activity, DollarSign, BarChart3, PieChart, Users, Zap, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import "@/styles/TokenSystemPanel.css";
-import {
-  Tabs, TabsContent, TabsList, TabsTrigger
-} from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/Modal";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/forms/Input";
 import { useToast } from "@/hooks/useToast";
@@ -642,7 +628,7 @@ export function TokenSystemPanel() {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
-                        className="bg-yellow-600 h-3 rounded-full token-progress"
+                        className="bg-yellow-600 h-3 rounded-full token-progress animate"
                         style={{ '--progress-width': `${(tokenStats.circulatingCMPX / tokenStats.totalCMPX) * 100}%` } as React.CSSProperties}
                       ></div>
                     </div>

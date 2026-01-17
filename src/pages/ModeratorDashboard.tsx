@@ -985,7 +985,7 @@ const ModeratorDashboard = () => {
                     </div>
 
                     <div className="flex items-center gap-4 flex-wrap">
-                      {ban.worldid_nullifier_hash && (
+                      {(ban as PermanentBanRow).worldid_nullifier_hash && (
                         <div className="flex items-center gap-2">
                           <Globe className="h-4 w-4 text-blue-400" />
                           <span className="text-white/70 text-sm">

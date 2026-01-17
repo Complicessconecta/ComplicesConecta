@@ -8,13 +8,8 @@
  * Realiza verificaciones automáticas y mejoras de accesibilidad
  */
 
-import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { CheckCircle, AlertTriangle, XCircle, RefreshCw } from "lucide-react";
@@ -158,12 +153,13 @@ export function AccessibilityAudit({
     // Verificar imágenes sin alt
     const imagesWithoutAlt = document.querySelectorAll("img:not([alt])");
     imagesWithoutAlt.forEach((img, index) => {
+      const imgElement = img as HTMLImageElement;
       issues.push({
         id: `aria-img-${index}`,
         type: "error",
         category: "aria",
         element: "img",
-        description: "Imagen sin atributo alt",
+        description: `Imagen sin atributo alt (src: ${imgElement.src.substring(0, 50)}...)`,
         wcagLevel: "A",
       });
     });

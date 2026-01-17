@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Bot, Shield, Loader2 } from "lucide-react";
 import { useLocalAI } from "@/ai/useLocalAI";
 import type { RelationshipStatus } from "@/ai/AIWorker";
+import "@/styles/LegalChatBox.css";
 
 interface LegalChatBoxProps {
   hasActivePrenup?: boolean;

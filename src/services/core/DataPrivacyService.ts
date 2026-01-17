@@ -104,9 +104,9 @@ export class DataPrivacyService {
 
         // Mensajes (últimos 1000 para no sobrecargar)
         supabase
-          .from("chat_messages")
+          .from("messages")
           .select("*")
-          .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+          .or(`sender_id.eq.${userId}`)
           .order("created_at", { ascending: false })
           .limit(1000),
 
@@ -256,20 +256,19 @@ export class DataPrivacyService {
         }
 
         const { data: messages } = await supabase
-          .from("chat_messages")
+          .from("messages")
           .select("id")
-          .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
+          .or(`sender_id.eq.${userId}`);
 
         if (messages && messages.length > 0) {
           // Anonimizar en lugar de eliminar (GDPR permite retención para seguridad)
           const { error: anonymizeError } = await supabase
-            .from("chat_messages")
+            .from("messages")
             .update({
               content: "[Mensaje eliminado]",
               sender_id: undefined, // O mantener pero marcar como eliminado
-              receiver_id: undefined,
             } as any)
-            .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
+            .or(`sender_id.eq.${userId}`);
 
           if (anonymizeError) {
             errors.push(

@@ -127,7 +127,7 @@ export class VirtualEventsService {
         .from("couple_events")
         .select("*")
         .eq("id", eventId)
-        .eq("event_type", "virtual")
+        .eq("event_type", "other")
         .single();
 
       if (eventError || !event) {
@@ -249,7 +249,7 @@ export class VirtualEventsService {
       const { data: events, error } = await supabase
         .from("couple_events")
         .select("*")
-        .eq("event_type", "virtual")
+        .eq("event_type", "other")
         .gte("start_date", new Date().toISOString())
         .order("start_date", { ascending: true })
         .limit(limit);

@@ -13,13 +13,7 @@ import React, { useState, useEffect } from "react";
 import { Bell, BellOff, Volume2, VolumeX, TestTube } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Switch } from "@/components/ui/switch";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
 import { desktopNotificationService } from "@/services/DesktopNotificationService";

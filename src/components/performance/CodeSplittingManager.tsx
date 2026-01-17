@@ -178,6 +178,7 @@ export class CodeSplittingManager {
   private static instance: CodeSplittingManager;
   private preloadedRoutes = new Set<string>();
   private preloadQueue: RouteConfig[] = [];
+  private isProcessingQueue = false;
 
   static getInstance(): CodeSplittingManager {
     if (!CodeSplittingManager.instance) {
@@ -200,6 +201,36 @@ export class CodeSplittingManager {
     setTimeout(() => {
       this.preloadMediumPriorityRoutes();
     }, 5000);
+
+    // Procesar la cola de precarga manual
+    setInterval(() => {
+      this.processPreloadQueue();
+    }, 1000);
+  }
+
+  // Agregar ruta a la cola de precarga
+  public addToPreloadQueue(config: RouteConfig): void {
+    const routeKey = config.chunkName || config.path;
+    if (!this.preloadedRoutes.has(routeKey)) {
+      this.preloadQueue.push(config);
+      logger.info(`📋 Ruta agregada a la cola de precarga: ${routeKey}`);
+    }
+  }
+
+  // Procesar la cola de precarga
+  private async processPreloadQueue(): Promise<void> {
+    if (this.isProcessingQueue || this.preloadQueue.length === 0) {
+      return;
+    }
+
+    this.isProcessingQueue = true;
+    const config = this.preloadQueue.shift();
+    
+    if (config) {
+      await this.preloadRoute(config);
+    }
+    
+    this.isProcessingQueue = false;
   }
 
   private async preloadHighPriorityRoutes() {

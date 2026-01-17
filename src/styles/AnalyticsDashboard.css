@@ -1,0 +1,215 @@
+/* AnalyticsDashboard.css - Estilos para el panel de analíticas */
+
+.analytics-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  min-height: 100vh;
+}
+
+.analytics-dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analytics-dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.analytics-dashboard-title svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #8b5cf6;
+}
+
+.analytics-dashboard-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.analytics-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.analytics-dashboard-card {
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.analytics-dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+}
+
+.analytics-dashboard-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analytics-dashboard-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.analytics-dashboard-card-title svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #06b6d4;
+}
+
+.analytics-dashboard-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.analytics-dashboard-stat-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.analytics-dashboard-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.analytics-dashboard-stat-value.trend-up {
+  color: #10b981;
+}
+
+.analytics-dashboard-stat-value.trend-down {
+  color: #ef4444;
+}
+
+.analytics-dashboard-chart {
+  width: 100%;
+  height: 300px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.analytics-dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.analytics-dashboard-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analytics-dashboard-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.analytics-dashboard-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.analytics-dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+  color: #fff;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.analytics-dashboard-badge.success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.analytics-dashboard-badge.warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.analytics-dashboard-badge.error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.analytics-dashboard-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+}
+
+.analytics-dashboard-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+.analytics-dashboard-empty svg {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+@keyframes analytics-dashboard-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.analytics-dashboard-loading {
+  animation: analytics-dashboard-pulse 2s ease-in-out infinite;
+}

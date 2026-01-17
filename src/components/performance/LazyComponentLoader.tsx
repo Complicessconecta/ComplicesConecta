@@ -164,7 +164,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
 export function usePreloadComponent(
   importFn: () => Promise<any>,
   condition: boolean = true,
-) {
+): void {
   React.useEffect(() => {
     if (condition) {
       const timer = setTimeout(() => {
@@ -177,6 +177,7 @@ export function usePreloadComponent(
 
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [importFn, condition]);
 }
 

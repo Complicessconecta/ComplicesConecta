@@ -1,45 +1,15 @@
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/forms/Input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/Modal";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
-import {
-  Shield,
-  AlertTriangle,
-  Lock,
-  Eye,
-  Ban,
-  UserX,
-  Smartphone,
-  RefreshCw,
-  Search,
-  Settings,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { Shield, AlertTriangle, Lock, Eye,Ban, UserX, Smartphone, RefreshCw, Search, Settings, CheckCircle, XCircle } from "lucide-react";
 
 type SecurityAlert = {
   id: string;

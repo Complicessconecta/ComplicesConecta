@@ -45,14 +45,16 @@ COMMENT ON COLUMN public.cache_statistics.created_at IS 'Fecha de creación del 
 ALTER TABLE public.cache_statistics ENABLE ROW LEVEL SECURITY;
 
 -- Política para permitir lectura a todos los usuarios autenticados
-CREATE POLICY IF NOT EXISTS "Permitir lectura a usuarios autenticados"
+DROP POLICY IF EXISTS "Permitir lectura a usuarios autenticados" ON public.cache_statistics;
+CREATE POLICY "Permitir lectura a usuarios autenticados"
 ON public.cache_statistics
 FOR SELECT
 TO authenticated
 USING (true);
 
 -- Política para permitir inserción a administradores
-CREATE POLICY IF NOT EXISTS "Permitir inserción a administradores"
+DROP POLICY IF EXISTS "Permitir inserción a administradores" ON public.cache_statistics;
+CREATE POLICY "Permitir inserción a administradores"
 ON public.cache_statistics
 FOR INSERT
 TO authenticated
@@ -65,7 +67,8 @@ WITH CHECK (
 );
 
 -- Política para permitir actualización a administradores
-CREATE POLICY IF NOT EXISTS "Permitir actualización a administradores"
+DROP POLICY IF EXISTS "Permitir actualización a administradores" ON public.cache_statistics;
+CREATE POLICY "Permitir actualización a administradores"
 ON public.cache_statistics
 FOR UPDATE
 TO authenticated
@@ -78,7 +81,8 @@ USING (
 );
 
 -- Política para permitir eliminación a administradores
-CREATE POLICY IF NOT EXISTS "Permitir eliminación a administradores"
+DROP POLICY IF EXISTS "Permitir eliminación a administradores" ON public.cache_statistics;
+CREATE POLICY "Permitir eliminación a administradores"
 ON public.cache_statistics
 FOR DELETE
 TO authenticated

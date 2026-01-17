@@ -213,14 +213,14 @@ export const Clubs = () => {
       filtered = filtered.filter(
         (club) =>
           club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          club.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (club.location && club.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
           (club.description &&
             club.description.toLowerCase().includes(searchQuery.toLowerCase())),
       );
     }
 
     if (selectedCity !== "all") {
-      filtered = filtered.filter((club) => club.city === selectedCity);
+      filtered = filtered.filter((club) => club.location === selectedCity);
     }
 
     setFilteredClubs(filtered);
@@ -272,7 +272,7 @@ export const Clubs = () => {
     }
   };
 
-  const cities = [...new Set(clubs.map((club) => club.city))];
+  const cities = [...new Set(clubs.map((club) => club.location).filter((loc): loc is string => Boolean(loc)))];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -315,7 +315,7 @@ export const Clubs = () => {
             rep_email: clubForm.repEmail,
             club_name: clubForm.clubName,
             address: clubForm.address,
-            city: clubForm.city,
+            location: clubForm.city,
             state: clubForm.state,
             zip_code: clubForm.zipCode,
             phone: clubForm.phone,
@@ -554,7 +554,7 @@ export const Clubs = () => {
                       Todas las ciudades
                     </option>
                     {cities.map((city) => (
-                      <option key={city} value={city} className="bg-purple-900">
+                      <option key={city} value={city || ""} className="bg-purple-900">
                         {city}
                       </option>
                     ))}
@@ -849,7 +849,7 @@ export const Clubs = () => {
                         <div className="flex items-center gap-2 text-white/70 mb-3">
                           <MapPin className="h-4 w-4" />
                           <span>
-                            {club.city}, {club.state}
+                            {club.location || "Ubicación no disponible"}
                           </span>
                         </div>
 
@@ -886,7 +886,7 @@ export const Clubs = () => {
                         {/* Acciones */}
                         <div className="flex gap-2">
                           <Button
-                            onClick={() => navigate(`/clubs/${club.slug}`)}
+                            onClick={() => navigate(`/clubs/${club.id}`)}
                             className="flex-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />
@@ -1098,7 +1098,7 @@ export const Clubs = () => {
                   <Input
                     id="city"
                     name="city"
-                    value={clubForm.city}
+                    value={clubForm.city || ""}
                     onChange={handleInputChange}
                     required
                     placeholder="Ciudad de México"

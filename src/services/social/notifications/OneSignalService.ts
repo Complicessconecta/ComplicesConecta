@@ -210,6 +210,8 @@ class OneSignalService {
       // Por ahora, simulamos el envío exitoso
       logger.info("✅ Notificación enviada exitosamente (simulado)", {
         userId: userId.substring(0, 8) + "***",
+        title,
+        message,
       });
       return true;
     } catch (error) {

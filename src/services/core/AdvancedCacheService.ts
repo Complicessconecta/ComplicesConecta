@@ -401,6 +401,7 @@ export class AdvancedCacheService {
       const { supabase } = await import('@/integrations/supabase/client');
       if (!supabase) return;
 
+      // Insertar estadísticas del cache en la base de datos
       await supabase
         .from('cache_statistics')
         .insert({

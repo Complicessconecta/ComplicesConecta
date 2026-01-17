@@ -1,35 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/cards/Card";
-import { Button } from "@/components/ui/buttons/Button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription,} from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/Modal";
-import {
-  Plus,
-  MapPin,
-  CheckCircle,
-  Star,
-  Users,
-  Calendar,
-  Image as ImageIcon,
-  Shield,
-  Sparkles,
-} from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/buttons/Button";
+import { Plus, MapPin, CheckCircle, Star, Users, Calendar, Image as ImageIcon,  Shield, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
@@ -71,15 +49,12 @@ const AdminPartners = () => {
     name: "",
     slug: "",
     description: "",
-    address: "",
-    city: "",
-    state: "",
-    country: "México",
+    location: "",
     latitude: 0,
     longitude: 0,
     phone: "",
     email: "",
-    website: "",
+    website_url: "",
     check_in_radius_meters: 50,
     is_active: true,
     is_featured: false,
@@ -175,7 +150,7 @@ const AdminPartners = () => {
       return;
     }
     try {
-      if (!clubForm.name || !clubForm.address || !clubForm.city) {
+      if (!clubForm.name || !clubForm.location) {
         toast({
           title: "Error",
           description: "Completa los campos requeridos",
@@ -191,16 +166,13 @@ const AdminPartners = () => {
         .insert({
           name: clubForm.name!,
           slug,
-          address: clubForm.address!,
-          city: clubForm.city!,
+          location: clubForm.location || "",
           description: clubForm.description || null,
-          state: clubForm.state || null,
-          country: clubForm.country || "México",
-          latitude: clubForm.latitude || 0,
-          longitude: clubForm.longitude || 0,
+          latitude: clubForm.latitude || null,
+          longitude: clubForm.longitude || null,
           phone: clubForm.phone || null,
           email: clubForm.email || null,
-          website: clubForm.website || null,
+          website_url: clubForm.website_url || null,
           check_in_radius_meters: clubForm.check_in_radius_meters || 50,
           is_active: clubForm.is_active ?? true,
           is_featured: clubForm.is_featured ?? false,
@@ -220,15 +192,12 @@ const AdminPartners = () => {
         name: "",
         slug: "",
         description: "",
-        address: "",
-        city: "",
-        state: "",
-        country: "México",
+        location: "",
         latitude: 0,
         longitude: 0,
         phone: "",
         email: "",
-        website: "",
+        website_url: "",
         check_in_radius_meters: 50,
         is_active: true,
         is_featured: false,
@@ -259,6 +228,7 @@ const AdminPartners = () => {
     try {
       const { error } = await supabase.from("club_verifications").insert({
         club_id: clubId,
+        user_id: user.id,
         verified_by: user.id,
         verification_type: "admin",
         status,
@@ -312,6 +282,7 @@ const AdminPartners = () => {
         return;
       }
 
+      // Tabla club_flyers creada en la base de datos
       const { data, error } = await supabase
         .from("club_flyers")
         .insert({
@@ -338,18 +309,8 @@ const AdminPartners = () => {
       // Procesar imagen automáticamente
       try {
         await processClubFlyerImageServer(flyerForm.image_url!, data.id);
-        toast({
-          title: "Procesamiento iniciado",
-          description: "La imagen está siendo procesada con IA",
-        });
-      } catch (processError) {
-        logger.error("Error procesando imagen:", { error: processError });
-        toast({
-          title: "Advertencia",
-          description:
-            "El flyer se creó pero el procesamiento falló. Se reintentará automáticamente.",
-          variant: "destructive",
-        });
+      } catch (error) {
+        logger.error("Error procesando flyer:", { error });
       }
 
       setShowFlyerDialog(false);
@@ -431,7 +392,7 @@ const AdminPartners = () => {
                   </div>
                   <CardDescription>
                     <MapPin className="w-4 h-4 inline mr-1" />
-                    {club.city}, {club.state || club.country}
+                    {club.location || "Ubicación no disponible"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -445,7 +406,7 @@ const AdminPartners = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4" />
-                      <span>{club.check_in_count || 0} check-ins</span>
+                      <span>Check-ins</span>
                     </div>
                   </div>
                   <div className="mt-4 flex gap-2">
@@ -454,19 +415,17 @@ const AdminPartners = () => {
                       size="sm"
                       onClick={() => {
                         setSelectedClub(club);
-                        navigate(`/clubs/${club.slug}`);
+                        navigate(`/clubs/${club.id}`);
                       }}
                     >
                       Ver
                     </Button>
-                    {!club.verified_at && (
-                      <Button
-                        size="sm"
-                        onClick={() => handleVerifyClub(club.id, "approved")}
-                      >
+                    <Button
+                      size="sm"
+                      onClick={() => handleVerifyClub(club.id, "approved")}
+                    >
                         Verificar
                       </Button>
-                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -670,9 +629,8 @@ const AdminPartners = () => {
               <label className="text-sm font-medium">Slug</label>
               <Input
                 value={clubForm.slug}
-                onChange={(e) =>
-                  setClubForm({ ...clubForm, slug: e.target.value })
-                }
+                onChange={(e) => setClubForm({ ...clubForm, slug: e.target.value })}
+                placeholder="Slug generado automáticamente"
               />
             </div>
             <div>
@@ -686,20 +644,20 @@ const AdminPartners = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Dirección *</label>
+                <label className="text-sm font-medium">Ubicación *</label>
                 <Input
-                  value={clubForm.address}
+                  value={clubForm.location || ""}
                   onChange={(e) =>
-                    setClubForm({ ...clubForm, address: e.target.value })
+                    setClubForm({ ...clubForm, location: e.target.value })
                   }
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Ciudad *</label>
+                <label className="text-sm font-medium">Email *</label>
                 <Input
-                  value={clubForm.city}
+                  value={clubForm.email || ""}
                   onChange={(e) =>
-                    setClubForm({ ...clubForm, city: e.target.value })
+                    setClubForm({ ...clubForm, email: e.target.value })
                   }
                 />
               </div>
@@ -724,7 +682,7 @@ const AdminPartners = () => {
                 <Input
                   type="number"
                   step="any"
-                  value={clubForm.longitude}
+                  value={clubForm.longitude || 0}
                   onChange={(e) =>
                     setClubForm({
                       ...clubForm,
@@ -736,6 +694,8 @@ const AdminPartners = () => {
               <div>
                 <label className="text-sm font-medium">Radio (m)</label>
                 <Input
+                  disabled
+                  placeholder="TODO: Crear columna check_in_radius_meters en la tabla clubs"
                   type="number"
                   value={clubForm.check_in_radius_meters || 50}
                   onChange={(e) =>

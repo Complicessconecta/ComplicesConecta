@@ -2,21 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Heart,
-  MapPin,
-  Verified,
-  Crown,
-  Settings,
-  Share2,
-  Lock,
-  Images,
-  Flag,
-  Coins,
-  Wallet,
-  Users,
-  ShieldCheck,
-} from "lucide-react";
+import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Images, Flag, Coins, Wallet, Users, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
@@ -27,19 +13,11 @@ import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
-import {
-  walletService,
-  WalletService,
-} from "@/services/payments/WalletService";
+import { walletService } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
 import type { CoupleNFTRequest } from "@/types/blockchain";
 import { cn } from "@/shared/lib/cn";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { ImageModal } from "@/components/profiles/shared/ImageModal";
@@ -229,7 +207,7 @@ function ProfileCouple() {
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleNFTRequest[]>([]);
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
-  const [isDemoMode] = useState(WalletService.isDemoMode());
+  const [isDemoMode] = useState(walletService.isDemoMode);
 
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = coupleNFTs.length > 0;

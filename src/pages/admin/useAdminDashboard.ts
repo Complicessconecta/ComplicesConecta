@@ -113,12 +113,14 @@ export const useAdminDashboard = (dateRange: string) => {
         .from("user_roles")
         .select("id", { count: "exact", head: true })
         .eq("role", "moderator");
-      const { count: careerApplications } = await supabase
-        .from("career_applications")
-        .select("id", { count: "exact", head: true });
-      const { count: moderatorRequests } = await supabase
-        .from("moderator_requests")
-        .select("id", { count: "exact", head: true });
+      // TODO: Crear tabla career_applications en la base de datos
+      // const { count: careerApplications } = await supabase
+      //   .from("career_applications")
+      //   .select("id", { count: "exact", head: true });
+      // TODO: Crear tabla moderator_requests en la base de datos
+      // const { count: moderatorRequests } = await supabase
+      //   .from("moderator_requests")
+      //   .select("id", { count: "exact", head: true });
 
       setStats({
         totalUsers,
@@ -129,8 +131,8 @@ export const useAdminDashboard = (dateRange: string) => {
         moderatorsCount: moderatorsCount || 0,
         newUsersToday,
         matchesToday,
-        careerApplications: careerApplications || 0,
-        moderatorRequests: moderatorRequests || 0,
+        careerApplications: 0, // TODO: Crear tabla career_applications en la base de datos
+        moderatorRequests: 0, // TODO: Crear tabla moderator_requests en la base de datos
       });
 
       const { data: recentUsers, error: recentUsersError } = await supabase

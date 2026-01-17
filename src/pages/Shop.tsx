@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
 interface CMPXPackage {
-  id: number;
+  id: string;
   name: string;
   cmpx_amount: number;
   bonus_cmpx: number;

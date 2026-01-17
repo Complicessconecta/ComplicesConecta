@@ -8,17 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  EyeOff,
-  Crown,
-  Lock,
-  Heart,
-  MessageCircle,
-  Star,
-  Shield,
-  Zap,
-  Users,
-} from "lucide-react";
+import { EyeOff, Crown,Lock, Heart, MessageCircle, Star, Shield, Zap, Users } from "lucide-react";
 import { useFeatures } from "@/hooks/useFeatures";
 import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";

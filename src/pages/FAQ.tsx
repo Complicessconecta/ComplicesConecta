@@ -7,23 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/forms/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import {
-  HelpCircle,
-  MessageSquare,
-  Star,
-  Send,
-  Heart,
-  Shield,
-  Crown,
-  Bug,
-  AlertTriangle,
-  UserCheck,
-  Lock,
-  GalleryHorizontal,
-  MessageCircle,
-  Gift,
-  Zap,
-} from "lucide-react";
+import { HelpCircle, MessageSquare, Star, Send, Heart, Shield, Crown, Bug, AlertTriangle, UserCheck, Lock, GalleryHorizontal, MessageCircle, Gift, Zap } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 

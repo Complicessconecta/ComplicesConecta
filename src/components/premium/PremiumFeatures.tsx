@@ -1,21 +1,6 @@
 import { useState } from "react";
-import {
-  Crown,
-  Zap,
-  Eye,
-  Target,
-  BarChart3,
-  Globe,
-  MessageCircle,
-  Heart,
-  Lock,
-} from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Crown, Zap, Eye, Target, BarChart3, Globe, MessageCircle, Heart, Lock } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Progress } from "@/components/ui/progress";
@@ -116,8 +101,15 @@ const premiumFeatures = [
 
 const _planHierarchy = ["free", "basic", "silver", "gold", "premium"];
 
+// Función para verificar si un plan tiene acceso a características premium
+const hasPremiumAccess = (plan: string): boolean => {
+  const planIndex = _planHierarchy.indexOf(plan);
+  return planIndex >= _planHierarchy.indexOf("silver");
+};
+
 export const PremiumFeatures = () => {
   const [currentPlan] = useState(mockUserSubscription.plan);
+  const hasAccess = hasPremiumAccess(currentPlan);
 
   return (
     <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/30">
@@ -130,8 +122,7 @@ export const PremiumFeatures = () => {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {premiumFeatures.map((feature) => {
-            const isUnlocked =
-              currentPlan === "premium" || currentPlan === "beta";
+            const isUnlocked = hasAccess || currentPlan === "beta";
 
             return (
               <div

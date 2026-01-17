@@ -1,37 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/useToast";
-import {
-  securityAuditService,
-  type SecurityReport,
-  type ThreatDetection,
-  type SecurityEvent,
-} from "@/services/SecurityAuditService";
+import { securityAuditService, type SecurityReport, type ThreatDetection, type SecurityEvent } from "@/services/SecurityAuditService";
 import { logger } from "@/lib/logger";
-import {
-  Shield,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  TrendingUp,
-  Users,
-  Activity,
-  RefreshCw,
-  Download,
-  Eye,
-  Ban,
-  Lock,
-} from "lucide-react";
+import { Shield, AlertTriangle, CheckCircle, Clock, TrendingUp, Users, Activity, RefreshCw, Download, Eye, Ban, Lock } from "lucide-react";
 
 export const SecurityDashboard: React.FC = () => {
   const [securityReport, setSecurityReport] = useState<SecurityReport | null>(

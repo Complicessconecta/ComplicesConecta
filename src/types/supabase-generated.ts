@@ -7,31 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       analytics_events: {
@@ -64,42 +39,6 @@ export type Database = {
           session_id?: string | null
           timestamp?: string | null
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      app_metrics: {
-        Row: {
-          id: string
-          user_id: string
-          metric_name: string
-          metric_value: number
-          metric_type: "counter" | "gauge" | "histogram"
-          tags: Json | null
-          timestamp: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          metric_name: string
-          metric_value: number
-          metric_type: "counter" | "gauge" | "histogram"
-          tags?: Json | null
-          timestamp?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          metric_name?: string
-          metric_value?: number
-          metric_type?: "counter" | "gauge" | "histogram"
-          tags?: Json | null
-          timestamp?: string | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -186,6 +125,42 @@ export type Database = {
           level?: string
           message?: string
           metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      app_metrics: {
+        Row: {
+          created_at: string | null
+          id: string
+          metric_name: string
+          metric_type: string
+          metric_value: number
+          tags: Json | null
+          timestamp: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metric_name: string
+          metric_type: string
+          metric_value: number
+          tags?: Json | null
+          timestamp?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metric_name?: string
+          metric_type?: string
+          metric_value?: number
+          tags?: Json | null
+          timestamp?: string | null
+          updated_at?: string | null
           user_id?: string | null
         }
         Relationships: []
@@ -397,41 +372,6 @@ export type Database = {
         }
         Relationships: []
       }
-      chat_messages: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          is_read: boolean
-          room_id: string
-          sender_id: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          is_read?: boolean
-          room_id: string
-          sender_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          is_read?: boolean
-          room_id?: string
-          sender_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_messages_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "chat_rooms"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       chat_rooms: {
         Row: {
           created_at: string | null
@@ -505,96 +445,300 @@ export type Database = {
           },
         ]
       }
-      cmpx_purchases: {
+      club_flyers: {
         Row: {
-          bonus_cmpx: number
-          cmpx_amount: number
+          ai_processing_status: string
+          blur_applied: boolean
+          club_id: string
           created_at: string
-          id: number
-          package_id: number
-          package_name: string
-          payment_method: string | null
-          price_mxn: number
-          price_usd: number
-          status: string
-          transaction_id: string | null
+          description: string | null
+          event_date: string | null
+          event_end_date: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          is_featured: boolean
+          processed_image_url: string | null
+          title: string
           updated_at: string
-          user_id: string
+          watermark_applied: boolean
         }
         Insert: {
-          bonus_cmpx?: number
-          cmpx_amount?: number
+          ai_processing_status?: string
+          blur_applied?: boolean
+          club_id: string
           created_at?: string
-          id?: number
-          package_id: number
-          package_name: string
-          payment_method?: string | null
-          price_mxn?: number
-          price_usd?: number
-          status?: string
-          transaction_id?: string | null
+          description?: string | null
+          event_date?: string | null
+          event_end_date?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          is_featured?: boolean
+          processed_image_url?: string | null
+          title: string
           updated_at?: string
-          user_id: string
+          watermark_applied?: boolean
         }
         Update: {
-          bonus_cmpx?: number
-          cmpx_amount?: number
+          ai_processing_status?: string
+          blur_applied?: boolean
+          club_id?: string
           created_at?: string
-          id?: number
-          package_id?: number
-          package_name?: string
-          payment_method?: string | null
-          price_mxn?: number
-          price_usd?: number
+          description?: string | null
+          event_date?: string | null
+          event_end_date?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          is_featured?: boolean
+          processed_image_url?: string | null
+          title?: string
+          updated_at?: string
+          watermark_applied?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_flyers_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_verifications: {
+        Row: {
+          club_id: string
+          created_at: string
+          documents: Json | null
+          id: string
+          notes: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_at: string
+          updated_at: string
+          user_id: string
+          verification_type: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          club_id: string
+          created_at?: string
+          documents?: Json | null
+          id?: string
+          notes?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string
-          transaction_id?: string | null
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+          verification_type?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          club_id?: string
+          created_at?: string
+          documents?: Json | null
+          id?: string
+          notes?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
           updated_at?: string
           user_id?: string
+          verification_type?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_verifications_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clubs: {
+        Row: {
+          amenities: Json | null
+          check_in_radius_meters: number | null
+          created_at: string | null
+          description: string | null
+          email: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          name: string
+          opening_hours: Json | null
+          phone: string | null
+          rating_average: number | null
+          rating_count: number | null
+          slug: string
+          updated_at: string | null
+          verified_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          amenities?: Json | null
+          check_in_radius_meters?: number | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          name: string
+          opening_hours?: Json | null
+          phone?: string | null
+          rating_average?: number | null
+          rating_count?: number | null
+          slug?: string
+          updated_at?: string | null
+          verified_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          amenities?: Json | null
+          check_in_radius_meters?: number | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          name?: string
+          opening_hours?: Json | null
+          phone?: string | null
+          rating_average?: number | null
+          rating_count?: number | null
+          slug?: string
+          updated_at?: string | null
+          verified_at?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }
-      cmpx_shop_packages: {
+      cmpx_purchases: {
         Row: {
-          bonus_cmpx: number
+          bonus_cmpx: number | null
           cmpx_amount: number
-          created_at: string
-          description: string | null
-          display_order: number
-          id: number
-          is_active: boolean
-          is_popular: boolean
-          name: string
+          created_at: string | null
+          id: string
+          package_id: string
+          payment_status: string | null
           price_mxn: number
-          price_usd: number
-          updated_at: string
+          price_usd: number | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_payment_intent_id: string | null
+          total_cmpx: number
+          updated_at: string | null
+          user_id: string
         }
         Insert: {
-          bonus_cmpx?: number
-          cmpx_amount?: number
-          created_at?: string
-          description?: string | null
-          display_order?: number
-          id?: number
-          is_active?: boolean
-          is_popular?: boolean
-          name: string
-          price_mxn?: number
-          price_usd?: number
-          updated_at?: string
+          bonus_cmpx?: number | null
+          cmpx_amount: number
+          created_at?: string | null
+          id?: string
+          package_id: string
+          payment_status?: string | null
+          price_mxn: number
+          price_usd?: number | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          total_cmpx: number
+          updated_at?: string | null
+          user_id: string
         }
         Update: {
-          bonus_cmpx?: number
+          bonus_cmpx?: number | null
           cmpx_amount?: number
-          created_at?: string
+          created_at?: string | null
+          id?: string
+          package_id?: string
+          payment_status?: string | null
+          price_mxn?: number
+          price_usd?: number | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          total_cmpx?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cmpx_purchases_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "cmpx_shop_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cmpx_shop_packages: {
+        Row: {
+          bonus_cmpx: number | null
+          cmpx_amount: number
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          is_popular: boolean | null
+          name: string
+          price_mxn: number
+          price_usd: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          bonus_cmpx?: number | null
+          cmpx_amount: number
+          created_at?: string | null
           description?: string | null
-          display_order?: number
-          id?: number
-          is_active?: boolean
-          is_popular?: boolean
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name: string
+          price_mxn: number
+          price_usd?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          bonus_cmpx?: number | null
+          cmpx_amount?: number
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
           name?: string
           price_mxn?: number
-          price_usd?: number
-          updated_at?: string
+          price_usd?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -635,52 +779,52 @@ export type Database = {
       }
       consent_verifications: {
         Row: {
-          id: string
           chat_id: string
+          confidence: number | null
+          consent_score: number | null
+          created_at: string | null
+          id: string
+          is_paused: boolean | null
+          message_count: number | null
+          pause_reason: string | null
+          reasoning: string | null
+          status: string | null
+          updated_at: string | null
           user_id: string
           user_id1: string
           user_id2: string
-          consent_score: number | null
-          confidence: number | null
-          status: string | null
-          reasoning: string | null
-          message_count: number | null
-          is_paused: boolean | null
-          pause_reason: string | null
-          created_at: string | null
-          updated_at: string | null
         }
         Insert: {
-          id?: string
           chat_id: string
+          confidence?: number | null
+          consent_score?: number | null
+          created_at?: string | null
+          id?: string
+          is_paused?: boolean | null
+          message_count?: number | null
+          pause_reason?: string | null
+          reasoning?: string | null
+          status?: string | null
+          updated_at?: string | null
           user_id: string
           user_id1: string
           user_id2: string
-          consent_score?: number | null
-          confidence?: number | null
-          status?: string | null
-          reasoning?: string | null
-          message_count?: number | null
-          is_paused?: boolean | null
-          pause_reason?: string | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Update: {
-          id?: string
           chat_id?: string
+          confidence?: number | null
+          consent_score?: number | null
+          created_at?: string | null
+          id?: string
+          is_paused?: boolean | null
+          message_count?: number | null
+          pause_reason?: string | null
+          reasoning?: string | null
+          status?: string | null
+          updated_at?: string | null
           user_id?: string
           user_id1?: string
           user_id2?: string
-          consent_score?: number | null
-          confidence?: number | null
-          status?: string | null
-          reasoning?: string | null
-          message_count?: number | null
-          is_paused?: boolean | null
-          pause_reason?: string | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -698,7 +842,7 @@ export type Database = {
           total_points: number | null
           updated_at: string | null
           user_id: string
-          viral_bonus?: number | null
+          viral_bonus: number | null
         }
         Insert: {
           base_points?: number | null
@@ -729,69 +873,6 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           viral_bonus?: number | null
-        }
-        Relationships: []
-      }
-      clubs: {
-        Row: {
-          id: string
-          name: string
-          description: string | null
-          location: string | null
-          latitude: number | null
-          longitude: number | null
-          rating_average: number | null
-          rating_count: number | null
-          is_featured: boolean | null
-          is_active: boolean | null
-          image_url: string | null
-          website_url: string | null
-          phone: string | null
-          email: string | null
-          opening_hours: Json | null
-          amenities: Json | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          name: string
-          description?: string | null
-          location?: string | null
-          latitude?: number | null
-          longitude?: number | null
-          rating_average?: number | null
-          rating_count?: number | null
-          is_featured?: boolean | null
-          is_active?: boolean | null
-          image_url?: string | null
-          website_url?: string | null
-          phone?: string | null
-          email?: string | null
-          opening_hours?: Json | null
-          amenities?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          name?: string
-          description?: string | null
-          location?: string | null
-          latitude?: number | null
-          longitude?: number | null
-          rating_average?: number | null
-          rating_count?: number | null
-          is_featured?: boolean | null
-          is_active?: boolean | null
-          image_url?: string | null
-          website_url?: string | null
-          phone?: string | null
-          email?: string | null
-          opening_hours?: Json | null
-          amenities?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -864,46 +945,61 @@ export type Database = {
       }
       couple_disputes: {
         Row: {
+          accepted_at: string | null
           couple_agreement_id: string
           couple_id: string | null
           created_at: string | null
           deadline_at: string
           dispute_reason: string
+          frozen_assets_snapshot: Json | null
           id: string
           initiated_by: string
           nfts_in_dispute: Json | null
+          proposed_at: string | null
+          proposed_winner_id: string | null
           resolution_type: string | null
           status: string
           tokens_in_dispute: Json | null
           updated_at: string | null
+          winner_accepted_by: string | null
         }
         Insert: {
+          accepted_at?: string | null
           couple_agreement_id: string
           couple_id?: string | null
           created_at?: string | null
           deadline_at?: string
           dispute_reason: string
+          frozen_assets_snapshot?: Json | null
           id?: string
           initiated_by: string
           nfts_in_dispute?: Json | null
+          proposed_at?: string | null
+          proposed_winner_id?: string | null
           resolution_type?: string | null
           status?: string
           tokens_in_dispute?: Json | null
           updated_at?: string | null
+          winner_accepted_by?: string | null
         }
         Update: {
+          accepted_at?: string | null
           couple_agreement_id?: string
           couple_id?: string | null
           created_at?: string | null
           deadline_at?: string
           dispute_reason?: string
+          frozen_assets_snapshot?: Json | null
           id?: string
           initiated_by?: string
           nfts_in_dispute?: Json | null
+          proposed_at?: string | null
+          proposed_winner_id?: string | null
           resolution_type?: string | null
           status?: string
           tokens_in_dispute?: Json | null
           updated_at?: string | null
+          winner_accepted_by?: string | null
         }
         Relationships: [
           {
@@ -923,6 +1019,41 @@ export type Database = {
           {
             foreignKeyName: "couple_disputes_initiated_by_fkey"
             columns: ["initiated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_couple_disputes_couple_agreement_id"
+            columns: ["couple_agreement_id"]
+            isOneToOne: false
+            referencedRelation: "couple_agreements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_couple_disputes_couple_id"
+            columns: ["couple_id"]
+            isOneToOne: false
+            referencedRelation: "couples"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_couple_disputes_initiated_by"
+            columns: ["initiated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_couple_disputes_proposed_winner_id"
+            columns: ["proposed_winner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_couple_disputes_winner_accepted_by"
+            columns: ["winner_accepted_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1211,6 +1342,51 @@ export type Database = {
           },
         ]
       }
+      couples: {
+        Row: {
+          created_at: string
+          id: string
+          partner_id: string | null
+          relationship_start_date: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          partner_id?: string | null
+          relationship_start_date?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          partner_id?: string | null
+          relationship_start_date?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "couples_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "couples_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_activities: {
         Row: {
           activity_date: string
@@ -1412,6 +1588,39 @@ export type Database = {
         }
         Relationships: []
       }
+      event_participations: {
+        Row: {
+          cmpx_rewarded: number | null
+          co2_saved: number | null
+          created_at: string | null
+          event_id: string
+          id: string
+          participated_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cmpx_rewarded?: number | null
+          co2_saved?: number | null
+          created_at?: string | null
+          event_id: string
+          id?: string
+          participated_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cmpx_rewarded?: number | null
+          co2_saved?: number | null
+          created_at?: string | null
+          event_id?: string
+          id?: string
+          participated_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       frozen_assets: {
         Row: {
           amount: number | null
@@ -1535,37 +1744,209 @@ export type Database = {
         }
         Relationships: []
       }
-      gallery_unlocks: {
+      images: {
         Row: {
-          gallery_item_id: string
+          created_at: string | null
           id: string
-          profile_id: string | null
-          unlocked_at: string
-          user_id: string | null
+          is_public: boolean | null
+          profile_id: string
+          updated_at: string | null
+          url: string
         }
         Insert: {
-          gallery_item_id: string
+          created_at?: string | null
           id?: string
-          profile_id?: string | null
-          unlocked_at?: string
-          user_id?: string | null
+          is_public?: boolean | null
+          profile_id: string
+          updated_at?: string | null
+          url: string
         }
         Update: {
-          gallery_item_id?: string
+          created_at?: string | null
           id?: string
-          profile_id?: string | null
-          unlocked_at?: string
-          user_id?: string | null
+          is_public?: boolean | null
+          profile_id?: string
+          updated_at?: string | null
+          url?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "gallery_unlocks_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      investment_tiers: {
+        Row: {
+          amount_mxn: number
+          benefits: Json | null
+          cmpx_tokens_rewarded: number
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          equity_percentage: number | null
+          id: string
+          includes_equity: boolean | null
+          includes_vip_dinner: boolean | null
+          is_active: boolean | null
+          name: string
+          return_percentage: number
+          return_type: string | null
+          tier_key: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount_mxn: number
+          benefits?: Json | null
+          cmpx_tokens_rewarded?: number
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          equity_percentage?: number | null
+          id?: string
+          includes_equity?: boolean | null
+          includes_vip_dinner?: boolean | null
+          is_active?: boolean | null
+          name: string
+          return_percentage?: number
+          return_type?: string | null
+          tier_key: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount_mxn?: number
+          benefits?: Json | null
+          cmpx_tokens_rewarded?: number
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          equity_percentage?: number | null
+          id?: string
+          includes_equity?: boolean | null
+          includes_vip_dinner?: boolean | null
+          is_active?: boolean | null
+          name?: string
+          return_percentage?: number
+          return_type?: string | null
+          tier_key?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      investments: {
+        Row: {
+          activated_at: string | null
+          amount_mxn: number
+          amount_usd: number | null
+          benefits: Json | null
+          cmpx_tokens_rewarded: number | null
+          completed_at: string | null
+          contract_signed: boolean | null
+          contract_signed_at: string | null
+          created_at: string | null
+          equity_percentage: number | null
+          id: string
+          includes_equity: boolean | null
+          includes_vip_dinner: boolean | null
+          metadata: Json | null
+          notes: string | null
+          payment_method: string | null
+          payment_status: string | null
+          return_percentage: number
+          return_type: string | null
+          safte_contract_url: string | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_payment_intent_id: string | null
+          tier: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          activated_at?: string | null
+          amount_mxn: number
+          amount_usd?: number | null
+          benefits?: Json | null
+          cmpx_tokens_rewarded?: number | null
+          completed_at?: string | null
+          contract_signed?: boolean | null
+          contract_signed_at?: string | null
+          created_at?: string | null
+          equity_percentage?: number | null
+          id?: string
+          includes_equity?: boolean | null
+          includes_vip_dinner?: boolean | null
+          metadata?: Json | null
+          notes?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          return_percentage: number
+          return_type?: string | null
+          safte_contract_url?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          tier: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          activated_at?: string | null
+          amount_mxn?: number
+          amount_usd?: number | null
+          benefits?: Json | null
+          cmpx_tokens_rewarded?: number | null
+          completed_at?: string | null
+          contract_signed?: boolean | null
+          contract_signed_at?: string | null
+          created_at?: string | null
+          equity_percentage?: number | null
+          id?: string
+          includes_equity?: boolean | null
+          includes_vip_dinner?: boolean | null
+          metadata?: Json | null
+          notes?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          return_percentage?: number
+          return_type?: string | null
+          safte_contract_url?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          tier?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      invitation_statistics: {
+        Row: {
+          created_at: string | null
+          id: string
+          total_accepted: number | null
+          total_pending: number | null
+          total_rejected: number | null
+          total_sent: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          total_accepted?: number | null
+          total_pending?: number | null
+          total_rejected?: number | null
+          total_sent?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          total_accepted?: number | null
+          total_pending?: number | null
+          total_rejected?: number | null
+          total_sent?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       invitation_templates: {
         Row: {
@@ -1605,199 +1986,28 @@ export type Database = {
           created_at: string | null
           from_profile: string | null
           id: string
+          status: string | null
           to_profile: string | null
           type: string | null
-          status: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           from_profile?: string | null
           id?: string
+          status?: string | null
           to_profile?: string | null
           type?: string | null
-          status?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           from_profile?: string | null
           id?: string
+          status?: string | null
           to_profile?: string | null
           type?: string | null
-          status?: string | null
           updated_at?: string | null
-        }
-        Relationships: []
-      }
-      invitation_statistics: {
-        Row: {
-          id: string
-          user_id: string
-          total_sent: number | null
-          total_accepted: number | null
-          total_rejected: number | null
-          total_pending: number | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          total_sent?: number | null
-          total_accepted?: number | null
-          total_rejected?: number | null
-          total_pending?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          total_sent?: number | null
-          total_accepted?: number | null
-          total_rejected?: number | null
-          total_pending?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      images: {
-        Row: {
-          id: string
-          profile_id: string
-          url: string
-          is_public: boolean
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          profile_id: string
-          url: string
-          is_public?: boolean
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          profile_id?: string
-          url?: string
-          is_public?: boolean
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      legal_access_audit: {
-        Row: {
-          accessed_at: string
-          accessed_by: string
-          action: string
-          id: string
-          ip: unknown
-          reason: string | null
-          target_id: string | null
-          target_table: string
-          user_agent: string | null
-        }
-        Insert: {
-          accessed_at?: string
-          accessed_by: string
-          action: string
-          id?: string
-          ip?: unknown
-          reason?: string | null
-          target_id?: string | null
-          target_table: string
-          user_agent?: string | null
-        }
-        Update: {
-          accessed_at?: string
-          accessed_by?: string
-          action?: string
-          id?: string
-          ip?: unknown
-          reason?: string | null
-          target_id?: string | null
-          target_table?: string
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
-      legal_consents: {
-        Row: {
-          accepted_at: string
-          created_at: string
-          device_info: Json | null
-          document_slug: string
-          document_version: string
-          evidence_encrypted: string | null
-          id: string
-          ip: unknown
-          user_agent: string | null
-          user_id: string
-        }
-        Insert: {
-          accepted_at?: string
-          created_at?: string
-          device_info?: Json | null
-          document_slug: string
-          document_version: string
-          evidence_encrypted?: string | null
-          id?: string
-          ip?: unknown
-          user_agent?: string | null
-          user_id: string
-        }
-        Update: {
-          accepted_at?: string
-          created_at?: string
-          device_info?: Json | null
-          document_slug?: string
-          document_version?: string
-          evidence_encrypted?: string | null
-          id?: string
-          ip?: unknown
-          user_agent?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      legal_documents: {
-        Row: {
-          content_sha256: string | null
-          created_at: string
-          effective_date: string | null
-          id: string
-          jurisdiction: string | null
-          slug: string
-          source_path: string | null
-          title: string
-          version: string
-        }
-        Insert: {
-          content_sha256?: string | null
-          created_at?: string
-          effective_date?: string | null
-          id?: string
-          jurisdiction?: string | null
-          slug: string
-          source_path?: string | null
-          title: string
-          version: string
-        }
-        Update: {
-          content_sha256?: string | null
-          created_at?: string
-          effective_date?: string | null
-          id?: string
-          jurisdiction?: string | null
-          slug?: string
-          source_path?: string | null
-          title?: string
-          version?: string
         }
         Relationships: []
       }
@@ -1819,39 +2029,6 @@ export type Database = {
           id?: string
           user1_id?: string
           user2_id?: string
-        }
-        Relationships: []
-      }
-      mfa_settings: {
-        Row: {
-          id: string
-          user_id: string
-          secret: string
-          backup_codes: string[]
-          enabled: boolean
-          verified_at: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          secret: string
-          backup_codes?: string[]
-          enabled?: boolean
-          verified_at?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          secret?: string
-          backup_codes?: string[]
-          enabled?: boolean
-          verified_at?: string | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1906,6 +2083,39 @@ export type Database = {
           },
         ]
       }
+      mfa_settings: {
+        Row: {
+          backup_codes: string[]
+          created_at: string | null
+          enabled: boolean
+          id: string
+          secret: string
+          updated_at: string | null
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          backup_codes?: string[]
+          created_at?: string | null
+          enabled?: boolean
+          id?: string
+          secret: string
+          updated_at?: string | null
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          backup_codes?: string[]
+          created_at?: string | null
+          enabled?: boolean
+          id?: string
+          secret?: string
+          updated_at?: string | null
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       missions: {
         Row: {
           created_at: string | null
@@ -1957,6 +2167,108 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          moderator_id: string
+          reason: string | null
+          target_id: string
+          target_type: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          moderator_id: string
+          reason?: string | null
+          target_id: string
+          target_type: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          moderator_id?: string
+          reason?: string | null
+          target_id?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
+      moderator_payments: {
+        Row: {
+          actions_taken: number | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          moderator_id: string
+          moderator_level: string | null
+          notes: string | null
+          payment_amount_mxn: number
+          payment_date: string | null
+          payment_method: string | null
+          payment_period_end: string
+          payment_period_start: string
+          payment_status: string | null
+          quality_score: number | null
+          reports_reviewed: number | null
+          revenue_percentage: number
+          stripe_payout_id: string | null
+          total_minutes_worked: number | null
+          total_revenue_mxn: number
+          updated_at: string | null
+        }
+        Insert: {
+          actions_taken?: number | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          moderator_id: string
+          moderator_level?: string | null
+          notes?: string | null
+          payment_amount_mxn: number
+          payment_date?: string | null
+          payment_method?: string | null
+          payment_period_end: string
+          payment_period_start: string
+          payment_status?: string | null
+          quality_score?: number | null
+          reports_reviewed?: number | null
+          revenue_percentage: number
+          stripe_payout_id?: string | null
+          total_minutes_worked?: number | null
+          total_revenue_mxn: number
+          updated_at?: string | null
+        }
+        Update: {
+          actions_taken?: number | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          moderator_id?: string
+          moderator_level?: string | null
+          notes?: string | null
+          payment_amount_mxn?: number
+          payment_date?: string | null
+          payment_method?: string | null
+          payment_period_end?: string
+          payment_period_start?: string
+          payment_status?: string | null
+          quality_score?: number | null
+          reports_reviewed?: number | null
+          revenue_percentage?: number
+          stripe_payout_id?: string | null
+          total_minutes_worked?: number | null
+          total_revenue_mxn?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       moderator_sessions: {
         Row: {
           actions_taken: number | null
@@ -1993,6 +2305,57 @@ export type Database = {
         }
         Relationships: []
       }
+      moderators: {
+        Row: {
+          activated_at: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          level: string | null
+          moderator_id: string | null
+          notes: string | null
+          permissions: Json | null
+          role: string | null
+          status: string | null
+          suspended_at: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          level?: string | null
+          moderator_id?: string | null
+          notes?: string | null
+          permissions?: Json | null
+          role?: string | null
+          status?: string | null
+          suspended_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          level?: string | null
+          moderator_id?: string | null
+          notes?: string | null
+          permissions?: Json | null
+          role?: string | null
+          status?: string | null
+          suspended_at?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       monitoring_sessions: {
         Row: {
           created_at: string | null
@@ -2026,80 +2389,129 @@ export type Database = {
         }
         Relationships: []
       }
-      moderation_logs: {
+      nft_galleries: {
         Row: {
-          id: string
-          moderator_id: string
-          action: string
-          target_type: string
-          target_id: string
-          reason: string | null
-          metadata: Json | null
           created_at: string | null
-        }
-        Insert: {
-          id?: string
-          moderator_id: string
-          action: string
-          target_type: string
-          target_id: string
-          reason?: string | null
-          metadata?: Json | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          moderator_id?: string
-          action?: string
-          target_type?: string
-          target_id?: string
-          reason?: string | null
-          metadata?: Json | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      user_suspensions: {
-        Row: {
+          description: string | null
           id: string
-          user_id: string
-          suspended_by: string
-          reason: string
-          suspended_at: string | null
-          lifted_at: string | null
-          lifted_by: string | null
-          lift_reason: string | null
+          is_public: boolean | null
+          is_verified: boolean | null
           metadata: Json | null
-          created_at: string | null
+          minted_at: string | null
+          minted_with_gtk: number | null
+          nft_contract_address: string | null
+          nft_network: string | null
+          nft_token_id: string | null
+          profile_id: string | null
+          title: string
           updated_at: string | null
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          suspended_by: string
-          reason: string
-          suspended_at?: string | null
-          lifted_at?: string | null
-          lifted_by?: string | null
-          lift_reason?: string | null
-          metadata?: Json | null
           created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          metadata?: Json | null
+          minted_at?: string | null
+          minted_with_gtk?: number | null
+          nft_contract_address?: string | null
+          nft_network?: string | null
+          nft_token_id?: string | null
+          profile_id?: string | null
+          title: string
           updated_at?: string | null
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          suspended_by?: string
-          reason?: string
-          suspended_at?: string | null
-          lifted_at?: string | null
-          lifted_by?: string | null
-          lift_reason?: string | null
-          metadata?: Json | null
           created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          metadata?: Json | null
+          minted_at?: string | null
+          minted_with_gtk?: number | null
+          nft_contract_address?: string | null
+          nft_network?: string | null
+          nft_token_id?: string | null
+          profile_id?: string | null
+          title?: string
           updated_at?: string | null
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "nft_galleries_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nft_gallery_images: {
+        Row: {
+          created_at: string | null
+          gallery_id: string
+          id: string
+          image_hash: string | null
+          image_url: string
+          is_verified: boolean | null
+          metadata: Json | null
+          minted_at: string | null
+          minted_with_gtk: number | null
+          nft_contract_address: string | null
+          nft_network: string | null
+          nft_token_id: string | null
+          sort_order: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          gallery_id: string
+          id?: string
+          image_hash?: string | null
+          image_url: string
+          is_verified?: boolean | null
+          metadata?: Json | null
+          minted_at?: string | null
+          minted_with_gtk?: number | null
+          nft_contract_address?: string | null
+          nft_network?: string | null
+          nft_token_id?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          gallery_id?: string
+          id?: string
+          image_hash?: string | null
+          image_url?: string
+          is_verified?: boolean | null
+          metadata?: Json | null
+          minted_at?: string | null
+          minted_with_gtk?: number | null
+          nft_contract_address?: string | null
+          nft_network?: string | null
+          nft_token_id?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nft_gallery_images_gallery_id_fkey"
+            columns: ["gallery_id"]
+            isOneToOne: false
+            referencedRelation: "nft_galleries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       nft_staking: {
         Row: {
@@ -2143,114 +2555,6 @@ export type Database = {
           total_rewards_claimed?: number | null
           user_address?: string
           vesting_period_days?: number
-        }
-        Relationships: []
-      }
-      nft_galleries: {
-        Row: {
-          id: string
-          user_id: string
-          profile_id: string | null
-          title: string
-          description: string | null
-          nft_network: "ethereum" | "polygon" | "pending"
-          nft_contract_address: string | null
-          nft_token_id: string | null
-          minted_with_gtk: number | null
-          minted_at: string | null
-          is_verified: boolean
-          is_public: boolean
-          metadata: Json | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          profile_id?: string | null
-          title: string
-          description?: string | null
-          nft_network?: "ethereum" | "polygon" | "pending"
-          nft_contract_address?: string | null
-          nft_token_id?: string | null
-          minted_with_gtk?: number | null
-          minted_at?: string | null
-          is_verified?: boolean
-          is_public?: boolean
-          metadata?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          profile_id?: string | null
-          title?: string
-          description?: string | null
-          nft_network?: "ethereum" | "polygon" | "pending"
-          nft_contract_address?: string | null
-          nft_token_id?: string | null
-          minted_with_gtk?: number | null
-          minted_at?: string | null
-          is_verified?: boolean
-          is_public?: boolean
-          metadata?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      nft_gallery_images: {
-        Row: {
-          id: string
-          user_id: string
-          gallery_id: string
-          image_url: string
-          image_hash: string | null
-          nft_network: "ethereum" | "polygon" | "pending"
-          nft_contract_address: string | null
-          nft_token_id: string | null
-          minted_with_gtk: number | null
-          minted_at: string | null
-          is_verified: boolean
-          sort_order: number
-          metadata: Json | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          gallery_id: string
-          image_url: string
-          image_hash?: string | null
-          nft_network?: "ethereum" | "polygon" | "pending"
-          nft_contract_address?: string | null
-          nft_token_id?: string | null
-          minted_with_gtk?: number | null
-          minted_at?: string | null
-          is_verified?: boolean
-          sort_order?: number
-          metadata?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          gallery_id?: string
-          image_url?: string
-          image_hash?: string | null
-          nft_network?: "ethereum" | "polygon" | "pending"
-          nft_contract_address?: string | null
-          nft_token_id?: string | null
-          minted_with_gtk?: number | null
-          minted_at?: string | null
-          is_verified?: boolean
-          sort_order?: number
-          metadata?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -2370,45 +2674,51 @@ export type Database = {
       }
       permanent_bans: {
         Row: {
-          ban_reason: string
+          ban_reason: string | null
           banned_at: string | null
           banned_by: string | null
           combined_hash: string
+          created_at: string | null
           details: Json | null
           fingerprint_ids: string[] | null
           id: string
-          is_active: boolean | null
-          metadata: Json | null
+          lift_reason: string | null
+          lifted_at: string | null
+          lifted_by: string | null
           updated_at: string | null
-          user_id: string
+          user_id: string | null
           worldid_nullifier_hash: string | null
         }
         Insert: {
-          ban_reason: string
+          ban_reason?: string | null
           banned_at?: string | null
           banned_by?: string | null
           combined_hash: string
+          created_at?: string | null
           details?: Json | null
           fingerprint_ids?: string[] | null
           id?: string
-          is_active?: boolean | null
-          metadata?: Json | null
+          lift_reason?: string | null
+          lifted_at?: string | null
+          lifted_by?: string | null
           updated_at?: string | null
-          user_id: string
+          user_id?: string | null
           worldid_nullifier_hash?: string | null
         }
         Update: {
-          ban_reason?: string
+          ban_reason?: string | null
           banned_at?: string | null
           banned_by?: string | null
           combined_hash?: string
+          created_at?: string | null
           details?: Json | null
           fingerprint_ids?: string[] | null
           id?: string
-          is_active?: boolean | null
-          metadata?: Json | null
+          lift_reason?: string | null
+          lifted_at?: string | null
+          lifted_by?: string | null
           updated_at?: string | null
-          user_id?: string
+          user_id?: string | null
           worldid_nullifier_hash?: string | null
         }
         Relationships: []
@@ -2448,6 +2758,71 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      posts: {
+        Row: {
+          comments_count: number | null
+          content: string
+          created_at: string | null
+          deleted_at: string | null
+          id: string
+          image_url: string | null
+          is_premium: boolean | null
+          is_public: boolean | null
+          likes_count: number | null
+          location: string | null
+          post_type: string | null
+          profile_id: string | null
+          shares_count: number | null
+          updated_at: string | null
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          comments_count?: number | null
+          content: string
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          is_public?: boolean | null
+          likes_count?: number | null
+          location?: string | null
+          post_type?: string | null
+          profile_id?: string | null
+          shares_count?: number | null
+          updated_at?: string | null
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          comments_count?: number | null
+          content?: string
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          is_public?: boolean | null
+          likes_count?: number | null
+          location?: string | null
+          post_type?: string | null
+          profile_id?: string | null
+          shares_count?: number | null
+          updated_at?: string | null
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       predictive_match_scores: {
         Row: {
@@ -2501,6 +2876,8 @@ export type Database = {
           agreement_id: string | null
           avatar_url: string | null
           bio: string | null
+          blocked_at: string | null
+          blocked_reason: string | null
           consent_status: string | null
           created_at: string | null
           display_name: string | null
@@ -2511,11 +2888,11 @@ export type Database = {
           gender: string | null
           id: string
           interests: string[] | null
-          is_blocked: boolean
+          is_blocked: boolean | null
           is_demo: boolean
           is_online: boolean | null
           is_premium: boolean | null
-          is_verified: boolean
+          is_verified: boolean | null
           last_name: string | null
           latitude: number | null
           location: string | null
@@ -2527,8 +2904,6 @@ export type Database = {
           s2_level: number | null
           updated_at: string | null
           user_id: string
-          blocked_at: string | null
-          blocked_reason: string | null
         }
         Insert: {
           account_type?: string | null
@@ -2536,6 +2911,8 @@ export type Database = {
           agreement_id?: string | null
           avatar_url?: string | null
           bio?: string | null
+          blocked_at?: string | null
+          blocked_reason?: string | null
           consent_status?: string | null
           created_at?: string | null
           display_name?: string | null
@@ -2546,11 +2923,11 @@ export type Database = {
           gender?: string | null
           id?: string
           interests?: string[] | null
-          is_blocked?: boolean
+          is_blocked?: boolean | null
           is_demo?: boolean
           is_online?: boolean | null
           is_premium?: boolean | null
-          is_verified?: boolean
+          is_verified?: boolean | null
           last_name?: string | null
           latitude?: number | null
           location?: string | null
@@ -2562,8 +2939,6 @@ export type Database = {
           s2_level?: number | null
           updated_at?: string | null
           user_id: string
-          blocked_at?: string | null
-          blocked_reason?: string | null
         }
         Update: {
           account_type?: string | null
@@ -2571,6 +2946,8 @@ export type Database = {
           agreement_id?: string | null
           avatar_url?: string | null
           bio?: string | null
+          blocked_at?: string | null
+          blocked_reason?: string | null
           consent_status?: string | null
           created_at?: string | null
           display_name?: string | null
@@ -2581,11 +2958,11 @@ export type Database = {
           gender?: string | null
           id?: string
           interests?: string[] | null
-          is_blocked?: boolean
+          is_blocked?: boolean | null
           is_demo?: boolean
           is_online?: boolean | null
           is_premium?: boolean | null
-          is_verified?: boolean
+          is_verified?: boolean | null
           last_name?: string | null
           latitude?: number | null
           location?: string | null
@@ -2597,8 +2974,6 @@ export type Database = {
           s2_level?: number | null
           updated_at?: string | null
           user_id?: string
-          blocked_at?: string | null
-          blocked_reason?: string | null
         }
         Relationships: [
           {
@@ -2832,6 +3207,7 @@ export type Database = {
           report_type: string
           reported_content_id: string
           reported_user_id: string | null
+          reporter_id: string | null
           reporter_user_id: string | null
           resolution_notes: string | null
           resolved_at: string | null
@@ -2853,6 +3229,7 @@ export type Database = {
           report_type?: string
           reported_content_id: string
           reported_user_id?: string | null
+          reporter_id?: string | null
           reporter_user_id?: string | null
           resolution_notes?: string | null
           resolved_at?: string | null
@@ -2874,6 +3251,7 @@ export type Database = {
           report_type?: string
           reported_content_id?: string
           reported_user_id?: string | null
+          reporter_id?: string | null
           reporter_user_id?: string | null
           resolution_notes?: string | null
           resolved_at?: string | null
@@ -2883,6 +3261,99 @@ export type Database = {
           severity?: string | null
           status?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      security: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          risk_level: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          risk_level?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          risk_level?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      security_audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          resource: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          resource?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          resource?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      security_audit_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: string | null
+          resource: string | null
+          risk_score: number | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          resource?: string | null
+          risk_score?: number | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          resource?: string | null
+          risk_score?: number | null
+          user_agent?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -2913,99 +3384,6 @@ export type Database = {
           status?: string | null
           user_agent?: string | null
           user_id?: string
-        }
-        Relationships: []
-      }
-      security_audit_log: {
-        Row: {
-          id: string
-          user_id: string
-          action: string
-          resource: string | null
-          details: Json | null
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          action: string
-          resource?: string | null
-          details?: Json | null
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          action?: string
-          resource?: string | null
-          details?: Json | null
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      security: {
-        Row: {
-          id: string
-          user_id: string
-          event_type: string
-          details: Json | null
-          ip_address: string
-          risk_level: string
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          event_type: string
-          details?: Json | null
-          ip_address?: string
-          risk_level?: string
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          event_type?: string
-          details?: Json | null
-          ip_address?: string
-          risk_level?: string
-          created_at?: string | null
-        }
-        Relationships: []
-      }
-      security_audit_logs: {
-        Row: {
-          id: string
-          user_id: string
-          action: string
-          resource: string
-          details: Json | null
-          ip_address: string
-          user_agent: string
-          created_at: string | null
-          risk_score: number
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          action: string
-          resource?: string
-          details?: Json | null
-          ip_address?: string
-          user_agent?: string
-          created_at?: string | null
-          risk_score?: number
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          action?: string
-          resource?: string
-          details?: Json | null
-          ip_address?: string
-          user_agent?: string
-          created_at?: string | null
-          risk_score?: number
         }
         Relationships: []
       }
@@ -3181,96 +3559,132 @@ export type Database = {
         }
         Relationships: []
       }
-      summary_requests: {
-        Row: {
-          id: string
-          user_id: string
-          chat_id: string
-          status: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          chat_id: string
-          status?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          chat_id?: string
-          status?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       stripe_product_mapping: {
         Row: {
-          bonus_tokens: number | null
-          cmpx_tokens_amount: number
-          created_at: string | null
+          cmpx_tokens: number | null
+          created_at: string
           id: string
-          is_active: boolean | null
-          product_type: string
-          stripe_price_id: string
-          updated_at: string | null
+          is_active: boolean
+          price_amount: number | null
+          price_currency: string
+          price_id: string | null
+          product_id: string
+          product_name: string
+          stripe_product_id: string
+          updated_at: string
         }
         Insert: {
-          bonus_tokens?: number | null
-          cmpx_tokens_amount: number
-          created_at?: string | null
+          cmpx_tokens?: number | null
+          created_at?: string
           id?: string
-          is_active?: boolean | null
-          product_type: string
-          stripe_price_id: string
-          updated_at?: string | null
+          is_active?: boolean
+          price_amount?: number | null
+          price_currency?: string
+          price_id?: string | null
+          product_id: string
+          product_name: string
+          stripe_product_id: string
+          updated_at?: string
         }
         Update: {
-          bonus_tokens?: number | null
-          cmpx_tokens_amount?: number
-          created_at?: string | null
+          cmpx_tokens?: number | null
+          created_at?: string
           id?: string
-          is_active?: boolean | null
-          product_type?: string
-          stripe_price_id?: string
-          updated_at?: string | null
+          is_active?: boolean
+          price_amount?: number | null
+          price_currency?: string
+          price_id?: string | null
+          product_id?: string
+          product_name?: string
+          stripe_product_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
       stripe_webhook_events: {
         Row: {
-          created_at: string | null
-          error_message: string | null
+          created_at: string
           event_data: Json
+          event_id: string
           event_type: string
           id: string
-          processed: boolean | null
+          processed: boolean
           processed_at: string | null
-          stripe_event_id: string
         }
         Insert: {
-          created_at?: string | null
-          error_message?: string | null
+          created_at?: string
           event_data: Json
+          event_id: string
           event_type: string
           id?: string
-          processed?: boolean | null
+          processed?: boolean
           processed_at?: string | null
-          stripe_event_id: string
         }
         Update: {
-          created_at?: string | null
-          error_message?: string | null
+          created_at?: string
           event_data?: Json
+          event_id?: string
           event_type?: string
           id?: string
-          processed?: boolean | null
+          processed?: boolean
           processed_at?: string | null
-          stripe_event_id?: string
+        }
+        Relationships: []
+      }
+      summary_feedback: {
+        Row: {
+          created_at: string
+          feedback: string | null
+          id: string
+          is_helpful: boolean
+          rating: number | null
+          summary_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          is_helpful: boolean
+          rating?: number | null
+          summary_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          is_helpful?: boolean
+          rating?: number | null
+          summary_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      summary_requests: {
+        Row: {
+          chat_id: string
+          created_at: string | null
+          id: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chat_id: string
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chat_id?: string
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -3304,6 +3718,63 @@ export type Database = {
           transaction_hash?: string | null
           user_id?: string
           wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      token_analytics: {
+        Row: {
+          active_stakers: number
+          circulating_cmpx: number
+          circulating_gtk: number
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          period_end: string
+          period_start: string
+          period_type: string
+          total_cmpx_supply: number
+          total_gtk_supply: number
+          total_staked_cmpx: number
+          transaction_count: number
+          transaction_volume_cmpx: number
+          transaction_volume_gtk: number
+          updated_at: string | null
+        }
+        Insert: {
+          active_stakers: number
+          circulating_cmpx: number
+          circulating_gtk: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          period_end: string
+          period_start: string
+          period_type: string
+          total_cmpx_supply: number
+          total_gtk_supply: number
+          total_staked_cmpx: number
+          transaction_count: number
+          transaction_volume_cmpx: number
+          transaction_volume_gtk: number
+          updated_at?: string | null
+        }
+        Update: {
+          active_stakers?: number
+          circulating_cmpx?: number
+          circulating_gtk?: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          period_end?: string
+          period_start?: string
+          period_type?: string
+          total_cmpx_supply?: number
+          total_gtk_supply?: number
+          total_staked_cmpx?: number
+          transaction_count?: number
+          transaction_volume_cmpx?: number
+          transaction_volume_gtk?: number
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -3385,96 +3856,39 @@ export type Database = {
         }
         Relationships: []
       }
-      token_analytics: {
-        Row: {
-          id: string
-          period_type: string
-          period_start: string
-          period_end: string
-          total_cmpx_supply: number
-          total_gtk_supply: number
-          circulating_cmpx: number
-          circulating_gtk: number
-          transaction_count: number
-          transaction_volume_cmpx: number
-          transaction_volume_gtk: number
-          total_staked_cmpx: number
-          active_stakers: number
-          metadata: Json | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          period_type: string
-          period_start: string
-          period_end: string
-          total_cmpx_supply: number
-          total_gtk_supply: number
-          circulating_cmpx: number
-          circulating_gtk: number
-          transaction_count: number
-          transaction_volume_cmpx: number
-          transaction_volume_gtk: number
-          total_staked_cmpx: number
-          active_stakers: number
-          metadata?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          period_type?: string
-          period_start?: string
-          period_end?: string
-          total_cmpx_supply?: number
-          total_gtk_supply?: number
-          circulating_cmpx?: number
-          circulating_gtk?: number
-          transaction_count?: number
-          transaction_volume_cmpx?: number
-          transaction_volume_gtk?: number
-          total_staked_cmpx?: number
-          active_stakers?: number
-          metadata?: Json | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       two_factor_auth: {
         Row: {
-          id: string
-          user_id: string
-          method: "2fa_app" | "sms" | "email"
-          secret: string | null
           backup_codes: string[]
-          is_enabled: boolean
-          verified_at: string | null
           created_at: string | null
+          id: string
+          is_enabled: boolean
+          method: string
+          secret: string | null
           updated_at: string | null
+          user_id: string
+          verified_at: string | null
         }
         Insert: {
-          id?: string
-          user_id: string
-          method: "2fa_app" | "sms" | "email"
-          secret?: string | null
           backup_codes?: string[]
-          is_enabled?: boolean
-          verified_at?: string | null
           created_at?: string | null
+          id?: string
+          is_enabled?: boolean
+          method: string
+          secret?: string | null
           updated_at?: string | null
+          user_id: string
+          verified_at?: string | null
         }
         Update: {
-          id?: string
-          user_id?: string
-          method?: "2fa_app" | "sms" | "email"
-          secret?: string | null
           backup_codes?: string[]
-          is_enabled?: boolean
-          verified_at?: string | null
           created_at?: string | null
+          id?: string
+          is_enabled?: boolean
+          method?: string
+          secret?: string | null
           updated_at?: string | null
+          user_id?: string
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -3536,6 +3950,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_device_tokens: {
+        Row: {
+          app_version: string | null
+          created_at: string | null
+          device_model: string | null
+          device_os: string | null
+          device_token: string
+          device_type: string | null
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          app_version?: string | null
+          created_at?: string | null
+          device_model?: string | null
+          device_os?: string | null
+          device_token: string
+          device_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          app_version?: string | null
+          created_at?: string | null
+          device_model?: string | null
+          device_os?: string | null
+          device_token?: string
+          device_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_identifiers: {
         Row: {
@@ -3805,26 +4261,115 @@ export type Database = {
       }
       user_stripe_customers: {
         Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          stripe_customer_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          stripe_customer_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          stripe_customer_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_stripe_customers_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_suspensions: {
+        Row: {
           created_at: string | null
           id: string
+          lift_reason: string | null
+          lifted_at: string | null
+          lifted_by: string | null
           metadata: Json | null
-          stripe_customer_id: string
+          reason: string
+          suspended_at: string | null
+          suspended_by: string
           updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
+          lift_reason?: string | null
+          lifted_at?: string | null
+          lifted_by?: string | null
           metadata?: Json | null
-          stripe_customer_id: string
+          reason: string
+          suspended_at?: string | null
+          suspended_by: string
           updated_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
+          lift_reason?: string | null
+          lifted_at?: string | null
+          lifted_by?: string | null
           metadata?: Json | null
-          stripe_customer_id?: string
+          reason?: string
+          suspended_at?: string | null
+          suspended_by?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_themes: {
+        Row: {
+          bg_url: string | null
+          created_at: string | null
+          id: string
+          primary_color: string | null
+          secondary_color: string | null
+          text_color: string | null
+          theme_name: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bg_url?: string | null
+          created_at?: string | null
+          id?: string
+          primary_color?: string | null
+          secondary_color?: string | null
+          text_color?: string | null
+          theme_name?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bg_url?: string | null
+          created_at?: string | null
+          id?: string
+          primary_color?: string | null
+          secondary_color?: string | null
+          text_color?: string | null
+          theme_name?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -3890,113 +4435,47 @@ export type Database = {
         }
         Relationships: []
       }
-      user_themes: {
+      virtual_events: {
         Row: {
-          id: string
-          user_id: string
-          theme_name: string
-          bg_url: string | null
-          primary_color: string
-          secondary_color: string
-          text_color: string
           created_at: string | null
+          created_by: string | null
+          description: string | null
+          end_time: string
+          event_type: string
+          id: string
+          location: string | null
+          max_participants: number | null
+          name: string
+          start_time: string
+          status: string | null
           updated_at: string | null
         }
         Insert: {
-          id?: string
-          user_id: string
-          theme_name?: string
-          bg_url?: string | null
-          primary_color?: string
-          secondary_color?: string
-          text_color?: string
           created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_time: string
+          event_type: string
+          id?: string
+          location?: string | null
+          max_participants?: number | null
+          name: string
+          start_time: string
+          status?: string | null
           updated_at?: string | null
         }
         Update: {
-          id?: string
-          user_id?: string
-          theme_name?: string
-          bg_url?: string | null
-          primary_color?: string
-          secondary_color?: string
-          text_color?: string
           created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      event_participations: {
-        Row: {
-          id: string
-          event_id: string
-          user_id: string
-          participated_at: string | null
-          cmpx_rewarded: number | null
-          co2_saved: number | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
+          created_by?: string | null
+          description?: string | null
+          end_time?: string
+          event_type?: string
           id?: string
-          event_id: string
-          user_id: string
-          participated_at?: string | null
-          cmpx_rewarded?: number | null
-          co2_saved?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          event_id?: string
-          user_id?: string
-          participated_at?: string | null
-          cmpx_rewarded?: number | null
-          co2_saved?: number | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      user_device_tokens: {
-        Row: {
-          id: string
-          user_id: string
-          device_token: string
-          device_type: string | null
-          device_os: string | null
-          device_model: string | null
-          app_version: string | null
-          is_active: boolean | null
-          last_used_at: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          device_token: string
-          device_type?: string | null
-          device_os?: string | null
-          device_model?: string | null
-          app_version?: string | null
-          is_active?: boolean | null
-          last_used_at?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          device_token?: string
-          device_type?: string | null
-          device_os?: string | null
-          device_model?: string | null
-          app_version?: string | null
-          is_active?: boolean | null
-          last_used_at?: string | null
-          created_at?: string | null
+          location?: string | null
+          max_participants?: number | null
+          name?: string
+          start_time?: string
+          status?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -4073,42 +4552,6 @@ export type Database = {
         }
         Relationships: []
       }
-      wrappers_fdw_stats: {
-        Row: {
-          bytes_in: number | null
-          bytes_out: number | null
-          create_times: number | null
-          created_at: string
-          fdw_name: string
-          metadata: Json | null
-          rows_in: number | null
-          rows_out: number | null
-          updated_at: string
-        }
-        Insert: {
-          bytes_in?: number | null
-          bytes_out?: number | null
-          create_times?: number | null
-          created_at?: string
-          fdw_name: string
-          metadata?: Json | null
-          rows_in?: number | null
-          rows_out?: number | null
-          updated_at?: string
-        }
-        Update: {
-          bytes_in?: number | null
-          bytes_out?: number | null
-          create_times?: number | null
-          created_at?: string
-          fdw_name?: string
-          metadata?: Json | null
-          rows_in?: number | null
-          rows_out?: number | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       geographic_hotspots: {
@@ -4121,159 +4564,9 @@ export type Database = {
         }
         Relationships: []
       }
-      stripe_prices: {
-        Row: {
-          created: string | null
-          currency: string | null
-          id: string | null
-          metadata: Json | null
-          nickname: string | null
-          product_id: string | null
-          recurring_interval: string | null
-          recurring_interval_count: number | null
-          type: string | null
-          unit_amount: number | null
-          updated: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "prices_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "stripe_products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      stripe_products: {
-        Row: {
-          active: boolean | null
-          created: string | null
-          description: string | null
-          id: string | null
-          metadata: Json | null
-          name: string | null
-          updated: string | null
-        }
-        Relationships: []
-      }
-      stripe_user_charges: {
-        Row: {
-          amount: number | null
-          created: string | null
-          currency: string | null
-          description: string | null
-          id: string | null
-          metadata: Json | null
-          status: string | null
-        }
-        Relationships: []
-      }
-      stripe_user_invoices: {
-        Row: {
-          amount_due: number | null
-          amount_paid: number | null
-          created: string | null
-          currency: string | null
-          due_date: string | null
-          hosted_invoice_url: string | null
-          id: string | null
-          invoice_pdf: string | null
-          metadata: Json | null
-          number: string | null
-          status: string | null
-        }
-        Relationships: []
-      }
-      stripe_user_subscriptions: {
-        Row: {
-          cancel_at: string | null
-          cancel_at_period_end: boolean | null
-          canceled_at: string | null
-          created: string | null
-          current_period_end: string | null
-          current_period_start: string | null
-          customer_id: string | null
-          id: string | null
-          metadata: Json | null
-          status: string | null
-          updated: string | null
-        }
-        Relationships: []
-      }
     }
     Functions: {
-      airtable_fdw_handler: { Args: never; Returns: unknown }
-      airtable_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      airtable_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      auth0_fdw_handler: { Args: never; Returns: unknown }
-      auth0_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      auth0_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      big_query_fdw_handler: { Args: never; Returns: unknown }
-      big_query_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      big_query_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       cleanup_expired_couple_requests: { Args: never; Returns: number }
-      click_house_fdw_handler: { Args: never; Returns: unknown }
-      click_house_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      click_house_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      cognito_fdw_handler: { Args: never; Returns: unknown }
-      cognito_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      cognito_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       count_users_per_cell: {
         Args: never
         Returns: {
@@ -4283,38 +4576,6 @@ export type Database = {
         }[]
       }
       create_assets_snapshot: { Args: { p_couple_id: string }; Returns: Json }
-      create_stripe_customer_for_user: {
-        Args: { p_email?: string; p_metadata?: Json; p_name?: string }
-        Returns: string
-      }
-      duckdb_fdw_handler: { Args: never; Returns: unknown }
-      duckdb_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      duckdb_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      firebase_fdw_handler: { Args: never; Returns: unknown }
-      firebase_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      firebase_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       get_dispute_time_remaining: {
         Args: { p_dispute_id: string }
         Returns: {
@@ -4354,143 +4615,21 @@ export type Database = {
           token_type: string
         }[]
       }
-      get_user_stripe_customer_id: { Args: never; Returns: string }
-      hello_world_fdw_handler: { Args: never; Returns: unknown }
-      hello_world_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      hello_world_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      iceberg_fdw_handler: { Args: never; Returns: unknown }
-      iceberg_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      iceberg_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       is_admin_or_moderator: { Args: never; Returns: boolean }
       is_demo_user: { Args: never; Returns: boolean }
-      logflare_fdw_handler: { Args: never; Returns: unknown }
-      logflare_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      logflare_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      mssql_fdw_handler: { Args: never; Returns: unknown }
-      mssql_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      mssql_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      process_stripe_webhook_event: {
-        Args: {
-          p_event_data: Json
-          p_event_type: string
-          p_stripe_event_id: string
-        }
-        Returns: Json
-      }
-      redis_fdw_handler: { Args: never; Returns: unknown }
-      redis_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      redis_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      refresh_stripe_materialized_views: { Args: never; Returns: undefined }
-      s3_fdw_handler: { Args: never; Returns: unknown }
-      s3_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      s3_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      stripe_fdw_handler: { Args: never; Returns: unknown }
-      stripe_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      stripe_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
-      wasm_fdw_handler: { Args: never; Returns: unknown }
-      wasm_fdw_meta: {
-        Args: never
-        Returns: {
-          author: string
-          name: string
-          version: string
-          website: string
-        }[]
-      }
-      wasm_fdw_validator: {
-        Args: { catalog: unknown; options: string[] }
-        Returns: undefined
-      }
       record_gallery_commission: {
         Args: {
-          p_gallery_id: string
-          p_creator_id: string
-          p_transaction_type: string
           p_amount_cmpx: number
-          p_commission_percentage: number
+          p_commission_percentage?: number
+          p_creator_id: string
+          p_gallery_id: string
+          p_transaction_type: string
         }
         Returns: string
       }
     }
     Enums: {
-      event_type: "meetup" | "party" | "dinner" | "travel" | "other" | "virtual"
+      event_type: "meetup" | "party" | "dinner" | "travel" | "other"
       match_status: "pending" | "accepted" | "rejected" | "blocked"
       report_status: "pending" | "reviewing" | "resolved" | "dismissed"
       transaction_type:
@@ -4626,9 +4765,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       event_type: ["meetup", "party", "dinner", "travel", "other"],

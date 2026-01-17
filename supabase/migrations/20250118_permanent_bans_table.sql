@@ -44,9 +44,10 @@ ALTER TABLE public.permanent_bans ENABLE ROW LEVEL SECURITY;
 
 -- Crear políticas RLS
 DO $$
+DECLARE
+  user_role_exists BOOLEAN;
 BEGIN
   -- Verificar si la tabla profiles tiene la columna user_role antes de crear políticas de admin
-  DECLARE user_role_exists BOOLEAN;
   SELECT EXISTS (
     SELECT 1 FROM information_schema.columns 
     WHERE table_schema = 'public' 

@@ -308,8 +308,8 @@ CREATE TABLE IF NOT EXISTS public.user_stripe_customers (
 );
 
 -- Crear índices
-CREATE INDEX idx_user_stripe_customers_user_id ON public.user_stripe_customers(user_id);
-CREATE INDEX idx_user_stripe_customers_stripe_id ON public.user_stripe_customers(stripe_customer_id);
+CREATE INDEX IF NOT EXISTS idx_user_stripe_customers_user_id ON public.user_stripe_customers(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_stripe_customers_stripe_id ON public.user_stripe_customers(stripe_customer_id);
 
 -- Habilitar RLS
 ALTER TABLE public.user_stripe_customers ENABLE ROW LEVEL SECURITY;

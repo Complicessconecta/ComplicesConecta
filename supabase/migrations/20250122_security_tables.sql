@@ -191,4 +191,8 @@ END $$;
 COMMENT ON TABLE public.security IS 'Eventos de seguridad de usuarios';
 COMMENT ON TABLE public.security_audit_logs IS 'Logs de auditoría de seguridad';
 
-RAISE NOTICE '✅ Tablas security y security_audit_logs creadas exitosamente';
+-- Notificación final
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Tablas security y security_audit_logs creadas exitosamente';
+END $$;

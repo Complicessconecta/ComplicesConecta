@@ -69,6 +69,7 @@ webpack-bundle-analyzer-report.html
 .env.demo
 .env.circleci
 .env*.local
+monitoring/.env
 
 # API Keys & Secrets
 *.key
@@ -350,4 +351,10 @@ REFERENCIA_EXTERNA/**/*_keys*.txt
 /exiftool.md.bak
 /exiftool.translated.md
 /windows_exiftool
+
+# ============================================================================
+# WINDSURF RULES (configuración local de IA)
+# ============================================================================
+.windsurfrules
+.windsurf/
 

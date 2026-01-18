@@ -17,6 +17,7 @@ import { usePersistedState } from '@/hooks/usePersistedState';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { safeSetItem } from '@/utils/safeLocalStorage';
 import { PhoneInput } from '@/components/forms/PhoneInput';
+import { motion } from 'framer-motion';
 
 interface FormData {
   email: string;
@@ -294,8 +295,8 @@ const Auth = () => {
       {/* Background completamente uniforme - sin bloques visibles */}
       
       <div className="relative z-10 w-full max-w-md">
-        {/* Card con glassmorphism mejorado inspirado en las plantillas */}
-        <Card className="bg-white/10 backdrop-blur-xl border-white/30 shadow-2xl rounded-2xl overflow-hidden">
+        {/* Card con glassmorphism profesional */}
+        <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl overflow-hidden max-w-full box-border">
           <CardHeader className="text-center">
             <div className="flex justify-between items-center mb-4">
               <Button
@@ -334,19 +335,31 @@ const Auth = () => {
               Conecta con personas afines en un entorno seguro y discreto
             </CardDescription>
             
-            <div className="flex justify-center space-x-8 mt-6 mb-4">
-              <div className="text-center">
-                <Shield className="h-6 w-6 text-green-400 mx-auto mb-1" />
-                <p className="text-xs text-white font-medium">Seguro</p>
-              </div>
-              <div className="text-center">
-                <Users className="h-6 w-6 text-blue-400 mx-auto mb-1" />
-                <p className="text-xs text-white font-medium">Comunidad</p>
-              </div>
-              <div className="text-center">
-                <Sparkles className="h-6 w-6 text-purple-400 mx-auto mb-1" />
-                <p className="text-xs text-white font-medium">IA Match</p>
-              </div>
+            <div className="flex justify-center space-x-12 mt-6 mb-4">
+              <motion.div 
+                className="text-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Shield className="h-7 w-7 text-green-400 mx-auto mb-2" style={{ filter: 'drop-shadow(0 0 8px rgba(74, 222, 128, 0.6))' }} />
+                <p className="text-sm text-white/90 font-semibold tracking-wide">Seguro</p>
+              </motion.div>
+              <motion.div 
+                className="text-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Users className="h-7 w-7 text-blue-400 mx-auto mb-2" style={{ filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.6))' }} />
+                <p className="text-sm text-white/90 font-semibold tracking-wide">Comunidad</p>
+              </motion.div>
+              <motion.div 
+                className="text-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Sparkles className="h-7 w-7 text-purple-400 mx-auto mb-2" style={{ filter: 'drop-shadow(0 0 8px rgba(192, 132, 252, 0.6))' }} />
+                <p className="text-sm text-white/90 font-semibold tracking-wide">IA Match</p>
+              </motion.div>
             </div>
           </CardHeader>
           <CardContent>
@@ -355,23 +368,35 @@ const Auth = () => {
                 <TabsTrigger 
                   value="signin" 
                   data-testid="switch-to-login"
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
                 >
                   Iniciar Sesión
                 </TabsTrigger>
                 <TabsTrigger 
                   value="signup" 
                   data-testid="switch-to-register"
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
                 >
                   Registrarse
                 </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4" data-testid="login-form">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white font-medium">Correo electrnico</Label>
+              <TabsContent value="signin" className="mt-6">
+                <motion.form 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  onSubmit={handleSignIn} 
+                  className="space-y-4" 
+                  data-testid="login-form"
+                >
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    className="space-y-2"
+                  >
+                    <Label htmlFor="email" className="text-white/90 font-semibold text-base tracking-wide">Correo electrónico</Label>
                     <Input
                       id="email"
                       name="email"
@@ -387,11 +412,16 @@ const Auth = () => {
                       readOnly={!isEmailFocused}
                       onClick={() => setIsEmailFocused(true)}
                       data-testid="email-input"
-                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
+                      className="bg-white/5 border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300"
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-white font-medium">Contrasea</Label>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.2 }}
+                    className="space-y-2"
+                  >
+                    <Label htmlFor="password" className="text-white/90 font-semibold text-base tracking-wide">Contraseña</Label>
                     <Input
                       id="password"
                       type="password"
@@ -400,30 +430,36 @@ const Auth = () => {
                       required
                       minLength={6}
                       data-testid="password-input"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
+                      className="bg-white/5 border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300"
                     />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-purple-400" 
-                    disabled={isLoading} 
-                    data-testid="login-button"
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.3 }}
                   >
-                    {isLoading ? (
-                      <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12c0 4.418 3.582 8 8 8s8-3.582 8-8h4zm0 0H4a8 8 0 00-8 8v4a8 8 0 008 8h4a8 8 0 008-8v-4a8 8 0 00-8-8z"></path>
-                        </svg>
-                        Iniciando sesión...
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center">
-                        <Shield className="h-5 w-5 mr-2" />
-                        Iniciar Sesión
-                      </span>
-                    )}
-                  </Button>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-purple-400" 
+                      disabled={isLoading} 
+                      data-testid="login-button"
+                    >
+                      {isLoading ? (
+                        <span className="flex items-center justify-center">
+                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12c0 4.418 3.582 8 8 8s8-3.582 8-8h4zm0 0H4a8 8 0 00-8 8v4a8 8 0 008 8h4a8 8 0 008-8v-4a8 8 0 00-8-8z"></path>
+                          </svg>
+                          Iniciando sesión...
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center">
+                          <Shield className="h-5 w-5 mr-2" />
+                          Iniciar Sesión
+                        </span>
+                      )}
+                    </Button>
+                  </motion.div>
                   
                   <button
                     type="button"
@@ -457,7 +493,7 @@ const Auth = () => {
                       </Button>
                     </div>
                   )}
-                </form>
+                </motion.form>
               </TabsContent>
               
               <TabsContent value="signup" data-testid="register-form">

@@ -115,10 +115,48 @@ const Auth = () => {
     throw new Error('Credenciales demo no configuradas. Contacte al administrador.');
   }
 
-  const _handleDemoLogin = () => {
-    const event = new Event('submit') as any;
-    event.isDemo = true;
-    handleSignIn(event);
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    setShowLoginLoading(true);
+    
+    try {
+      // Configurar credenciales demo - Lógica del respaldo
+      const demoCredentials = {
+        email: 'demo@complicesconecta.com',
+        password: 'demo123'
+      };
+      
+      // Establecer estado de autenticación demo
+      _setDemoAuthenticated(true);
+      _setDemoUser(demoCredentials);
+      _setUserType('single');
+      
+      // Configurar localStorage para demo
+      localStorage.setItem('demo_authenticated', 'true');
+      localStorage.setItem('demo_user', JSON.stringify(demoCredentials));
+      localStorage.setItem('userType', 'single');
+      
+      toast({
+        title: "Acceso Demo Activado",
+        description: "Bienvenido al modo demo de ComplicesConecta",
+      });
+      
+      // Navegar al feed después de un breve delay
+      setTimeout(() => {
+        navigate('/feed');
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Error en demo login:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo activar el modo demo",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+      setShowLoginLoading(false);
+    }
   };
 
 
@@ -319,18 +357,15 @@ const Auth = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
+                  // Toggle entre modo normal y admin - Lógica del respaldo
                   setIsAdminMode(!isAdminMode);
-                  setFormData((prev) => ({
-                    ...prev,
-                    email: "",
-                    password: "",
-                  }));
+                  if (!isAdminMode) {
+                    setFormData(prev => ({ ...prev, email: 'complicesconectasw@outlook.es', password: 'admin123' }));
+                  } else {
+                    setFormData(prev => ({ ...prev, email: '', password: '' }));
+                  }
                 }}
-                className={`bg-gradient-to-r hover:scale-105 transition-all duration-300 hover:shadow-lg ${
-                  isAdminMode
-                    ? "from-green-600/20 to-emerald-600/40 hover:from-green-600/40 hover:to-emerald-600/60 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm hover:shadow-green-500/30"
-                    : "from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm hover:shadow-purple-500/30"
-                }`}
+                className="text-white/90 hover:text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20 hover:border-white/40 rounded-lg px-4 py-2"
                 data-testid="toggle-auth-mode"
               >
                 <Shield className="h-4 w-4 mr-2" />
@@ -483,7 +518,7 @@ const Auth = () => {
                         type="button"
                         variant="outline"
                         className="w-full border-2 border-purple-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-purple-500/40 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-purple-500/20"
-                        onClick={_handleDemoLogin}
+                        onClick={handleDemoLogin}
                         data-testid="demo-login-button"
                       >
                         <Sparkles className="w-5 h-5 mr-2 animate-pulse" />

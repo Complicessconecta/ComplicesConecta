@@ -302,7 +302,7 @@ const Auth = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/')}
-                className="text-white/80 hover:text-white hover:bg-white/10"
+                className="text-white/90 hover:text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20 hover:border-white/40 rounded-lg px-4 py-2"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver
@@ -351,9 +351,21 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin" data-testid="switch-to-login">Iniciar Sesión</TabsTrigger>
-                <TabsTrigger value="signup" data-testid="switch-to-register">Registrarse</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 gap-2 p-1 bg-white/10 backdrop-blur-sm rounded-xl">
+                <TabsTrigger 
+                  value="signin" 
+                  data-testid="switch-to-login"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
+                >
+                  Iniciar Sesión
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="signup" 
+                  data-testid="switch-to-register"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
+                >
+                  Registrarse
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin">
@@ -393,12 +405,24 @@ const Auth = () => {
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95" 
+                    className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-purple-400" 
                     disabled={isLoading} 
                     data-testid="login-button"
-                    style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
                   >
-                    {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                    {isLoading ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12c0 4.418 3.582 8 8 8s8-3.582 8-8h4zm0 0H4a8 8 0 00-8 8v4a8 8 0 008 8h4a8 8 0 008-8v-4a8 8 0 00-8-8z"></path>
+                        </svg>
+                        Iniciando sesión...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center">
+                        <Shield className="h-5 w-5 mr-2" />
+                        Iniciar Sesión
+                      </span>
+                    )}
                   </Button>
                   
                   <button
@@ -776,11 +800,23 @@ const Auth = () => {
 
                   <Button 
                     type="submit" 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95" 
+                    className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-purple-400" 
                     disabled={isLoading}
-                    style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
                   >
-                    {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
+                    {isLoading ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12c0 4.418 3.582 8 8 8s8-3.582 8-8h4zm0 0H4a8 8 0 00-8 8v4a8 8 0 008 8h4a8 8 0 008-8v-4a8 8 0 00-8-8z"></path>
+                        </svg>
+                        Creando cuenta...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center">
+                        <Users className="h-5 w-5 mr-2" />
+                        Crear Cuenta
+                      </span>
+                    )}
                   </Button>
                 </form>
               </TabsContent>

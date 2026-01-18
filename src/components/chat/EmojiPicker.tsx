@@ -725,7 +725,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
               <button
                 key={key}
                 onClick={() => setActiveCategory(key)}
-                className={`flex-shrink-0 p-2 rounded-lg transition-colors ${
+                className={`shrink-0 p-2 rounded-lg transition-colors ${
                   activeCategory === key
                     ? "bg-purple-100 dark:bg-purple-900/30"
                     : "hover:bg-gray-100 dark:hover:bg-gray-800"

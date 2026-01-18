@@ -321,7 +321,7 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
                 className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
               >
                 {/* Preview/Icon */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   {filePreview.preview ? (
                     <img
                       src={filePreview.preview}

@@ -275,7 +275,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-gradient-to-br from-purple-900/90 to-blue-900/90 backdrop-blur-md border border-white/20 rounded-lg p-6 max-w-md w-full mx-4 text-white">
+      <div className="bg-linear-to-br from-purple-900/90 to-blue-900/90 backdrop-blur-md border border-white/20 rounded-lg p-6 max-w-md w-full mx-4 text-white">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -344,7 +344,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
           {/* Información importante */}
           <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-400/30">
             <div className="flex items-start gap-2">
-              <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+              <Info className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
               <div className="text-xs text-blue-300">
                 <div className="font-medium mb-1">
                   Sistema de Consentimiento Doble

@@ -143,7 +143,7 @@ export const BetaModal = () => {
                 <X className="h-4 w-4" />
               </Button>
 
-              <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 p-6 text-white text-center rounded-t-lg">
+              <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-6 text-white text-center rounded-t-lg">
                 <Rocket className="h-12 w-12 mx-auto mb-3 animate-bounce" />
                 <h2 className="text-2xl font-bold mb-2">
                   ¡Bienvenido a la Beta!

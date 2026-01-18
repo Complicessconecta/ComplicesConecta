@@ -389,7 +389,7 @@ export function TokenSystemPanel() {
                   </Button>
                   <Button
                     onClick={handleTokenAdjustment}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                    className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                   >
                     Aplicar Ajuste
                   </Button>

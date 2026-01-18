@@ -393,19 +393,19 @@ export const PerformancePanel = () => {
         <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-md border border-white/20">
           <TabsTrigger
             value="overview"
-            className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+            className="text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
           >
             Resumen
           </TabsTrigger>
           <TabsTrigger
             value="metrics"
-            className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+            className="text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
           >
             Métricas
           </TabsTrigger>
           <TabsTrigger
             value="history"
-            className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+            className="text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
           >
             Historial
           </TabsTrigger>

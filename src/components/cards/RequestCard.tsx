@@ -206,7 +206,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
       <div className="flex items-start gap-4">
         {/* Avatar - Campo avatar_url no existe en schema, usando placeholder */}
         <div className="relative">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center">
             <User className="w-6 h-6 text-white" />
           </div>
 
@@ -255,7 +255,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
           {request.message && (
             <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-start gap-2">
-                <MessageCircle className="w-4 h-4 text-gray-600 dark:text-gray-300 mt-0.5 flex-shrink-0" />
+                <MessageCircle className="w-4 h-4 text-gray-600 dark:text-gray-300 mt-0.5 shrink-0" />
                 <p className="text-sm text-gray-700 dark:text-gray-300">
                   {request.message}
                 </p>

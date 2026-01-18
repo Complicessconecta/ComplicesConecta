@@ -343,7 +343,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
         </div>
 
         {/* Performance Summary */}
-        <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700">
+        <div className="bg-linear-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
             📊 Resumen de Rendimiento
           </h3>

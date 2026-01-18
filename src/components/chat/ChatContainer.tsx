@@ -69,7 +69,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       initial={enableAnimations ? { opacity: 0, scale: 0.95 } : false}
       animate={enableAnimations ? { opacity: 1, scale: 1 } : false}
       className={cn(
-        "flex flex-col h-full bg-gradient-to-br from-white to-gray-50",
+        "flex flex-col h-full bg-linear-to-br from-white to-gray-50",
         "rounded-lg shadow-xl overflow-hidden",
         className,
       )}
@@ -93,7 +93,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
 
         <Avatar className="w-10 h-10">
           <AvatarImage src={chat.avatar} alt={chat.name} />
-          <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-600 text-white">
+          <AvatarFallback className="bg-linear-to-br from-pink-500 to-purple-600 text-white">
             {chat.name.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -183,7 +183,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             onClick={scrollToBottom}
             className="absolute bottom-20 right-6 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
           >
-            <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-gray-600" />
+            <div className="w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-6 border-t-gray-600" />
           </motion.button>
         )}
       </AnimatePresence>

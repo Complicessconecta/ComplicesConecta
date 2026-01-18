@@ -216,9 +216,9 @@ export const ChatBot: React.FC<ChatBotProps> = ({
               >
                 <div className="flex items-start space-x-2">
                   {message.role === 'user' ? (
-                    <User className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <User className="w-4 h-4 mt-1 shrink-0" />
                   ) : (
-                    <Bot className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <Bot className="w-4 h-4 mt-1 shrink-0" />
                   )}
                   <div className="flex-1">
                     <p className="text-sm whitespace-pre-wrap">{message.content}</p>

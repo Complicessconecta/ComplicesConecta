@@ -214,7 +214,7 @@ export const AdminBannerPanel: React.FC = () => {
             resetForm();
             setShowForm(true);
           }}
-          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+          className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
         >
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Banner

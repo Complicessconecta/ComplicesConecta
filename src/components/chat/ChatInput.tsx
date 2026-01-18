@@ -133,7 +133,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             disabled={!message.trim() || disabled}
             className={cn(
               "h-10 w-10 p-0 rounded-full",
-              "bg-gradient-to-r from-pink-500 to-purple-600",
+              "bg-linear-to-r from-pink-500 to-purple-600",
               "hover:from-pink-600 hover:to-purple-700",
               "disabled:from-gray-300 disabled:to-gray-400",
               "transition-all duration-200",

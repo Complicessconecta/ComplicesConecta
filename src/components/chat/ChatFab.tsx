@@ -32,7 +32,7 @@ export const ChatFab: React.FC<ChatFabProps> = ({ onOpen }) => {
           navigate("/chat");
         }
       }}
-      className="fixed bottom-24 right-4 z-50 rounded-full w-14 h-14 shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-0 flex items-center justify-center transition-transform hover:scale-110"
+      className="fixed bottom-24 right-4 z-50 rounded-full w-14 h-14 shadow-lg bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-0 flex items-center justify-center transition-transform hover:scale-110"
       aria-label="Abrir Chat"
     >
       <MessageCircle className="w-8 h-8" />

@@ -317,7 +317,7 @@ export const AnalyticsDashboard: React.FC = () => {
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Avg Load Time */}
-            <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-white/70 font-medium">
@@ -343,7 +343,7 @@ export const AnalyticsDashboard: React.FC = () => {
             </div>
 
             {/* Total Requests */}
-            <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-white/70 font-medium">
@@ -361,7 +361,7 @@ export const AnalyticsDashboard: React.FC = () => {
             </div>
 
             {/* Memory Usage */}
-            <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-white/70 font-medium">
@@ -387,7 +387,7 @@ export const AnalyticsDashboard: React.FC = () => {
             </div>
 
             {/* Error Status */}
-            <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-white/70 font-medium">
@@ -415,7 +415,7 @@ export const AnalyticsDashboard: React.FC = () => {
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Performance Metrics */}
-            <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
               <h3 className="text-lg font-semibold text-white mb-4">
                 📈 Performance
               </h3>
@@ -446,7 +446,7 @@ export const AnalyticsDashboard: React.FC = () => {
             </div>
 
             {/* Errors by Severity */}
-            <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
               <h3 className="text-lg font-semibold text-white mb-4">
                 🚨 Errors by Severity
               </h3>
@@ -478,7 +478,7 @@ export const AnalyticsDashboard: React.FC = () => {
             </div>
 
             {/* Web Vitals */}
-            <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
               <h3 className="text-lg font-semibold text-white mb-4">
                 ⚡ Web Vitals
               </h3>

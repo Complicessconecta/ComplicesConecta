@@ -70,7 +70,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
         <div className="flex items-center gap-3 text-[11px] text-white/70">
           <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
             <div
-              className={`h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 transition-all duration-300 progress-bar-fill ${
+              className={`h-1 bg-linear-to-r from-purple-500 via-blue-500 to-cyan-500 transition-all duration-300 progress-bar-fill ${
                 isLoadingModel ? "animate-pulse" : ""
               }`}
               style={{ width: `${progress.percent || (isReady ? 100 : 10)}%` }}
@@ -138,7 +138,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
           <Button
             type="submit"
             disabled={!input.trim()}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4"
+            className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4"
           >
             {isLoadingModel ? (
               <Loader2 className="w-4 h-4 animate-spin" />

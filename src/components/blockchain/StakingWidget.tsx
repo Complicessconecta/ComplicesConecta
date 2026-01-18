@@ -248,7 +248,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
 
   return (
     <Card
-      className={`bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white ${className}`}
+      className={`bg-linear-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white ${className}`}
     >
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -427,7 +427,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
         {/* Información de Modo Demo */}
         {isDemoMode && (
           <div className="text-yellow-400 text-sm bg-yellow-500/10 p-2 rounded border border-yellow-500/20 flex items-start gap-2">
-            <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <Info className="w-4 h-4 mt-0.5 shrink-0" />
             <div>
               <div className="font-medium">Modo Demo Activo</div>
               <div className="text-xs text-yellow-300/80">

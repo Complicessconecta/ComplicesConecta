@@ -21,9 +21,9 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
       exit={{ opacity: 0, y: -10 }}
       className={cn("flex items-center gap-3 mb-4", className)}
     >
-      <Avatar className="w-8 h-8 flex-shrink-0">
+      <Avatar className="w-8 h-8 shrink-0">
         <AvatarImage src={avatar} alt={username} />
-        <AvatarFallback className="text-xs bg-gradient-to-br from-gray-400 to-gray-600 text-white">
+        <AvatarFallback className="text-xs bg-linear-to-br from-gray-400 to-gray-600 text-white">
           {username.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>

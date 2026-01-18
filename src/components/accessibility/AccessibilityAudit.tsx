@@ -395,7 +395,7 @@ export function AccessibilityAudit({
                       "bg-blue-50 border-blue-200",
                   )}
                 >
-                  <div className="flex-shrink-0 mt-0.5">
+                  <div className="shrink-0 mt-0.5">
                     {issue.fixed ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
                     ) : issue.type === "error" ? (
@@ -442,7 +442,7 @@ export function AccessibilityAudit({
           <div className="text-center">
             <Button
               onClick={() => applyAutoFixes(issues)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              className="bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
               ?? Aplicar Correcciones Automáticas
             </Button>

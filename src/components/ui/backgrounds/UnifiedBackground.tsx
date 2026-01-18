@@ -395,29 +395,24 @@ const neonOptions = useMemo(
 
   return (
     <div
-      className={`relative min-h-screen w-full max-w-full overflow-x-hidden ${className || ""}`}
+      className={`fixed inset-0 -z-30 bg-linear-to-br ${
+        preferences.particlesEnabled
+          ? "from-slate-900 via-purple-950 to-slate-900"
+          : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
+      } ${variant === "solid" ? "bg-(--cc-solid-bg)" : ""}`}
     >
-      {/* Capa base: gradiente sólido (anti-flash) */}
-      <div
-        className={`fixed inset-0 -z-30 bg-gradient-to-br ${
-          preferences.particlesEnabled
-            ? "from-slate-900 via-purple-950 to-slate-900"
-            : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
-        } ${variant === "solid" ? "bg-[var(--cc-solid-bg)]" : ""}`}
-      />
-
       {/* Imagen de fondo con fade-in sólo cuando está cargada */}
       {variant !== "solid" && resolvedBackground && (
         <img
           src={resolvedBackground}
           alt=""
           aria-hidden="true"
-          className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-[1200ms] ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+          className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-1200 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
         />
       )}
 
       {/* Overlay gradiente oscuro para legibilidad */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-black/40 via-black/30 to-black/40" />
+      <div className="fixed inset-0 -z-10 bg-linear-to-br from-black/40 via-black/30 to-black/40" />
 
       {/* Partículas neón globales (modo Lifestyle Swinger) */}
       {showNeonParticles && (

@@ -206,7 +206,7 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
                 alt={user.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
 
               {/* Online indicator */}
               {user.isOnline && (
@@ -245,7 +245,7 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
 
         {/* Back of card */}
         <div className="absolute inset-0 backface-hidden rotate-y-180">
-          <EnhancedCard className="h-full bg-gradient-to-br from-purple-600 to-pink-600">
+          <EnhancedCard className="h-full bg-linear-to-br from-purple-600 to-pink-600">
             <div className="p-6 h-full flex flex-col justify-between text-white">
               <div>
                 <h3 className="text-xl font-bold mb-4">{user.name}</h3>
@@ -358,7 +358,7 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
       <div
         className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
           message.isOwn
-            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+            ? "bg-linear-to-r from-purple-600 to-pink-600 text-white"
             : "bg-gray-200 text-gray-800"
         }`}
       >

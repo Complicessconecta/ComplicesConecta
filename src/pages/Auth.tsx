@@ -296,8 +296,15 @@ const Auth = () => {
       
       <div className="relative z-10 w-full max-w-md">
         {/* Card con glassmorphism profesional */}
-        <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl overflow-hidden max-w-full box-border">
-          <CardHeader className="text-center">
+        <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl overflow-hidden max-w-full box-border h-auto max-h-[90vh] overflow-y-auto">
+          {/* Corazones decorativos dentro del contenedor */}
+          <div className="relative z-0 absolute inset-0 overflow-hidden pointer-events-none">
+            <DecorativeHearts count={6} />
+          </div>
+
+          {/* Contenido del formulario en z-10 */}
+          <div className="relative z-10">
+          <CardHeader className="text-center relative z-10">
             <div className="flex justify-between items-center mb-4">
               <Button
                 variant="ghost"
@@ -440,7 +447,7 @@ const Auth = () => {
                   >
                     <Button 
                       type="submit" 
-                      className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-purple-400" 
+                      className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 border-2 border-purple-400" 
                       disabled={isLoading} 
                       data-testid="login-button"
                     >
@@ -475,7 +482,7 @@ const Auth = () => {
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-2 border-purple-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-purple-500/40 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/20"
+                        className="w-full border-2 border-purple-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-purple-500/40 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-purple-500/20"
                         onClick={_handleDemoLogin}
                         data-testid="demo-login-button"
                       >
@@ -485,7 +492,7 @@ const Auth = () => {
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-2 border-blue-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-blue-500/40 hover:border-blue-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/20"
+                        className="w-full border-2 border-blue-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-blue-500/40 hover:border-blue-400 hover:text-white transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-blue-500/20"
                         onClick={() => navigate('/clubs-coming-soon')}
                       >
                         <Building2 className="w-5 h-5 mr-2" />
@@ -529,7 +536,7 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  {/* Informacin Bsica */}
+                  {/* Información Básica */}
                   <div className="space-y-2">
                     <Label htmlFor="firstName" className="text-white font-medium">Nombre</Label>
                     <Input
@@ -858,6 +865,7 @@ const Auth = () => {
               </TabsContent>
             </Tabs>
           </CardContent>
+          </div>
         </Card>
       </div>
 

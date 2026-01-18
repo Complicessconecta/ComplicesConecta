@@ -2,16 +2,15 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
-import { Button } from "@/components/ui/buttons/Button";
-import { Input } from "@/components/ui/forms/Input";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Users, ArrowLeft, Sparkles, MapPin, Building2 } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
-import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 import { Theme } from '@/features/profile/useProfileTheme';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
@@ -326,7 +325,7 @@ const Auth = () => {
   }
 
   return (
-    <ResponsiveContainer className="w-full max-w-7xl mx-auto sm:px-8 lg:px-12 min-h-screen bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="w-full min-h-screen bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={6} />
       
@@ -1003,7 +1002,7 @@ const Auth = () => {
           </div>
         </div>
       )}
-    </ResponsiveContainer>
+    </div>
   );
 };
 

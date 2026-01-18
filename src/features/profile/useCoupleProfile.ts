@@ -1,10 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { logger } from "@/lib/logger";
 import type { CoupleProfile } from "@/services/couple/AdvancedCoupleService";
-import {
-  coupleProfilesService,
-  getAllCoupleProfiles,
-} from "@/services/couple/CoupleProfilesService";
+import { coupleProfilesService, getAllCoupleProfiles } from "@/services/couple/CoupleProfilesService";
 
 // Extended interface for couple profiles with partner details
 // Note: AdvancedCoupleService might return this structure implicitly or we might need to fetch partners separately

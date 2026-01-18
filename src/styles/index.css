@@ -1,91 +1,918 @@
-/* Tailwind Directives - Deben ir PRIMERO para que @apply funcione correctamente */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
 
-/* ===== ESTILOS BASE Y VARIABLES ===== */
-/* Consolidado desde src/styles/base/base.css */
 :root {
-  --primary: #ff1493;
-  --secondary: #8b00ff;
-  --bg-dark: #1a0033;
-  --accent: #ff6b9d;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
+  /* Densidades Android: mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi */
+  --android-touch-target: 48px; /* Material Design minimum */
+  --android-font-base: 16px; /* Evita zoom automático */
+  --android-line-height: 1.5;
+  --android-padding: 16px; /* 16dp = 16px en mdpi */
+  --android-margin: 8px;
+  --android-border-radius: 8px;
+  --android-elevation-1:
+    0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --android-elevation-2:
+    0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --android-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Safe Areas (iOS/Android) */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+
+  /* Safe Area Utilities */
+  .safe-area-pt {
+    padding-top: var(--sat);
+  }
+  .safe-area-pb {
+    padding-bottom: var(--sab);
+  }
+  .safe-area-pl {
+    padding-left: var(--sal);
+  }
+  .safe-area-pr {
+    padding-right: var(--sar);
+  }
+  .safe-area-inset {
+    padding-left: var(--sal);
+    padding-right: var(--sar);
+  }
+  .safe-area-my {
+    margin-top: var(--sat);
+    margin-bottom: var(--sab);
+  }
+
+  /* Modern gradient background */
+  --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  --secondary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+
+  /* ComplicesConecta Design System - All colors MUST be HSL */
+  --background: 350 20% 99%;
+  --foreground: 345 15% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 345 15% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 345 15% 15%;
+
+  /* Primary - Passionate coral/pink */
+  --primary: 345 85% 65%;
+  --primary-foreground: 0 0% 100%;
+  --primary-glow: 345 85% 75%;
+
+  /* Secondary - Warm peach */
+  --secondary: 25 90% 85%;
+  --secondary-foreground: 345 15% 15%;
+
+  /* Muted - Soft neutral */
+  --muted: 350 15% 95%;
+  --muted-foreground: 345 10% 45%;
+
+  /* Accent - Golden warmth */
+  --accent: 45 90% 70%;
+  --accent-foreground: 345 15% 15%;
+
+  --destructive: 0 85% 65%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 350 15% 90%;
+  --input: 350 15% 90%;
+  --ring: 345 85% 65%;
+
+  /* ComplicesConecta Custom Variables */
+  --love-gradient: linear-gradient(135deg, hsl(270 70% 60%), hsl(260 75% 65%));
+  --hero-gradient: linear-gradient(
+    135deg,
+    hsl(240 70% 55%) 0%,
+    hsl(270 70% 60%) 50%,
+    hsl(280 65% 65%) 100%
+  );
+  --card-gradient: linear-gradient(
+    180deg,
+    hsl(0 0% 100%) 0%,
+    hsl(350 20% 99%) 100%
+  );
+
+  /* Shadows with brand colors */
+  --shadow-primary: 0 10px 30px -10px hsl(345 85% 65% / 0.3);
+  --shadow-glow: 0 0 40px hsl(345 85% 75% / 0.4);
+  --shadow-soft: 0 4px 20px -8px hsl(345 15% 15% / 0.1);
+
+  /* Animations */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  --radius: 0.5rem;
+
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
 }
 
-body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
-/* ===== ESTILOS DE COMPONENTES ===== */
-/* Consolidado desde src/styles/components/components.css */
-/* NOTA: Los warnings sobre @apply son normales - Tailwind CSS procesa estas directivas correctamente */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  html, body {
+    height: 100%;
+  }
+}
+
+/* Animations */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.55;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(-40px) translateX(-10px);
+    opacity: 0.55;
+  }
+  75% {
+    transform: translateY(-20px) translateX(15px);
+    opacity: 0.55;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.progress-bar-dynamic {
+  transition: width 0.5s ease-in-out;
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Button animations */
+button,
+.btn,
+[role="button"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover:not(:disabled),
+.btn:hover:not(:disabled),
+[role="button"]:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+button:active:not(:disabled),
+.btn:active:not(:disabled),
+[role="button"]:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.like-button {
+  transition: all 0.3s ease;
+}
+.like-button:hover {
+  transform: scale(1.2);
+}
+.like-button:active {
+  transform: scale(0.9);
+}
+.like-button.liked {
+  animation: heartBeat 0.6s ease-in-out;
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+/* UI Fixes */
+[class*="hover:bg-white/10"]:hover,
+[class*="bg-white/10"]:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+[class*="bg-white/10"] {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+[class*="border-white/20"] {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* MERGED STYLES FROM DECORATIVE-HEARTS.CSS                                 */
+/* -------------------------------------------------------------------------- */
+
+/* Estilos para corazones decorativos flotantes - Animaciones más lentas y visibles */
+@keyframes float-heart {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translateY(-30px) translateX(15px) rotate(8deg) scale(1.1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) translateX(-10px) rotate(-6deg) scale(0.95);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translateY(-35px) translateX(12px) rotate(7deg) scale(1.05);
+    opacity: 0.65;
+  }
+}
+
+/* Animación más lenta para corazones - sin lag al hacer scroll */
+@keyframes float-heart-slow {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1)
+      translateZ(0);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) rotate(5deg) scale(1.08)
+      translateZ(0);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(-15px) translateX(-8px) rotate(-4deg) scale(0.98)
+      translateZ(0);
+    opacity: 0.65;
+  }
+  75% {
+    transform: translateY(-25px) translateX(8px) rotate(4deg) scale(1.05)
+      translateZ(0);
+    opacity: 0.8;
+  }
+}
+
+/* Animación adicional para efectos de brillo */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 6px 20px rgba(255, 255, 255, 0.8));
+  }
+}
+
+.animate-float {
+  animation:
+    float-heart 10s ease-in-out infinite,
+    pulse-glow 4s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.animate-float-heart-slow {
+  animation:
+    float-heart-slow 15s ease-in-out infinite,
+    pulse-glow 5s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Estilos personalizados para scrollbar del dropdown */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.3) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.4);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.6);
+}
+
+.custom-scrollbar-inner {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.3) transparent;
+}
+
+.custom-scrollbar-inner::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar-inner::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.custom-scrollbar-inner::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.4);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.custom-scrollbar-inner::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.6);
+}
+
+/* Ocultar scrollbar por defecto, mostrar al hover */
+.custom-scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.custom-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar-hide:hover {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.3) transparent;
+}
+
+.custom-scrollbar-hide:hover::-webkit-scrollbar {
+  display: block;
+  width: 6px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* MERGED STYLES FROM ANIMATIONS.CSS                                        */
+/* -------------------------------------------------------------------------- */
+
+/* Custom animations for Index page */
+.particle-1 {
+  left: 15%;
+  top: 20%;
+  animation-delay: 0.5s;
+  animation-duration: 4s;
+}
+.particle-2 {
+  left: 85%;
+  top: 30%;
+  animation-delay: 1.2s;
+  animation-duration: 5s;
+}
+.particle-3 {
+  left: 25%;
+  top: 70%;
+  animation-delay: 2s;
+  animation-duration: 3.5s;
+}
+.particle-4 {
+  left: 75%;
+  top: 80%;
+  animation-delay: 0.8s;
+  animation-duration: 4.5s;
+}
+.particle-5 {
+  left: 45%;
+  top: 15%;
+  animation-delay: 1.5s;
+  animation-duration: 3.8s;
+}
+.particle-6 {
+  left: 65%;
+  top: 60%;
+  animation-delay: 0.3s;
+  animation-duration: 4.2s;
+}
+.particle-7 {
+  left: 10%;
+  top: 50%;
+  animation-delay: 1.8s;
+  animation-duration: 3.2s;
+}
+.particle-8 {
+  left: 90%;
+  top: 10%;
+  animation-delay: 2.5s;
+  animation-duration: 5.5s;
+}
+.particle-9 {
+  left: 35%;
+  top: 85%;
+  animation-delay: 0.7s;
+  animation-duration: 4.8s;
+}
+.particle-10 {
+  left: 55%;
+  top: 25%;
+  animation-delay: 1.9s;
+  animation-duration: 3.6s;
+}
+.particle-11 {
+  left: 20%;
+  top: 40%;
+  animation-delay: 0.4s;
+  animation-duration: 4.3s;
+}
+.particle-12 {
+  left: 80%;
+  top: 75%;
+  animation-delay: 1.6s;
+  animation-duration: 3.9s;
+}
+.particle-13 {
+  left: 30%;
+  top: 5%;
+  animation-delay: 2.2s;
+  animation-duration: 4.7s;
+}
+.particle-14 {
+  left: 70%;
+  top: 45%;
+  animation-delay: 0.9s;
+  animation-duration: 3.4s;
+}
+.particle-15 {
+  left: 5%;
+  top: 90%;
+  animation-delay: 1.3s;
+  animation-duration: 5.2s;
+}
+.particle-16 {
+  left: 95%;
+  top: 35%;
+  animation-delay: 2.8s;
+  animation-duration: 3.7s;
+}
+.particle-17 {
+  left: 40%;
+  top: 65%;
+  animation-delay: 0.6s;
+  animation-duration: 4.6s;
+}
+.particle-18 {
+  left: 60%;
+  top: 95%;
+  animation-delay: 1.7s;
+  animation-duration: 3.3s;
+}
+.particle-19 {
+  left: 15%;
+  top: 75%;
+  animation-delay: 2.4s;
+  animation-duration: 4.9s;
+}
+.particle-20 {
+  left: 85%;
+  top: 55%;
+  animation-delay: 1.1s;
+  animation-duration: 3.1s;
+}
+
+.shape-delay-1 {
+  animation-delay: 1s;
+}
+.shape-delay-2 {
+  animation-delay: 1.5s;
+}
+
+/* Animación de deslizamiento hacia arriba con delay dinámico */
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+  animation-delay: var(--animation-delay, 0s);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Barra de progreso con ancho dinámico basado en data attribute */
+.progress-bar[data-progress] {
+  width: calc(var(--progress, 0) * 1%);
+}
+
+.progress-bar[data-progress="0"] {
+  --progress: 0;
+}
+.progress-bar[data-progress="10"] {
+  --progress: 10;
+}
+.progress-bar[data-progress="20"] {
+  --progress: 20;
+}
+.progress-bar[data-progress="30"] {
+  --progress: 30;
+}
+.progress-bar[data-progress="40"] {
+  --progress: 40;
+}
+.progress-bar[data-progress="50"] {
+  --progress: 50;
+}
+.progress-bar[data-progress="60"] {
+  --progress: 60;
+}
+.progress-bar[data-progress="70"] {
+  --progress: 70;
+}
+.progress-bar[data-progress="80"] {
+  --progress: 80;
+}
+.progress-bar[data-progress="90"] {
+  --progress: 90;
+}
+.progress-bar[data-progress="100"] {
+  --progress: 100;
+}
+
+.icon-delay-1 {
+  animation-delay: 0.5s;
+}
+.icon-delay-2 {
+  animation-delay: 1.2s;
+}
+.icon-delay-3 {
+  animation-delay: 2s;
+}
+.icon-delay-4 {
+  animation-delay: 0.8s;
+}
+.icon-delay-5 {
+  animation-delay: 1.5s;
+}
+
+.slide-up-delay-0 {
+  animation-delay: 0s;
+}
+.slide-up-delay-1 {
+  animation-delay: 0.2s;
+}
+.slide-up-delay-2 {
+  animation-delay: 0.4s;
+}
+.slide-up-delay-3 {
+  animation-delay: 0.6s;
+}
+
+/* Dynamic animation delay using CSS custom properties */
+.animation-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animation-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.animation-delay-600 {
+  animation-delay: 0.6s;
+}
+
+.animation-delay-800 {
+  animation-delay: 0.8s;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1s;
+}
+
+.animation-delay-1200 {
+  animation-delay: 1.2s;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.slide-up-delay-0 {
+  animation-delay: 0s;
+}
+.slide-up-delay-1 {
+  animation-delay: 0.2s;
+}
+.slide-up-delay-2 {
+  animation-delay: 0.4s;
+}
+.slide-up-delay-3 {
+  animation-delay: 0.6s;
+}
+
+/* Dynamic animation delay using CSS custom properties */
+.animate-slide-up {
+  animation-delay: var(--animation-delay, 0s);
+}
+
+/* Advanced animations for background effects */
+@keyframes gradient-x {
+  0%,
+  100% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes gradient-y {
+  0%,
+  100% {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+  66% {
+    transform: translateY(10px) rotate(-2deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(15px) rotate(-1deg);
+  }
+  66% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 15s ease infinite;
+}
+
+.animate-gradient-y {
+  animation: gradient-y 15s ease infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* MERGED STYLES FROM COMPONENT CLASSES (PROFILES, UI)                        */
+/* -------------------------------------------------------------------------- */
+
+/* Modal animations */
+@keyframes modal-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-in {
+  animation: modal-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Pulse glow animation for text */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.7));
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
 @layer components {
-  .button {
-    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold;
-  }
-
-  .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
-  }
-
-  .input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2;
-  }
-}
-
-/* ===== UTILIDADES PERSONALIZADAS ===== */
-/* Consolidado desde src/styles/utils/utils.css */
-/* NOTA: Los warnings sobre @apply son normales - Tailwind CSS procesa estas directivas correctamente */
-@layer utilities {
-  .container {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
-  }
-
-  .sr-only {
-    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
-    clip: rect(0, 0, 0, 0);
-  }
-}
-
-/* ===== ESTILOS DE PERFILES ===== */
-/* Consolidado desde src/styles/profiles/single.css y couple.css */
-/* NOTA: Los warnings sobre @apply son normales - Tailwind CSS procesa estas directivas correctamente */
-@layer components {
+  /* Profiles - Single */
   .profile-single {
     @apply container mx-auto px-4 py-8;
   }
-
   .profile-single-header {
     @apply mb-8 text-center;
   }
-
   .profile-single-content {
     @apply grid grid-cols-1 md:grid-cols-2 gap-6;
   }
 
+  /* Profiles - Couple */
   .profile-couple {
     @apply container mx-auto px-4 py-8;
   }
-
   .profile-couple-header {
     @apply mb-8 text-center;
   }
-
   .profile-couple-content {
     @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+  }
+
+  /* UI Components */
+  .button {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold;
+  }
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2;
   }
 }

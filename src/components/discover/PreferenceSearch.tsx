@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Database } from "@/types/supabase-generated";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Label } from "@/components/ui/label";

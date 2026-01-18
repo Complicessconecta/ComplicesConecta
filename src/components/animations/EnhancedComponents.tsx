@@ -3,11 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { UnifiedCard } from "@/components/ui/UnifiedCard";
 import { useAnimationVariants } from "@/components/animations/AnimationProvider";
-import {
-  MagneticButton,
-  RippleEffect,
-  FloatingElement,
-} from "@/components/animations/InteractiveAnimations";
+import { MagneticButton, RippleEffect, FloatingElement } from "@/components/animations/InteractiveAnimations";
 import { Heart, Star } from "lucide-react";
 
 // Enhanced Animated Button with multiple effects

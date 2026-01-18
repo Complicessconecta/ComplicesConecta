@@ -1,13 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Heart,
-  MessageCircle,
-  User,
-  Flame,
-  Users,
-  Crown,
-  Sparkles,
-} from "lucide-react";
+import { Heart, MessageCircle, User, Flame, Users, Crown, Sparkles } from "lucide-react";
 // useNavigate removido por no utilizarse
 import { motion } from "framer-motion";
 import { logger } from "@/lib/logger";

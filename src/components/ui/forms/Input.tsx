@@ -1,7 +1,5 @@
 import * as React from "react";
-
 import { cn } from "@/shared/lib/cn";
-
 export type InputProps = React.ComponentProps<"input">;
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(

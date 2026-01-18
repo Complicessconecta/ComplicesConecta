@@ -145,7 +145,7 @@ if (typeof window !== "undefined") {
 
 // Ahora sí, importar el resto de las dependencias
 import App from "@/App";
-import "./index.css"; // Estilos con Tailwind CSS (consolidados)
+import "./styles/index.css"; // Estilos con Tailwind CSS (consolidados en src/styles/)
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { BackgroundProvider } from "@/context/BackgroundContext";
 import { AppInitializer } from "@/components/AppInitializer"; // <-- IMPORTADO
@@ -227,6 +227,8 @@ async function initializeApp() {
         );
       });
     }
+
+    document.body.removeAttribute("unresolved");
 
     // Obtener el elemento root
     const container = document.getElementById("root");

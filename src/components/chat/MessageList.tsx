@@ -112,10 +112,10 @@ export const MessageList: React.FC<MessageListProps> = ({
               {/* Contenido del mensaje */}
               <div
                 className={cn(
-                  "rounded-lg px-4 py-2 break-words",
+                  "rounded-lg px-4 py-2 wrap-break-word",
                   isOwn
-                    ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                    : "bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm",
+                    ? "bg-linear-to-r from-purple-500 to-blue-500 text-white shadow-lg"
+                    : "bg-linear-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm",
                 )}
               >
                 <p className="text-sm whitespace-pre-wrap font-medium drop-shadow-md">

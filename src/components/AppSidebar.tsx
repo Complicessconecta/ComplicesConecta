@@ -1,10 +1,5 @@
 import { Sidebar, SidebarContent, useSidebar } from "@/components/ui/sidebar";
-import {
-  mainNavItems,
-  premiumItems,
-  settingsItems,
-  mockUser,
-} from "@/lib/data";
+import { mainNavItems, premiumItems, settingsItems, mockUser } from "@/lib/data";
 import { UserProfile } from "@/components/profiles/shared/UserProfile";
 import { CollapsedUserProfile } from "@/components/profiles/shared/CollapsedUserProfile";
 

@@ -1,0 +1,18 @@
+# Browserslist Configuration for CómplicesConecta v3.8.3
+# Define compatibilidad de navegadores para el proyecto
+
+# Navegadores modernos soportados
+> 0.5%
+last 2 versions
+not dead
+
+# Navegadores específicos
+Chrome >= 90
+Firefox >= 88
+Safari >= 14
+Edge >= 90
+Opera >= 76
+
+# Navegadores móviles
+iOS >= 14
+Android >= 10

@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { GlassAppShell } from "@/components/templates/GlassAppShell";
-import {
-  LayoutGrid,
-  RefreshCw,
-  Camera,
-  PenTool,
-  Film,
-  Sparkles,
-} from "lucide-react";
+import { LayoutGrid, RefreshCw, Camera, PenTool, Film, Sparkles } from "lucide-react";
 
 const TemplateDemo: React.FC = () => {
   const [themeMode, setThemeMode] = useState<"dark" | "light">("dark");

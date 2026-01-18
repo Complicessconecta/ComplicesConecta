@@ -1,19 +1,7 @@
 ﻿import React from "react";
-import {
-  Shield,
-  AlertTriangle,
-  Phone,
-  Mail,
-  ExternalLink,
-  ArrowLeft,
-} from "lucide-react";
+import { Shield, AlertTriangle, Phone, Mail, ExternalLink, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { useNavigate } from "react-router-dom";
 
 const LeyOlimpia: React.FC = () => {

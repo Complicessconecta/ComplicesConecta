@@ -7,17 +7,23 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Link } from "react-router-dom";
 import { logger } from "@/lib/logger";
 
-export const BetaBanner = () => {
+interface BetaBannerProps {
+  embedded?: boolean;
+}
+
+export const BetaBanner = ({ embedded = false }: BetaBannerProps) => {
   const [isVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
+  const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
     // Detectar si es Android
     const userAgent = navigator.userAgent.toLowerCase();
     setIsAndroid(userAgent.includes("android"));
 
-    // Manejar scroll para ocultar banner
+    if (embedded) return;
+
     const handleScroll = () => {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
@@ -28,22 +34,45 @@ export const BetaBanner = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  if (!isVisible || isScrolled) return null;
+  useEffect(() => {
+    if (embedded) {
+      setShouldRender(true);
+      return;
+    }
+
+    if (!isVisible) {
+      setShouldRender(false);
+      return;
+    }
+
+    if (!isScrolled) {
+      setShouldRender(true);
+      return;
+    }
+
+    const t = window.setTimeout(() => {
+      setShouldRender(false);
+    }, 520);
+
+    return () => window.clearTimeout(t);
+  }, [isScrolled, isVisible]);
+
+  if (!isVisible || !shouldRender) return null;
 
   return (
     <DismissibleBanner
       storageKey="beta_banner"
       className={`
-        fixed top-0 left-0 right-0 z-40 
+        ${embedded ? "w-full" : "fixed top-[calc(env(safe-area-inset-top)+4rem)] left-0 right-0 z-40"}
         transform transition-all duration-500 ease-in-out
-        ${isScrolled ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"}
+        ${embedded ? "translate-y-0 opacity-100" : isScrolled ? "-translate-y-4 opacity-0 pointer-events-none" : "translate-y-0 opacity-100"}
       `}
     >
-      <Card className="rounded-none border-0 bg-gradient-to-r from-purple-600 via-purple-700 to-blue-700 shadow-lg">
+      <Card className="rounded-none border-0 -mt-px bg-linear-to-r from-purple-700/90 via-purple-700/85 to-blue-700/85 backdrop-blur-md shadow-lg border-b border-white/10">
         <CardContent className="p-3 sm:p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <div className="relative">
                   <Rocket className="h-6 w-6 sm:h-7 sm:w-7 text-white animate-bounce" />
                   <div className="absolute -top-1 -right-1">
@@ -74,7 +103,7 @@ export const BetaBanner = () => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 flex-shrink-0 ml-4">
+            <div className="flex items-center space-x-2 shrink-0 ml-4">
               {isAndroid && (
                 <Button
                   variant="secondary"

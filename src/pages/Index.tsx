@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { HeroSection } from "@/components/HeroSection";
 import { Footer } from "@/components/Footer";
-import { BetaBanner } from "@/components/BetaBanner";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { HomeProfilesSection } from "@/components/home/HomeProfilesSection";
@@ -121,8 +120,6 @@ const Index = () => {
       {/* CAPA 1: CONTENIDO (Hijo Activo) */}
       {/* Z-index positivo para asegurar que el texto sea clickeable */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <BetaBanner />
-        <div className="pt-16"> {/* Padding for fixed banner */}</div>
         <DecorativeHearts count={8} />
 
         <main className="flex-grow">

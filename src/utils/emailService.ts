@@ -1,9 +1,11 @@
-import { logger } from "@/lib/logger";
-import { validateEmail } from "@/lib/zod-schemas";
 // ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 // Cambios: Reemplazado process.env con import.meta.env para compatibilidad Vite
 // Logs informativos agregados para monitoreo en producción
+
+import { logger } from "@/lib/logger";
+import { validateEmail } from "@/lib/zod-schemas";
+
 
 export interface EmailData {
   to: string;

@@ -99,7 +99,7 @@ class ErrorBoundary extends React.Component<
       }
 
       return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
           <Card className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-md border-white/20">
             <CardHeader className="text-center">
               <div className="mx-auto w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Heart, Search, User, MessageSquare, Calendar, Building2, Shield, HelpCircle, Info, DollarSign, Settings, Bell, Menu, ShoppingBag, FileText, Lock, Crown, ChevronDown, MoreHorizontal, Scale, Image, Home, BookOpen, Users } from "lucide-react";
+import { BetaBanner } from "@/components/BetaBanner";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
@@ -41,6 +42,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     typeof isAuthenticated === "function"
       ? isAuthenticated()
       : Boolean(isAuthenticated);
+
+  const isHomeRoute = location.pathname === "/";
 
   const chatPath = hasSession ? "/chat" : "/chat-info";
 
@@ -129,15 +132,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
       <header
         className={`header-nav-main fixed top-0 left-0 right-0 z-50 transition-all duration-300 safe-area-pt ${
           isScrolled
-            ? "bg-gradient-to-b from-purple-900/90 via-purple-800/85 to-transparent backdrop-blur-md border-b border-purple-500/20"
-            : "bg-gradient-to-b from-purple-900/95 via-purple-800/90 to-purple-700/80 backdrop-blur-sm border-b border-purple-400/30"
+            ? "bg-linear-to-b from-purple-900/90 via-purple-800/85 to-transparent backdrop-blur-md border-b border-purple-500/20"
+            : "bg-linear-to-b from-purple-900/95 via-purple-800/90 to-purple-700/80 backdrop-blur-sm border-b border-purple-400/30"
         } ${className}`}
       >
         {/* Contenedor Principal */}
         <div className="w-full">
           <div className="flex items-center justify-between h-16 px-4 lg:px-6">
             {/* Logo - Izquierda */}
-            <div className="flex items-center space-x-3 flex-shrink-0">
+            <div className="flex items-center space-x-3 shrink-0">
               <button
                 onClick={() => handleNavigation("/")}
                 className="flex items-center space-x-3 group transition-all duration-300 hover:scale-110"
@@ -159,28 +162,28 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     <Heart className="absolute top-1 right-0 w-2 h-2 text-pink-400 animate-heart-particle-2" fill="currentColor" />
                   </div>
                 </div>
-                <span className="text-white font-black text-xl lg:text-2xl hidden sm:block bg-gradient-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x">
+                <span className="font-black text-xl lg:text-2xl hidden sm:block bg-linear-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x">
                   ComplicesConecta
                 </span>
               </button>
             </div>
 
             {/* Navegación Central - Desktop */}
-            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2 flex-1 justify-center mx-4 xl:mx-8 overflow-x-auto scrollbar-hide">
-              {mainNavItems.slice(0, 4).map((item) => {
+            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2 flex-1 justify-center mx-4 xl:mx-8 overflow-x-hidden flex-nowrap">
+              {mainNavItems.map((item) => {
                 const IconComponent = item.icon;
                 return (
                   <button
                     key={item.name}
                     onClick={() => handleNavigation(item.path)}
-                    className={`flex items-center space-x-1 xl:space-x-2 px-2 xl:px-4 py-2 rounded-lg text-xs xl:text-sm font-medium transition-all duration-300 flex-shrink-0 ${
+                    className={`flex items-center space-x-1 xl:space-x-2 px-2 xl:px-4 py-2 rounded-lg text-xs xl:text-sm font-medium transition-all duration-300 shrink-0 ${
                       isActive(item.path)
-                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25"
+                        ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25"
                         : "text-white/90 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    <IconComponent className="h-4 w-4 flex-shrink-0 text-white" />
-                    <span className="whitespace-nowrap hidden xl:inline">
+                    <IconComponent className="h-4 w-4 shrink-0 text-white" />
+                    <span className="whitespace-nowrap">
                       {item.name}
                     </span>
                   </button>
@@ -190,14 +193,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               {/* Menú desplegable "Más" */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center space-x-1 xl:space-x-2 px-2 xl:px-4 py-2 rounded-lg text-xs xl:text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 flex-shrink-0">
-                    <MoreHorizontal className="h-4 w-4 flex-shrink-0 text-white" />
+                  <button className="flex items-center space-x-1 xl:space-x-2 px-2 xl:px-4 py-2 rounded-lg text-xs xl:text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 shrink-0">
+                    <MoreHorizontal className="h-4 w-4 shrink-0 text-white" />
                     <span className="whitespace-nowrap">Más</span>
-                    <ChevronDown className="h-3 w-3 flex-shrink-0 text-white" />
+                    <ChevronDown className="h-3 w-3 shrink-0 text-white" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-56 sm:w-64 bg-purple-900/95 border-purple-500/30 backdrop-blur-md max-h-[80vh] overflow-y-auto z-[200] custom-scrollbar"
+                  className="w-56 sm:w-64 bg-purple-900/95 border-purple-500/30 backdrop-blur-md max-h-[80vh] overflow-y-auto z-200 custom-scrollbar"
                   align="end"
                   sideOffset={5}
                 >
@@ -229,7 +232,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                                 onClick={() => handleNavigation(item.path)}
                                 className="text-white hover:bg-purple-500/20 hover:text-white cursor-pointer px-2 py-2"
                               >
-                                <IconComponent className="h-4 w-4 mr-2 flex-shrink-0 text-white" />
+                                <IconComponent className="h-4 w-4 shrink-0 text-white" />
                                 <span className="truncate">{item.name}</span>
                               </DropdownMenuItem>
                             );
@@ -244,7 +247,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
             </nav>
 
             {/* Acciones de Usuario - Derecha */}
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className="flex items-center space-x-2 shrink-0">
               {/* Iconos de Acción */}
               <div className="hidden md:flex items-center space-x-1">
                 <button
@@ -305,8 +308,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               {isAuthenticated() ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center">
-                      <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0 text-white" />
+                    <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center">
+                      <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 shrink-0 text-white" />
                       <span className="hidden sm:inline text-sm sm:text-base truncate max-w-[120px]">
                         {displayUserLabel}
                       </span>
@@ -350,9 +353,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               ) : (
                 <Button
                   onClick={handleLogin}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center"
+                  className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center"
                 >
-                  <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0 text-white" />
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 shrink-0 text-white" />
                   <span className="hidden sm:inline text-sm sm:text-base">
                     Ingresar
                   </span>
@@ -373,12 +376,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                 </SheetTrigger>
                 <SheetContent
                   side="left"
-                  className="bg-gradient-to-b from-purple-900 via-purple-900 to-blue-900 border-r border-purple-500/30 text-white w-80 overflow-y-auto"
+                  className="bg-linear-to-b from-purple-900 via-purple-900 to-blue-900 border-r border-purple-500/30 text-white w-80 overflow-y-auto"
                 >
                   <SheetHeader>
                     <SheetTitle className="text-white text-left flex items-center space-x-2">
                       <Heart className="h-6 w-6 text-purple-400 fill-current" />
-                      <span className="bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
+                      <span className="bg-linear-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">
                         CómplicesConecta
                       </span>
                     </SheetTitle>
@@ -478,6 +481,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
             </div>
           </div>
         </div>
+
+        {isHomeRoute && (
+          <div className="w-full">
+            <BetaBanner embedded />
+          </div>
+        )}
       </header>
 
       {/* Espaciador para contenido */}

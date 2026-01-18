@@ -1,16 +1,3 @@
-import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/useToast";
-import { Button } from "@/components/ui/buttons/Button";
-import { Sparkles, Loader2 } from "lucide-react";
-import { useChatSummary } from "@/features/chat/useChatSummary";
-import { SummaryModal } from "@/components/modals/SummaryModal";
-import { cn } from "@/shared/lib/cn";
-import React from "react";
-
-interface SummaryButtonProps {
-  chatId: string;
-  className?: string;
-}
 
 /**
  * SummaryButton Component
@@ -29,6 +16,21 @@ interface SummaryButtonProps {
  * <SummaryButton chatId="123" />
  * ```
  */
+
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/useToast";
+import { Button } from "@/components/ui/buttons/Button";
+import { Sparkles, Loader2 } from "lucide-react";
+import { useChatSummary } from "@/features/chat/useChatSummary";
+import { SummaryModal } from "@/components/modals/SummaryModal";
+import { cn } from "@/shared/lib/cn";
+import React from "react";
+
+interface SummaryButtonProps {
+  chatId: string;
+  className?: string;
+}
+
 export const SummaryButton: React.FC<SummaryButtonProps> = ({
   chatId,
   className,

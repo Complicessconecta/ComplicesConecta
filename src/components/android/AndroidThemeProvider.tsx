@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 // CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(

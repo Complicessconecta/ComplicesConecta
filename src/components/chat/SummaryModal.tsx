@@ -1,17 +1,3 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/Modal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/buttons/Button";
-import { ThumbsUp, ThumbsDown, Copy, CheckCircle } from "lucide-react";
-import { useState } from "react";
-import type { ChatSummary } from "@/features/chat/ChatSummaryService";
-
-interface SummaryModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  summary: ChatSummary | null;
-  error?: string | null;
-}
-
 /**
  * SummaryModal Component
  *
@@ -33,6 +19,22 @@ interface SummaryModalProps {
  * />
  * ```
  */
+
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/buttons/Button";
+import { ThumbsUp, ThumbsDown, Copy, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import type { ChatSummary } from "@/features/chat/ChatSummaryService";
+
+interface SummaryModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  summary: ChatSummary | null;
+  error?: string | null;
+}
+
+
 export function SummaryModal({
   isOpen,
   onClose,

@@ -1,14 +1,3 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/buttons/Button";
-import { Sparkles, Loader2 } from "lucide-react";
-import { useChatSummary } from "@/features/chat/useChatSummary";
-import { SummaryModal } from "@/components/modals/SummaryModal";
-import { toast } from "@/hooks/useToast";
-
-interface SummaryButtonProps {
-  chatId: string;
-  className?: string;
-}
 
 /**
  * SummaryButton Component
@@ -27,6 +16,19 @@ interface SummaryButtonProps {
  * <SummaryButton chatId="123" />
  * ```
  */
+
+import { useState } from "react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Sparkles, Loader2 } from "lucide-react";
+import { useChatSummary } from "@/features/chat/useChatSummary";
+import { SummaryModal } from "@/components/modals/SummaryModal";
+import { toast } from "@/hooks/useToast";
+
+interface SummaryButtonProps {
+  chatId: string;
+  className?: string;
+}
+
 export function SummaryButton({ chatId, className }: SummaryButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { summary, isLoading, error, usageStats, generateSummary, clearError } =

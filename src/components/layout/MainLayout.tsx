@@ -36,6 +36,7 @@ export const MainLayout = () => {
   const pathname = location.pathname;
 
   // Lista explícita de rutas donde NO debe aparecer HeaderNav
+  // HeaderNav es consistente en TODAS las páginas públicas (incluso logueado)
   const HIDE_HEADER_EXACT = new Set<string>(["/auth"]);
   const HIDE_HEADER_PREFIXES: string[] = [
     "/profile",
@@ -51,8 +52,18 @@ export const MainLayout = () => {
 
   const showHeaderNav = !shouldHideHeader;
 
+  const isHomeRoute = pathname === "/";
+
+  const headerOffsetClass = showHeaderNav
+    ? isHomeRoute
+      ? "pt-[calc(env(safe-area-inset-top)+7.5rem)]"
+      : "pt-[calc(env(safe-area-inset-top)+4rem)]"
+    : "pt-[env(safe-area-inset-top)]";
+
+  // Bottom Navigation solo para usuarios logueados
   const showBottomNavigation = hasSession;
 
+  // Chat FAB no se muestra en rutas de perfil
   const isProfileRoute =
     pathname === "/profile" ||
     pathname === "/profile-single" ||
@@ -63,8 +74,8 @@ export const MainLayout = () => {
   const showChatFab = !isProfileRoute;
 
   return (
-    <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
-      <div className="min-h-full relative overflow-x-hidden pb-24 flex flex-col">
+    <div className="min-h-dvh w-full text-white pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] overflow-x-hidden">
+      <div className="min-h-full relative pb-24 flex flex-col">
         {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
         <AnimationSettingsButton />
 
@@ -79,8 +90,8 @@ export const MainLayout = () => {
         )}
 
         {/* Main Content */}
-        <main className={showHeaderNav ? "" : ""}>
-          <div className={showHeaderNav ? "-mt-[1px]" : ""}>
+        <main className={headerOffsetClass}>
+          <div className={showHeaderNav ? "-mt-px" : ""}>
             <PageTransitionWrapper>
               <PageBackground>
                 <Suspense fallback={<PageLoader />}>

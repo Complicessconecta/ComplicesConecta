@@ -395,7 +395,7 @@ const neonOptions = useMemo(
 
   return (
     <div
-      className={`relative min-h-screen w-full overflow-hidden ${className || ""}`}
+      className={`relative min-h-screen w-full max-w-full overflow-x-hidden ${className || ""}`}
     >
       {/* Capa base: gradiente sólido (anti-flash) */}
       <div

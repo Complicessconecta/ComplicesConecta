@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
-import {  Card,  CardContent, CardDescription,  CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription,  CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNav } from "@/components/AdminNav";

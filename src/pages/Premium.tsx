@@ -1,28 +1,9 @@
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Crown,
-  Zap,
-  Heart,
-  Star,
-  Shield,
-  Calendar,
-  Users,
-  Coins,
-  Lock,
-  Sparkles,
-  Gift,
-} from "lucide-react";
+import { ArrowLeft, Crown, Zap, Heart, Star, Shield, Calendar, Users, Coins, Lock, Sparkles, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { PremiumFeatures } from "@/components/premium/PremiumFeatures";

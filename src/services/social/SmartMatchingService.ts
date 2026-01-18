@@ -1,30 +1,17 @@
 /**
  * SmartMatchingService - Servicio unificado para matching inteligente
- *
  * Conecta el algoritmo de matching (smartMatchingEngine) con la base de datos
  * Proporciona API centralizada para buscar matches desde cualquier parte de la app
- *
+ * COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+ * Sistema operando bajo reglas de determinismo y robustez v4.0
  * @version 3.5.0
  */
 
-// ------------------------------------------------------------------
-// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
-// Sistema operando bajo reglas de determinismo y robustez v4.0
-// ------------------------------------------------------------------
-
-import {
-  smartMatchingEngine,
-  type UserProfile,
-  type MatchScore,
-  type MatchingContext,
-} from "@/lib/ai/smartMatching";
+import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingContext } from "@/lib/ai/smartMatching";
 import { supabase } from "@/lib/supabase";
 import { logger } from "@/lib/logger";
 import { neo4jService } from "@/services/core/graph/Neo4jService";
-import {
-  AdvancedFeaturesService,
-  type ConversationStarter,
-} from "@/lib/advancedFeatures";
+import { AdvancedFeaturesService, type ConversationStarter } from "@/lib/advancedFeatures";
 
 export interface MatchFilters {
   ageRange?: { min: number; max: number };

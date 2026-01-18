@@ -8,6 +8,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger,  SelectValue } from "
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
+
+interface ProfileRow {
+  id: string;
+  display_name?: string | null;
+  first_name?: string | null;
+  age?: number | null;
+  gender?: string | null;
+  location?: string | null;
+  bio?: string | null;
+  is_premium?: boolean | null;
+  is_verified?: boolean | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  account_type?: string | null;
+  suspended?: boolean | null;
+  email?: string | null;
+  last_seen?: string | null;
+}
 import { Users, Search, Filter, MoreHorizontal, UserCheck, UserX, Mail, Calendar, Eye, Trash2, Ban, CheckCircle, AlertTriangle, Plus } from "lucide-react";
 
 interface User {
@@ -24,7 +42,7 @@ interface User {
   last_seen?: string;
   status: "active" | "suspended" | "banned" | "pending";
   reports_count?: number;
-  account_type?: string;
+  account_type?: string | null;
 }
 
 interface UserFilters {
@@ -107,25 +125,26 @@ export function UserManagementPanel() {
           variant: "destructive",
         });
       } else {
-        const processedUsers: User[] = (profiles || []).map((profile: any) => {
-          const status: User["status"] = profile.suspended
-            ? "suspended"
-            : "active";
+        const processedUsers: User[] = (profiles || []).map((rawProfile) => {
+          const profile = rawProfile as ProfileRow;
+          const isSuspended = Boolean(profile.suspended);
+          const status: User["status"] = isSuspended ? "suspended" : "active";
+
           return {
             id: profile.id,
             name: profile.display_name || profile.first_name || "Usuario",
-            email: profile.email || "No disponible",
+            email: profile.email ?? "No disponible",
             age: profile.age ?? undefined,
             gender: profile.gender ?? undefined,
-            location: profile.location || "No especificada",
+            location: profile.location ?? "No especificada",
             bio: profile.bio ?? undefined,
             is_premium: Boolean(profile.is_premium),
             is_verified: Boolean(profile.is_verified),
-            created_at: profile.created_at || new Date().toISOString(),
-            last_seen: profile.last_seen || profile.updated_at || null,
+            created_at: profile.created_at ?? new Date().toISOString(),
+            last_seen: profile.last_seen ?? profile.updated_at ?? undefined,
             status,
             reports_count: 0,
-            account_type: profile.account_type,
+            account_type: profile.account_type ?? null,
           };
         });
         setUsers(processedUsers);
@@ -227,11 +246,14 @@ export function UserManagementPanel() {
       setNewUserPassword("");
       setNewUserName("");
       loadUsers(); // Refresh list
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating user:", error);
       toast({
         title: "Error",
-        description: error.message || "No se pudo crear el usuario",
+        description:
+          error instanceof Error
+            ? error.message
+            : "No se pudo crear el usuario",
         variant: "destructive",
       });
     } finally {

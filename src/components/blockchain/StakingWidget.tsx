@@ -6,6 +6,12 @@ import { Coins, TrendingUp, Lock, Unlock, Calendar, Percent, Loader2, CheckCircl
 import { walletService, WalletService } from "@/services/WalletService";
 import { logger } from "@/lib/logger";
 
+interface StakingNFT {
+  id: string;
+  token_id: number | string;
+  rarity?: string | null;
+}
+
 /**
  * Widget reutilizable para staking de tokens GTK y NFTs
  * Muestra información de staking, APY y permite stake/unstake
@@ -33,7 +39,7 @@ interface StakingWidgetProps {
   /** Balance disponible para stake (solo para tokens) */
   availableBalance?: number;
   /** Lista de NFTs disponibles para stake (solo para NFTs) */
-  availableNFTs?: any[];
+  availableNFTs?: StakingNFT[];
   /** Posiciones de staking actuales */
   stakingPositions?: StakingPosition[];
   /** Función callback cuando se actualiza el staking */

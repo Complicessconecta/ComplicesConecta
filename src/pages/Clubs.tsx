@@ -300,9 +300,9 @@ export const Clubs = () => {
       const tempPassword = generateTempPassword();
       const tempPasswordExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 días
 
-      // Guardar en base de datos usando any para evitar error de tipos
+      // Guardar en base de datos usando cast para evitar error de tipos
       const { data, error } = await supabase!
-        .from("club_applications" as any)
+        .from("club_applications" as never)
         .insert([
           {
             owner_name: clubForm.ownerName,
@@ -335,7 +335,7 @@ export const Clubs = () => {
             temp_password: tempPassword,
             temp_password_expires_at: tempPasswordExpiresAt.toISOString(),
             temp_password_used: false,
-          },
+          } as never,
         ])
         .select()
         .single();
@@ -399,7 +399,9 @@ export const Clubs = () => {
         license: "",
       });
 
-      logger.info("Club application submitted successfully", { clubId: (data as any)?.id });
+      logger.info("Club application submitted successfully", {
+        clubId: (data as { id?: string | number | null } | null)?.id,
+      });
     } catch (error) {
       logger.error("Error submitting club application:", {
         error: error instanceof Error ? error.message : String(error),

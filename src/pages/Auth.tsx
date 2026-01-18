@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Users, ArrowLeft, Sparkles, MapPin } from "lucide-react";
+import { Shield, Users, ArrowLeft, Sparkles, MapPin, Building2 } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
@@ -409,18 +409,32 @@ const Auth = () => {
                     ¿Olvidaste tu contraseña?
                   </button>
                   
-                  {/* Demo Login Button con glassmorphism mejorado - Usa _handleDemoLogin */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full border-2 border-purple-400/50 bg-white/10 backdrop-blur-sm text-white font-semibold hover:bg-purple-500/30 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
-                    onClick={_handleDemoLogin}
-                    data-testid="demo-login-button"
-                    style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-                  >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Acceso Demo
-                  </Button>
+                  {/* Botones de Demo y Clubs - Solo en modo normal */}
+                  {!isAdminMode && (
+                    <div className="space-y-2 mt-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full border-2 border-purple-400/50 bg-white/10 backdrop-blur-sm text-white font-semibold hover:bg-purple-500/30 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
+                        onClick={_handleDemoLogin}
+                        data-testid="demo-login-button"
+                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
+                      >
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Acceso Demo
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full border-2 border-blue-400/50 bg-white/10 backdrop-blur-sm text-white font-semibold hover:bg-blue-500/30 hover:border-blue-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
+                        onClick={() => navigate('/clubs-coming-soon')}
+                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
+                      >
+                        <Building2 className="w-4 h-4 mr-2" />
+                        Próximamente Clubs
+                      </Button>
+                    </div>
+                  )}
                 </form>
               </TabsContent>
               

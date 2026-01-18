@@ -1,40 +1,11 @@
 import type { FC } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import {
-  Heart,
-  Brain,
-  Shield,
-  Zap,
-  TrendingUp,
-  DollarSign,
-  Rocket,
-  Users,
-  Globe,
-  Database,
-  Lock,
-  Sparkles,
-  Coins,
-  BarChart3,
-  CheckCircle2,
-  Star,
-  Target,
-  Award,
-  Mail,
-  ArrowRight,
-  ChevronRight,
-  FileText,
-  Scale,
-} from "lucide-react";
+import { Heart, Brain, Shield, Zap, TrendingUp, DollarSign, Rocket, Users, Globe, Database, Lock, Sparkles, Coins, BarChart3, CheckCircle2, Star, Target, Award, Mail, ArrowRight, ChevronRight, FileText, Scale } from "lucide-react";
 
 const Investors: FC = () => {
   const navigate = useNavigate();

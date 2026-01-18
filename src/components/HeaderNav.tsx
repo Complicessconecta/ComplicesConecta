@@ -1,48 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Heart,
-  Search,
-  User,
-  MessageSquare,
-  Calendar,
-  Building2,
-  Shield,
-  HelpCircle,
-  Info,
-  DollarSign,
-  Settings,
-  Bell,
-  Menu,
-  ShoppingBag,
-  FileText,
-  Lock,
-  Crown,
-  ChevronDown,
-  MoreHorizontal,
-  Scale,
-  Image,
-  Home,
-  BookOpen,
-  Users,
-} from "lucide-react";
+import { Heart, Search, User, MessageSquare, Calendar, Building2, Shield, HelpCircle, Info, DollarSign, Settings, Bell, Menu, ShoppingBag, FileText, Lock, Crown, ChevronDown, MoreHorizontal, Scale, Image, Home, BookOpen, Users } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 
@@ -217,7 +179,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         : "text-white/90 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    <IconComponent className="h-4 w-4 flex-shrink-0" />
+                    <IconComponent className="h-4 w-4 flex-shrink-0 text-white" />
                     <span className="whitespace-nowrap hidden xl:inline">
                       {item.name}
                     </span>
@@ -229,9 +191,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center space-x-1 xl:space-x-2 px-2 xl:px-4 py-2 rounded-lg text-xs xl:text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 flex-shrink-0">
-                    <MoreHorizontal className="h-4 w-4 flex-shrink-0" />
+                    <MoreHorizontal className="h-4 w-4 flex-shrink-0 text-white" />
                     <span className="whitespace-nowrap">Más</span>
-                    <ChevronDown className="h-3 w-3 flex-shrink-0" />
+                    <ChevronDown className="h-3 w-3 flex-shrink-0 text-white" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -267,7 +229,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                                 onClick={() => handleNavigation(item.path)}
                                 className="text-white hover:bg-purple-500/20 hover:text-white cursor-pointer px-2 py-2"
                               >
-                                <IconComponent className="h-4 w-4 mr-2 flex-shrink-0" />
+                                <IconComponent className="h-4 w-4 mr-2 flex-shrink-0 text-white" />
                                 <span className="truncate">{item.name}</span>
                               </DropdownMenuItem>
                             );
@@ -290,20 +252,20 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     handleNavigation("/tokens");
                     logger.info("Tokens icon clicked");
                   }}
-                  className="p-2 text-white/70 hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                  className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
                   title="Tokens"
                 >
-                  <DollarSign className="h-5 w-5" />
+                  <DollarSign className="h-5 w-5 text-white hover:text-purple-400" />
                 </button>
                 <button
                   onClick={() => {
                     handleNavigation("/faq");
                     logger.info("Help icon clicked");
                   }}
-                  className="p-2 text-white/70 hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                  className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
                   title="Ayuda"
                 >
-                  <HelpCircle className="h-5 w-5" />
+                  <HelpCircle className="h-5 w-5 text-white hover:text-purple-400" />
                 </button>
                 <button
                   onClick={() => {
@@ -314,10 +276,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     }
                     logger.info("Settings icon clicked");
                   }}
-                  className="p-2 text-white/70 hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                  className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
                   title="Configuración"
                 >
-                  <Settings className="h-5 w-5" />
+                  <Settings className="h-5 w-5 text-white hover:text-purple-400" />
                 </button>
                 <button
                   onClick={() => {
@@ -329,10 +291,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     }
                     logger.info("Notifications icon clicked");
                   }}
-                  className="relative p-2 text-white/70 hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                  className="relative p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
                   title="Notificaciones"
                 >
-                  <Bell className="h-5 w-5" />
+                  <Bell className="h-5 w-5 text-white hover:text-purple-400" />
                   <Badge className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 bg-purple-500 text-white text-xs flex items-center justify-center rounded-full shadow-lg border-2 border-purple-600 z-10">
                     3
                   </Badge>
@@ -344,7 +306,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center">
-                      <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0" />
+                      <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0 text-white" />
                       <span className="hidden sm:inline text-sm sm:text-base truncate max-w-[120px]">
                         {displayUserLabel}
                       </span>
@@ -363,14 +325,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                       onClick={() => navigate("/profile")}
                       className="text-white hover:bg-purple-700/50 cursor-pointer"
                     >
-                      <User className="h-4 w-4 mr-2" />
+                      <User className="h-4 w-4 mr-2 text-white" />
                       Mi Perfil
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => navigate("/settings")}
                       className="text-white hover:bg-purple-700/50 cursor-pointer"
                     >
-                      <Settings className="h-4 w-4 mr-2" />
+                      <Settings className="h-4 w-4 mr-2 text-white" />
                       Configuración
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-purple-500/30" />
@@ -390,7 +352,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                   onClick={handleLogin}
                   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center"
                 >
-                  <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0" />
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0 text-white" />
                   <span className="hidden sm:inline text-sm sm:text-base">
                     Ingresar
                   </span>
@@ -406,7 +368,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     aria-label="Abrir menú"
                     title="Abrir menú"
                   >
-                    <Menu className="h-6 w-6" />
+                    <Menu className="h-6 w-6 text-white" />
                   </button>
                 </SheetTrigger>
                 <SheetContent
@@ -440,7 +402,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                                 : "text-white/70 hover:bg-white/5 hover:text-white"
                             }`}
                           >
-                            <IconComponent className="h-5 w-5" />
+                            <IconComponent className="h-5 w-5 text-white" />
                             <span className="font-medium">{item.name}</span>
                           </button>
                         );
@@ -476,7 +438,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                                     : "text-white/70 hover:bg-white/5 hover:text-white"
                                 }`}
                               >
-                                <IconComponent className="h-4 w-4" />
+                                <IconComponent className="h-4 w-4 text-white" />
                                 <span className="font-medium text-sm">
                                   {item.name}
                                 </span>
@@ -493,7 +455,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         onClick={() => handleNavigation("/tokens")}
                         className="w-full flex items-center space-x-3 px-4 py-3 text-white/80 hover:bg-white/5 rounded-lg transition-all"
                       >
-                        <DollarSign className="h-5 w-5" />
+                        <DollarSign className="h-5 w-5 text-white" />
                         <span>Tokens</span>
                       </button>
                       <button
@@ -506,7 +468,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         }}
                         className="w-full flex items-center space-x-3 px-4 py-3 text-white/80 hover:bg-white/5 rounded-lg transition-all"
                       >
-                        <Settings className="h-5 w-5" />
+                        <Settings className="h-5 w-5 text-white" />
                         <span>Configuración</span>
                       </button>
                     </div>

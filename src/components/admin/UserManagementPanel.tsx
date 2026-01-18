@@ -125,28 +125,36 @@ export function UserManagementPanel() {
           variant: "destructive",
         });
       } else {
-        const processedUsers: User[] = (profiles || []).map((rawProfile) => {
+        const processedUsers: User[] = Array.isArray(profiles) ? profiles.map((rawProfile) => {
           const profile = rawProfile as ProfileRow;
           const isSuspended = Boolean(profile.suspended);
           const status: User["status"] = isSuspended ? "suspended" : "active";
 
-          return {
+          const user: User = {
             id: profile.id,
             name: profile.display_name || profile.first_name || "Usuario",
             email: profile.email ?? "No disponible",
-            age: profile.age ?? undefined,
-            gender: profile.gender ?? undefined,
             location: profile.location ?? "No especificada",
-            bio: profile.bio ?? undefined,
             is_premium: Boolean(profile.is_premium),
             is_verified: Boolean(profile.is_verified),
             created_at: profile.created_at ?? new Date().toISOString(),
-            last_seen: profile.last_seen ?? profile.updated_at ?? undefined,
             status,
             reports_count: 0,
             account_type: profile.account_type ?? null,
           };
-        });
+
+          // Agregar propiedades opcionales solo si tienen valor
+          if (profile.age != null) user.age = profile.age;
+          if (profile.gender != null) user.gender = profile.gender;
+          if (profile.bio != null) user.bio = profile.bio;
+          if (profile.last_seen != null) {
+            user.last_seen = profile.last_seen;
+          } else if (profile.updated_at != null) {
+            user.last_seen = profile.updated_at;
+          }
+
+          return user;
+        }) : [];
         setUsers(processedUsers);
       }
     } catch (error) {
@@ -541,7 +549,7 @@ export function UserManagementPanel() {
                       className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
+                        <div className="w-10 h-10 bg-linear-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
                           {user.name.charAt(0)}
                         </div>
                         <div className="flex-1">

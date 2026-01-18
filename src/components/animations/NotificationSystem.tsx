@@ -217,7 +217,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
     >
       {/* Animated background gradient */}
       <motion.div
-        className={`absolute inset-0 bg-gradient-to-r ${getColors()} opacity-20`}
+        className={`absolute inset-0 bg-linear-to-r ${getColors()} opacity-20`}
         animate={{
           background: [
             `linear-gradient(45deg, ${getColors()})`,
@@ -373,7 +373,7 @@ export const AchievementNotification: React.FC<{ achievement: any }> = ({
           ],
         }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-3 rounded-full font-bold shadow-lg"
+        className="bg-linear-to-r from-yellow-400 to-orange-500 text-white px-6 py-3 rounded-full font-bold shadow-lg"
       >
         <div className="flex items-center gap-2">
           <Trophy className="w-5 h-5" />

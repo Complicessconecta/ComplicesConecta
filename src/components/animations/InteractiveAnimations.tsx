@@ -152,7 +152,7 @@ export const MorphingShape: React.FC<{ className?: string }> = ({
 }) => {
   return (
     <motion.div
-      className={`rounded-full bg-gradient-to-r from-primary to-accent ${className}`}
+      className={`rounded-full bg-linear-to-r from-primary to-accent ${className}`}
       animate={{
         borderRadius: ["50%", "25%", "50%", "25%", "50%"],
         rotate: [0, 90, 180, 270, 360],
@@ -263,7 +263,7 @@ export const LiquidButton: React.FC<LiquidButtonProps> = ({
       whileTap={{ scale: 0.95 }}
     >
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-primary to-accent"
+        className="absolute inset-0 bg-linear-to-r from-primary to-accent"
         initial={{ scale: 0, borderRadius: "50%" }}
         animate={
           isHovered

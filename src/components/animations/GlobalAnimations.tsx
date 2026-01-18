@@ -225,11 +225,11 @@ export const AnimatedBackground: React.FC = () => {
   return (
     <div className="fixed inset-0 z-0 overflow-hidden">
       {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-secondary/20" />
+      <div className="absolute inset-0 bg-linear-to-br from-background via-muted/30 to-secondary/20" />
 
       {/* Animated orbs */}
       <motion.div
-        className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+        className="absolute top-20 left-10 w-96 h-96 bg-linear-to-r from-primary/20 to-accent/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
         animate={{
           x: [0, 30, -20, 0],
           y: [0, -50, 20, 0],
@@ -243,7 +243,7 @@ export const AnimatedBackground: React.FC = () => {
       />
 
       <motion.div
-        className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+        className="absolute top-40 right-10 w-96 h-96 bg-linear-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
         animate={{
           x: [0, -30, 20, 0],
           y: [0, 50, -20, 0],
@@ -258,7 +258,7 @@ export const AnimatedBackground: React.FC = () => {
       />
 
       <motion.div
-        className="absolute -bottom-32 left-20 w-96 h-96 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
+        className="absolute -bottom-32 left-20 w-96 h-96 bg-linear-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
         animate={{
           x: [0, 20, -30, 0],
           y: [0, -30, 10, 0],

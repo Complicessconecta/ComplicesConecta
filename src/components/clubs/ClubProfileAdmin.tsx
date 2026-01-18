@@ -1,17 +1,5 @@
 import { useState } from "react";
-import { 
-  Edit, 
-  Image as ImageIcon, 
-  Calendar, 
-  Tag, 
-  BarChart3, 
-  MessageSquare, 
-  Settings,
-  Save,
-  Users,
-  TrendingUp,
-  Eye
-} from "lucide-react";
+import { Edit, Image as ImageIcon, Calendar, Tag, BarChart3, MessageSquare, Settings, Save, Users, TrendingUp, Eye } from "lucide-react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";

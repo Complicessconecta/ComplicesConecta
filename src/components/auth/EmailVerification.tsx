@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
@@ -175,7 +170,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-pink-900 to-red-900 flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-white/10 backdrop-blur-sm border-white/20">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-white text-center flex items-center justify-center gap-2">
@@ -248,7 +243,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
             <Button
               onClick={handleVerifyCode}
               disabled={isVerifying || verificationCode.length !== 6}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
               {isVerifying ? (
                 <div className="flex items-center gap-2">
@@ -275,7 +270,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
           {/* Información adicional */}
           <div className="bg-blue-500/20 rounded-lg p-3">
             <div className="flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
+              <AlertCircle className="h-4 w-4 text-blue-400 mt-0.5 shrink-0" />
               <div className="text-xs text-blue-200 space-y-1">
                 <p>• El código expira en 5 minutos</p>
                 <p>• Revisa tu carpeta de spam si no lo encuentras</p>

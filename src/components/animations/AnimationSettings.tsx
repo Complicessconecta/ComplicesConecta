@@ -262,7 +262,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
-                  className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                  className="w-12 h-12 bg-linear-to-r from-purple-500 to-pink-500 rounded-full"
                 />
               </div>
             </div>

@@ -1,23 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  ArrowLeft,
-  TrendingUp,
-  Shield,
-  CheckCircle,
-  Zap,
-  Crown,
-  Star,
-  Percent,
-} from "lucide-react";
+import { ArrowLeft, TrendingUp, Shield, CheckCircle, Zap, Crown, Star, Percent } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";

@@ -1,19 +1,5 @@
-﻿import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
-import {
-  Users,
-  Heart,
-  Shield,
-  AlertCircle,
-  CheckCircle,
-  XCircle,
-  Flag,
-  ArrowLeft,
-} from "lucide-react";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import { Users, Heart, Shield, AlertCircle, CheckCircle, XCircle, Flag, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { useNavigate } from "react-router-dom";
 

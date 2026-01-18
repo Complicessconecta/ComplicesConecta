@@ -179,7 +179,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between">
                             <div className="flex items-center space-x-4">
-                              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold">
+                              <div className="w-12 h-12 bg-linear-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold">
                                 {candidate.name.charAt(0).toUpperCase()}
                               </div>
 

@@ -10,16 +10,7 @@
  */
 
 import React, { useState, useRef, useCallback } from "react";
-import {
-  Upload,
-  X,
-  File,
-  Image as ImageIcon,
-  Film,
-  Music,
-  FileText,
-  Loader2,
-} from "lucide-react";
+import { Upload, X, File, Image as ImageIcon, Film, Music, FileText, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { logger } from "@/lib/logger";

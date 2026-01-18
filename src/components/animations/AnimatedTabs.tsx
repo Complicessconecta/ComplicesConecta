@@ -67,7 +67,7 @@ export const AnimatedTabs = ({
           className={cn(
             "absolute rounded-md pointer-events-none",
             variant === "pills" &&
-              "bg-gradient-to-r from-purple-500/20 to-pink-500/20",
+              "bg-linear-to-r from-purple-500/20 to-pink-500/20",
             variant === "cards" && "bg-muted border",
             variant === "default" && "bg-muted",
             variant === "underline" && "hidden",
@@ -85,7 +85,7 @@ export const AnimatedTabs = ({
               onClick={() => handleTabClick(tab.id)}
               disabled={tab.disabled}
               className={cn(
-                "relative px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap flex-shrink-0",
+                "relative px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap shrink-0",
                 "hover:bg-white/10 cursor-pointer flex items-center gap-1 sm:gap-2 touch-manipulation",
                 activeTab === tab.id
                   ? "text-white bg-white/20"

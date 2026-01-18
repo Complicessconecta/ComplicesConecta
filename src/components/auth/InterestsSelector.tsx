@@ -62,7 +62,7 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
               variant={isSelected ? "default" : "outline"}
               className={`cursor-pointer transition-all duration-200 text-center justify-center py-2 px-3 ${
                 isSelected
-                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-transparent hover:from-pink-600 hover:to-purple-600"
+                  ? "bg-linear-to-r from-pink-500 to-purple-500 text-white border-transparent hover:from-pink-600 hover:to-purple-600"
                   : "bg-white/10 text-white/80 border-white/20 hover:bg-white/20 hover:text-white"
               }`}
               onClick={() => handleInterestToggle(interest)}

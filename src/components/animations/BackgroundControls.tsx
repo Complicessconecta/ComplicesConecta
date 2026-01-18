@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Sparkles, Zap, RotateCcw, Layers } from "lucide-react";
-import {
-  useBackgroundPreferences,
-  type BackgroundMode,
-} from "@/hooks/useBackgroundPreferences";
+import { useBackgroundPreferences, type BackgroundMode } from "@/hooks/useBackgroundPreferences";
 
 interface BackgroundControlsProps {
   onClose?: () => void;
@@ -110,7 +107,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
             aria-label={localPrefs.particlesEnabled ? "Desactivar partículas" : "Activar partículas"}
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.particlesEnabled
-                ? "bg-gradient-to-r from-purple-600 to-pink-600"
+                ? "bg-linear-to-r from-purple-600 to-pink-600"
                 : "bg-gray-600"
             }`}
           >
@@ -148,7 +145,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
             aria-label={localPrefs.transparenciesEnabled ? "Desactivar transparencias" : "Activar transparencias"}
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.transparenciesEnabled
-                ? "bg-gradient-to-r from-blue-600 to-cyan-600"
+                ? "bg-linear-to-r from-blue-600 to-cyan-600"
                 : "bg-gray-600"
             }`}
           >
@@ -188,7 +185,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
               onClick={() => handleBackgroundModeChange(mode.value)}
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                 localPrefs.backgroundMode === mode.value
-                  ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg scale-105"
+                  ? "bg-linear-to-r from-purple-600 to-pink-600 text-white shadow-lg scale-105"
                   : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
               }`}
               title={mode.description}

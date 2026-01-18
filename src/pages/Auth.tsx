@@ -287,7 +287,7 @@ const Auth = () => {
   }
 
   return (
-    <ResponsiveContainer className="w-full max-w-7xl mx-auto sm:px-8 lg:px-12 min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <ResponsiveContainer className="w-full max-w-7xl mx-auto sm:px-8 lg:px-12 min-h-screen bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={6} />
       
@@ -411,26 +411,24 @@ const Auth = () => {
                   
                   {/* Botones de Demo y Clubs - Solo en modo normal */}
                   {!isAdminMode && (
-                    <div className="space-y-2 mt-4">
+                    <div className="space-y-3 mt-6">
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-2 border-purple-400/50 bg-white/10 backdrop-blur-sm text-white font-semibold hover:bg-purple-500/30 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
+                        className="w-full border-2 border-purple-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-purple-500/40 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/20"
                         onClick={_handleDemoLogin}
                         data-testid="demo-login-button"
-                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
                       >
-                        <Sparkles className="w-4 h-4 mr-2" />
+                        <Sparkles className="w-5 h-5 mr-2 animate-pulse" />
                         Acceso Demo
                       </Button>
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-2 border-blue-400/50 bg-white/10 backdrop-blur-sm text-white font-semibold hover:bg-blue-500/30 hover:border-blue-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
+                        className="w-full border-2 border-blue-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-blue-500/40 hover:border-blue-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/20"
                         onClick={() => navigate('/clubs-coming-soon')}
-                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
                       >
-                        <Building2 className="w-4 h-4 mr-2" />
+                        <Building2 className="w-5 h-5 mr-2" />
                         Próximamente Clubs
                       </Button>
                     </div>
@@ -441,24 +439,32 @@ const Auth = () => {
               <TabsContent value="signup" data-testid="register-form">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   {/* Tipo de Cuenta */}
-                  <div className="space-y-2">
-                    <Label className="text-white font-medium">Tipo de Cuenta</Label>
-                    <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-3">
+                    <Label className="text-white font-semibold text-base">Tipo de Cuenta</Label>
+                    <div className="grid grid-cols-2 gap-3">
                       <Button
                         type="button"
-                        variant={formData.accountType === 'single' ? 'default' : 'outline'}
                         onClick={() => handleInputChange('accountType', 'single')}
-                        className={`text-sm font-semibold ${formData.accountType === 'single' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white/20 text-white border-white/30 hover:bg-white/30'}`}
+                        className={`text-sm font-semibold py-6 transition-all duration-300 hover:scale-105 active:scale-95 ${
+                          formData.accountType === 'single' 
+                            ? 'bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/40 border-2 border-purple-400' 
+                            : 'bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20 hover:border-white/50'
+                        }`}
                       >
-                        👤 Soltero/a
+                        <span className="text-2xl mr-2">👤</span>
+                        Soltero/a
                       </Button>
                       <Button
                         type="button"
-                        variant={formData.accountType === 'couple' ? 'default' : 'outline'}
                         onClick={() => handleInputChange('accountType', 'couple')}
-                        className={`text-sm font-semibold ${formData.accountType === 'couple' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white/20 text-white border-white/30 hover:bg-white/30'}`}
+                        className={`text-sm font-semibold py-6 transition-all duration-300 hover:scale-105 active:scale-95 ${
+                          formData.accountType === 'couple' 
+                            ? 'bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/40 border-2 border-purple-400' 
+                            : 'bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20 hover:border-white/50'
+                        }`}
                       >
-                        💑 Pareja
+                        <span className="text-2xl mr-2">💑</span>
+                        Pareja
                       </Button>
                     </div>
                   </div>

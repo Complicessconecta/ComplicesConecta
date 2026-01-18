@@ -59,7 +59,9 @@ Alinear tablas locales/remotas antes de modificar
 Notificar tablas faltantes antes de crearlas
 al finalizar el uso de Doker-Desktop verificar que todo esta en orden
 y hacer kill para sair 
-|
+
+
+
 1.5 Cambios Grandes
 
 Trabajar en rama separada (solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA
@@ -139,10 +141,11 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
         this.sessionMap.delete(sessionId);
         cleanedCount++;"
 
-    Si se detecta comentarios en el archivo en ingles cambialos a español ES-MX UTF-8
+    Si se detecta comentarios en el archivos en ingles cambialos a español ES-MX UTF-8
     Al crear archivos verificar que no existan, si existen preguntar al usuario si desea sobreescribirlos, si no desea sobreescribirlos preguntar al usuario si desea crear un nuevo archivo con un nombre diferente justificando la necesidad de crear un nuevo archivo , se agrega comentario general del archivo y su uso por ejemplo: 
-   " /**
-   * Google Services Integration - ComplicesConecta v3.3.0
+    
+    " /**
+    * Google Services Integration - ComplicesConecta v3.3.0
     * Servicios de Google (Analytics, Push Notifications) - Sin Firebase
     * Nota: Este proyecto usa Supabase, no Firebase
     *

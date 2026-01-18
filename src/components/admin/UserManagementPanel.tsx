@@ -1,46 +1,14 @@
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/forms/Input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/Modal";
+import { Select, SelectContent, SelectItem, SelectTrigger,  SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Users,
-  Search,
-  Filter,
-  MoreHorizontal,
-  UserCheck,
-  UserX,
-  Mail,
-  Calendar,
-  Eye,
-  Trash2,
-  Ban,
-  CheckCircle,
-  AlertTriangle,
-  Plus,
-} from "lucide-react";
+import { Users, Search, Filter, MoreHorizontal, UserCheck, UserX, Mail, Calendar, Eye, Trash2, Ban, CheckCircle, AlertTriangle, Plus } from "lucide-react";
 
 interface User {
   id: string;

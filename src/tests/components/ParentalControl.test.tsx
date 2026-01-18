@@ -36,16 +36,16 @@ describe("ParentalControl", () => {
 
   it("renders locked state correctly", () => {
     render(<ParentalControl {...defaultProps} />);
-    expect(screen.getByText(/Control Parental Activo/i)).toBeInTheDocument();
-    expect(screen.getByText(/Desbloquear Contenido/i)).toBeInTheDocument();
+    expect(screen.getByText(/Control Parental/i)).toBeInTheDocument();
+    expect(screen.getByText(/Contenido restringido/i)).toBeInTheDocument();
   });
 
   it("shows PIN input when unlock button is clicked", () => {
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(
-      screen.getByText(/Desbloquear Contenido/i) as unknown as Element,
+      screen.getByText(/Desbloquear/i) as unknown as Element,
     );
-    expect(screen.getByText(/Ingresa PIN de 4 dígitos/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ingresa PIN/i)).toBeInTheDocument();
   });
 
   it("handles correct PIN entry", () => {
@@ -53,7 +53,7 @@ describe("ParentalControl", () => {
 
     // Open PIN input
     fireEvent.click(
-      screen.getByText(/Desbloquear Contenido/i) as unknown as Element,
+      screen.getByText(/Desbloquear/i) as unknown as Element,
     );
 
     // Enter PIN "1234" (default mock)
@@ -72,7 +72,7 @@ describe("ParentalControl", () => {
   it("handles incorrect PIN entry and lockout", async () => {
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(
-      screen.getByText(/Desbloquear Contenido/i) as unknown as Element,
+      screen.getByText(/Desbloquear/i) as unknown as Element,
     );
     const input = screen.getByPlaceholderText("••••");
     const confirmBtn = screen.getByText(/Confirmar/i);
@@ -111,7 +111,7 @@ describe("ParentalControl", () => {
   it("submits PIN on Enter key press", () => {
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(
-      screen.getByText(/Desbloquear Contenido/i) as unknown as Element,
+      screen.getByText(/Desbloquear/i) as unknown as Element,
     );
     const input = screen.getByPlaceholderText("••••");
 

@@ -1,24 +1,8 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Coins,
-  TrendingUp,
-  Lock,
-  Unlock,
-  Calendar,
-  Percent,
-  Loader2,
-  CheckCircle,
-  AlertCircle,
-  Info,
-} from "lucide-react";
+import { Coins, TrendingUp, Lock, Unlock, Calendar, Percent, Loader2, CheckCircle, AlertCircle, Info } from "lucide-react";
 import { walletService, WalletService } from "@/services/WalletService";
 import { logger } from "@/lib/logger";
 

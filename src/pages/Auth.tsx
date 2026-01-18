@@ -1,22 +1,19 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Users, ArrowLeft, Sparkles, MapPin, Building2 } from "lucide-react";
+import { Shield, Users, ArrowLeft, Sparkles, Building } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
-import { Theme } from '@/features/profile/useProfileTheme';
-import { usePersistedState } from '@/hooks/usePersistedState';
-import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { safeSetItem } from '@/utils/safeLocalStorage';
-import { PhoneInput } from '@/components/forms/PhoneInput';
-import { motion } from 'framer-motion';
+import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
+import { DecorativeHearts } from "@/components/DecorativeHearts";
+import RegisterForm from "@/components/auth/RegisterForm";
 
 interface FormData {
   email: string;
@@ -44,120 +41,85 @@ interface FormData {
   acceptTerms: boolean;
   shareLocation: boolean;
   selectedInterests: string[];
-  preferredTheme: Theme;
+  preferredTheme: string;
   profileTheme: string;
 }
 
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { getCurrentLocation: _getCurrentLocation, location: _location, isLoading: _locationLoading, error: _locationError } = useGeolocation();
-  const { user: _user, session: _session, profile: _profile, loading: _loading, signIn, signOut: _signOut, isAdmin: _isAdmin, isDemo: _isDemo, getProfileType: _getProfileType, shouldUseProductionAdmin: _shouldUseProductionAdmin, appMode: _appMode } = useAuth();
-  
-  // Estado persistente para autenticacin demo
-  const [_demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
-  const [_demoAuthenticated, _setDemoAuthenticated] = usePersistedState<boolean>('demo_authenticated', false);
-  const [_userType, _setUserType] = usePersistedState<string>('userType', '');
-  
+  const {
+    getCurrentLocation: _getCurrentLocation,
+    location: _location,
+    isLoading: _locationLoading,
+    error: _locationError,
+  } = useGeolocation();
+  const {
+    user: _user,
+    session: _session,
+    profile: _profile,
+    loading: _loading,
+    signIn,
+    signOut: _signOut,
+    isAdmin: _isAdmin,
+    isDemo: _isDemo,
+    getProfileType: _getProfileType,
+    shouldUseProductionAdmin: _shouldUseProductionAdmin,
+    appMode: _appMode,
+  } = useAuth();
+
   const [isLoading, setIsLoading] = useState(false);
-  const [showResetPassword, setShowResetPassword] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
+  const [__showResetPassword, _setShowResetPassword] = useState(false);
+  const [__resetEmail, _setResetEmail] = useState("");
   const [showLoginLoading, setShowLoginLoading] = useState(false);
-  const [autoLocationRequested, setAutoLocationRequested] = useState(false);
-  const [showThemeModal, setShowThemeModal] = useState(false);
-  const [showTermsModal, setShowTermsModal] = useState(false);
-  const [isAdminMode, setIsAdminMode] = useState(false);
-  const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [__autoLocationRequested, _setAutoLocationRequested] = useState(false);
+  const [__showThemeModal, _setShowThemeModal] = useState(false);
+  const [__showTermsModal, _setShowTermsModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
+  
+  // Depurar cambio de activeTab
+  useEffect(() => {
+    console.log("activeTab cambió:", activeTab);
+  }, [activeTab]);
   const [formData, setFormData] = useState<FormData>({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    nickname: '',
-    age: '',
-    birthDate: '',
-    gender: '',
-    interestedIn: '',
-    bio: '',
-    role: 'user',
-    accountType: 'single',
-    phone: '', // Teléfono agregado para validación MX
-    partnerFirstName: '',
-    partnerLastName: '',
-    partnerNickname: '',
-    partnerAge: '',
-    partnerBirthDate: '',
-    partnerGender: '',
-    partnerInterestedIn: '',
-    partnerBio: '',
-    location: '',
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    nickname: "",
+    age: "",
+    birthDate: "",
+    gender: "",
+    interestedIn: "",
+    bio: "",
+    role: "user",
+    accountType: "single",
+    phone: "", // Teléfono agregado para validación MX
+    partnerFirstName: "",
+    partnerLastName: "",
+    partnerNickname: "",
+    partnerAge: "",
+    partnerBirthDate: "",
+    partnerGender: "",
+    partnerInterestedIn: "",
+    partnerBio: "",
+    location: "",
     acceptTerms: false,
     shareLocation: false,
     selectedInterests: [],
-    preferredTheme: 'dark',
-    profileTheme: 'dark'
+    preferredTheme: "dark",
+    profileTheme: "dark",
   });
 
-  const handleInputChange = (field: string, value: string | boolean | string[]) => {
-    setFormData(prev => ({
+  const handleInputChange = (
+    field: string,
+    value: string | boolean | string[],
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
-
-  const demoCredentials = {
-    email: import.meta.env.VITE_DEMO_EMAIL,
-    password: import.meta.env.VITE_DEMO_PASSWORD
-  };
-
-  if (!demoCredentials.email || !demoCredentials.password) {
-    throw new Error('Credenciales demo no configuradas. Contacte al administrador.');
-  }
-
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    setShowLoginLoading(true);
-    
-    try {
-      // Configurar credenciales demo - Lógica del respaldo
-      const demoCredentials = {
-        email: 'demo@complicesconecta.com',
-        password: 'demo123'
-      };
-      
-      // Establecer estado de autenticación demo
-      _setDemoAuthenticated(true);
-      _setDemoUser(demoCredentials);
-      _setUserType('single');
-      
-      // Configurar localStorage para demo
-      localStorage.setItem('demo_authenticated', 'true');
-      localStorage.setItem('demo_user', JSON.stringify(demoCredentials));
-      localStorage.setItem('userType', 'single');
-      
-      toast({
-        title: "Acceso Demo Activado",
-        description: "Bienvenido al modo demo de ComplicesConecta",
-      });
-      
-      // Navegar al feed después de un breve delay
-      setTimeout(() => {
-        navigate('/feed');
-      }, 1500);
-      
-    } catch (error) {
-      console.error('Error en demo login:', error);
-      toast({
-        title: "Error",
-        description: "No se pudo activar el modo demo",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-      setShowLoginLoading(false);
-    }
-  };
-
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -165,70 +127,59 @@ const Auth = () => {
     setShowLoginLoading(true);
 
     try {
-      // ✅ Detectar credenciales demo y manejarlas directamente
-      if ((e.nativeEvent as any).isDemo || (formData.email === demoCredentials.email && formData.password === demoCredentials.password)) {
-        // Configurar estado de autenticación demo
-        _setDemoAuthenticated(true);
-        _setDemoUser({ email: formData.email, password: formData.password });
-        _setUserType(formData.accountType || 'single');
-        
-        // Configurar localStorage para demo
-        safeSetItem('demo_authenticated', 'true', { validate: true });
-        safeSetItem('demo_user', { email: formData.email, id: 'demo-user-id' }, { validate: false, sanitize: true });
-        safeSetItem('userType', formData.accountType || 'single', { validate: false });
-        
-        toast({
-          title: "Inicio de sesión exitoso",
-          description: "Bienvenido al modo demo de ComplicesConecta",
-        });
-
-        setTimeout(() => {
-          navigate('/feed');
-        }, 1500);
-        
-        return;
-      }
-
       // Usar el método signIn del hook useAuth que maneja correctamente demo y producción
-      const result = await signIn(formData.email, formData.password, formData.accountType || 'single');
+      const result = await signIn(
+        formData.email,
+        formData.password,
+        formData.accountType || "single",
+      );
 
       if (result && result.user) {
         toast({
-          title: "Inicio de sesión exitoso",
+          title: "Inicio de sesin exitoso",
           description: "Bienvenido de vuelta a ComplicesConecta",
         });
 
         // Redirigir segn el tipo de cuenta
         const userWithMetadata = result.user as any;
-        const accountType = userWithMetadata?.user_metadata?.account_type || 
-                           userWithMetadata?.user_metadata?.accountType || 
-                           userWithMetadata?.accountType ||
-                           formData.accountType || 
-                           'single';
+        const accountType =
+          userWithMetadata?.user_metadata?.account_type ||
+          userWithMetadata?.user_metadata?.accountType ||
+          userWithMetadata?.accountType ||
+          formData.accountType ||
+          "single";
 
         setTimeout(() => {
-          if (accountType === 'couple') {
-            navigate('/profile-couple');
+          if (accountType === "couple") {
+            navigate("/profile-couple");
           } else {
-            navigate('/profile-single');
+            navigate("/profile-single");
           }
-        }, 1500);
+        }, 3000);
       } else {
-        throw new Error('No se recibieron datos de usuario');
+        throw new Error("No se recibieron datos de usuario");
       }
     } catch (error: any) {
       // Mejorar mensajes de error
-      let errorMessage = 'Error al iniciar sesión';
-      
+      let errorMessage = "Error al iniciar sesin";
+
       if (error?.message) {
-        if (error.message.includes('Invalid API key')) {
-          errorMessage = 'Error de configuracin. Por favor, contacta al soporte.';
-        } else if (error.message.includes('Invalid login credentials') || error.message.includes('Invalid credentials')) {
-          errorMessage = 'Correo electrnico o contrasea incorrectos';
-        } else if (error.message.includes('Email not confirmed')) {
-          errorMessage = 'Por favor, confirma tu correo electrnico antes de iniciar sesin';
-        } else if (error.message.includes('User not found')) {
-          errorMessage = 'Usuario no encontrado. Verifica tu correo electrnico';
+        if (error.message.includes("Invalid API key")) {
+          errorMessage =
+            "Error de configuracin. Por favor, contacta al soporte.";
+        } else if (
+          error.message.includes("Invalid login credentials") ||
+          error.message.includes("Invalid credentials") ||
+          error.message.includes("Invalid login") ||
+          error.message.includes("Invalid password") ||
+          error.message.includes("Authentication failed")
+        ) {
+          errorMessage = "Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e intenta nuevamente.";
+        } else if (error.message.includes("Email not confirmed")) {
+          errorMessage =
+            "Por favor, confirma tu correo electrnico antes de iniciar sesin";
+        } else if (error.message.includes("User not found")) {
+          errorMessage = "Usuario no encontrado. Verifica tu correo electrnico";
         } else {
           errorMessage = error.message;
         }
@@ -252,22 +203,26 @@ const Auth = () => {
     try {
       // Validaciones adicionales
       if (!formData.acceptTerms) {
-        throw new Error('Debes aceptar los trminos y condiciones');
+        throw new Error("Debes aceptar los trminos y condiciones");
       }
 
       if (formData.age && parseInt(formData.age) < 18) {
-        throw new Error('Debes ser mayor de 18 aos');
+        throw new Error("Debes ser mayor de 18 aos");
       }
 
-      if (formData.accountType === 'couple' && formData.partnerAge && parseInt(formData.partnerAge) < 18) {
-        throw new Error('Tu pareja debe ser mayor de 18 aos');
+      if (
+        formData.accountType === "couple" &&
+        formData.partnerAge &&
+        parseInt(formData.partnerAge) < 18
+      ) {
+        throw new Error("Tu pareja debe ser mayor de 18 aos");
       }
 
       // Crear usuario en Supabase
       if (!supabase) {
-        throw new Error('Supabase no est disponible');
+        throw new Error("Supabase no est disponible");
       }
-      
+
       const { data: _authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -285,16 +240,16 @@ const Auth = () => {
             location: formData.location,
             share_location: formData.shareLocation,
             // Datos de pareja si aplica
-            ...(formData.accountType === 'couple' && {
+            ...(formData.accountType === "couple" && {
               partner_first_name: formData.partnerFirstName,
               partner_last_name: formData.partnerLastName,
               partner_display_name: formData.partnerNickname,
               partner_age: parseInt(formData.partnerAge),
               partner_gender: formData.partnerGender,
               partner_interested_in: formData.partnerInterestedIn,
-            })
-          }
-        }
+            }),
+          },
+        },
       });
 
       if (authError) throw authError;
@@ -306,9 +261,8 @@ const Auth = () => {
 
       // Redirigir al login despus del registro
       setTimeout(() => {
-        navigate('/auth');
+        navigate("/auth");
       }, 2000);
-
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -321,33 +275,31 @@ const Auth = () => {
   };
 
   if (showLoginLoading) {
-    return <LoginLoadingScreen onComplete={() => setShowLoginLoading(false)} userType="single" />;
+    return (
+      <LoginLoadingScreen
+        onComplete={() => setShowLoginLoading(false)}
+        userType="single"
+      />
+    );
   }
 
   return (
-    <div className="w-full min-h-screen bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 relative overflow-hidden">
+    <ResponsiveContainer className="min-h-screen bg-transparent flex items-center justify-center p-4 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={6} />
-      
-      {/* Background completamente uniforme - sin bloques visibles */}
-      
-      <div className="relative z-10 w-full max-w-md">
-        {/* Card con glassmorphism profesional sin scrollbar */}
-        <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl overflow-hidden max-w-full box-border">
-          {/* Corazones decorativos dentro del contenedor */}
-          <div className="relative z-0 absolute inset-0 overflow-hidden pointer-events-none">
-            <DecorativeHearts count={6} />
-          </div>
 
-          {/* Contenido del formulario en z-10 */}
-          <div className="relative z-10">
-          <CardHeader className="text-center relative z-10">
+      {/* Background completamente uniforme - sin bloques visibles */}
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Card con glassmorphism mejorado - más transparente para ver fondo */}
+        <Card className="bg-white/5 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-hidden">
+          <CardHeader className="text-center">
             <div className="flex justify-between items-center mb-4">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/')}
-                className="text-white/90 hover:text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20 hover:border-white/40 rounded-lg px-4 py-2"
+                onClick={() => navigate("/")}
+                className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver
@@ -355,654 +307,195 @@ const Auth = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  // Toggle entre modo normal y admin - Lógica del respaldo
-                  setIsAdminMode(!isAdminMode);
+                onClick={async () => {
+                  // Toggle entre modo normal y admin
+                  const isAdminMode = formData.email.includes(
+                    "complicesconectasw@outlook.es",
+                  );
+                  
+                  console.log("Botón Admin clickeado:", { isAdminMode, activeTab });
+                  
+                  // Siempre cambiar a pestaña de login cuando se activa modo Admin
                   if (!isAdminMode) {
-                    setFormData(prev => ({ ...prev, email: 'complicesconectasw@outlook.es', password: 'admin123' }));
+                    // NO prellenar email - dejar que el usuario lo ingrese manualmente
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: "",
+                    }));
+                    
+                    // Forzar cambio de pestaña de login
+                    setActiveTab("signin");
+                    console.log("setActiveTab('signin') llamado");
+                    
+                    // Forzar re-renderizado con un pequeño delay
+                    setTimeout(() => {
+                      setActiveTab("signin");
+                      console.log("setActiveTab('signin') llamado en timeout");
+                    }, 10);
+                    
+                    toast({
+                      title: "Modo Admin Activado",
+                      description: "Ingresa tu email de administrador para continuar",
+                    });
                   } else {
-                    setFormData(prev => ({ ...prev, email: '', password: '' }));
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: "",
+                      password: "",
+                    }));
+                    toast({
+                      title: "Modo Normal Activado",
+                      description: "Ingresa tus credenciales de usuario",
+                    });
                   }
                 }}
-                className="text-white/90 hover:text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20 hover:border-white/40 rounded-lg px-4 py-2"
+                className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
                 data-testid="toggle-auth-mode"
               >
                 <Shield className="h-4 w-4 mr-2" />
-                {isAdminMode ? "Admin" : "Normal"}
+                Admin
               </Button>
             </div>
-            <CardTitle className="text-2xl font-bold text-white">ComplicesConecta</CardTitle>
-            <CardDescription className="text-white/90 font-medium">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
+              ComplicesConecta
+            </CardTitle>
+            <CardDescription className="text-white/90 font-medium text-lg">
               Conecta con personas afines en un entorno seguro y discreto
             </CardDescription>
-            
-            <div className="flex justify-center space-x-12 mt-6 mb-4">
-              <motion.div 
-                className="text-center"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Shield className="h-7 w-7 text-green-400 mx-auto mb-2" style={{ filter: 'drop-shadow(0 0 8px rgba(74, 222, 128, 0.6))' }} />
-                <p className="text-sm text-white/90 font-semibold tracking-wide">Seguro</p>
-              </motion.div>
-              <motion.div 
-                className="text-center"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Users className="h-7 w-7 text-blue-400 mx-auto mb-2" style={{ filter: 'drop-shadow(0 0 8px rgba(96, 165, 250, 0.6))' }} />
-                <p className="text-sm text-white/90 font-semibold tracking-wide">Comunidad</p>
-              </motion.div>
-              <motion.div 
-                className="text-center"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Sparkles className="h-7 w-7 text-purple-400 mx-auto mb-2" style={{ filter: 'drop-shadow(0 0 8px rgba(192, 132, 252, 0.6))' }} />
-                <p className="text-sm text-white/90 font-semibold tracking-wide">IA Match</p>
-              </motion.div>
+
+            <div className="flex justify-center space-x-8 mt-6 mb-4">
+              <div className="text-center">
+                <Shield className="h-6 w-6 text-green-400 mx-auto mb-1" />
+                <p className="text-xs text-white font-medium">Seguro</p>
+              </div>
+              <div className="text-center">
+                <Users className="h-6 w-6 text-blue-400 mx-auto mb-1" />
+                <p className="text-xs text-white font-medium">Comunidad</p>
+              </div>
+              <div className="text-center">
+                <Sparkles className="h-6 w-6 text-purple-400 mx-auto mb-1" />
+                <p className="text-xs text-white font-medium">IA Match</p>
+              </div>
             </div>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 gap-2 p-1 bg-white/10 backdrop-blur-sm rounded-xl">
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "signin" | "signup")} className="w-full" key={activeTab}>
+              <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg">
                 <TabsTrigger 
                   value="signin" 
                   data-testid="switch-to-login"
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
                 >
                   Iniciar Sesión
                 </TabsTrigger>
                 <TabsTrigger 
                   value="signup" 
                   data-testid="switch-to-register"
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/40 text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 hover:scale-105 active:scale-95 rounded-lg font-semibold py-3"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
                 >
                   Registrarse
                 </TabsTrigger>
               </TabsList>
-              
-              <TabsContent value="signin" className="mt-6">
-                <motion.form 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  onSubmit={handleSignIn} 
-                  className="space-y-4" 
+
+              <TabsContent value="signin">
+                <form
+                  onSubmit={handleSignIn}
+                  autoComplete="off"
+                  className="space-y-4"
                   data-testid="login-form"
                 >
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.1 }}
-                    className="space-y-2"
-                  >
-                    <Label htmlFor="email" className="text-white/90 font-semibold text-base tracking-wide">Correo electrónico</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-white font-medium">
+                      Correo electrnico
+                    </Label>
                     <Input
                       id="email"
                       name="email"
                       type="email"
-                      inputMode="email"
                       value={formData.email}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("email", e.target.value)}
-                      onFocus={() => setIsEmailFocused(true)}
-                      onBlur={() => setIsEmailFocused(false)}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
                       required
                       placeholder="tu@email.com"
-                      autoComplete="off"
-                      readOnly={!isEmailFocused}
-                      onClick={() => setIsEmailFocused(true)}
+                      autoComplete="email"
                       data-testid="email-input"
-                      className="bg-white/5 border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300"
+                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.2 }}
-                    className="space-y-2"
-                  >
-                    <Label htmlFor="password" className="text-white/90 font-semibold text-base tracking-wide">Contraseña</Label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="password"
+                      className="text-white font-medium"
+                    >
+                      Contrasea
+                    </Label>
                     <Input
                       id="password"
+                      name="password"
                       type="password"
                       value={formData.password}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("password", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("password", e.target.value)
+                      }
                       required
                       minLength={6}
+                      placeholder="Tu contraseña"
+                      autoComplete="current-password"
                       data-testid="password-input"
-                      className="bg-white/5 border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300"
+                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.3 }}
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold shadow-lg transition-all duration-300 hover:from-purple-700 hover:to-blue-700 hover:scale-105"
+                    data-testid="login-button"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 border-2 border-purple-400" 
-                      disabled={isLoading} 
-                      data-testid="login-button"
-                    >
-                      {isLoading ? (
-                        <span className="flex items-center justify-center">
-                          <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12c0 4.418 3.582 8 8 8s8-3.582 8-8h4zm0 0H4a8 8 0 00-8 8v4a8 8 0 008 8h4a8 8 0 008-8v-4a8 8 0 00-8-8z"></path>
-                          </svg>
-                          Iniciando sesión...
-                        </span>
-                      ) : (
-                        <span className="flex items-center justify-center">
-                          <Shield className="h-5 w-5 mr-2" />
-                          Iniciar Sesión
-                        </span>
-                      )}
-                    </Button>
-                  </motion.div>
-                  
-                  <button
+                    Iniciar Sesión
+                  </Button>
+
+                  {/* Demo Login Button con glassmorphism mejorado - Navega a selector */}
+                  <Button
                     type="button"
-                    onClick={() => setShowResetPassword(true)}
-                    className="w-full text-sm text-white/70 hover:text-white/90 transition-colors py-2"
+                    variant="outline"
+                    className="w-full border-2 border-yellow-400/50 bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-yellow-500/20 backdrop-blur-sm text-white font-semibold hover:from-yellow-500/40 hover:via-amber-500/40 hover:to-yellow-500/40 hover:border-yellow-400 hover:text-white hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 active:scale-95 relative overflow-hidden group"
+                    onClick={() => navigate("/demo")}
+                    data-testid="demo-login-button"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
                   >
-                    ¿Olvidaste tu contraseña?
-                  </button>
-                  
-                  {/* Botones de Demo y Clubs - Solo en modo normal */}
-                  {!isAdminMode && (
-                    <div className="space-y-3 mt-6">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full border-2 border-purple-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-purple-500/40 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-purple-500/20"
-                        onClick={handleDemoLogin}
-                        data-testid="demo-login-button"
-                      >
-                        <Sparkles className="w-5 h-5 mr-2 animate-pulse" />
-                        Acceso Demo
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full border-2 border-blue-400/60 bg-white/15 backdrop-blur-md text-white font-semibold hover:bg-blue-500/40 hover:border-blue-400 hover:text-white transition-all duration-300 hover:scale-105 hover:brightness-110 active:scale-95 shadow-lg shadow-blue-500/20"
-                        onClick={() => navigate('/clubs-coming-soon')}
-                      >
-                        <Building2 className="w-5 h-5 mr-2" />
-                        Próximamente Clubs
-                      </Button>
-                    </div>
-                  )}
-                </motion.form>
-              </TabsContent>
-              
-              <TabsContent value="signup" data-testid="register-form">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  {/* Tipo de Cuenta */}
-                  <div className="space-y-3">
-                    <Label className="text-white font-semibold text-base">Tipo de Cuenta</Label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <Button
-                        type="button"
-                        onClick={() => handleInputChange('accountType', 'single')}
-                        className={`text-sm font-semibold py-6 transition-all duration-300 hover:scale-105 active:scale-95 ${
-                          formData.accountType === 'single' 
-                            ? 'bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/40 border-2 border-purple-400' 
-                            : 'bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20 hover:border-white/50'
-                        }`}
-                      >
-                        <span className="text-2xl mr-2">👤</span>
-                        Soltero/a
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={() => handleInputChange('accountType', 'couple')}
-                        className={`text-sm font-semibold py-6 transition-all duration-300 hover:scale-105 active:scale-95 ${
-                          formData.accountType === 'couple' 
-                            ? 'bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-xl shadow-purple-500/40 border-2 border-purple-400' 
-                            : 'bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20 hover:border-white/50'
-                        }`}
-                      >
-                        <span className="text-2xl mr-2">💑</span>
-                        Pareja
-                      </Button>
-                    </div>
-                  </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/0 via-yellow-400/20 to-yellow-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                    <Sparkles className="w-4 h-4 mr-2 relative z-10 group-hover:animate-spin" />
+                    <span className="relative z-10">Acceso Demo</span>
+                  </Button>
 
-                  {/* Información Básica */}
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-white font-medium">Nombre</Label>
-                    <Input
-                      id="firstName"
-                      value={formData.firstName}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('firstName', e.target.value)}
-                      required
-                      placeholder="Tu nombre"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-white font-medium">Apellido</Label>
-                    <Input
-                      id="lastName"
-                      value={formData.lastName}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('lastName', e.target.value)}
-                      required
-                      placeholder="Tu apellido"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="nickname" className="text-white font-medium">Nombre de Usuario</Label>
-                    <Input
-                      id="nickname"
-                      value={formData.nickname}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('nickname', e.target.value)}
-                      required
-                      placeholder="Nombre pblico"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="age" className="text-white font-medium">Edad</Label>
-                    <Input
-                      id="age"
-                      type="number"
-                      min="18"
-                      max="99"
-                      value={formData.age}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('age', e.target.value)}
-                      required
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                    />
-                  </div>
-
-                  {/* Campo de teléfono con validación MX */}
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-white font-medium">
-                      Teléfono <span className="text-white/60 text-sm">(México)</span>
-                    </Label>
-                    <PhoneInput
-                      value={formData.phone}
-                      onChange={(value: string) => handleInputChange('phone', value)}
-                      placeholder="55 1234 5678"
-                      required
-                      showValidation={true}
-                      autoFormat={true}
-                      className="w-full"
-                    />
-                  </div>
-
-                  {/* Campo de teléfono con validación MX */}
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-white font-medium">
-                      Teléfono <span className="text-white/60 text-sm">(México)</span>
-                    </Label>
-                    <PhoneInput
-                      value={formData.phone}
-                      onChange={(value: string) => handleInputChange('phone', value)}
-                      placeholder="55 1234 5678"
-                      required
-                      showValidation={true}
-                      autoFormat={true}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="interestedIn" className="text-white font-medium">Interesado en</Label>
-                    <select
-                      id="interestedIn"
-                      aria-label="Selecciona en quién estás interesado"
-                      value={formData.interestedIn}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleInputChange('interestedIn', e.target.value)}
-                      required
-                      className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
-                    >
-                      <option value="" className="bg-purple-900 text-white">Selecciona tu inters</option>
-                      <option value="male" className="bg-purple-900 text-white">Hombres</option>
-                      <option value="female" className="bg-purple-900 text-white">Mujeres</option>
-                      <option value="both" className="bg-purple-900 text-white">Ambos</option>
-                      <option value="couples" className="bg-purple-900 text-white">Parejas</option>
-                    </select>
-                  </div>
-
-                  {/* Informacin de Pareja - Solo si es pareja */}
-                  {formData.accountType === 'couple' && (
-                    <>
-                      <div className="border-t border-white/20 pt-4">
-                        <h4 className="text-white font-medium mb-4">Informacin de tu Pareja</h4>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="partnerFirstName" className="text-white font-medium">Nombre de tu Pareja</Label>
-                          <Input
-                            id="partnerFirstName"
-                            value={formData.partnerFirstName}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('partnerFirstName', e.target.value)}
-                            required
-                            placeholder="Nombre de tu pareja"
-                            className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="partnerLastName" className="text-white font-medium">Apellido de tu Pareja</Label>
-                          <Input
-                            id="partnerLastName"
-                            value={formData.partnerLastName}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('partnerLastName', e.target.value)}
-                            required
-                            placeholder="Apellido de tu pareja"
-                            className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="partnerNickname" className="text-white font-medium">Nombre de Usuario de tu Pareja</Label>
-                          <Input
-                            id="partnerNickname"
-                            value={formData.partnerNickname}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('partnerNickname', e.target.value)}
-                            required
-                            placeholder="Nombre pblico de tu pareja"
-                            className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="partnerAge" className="text-white font-medium">Edad de tu Pareja</Label>
-                          <Input
-                            id="partnerAge"
-                            type="number"
-                            min="18"
-                            max="99"
-                            value={formData.partnerAge}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('partnerAge', e.target.value)}
-                            required
-                            className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="partnerGender" className="text-white font-medium">Gnero de tu Pareja</Label>
-                          <select
-                            id="partnerGender"
-                            aria-label="Selecciona el género de tu pareja"
-                            value={formData.partnerGender}
-                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleInputChange('partnerGender', e.target.value)}
-                            required
-                            className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
-                          >
-                            <option value="" className="bg-purple-900 text-white">Selecciona el gnero</option>
-                            <option value="male" className="bg-purple-900 text-white">Masculino</option>
-                            <option value="female" className="bg-purple-900 text-white">Femenino</option>
-                            <option value="non-binary" className="bg-purple-900 text-white">No binario</option>
-                            <option value="other" className="bg-purple-900 text-white">Otro</option>
-                          </select>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="partnerInterestedIn" className="text-white font-medium">Interesado en</Label>
-                          <select
-                            id="partnerInterestedIn"
-                            aria-label="Selecciona en quién está interesada tu pareja"
-                            value={formData.partnerInterestedIn}
-                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleInputChange('partnerInterestedIn', e.target.value)}
-                            required
-                            className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
-                          >
-                            <option value="" className="bg-purple-900 text-white">Selecciona el inters</option>
-                            <option value="male" className="bg-purple-900 text-white">Hombres</option>
-                            <option value="female" className="bg-purple-900 text-white">Mujeres</option>
-                            <option value="both" className="bg-purple-900 text-white">Ambos</option>
-                            <option value="couples" className="bg-purple-900 text-white">Parejas</option>
-                          </select>
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {/* Informacin Adicional */}
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white font-medium">Correo electrnico</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('email', e.target.value)}
-                      required
-                      placeholder="tu@email.com"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-white font-medium">Contrasea</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={formData.password}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('password', e.target.value)}
-                      required
-                      minLength={6}
-                      placeholder="Mnimo 6 caracteres"
-                      className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="bio" className="text-white font-medium">Biografa</Label>
-                    <textarea
-                      id="bio"
-                      value={formData.bio}
-                      onChange={(e) => handleInputChange('bio', e.target.value)}
-                      required
-                      rows={3}
-                      placeholder="Cuntanos sobre ti..."
-                      className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 resize-none"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="location" className="text-white font-medium">Ubicacin</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        id="location"
-                        value={formData.location}
-                        onChange={(e) => handleInputChange('location', e.target.value)}
-                        required
-                        placeholder="Ciudad, Estado"
-                        className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          setAutoLocationRequested(true);
-                          if (_location) {
-                            handleInputChange('location', `${_location.latitude.toFixed(4)}, ${_location.longitude.toFixed(4)}`);
-                          } else {
-                            toast({
-                              title: "Ubicación no disponible",
-                              description: "No se pudo obtener la ubicación automática",
-                              variant: "destructive"
-                            });
-                          }
-                        }}
-                        disabled={autoLocationRequested || _locationLoading}
-                        className="bg-white/10 border-white/30 text-white hover:bg-white/20"
-                      >
-                        <MapPin className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Trminos y Condiciones */}
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="acceptTerms"
-                        aria-label="Acepto los términos y condiciones"
-                        checked={formData.acceptTerms}
-                        onChange={(e) => handleInputChange('acceptTerms', e.target.checked)}
-                        required
-                        className="rounded"
-                      />
-                      <Label htmlFor="acceptTerms" className="text-sm text-white/80">
-                        Acepto los <button type="button" onClick={() => setShowTermsModal(true)} className="text-purple-300 hover:underline">Trminos y Condiciones</button> y la <Link to="/privacy" className="text-purple-300 hover:underline">Poltica de Privacidad</Link>
-                      </Label>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="shareLocation"
-                        aria-label="Compartir mi ubicación"
-                        checked={formData.shareLocation}
-                        onChange={(e) => handleInputChange('shareLocation', e.target.checked)}
-                        className="rounded"
-                      />
-                      <Label htmlFor="shareLocation" className="text-sm text-white/80">
-                        Compartir mi ubicacin para mejorar las coincidencias
-                      </Label>
-                    </div>
-                </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-xl shadow-purple-500/40 transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-purple-400" 
-                    disabled={isLoading}
+                  {/* Club Demo Button - Próximamente */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled
+                    className="w-full border-2 border-purple-400/50 bg-gradient-to-r from-purple-500/20 via-fuchsia-500/20 to-purple-500/20 backdrop-blur-sm text-white/70 font-semibold cursor-not-allowed relative overflow-hidden"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
                   >
-                    {isLoading ? (
-                      <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12c0 4.418 3.582 8 8 8s8-3.582 8-8h4zm0 0H4a8 8 0 00-8 8v4a8 8 0 008 8h4a8 8 0 008-8v-4a8 8 0 00-8-8z"></path>
-                        </svg>
-                        Creando cuenta...
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center">
-                        <Users className="h-5 w-5 mr-2" />
-                        Crear Cuenta
-                      </span>
-                    )}
+                    <Building className="w-4 h-4 mr-2" />
+                    <span>Club Demo - Próximamente</span>
                   </Button>
                 </form>
               </TabsContent>
+
+              <TabsContent value="signup" data-testid="register-form">
+                <RegisterForm
+                  formData={formData}
+                  handleInputChange={handleInputChange}
+                  handleSignUp={handleSignUp}
+                  isLoading={isLoading}
+                />
+              </TabsContent>
             </Tabs>
           </CardContent>
-          </div>
         </Card>
       </div>
-
-      {/* Modal de Restablecer Contraseña */}
-      {showResetPassword && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white/10 backdrop-blur-xl border border-white/30 rounded-2xl p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold text-white mb-4">Restablecer Contraseña</h3>
-            <p className="text-white/80 mb-4">Ingresa tu correo electrónico para recibir un enlace de restablecimiento.</p>
-            <Input
-              type="email"
-              placeholder="tu@email.com"
-              value={resetEmail}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setResetEmail(e.target.value)}
-              className="bg-white/20 border-white/30 text-white placeholder-white/70 mb-4"
-            />
-            <div className="flex gap-2">
-              <Button
-                onClick={() => setShowResetPassword(false)}
-                variant="outline"
-                className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={() => {
-                  if (resetEmail) {
-                    toast({
-                      title: "Correo enviado",
-                      description: "Se ha enviado un enlace de restablecimiento a tu correo",
-                    });
-                    setShowResetPassword(false);
-                    setResetEmail("");
-                  }
-                }}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-              >
-                Enviar
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Términos y Condiciones */}
-      {showTermsModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white/10 backdrop-blur-xl border border-white/30 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <h3 className="text-xl font-bold text-white mb-4">Términos y Condiciones</h3>
-            <div className="text-white/80 space-y-4 text-sm">
-              <p>1. Aceptación de Términos: Al usar CómplicesConecta, aceptas estos términos y condiciones.</p>
-              <p>2. Uso Responsable: Debes usar la plataforma de manera responsable y respetuosa.</p>
-              <p>3. Privacidad: Tus datos personales serán protegidos de acuerdo con nuestra Política de Privacidad.</p>
-              <p>4. Contenido: No puedes compartir contenido inapropiado o ilegal.</p>
-              <p>5. Conducta: Debes mantener un comportamiento respetuoso con otros usuarios.</p>
-              <p>6. Modificaciones: Nos reservamos el derecho de modificar estos términos en cualquier momento.</p>
-            </div>
-            <Button
-              onClick={() => setShowTermsModal(false)}
-              className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white"
-            >
-              Entendido
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Tema */}
-      {showThemeModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white/10 backdrop-blur-xl border border-white/30 rounded-2xl p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold text-white mb-4">Selecciona tu Tema</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { value: 'dark', label: 'Oscuro', bg: 'from-gray-900 to-gray-800' },
-                { value: 'light', label: 'Claro', bg: 'from-gray-100 to-gray-200' },
-                { value: 'midnight', label: 'Medianoche', bg: 'from-blue-900 to-purple-900' },
-                { value: 'sunset', label: 'Atardecer', bg: 'from-orange-500 to-pink-500' }
-              ].map(theme => (
-                <button
-                  key={theme.value}
-                  type="button"
-                  onClick={() => {
-                    handleInputChange('preferredTheme', theme.value);
-                    setShowThemeModal(false);
-                  }}
-                  className={`bg-gradient-to-r ${theme.bg} p-4 rounded-lg text-white font-semibold hover:scale-105 transition-transform ${formData.preferredTheme === theme.value ? 'ring-2 ring-white' : ''}`}
-                >
-                  {theme.label}
-                </button>
-              ))}
-            </div>
-            <Button
-              onClick={() => setShowThemeModal(false)}
-              variant="outline"
-              className="w-full mt-4 bg-white/10 border-white/30 text-white hover:bg-white/20"
-            >
-              Cancelar
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
+    </ResponsiveContainer>
   );
 };
 

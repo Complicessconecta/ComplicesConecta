@@ -295,8 +295,8 @@ const Auth = () => {
       {/* Background completamente uniforme - sin bloques visibles */}
       
       <div className="relative z-10 w-full max-w-md">
-        {/* Card con glassmorphism profesional */}
-        <Card className="bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl rounded-3xl overflow-hidden max-w-full box-border h-auto max-h-[90vh] overflow-y-auto">
+        {/* Card con glassmorphism profesional sin scrollbar */}
+        <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl overflow-hidden max-w-full box-border">
           {/* Corazones decorativos dentro del contenedor */}
           <div className="relative z-0 absolute inset-0 overflow-hidden pointer-events-none">
             <DecorativeHearts count={6} />

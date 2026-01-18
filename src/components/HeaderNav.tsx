@@ -47,19 +47,30 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
   const chatPath = hasSession ? "/chat" : "/chat-info";
 
-  // C) Menú principal (máximo 7 items)
+  // C) Menú principal REDUCIDO a 5 items para evitar overflow
   const mainNavItems = [
     { name: "Inicio", path: "/", icon: Home },
     { name: "Descubrir", path: "/discover", icon: Search },
     { name: "Chat", path: chatPath, icon: MessageSquare },
     { name: "Eventos", path: "/events", icon: Calendar },
     { name: "Clubs", path: "/clubs", icon: Building2 },
-    { name: "Tokens", path: "/tokens", icon: DollarSign },
-    { name: "Marketplace", path: "/marketplace", icon: ShoppingBag },
   ];
 
-  // D) Dropdown "Más" con categorías exactas (Contenido & Empresa, Legal, Ayuda, Explorar)
+  // D) Dropdown "Más" con TODOS los items restantes organizados por categorías
   const secondaryNavItems = [
+    // Tokens & Marketplace
+    { name: "Tokens", path: "/tokens", icon: DollarSign, category: "Tokens & Marketplace" },
+    { name: "Marketplace", path: "/marketplace", icon: ShoppingBag, category: "Tokens & Marketplace" },
+    { name: "NFTs", path: "/nfts", icon: Image, category: "Tokens & Marketplace" },
+    { name: "Premium", path: "/premium", icon: Crown, category: "Tokens & Marketplace" },
+    { name: "Shop", path: "/shop", icon: ShoppingBag, category: "Tokens & Marketplace" },
+
+    // Explorar
+    { name: "Stories", path: "/stories", icon: Image, category: "Explorar" },
+    { name: "Feed", path: "/feed", icon: Heart, category: "Explorar" },
+    { name: "Info", path: "/info", icon: Info, category: "Explorar" },
+    { name: "About", path: "/about", icon: Building2, category: "Explorar" },
+
     // Contenido & Empresa
     { name: "Blog", path: "/blog", icon: BookOpen, category: "Contenido & Empresa" },
     { name: "Noticias", path: "/news", icon: FileText, category: "Contenido & Empresa" },
@@ -69,15 +80,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     { name: "Donaciones", path: "/donations", icon: DollarSign, category: "Contenido & Empresa" },
     { name: "Moderadores", path: "/moderators", icon: Users, category: "Contenido & Empresa" },
     { name: "Proyecto", path: "/project-info", icon: FileText, category: "Contenido & Empresa" },
-
-    // Explorar
-    { name: "Stories", path: "/stories", icon: Image, category: "Explorar" },
-    { name: "Feed", path: "/feed", icon: Heart, category: "Explorar" },
-    { name: "Info", path: "/info", icon: Info, category: "Explorar" },
-    { name: "About", path: "/about", icon: Building2, category: "Explorar" },
-    { name: "NFTs", path: "/nfts", icon: Image, category: "Explorar" },
-    { name: "Premium", path: "/premium", icon: Crown, category: "Explorar" },
-    { name: "Shop", path: "/shop", icon: ShoppingBag, category: "Explorar" },
 
     // Ayuda
     { name: "FAQ", path: "/faq", icon: HelpCircle, category: "Ayuda" },
@@ -136,8 +138,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
             : "bg-linear-to-b from-purple-900/95 via-purple-800/90 to-purple-700/80 backdrop-blur-sm border-b border-purple-400/30"
         } ${className}`}
       >
-        {/* Contenedor Principal */}
-        <div className="w-full">
+        {/* Contenedor Principal con max-width para evitar overflow */}
+        <div className="w-full max-w-[1920px] mx-auto">
           <div className="flex items-center justify-between h-16 px-4 lg:px-6">
             {/* Logo - Izquierda */}
             <div className="flex items-center space-x-3 shrink-0">
@@ -182,8 +184,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         : "text-white/90 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    <IconComponent className="h-4 w-4 shrink-0 text-white" />
-                    <span className="whitespace-nowrap">
+                    <IconComponent className="h-5 w-5 shrink-0 text-white" />
+                    <span className="whitespace-nowrap hidden xl:inline">
                       {item.name}
                     </span>
                   </button>
@@ -193,10 +195,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               {/* Menú desplegable "Más" */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center space-x-1 xl:space-x-2 px-2 xl:px-4 py-2 rounded-lg text-xs xl:text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 shrink-0">
-                    <MoreHorizontal className="h-4 w-4 shrink-0 text-white" />
-                    <span className="whitespace-nowrap">Más</span>
-                    <ChevronDown className="h-3 w-3 shrink-0 text-white" />
+                  <button className="flex items-center space-x-1 xl:space-x-2 px-2 xl:px-3 py-2 rounded-lg text-xs xl:text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 shrink-0">
+                    <MoreHorizontal className="h-5 w-5 shrink-0 text-white" />
+                    <span className="whitespace-nowrap hidden xl:inline">Más</span>
+                    <ChevronDown className="h-4 w-4 shrink-0 text-white" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -206,11 +208,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                 >
                   <div className="max-h-[calc(80vh-2rem)] overflow-y-auto overscroll-contain custom-scrollbar-inner">
                     {[
-                      "Comunidad",
-                      "Servicios",
-                      "Tokens",
-                      "Contenido",
-                      "Acerca de",
+                      "Tokens & Marketplace",
+                      "Explorar",
+                      "Contenido & Empresa",
                       "Ayuda",
                       "Legal",
                     ].map((category) => {
@@ -232,7 +232,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                                 onClick={() => handleNavigation(item.path)}
                                 className="text-white hover:bg-purple-500/20 hover:text-white cursor-pointer px-2 py-2"
                               >
-                                <IconComponent className="h-4 w-4 shrink-0 text-white" />
+                                <IconComponent className="h-5 w-5 shrink-0 text-white" />
                                 <span className="truncate">{item.name}</span>
                               </DropdownMenuItem>
                             );
@@ -483,7 +483,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
         </div>
 
         {isHomeRoute && (
-          <div className="w-full">
+          <div className="w-full max-w-[1920px] mx-auto">
             <BetaBanner embedded />
           </div>
         )}

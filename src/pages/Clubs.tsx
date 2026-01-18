@@ -178,7 +178,8 @@ export const Clubs = () => {
       logger.info("Clubs loaded successfully", { count: data?.length });
     } catch (error) {
       logger.error("Error loading clubs:", {
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : JSON.stringify(error),
+        stack: error instanceof Error ? error.stack : undefined,
       });
       toast({
         title: "Error",

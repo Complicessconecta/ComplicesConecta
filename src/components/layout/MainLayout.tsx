@@ -56,7 +56,7 @@ export const MainLayout = () => {
 
   const headerOffsetClass = showHeaderNav
     ? isHomeRoute
-      ? "pt-[calc(env(safe-area-inset-top)+7.5rem)]"
+      ? "pt-[calc(env(safe-area-inset-top)+6rem)]"
       : "pt-[calc(env(safe-area-inset-top)+4rem)]"
     : "pt-[env(safe-area-inset-top)]";
 

@@ -284,7 +284,7 @@ const Auth = () => {
   }
 
   return (
-    <ResponsiveContainer className="min-h-screen bg-transparent flex items-center justify-center p-4 relative overflow-hidden">
+    <ResponsiveContainer className="min-h-screen bg-transparent flex items-center justify-center p-4 relative overflow-visible">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={6} />
 
@@ -292,7 +292,7 @@ const Auth = () => {
 
       <div className="relative z-10 w-full max-w-md">
         {/* Card con glassmorphism mejorado - más transparente para ver fondo */}
-        <Card className="bg-white/5 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-hidden">
+        <Card className="bg-white/5 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-visible">
           <CardHeader className="text-center">
             <div className="flex justify-between items-center mb-4">
               <Button

@@ -19,10 +19,10 @@ export default function TokensLegal() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <TokensSubnav />
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-md border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-linear-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
@@ -45,12 +45,12 @@ export default function TokensLegal() {
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Hero */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-r from-purple-600 to-blue-600 rounded-full mb-4">
             <Scale className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white">
             Responsabilidad Legal
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+            <span className="block text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-blue-400">
               Sistema de Tokens CMPX/GTK
             </span>
           </h1>
@@ -91,7 +91,7 @@ export default function TokensLegal() {
               tu contrato digital o el funcionamiento de los tokens CMPX/GTK.
             </p>
             <Link to="/ai-help" className="inline-flex">
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm">
+              <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm">
                 <Sparkles className="w-4 h-4" />
                 Ir al Centro de Control IA
               </Button>

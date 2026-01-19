@@ -50,6 +50,8 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
       const userEmail = session.user.email;
       const adminEmails = [
         import.meta.env.VITE_ADMIN_EMAIL || "",
+        import.meta.env.VITE_ADMIN_EMAIL_2 || "",
+        import.meta.env.VITE_ADMIN_EMAIL_3 || "",
       ];
 
       if (adminEmails.includes(userEmail || "")) {

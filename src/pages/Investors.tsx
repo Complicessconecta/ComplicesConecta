@@ -11,7 +11,7 @@ const Investors: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={12} />
 
@@ -28,7 +28,7 @@ const Investors: FC = () => {
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                className="p-4 bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-600 rounded-2xl shadow-2xl"
+                className="p-4 bg-linear-to-r from-purple-500 via-fuchsia-500 to-blue-600 rounded-2xl shadow-2xl"
               >
                 <Heart className="h-16 w-16 text-white" fill="currentColor" />
               </motion.div>
@@ -45,19 +45,19 @@ const Investors: FC = () => {
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <Rocket className="h-4 w-4 mr-2" />
                 Beta Activa
               </Badge>
-              <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Brain className="h-4 w-4 mr-2" />
                 AI-Native
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Coins className="h-4 w-4 mr-2" />
                 Economía Tokenizada
               </Badge>
-              <Badge className="bg-gradient-to-r from-orange-500/20 to-red-500/20 text-orange-300 border-orange-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-orange-500/20 to-red-500/20 text-orange-300 border-orange-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Blockchain Roadmap
               </Badge>
@@ -66,7 +66,7 @@ const Investors: FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={() => navigate("/about")}
-                className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
               >
                 <Target className="h-5 w-5 mr-2" />
                 Conocer Más
@@ -97,7 +97,7 @@ const Investors: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
                 ¿Qué es ComplicesConecta?
@@ -158,10 +158,10 @@ const Investors: FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-linear-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                   <Coins className="h-6 w-6 text-white" />
                 </div>
                 Sistema de Tokens: Economía Digital Única
@@ -172,7 +172,7 @@ const Investors: FC = () => {
                 {/* Token CMPX */}
                 <div className="p-6 bg-white/10 rounded-xl border border-white/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
+                    <div className="p-3 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <DollarSign className="h-6 w-6 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white">
@@ -184,24 +184,24 @@ const Investors: FC = () => {
                   </p>
                   <ul className="space-y-2 text-white/70">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         Compra directa con dinero real (MXN, USD, criptomonedas)
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         Uso para regalos virtuales, eventos VIP, funciones
                         premium
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                       <span>Transferible entre usuarios</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                       <span>Ingresos recurrentes para la plataforma</span>
                     </li>
                   </ul>
@@ -222,7 +222,7 @@ const Investors: FC = () => {
                 {/* Token GTK */}
                 <div className="p-6 bg-white/10 rounded-xl border border-white/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
+                    <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Rocket className="h-6 w-6 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white">Token GTK</h3>
@@ -232,19 +232,19 @@ const Investors: FC = () => {
                   </p>
                   <ul className="space-y-2 text-white/70">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>Token de Staking para ingresos pasivos</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>Próxima integración blockchain (Q2-Q4 2026)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>APY: 8-18% según duración de staking</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>Potencial de apreciación a largo plazo</span>
                     </li>
                   </ul>
@@ -274,7 +274,7 @@ const Investors: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                   <TrendingUp className="h-6 w-6 text-white" />
                 </div>
                 Modelo de Ingresos Proyectado
@@ -313,7 +313,7 @@ const Investors: FC = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.7 + idx * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    className={`p-6 rounded-xl border border-white/20 bg-gradient-to-br ${projection.color} backdrop-blur-sm`}
+                    className={`p-6 rounded-xl border border-white/20 bg-linear-to-br ${projection.color} backdrop-blur-sm`}
                   >
                     <h4 className="text-xl font-bold text-white mb-4">
                       {projection.year}
@@ -370,7 +370,7 @@ const Investors: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg">
                   <Zap className="h-6 w-6 text-white" />
                 </div>
                 Tecnología de Vanguardia
@@ -385,35 +385,35 @@ const Investors: FC = () => {
                   </h4>
                   <ul className="space-y-2 text-white/80">
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>107 tablas</strong> optimizadas para
                         escalabilidad masiva
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>122 políticas RLS</strong> de seguridad
                         multicapa
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Google S2 Geosharding</strong> - Consultas
                         50-300x más rápidas
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Neo4j Graph Database</strong> - 200x más rápido
                         en queries sociales
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Monitoreo en tiempo real</strong> con Sentry,
                         New Relic, Datadog
@@ -429,41 +429,41 @@ const Investors: FC = () => {
                   </h4>
                   <ul className="space-y-2 text-white/80">
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>ML Compatibility Scoring</strong> - 400K
                         parámetros
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Chat Summaries ML</strong> - GPT-4, BART,
                         Fallback
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Aprendizaje continuo</strong> - Mejora con cada
                         interacción
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Hybrid scoring</strong> - AI + legacy fallback
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Verificador IA de Consentimiento</strong> -
                         Detección proactiva en chats (Ley Olimpia)
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <ChevronRight className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Matching Predictivo con Graphs</strong> - Neo4j
                         + IA para conexiones emocionales
@@ -482,10 +482,10 @@ const Investors: FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-linear-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                   <Star className="h-6 w-6 text-white" />
                 </div>
                 Ventajas para Inversores
@@ -528,7 +528,7 @@ const Investors: FC = () => {
                     className="p-6 bg-white/10 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
                   >
                     <div
-                      className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${advantage.color} text-white mb-4`}
+                      className={`inline-flex p-3 rounded-lg bg-linear-to-r ${advantage.color} text-white mb-4`}
                     >
                       {advantage.icon}
                     </div>
@@ -554,7 +554,7 @@ const Investors: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                   <CheckCircle2 className="h-6 w-6 text-white" />
                 </div>
                 Estado del Proyecto
@@ -571,7 +571,7 @@ const Investors: FC = () => {
                   </span>
                 </div>
                 <div className="w-full bg-white/10 rounded-full h-3">
-                  <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full progress-85"></div>
+                  <div className="bg-linear-to-r from-green-500 to-emerald-600 h-3 rounded-full progress-85"></div>
                 </div>
               </div>
 
@@ -594,7 +594,7 @@ const Investors: FC = () => {
                       "Neo4j Graph Database (100%)",
                     ].map((item, idx) => (
                       <li key={idx} className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0" />
                         <span>{item}</span>
                       </li>
                     ))}
@@ -642,7 +642,7 @@ const Investors: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg">
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
                 Próximas Funcionalidades
@@ -689,7 +689,7 @@ const Investors: FC = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.3 + idx * 0.1 }}
-                    className={`p-6 rounded-xl border border-white/20 bg-gradient-to-br ${roadmap.color} backdrop-blur-sm`}
+                    className={`p-6 rounded-xl border border-white/20 bg-linear-to-br ${roadmap.color} backdrop-blur-sm`}
                   >
                     <h4 className="text-xl font-bold text-white mb-4">
                       {roadmap.period}
@@ -700,7 +700,7 @@ const Investors: FC = () => {
                           key={itemIdx}
                           className="flex items-start gap-2 text-white/80"
                         >
-                          <ArrowRight className="h-4 w-4 text-purple-400 flex-shrink-0 mt-1" />
+                          <ArrowRight className="h-4 w-4 text-purple-400 shrink-0 mt-1" />
                           <span className="text-sm">{item}</span>
                         </li>
                       ))}
@@ -718,10 +718,10 @@ const Investors: FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.3 }}
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-linear-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
                 Valores y Principios
@@ -763,7 +763,7 @@ const Investors: FC = () => {
                     className="p-6 bg-white/10 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
                   >
                     <div
-                      className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${value.color} text-white mb-4`}
+                      className={`inline-flex p-3 rounded-lg bg-linear-to-r ${value.color} text-white mb-4`}
                     >
                       {value.icon}
                     </div>
@@ -789,7 +789,7 @@ const Investors: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                   <Target className="h-6 w-6 text-white" />
                 </div>
                 ¿Por qué ComplicesConecta?
@@ -851,7 +851,7 @@ const Investors: FC = () => {
                     className="p-6 bg-white/10 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
                   >
                     <div
-                      className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${reason.color} text-white mb-4`}
+                      className={`inline-flex p-3 rounded-lg bg-linear-to-r ${reason.color} text-white mb-4`}
                     >
                       {reason.icon}
                     </div>
@@ -864,7 +864,7 @@ const Investors: FC = () => {
                           key={pointIdx}
                           className="flex items-start gap-2 text-white/80 text-sm"
                         >
-                          <CheckCircle2 className="h-4 w-4 text-purple-400 flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-4 w-4 text-purple-400 shrink-0 mt-0.5" />
                           <span>{point}</span>
                         </li>
                       ))}
@@ -883,12 +883,12 @@ const Investors: FC = () => {
           transition={{ duration: 0.6, delay: 1.5 }}
           className="text-center pt-8"
         >
-          <Card className="bg-gradient-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+          <Card className="bg-linear-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
             <CardContent className="p-12">
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                className="inline-flex p-4 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl mb-6"
+                className="inline-flex p-4 bg-linear-to-r from-yellow-500 to-orange-600 rounded-2xl mb-6"
               >
                 <Award className="h-12 w-12 text-white" />
               </motion.div>
@@ -907,7 +907,7 @@ const Investors: FC = () => {
                     (window.location.href =
                       "mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión - ComplicesConecta")
                   }
-                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                  className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <Mail className="h-5 w-5 mr-2" />
                   Contactar para Inversión
@@ -944,7 +944,7 @@ const Investors: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg">
                   <Scale className="h-6 w-6 text-white" />
                 </div>
                 Información Legal
@@ -960,7 +960,7 @@ const Investors: FC = () => {
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button
                   onClick={() => navigate("/legal")}
-                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                  className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <FileText className="h-5 w-5 mr-2" />
                   Marco Legal Completo

@@ -3,16 +3,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  UserPlus,
-  UserCheck,
-  UserX,
-  Clock, // For photo access
-  GalleryHorizontal, // For gallery access
-  MessageSquare, // For chat access
-  MailQuestion,
-  Send,
-} from "lucide-react";
+import { UserPlus, UserCheck, UserX, Clock, GalleryHorizontal, MessageSquare, MailQuestion, Send } from "lucide-react";
 import { useFeatures } from "@/hooks/useFeatures";
 import { invitationService, type Invitation } from "@/lib/invitations";
 import { useAuth } from "@/features/auth/useAuth";

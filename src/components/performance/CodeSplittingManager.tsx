@@ -68,7 +68,7 @@ const ROUTE_CONFIGS: RouteConfig[] = [
   },
   {
     path: "/settings",
-    component: () => import("@/pages/Settings"),
+    component: () => import("@/pages/SwingerDashboard"),
     priority: "medium",
     preload: false,
     chunkName: "settings",

@@ -1,23 +1,4 @@
-import { TooltipProvider } from "@/components/ui/tooltip";
-// CRÍTICO: Importar QueryClient de forma segura - verificar que React esté disponible
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "@/styles/android-grid.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { CrossBrowserOptimizer } from "@/components/ui/CrossBrowserOptimizer";
-import { AccessibilityEnhancer } from "@/components/ui/AccessibilityEnhancer";
-import { MobileOptimizer } from "@/components/ui/MobileOptimizer";
-import { ThemeProvider } from "@/components/ui/ThemeProvider";
-import { lazy } from "react";
-import { lazyWithDefault } from "@/utils/lazyWithDefault";
-import { AnimationProvider } from "@/components/animations/AnimationProvider";
-import { NotificationProvider } from "@/components/animations/NotificationSystem";
-import AdminRoute from "@/components/auth/AdminRoute";
-import ModeratorRoute from "@/components/auth/ModeratorRoute";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { AppFactory } from "@/demo/AppFactory";
-import { MainLayout } from "@/components/layout/MainLayout";
-import ProfileLayout from "@/layouts/ProfileLayout";
-import { LoadingProvider } from "@/contexts/LoadingContext";
+
 
 // ============================================================================
 // ESTRATEGIA DE CARGA DE PÁGINAS
@@ -43,6 +24,29 @@ import { LoadingProvider } from "@/contexts/LoadingContext";
 // ============================================================================
 
 // Critical pages - loaded immediately
+// CRÍTICO: Importar QueryClient de forma segura - verificar que React esté disponible
+
+
+
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "@/styles/android-grid.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { CrossBrowserOptimizer } from "@/components/ui/CrossBrowserOptimizer";
+import { AccessibilityEnhancer } from "@/components/ui/AccessibilityEnhancer";
+import { MobileOptimizer } from "@/components/ui/MobileOptimizer";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
+import { lazy } from "react";
+import { lazyWithDefault } from "@/utils/lazyWithDefault";
+import { AnimationProvider } from "@/components/animations/AnimationProvider";
+import { NotificationProvider } from "@/components/animations/NotificationSystem";
+import AdminRoute from "@/components/auth/AdminRoute";
+import ModeratorRoute from "@/components/auth/ModeratorRoute";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { AppFactory } from "@/demo/AppFactory";
+import { MainLayout } from "@/components/layout/MainLayout";
+import ProfileLayout from "@/layouts/ProfileLayout";
+import { LoadingProvider } from "@/contexts/LoadingContext";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
@@ -61,7 +65,7 @@ const Chat = lazyWithDefault(() => import("@/pages/Chat"));
 const ChatInfo = lazyWithDefault(() => import("@/pages/ChatInfo"));
 const Matches = lazyWithDefault(() => import("@/pages/Matches"));
 const Requests = lazyWithDefault(() => import("@/pages/Requests"));
-const Settings = lazyWithDefault(() => import("@/pages/Settings"));
+const SwingerDashboard = lazyWithDefault(() => import("@/pages/SwingerDashboard"));
 const Premium = lazyWithDefault(() => import("@/pages/Premium"));
 const Dashboard = lazyWithDefault(() => import("@/pages/Dashboard"));
 
@@ -275,7 +279,7 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
-                            <Route path="/settings" element={<Settings />} />
+                            <Route path="/settings" element={<SwingerDashboard />} />
                             <Route path="/premium" element={<Premium />} />
                             <Route
                               path="/dashboard"

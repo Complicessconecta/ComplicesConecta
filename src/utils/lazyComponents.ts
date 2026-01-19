@@ -140,8 +140,8 @@ export const LazyPages = {
   Requests: lazyWithDefault(
     () => import(/* webpackChunkName: "core" */ "@/pages/Requests"),
   ),
-  Settings: lazyWithDefault(
-    () => import(/* webpackChunkName: "core" */ "@/pages/Settings"),
+  SwingerDashboard: lazyWithDefault(
+    () => import(/* webpackChunkName: "core" */ "@/pages/SwingerDashboard"),
   ),
   Discover: lazyWithDefault(
     () => import(/* webpackChunkName: "core" */ "@/pages/Discover"),

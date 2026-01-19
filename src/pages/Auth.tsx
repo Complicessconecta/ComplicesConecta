@@ -68,12 +68,7 @@ const Auth = () => {
     appMode: _appMode,
   } = useAuth();
 
-  const [__showResetPassword, _setShowResetPassword] = useState(false);
-  const [__resetEmail, _setResetEmail] = useState("");
   const [showLoginLoading, setShowLoginLoading] = useState(false);
-  const [__autoLocationRequested, _setAutoLocationRequested] = useState(false);
-  const [__showThemeModal, _setShowThemeModal] = useState(false);
-  const [__showTermsModal, _setShowTermsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
   
   // Depurar cambio de activeTab

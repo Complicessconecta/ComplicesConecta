@@ -501,7 +501,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
 
           {/* Recent Alerts */}
-          <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+          <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
             <h3 className="text-lg font-semibold text-white mb-4">
               🔔 Recent Alerts (Last 24h)
             </h3>

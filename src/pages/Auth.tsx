@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -69,7 +68,6 @@ const Auth = () => {
     appMode: _appMode,
   } = useAuth();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [__showResetPassword, _setShowResetPassword] = useState(false);
   const [__resetEmail, _setResetEmail] = useState("");
   const [showLoginLoading, setShowLoginLoading] = useState(false);
@@ -124,7 +122,6 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
     setShowLoginLoading(true);
 
     try {
@@ -192,88 +189,11 @@ const Auth = () => {
         description: errorMessage,
       });
     } finally {
-      setIsLoading(false);
       setShowLoginLoading(false);
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Validaciones adicionales
-      if (!formData.acceptTerms) {
-        throw new Error("Debes aceptar los trminos y condiciones");
-      }
-
-      if (formData.age && parseInt(formData.age) < 18) {
-        throw new Error("Debes ser mayor de 18 aos");
-      }
-
-      if (
-        formData.accountType === "couple" &&
-        formData.partnerAge &&
-        parseInt(formData.partnerAge) < 18
-      ) {
-        throw new Error("Tu pareja debe ser mayor de 18 aos");
-      }
-
-      // Crear usuario en Supabase
-      if (!supabase) {
-        throw new Error("Supabase no est disponible");
-      }
-
-      const { data: _authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            display_name: formData.nickname,
-            account_type: formData.accountType,
-            profile_type: formData.accountType,
-            age: parseInt(formData.age),
-            gender: formData.gender,
-            interested_in: formData.interestedIn,
-            bio: formData.bio,
-            location: formData.location,
-            share_location: formData.shareLocation,
-            // Datos de pareja si aplica
-            ...(formData.accountType === "couple" && {
-              partner_first_name: formData.partnerFirstName,
-              partner_last_name: formData.partnerLastName,
-              partner_display_name: formData.partnerNickname,
-              partner_age: parseInt(formData.partnerAge),
-              partner_gender: formData.partnerGender,
-              partner_interested_in: formData.partnerInterestedIn,
-            }),
-          },
-        },
-      });
-
-      if (authError) throw authError;
-
-      toast({
-        title: "Cuenta creada exitosamente!",
-        description: "Revisa tu correo para verificar tu cuenta",
-      });
-
-      // Redirigir al login despus del registro
-      setTimeout(() => {
-        navigate("/auth");
-      }, 2000);
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Error al crear cuenta",
-        description: error.message,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // handleSignUp eliminado - los formularios SingleRegistrationForm y CoupleRegistrationForm manejan su propia lógica
 
   if (showLoginLoading) {
     return (
@@ -486,9 +406,9 @@ const Auth = () => {
 
               <TabsContent value="signup" data-testid="register-form">
                 {formData.accountType === "single" ? (
-                  <SingleRegistrationForm />
+                  <SingleRegistrationForm onSuccess={() => navigate("/")} />
                 ) : formData.accountType === "couple" ? (
-                  <CoupleRegistrationForm />
+                  <CoupleRegistrationForm onSuccess={() => navigate("/")} />
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-white/70 mb-4">Selecciona el tipo de cuenta</p>

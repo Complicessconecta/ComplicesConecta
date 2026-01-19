@@ -414,7 +414,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
       <Button
         onClick={() => setCurrentStep(2)}
         disabled={!canProceedToStep2()}
-        className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+        className="w-full bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
       >
         Continuar
       </Button>
@@ -545,7 +545,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Button
           onClick={() => setCurrentStep(3)}
           disabled={!canProceedToStep3()}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+          className="flex-1 bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
         >
           Continuar
         </Button>
@@ -666,7 +666,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Button
           onClick={handleSubmit}
           disabled={!canSubmit() || isLoading}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+          className="flex-1 bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
         >
           {isLoading ? (
             <>

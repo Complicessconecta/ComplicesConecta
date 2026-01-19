@@ -68,7 +68,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-indigo-500 to-violet-500 rounded-lg">
               <Settings className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -230,7 +230,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
+                className="w-full bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
               >
                 <Save className="h-4 w-4 mr-2" />
                 {saving ? 'Guardando...' : 'Guardar Cambios'}
@@ -243,7 +243,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <div className="text-center py-12">
               <ImageIcon className="h-16 w-16 text-white/40 mx-auto mb-4" />
               <p className="text-white/60 mb-4">Gestiona las imágenes de tu club</p>
-              <Button className="bg-gradient-to-r from-purple-600 to-fuchsia-600">
+              <Button className="bg-linear-to-r from-purple-600 to-fuchsia-600">
                 Subir Imagen
               </Button>
             </div>
@@ -254,7 +254,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <div className="text-center py-12">
               <Calendar className="h-16 w-16 text-white/40 mx-auto mb-4" />
               <p className="text-white/60 mb-4">Crea y gestiona tus eventos</p>
-              <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
+              <Button className="bg-linear-to-r from-blue-600 to-cyan-600">
                 Crear Evento
               </Button>
             </div>
@@ -265,7 +265,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <div className="text-center py-12">
               <Tag className="h-16 w-16 text-white/40 mx-auto mb-4" />
               <p className="text-white/60 mb-4">Configura promociones y descuentos</p>
-              <Button className="bg-gradient-to-r from-yellow-600 to-orange-600">
+              <Button className="bg-linear-to-r from-yellow-600 to-orange-600">
                 Crear Promoción
               </Button>
             </div>
@@ -276,7 +276,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <div className="text-center py-12">
               <MessageSquare className="h-16 w-16 text-white/40 mx-auto mb-4" />
               <p className="text-white/60 mb-4">Responde a las reseñas de tus clientes</p>
-              <Button className="bg-gradient-to-r from-green-600 to-emerald-600">
+              <Button className="bg-linear-to-r from-green-600 to-emerald-600">
                 Ver Reseñas
               </Button>
             </div>

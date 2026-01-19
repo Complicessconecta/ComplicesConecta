@@ -180,7 +180,7 @@ const VideoChat = () => {
                     </Button>
                     <Button
                       onClick={startCall}
-                      className="bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
+                      className="bg-linear-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
                     >
                       <Phone className="h-4 w-4 mr-2" />
                       Iniciar Llamada
@@ -257,7 +257,7 @@ const VideoChat = () => {
                         key={participant.id}
                         className="relative bg-gray-800 rounded-lg aspect-video"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="absolute inset-0 bg-linear-to-br from-gray-700 to-gray-800 rounded-lg flex items-center justify-center">
                           <img
                             src={participant.avatar}
                             alt={participant.name}

@@ -180,7 +180,7 @@ export function TokenDashboard({
     <main role="main" className="space-y-6 p-4 md:p-8">
       {/* Header con balance principal */}
       <div className="relative overflow-hidden text-center bg-white/5 backdrop-blur-xl border border-white/15 text-white p-6 md:p-8 rounded-2xl shadow-xl">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/40 to-blue-600/40" />
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-purple-600/40 to-blue-600/40" />
         <div className="relative z-10">
           {isDemoMode && (
             <div className="absolute top-2 right-2 bg-yellow-400/20 text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">
@@ -317,7 +317,7 @@ export function TokenDashboard({
                 />
               </svg>
             </div>
-            <p className="text-xs text-white/70 break-words">
+            <p className="text-xs text-white/70 wrap-break-word">
               En fase beta cada usuario puede ganar máximo{" "}
               {balance.monthlyLimit} CMPX al mes
             </p>
@@ -341,13 +341,13 @@ export function TokenDashboard({
                   <p className="font-semibold text-white truncate">
                     🌍 World ID Verificado
                   </p>
-                  <p className="text-sm text-white/80 break-words">
+                  <p className="text-sm text-white/80 wrap-break-word">
                     Reclama 100 CMPX por verificar tu identidad
                   </p>
                 </div>
                 <Button
                   onClick={claimWorldIdReward}
-                  className="bg-green-600 hover:bg-green-700 text-white ml-2 flex-shrink-0"
+                  className="bg-green-600 hover:bg-green-700 text-white ml-2 shrink-0"
                 >
                   Reclamar 100 CMPX
                 </Button>
@@ -369,7 +369,7 @@ export function TokenDashboard({
                 </div>
                 <Badge
                   variant="secondary"
-                  className="bg-yellow-500/80 text-white ml-2 flex-shrink-0"
+                  className="bg-yellow-500/80 text-white ml-2 shrink-0"
                 >
                   Pendiente
                 </Badge>
@@ -393,7 +393,7 @@ export function TokenDashboard({
               <p className="text-sm text-white mb-2">
                 💡 <strong>¿Qué es staking?</strong>
               </p>
-              <p className="text-sm text-white/90 break-words">
+              <p className="text-sm text-white/90 wrap-break-word">
                 Guardas tus CMPX por 30 días y recibes +10% de recompensa.
                 Ejemplo: 100 CMPX → 110 CMPX después de 30 días.
               </p>
@@ -411,13 +411,13 @@ export function TokenDashboard({
                       <p className="font-medium text-white truncate">
                         {staking.amount} CMPX
                       </p>
-                      <p className="text-sm text-white/80 break-words">
+                      <p className="text-sm text-white/80 wrap-break-word">
                         {staking.status === "active"
                           ? `${Math.ceil((new Date(staking.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} días restantes`
                           : `Completado (+${Math.round((staking.amount * staking.apy) / 100)} CMPX)`}
                       </p>
                     </div>
-                    <div className="text-right flex-shrink-0 ml-2">
+                    <div className="text-right shrink-0 ml-2">
                       <Badge
                         variant={
                           staking.status === "active" ? "default" : "secondary"
@@ -476,7 +476,7 @@ export function TokenDashboard({
               </span>
               <Badge
                 variant="outline"
-                className="font-mono bg-white/20 text-white border-white/30 ml-2 flex-shrink-0"
+                className="font-mono bg-white/20 text-white border-white/30 ml-2 shrink-0"
               >
                 {balance.referralCode}
               </Badge>
@@ -485,12 +485,12 @@ export function TokenDashboard({
               <span className="text-white/90 truncate">
                 Referidos exitosos:
               </span>
-              <span className="font-semibold text-white flex-shrink-0 ml-2">
+              <span className="font-semibold text-white shrink-0 ml-2">
                 {balance.totalReferrals}
               </span>
             </div>
             <div className="bg-yellow-500/20 backdrop-blur-sm p-3 rounded-lg border border-yellow-400/30">
-              <p className="text-sm text-white break-words">
+              <p className="text-sm text-white wrap-break-word">
                 💰 <strong>Gana 50 CMPX</strong> por cada amigo que invites y se
                 registre. Tu amigo también recibe{" "}
                 <strong>50 CMPX de bienvenida</strong>.
@@ -613,7 +613,7 @@ export function TokenDashboard({
               <p className="text-sm text-white mb-2">
                 💡 <strong>¿Qué son los NFTs?</strong>
               </p>
-              <p className="text-sm text-white/90 break-words">
+              <p className="text-sm text-white/90 wrap-break-word">
                 Convierte tus galerías en NFTs verificados usando tokens GTK.
                 Verifica la autenticidad de tus fotos en blockchain y aumenta el
                 valor de tu perfil.
@@ -669,7 +669,7 @@ export function TokenDashboard({
                       {new Date(tx.created_at).toLocaleDateString("es-ES")}
                     </p>
                   </div>
-                  <div className="text-right flex-shrink-0 ml-2">
+                  <div className="text-right shrink-0 ml-2">
                     <p
                       className={`text-sm font-semibold ${tx.amount > 0 ? "text-green-400" : "text-red-400"}`}
                     >

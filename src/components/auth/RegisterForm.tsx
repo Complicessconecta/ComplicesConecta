@@ -56,7 +56,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           onClick={() => handleInputChange("accountType", "single")}
           className={`${
             formData.accountType === "single"
-              ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+              ? "bg-linear-to-r from-purple-600 to-blue-600 text-white"
               : "bg-white/10 border-white/20 text-white/70 hover:text-white"
           }`}
         >
@@ -68,7 +68,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           onClick={() => handleInputChange("accountType", "couple")}
           className={`${
             formData.accountType === "couple"
-              ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+              ? "bg-linear-to-r from-purple-600 to-blue-600 text-white"
               : "bg-white/10 border-white/20 text-white/70 hover:text-white"
           }`}
         >
@@ -384,7 +384,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold shadow-lg transition-all duration-300 hover:from-purple-700 hover:to-blue-700 hover:scale-105"
+        className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white font-bold shadow-lg transition-all duration-300 hover:from-purple-700 hover:to-blue-700 hover:scale-105"
         disabled={isLoading}
         style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
       >

@@ -13,7 +13,8 @@ import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
 import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
-import RegisterForm from "@/components/auth/RegisterForm";
+import { SingleRegistrationForm } from "@/components/profiles/single/SingleRegistrationForm";
+import { CoupleRegistrationForm } from "@/components/profiles/couple/CoupleRegistrationForm";
 
 interface FormData {
   email: string;
@@ -484,12 +485,29 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="signup" data-testid="register-form">
-                <RegisterForm
-                  formData={formData}
-                  handleInputChange={handleInputChange}
-                  handleSignUp={handleSignUp}
-                  isLoading={isLoading}
-                />
+                {formData.accountType === "single" ? (
+                  <SingleRegistrationForm />
+                ) : formData.accountType === "couple" ? (
+                  <CoupleRegistrationForm />
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-white/70 mb-4">Selecciona el tipo de cuenta</p>
+                    <div className="flex gap-4 justify-center">
+                      <Button
+                        onClick={() => handleInputChange("accountType", "single")}
+                        className="bg-linear-to-r from-purple-600 to-blue-600 text-white"
+                      >
+                        Soltero/a
+                      </Button>
+                      <Button
+                        onClick={() => handleInputChange("accountType", "couple")}
+                        className="bg-linear-to-r from-pink-600 to-purple-600 text-white"
+                      >
+                        Pareja
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </CardContent>

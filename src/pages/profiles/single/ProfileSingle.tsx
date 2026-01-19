@@ -587,7 +587,7 @@ Información del perfil:
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-800 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-800 flex items-center justify-center">
         <Card className="w-full max-w-md mx-4">
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-semibold mb-2">Perfil no encontrado</h2>
@@ -679,7 +679,7 @@ Información del perfil:
                     className={cn(
                       "profile-header-title",
                       isDemoProfile &&
-                        "bg-gradient-to-r from-purple-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent drop-shadow",
+                        "bg-linear-to-r from-purple-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent drop-shadow",
                     )}
                   >
                     {displayName}
@@ -818,7 +818,7 @@ Información del perfil:
                     {privateImageAccess === "none" && (
                       <Button
                         onClick={handleViewPrivatePhotos}
-                        className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full shadow-lg"
+                        className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full shadow-lg"
                       >
                         <Lock className="w-4 h-4" />
                         <span className="hidden sm:inline">
@@ -1169,7 +1169,7 @@ Información del perfil:
                             }
                             navigate("/nfts");
                           }}
-                          className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white text-xs shadow-lg hover:shadow-purple-500/50 transition-all"
+                          className="bg-linear-to-r from-purple-600 to-fuchsia-600 text-white text-xs shadow-lg hover:shadow-purple-500/50 transition-all"
                         >
                           <Sparkles className="w-3 h-3 mr-1" />
                           Crear NFT
@@ -1204,7 +1204,7 @@ Información del perfil:
                                 className="w-full h-full group-hover:scale-110 transition-transform"
                               />
                             ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 flex items-center justify-center">
+                              <div className="w-full h-full bg-linear-to-br from-purple-500/30 to-blue-500/30 flex items-center justify-center">
                                 <Images className="w-8 h-8 text-white/40" />
                               </div>
                             )}
@@ -1270,7 +1270,7 @@ Información del perfil:
           <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
             <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-blue-500 flex items-center justify-center">
                   <Wallet className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
@@ -1288,7 +1288,7 @@ Información del perfil:
               </div>
               <Button
                 onClick={() => navigate("/tokens")}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
+                className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
               >
                 <Wallet className="w-4 h-4" />
                 <span>
@@ -1416,7 +1416,7 @@ Información del perfil:
                   </Modal>
 
                   <button
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg hover:scale-[1.02] transition-all"
+                    className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg hover:scale-[1.02] transition-all"
                     onClick={() => setIsVipModalOpen(true)}
                   >
                     <Calendar className="w-4 h-4" />
@@ -1451,21 +1451,21 @@ Información del perfil:
 
               {/* Galera pblica siempre visible */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 mb-6">
-                <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 1"
                     className="w-full h-full"
                   />
                 </div>
-                <div className="aspect-square bg-gradient-to-br from-pink-400 to-red-600 rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="aspect-square bg-linear-to-br from-pink-400 to-red-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 2"
                     className="w-full h-full"
                   />
                 </div>
-                <div className="aspect-square bg-gradient-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="aspect-square bg-linear-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage
                     src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 3"
@@ -1578,7 +1578,7 @@ Información del perfil:
                                 />
 
                                 {!isGalleryUnlocked && (
-                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
+                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
                                     <div className="bg-white/20 p-4 rounded-2xl border-2 border-white/30 shadow-2xl backdrop-blur-md">
                                       <Lock className="w-8 h-8 text-white drop-shadow-lg" />
                                     </div>
@@ -1682,7 +1682,7 @@ Información del perfil:
               Descarga de perfil (DEMO)
             </h4>
             <div className="py-2 max-w-2xl mx-auto">
-              <pre className="whitespace-pre-wrap break-words text-sm text-neutral-600 dark:text-neutral-200 bg-black/30 border border-white/10 rounded-lg p-4">
+              <pre className="whitespace-pre-wrap wrap-break-word text-sm text-neutral-600 dark:text-neutral-200 bg-black/30 border border-white/10 rounded-lg p-4">
                 {downloadModalContent}
               </pre>
             </div>

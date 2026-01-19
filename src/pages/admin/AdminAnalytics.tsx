@@ -20,7 +20,7 @@ export const AdminAnalytics: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-gray-900 to-slate-800">
       {/* Navegación del Admin */}
       <AdminNav userRole="admin" />
 

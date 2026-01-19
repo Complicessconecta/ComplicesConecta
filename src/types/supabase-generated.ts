@@ -372,6 +372,57 @@ export type Database = {
         }
         Relationships: []
       }
+      career_applications: {
+        Row: {
+          cover_letter: string | null
+          created_at: string | null
+          email: string
+          experience_years: number | null
+          full_name: string
+          id: string
+          linkedin_url: string | null
+          phone: string | null
+          position: string
+          resume_url: string | null
+          skills: string[] | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          cover_letter?: string | null
+          created_at?: string | null
+          email: string
+          experience_years?: number | null
+          full_name: string
+          id?: string
+          linkedin_url?: string | null
+          phone?: string | null
+          position: string
+          resume_url?: string | null
+          skills?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          cover_letter?: string | null
+          created_at?: string | null
+          email?: string
+          experience_years?: number | null
+          full_name?: string
+          id?: string
+          linkedin_url?: string | null
+          phone?: string | null
+          position?: string
+          resume_url?: string | null
+          skills?: string[] | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           chat_room_id: string
@@ -463,46 +514,43 @@ export type Database = {
       }
       chat_summaries: {
         Row: {
-          chat_id: string
+          chat_id: string | null
+          chat_room_id: string
           content: string | null
           created_at: string | null
           id: string
           key_points: string[] | null
-          message_count: number
+          message_count: number | null
           method: string | null
-          model_version: string | null
           sentiment: string | null
           summary: string | null
-          topics: Json | null
-          updated_at: string | null
+          topics: string[] | null
         }
         Insert: {
-          chat_id: string
+          chat_id?: string | null
+          chat_room_id: string
           content?: string | null
           created_at?: string | null
           id?: string
           key_points?: string[] | null
-          message_count?: number
+          message_count?: number | null
           method?: string | null
-          model_version?: string | null
           sentiment?: string | null
           summary?: string | null
-          topics?: Json | null
-          updated_at?: string | null
+          topics?: string[] | null
         }
         Update: {
-          chat_id?: string
+          chat_id?: string | null
+          chat_room_id?: string
           content?: string | null
           created_at?: string | null
           id?: string
           key_points?: string[] | null
-          message_count?: number
+          message_count?: number | null
           method?: string | null
-          model_version?: string | null
           sentiment?: string | null
           summary?: string | null
-          topics?: Json | null
-          updated_at?: string | null
+          topics?: string[] | null
         }
         Relationships: [
           {
@@ -2455,6 +2503,54 @@ export type Database = {
           total_minutes_worked?: number | null
           total_revenue_mxn?: number
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      moderator_requests: {
+        Row: {
+          availability: string | null
+          created_at: string | null
+          email: string
+          experience: string | null
+          full_name: string
+          id: string
+          reason: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          availability?: string | null
+          created_at?: string | null
+          email: string
+          experience?: string | null
+          full_name: string
+          id?: string
+          reason: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          availability?: string | null
+          created_at?: string | null
+          email?: string
+          experience?: string | null
+          full_name?: string
+          id?: string
+          reason?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }

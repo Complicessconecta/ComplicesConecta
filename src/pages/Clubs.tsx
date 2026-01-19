@@ -418,7 +418,7 @@ export const Clubs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -426,12 +426,12 @@ export const Clubs = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <Badge className="bg-gradient-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
+          <Badge className="bg-linear-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
             🏢 CLUBS VERIFICADOS
           </Badge>
           <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
             Clubs
-            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               {" "}
               Verificados
             </span>
@@ -452,7 +452,7 @@ export const Clubs = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                   <Verified className="h-6 w-6 text-white" />
                 </div>
                 Sistema de Clubs Verificados
@@ -476,7 +476,7 @@ export const Clubs = () => {
                         key={index}
                         className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
                       >
-                        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white flex-shrink-0">
+                        <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg text-white shrink-0">
                           {step.icon}
                         </div>
                         <div>
@@ -504,7 +504,7 @@ export const Clubs = () => {
                         key={index}
                         className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
                       >
-                        <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white flex-shrink-0">
+                        <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white shrink-0">
                           {benefit.icon}
                         </div>
                         <div>
@@ -575,7 +575,7 @@ export const Clubs = () => {
           transition={{ delay: 0.3 }}
           className="mb-12"
         >
-          <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-2xl text-white flex items-center gap-3">
                 <Sparkles className="h-6 w-6" />
@@ -589,7 +589,7 @@ export const Clubs = () => {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                       <Globe className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Página Pública Profesional</h3>
@@ -601,7 +601,7 @@ export const Clubs = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <MapPin className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Check-ins Verificados</h3>
@@ -613,7 +613,7 @@ export const Clubs = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                       <Star className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Reseñas Auténticas</h3>
@@ -625,7 +625,7 @@ export const Clubs = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Camera className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Flyers Editables con IA</h3>
@@ -637,7 +637,7 @@ export const Clubs = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-pink-500 to-rose-600 rounded-lg">
                       <Award className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Publicidad Premium</h3>
@@ -649,7 +649,7 @@ export const Clubs = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-indigo-500 to-violet-600 rounded-lg">
                       <Building className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Integración con Tokens</h3>
@@ -670,7 +670,7 @@ export const Clubs = () => {
           transition={{ delay: 0.4 }}
           className="mb-12"
         >
-          <Card className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 backdrop-blur-xl border-amber-400/30 shadow-2xl">
+          <Card className="bg-linear-to-r from-amber-900/40 to-orange-900/40 backdrop-blur-xl border-amber-400/30 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-2xl text-white flex items-center gap-3">
                 <Target className="h-6 w-6" />
@@ -684,7 +684,7 @@ export const Clubs = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">Clubs en Perfiles</h3>
                       <p className="text-white/70 text-sm">
@@ -694,7 +694,7 @@ export const Clubs = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">Sistema de Descuentos Premium</h3>
                       <p className="text-white/70 text-sm">
@@ -704,7 +704,7 @@ export const Clubs = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">NFTs de Clubs</h3>
                       <p className="text-white/70 text-sm">
@@ -716,7 +716,7 @@ export const Clubs = () => {
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">Integración con Tokens</h3>
                       <p className="text-white/70 text-sm">
@@ -726,7 +726,7 @@ export const Clubs = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">Analytics Avanzados</h3>
                       <p className="text-white/70 text-sm">
@@ -736,7 +736,7 @@ export const Clubs = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-lg font-semibold text-white">Panel de Administración</h3>
                       <p className="text-white/70 text-sm">
@@ -803,7 +803,7 @@ export const Clubs = () => {
                   <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
                     <CardContent className="p-0">
                       {/* Imagen del Club */}
-                      <div className="relative h-48 bg-gradient-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
+                      <div className="relative h-48 bg-linear-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
                         {club.cover_image_url ? (
                           <img
                             src={club.cover_image_url}
@@ -890,7 +890,7 @@ export const Clubs = () => {
                         <div className="flex gap-2">
                           <Button
                             onClick={() => navigate(`/clubs/${club.id}`)}
-                            className="flex-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
+                            className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />
                             Ver Club
@@ -926,7 +926,7 @@ export const Clubs = () => {
           transition={{ delay: 0.6 }}
           className="mt-12"
         >
-          <Card className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-fuchsia-600/20 backdrop-blur-xl border-white/20">
+          <Card className="bg-linear-to-r from-blue-600/20 via-purple-600/20 to-fuchsia-600/20 backdrop-blur-xl border-white/20">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold text-white mb-4">
                 ¿Tienes un Club?
@@ -938,7 +938,7 @@ export const Clubs = () => {
               </p>
               <Button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3"
+                className="bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3"
               >
                 <Building className="h-5 w-5 mr-2" />
                 Registrar mi Club
@@ -1311,7 +1311,7 @@ export const Clubs = () => {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
+                className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
               >
                 {submitting ? (
                   <>

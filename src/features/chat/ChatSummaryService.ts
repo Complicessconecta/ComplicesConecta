@@ -519,7 +519,7 @@ ${messagesText}`;
 
     return {
       id: summaryRow.id,
-      chatId: summaryRow.chat_id,
+      chatId: summaryRow.chat_id || "",
       summary: summaryRow.summary || summaryRow.content || "",
       sentiment: (summaryRow.sentiment || "neutral") as
         | "positive"
@@ -575,7 +575,7 @@ ${messagesText}`;
     }
 
     const { error } = await supabase.from("chat_summaries").insert({
-      id: summary.id,
+      chat_room_id: summary.chatId,
       chat_id: summary.chatId,
       content: summary.summary,
       sentiment: summary.sentiment,

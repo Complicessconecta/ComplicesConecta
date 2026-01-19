@@ -66,8 +66,8 @@ export const Admin = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const [_profiles, setProfiles] = useState<Profile[]>([]);
-  const [_stats, setStats] = useState<AppStats>({
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [stats, setStats] = useState<AppStats>({
     totalUsers: 0,
     activeUsers: 0,
     premiumUsers: 0,
@@ -79,13 +79,12 @@ export const Admin = () => {
     worldIdVerified: 0,
     rewardsDistributed: 0,
   });
-  const [_faqs, _setFaqs] = useState<FAQItem[]>([]);
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [_loading, setLoading] = useState(true);
-  const [_selectedProfile, _setSelectedProfile] = useState<Profile | null>(
-    null,
-  );
-  const [_error, _setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [newFaq, setNewFaq] = useState({
     question: "",
     answer: "",
@@ -155,6 +154,7 @@ export const Admin = () => {
 
   const loadAdminData = async () => {
     setLoading(true);
+    setError(null);
     try {
       await Promise.all([
         loadProfiles(),
@@ -162,11 +162,12 @@ export const Admin = () => {
         _loadFAQs(),
         _loadInvitations(),
       ]);
-    } catch (error) {
+    } catch (error: any) {
       logger.error("Error loading admin data:", { error: String(error) });
+      setError(error.message || "Error al cargar datos del panel de administracin");
       toast({
         title: "Error",
-        description: "Error al cargar datos del panel de administracin",
+        description: error.message || "Error al cargar datos del panel de administracin",
         variant: "destructive",
       });
     } finally {
@@ -238,7 +239,7 @@ export const Admin = () => {
           created_at: new Date().toISOString(),
         },
       ];
-      _setFaqs(mockFAQs);
+      setFaqs(mockFAQs);
     } catch (_error) {
       logger.error("Error loading FAQs:", { error: String(_error) });
     }
@@ -278,11 +279,11 @@ export const Admin = () => {
       const faqItem: FAQItem = {
         id: Date.now().toString(),
         ...newFaq,
-        priority: _faqs.length + 1,
+        priority: faqs.length + 1,
         created_at: new Date().toISOString(),
       };
 
-      _setFaqs([..._faqs, faqItem]);
+      setFaqs([...faqs, faqItem]);
       setNewFaq({ question: "", answer: "", category: "general" });
 
       toast({
@@ -300,17 +301,27 @@ export const Admin = () => {
   };
 
   const handleDeleteFAQ = (faqId: string) => {
-    const updatedFaqs = _faqs.filter((faq: any) => faq.id !== faqId);
-    _setFaqs(updatedFaqs);
+    const updatedFaqs = faqs.filter((faq: any) => faq.id !== faqId);
+    setFaqs(updatedFaqs);
     toast({
       title: "FAQ Eliminado",
       description: "La pregunta frecuente ha sido eliminada",
     });
   };
 
+  const handleSelectProfile = (profile: Profile) => {
+    setSelectedProfile(profile);
+    setShowProfileModal(true);
+  };
+
+  const handleCloseProfileModal = () => {
+    setShowProfileModal(false);
+    setSelectedProfile(null);
+  };
+
   if (!isAuthenticated || !isAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
@@ -331,9 +342,9 @@ export const Admin = () => {
     );
   }
 
-  if (_loading) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
@@ -352,9 +363,14 @@ export const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
+    <div className="min-h-screen bg-linear-to-br from-background via-background/95 to-primary/5">
       <AdminNav userRole="admin" />
       <div className="container mx-auto px-4 py-8 pt-24">
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg">
+            <p className="text-red-400 font-medium">Error: {error}</p>
+          </div>
+        )}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
             Panel de Administracin
@@ -384,7 +400,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-blue-600">
-                    {_stats.totalUsers}
+                    {stats.totalUsers}
                   </p>
                 </CardContent>
               </Card>
@@ -398,7 +414,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-green-600">
-                    {_stats.activeUsers}
+                    {stats.activeUsers}
                   </p>
                 </CardContent>
               </Card>
@@ -412,7 +428,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-purple-600">
-                    {_stats.premiumUsers}
+                    {stats.premiumUsers}
                   </p>
                 </CardContent>
               </Card>
@@ -426,7 +442,7 @@ export const Admin = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold text-red-600">
-                    {_stats.totalMatches}
+                    {stats.totalMatches}
                   </p>
                 </CardContent>
               </Card>
@@ -440,7 +456,7 @@ export const Admin = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {_profiles.map((profile: any) => (
+                  {profiles.map((profile: any) => (
                     <div
                       key={profile.id}
                       className="flex items-center justify-between p-4 border rounded-lg"
@@ -456,6 +472,13 @@ export const Admin = () => {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleSelectProfile(profile)}
+                        >
+                          Ver Detalles
+                        </Button>
                         <Badge
                           variant={
                             profile.is_verified ? "default" : "secondary"
@@ -527,13 +550,13 @@ export const Admin = () => {
                       <div className="flex justify-between">
                         <span>Total en circulacin:</span>
                         <span className="font-bold">
-                          {_stats.totalTokens.toLocaleString()}
+                          {stats.totalTokens.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Total bloqueado:</span>
                         <span className="font-bold">
-                          {_stats.stakedTokens.toLocaleString()}
+                          {stats.stakedTokens.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -545,13 +568,13 @@ export const Admin = () => {
                       <div className="flex justify-between">
                         <span>WorldID verificados:</span>
                         <span className="font-bold">
-                          {_stats.worldIdVerified.toLocaleString()}
+                          {stats.worldIdVerified.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Recompensas distribuidas:</span>
                         <span className="font-bold">
-                          {_stats.rewardsDistributed.toLocaleString()}
+                          {stats.rewardsDistributed.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -598,7 +621,7 @@ export const Admin = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {_faqs.map((faq: any) => (
+                  {faqs.map((faq: any) => (
                     <div key={faq.id} className="p-4 border rounded-lg">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -626,6 +649,91 @@ export const Admin = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Modal de detalles de perfil */}
+      {showProfileModal && selectedProfile && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-2xl shadow-2xl border border-purple-500/40 max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white">Detalles del Perfil</h3>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleCloseProfileModal}
+                className="text-white hover:text-white/80"
+              >
+                ✕
+              </Button>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                {selectedProfile.avatar_url ? (
+                  <img
+                    src={selectedProfile.avatar_url}
+                    alt={selectedProfile.display_name || "Usuario"}
+                    className="w-16 h-16 rounded-full"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                    {(selectedProfile.display_name || selectedProfile.first_name || "U").charAt(0)}
+                  </div>
+                )}
+                <div>
+                  <h4 className="text-lg font-semibold text-white">
+                    {selectedProfile.display_name ||
+                      `${selectedProfile.first_name} ${selectedProfile.last_name}`}
+                  </h4>
+                  <p className="text-sm text-white/70">{selectedProfile.email}</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-white/70">ID:</span>
+                  <span className="text-white font-mono text-sm">{selectedProfile.id}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Verificado:</span>
+                  <span className={selectedProfile.is_verified ? "text-green-400" : "text-red-400"}>
+                    {selectedProfile.is_verified ? "Sí" : "No"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Premium:</span>
+                  <span className={selectedProfile.is_premium ? "text-purple-400" : "text-white/70"}>
+                    {selectedProfile.is_premium ? "Sí" : "No"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Registrado:</span>
+                  <span className="text-white text-sm">
+                    {new Date(selectedProfile.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                {selectedProfile.last_seen && (
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Última vez:</span>
+                    <span className="text-white text-sm">
+                      {new Date(selectedProfile.last_seen).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+                {selectedProfile.bio && (
+                  <div>
+                    <span className="text-white/70 block mb-1">Bio:</span>
+                    <p className="text-white text-sm">{selectedProfile.bio}</p>
+                  </div>
+                )}
+              </div>
+              <Button
+                onClick={handleCloseProfileModal}
+                className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white"
+              >
+                Cerrar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

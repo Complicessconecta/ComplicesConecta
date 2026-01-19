@@ -638,7 +638,7 @@ const Profiles: React.FC = () => {
           )}
         </div>
         <Button
-          className="w-full px-3 py-2 text-sm bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-200"
+          className="w-full px-3 py-2 text-sm bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-200"
           onClick={() => logger.info("Ver perfil:", { profileId: profile.id })}
         >
           Ver Perfil Completo
@@ -648,7 +648,7 @@ const Profiles: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
       <ContrastFixer enabled={true} level="AA" />
 
       {/* Elementos decorativos */}
@@ -694,7 +694,7 @@ const Profiles: React.FC = () => {
             <div className="text-center mb-12 pt-8">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
                 Descubre
-                <span className="block bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent drop-shadow-lg">
+                <span className="block bg-linear-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent drop-shadow-lg">
                   Tu Match Perfecto
                 </span>
               </h1>
@@ -730,7 +730,7 @@ const Profiles: React.FC = () => {
                       <Button
                         onClick={() => handleAiSearch(searchQuery)}
                         disabled={isSearching || searchQuery.length < 3}
-                        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                        className="px-6 py-3 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                       >
                         {isSearching ? (
                           <div className="flex items-center gap-2">

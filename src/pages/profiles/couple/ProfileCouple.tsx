@@ -615,7 +615,7 @@ function ProfileCouple() {
     return (
       <div className="min-h-screen relative overflow-hidden">
         <div className="relative z-10 flex flex-col min-h-screen">
-          <div className="bg-black/80 backdrop-blur-md border-b border-white/30 p-3 sm:p-4 shadow-lg flex-shrink-0">
+          <div className="bg-black/80 backdrop-blur-md border-b border-white/30 p-3 sm:p-4 shadow-lg shrink-0">
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
               <span className="ml-3 text-white">Cargando perfil...</span>
@@ -797,9 +797,9 @@ function ProfileCouple() {
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                   {/* Avatares de la pareja */}
-                  <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                     <div className="relative">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-linear-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
                         {profile?.partner1_first_name?.[0]?.toUpperCase() ||
                           "E"}
                       </div>
@@ -811,7 +811,7 @@ function ProfileCouple() {
                     </div>
                     <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-fuchsia-400 animate-pulse" />
                     <div className="relative">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-purple-400 to-fuchsia-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-linear-to-br from-purple-400 to-fuchsia-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
                         {profile?.partner2_first_name?.[0]?.toUpperCase() || ""}
                       </div>
                       {profile?.is_verified && (
@@ -1027,7 +1027,7 @@ function ProfileCouple() {
                       />
 
                       {!isGalleryUnlocked && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
                           <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
                             <Lock className="w-6 h-6 text-white" />
                           </div>
@@ -1048,7 +1048,7 @@ function ProfileCouple() {
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl mt-4">
               <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center">
                     <Wallet className="w-5 h-5 text-white" />
                   </div>
                   <div className="text-left">
@@ -1068,7 +1068,7 @@ function ProfileCouple() {
                 </div>
                 <Button
                   onClick={() => navigate("/tokens")}
-                  className="bg-gradient-to-r from-fuchsia-600 to-blue-600 hover:from-fuchsia-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-fuchsia-500/40 flex items-center gap-2"
+                  className="bg-linear-to-r from-fuchsia-600 to-blue-600 hover:from-fuchsia-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-fuchsia-500/40 flex items-center gap-2"
                 >
                   <Wallet className="w-4 h-4" />
                   <span>
@@ -1082,7 +1082,7 @@ function ProfileCouple() {
 
             {/* Sección Blockchain para Parejas - Solo para perfil propio */}
             {isOwnProfile && (
-              <Card className="bg-gradient-to-br from-fuchsia-600/20 to-purple-600/20 backdrop-blur-md border-fuchsia-400/30 text-white mt-6">
+              <Card className="bg-linear-to-br from-fuchsia-600/20 to-purple-600/20 backdrop-blur-md border-fuchsia-400/30 text-white mt-6">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Wallet className="w-5 h-5 text-fuchsia-400" />

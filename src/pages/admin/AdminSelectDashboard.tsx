@@ -33,7 +33,7 @@ export const AdminSelectDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -41,13 +41,13 @@ export const AdminSelectDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <Badge className="bg-gradient-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
+          <Badge className="bg-linear-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
             <Shield className="h-4 w-4 mr-2" />
             Panel de Administración
           </Badge>
           <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
             Bienvenido,
-            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               {" "}
               {user?.email || "Admin"}
             </span>
@@ -65,11 +65,11 @@ export const AdminSelectDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="bg-gradient-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-purple-400/50 transition-all duration-300 cursor-pointer h-full group"
+            <Card className="bg-linear-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-purple-400/50 transition-all duration-300 cursor-pointer h-full group"
                   onClick={handleAdminPanel}>
               <CardHeader>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-3 bg-linear-to-r from-indigo-500 to-violet-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
                     <Shield className="h-8 w-8 text-white" />
                   </div>
                   <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
@@ -110,11 +110,11 @@ export const AdminSelectDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="bg-gradient-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-fuchsia-400/50 transition-all duration-300 cursor-pointer h-full group"
+            <Card className="bg-linear-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-fuchsia-400/50 transition-all duration-300 cursor-pointer h-full group"
                   onClick={handleClubsDemo}>
               <CardHeader>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
                     <Building className="h-8 w-8 text-white" />
                   </div>
                   <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />

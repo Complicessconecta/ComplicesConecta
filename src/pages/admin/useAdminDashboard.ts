@@ -117,14 +117,31 @@ export const useAdminDashboard = (dateRange: string) => {
         .from("user_roles")
         .select("id", { count: "exact", head: true })
         .eq("role", "moderator");
-      // TODO: Crear tabla career_applications en la base de datos
-      // const { count: careerApplications } = await supabase
-      //   .from("career_applications")
-      //   .select("id", { count: "exact", head: true });
-      // TODO: Crear tabla moderator_requests en la base de datos
-      // const { count: moderatorRequests } = await supabase
-      //   .from("moderator_requests")
-      //   .select("id", { count: "exact", head: true });
+      
+      // Intentar obtener career_applications si la tabla existe
+      let careerApplications = 0;
+      try {
+        const { count: careerAppsCount } = await supabase
+          .from("career_applications")
+          .select("id", { count: "exact", head: true });
+        careerApplications = careerAppsCount || 0;
+      } catch {
+        // Tabla career_applications no existe, mantener valor 0
+        careerApplications = 0;
+      }
+      
+      // Intentar obtener moderator_requests si la tabla existe
+      let moderatorRequests = 0;
+      try {
+        const { count: modReqsCount } = await supabase
+          .from("moderator_requests")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "pending");
+        moderatorRequests = modReqsCount || 0;
+      } catch {
+        // Tabla moderator_requests no existe, mantener valor 0
+        moderatorRequests = 0;
+      }
 
       setStats({
         totalUsers,
@@ -135,8 +152,8 @@ export const useAdminDashboard = (dateRange: string) => {
         moderatorsCount: moderatorsCount || 0,
         newUsersToday,
         matchesToday,
-        careerApplications: 0, // TODO: Crear tabla career_applications en la base de datos
-        moderatorRequests: 0, // TODO: Crear tabla moderator_requests en la base de datos
+        careerApplications,
+        moderatorRequests,
       });
 
       const { data: recentUsers, error: recentUsersError } = await supabase

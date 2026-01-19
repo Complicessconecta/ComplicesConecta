@@ -366,11 +366,11 @@ const AdminModerators = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900">
         <AdminNav userRole="admin" />
         <div className="flex items-center justify-center h-64 pt-24">
           <div className="text-white text-xl">
-            Cargando sistema de moderadores...
+            Cargando moderadores...
           </div>
         </div>
       </div>
@@ -378,7 +378,7 @@ const AdminModerators = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       <AdminNav userRole="admin" />
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
@@ -471,7 +471,7 @@ const AdminModerators = () => {
                       <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0">
                         <div className="flex-1 w-full">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
-                            <h3 className="text-lg sm:text-xl font-bold text-white break-words">
+                            <h3 className="text-lg sm:text-xl font-bold text-white wrap-break-word">
                               {moderator.full_name || moderator.email}
                             </h3>
                             <Badge
@@ -489,23 +489,23 @@ const AdminModerators = () => {
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-white/80 text-sm sm:text-base">
                             <div className="flex items-center gap-2">
-                              <Mail className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <Mail className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
                               <span className="break-all">
                                 {moderator.email}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
                               <span>
                                 Creado: {formatDate(moderator.created_at)}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Activity className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <Activity className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
                               <span>Reportes: {moderator.reports_handled}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Ban className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                              <Ban className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
                               <span>
                                 Suspensiones: {moderator.suspensions_applied}
                               </span>
@@ -568,7 +568,7 @@ const AdminModerators = () => {
                       <CardContent className="p-4 sm:p-6">
                         <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-0">
                           <div className="flex-1 w-full">
-                            <h3 className="text-lg sm:text-xl font-bold text-white mb-2 break-words">
+                            <h3 className="text-lg sm:text-xl font-bold text-white mb-2 wrap-break-word">
                               {request.full_name}
                             </h3>
                             <div className="text-white/80 text-sm sm:text-base space-y-1">
@@ -670,7 +670,7 @@ const AdminModerators = () => {
                     disabled={
                       isCreating || !newModeratorEmail || !newModeratorName
                     }
-                    className="w-full bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 text-white font-semibold py-2 sm:py-3 text-sm sm:text-base"
+                    className="w-full bg-linear-to-r from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 text-white font-semibold py-2 sm:py-3 text-sm sm:text-base"
                   >
                     {isCreating ? (
                       <>Creando moderador...</>

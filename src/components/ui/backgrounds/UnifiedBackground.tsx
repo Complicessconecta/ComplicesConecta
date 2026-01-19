@@ -300,7 +300,7 @@ const neonOptions = useMemo(
     () => ({
       fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
-      fpsLimit: 60,
+      fpsLimit: 30,
       particles: {
         number: { value: profile?.is_premium ? 120 : 70 },
         color: { value: ["#00FFFF", "#FF00FF", "#AA00FF"] },

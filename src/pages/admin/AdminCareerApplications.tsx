@@ -241,7 +241,7 @@ const AdminCareerApplications = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900">
         <AdminNav userRole="admin" />
         <div className="flex items-center justify-center h-64 pt-24">
           <div className="text-white text-xl">Cargando solicitudes...</div>
@@ -251,7 +251,7 @@ const AdminCareerApplications = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       <AdminNav userRole="admin" />
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
@@ -404,14 +404,14 @@ const AdminCareerApplications = () => {
                           {application.domicilio && (
                             <div className="flex items-center gap-2 sm:col-span-2">
                               <MapPin className="h-4 w-4" />
-                              <span className="break-words">
+                              <span className="wrap-break-word">
                                 {application.domicilio}
                               </span>
                             </div>
                           )}
                         </div>
                       </div>
-                      <div className="flex gap-2 ml-2 sm:ml-4 flex-shrink-0">
+                      <div className="flex gap-2 ml-2 sm:ml-4 shrink-0">
                         <Button
                           onClick={() => setSelectedApplication(application)}
                           className="bg-white/10 border border-white/20 text-white hover:bg-white/20 px-2 py-1 text-sm"

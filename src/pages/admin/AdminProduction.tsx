@@ -2,7 +2,17 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Users, BarChart3, MessageSquare, Shield, Trash2, Plus, Eye, CheckCircle, XCircle, Crown, HelpCircle, ArrowLeft, FileText, AlertTriangle, Zap, UserCheck } from "lucide-react";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 // import { Database } from '@/types/supabase';
+
 
 interface Invitation {
   id: string;
@@ -14,15 +24,6 @@ interface Invitation {
   created_at: string;
   decided_at: string | null;
 }
-import { Input } from "@/components/ui/forms/Input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, BarChart3, MessageSquare, Shield, Trash2, Plus, Eye, CheckCircle, XCircle, Crown, HelpCircle, ArrowLeft, FileText, AlertTriangle, Zap, UserCheck } from "lucide-react";
-import { useAuth } from "@/features/auth/useAuth";
-import { useToast } from "@/hooks/useToast";
-import { supabase } from "@/integrations/supabase/client";
-import { logger } from "@/lib/logger";
 
 interface Profile {
   id: string;
@@ -619,7 +620,7 @@ const AdminProduction = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-64">
             <div className="text-white text-xl">
@@ -632,7 +633,7 @@ const AdminProduction = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -972,7 +973,7 @@ const AdminProduction = () => {
                       className="flex items-center justify-between p-4 bg-white/5 rounded-lg"
                     >
                       <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-fuchsia-400 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-linear-to-r from-purple-400 to-fuchsia-400 rounded-full flex items-center justify-center">
                           <span className="text-white font-semibold">
                             {profile.display_name?.charAt(0) ||
                               profile.first_name?.charAt(0) ||

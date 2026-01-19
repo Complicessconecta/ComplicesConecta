@@ -14,6 +14,7 @@ import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { SingleRegistrationForm } from "@/components/profiles/single/SingleRegistrationForm";
 import { CoupleRegistrationForm } from "@/components/profiles/couple/CoupleRegistrationForm";
+import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 
 interface FormData {
   email: string;
@@ -68,7 +69,12 @@ const Auth = () => {
     appMode: _appMode,
   } = useAuth();
 
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
   const [showLoginLoading, setShowLoginLoading] = useState(false);
+  const [autoLocationRequested, setAutoLocationRequested] = useState(false);
+  const [showThemeModal, setShowThemeModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
   
   // Depurar cambio de activeTab
@@ -190,6 +196,56 @@ const Auth = () => {
 
   // handleSignUp eliminado - los formularios SingleRegistrationForm y CoupleRegistrationForm manejan su propia lógica
 
+  // Handler para recuperación de contraseña
+  const handleResetPassword = async () => {
+    if (!resetEmail) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Por favor ingresa tu correo electrónico",
+      });
+      return;
+    }
+    // Aquí se implementaría la lógica de recuperación de contraseña
+    toast({
+      title: "Recuperación de contraseña",
+      description: "Se ha enviado un correo de recuperación a " + resetEmail,
+    });
+    setShowResetPassword(false);
+    setResetEmail("");
+  };
+
+  // Handler para solicitar ubicación automática
+  const handleAutoLocation = async () => {
+    if (autoLocationRequested) {
+      toast({
+        title: "Ubicación ya solicitada",
+        description: "La ubicación ya ha sido solicitada anteriormente",
+      });
+      return;
+    }
+    try {
+      _getCurrentLocation();
+      if (_location && _location.latitude && _location.longitude) {
+        setFormData((prev) => ({
+          ...prev,
+          location: `${_location.latitude},${_location.longitude}`,
+        }));
+        setAutoLocationRequested(true);
+        toast({
+          title: "Ubicación obtenida",
+          description: "Tu ubicación ha sido obtenida exitosamente",
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error al obtener ubicación",
+        description: "No se pudo obtener tu ubicación automáticamente",
+      });
+    }
+  };
+
   if (showLoginLoading) {
     return (
       <LoginLoadingScreen
@@ -220,7 +276,16 @@ const Auth = () => {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver
               </Button>
-              <Button
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowThemeModal(true)}
+                  className="bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
+                >
+                  Tema
+                </Button>
+                <Button
                 variant="ghost"
                 size="sm"
                 onClick={async () => {
@@ -271,6 +336,7 @@ const Auth = () => {
                 <Shield className="h-4 w-4 mr-2" />
                 Admin
               </Button>
+              </div>
             </div>
             <CardTitle className="text-3xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
               ComplicesConecta
@@ -362,6 +428,15 @@ const Auth = () => {
                       className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
                     />
                   </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setShowResetPassword(true)}
+                      className="text-sm text-purple-300 hover:text-purple-200 underline"
+                    >
+                      ¿Olvidaste tu contraseña?
+                    </button>
+                  </div>
                   <Button
                     type="submit"
                     className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white font-bold shadow-lg transition-all duration-300 hover:from-purple-700 hover:to-blue-700 hover:scale-105"
@@ -400,34 +475,128 @@ const Auth = () => {
               </TabsContent>
 
               <TabsContent value="signup" data-testid="register-form">
-                {formData.accountType === "single" ? (
-                  <SingleRegistrationForm onSuccess={() => navigate("/")} />
-                ) : formData.accountType === "couple" ? (
-                  <CoupleRegistrationForm onSuccess={() => navigate("/")} />
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-white/70 mb-4">Selecciona el tipo de cuenta</p>
-                    <div className="flex gap-4 justify-center">
-                      <Button
-                        onClick={() => handleInputChange("accountType", "single")}
-                        className="bg-linear-to-r from-purple-600 to-blue-600 text-white"
-                      >
-                        Soltero/a
-                      </Button>
-                      <Button
-                        onClick={() => handleInputChange("accountType", "couple")}
-                        className="bg-linear-to-r from-pink-600 to-purple-600 text-white"
-                      >
-                        Pareja
-                      </Button>
-                    </div>
+                <div className="space-y-4">
+                  <div className="flex gap-4 justify-center mb-4">
+                    <Button
+                      onClick={() => handleInputChange("accountType", "single")}
+                      className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 text-white"
+                    >
+                      Soltero/a
+                    </Button>
+                    <Button
+                      onClick={() => handleInputChange("accountType", "couple")}
+                      className="flex-1 bg-linear-to-r from-pink-600 to-purple-600 text-white"
+                    >
+                      Pareja
+                    </Button>
                   </div>
-                )}
+                  
+                  {formData.accountType && (
+                    <Button
+                      onClick={handleAutoLocation}
+                      disabled={autoLocationRequested}
+                      className="w-full bg-linear-to-r from-green-600 to-emerald-600 text-white"
+                    >
+                      {autoLocationRequested ? "Ubicación obtenida" : "Obtener mi ubicación"}
+                    </Button>
+                  )}
+
+                  {formData.accountType === "single" ? (
+                    <SingleRegistrationForm onSuccess={() => navigate("/")} />
+                  ) : formData.accountType === "couple" ? (
+                    <CoupleRegistrationForm onSuccess={() => navigate("/")} />
+                  ) : null}
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de recuperación de contraseña */}
+      {showResetPassword && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-2xl shadow-2xl border border-purple-500/40 max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-white mb-4">Recuperar Contraseña</h3>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="reset-email" className="text-white">Correo electrónico</Label>
+                <Input
+                  id="reset-email"
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  placeholder="tu@email.com"
+                  className="bg-white/10 border-white/20 text-white placeholder-white/70"
+                />
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => {
+                    setShowResetPassword(false);
+                    setResetEmail("");
+                  }}
+                  variant="outline"
+                  className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={handleResetPassword}
+                  className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 text-white"
+                >
+                  Enviar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de tema */}
+      {showThemeModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-2xl shadow-2xl border border-purple-500/40 max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-white mb-4">Cambiar Tema</h3>
+            <div className="space-y-4">
+              <Button
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, preferredTheme: "dark" }));
+                  setShowThemeModal(false);
+                }}
+                className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white"
+              >
+                Tema Oscuro
+              </Button>
+              <Button
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, preferredTheme: "light" }));
+                  setShowThemeModal(false);
+                }}
+                className="w-full bg-linear-to-r from-pink-600 to-purple-600 text-white"
+              >
+                Tema Claro
+              </Button>
+              <Button
+                onClick={() => setShowThemeModal(false)}
+                variant="outline"
+                className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20"
+              >
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de términos y condiciones */}
+      <SharedTermsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        onAccept={(termsAccepted, privacyAccepted) => {
+          console.log("Términos aceptados:", termsAccepted, "Privacidad aceptada:", privacyAccepted);
+        }}
+      />
     </ResponsiveContainer>
   );
 };

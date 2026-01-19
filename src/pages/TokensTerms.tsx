@@ -11,7 +11,7 @@ export default function TokensTerms() {
     <div className="min-h-screen bg-hero-gradient">
       <TokensSubnav />
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/90 to-purple-800/90 backdrop-blur-md border-b border-white/20">
+      <div className="sticky top-0 z-50 bg-linear-to-r from-purple-900/90 to-purple-800/90 backdrop-blur-md border-b border-white/20">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
@@ -43,12 +43,12 @@ export default function TokensTerms() {
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Hero */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-r from-green-500 to-blue-500 rounded-full mb-4">
             <FileText className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white">
             Términos y Condiciones
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
+            <span className="block text-transparent bg-clip-text bg-linear-to-r from-green-400 to-blue-400">
               Programa de Tokens CMPX/GTK
             </span>
           </h1>
@@ -193,7 +193,7 @@ export default function TokensTerms() {
         </Card>
 
         {/* Limitaciones y Restricciones */}
-        <Card className="bg-gradient-to-r from-orange-900/80 to-red-900/80 backdrop-blur-sm border border-orange-400/30">
+        <Card className="bg-linear-to-r from-orange-900/80 to-red-900/80 backdrop-blur-sm border border-orange-400/30">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <AlertTriangle className="h-6 w-6 text-orange-400" />
@@ -364,7 +364,7 @@ export default function TokensTerms() {
         </Card>
 
         {/* Transición a Producción */}
-        <Card className="bg-gradient-to-r from-green-900/80 to-blue-900/80 backdrop-blur-sm border border-green-400/30">
+        <Card className="bg-linear-to-r from-green-900/80 to-blue-900/80 backdrop-blur-sm border border-green-400/30">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <Coins className="h-6 w-6 text-green-400" />
@@ -458,7 +458,7 @@ export default function TokensTerms() {
         </Card>
 
         {/* Aceptacin */}
-        <Card className="bg-gradient-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-purple-400/30">
+        <Card className="bg-linear-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-purple-400/30">
           <CardContent className="p-6 text-center">
             <h3 className="text-xl font-bold text-white mb-4">
               Aceptación de Términos
@@ -470,7 +470,7 @@ export default function TokensTerms() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={() => navigate("/tokens-privacy")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
                 <Shield className="h-4 w-4 mr-2" />
                 Ver Política de Privacidad

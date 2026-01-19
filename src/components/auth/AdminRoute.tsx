@@ -49,7 +49,6 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
       // Verificar si el email del usuario es de admin
       const userEmail = session.user.email;
       const adminEmails = [
-        "admin@complicesconecta.com",
         import.meta.env.VITE_ADMIN_EMAIL || "",
       ];
 

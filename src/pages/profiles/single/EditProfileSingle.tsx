@@ -251,7 +251,7 @@ const EditProfileSingle = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-white text-lg">Cargando perfil...</p>
@@ -286,7 +286,7 @@ const EditProfileSingle = () => {
           <Button
             onClick={handleSave}
             disabled={_isLoading}
-            className="bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
+            className="bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
           >
             <Save className="h-4 w-4 mr-2" />
             {_isLoading ? "Guardando..." : "Guardar Cambios"}
@@ -438,7 +438,7 @@ const EditProfileSingle = () => {
                   }
                   className={`cursor-pointer transition-all ${
                     formData.interests.includes(interest)
-                      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-md border-0"
+                      ? "bg-linear-to-r from-fuchsia-500 to-purple-500 text-white shadow-md border-0"
                       : "bg-white/20 text-white border border-white/30 hover:bg-white/30"
                   }`}
                   onClick={() => handleInterestToggle(interest)}
@@ -486,7 +486,7 @@ const EditProfileSingle = () => {
                     onClick={() => setDemoTheme("light")}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       demoTheme === "light"
-                        ? "border-yellow-400 bg-gradient-to-br from-fuchsia-300 via-purple-200 to-indigo-200"
+                        ? "border-yellow-400 bg-linear-to-br from-fuchsia-300 via-purple-200 to-indigo-200"
                         : "border-white/30 bg-white/10 hover:bg-white/20"
                     }`}
                   >
@@ -508,7 +508,7 @@ const EditProfileSingle = () => {
                     onClick={() => setDemoTheme("dark")}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       demoTheme === "dark"
-                        ? "border-purple-400 bg-gradient-to-br from-gray-900 via-gray-800 to-black"
+                        ? "border-purple-400 bg-linear-to-br from-gray-900 via-gray-800 to-black"
                         : "border-white/30 bg-white/10 hover:bg-white/20"
                     }`}
                   >
@@ -548,7 +548,7 @@ const EditProfileSingle = () => {
                     onClick={() => setNavbarStyle("solid")}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       navbarStyle === "solid"
-                        ? "border-purple-400 bg-gradient-to-r from-purple-600 to-fuchsia-600"
+                        ? "border-purple-400 bg-linear-to-r from-purple-600 to-fuchsia-600"
                         : "border-white/30 bg-white/10 hover:bg-white/20"
                     }`}
                   >

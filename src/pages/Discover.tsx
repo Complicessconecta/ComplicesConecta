@@ -868,7 +868,7 @@ export const Discover = () => {
                         key={interest}
                         className={`cursor-pointer text-xs font-medium transition-all duration-200 hover:scale-105 ${
                           filters.interests.includes(interest)
-                            ? "bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg"
+                            ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg"
                             : "border-white/60 text-white hover:border-white hover:bg-white/20 border bg-transparent"
                         }`}
                         onClick={() => {

@@ -348,27 +348,11 @@ const neonOptions = useMemo(
     !engineReady && forceNeon && preferences.particlesEnabled;
 
   // LOGGING: Diagnosticar por qué no se muestran las partículas
-  if (import.meta.env.DEV) {
-    console.log("🔍 ParticlesNeon Debug:", {
-      pathname: location.pathname,
-      engineReady,
-      shouldAvoidHeavyParticles,
-      forceImageAndNeon,
-      forceNeon,
-      preferences: {
-        particlesEnabled: preferences.particlesEnabled,
-        backgroundMode: preferences.backgroundMode,
-      },
-      isLowEnd,
-      reducedMotion,
-      allowParticles,
-      variant,
-      showNeonParticles,
-      showFallbackParticles,
-      isSnowRoute,
-      inAllowedRoutes: ALLOW_HEAVY_ROUTES.has(location.pathname),
-      isPremium: profile?.is_premium,
-    });
+  if (import.meta.env.DEV) { console.log("🔍 ParticlesNeon Debug:", 
+  { pathname: location.pathname, engineReady, shouldAvoidHeavyParticles, forceImageAndNeon, forceNeon, references:
+  { particlesEnabled: preferences.particlesEnabled, backgroundMode: preferences.backgroundMode }
+  , isLowEnd, reducedMotion, allowParticles, variant, showNeonParticles, showFallbackParticles, isSnowRoute, 
+  inAllowedRoutes: ALLOW_HEAVY_ROUTES.has(location.pathname), isPremium: profile?.is_premium  });
   }
 
   // Predefined utility class sets for CSS particles (avoid inline styles)
@@ -399,7 +383,7 @@ const neonOptions = useMemo(
         preferences.particlesEnabled
           ? "from-slate-900 via-purple-950 to-slate-900"
           : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
-      } ${variant === "solid" ? "bg-(--cc-solid-bg)" : ""}`}
+      } ${variant === "solid" ? "bg-(--cc-solid-bg)" : ""} ${className || ""}`}
     >
       {/* Imagen de fondo con fade-in sólo cuando está cargada */}
       {variant !== "solid" && resolvedBackground && (

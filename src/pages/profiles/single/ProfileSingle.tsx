@@ -986,7 +986,7 @@ Información del perfil:
                       }
                       navigate("/nfts");
                     }}
-                    className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm px-3 py-2 border"
+                    className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm px-3 py-2"
                   >
                     <Images className="w-4 h-4" />
                     Ver NFTs

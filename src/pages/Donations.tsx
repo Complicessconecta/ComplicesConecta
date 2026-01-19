@@ -239,6 +239,12 @@ const Donations = () => {
                 </div>
                 <span className="text-sm">OXXO Pay</span>
               </div>
+               <div className="text-center text-white">
+                <div className="w-12 h-8 bg-white/20 rounded mb-2 mx-auto flex items-center justify-center">
+                  <span className="text-xs font-bold">Transfer</span>
+                </div>
+                <span className="text-sm">STP</span>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -269,7 +275,7 @@ const Donations = () => {
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
                 <CardTitle className="text-white text-lg">
-                  Para qu se usan las donaciones?
+                  Para que se usan las donaciones?
                 </CardTitle>
               </CardHeader>
               <CardContent>

@@ -310,7 +310,7 @@ const Auth = () => {
                 onClick={async () => {
                   // Toggle entre modo normal y admin
                   const isAdminMode = formData.email.includes(
-                    "complicesconectasw@outlook.es",
+                    import.meta.env.VITE_ADMIN_EMAIL || "",
                   );
                   
                   console.log("Botón Admin clickeado:", { isAdminMode, activeTab });

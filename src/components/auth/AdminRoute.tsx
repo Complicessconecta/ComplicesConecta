@@ -50,7 +50,7 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
       const userEmail = session.user.email;
       const adminEmails = [
         "admin@complicesconecta.com",
-        "ComplicesConectaSw@outlook.es",
+        import.meta.env.VITE_ADMIN_EMAIL || "",
       ];
 
       if (adminEmails.includes(userEmail || "")) {

@@ -559,7 +559,7 @@ export const useAuth = () => {
 
     // Si es admin real, usar panel de producción
     const userEmail = user?.email?.toLowerCase();
-    const isRealAdmin = userEmail === "complicesconectasw@outlook.es";
+    const isRealAdmin = userEmail === (import.meta.env.VITE_ADMIN_EMAIL || "").toLowerCase();
 
     logger.info("🏭 shouldUseProductionAdmin check", {
       userEmail,

@@ -128,6 +128,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     }
   };
 
+  // Ocultar HeaderNav cuando el usuario está autenticado
+  // Solo mostrar en páginas públicas (no autenticadas)
+  if (isAuthenticated()) {
+    return null;
+  }
+
   return (
     <>
       {/* Header Principal con gradiente difuminado */}

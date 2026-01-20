@@ -50,7 +50,7 @@ export const MainLayout = () => {
     HIDE_HEADER_EXACT.has(pathname) ||
     HIDE_HEADER_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
-  const showHeaderNav = !shouldHideHeader;
+  const showHeaderNav = !hasSession && !shouldHideHeader;
 
   const isHomeRoute = pathname === "/";
 
@@ -103,11 +103,7 @@ export const MainLayout = () => {
         </main>
 
         {/* Bottom Navigation (perfil/app) */}
-        {showBottomNavigation && (
-          <div className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
-            <Navigation />
-          </div>
-        )}
+        {showBottomNavigation && <Navigation />}
 
         <Toaster />
       </div>

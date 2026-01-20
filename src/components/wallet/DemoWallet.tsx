@@ -3,7 +3,7 @@
 // Fecha: 10 Ene 2026 | Autor: Ing. Juan Carlos Méndez Nataren
 // Descripción: Componente de wallet para perfiles demo
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
@@ -21,6 +21,10 @@ interface DemoNFT {
   isCouple: boolean;
 }
 
+interface DemoWalletProps {
+  userId: string;
+}
+
 /**
  * Interfaz para Token mock
  */
@@ -35,48 +39,153 @@ interface DemoToken {
 /**
  * Componente de Wallet para perfiles demo
  */
-export function DemoWallet() {
+export function DemoWallet({ userId }: DemoWalletProps) {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("0x1234...5678");
   const [balance, setBalance] = useState("0.00");
   const [showPolygonModal, setShowPolygonModal] = useState(false);
   const [selectedNft, setSelectedNft] = useState<DemoNFT | null>(null);
 
-  // NFTs mock para demo
-  const demoNFTs: DemoNFT[] = [
-    {
-      id: "nft-1",
-      name: "Cómplice Legendario",
-      rarity: "legendary",
-      image: "/assets/nfts/imagen4.gif",
-      value: 5000,
-      isCouple: false,
-    },
-    {
-      id: "nft-2",
-      name: "Cómplice Épico",
-      rarity: "epic",
-      image: "/assets/nfts/imagen3.jpg",
-      value: 2000,
-      isCouple: true,
-    },
-    {
-      id: "nft-3",
-      name: "Cómplice Raro",
-      rarity: "rare",
-      image: "/assets/nfts/imagen1.jpg",
-      value: 750,
-      isCouple: false,
-    },
-    {
-      id: "nft-4",
-      name: "Cómplice Común",
-      rarity: "common",
-      image: "/assets/nfts/imagen2.jpg",
-      value: 100,
-      isCouple: true,
-    },
-  ];
+  const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
+
+  const defaultDemoNFTs: DemoNFT[] = useMemo(
+    () => [
+      {
+        id: "nft-1",
+        name: "Cómplice Legendario",
+        rarity: "legendary",
+        image: "/assets/nfts/imagen4.gif",
+        value: 5000,
+        isCouple: false,
+      },
+      {
+        id: "nft-2",
+        name: "Cómplice Épico",
+        rarity: "epic",
+        image: "/assets/nfts/imagen3.jpg",
+        value: 2000,
+        isCouple: true,
+      },
+      {
+        id: "nft-3",
+        name: "Cómplice Raro",
+        rarity: "rare",
+        image: "/assets/nfts/imagen1.jpg",
+        value: 750,
+        isCouple: false,
+      },
+      {
+        id: "nft-4",
+        name: "Cómplice Común",
+        rarity: "common",
+        image: "/assets/nfts/imagen2.jpg",
+        value: 100,
+        isCouple: true,
+      },
+    ],
+    [],
+  );
+
+  const [demoNFTs, setDemoNFTs] = useState<DemoNFT[]>(defaultDemoNFTs);
+
+  useEffect(() => {
+    if (!userId) return;
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(getDemoNFTStorageKey(userId));
+      if (!raw) return;
+      const parsed: unknown = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+      const normalized = parsed
+        .filter((item): item is Record<string, unknown> => Boolean(item))
+        .slice(0, 4)
+        .map((item, idx): DemoNFT => {
+          const rarityRaw = item.rarity;
+          const rarity: DemoNFT["rarity"] =
+            rarityRaw === "legendary" ||
+            rarityRaw === "epic" ||
+            rarityRaw === "rare" ||
+            rarityRaw === "common"
+              ? rarityRaw
+              : "common";
+
+          return {
+            id: typeof item.id === "string" ? item.id : `demo-nft-${userId}-${idx}`,
+            name:
+              typeof item.name === "string" && item.name
+                ? item.name
+                : "Cómplice Demo",
+            rarity,
+            image:
+              typeof item.image === "string" && item.image
+                ? item.image
+                : "/assets/nfts/imagen2.jpg",
+            value: typeof item.value === "number" ? item.value : 100,
+            isCouple: Boolean(item.is_couple ?? item.isCouple),
+          };
+        });
+      if (normalized.length > 0) {
+        setDemoNFTs(normalized);
+      }
+    } catch {
+      // no-op
+    }
+  }, [userId]);
+
+  const writeDemoNFTs = (items: DemoNFT[]) => {
+    if (!userId) return;
+    if (typeof window === "undefined") return;
+    const payload = items.map((nft) => ({
+      id: nft.id,
+      name: nft.name,
+      rarity: nft.rarity,
+      image: nft.image,
+      value: nft.value,
+      is_couple: nft.isCouple,
+      created_at: new Date().toISOString(),
+      token_id: items.length,
+      metadata_uri: "ipfs://demo-metadata-hash",
+    }));
+    window.localStorage.setItem(getDemoNFTStorageKey(userId), JSON.stringify(payload));
+  };
+
+  const handleMintDemoNft = () => {
+    if (!userId) return;
+    const images = [
+      "/assets/nfts/imagen1.jpg",
+      "/assets/nfts/imagen2.jpg",
+      "/assets/nfts/imagen3.jpg",
+      "/assets/nfts/imagen4.gif",
+    ];
+    const rarityRoll = Math.random();
+    let rarity: DemoNFT["rarity"] = "common";
+    let value = 100;
+    if (rarityRoll > 0.95) {
+      rarity = "legendary";
+      value = 5000;
+    } else if (rarityRoll > 0.8) {
+      rarity = "epic";
+      value = 1500;
+    } else if (rarityRoll > 0.5) {
+      rarity = "rare";
+      value = 500;
+    }
+
+    const next: DemoNFT[] = [
+      {
+        id: `demo-nft-${Date.now()}`,
+        name: "NFT Demo Minteado",
+        rarity,
+        image: images[Math.floor(Math.random() * images.length)] || "/assets/nfts/imagen2.jpg",
+        value,
+        isCouple: false,
+      },
+      ...demoNFTs,
+    ].slice(0, 4);
+
+    setDemoNFTs(next);
+    writeDemoNFTs(next);
+  };
 
   // Tokens mock para demo
   const demoTokens: DemoToken[] = [
@@ -221,6 +330,14 @@ export function DemoWallet() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <Button
+            onClick={handleMintDemoNft}
+            className="w-full mb-4 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+            type="button"
+          >
+            <Sparkles className="mr-2 h-4 w-4" />
+            Mintear NFT Demo
+          </Button>
           <div className="grid grid-cols-2 gap-4">
             {demoNFTs.map((nft) => (
               <div

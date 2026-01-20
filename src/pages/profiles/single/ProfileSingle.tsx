@@ -1301,7 +1301,9 @@ Información del perfil:
           </Card>
 
           {/* Demo Wallet - Solo para perfiles demo */}
-          {isDemoProfile && <DemoWallet />}
+          {isDemoProfile && (
+            <DemoWallet userId={user?.id || profile?.id || ""} />
+          )}
 
           {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
 

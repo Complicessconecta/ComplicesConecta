@@ -125,4 +125,36 @@ describe("ParentalControl", () => {
 
     expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
   });
+
+  it("permite re-bloquear después de desbloquear", () => {
+    const { rerender } = render(<ParentalControl {...defaultProps} />);
+
+    fireEvent.click(screen.getByText(/Desbloquear/i) as unknown as Element);
+    const input = screen.getByPlaceholderText("••••");
+    fireEvent.change(input as unknown as Element, {
+      target: { value: "1234" },
+    });
+    fireEvent.click(screen.getByText(/Confirmar/i) as unknown as Element);
+
+    expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
+
+    rerender(
+      <ParentalControl
+        {...defaultProps}
+        isLocked={false}
+      />,
+    );
+
+    fireEvent.click(screen.getByText(/Bloquear Ahora/i) as unknown as Element);
+    expect(defaultProps.onToggle).toHaveBeenCalledWith(true);
+
+    rerender(
+      <ParentalControl
+        {...defaultProps}
+        isLocked={true}
+      />,
+    );
+
+    expect(screen.getByText(/Desbloquear/i)).toBeInTheDocument();
+  });
 });

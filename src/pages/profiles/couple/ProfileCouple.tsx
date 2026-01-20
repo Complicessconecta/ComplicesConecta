@@ -207,7 +207,10 @@ function ProfileCouple() {
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleNFTRequest[]>([]);
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
-  const [isDemoMode] = useState(WalletService.isDemoMode);
+  const isDemoMode =
+    WalletService.isDemoMode() ||
+    (typeof window !== "undefined" &&
+      window.localStorage.getItem("demo_authenticated") === "true");
 
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = coupleNFTs.length > 0;
@@ -411,6 +414,27 @@ function ProfileCouple() {
     if (!user?.id) return;
 
     try {
+      if (isDemoMode) {
+        const [nfts] = await Promise.all([
+          nftService.getUserNFTs(user.id).catch(() => []),
+        ]);
+
+        setWalletInfo(null);
+        setTokenBalances({ cmpx: "500", gtk: "250", matic: "10" });
+        setCoupleNFTs(nfts.filter((nft: any) => Boolean(nft?.is_couple)));
+        setCoupleRequests([]);
+        setTestnetInfo({
+          remaining: 500,
+          dailyRemaining: 2500000,
+          canClaim: true,
+          dailyLimit: 2500000,
+          dailyClaimed: 0,
+          claimed: 500,
+          maxClaim: 1000,
+        } as any);
+        return;
+      }
+
       // Cargar información específica de pareja
       const [wallet, tokens, nfts, requests, testnet] = await Promise.all([
         walletService.getOrCreateWallet(user.id).catch(() => null),
@@ -762,7 +786,7 @@ function ProfileCouple() {
                   e.stopPropagation();
                   setShowReportDialog(true);
                 }}
-                className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105 hover:bg-red-500/20 group"
+                className="bg-white/10 hover:bg-red-500/20 p-2 transition-all duration-300 hover:scale-105 group"
               >
                 <Flag className="h-4 w-4 text-white group-hover:text-red-400 transition-colors" />
               </Button>

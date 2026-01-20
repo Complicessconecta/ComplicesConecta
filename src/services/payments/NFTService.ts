@@ -260,10 +260,18 @@ export class NFTService {
         return readDemoNFTs(userId);
       }
 
+      const wallet = await this.walletService
+        .getOrCreateWallet(userId)
+        .catch(() => null);
+      const ownerAddress = (wallet as any)?.address;
+      if (typeof ownerAddress !== "string" || !ownerAddress) {
+        return [];
+      }
+
       const { data, error } = await this.blockchainClient
         .from("user_nfts")
         .select("*")
-        .eq("user_id", userId);
+        .eq("owner_address", ownerAddress);
 
       if (error) throw error;
       return (data || []).map((nft: any) => {

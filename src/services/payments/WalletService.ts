@@ -74,6 +74,55 @@ interface NetworkConfig {
 export class WalletService {
   private static instance: WalletService;
 
+  private static getDemoWalletStorageKey(userId: string) {
+    return `demo_wallet:${userId}`;
+  }
+
+  private getDemoWallet(userId: string, network: string = "mumbai"): WalletInfo {
+    const now = new Date().toISOString();
+    const address = (() => {
+      try {
+        const hex = ethers.keccak256(ethers.toUtf8Bytes(userId)).slice(2, 42);
+        return ethers.getAddress(`0x${hex}`);
+      } catch {
+        return "0x000000000000000000000000000000000000dEaD";
+      }
+    })();
+
+    const base: WalletInfo = {
+      id: `demo-wallet-${userId}`,
+      user_id: userId,
+      address,
+      encrypted_private_key: "demo-private-key",
+      network,
+      created_at: now,
+      updated_at: now,
+    };
+
+    if (typeof window === "undefined") return base;
+    try {
+      const key = WalletService.getDemoWalletStorageKey(userId);
+      const raw = window.localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<WalletInfo>;
+        if (parsed && typeof parsed.address === "string" && parsed.address) {
+          return {
+            ...base,
+            ...parsed,
+            address: parsed.address,
+            user_id: userId,
+            id: parsed.id || base.id,
+          };
+        }
+      }
+      window.localStorage.setItem(key, JSON.stringify(base));
+    } catch {
+      // no-op
+    }
+
+    return base;
+  }
+
   // Helper para acceder a tablas blockchain
   private get blockchainClient() {
     if (!supabase) {
@@ -234,6 +283,10 @@ export class WalletService {
    */
   public async getWalletByUserId(userId: string): Promise<WalletInfo | null> {
     try {
+      if (WalletService.isDemoActionAllowed()) {
+        return this.getDemoWallet(userId);
+      }
+
       const { data, error } = await this.blockchainClient
         .from("user_wallets")
         .select("*")
@@ -248,7 +301,9 @@ export class WalletService {
 
       return data as WalletInfo | null;
     } catch (error) {
-      logger.error("Error obteniendo wallet:", { error: String(error) });
+      logger.error("Error obteniendo wallet:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error;
     }
   }
@@ -264,6 +319,10 @@ export class WalletService {
     network: string = "mumbai",
   ): Promise<WalletInfo> {
     try {
+      if (WalletService.isDemoActionAllowed()) {
+        return this.getDemoWallet(userId, network);
+      }
+
       let wallet = await this.getWalletByUserId(userId);
 
       if (!wallet) {
@@ -273,7 +332,7 @@ export class WalletService {
       return wallet;
     } catch (error) {
       logger.error("Error obteniendo o creando wallet:", {
-        error: String(error),
+        error: error instanceof Error ? error.message : String(error),
       });
       throw error;
     }

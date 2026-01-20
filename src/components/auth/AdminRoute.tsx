@@ -46,20 +46,54 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
         return;
       }
 
-      // Verificar si el email del usuario es de admin
-      const userEmail = session.user.email;
-      const adminEmails = [
-        import.meta.env.VITE_ADMIN_EMAIL || "",
-        import.meta.env.VITE_ADMIN_EMAIL_2 || "",
-      ];
+      // Validación segura: backend decide si el usuario es admin (función SECURITY DEFINER)
+      // Evita depender de variables VITE_* (expuestas en frontend)
+      try {
+        const { data, error } = await supabase.rpc("is_admin");
+        if (error) {
+          throw error;
+        }
 
-      if (adminEmails.includes(userEmail || "")) {
-        logger.info("✅ Acceso de admin verificado:", { email: userEmail });
-        setIsAdmin(true);
-      } else {
-        logger.info("🚫 Usuario no es admin:", { email: userEmail });
+        if (data === true) {
+          logger.info("✅ Acceso de admin verificado (rpc:is_admin)");
+          setIsAdmin(true);
+          return;
+        }
+
+        logger.info("🚫 Usuario no es admin (rpc:is_admin)");
         setIsAdmin(false);
+        return;
+      } catch (error: any) {
+        logger.error("⚠️ Error verificando admin via rpc:is_admin, usando fallback", {
+          error: error?.message,
+        });
       }
+
+      // Fallback: consultar admin_users (RLS debe permitir ver solo si es admin)
+      const { data: adminRow, error: adminError } = await supabase
+        .from("admin_users")
+        .select("id, user_id, role, is_active")
+        .eq("user_id", session.user.id)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (adminError) {
+        logger.error("❌ Error consultando admin_users", {
+          error: adminError.message,
+        });
+        setIsAdmin(false);
+        return;
+      }
+
+      const hasAdminAccess = Boolean(adminRow?.id);
+      if (hasAdminAccess) {
+        logger.info("✅ Acceso de admin verificado (admin_users)", {
+          role: adminRow?.role,
+        });
+      } else {
+        logger.info("🚫 Usuario no es admin (admin_users)");
+      }
+      setIsAdmin(hasAdminAccess);
     } catch (error: any) {
       logger.error("❌ Error inesperado al verificar admin:", {
         error: error.message,

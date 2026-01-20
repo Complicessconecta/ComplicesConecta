@@ -81,6 +81,10 @@ export const ParentalControl = ({
   useEffect(() => {
     if (isLocked) {
       clear();
+      setShowPinInput(false);
+      setPin("");
+      setAttempts(0);
+      setLockoutUntil(null);
     }
   }, [isLocked, clear]);
 
@@ -178,7 +182,7 @@ export const ParentalControl = ({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
           <Card className="w-full max-w-sm bg-linear-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
             <CardHeader className="text-center pb-4">

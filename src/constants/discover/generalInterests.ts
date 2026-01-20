@@ -1,0 +1,17 @@
+export const generalInterests = [
+  "Lifestyle",
+  "Aventura",
+  "Diversión",
+  "Respeto",
+  "Discreción",
+  "Experiencia",
+  "Naturaleza",
+  "Viajes",
+  "Música",
+  "Arte",
+  "Deportes",
+  "Cine",
+  "Literatura",
+  "Tecnología",
+  "Gastronomía",
+] as const;

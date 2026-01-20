@@ -1,0 +1,17 @@
+export const ubicaciones = [
+  "Ciudad de México",
+  "Guadalajara",
+  "Monterrey",
+  "Puebla",
+  "Tijuana",
+  "León",
+  "Juárez",
+  "Torreón",
+  "Querétaro",
+  "San Luis Potosí",
+  "Mérida",
+  "Mexicali",
+  "Aguascalientes",
+  "Cuernavaca",
+  "Saltillo",
+] as const;

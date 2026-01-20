@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +11,7 @@ import EventsModal from "@/components/modals/EventsModal";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { pickProfileImage, inferProfileKind, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
+import { pickProfileImage, type Gender } from "@/lib/media";
 import { calculateDistance, getLocationDisplay } from "@/lib/distance-utils";
 import { type CoupleProfileWithPartners, getAllCoupleProfiles } from "@/services/social/couple/CoupleProfilesService";
 import { generateDemoProfiles, type DemoProfile } from "@/demo/demoData";
@@ -27,36 +26,10 @@ import { motion } from "framer-motion";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { logger } from "@/lib/logger";
 import { matchService } from "@/services/social/MatchService";
-
-// Definicin del tipo para un perfil
-interface Profile {
-  id: string;
-  name: string;
-  age: number;
-  location: string;
-  distance: number;
-  interests: string[];
-  image: string;
-  bio: string;
-  isOnline: boolean;
-  lastActive: string;
-  isVerified: boolean;
-  isPremium: boolean;
-  rating: number;
-  matchScore: number;
-  profileType: ProfileType;
-  gender?: Gender;
-}
-
-interface Filters {
-  ageRange: [number, number];
-  distance: number;
-  interests: string[];
-  verified: boolean;
-  premium: boolean;
-  online: boolean;
-  relationshipType: string[];
-}
+import type { Profile, Filters } from "@/types/discover.types";
+import { generalInterests } from "@/constants/discover/generalInterests";
+import { explicitInterests } from "@/constants/discover/explicitInterests";
+import { generateRandomProfiles } from "@/utils/discover/generateRandomProfiles";
 
 export const Discover = () => {
   const navigate = useNavigate();
@@ -97,45 +70,7 @@ export const Discover = () => {
     relationshipType: [],
   });
 
-  // Intereses generales (para todos los usuarios)
-  const generalInterests = [
-    "Lifestyle",
-    "Aventura",
-    "Diversión",
-    "Respeto",
-    "Discreción",
-    "Experiencia",
-    "Naturaleza",
-    "Viajes",
-    "Música",
-    "Arte",
-    "Deportes",
-    "Cine",
-    "Literatura",
-    "Tecnología",
-    "Gastronomía",
-  ];
-
-  // Intereses explcitos (solo para perfiles demo y produccin)
-  const explicitInterests = [
-    "Swinger",
-    "Parejas",
-    "Intercambio",
-    "Liberal",
-    "Soft Swap",
-    "Hard Swap",
-    "Clubs Exclusivos",
-    "Eventos VIP",
-    "Fiestas Privadas",
-    "Tantra",
-    "BDSM",
-    "Poliamor",
-    "Cuckolding",
-    "Hotwife",
-    "Lifestyle Swinger",
-  ];
-
-  // Determinar si el usuario es demo/produccin
+  // Determinar si el usuario es demo/producción
   const isDemoOrProduction = () => {
     const authStatus = isAuthenticated();
     if (!authStatus || !user) return false;
@@ -166,121 +101,6 @@ export const Discover = () => {
         error: error instanceof Error ? error.message : String(error),
       });
     }
-  }, []);
-
-  // Generar perfiles aleatorios
-  const generateRandomProfiles = useCallback(() => {
-    const nombres = [
-      "Alejandro",
-      "Mara",
-      "Carlos",
-      "Ana",
-      "Jos",
-      "Laura",
-      "Miguel",
-      "Carmen",
-      "Antonio",
-      "Isabel",
-      "Manuel",
-      "Pilar",
-      "Francisco",
-      "Dolores",
-      "David",
-      "Cristina",
-      "Javier",
-      "Rosa",
-      "Daniel",
-      "Antonia",
-      "Rafael",
-      "Francisca",
-      "Jos Luis",
-      "Luca",
-      "Jess",
-      "Mercedes",
-      "ngel",
-      "Josefa",
-      "Marcos",
-      "Elena",
-      "Pedro",
-      "Teresa",
-      "Sergio",
-      "Raquel",
-      "Pablo",
-      "Manuela",
-    ];
-
-    const ubicaciones = [
-      "Ciudad de Mxico",
-      "Guadalajara",
-      "Monterrey",
-      "Puebla",
-      "Tijuana",
-      "Len",
-      "Jurez",
-      "Torren",
-      "Quertaro",
-      "San Luis Potos",
-      "Mrida",
-      "Mexicali",
-      "Aguascalientes",
-      "Cuernavaca",
-      "Saltillo",
-    ];
-
-    const bios = [
-      "Aventurero en busca de nuevas experiencias y conexiones auténticas.",
-      "Amante de la vida, los viajes y las buenas conversaciones.",
-      "Explorando el mundo del lifestyle swinger con mente abierta.",
-      "Buscando parejas y personas afines para compartir momentos únicos.",
-      "Discreto, respetuoso y con ganas de conocer gente interesante.",
-      "Pareja liberal en busca de otras parejas para intercambios.",
-      "Nuevo en esto, pero con muchas ganas de aprender y disfrutar.",
-      "Experiencia y diversión garantizada. Siempre con respeto.",
-      "Mente abierta, corazón libre. Buscando conexiones reales.",
-      "Lifestyle swinger desde hace años. Conocemos el ambiente.",
-    ];
-
-    resetImageCounters();
-
-    const usedImages = new Set<string>();
-    const newProfiles: Profile[] = Array.from({ length: 50 }, (_, _index) => {
-      const name =
-        nombres[Math.floor(Math.random() * nombres.length)] ?? "Usuario";
-      const profileKind = inferProfileKind({ name });
-      const profileType: ProfileType =
-        profileKind.kind === "couple" ? "couple" : "single";
-      const gender: Gender = profileKind.gender;
-      const id = uuidv4();
-
-      return {
-        id,
-        name,
-        age: Math.floor(Math.random() * (45 - 22 + 1)) + 22,
-        location:
-          ubicaciones[Math.floor(Math.random() * ubicaciones.length)] ??
-          "Ciudad de México",
-        distance: Math.floor(Math.random() * 100) + 1,
-        interests: ["Lifestyle", "Swinger", "Parejas", "Intercambio"]
-          .sort(() => 0.5 - Math.random())
-          .slice(0, Math.floor(Math.random() * 3) + 2),
-        image: pickProfileImage(
-          { id, name, type: profileType, gender },
-          usedImages,
-        ),
-        bio: bios[Math.floor(Math.random() * bios.length)] ?? "",
-        isOnline: Math.random() > 0.6,
-        lastActive: Math.random() > 0.5 ? "Hace 1 hora" : "Hace 2 das",
-        isVerified: Math.random() > 0.7,
-        isPremium: Math.random() > 0.8,
-        rating: Math.round((Math.random() * 2 + 3) * 10) / 10,
-        matchScore: Math.floor(Math.random() * 40) + 60,
-        profileType,
-        gender,
-      };
-    });
-
-    setProfiles(newProfiles);
-    setFilteredProfiles(newProfiles);
   }, []);
 
   // Aplicar filtros
@@ -389,7 +209,7 @@ export const Discover = () => {
     applyFilters();
   }, [filters, demoProfiles, profiles, coupleProfiles, location]);
 
-  // Funcin para cargar perfiles reales desde Supabase
+  // Función para cargar perfiles reales desde Supabase
   const loadRealProfiles = useCallback(async () => {
     try {
       // Solo log una vez por carga
@@ -399,7 +219,9 @@ export const Discover = () => {
 
       if (!supabase) {
         logger.error("Supabase no est disponible");
-        generateRandomProfiles();
+        const newProfiles = generateRandomProfiles();
+        setProfiles(newProfiles);
+        setFilteredProfiles(newProfiles);
         return;
       }
 
@@ -423,7 +245,9 @@ export const Discover = () => {
       if (error) {
         logger.error("? Error cargando perfiles reales:", error);
         // Fallback a perfiles mock
-        generateRandomProfiles();
+        const newProfiles = generateRandomProfiles();
+        setProfiles(newProfiles);
+        setFilteredProfiles(newProfiles);
         return;
       }
 
@@ -469,7 +293,7 @@ export const Discover = () => {
             isPremium: profile.is_premium || false,
             rating: 4.5,
             matchScore: Math.floor(Math.random() * 40) + 60,
-            profileType: (profile.account_type as ProfileType) || "single",
+            profileType: (profile.account_type as any) || "single",
             gender: (profile.gender as Gender) || "other",
           }),
         );
@@ -478,7 +302,9 @@ export const Discover = () => {
         setFilteredProfiles(convertedProfiles);
       } else {
         logger.info("?? No hay perfiles reales disponibles, usando mock");
-        generateRandomProfiles();
+        const newProfiles = generateRandomProfiles();
+        setProfiles(newProfiles);
+        setFilteredProfiles(newProfiles);
       }
     } catch (error) {
       logger.error(
@@ -486,9 +312,11 @@ export const Discover = () => {
         { error: error instanceof Error ? error.message : String(error) },
       );
       // Fallback inmediato a perfiles mock cuando hay timeout
-      generateRandomProfiles();
+      const newProfiles = generateRandomProfiles();
+      setProfiles(newProfiles);
+      setFilteredProfiles(newProfiles);
     }
-  }, [generateRandomProfiles]);
+  }, [profiles.length, location]);
 
   // Cargar cards de filtros demo para usuarios no autenticados
   useEffect(() => {
@@ -544,7 +372,9 @@ export const Discover = () => {
         if (demoProfiles.length === 0) {
           logger.info("Usuario demo - cargando perfiles adicionales");
         }
-        generateRandomProfiles();
+        const newProfiles = generateRandomProfiles();
+        setProfiles(newProfiles);
+        setFilteredProfiles(newProfiles);
       } else {
         // Solo log una vez para usuarios reales
         logger.info("Cargando perfiles reales");
@@ -694,7 +524,9 @@ export const Discover = () => {
   };
 
   const handleRefresh = () => {
-    generateRandomProfiles();
+    const newProfiles = generateRandomProfiles();
+    setProfiles(newProfiles);
+    setFilteredProfiles(newProfiles);
     toast({
       title: "Perfiles actualizados",
       description: "Se han cargado nuevos perfiles para ti.",

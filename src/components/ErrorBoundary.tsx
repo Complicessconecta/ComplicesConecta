@@ -85,6 +85,13 @@ class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.hasError) {
+      // En producción, redirigir a NotFound para no revelar información del error
+      const isProduction = import.meta.env.PROD;
+      if (isProduction) {
+        window.location.href = "/404";
+        return null;
+      }
+
       if (this.props.fallback) {
         const FallbackComponent = this.props.fallback;
         const fallbackProps: { error?: Error } = this.state.error

@@ -5,7 +5,19 @@ import { useToast } from "@/hooks/useToast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  // Manejo seguro de useTheme para evitar errores cuando no hay ThemeProvider
+  let theme: "light" | "dark" | "system" = "system";
+  let setTheme: (_theme: "light" | "dark" | "system") => void = () => {};
+
+  try {
+    const themeContext = useTheme();
+    theme = themeContext.theme;
+    setTheme = themeContext.setTheme;
+  } catch (error) {
+    // Si no hay ThemeProvider, usar valores por defecto
+    console.warn("ThemeProvider no disponible, usando valores por defecto");
+  }
+
   const { toast } = useToast();
 
   return (

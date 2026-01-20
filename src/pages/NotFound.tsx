@@ -2,15 +2,18 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
-import { Home, Heart, Search, Sparkles, Zap, Star } from "lucide-react";
+import { Home, Heart, Search, Sparkles, Zap, Star, Shield, Bug } from "lucide-react";
 import { logger } from "@/lib/logger";
+import { useAuth } from "@/features/auth/useAuth";
 
 const NotFound = () => {
   const location = useLocation();
+  const { isAdmin, user } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
   const [sparklePositions, setSparklePositions] = useState<
     Array<{ x: number; y: number; delay: number }>
   >([]);
+  const [showLogs, setShowLogs] = useState(false);
 
   const sparkles = useMemo(() => {
     // Generar posiciones determinísticas basadas en un seed
@@ -21,15 +24,21 @@ const NotFound = () => {
     }));
   }, []);
 
+  const isDevelopment = import.meta.env.MODE === 'development';
+  const canViewLogs = isAdmin() || isDevelopment;
+
   useEffect(() => {
-    logger.error("404 Error: User attempted to access non-existent route:", {
+    // Log seguro: solo información mínima
+    logger.error("404 Error: User attempted to access non-existent route", {
       pathname: location.pathname,
+      userId: user?.id,
+      timestamp: new Date().toISOString(),
     });
 
     // Trigger entrance animation
     setTimeout(() => setIsVisible(true), 100);
     setSparklePositions(sparkles);
-  }, [location.pathname, sparkles]);
+  }, [location.pathname, sparkles, user?.id]);
 
   return (
     <main className="min-h-dvh grid place-items-center bg-linear-to-br from-purple-900/30 via-fuchsia-900/20 to-black relative overflow-x-hidden">
@@ -170,6 +179,31 @@ const NotFound = () => {
                 </Link>
               </p>
             </div>
+
+            {/* Admin-only Error Details */}
+            {canViewLogs && (
+              <div className="mt-6 pt-6 border-t border-white/10 animate-fade-in-delay-4">
+                <button
+                  onClick={() => setShowLogs(!showLogs)}
+                  className="flex items-center gap-2 text-white/60 hover:text-white text-sm transition-colors"
+                >
+                  <Bug className="h-4 w-4" />
+                  {showLogs ? "Ocultar" : "Ver"} detalles técnicos
+                </button>
+                {showLogs && (
+                  <Card className="mt-4 bg-black/60 border-white/10 p-4">
+                    <pre className="text-xs text-white/70 overflow-x-auto">
+                      {`Error: 404 Not Found
+Pathname: ${location.pathname}
+Timestamp: ${new Date().toISOString()}
+User ID: ${user?.id || 'N/A'}
+Environment: ${isDevelopment ? 'Development' : 'Production'}
+Admin Access: ${isAdmin() ? 'Yes' : 'No'}`}
+                    </pre>
+                  </Card>
+                )}
+              </div>
+            )}
           </div>
         </Card>
 

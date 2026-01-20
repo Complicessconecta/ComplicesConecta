@@ -45,7 +45,7 @@ const GuidelinesPage = () => {
             </h2>
             <p className="text-lg text-white/80 max-w-3xl mx-auto">
               Nuestra comunidad se basa en el respeto mutuo, la autenticidad y
-              la diversin responsable. Estas directrices nos ayudan a mantener
+              la diversion responsable. Estas directrices nos ayudan a mantener
               un ambiente seguro y acogedor para todos.
             </p>
           </div>
@@ -60,7 +60,7 @@ const GuidelinesPage = () => {
               <CardContent>
                 <p className="text-white/80 text-center">
                   Tratamos a todos los miembros con dignidad, respeto y
-                  consideracin, independientemente de sus preferencias o estilo
+                  consideracion, independientemente de sus preferencias o estilo
                   de vida.
                 </p>
               </CardContent>
@@ -75,7 +75,7 @@ const GuidelinesPage = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80 text-center">
-                  Valoramos la honestidad y la transparencia. S genuino en tu
+                  Valoramos la honestidad y la transparencia. Si genuino en tu
                   perfil y en tus interacciones con otros miembros.
                 </p>
               </CardContent>
@@ -109,15 +109,15 @@ const GuidelinesPage = () => {
                   <div className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-white/80">
-                      <strong>Comunicacin respetuosa:</strong> Usa un lenguaje
-                      corts y considerado
+                      <strong>Comunicacion respetuosa:</strong> Usa un lenguaje
+                      cortés y considerado
                     </p>
                   </div>
                   <div className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
-                      <strong>Perfiles autnticos:</strong> Usa fotos reales y
-                      informacin veraz
+                      <strong>Perfiles autenticos:</strong> Usa fotos reales y
+                      informacion veraz
                     </p>
                   </div>
                   <div className="flex items-start">
@@ -130,8 +130,8 @@ const GuidelinesPage = () => {
                   <div className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
-                      <strong>Privacidad:</strong> Mantn confidencial la
-                      informacin personal compartida
+                      <strong>Privacidad:</strong> Manten confidencial la
+                      informacion personal compartida
                     </p>
                   </div>
                   <div className="flex items-start">
@@ -157,8 +157,8 @@ const GuidelinesPage = () => {
                   <div className="flex items-start">
                     <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
-                      <strong>Acoso o intimidacin:</strong> Cualquier forma de
-                      hostigamiento est prohibida
+                      <strong>Acoso o intimidacion:</strong> Cualquier forma de
+                      hostigamiento esta prohibida
                     </p>
                   </div>
                   <div className="flex items-start">
@@ -178,15 +178,15 @@ const GuidelinesPage = () => {
                   <div className="flex items-start">
                     <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
-                      <strong>Spam o promocin:</strong> No uses la plataforma
+                      <strong>Spam o promocion:</strong> No uses la plataforma
                       para publicidad no autorizada
                     </p>
                   </div>
                   <div className="flex items-start">
                     <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
-                      <strong>Discriminacin:</strong> No toleramos prejuicios
-                      por raza, gnero, orientacin, etc.
+                      <strong>Discriminación:</strong> No toleramos prejuicios
+                      por raza, genero, orientación, etc.
                     </p>
                   </div>
                 </div>

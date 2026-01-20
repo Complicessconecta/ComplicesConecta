@@ -1104,7 +1104,7 @@ const Chat = () => {
                               : "bg-linear-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
                           }`}
                         >
-                          <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text">
+                          <p className="text-xs sm:text-sm leading-relaxed wrap-break-word whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text">
                             {message.content}
                           </p>
                           <p
@@ -1139,7 +1139,7 @@ const Chat = () => {
                               : "bg-linear-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
                           }`}
                         >
-                          <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text word-break-break-all">
+                          <p className="text-xs sm:text-sm leading-relaxed wrap-break-word whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text word-break-break-all">
                             {message.content}
                           </p>
                           <p

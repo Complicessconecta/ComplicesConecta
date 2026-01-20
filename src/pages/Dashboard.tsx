@@ -120,7 +120,7 @@ const DashboardCore = () => {
   // Si no está listo, mostrar loading
   if (!authChecked || !isReady) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto"></div>
           <p className="text-white/80">Cargando Dashboard...</p>
@@ -144,7 +144,7 @@ const DashboardCore = () => {
 
   return (
     <div
-      className="min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden"
+      className="min-h-dvh bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden"
       data-testid="dashboard-container"
     >
       {/* Debug info removido para evitar overlays que cubren contenido */}
@@ -157,7 +157,7 @@ const DashboardCore = () => {
             data-testid="dashboard-title"
           >
             Panel de Control
-            <span className="block bg-linear-to-r from-fuchsia-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-fuchsia-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
               Tu Progreso y Actividad
             </span>
           </h1>
@@ -185,21 +185,21 @@ const DashboardCore = () => {
           <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-1 sm:p-2 max-w-2xl mx-auto text-xs sm:text-sm">
             <TabsTrigger
               value="gamification"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <Trophy className="h-4 w-4 mr-2" />
               Logros
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <Bell className="h-4 w-4 mr-2" />
               Notificaciones
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <TrendingUp className="h-4 w-4 mr-2" />
               Analytics

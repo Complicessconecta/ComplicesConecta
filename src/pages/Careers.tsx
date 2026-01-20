@@ -188,7 +188,7 @@ const ProjectSupport = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-x-hidden">
+    <div className="min-h-dvh bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-x-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -224,7 +224,7 @@ const ProjectSupport = () => {
                 Apoyo al Proyecto ComplicesConecta
               </CardTitle>
               <div className="text-white/90 mt-4 space-y-4">
-                <div className="bg-linear-to-r from-fuchsia-500/20 to-purple-500/20 p-4 rounded-lg border border-white/10">
+                <div className="bg-gradient-to-r from-fuchsia-500/20 to-purple-500/20 p-4 rounded-lg border border-white/10">
                   <h3 className="text-xl font-semibold mb-2">
                     ¿Qué ofrecemos?
                   </h3>
@@ -247,7 +247,7 @@ const ProjectSupport = () => {
                   </ul>
                 </div>
 
-                <div className="bg-linear-to-r from-indigo-500/20 to-fuchsia-500/20 p-4 rounded-lg border border-white/10">
+                <div className="bg-gradient-to-r from-indigo-500/20 to-fuchsia-500/20 p-4 rounded-lg border border-white/10">
                   <h3 className="text-xl font-semibold mb-2">
                     Beneficios de unirse
                   </h3>
@@ -449,7 +449,7 @@ const ProjectSupport = () => {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white font-semibold py-3 text-lg"
+                  className="w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white font-semibold py-3 text-lg"
                 >
                   {isSubmitting ? (
                     <>

@@ -86,7 +86,7 @@ const CoupleProfileCard = ({
     >
       <div className="relative">
         {/* Partner Images Grid - Sincronizado con MainProfileCard aspect ratio */}
-        <div className="grid grid-cols-2 aspect-[3/4] overflow-hidden">
+        <div className="grid grid-cols-2 aspect-3/4 overflow-hidden">
           <div className="relative overflow-hidden">
             {!imageError && partner1Avatar ? (
               <img
@@ -183,7 +183,7 @@ const CoupleProfileCard = ({
         )}
 
         {/* Gradient Overlay - Sincronizado con MainProfileCard */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
 
         {/* Quick Actions - Sincronizado con MainProfileCard */}
         <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4 flex justify-center items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">

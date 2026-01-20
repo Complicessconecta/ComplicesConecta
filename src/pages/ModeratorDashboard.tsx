@@ -47,18 +47,12 @@ const getJoinedName = (value: unknown): string | undefined => {
   return typeof name === "string" ? name : undefined;
 };
 
-// Type guard para verificar que details es un objeto con propiedades específicas
-const isBanDetails = (value: unknown): value is { severity?: string; canvas_hash?: string; evidence?: Record<string, unknown>; worldid_nullifier_hash?: string } => {
-  if (!isRecord(value)) return false;
-  return true;
-};
-
 interface Report extends ReportRow {
   reporter_email: string | undefined;
   reported_user_email: string | undefined;
 }
 
-interface ModerationLog extends Omit<ModerationLogRow, "action_type"> {
+interface ModerationLog extends ModerationLogRow {
   action: ModerationAction;
   moderator_email?: string;
   target_user_email?: string;
@@ -204,7 +198,8 @@ const ModeratorDashboard = () => {
 
       return {
         ...logRow,
-        action: (logRow.action || "unknown") as ModerationAction,
+        action: (logRow.action_type || "unknown") as ModerationAction,
+        action_type: logRow.action_type || "unknown",
         moderator_email: moderatorName || logRow.moderator_id || "Moderador",
         target_user_email: targetUserName || logRow.target_id || "Usuario",
         ...(moderatorName ? { moderator: { name: moderatorName } } : {}),
@@ -247,15 +242,15 @@ const ModeratorDashboard = () => {
 
         return {
           ...suspensionRow,
-          suspended_by: suspensionRow.suspended_by || "",
-          ...(suspensionRow.lifted_at
-            ? { suspended_until: suspensionRow.lifted_at }
+          suspended_by: suspensionRow.moderator_id || "",
+          ...(suspensionRow.ends_at
+            ? { suspended_until: suspensionRow.ends_at }
             : {}),
-          is_permanent: !suspensionRow.lifted_at,
-          status: suspensionRow.lifted_at ? "lifted" : "active",
+          is_permanent: !suspensionRow.ends_at,
+          status: suspensionRow.is_active ? "active" : "lifted",
           user_email: userName || suspensionRow.user_id || "Usuario",
           suspended_by_email:
-            suspendedByName || suspensionRow.suspended_by || "Sistema",
+            suspendedByName || "Sistema",
           ...(userName ? { user: { name: userName } } : {}),
           ...(suspendedByName
             ? { suspended_by_user: { name: suspendedByName } }
@@ -314,12 +309,11 @@ const ModeratorDashboard = () => {
         .insert([
           {
             moderator_id: session.user.id,
-            action: moderationAction,
+            action_type: moderationAction,
             target_type: "report",
             target_id: reportId,
             target_user_id: report.reported_user_id,
             description: actionReason,
-            reason: actionReason,
             created_at: new Date().toISOString(),
           },
         ]);
@@ -340,15 +334,13 @@ const ModeratorDashboard = () => {
           .insert([
             {
               user_id: report.reported_user_id || "",
-              suspended_by: session.user.id,
+              moderator_id: session.user.id,
               reason: actionReason,
-              suspended_at: new Date().toISOString(),
-              lifted_at: suspendedUntil || null,
-              lift_reason: null,
-              metadata: {
-                suspension_type: suspensionDays === 0 ? "permanent" : "temporary",
-                duration_days: suspensionDays > 0 ? suspensionDays : null,
-              },
+              starts_at: new Date().toISOString(),
+              ends_at: suspendedUntil || null,
+              suspension_type: suspensionDays === 0 ? "permanent" : "temporary",
+              duration_days: suspensionDays > 0 ? suspensionDays : null,
+              is_active: true,
             },
           ]);
 
@@ -390,7 +382,7 @@ const ModeratorDashboard = () => {
       // Obtener WorldID si está disponible
       const { data: worldIdData } = await supabase
         .from("worldid_verifications")
-        .select("world_id")
+        .select("nullifier_hash")
         .eq("user_id", userId)
         .single();
 
@@ -404,8 +396,8 @@ const ModeratorDashboard = () => {
         },
       };
 
-      if (worldIdData?.world_id) {
-        banData.worldIdNullifierHash = worldIdData.world_id;
+      if (worldIdData?.nullifier_hash) {
+        banData.worldIdNullifierHash = worldIdData.nullifier_hash;
       }
 
       await createPermanentBan(banData, user.id);
@@ -459,10 +451,10 @@ const ModeratorDashboard = () => {
         await supabase.from("moderation_logs").insert([
           {
             moderator_id: session.user.id,
-            action: "suspension_lifted",
+            action_type: "suspension_lifted",
             target_type: "user",
             target_id: suspension.user_id || "",
-            reason: "Suspensión levantada por moderador",
+            description: "Suspensión levantada por moderador",
             created_at: new Date().toISOString(),
           },
         ]);
@@ -847,8 +839,8 @@ const ModeratorDashboard = () => {
                     </CardTitle>
                     <CardDescription className="text-white/70">
                       Suspendido el{" "}
-                      {suspension.suspended_at
-                        ? new Date(suspension.suspended_at).toLocaleDateString(
+                      {suspension.suspended_until
+                        ? new Date(suspension.suspended_until).toLocaleDateString(
                             "es-ES",
                           )
                         : "Fecha no disponible"}
@@ -940,18 +932,18 @@ const ModeratorDashboard = () => {
                       Baneo Permanente
                       <Badge
                         className={`ml-auto ${
-                          isBanDetails(ban.details) && ban.details.severity && isBanSeverity(ban.details.severity)
-                            ? ban.details.severity === "critical"
+                          ban.severity && isBanSeverity(ban.severity)
+                            ? ban.severity === "critical"
                               ? "bg-red-600"
-                              : ban.details.severity === "high"
+                              : ban.severity === "high"
                                 ? "bg-orange-600"
-                                : ban.details.severity === "medium"
+                                : ban.severity === "medium"
                                   ? "bg-yellow-600"
                                   : "bg-gray-600"
                             : "bg-gray-600"
                         }`}
                       >
-                        {isBanDetails(ban.details) && ban.details.severity ? ban.details.severity : "unknown"}
+                        {ban.severity ? ban.severity : "unknown"}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="text-white/70">
@@ -993,7 +985,7 @@ const ModeratorDashboard = () => {
                           </span>
                         </div>
                       )}
-                      {isBanDetails(ban.details) && ban.details.canvas_hash && (
+                      {ban.canvas_hash && (
                         <div className="flex items-center gap-2">
                           <Fingerprint className="h-4 w-4 text-purple-400" />
                           <span className="text-white/70 text-sm">
@@ -1081,7 +1073,7 @@ const ModeratorDashboard = () => {
                             {log.target_user_email || "Email no disponible"}
                           </p>
                           <p className="text-white/60 text-sm">
-                            Razón: {log.reason || "Sin razón especificada"}
+                            Razón: {log.description || "Sin razón especificada"}
                           </p>
                         </div>
                       </div>

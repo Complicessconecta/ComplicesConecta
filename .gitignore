@@ -87,11 +87,17 @@ config/secrets/
 VERCEL_OIDC_TOKEN
 
 # Supabase
+supabase/config.toml
 **/supabase/config.toml
 **/supabase/.env
 supabase/.temp/
 supabase/.branches/
 supabase/functions/_utils/
+
+# Supabase service role keys y secrets
+supabase/*service_role*
+supabase/*secret*
+supabase/*jwt*
 
 # Sentry
 sentry.properties
@@ -352,6 +358,17 @@ REFERENCIA_EXTERNA/**/*_keys*.txt
 /exiftool.md.bak
 /exiftool.translated.md
 /windows_exiftool
+
+# ============================================================================
+# SCRIPTS CON API KEYS Y CREDENCIALES (SENSIBLE)
+# ============================================================================
+scripts/apply-chat-migrations-simple.ts
+scripts/apply-chat-migrations.ts
+scripts/*migrations*
+scripts/*api*
+scripts/*key*
+scripts/*secret*
+scripts/*auth*
 
 # ============================================================================
 # WINDSURF RULES (configuración local de IA)

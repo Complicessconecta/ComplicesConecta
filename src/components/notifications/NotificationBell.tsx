@@ -171,7 +171,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
       const { error } = await supabase
         .from("notifications")
         .update({ read: true } as any)
-        .eq("id", notificationId);
+        .eq("id", Number(notificationId));
 
       if (error) throw error;
 
@@ -228,7 +228,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
       const { error } = await supabase
         .from("notifications")
         .delete()
-        .eq("id", notificationId);
+        .eq("id", Number(notificationId));
 
       if (error) throw error;
 

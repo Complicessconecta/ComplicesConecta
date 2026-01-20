@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Heart, MapPin, Verified, Star, X, Zap } from "lucide-react";
 import { logger } from "@/lib/logger";
-import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { useProfileTheme, Gender } from "@/features/profile/useProfileTheme";
@@ -31,10 +30,6 @@ const CoupleProfileCard = ({
   onOpenModal,
   useThemeBackground = false,
 }: CoupleProfileCardProps) => {
-  const {
-    getUserOnlineStatus: _getUserOnlineStatus,
-    getLastSeenTime: _getLastSeenTime,
-  } = useUserOnlineStatus();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [imageError, setImageError] = useState(false);

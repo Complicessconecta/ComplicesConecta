@@ -7,7 +7,7 @@ import { logger } from "@/lib/logger";
 // Interfaces actualizadas para coincidir con el schema de Supabase
 
 export interface Interest {
-  id: string; // UUID en la BD
+  id: number; // ID numérico en la BD
   name: string;
   category: string | null;
   description?: string | null;
@@ -18,9 +18,9 @@ export interface Interest {
 }
 
 export interface UserInterest {
-  id: string;
-  interest_id: string;
-  user_id: string;
+  id: number;
+  interest_id: number | null;
+  user_id: string | null;
   created_at: string | null;
 }
 
@@ -109,7 +109,7 @@ export const useInterests = () => {
 
         const { error } = await supabase.from("user_interests").insert({
           user_id: user.id,
-          interest_id: String(interestId),
+          interest_id: Number(interestId),
         });
 
         if (error) throw error;
@@ -155,7 +155,7 @@ export const useInterests = () => {
           .from("user_interests")
           .delete()
           .eq("user_id", user.id)
-          .eq("interest_id", String(interestId));
+          .eq("interest_id", Number(interestId));
 
         if (error) throw error;
 
@@ -184,7 +184,7 @@ export const useInterests = () => {
   const hasInterest = useCallback(
     (interestId: string | number) => {
       const stringId = String(interestId);
-      return userInterests.some((ui) => ui.interest_id === stringId);
+      return userInterests.some((ui) => ui.interest_id === Number(stringId));
     },
     [userInterests],
   );
@@ -252,12 +252,12 @@ export const useInterests = () => {
               return interest
                 ? {
                     user_id: user.id,
-                    interest_id: String(interest.id),
+                    interest_id: interest.id,
                   }
                 : null;
             })
             .filter(
-              (item): item is { user_id: string; interest_id: string } =>
+              (item): item is { user_id: string; interest_id: number } =>
                 item !== null,
             ); // Type guard
 

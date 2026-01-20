@@ -172,9 +172,8 @@ export const useAdminDashboard = (dateRange: string) => {
 
           recentUsers.map((u) => ({
             ...u,
-
-
-            full_name: u.display_name || u.name || "Usuario",
+            display_name: u.name || null,
+            full_name: u.name || "Usuario",
             email: "", // Email is not available on the profiles table
             is_active: u.updated_at ? new Date(u.updated_at) >= weekAgo : false,
           })),

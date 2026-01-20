@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
-import { Home, Heart, Search, Sparkles, Zap, Star, Shield, Bug } from "lucide-react";
+import { Home, Heart, Search, Sparkles, Zap, Star, Bug } from "lucide-react";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 

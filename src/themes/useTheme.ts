@@ -52,13 +52,23 @@ export const useTheme = () => {
       }
 
       try {
-        const { data, error } = await supabase
+        // Usar 'any' para evitar errores de tipos cuando la tabla no existe
+        const { data, error } = await (supabase as any)
           .from("user_themes")
           .select("*")
           .eq("user_id", user.id)
           .maybeSingle();
 
-        if (error) throw error;
+        if (error) {
+          // Si la tabla no existe, simplemente continuar con los valores por defecto
+          if (error.code === 'PGRST116' || error.message.includes('does not exist')) {
+            logger.info("Tabla user_themes no existe, usando valores por defecto");
+            setLoading(false);
+            return;
+          }
+          throw error;
+        }
+
         if (data) {
           const theme = data as {
             bg_url?: string;

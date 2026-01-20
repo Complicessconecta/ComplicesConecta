@@ -49,12 +49,12 @@ const AdminPartners = () => {
     name: "",
     slug: "",
     description: "",
-    location: "",
+    address: "",
     latitude: 0,
     longitude: 0,
     phone: "",
     email: "",
-    website_url: "",
+    website: "",
     check_in_radius_meters: 50,
     is_active: true,
     is_featured: false,
@@ -150,7 +150,7 @@ const AdminPartners = () => {
       return;
     }
     try {
-      if (!clubForm.name || !clubForm.location) {
+      if (!clubForm.name || !clubForm.address) {
         toast({
           title: "Error",
           description: "Completa los campos requeridos",
@@ -166,17 +166,17 @@ const AdminPartners = () => {
         .insert({
           name: clubForm.name!,
           slug,
-          location: clubForm.location || "",
+          address: clubForm.address || "",
           description: clubForm.description || null,
           latitude: clubForm.latitude || null,
           longitude: clubForm.longitude || null,
           phone: clubForm.phone || null,
           email: clubForm.email || null,
-          website_url: clubForm.website_url || null,
+          website: clubForm.website || null,
           check_in_radius_meters: clubForm.check_in_radius_meters || 50,
           is_active: clubForm.is_active ?? true,
           is_featured: clubForm.is_featured ?? false,
-        })
+        } as Database["public"]["Tables"]["clubs"]["Insert"])
         .select()
         .single();
 
@@ -192,12 +192,12 @@ const AdminPartners = () => {
         name: "",
         slug: "",
         description: "",
-        location: "",
+        address: "",
         latitude: 0,
         longitude: 0,
         phone: "",
         email: "",
-        website_url: "",
+        website: "",
         check_in_radius_meters: 50,
         is_active: true,
         is_featured: false,
@@ -392,7 +392,7 @@ const AdminPartners = () => {
                   </div>
                   <CardDescription>
                     <MapPin className="w-4 h-4 inline mr-1" />
-                    {club.location || "Ubicación no disponible"}
+                    {club.address || "Ubicación no disponible"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -646,9 +646,9 @@ const AdminPartners = () => {
               <div>
                 <label className="text-sm font-medium">Ubicación *</label>
                 <Input
-                  value={clubForm.location || ""}
+                  value={clubForm.address || ""}
                   onChange={(e) =>
-                    setClubForm({ ...clubForm, location: e.target.value })
+                    setClubForm({ ...clubForm, address: e.target.value })
                   }
                 />
               </div>

@@ -401,8 +401,8 @@ export class AdvancedCacheService {
       const { supabase } = await import('@/integrations/supabase/client');
       if (!supabase) return;
 
-      // Insertar estadísticas del cache en la base de datos
-      await supabase
+      // Usar 'any' para evitar errores de tipos cuando la tabla no existe
+      await (supabase as any)
         .from('cache_statistics')
         .insert({
           hit_rate: stats.hitRate,
@@ -417,6 +417,11 @@ export class AdvancedCacheService {
           timestamp: new Date().toISOString(),
         });
     } catch (error) {
+      // Si la tabla no existe, simplemente continuar
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'PGRST205') {
+        logger.debug('Tabla cache_statistics no existe, omitiendo logging de estadísticas');
+        return;
+      }
       logger.debug('Failed to log cache statistics:', { error: String(error) });
     }
   }

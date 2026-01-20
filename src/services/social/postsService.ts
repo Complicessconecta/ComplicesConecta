@@ -365,16 +365,16 @@ export class PostsService {
         .from("stories")
         .insert({
           user_id: userId,
-          caption: postData.content,
+          description: postData.content,
           media_url: postData.image_url || postData.video_url || "",
-          media_type: postData.post_type === "photo" ? "photo" : "video",
+          content_type: postData.post_type === "photo" ? "photo" : "video",
           is_public: true,
         })
         .select(
           `
           id,
           user_id,
-          caption as content,
+          description as content,
           content_type as post_type,
           content_url,
           location,

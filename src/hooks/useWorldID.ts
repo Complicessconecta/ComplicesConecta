@@ -53,7 +53,7 @@ export const useWorldID = () => {
       const { data, error } = await supabase
         .from("worldid_verifications")
         .select(
-          "id, nullifier_hash, verification_level, status, created_at",
+          "id, nullifier_hash, verification_level, is_active, created_at",
         )
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
@@ -73,11 +73,7 @@ export const useWorldID = () => {
         throw error;
       }
 
-      const normalizedStatus = String(data.status || "").toLowerCase();
-      const isVerified =
-        normalizedStatus === "verified" ||
-        normalizedStatus === "success" ||
-        normalizedStatus === "completed";
+      const isVerified = data.is_active === true;
 
       if (!isVerified) {
         setStatus({

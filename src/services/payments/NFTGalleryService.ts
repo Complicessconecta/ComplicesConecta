@@ -106,7 +106,7 @@ export class NFTGalleryService {
         .insert({
           user_id: userId,
           profile_id: data.profileId || null,
-          title: data.galleryName,
+          gallery_name: data.galleryName,
           description: data.description || null,
           nft_network: "pending", // Aún no mintado
           is_verified: false,

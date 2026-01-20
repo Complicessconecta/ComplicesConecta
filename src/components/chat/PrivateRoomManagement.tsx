@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Volume2, EyeOff, Users, Lock } from "lucide-react";
@@ -156,7 +156,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                   <Label className="text-white">Nombre *</Label>
                   <Input
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Nombre de la sala"
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     required
@@ -166,7 +166,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                   <Label className="text-white">Descripción</Label>
                   <Textarea
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, description: e.target.value })}
                     placeholder="Descripción de la sala"
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     rows={3}
@@ -179,7 +179,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                       type="number"
                       min="0"
                       value={formData.tokenCost}
-                      onChange={(e) => setFormData({ ...formData, tokenCost: parseInt(e.target.value) || 0 })}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, tokenCost: parseInt(e.target.value) || 0 })}
                       className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
@@ -190,7 +190,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                       min="2"
                       max="500"
                       value={formData.maxMembers}
-                      onChange={(e) => setFormData({ ...formData, maxMembers: parseInt(e.target.value) || 100 })}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, maxMembers: parseInt(e.target.value) || 100 })}
                       className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
@@ -236,11 +236,11 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                       <div className="flex items-center gap-4 text-xs text-white/60">
                         <span className="flex items-center gap-1">
                           <Users className="h-3 w-3" />
-                          {room.participants.length} miembros
+                          {room.participants?.length || 0} miembros
                         </span>
                         <span className="flex items-center gap-1">
                           <Lock className="h-3 w-3" />
-                          {room.token_cost > 0 ? `${room.token_cost} tokens` : "Gratis"}
+                          {(room.token_cost ?? 0) > 0 ? `${room.token_cost} tokens` : "Gratis"}
                         </span>
                       </div>
                     </div>

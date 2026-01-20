@@ -47,21 +47,22 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
 
       const { data, error: fetchError } = await supabase
         .from("couple_profiles")
-        .select("couple_images, id, created_at")
+        .select("avatar_url, id, created_at")
         .eq("id", currentProfileId!)
         .single();
 
       if (fetchError) throw fetchError;
 
-      const photosWithUrls =
-        (data?.couple_images as string[] | null || []).map((url: string, index: number) => ({
-          id: `${data.id}-${index}`,
-          url: url,
-          partner: (index % 2 === 0 ? "el" : "ella") as "el" | "ella",
-          isMain: index === 0,
-          profileId: data.id,
-          uploadedAt: new Date(data.created_at || new Date()),
-        }));
+      const photosWithUrls = data?.avatar_url
+        ? [{
+            id: `${data.id}-0`,
+            url: data.avatar_url,
+            partner: "el" as "el" | "ella",
+            isMain: true,
+            profileId: data.id,
+            uploadedAt: new Date(data.created_at || new Date()),
+          }]
+        : [];
 
       setPhotos(photosWithUrls);
     } catch (err) {
@@ -116,32 +117,19 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       const existingPhotos = photos.filter((p) => p.partner === partner);
       const isFirstPhoto = existingPhotos.length === 0;
 
-      // Obtener las imágenes actuales del perfil
-      const { data: currentProfile, error: profileError } = await supabase
-        .from("couple_profiles")
-        .select("couple_images")
-        .eq("id", currentProfileId!)
-        .single();
+      // Actualizar el perfil con la nueva imagen como avatar si es la primera foto
+      if (isFirstPhoto) {
+        const { error: insertError } = await supabase
+          .from("couple_profiles")
+          .update({ avatar_url: publicUrl })
+          .eq("id", currentProfileId!);
 
-      if (profileError) throw profileError;
-
-      // Agregar la nueva imagen al array
-      const updatedImages = [
-        ...(currentProfile.couple_images as string[] || []),
-        publicUrl,
-      ];
-
-      // Actualizar el perfil con las nuevas imágenes
-      const { error: insertError } = await supabase
-        .from("couple_profiles")
-        .update({ couple_images: updatedImages })
-        .eq("id", currentProfileId!);
-
-      if (insertError) throw insertError;
+        if (insertError) throw insertError;
+      }
 
       // Actualizar estado local
       const newPhotoData: CouplePhoto = {
-        id: `${currentProfileId}-${updatedImages.length - 1}`,
+        id: `${currentProfileId}-${photos.length}`,
         url: publicUrl,
         partner,
         isMain: isFirstPhoto,
@@ -172,15 +160,6 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
         throw new Error("Supabase no está disponible");
       }
 
-      // Obtener las imágenes actuales del perfil
-      const { data: currentProfile, error: fetchError } = await supabase
-        .from("couple_profiles")
-        .select("couple_images")
-        .eq("id", currentProfileId!)
-        .single();
-
-      if (fetchError) throw fetchError;
-
       // Obtener la URL de la imagen a eliminar
       const photoToDeleteUrl = photoToDelete.url;
 
@@ -197,17 +176,15 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
         }
       }
 
-      // Eliminar de la base de datos (remover de array)
-      const updatedImages =
-        (currentProfile.couple_images as string[] | null || []).filter(
-          (url: string) => url !== photoToDeleteUrl,
-        );
-      const { error: dbError } = await supabase
-        .from("couple_profiles")
-        .update({ couple_images: updatedImages })
-        .eq("id", currentProfileId!);
+      // Eliminar de la base de datos (si es la foto principal, establecer avatar_url a null)
+      if (photoToDelete?.isMain) {
+        const { error: dbError } = await supabase
+          .from("couple_profiles")
+          .update({ avatar_url: null })
+          .eq("id", currentProfileId!);
 
-      if (dbError) throw dbError;
+        if (dbError) throw dbError;
+      }
 
       // La lógica de foto principal se maneja automáticamente con el orden del array
 
@@ -231,29 +208,13 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
         throw new Error("Supabase no está disponible");
       }
 
-      // Obtener las imágenes actuales
-      const { data: currentProfile, error: profileError } = await supabase
-        .from("couple_profiles")
-        .select("couple_images")
-        .eq("id", currentProfileId!)
-        .single();
-
-      if (profileError) throw profileError;
-
-      // Reordenar array para poner la imagen seleccionada al principio
+      // Actualizar el perfil con la imagen seleccionada como avatar
       const photoToMove = photos.find((p) => p.id === photoId);
       if (!photoToMove) throw new Error("Foto no encontrada");
 
-      const updatedImages =
-        (currentProfile.couple_images as string[] | null || []).filter(
-          (url: string) => url !== photoToMove.url,
-        );
-      updatedImages.unshift(photoToMove.url);
-
-      // Actualizar el perfil
       const { error: updateError } = await supabase
         .from("couple_profiles")
-        .update({ couple_images: updatedImages })
+        .update({ avatar_url: photoToMove.url })
         .eq("id", currentProfileId!);
 
       if (updateError) throw updateError;

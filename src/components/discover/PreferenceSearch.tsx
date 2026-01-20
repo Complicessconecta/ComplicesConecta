@@ -114,14 +114,9 @@ export const PreferenceSearch = ({
 
       const supabaseClient = supabase;
 
-      let query = supabaseClient
+      let query: any = supabaseClient
         .from("profiles")
-        .select(
-          `
-          *,
-          user_preferences(*)
-        `,
-        )
+        .select("*")
         .neq("id", currentUserId)
         .gte("age", filters.ageRange[0])
         .lte("age", filters.ageRange[1]);
@@ -138,7 +133,7 @@ export const PreferenceSearch = ({
         query = query.eq("is_online", true);
       }
 
-      const { data: profiles, error } = await query;
+      const { data: profiles, error } = await query as any;
 
       if (error) throw error;
 

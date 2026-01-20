@@ -214,14 +214,14 @@ export const Clubs = () => {
       filtered = filtered.filter(
         (club) =>
           club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (club.location && club.location.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (club.address && club.address.toLowerCase().includes(searchQuery.toLowerCase())) ||
           (club.description &&
             club.description.toLowerCase().includes(searchQuery.toLowerCase())),
       );
     }
 
     if (selectedCity !== "all") {
-      filtered = filtered.filter((club) => club.location === selectedCity);
+      filtered = filtered.filter((club) => club.address === selectedCity);
     }
 
     setFilteredClubs(filtered);
@@ -273,7 +273,7 @@ export const Clubs = () => {
     }
   };
 
-  const cities = [...new Set(clubs.map((club) => club.location).filter((loc): loc is string => Boolean(loc)))];
+  const cities = [...new Set(clubs.map((club) => club.address).filter((loc): loc is string => Boolean(loc)))];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -852,7 +852,7 @@ export const Clubs = () => {
                         <div className="flex items-center gap-2 text-white/70 mb-3">
                           <MapPin className="h-4 w-4" />
                           <span>
-                            {club.location || "Ubicación no disponible"}
+                            {club.address || "Ubicación no disponible"}
                           </span>
                         </div>
 

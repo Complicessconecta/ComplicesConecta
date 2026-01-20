@@ -4,41 +4,40 @@ import { logger } from "@/lib/logger";
 // Tipos para salas de chat
 export interface ChatRoom {
   id: string;
-  name: string;
-  description?: string;
-  created_by: string;
-  is_private: boolean;
-  participants: string[];
-  token_cost: number;
-  is_active: boolean;
-  max_members: number;
-  created_at: string;
-  updated_at: string;
+  name: string | null;
+  description: string | null;
+  created_by: string | null;
+  is_private: boolean | null;
+  participants: string[] | null;
+  token_cost: number | null;
+  is_active: boolean | null;
+  max_members: number | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export interface ChatMember {
   id: string;
-  chat_room_id: string;
-  user_id: string;
-  is_owner: boolean;
-  is_muted: boolean;
-  is_hidden: boolean;
-  last_seen?: string;
-  is_online: boolean;
-  joined_at: string;
-  updated_at: string;
+  chat_room_id: string | null;
+  user_id: string | null;
+  is_owner: boolean | null;
+  is_muted: boolean | null;
+  is_hidden: boolean | null;
+  last_seen: string | null;
+  is_online: boolean | null;
+  joined_at: string | null;
+  updated_at: string | null;
 }
 
 export interface ChatMessage {
   id: string;
-  chat_room_id: string;
-  sender_id: string;
+  room_id: string | null;
+  sender_id: string | null;
   content: string;
-  message_type: string;
-  media_url?: string;
-  is_edited: boolean;
-  edited_at?: string;
-  created_at: string;
+  message_type: string | null;
+  media_url?: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 // Servicio para gestión de salas de chat
@@ -60,6 +59,11 @@ export class ChatRoomService {
     userId: string
   ): Promise<ChatRoom | null> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return null;
+      }
+
       const { data, error } = await supabase
         .from("chat_rooms")
         .insert({
@@ -96,6 +100,11 @@ export class ChatRoomService {
    */
   static async joinPublicRoom(roomId: string, userId: string): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return false;
+      }
+
       // Verificar si ya es miembro
       const { data: existingMember } = await supabase
         .from("chat_members")
@@ -127,7 +136,7 @@ export class ChatRoomService {
         .select("*", { count: "exact", head: true })
         .eq("chat_room_id", roomId);
 
-      if (count !== null && count >= room.max_members) {
+      if (count !== null && room.max_members !== null && count >= room.max_members) {
         logger.warn("Sala llena", { roomId, count, max: room.max_members });
         return false;
       }
@@ -156,6 +165,11 @@ export class ChatRoomService {
     isPremium: boolean = false
   ): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return false;
+      }
+
       // Verificar si ya es miembro
       const { data: existingMember } = await supabase
         .from("chat_members")
@@ -182,7 +196,7 @@ export class ChatRoomService {
       }
 
       // Verificar si el usuario está en la lista de participantes invitados
-      if (!room.participants.includes(userId)) {
+      if (!room.participants || !room.participants.includes(userId)) {
         logger.warn("Usuario no está invitado a la sala", { roomId, userId });
         return false;
       }
@@ -193,13 +207,13 @@ export class ChatRoomService {
         .select("*", { count: "exact", head: true })
         .eq("chat_room_id", roomId);
 
-      if (count !== null && count >= room.max_members) {
+      if (count !== null && room.max_members !== null && count >= room.max_members) {
         logger.warn("Sala llena", { roomId, count, max: room.max_members });
         return false;
       }
 
       // Deducir tokens si no es premium
-      if (!isPremium && room.token_cost > 0) {
+      if (!isPremium && room.token_cost !== null && room.token_cost > 0) {
         const tokenDeducted = await this.deductTokensForAccess(userId, room.token_cost);
         if (!tokenDeducted) {
           logger.warn("No se pudieron deducir tokens", { userId, cost: room.token_cost });
@@ -231,6 +245,11 @@ export class ChatRoomService {
     isOwner: boolean = false
   ): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return false;
+      }
+
       const { error } = await supabase.from("chat_members").insert({
         chat_room_id: roomId,
         user_id: userId,
@@ -276,6 +295,11 @@ export class ChatRoomService {
    */
   static async getPublicRooms(): Promise<ChatRoom[]> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("chat_rooms")
         .select("*")
@@ -299,6 +323,11 @@ export class ChatRoomService {
    */
   static async getUserPrivateRooms(userId: string): Promise<ChatRoom[]> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("chat_members")
         .select("chat_rooms(*)")
@@ -321,6 +350,11 @@ export class ChatRoomService {
    */
   static async getRoomMembers(roomId: string): Promise<ChatMember[]> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("chat_members")
         .select("*")
@@ -344,6 +378,11 @@ export class ChatRoomService {
    */
   static async muteRoom(roomId: string, userId: string): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return false;
+      }
+
       const { error } = await supabase
         .from("chat_members")
         .update({ is_muted: true })
@@ -368,6 +407,11 @@ export class ChatRoomService {
    */
   static async hideRoom(roomId: string, userId: string): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return false;
+      }
+
       const { error } = await supabase
         .from("chat_members")
         .update({ is_hidden: true })
@@ -392,6 +436,11 @@ export class ChatRoomService {
    */
   static async leaveRoom(roomId: string, userId: string): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return false;
+      }
+
       const { error } = await supabase
         .from("chat_members")
         .delete()
@@ -416,6 +465,11 @@ export class ChatRoomService {
    */
   static async deletePrivateRoom(roomId: string, userId: string): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return false;
+      }
+
       // Verificar si es el owner
       const { data: member } = await supabase
         .from("chat_members")
@@ -437,10 +491,10 @@ export class ChatRoomService {
 
       if (error) throw error;
 
-      logger.info("Sala privada eliminada", { roomId, userId });
+      logger.info("Sala eliminada", { roomId, userId });
       return true;
     } catch (error) {
-      logger.error("Error eliminando sala privada:", { error });
+      logger.error("Error eliminando sala:", { error });
       return false;
     }
   }
@@ -457,11 +511,16 @@ export class ChatRoomService {
     isOnline: boolean
   ): Promise<void> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return;
+      }
+
       const { error } = await supabase
         .from("chat_members")
         .update({
           is_online: isOnline,
-          last_seen: isOnline ? undefined : new Date().toISOString(),
+          last_seen: isOnline ? null : new Date().toISOString(),
         })
         .eq("chat_room_id", roomId)
         .eq("user_id", userId);
@@ -480,10 +539,15 @@ export class ChatRoomService {
    */
   static async getRoomMessages(roomId: string, limit: number = 50): Promise<ChatMessage[]> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("messages")
         .select("*")
-        .eq("chat_room_id", roomId)
+        .eq("room_id", roomId)
         .order("created_at", { ascending: false })
         .limit(limit);
 
@@ -509,10 +573,15 @@ export class ChatRoomService {
     content: string
   ): Promise<ChatMessage | null> {
     try {
+      if (!supabase) {
+        logger.error("Supabase no está disponible");
+        return null;
+      }
+
       const { data, error } = await supabase
         .from("messages")
         .insert({
-          chat_room_id: roomId,
+          room_id: roomId,
           sender_id: userId,
           content,
           message_type: "text",

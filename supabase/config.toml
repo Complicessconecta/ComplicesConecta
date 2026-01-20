@@ -2,7 +2,7 @@
 # https://supabase.com/docs/guides/local-development/cli/config
 # Una cadena usada para distinguir diferentes proyectos de Supabase en el mismo host.
 # Por defecto usa el nombre del directorio de trabajo al ejecutar `supabase init`.
-project_id = "conecta-social-comunidad-main"
+project_id = "axtvqnozatbmllvwzuim"
 
 [api]
 enabled = true

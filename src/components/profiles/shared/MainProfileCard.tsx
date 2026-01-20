@@ -1,6 +1,5 @@
 import React, { useState, memo, useMemo, useCallback } from "react";
 import { Heart, MapPin, Verified, Star, X, Zap } from "lucide-react";
-import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
 import { Button } from "@/components/ui/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
@@ -60,9 +59,7 @@ const MainProfileCardComponent = ({
   } catch (__error) {
     logger.error("❌ Error validando ProfileCard:", { error: __error });
   }
-  const { getUserOnlineStatus } = useUserOnlineStatus();
-  const profileId = String(profile.id);
-  const isOnline = profile.isOnline ?? getUserOnlineStatus(profileId);
+  const isOnline = profile.isOnline ?? false;
   const {
     id,
     name,

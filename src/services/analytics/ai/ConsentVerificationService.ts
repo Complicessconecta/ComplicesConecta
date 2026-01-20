@@ -548,6 +548,8 @@ Responde SOLO con un JSON válido en este formato exacto:
           user_id: verification.userId1,
           user_id1: verification.userId1,
           user_id2: verification.userId2,
+          recipient_id: verification.userId2,
+          consent_level: "verified",
           consent_score: verification.currentScore.score,
           confidence: verification.currentScore.confidence,
           status: verification.currentScore.status,
@@ -555,6 +557,9 @@ Responde SOLO con un JSON válido en este formato exacto:
           message_count: verification.messageCount,
           is_paused: verification.isPaused,
           pause_reason: verification.pauseReason || null,
+          requires_confirmation: false,
+          suggested_action: "continue",
+          verified: false,
           updated_at: new Date().toISOString(),
         },
         {

@@ -6,7 +6,7 @@ import { ChatRoomService, ChatMember } from "@/services/chat/ChatRoomService";
 interface OnlineStatus {
   userId: string;
   isOnline: boolean;
-  lastSeen?: string | undefined;
+  lastSeen?: string | null | undefined;
 }
 
 interface UseOnlineStatusOptions {
@@ -108,7 +108,9 @@ export const useOnlineStatus = (
       // Marcar usuario como offline al desmontar
       updateOnlineStatus(false);
       clearInterval(intervalId);
-      supabase.removeChannel(channel);
+      if (supabase) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [roomId, userId, enabled, interval, loadMembers, updateOnlineStatus]);
 
@@ -127,12 +129,12 @@ export const useOnlineStatus = (
 
   // Obtener lista de usuarios online
   const getOnlineUsers = useCallback((): string[] => {
-    return members.filter((m) => m.is_online).map((m) => m.user_id);
+    return members.filter((m) => m.is_online).map((m) => m.user_id || "");
   }, [members]);
 
   // Obtener lista de usuarios offline
   const getOfflineUsers = useCallback((): string[] => {
-    return members.filter((m) => !m.is_online).map((m) => m.user_id);
+    return members.filter((m) => !m.is_online).map((m) => m.user_id || "");
   }, [members]);
 
   return {

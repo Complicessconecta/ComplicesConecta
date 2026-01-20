@@ -2,7 +2,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from "@/services/auth/digitalFingerprint";
-import type { Json } from "@/types/supabase-generated";
 
 export interface PermanentBanData {
   userId: string;
@@ -46,13 +45,12 @@ export const createPermanentBan = async (
         user_id: banData.userId,
         combined_hash: fingerprint.combinedHash,
         ban_reason: banData.banReason,
+        ban_type: "permanent",
+        severity: banData.severity,
         banned_by: _bannedBy,
-        details: {
-          canvas_hash: fingerprint.canvasHash,
-          severity: banData.severity,
-          evidence: banData.evidence || {},
-          worldid_nullifier_hash: banData.worldIdNullifierHash,
-        } as Json,
+        canvas_hash: fingerprint.canvasHash,
+        worldid_nullifier_hash: banData.worldIdNullifierHash || null,
+        evidence: banData.evidence || {} as any,
       })
       .select("id")
       .single();

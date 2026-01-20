@@ -460,7 +460,7 @@ export class NotificationService {
           read: true,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", notificationId)
+        .eq("id", Number(notificationId))
         .eq("user_id", userId);
 
       if (error) {
@@ -527,7 +527,7 @@ export class NotificationService {
       const { error } = await supabase
         .from("notifications")
         .delete()
-        .eq("id", notificationId);
+        .eq("id", Number(notificationId));
 
       if (error) {
         logger.error("Error deleting notification:", { error: error.message });

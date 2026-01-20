@@ -156,7 +156,7 @@ export const ImageModal = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-gradient-to-br from-purple-900/95 via-black/90 to-blue-900/95 backdrop-blur-xl"
+        className="fixed inset-0 z-50 bg-linear-to-br from-purple-900/95 via-black/90 to-blue-900/95 backdrop-blur-xl"
         onClick={onClose}
       >
         <div className="relative w-full h-full flex items-center justify-center">

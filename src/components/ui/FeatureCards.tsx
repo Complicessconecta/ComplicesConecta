@@ -18,7 +18,7 @@ const FeatureCard: FC<FeatureCardProps> = ({
   return (
     <div
       className={cn(
-        "bg-gradient-to-br from-black/40 to-black/60 rounded-2xl p-8 shadow-soft hover:shadow-glow transition-all duration-300 transform hover:scale-105 border border-white/30 backdrop-blur-sm",
+        "bg-linear-to-br from-black/40 to-black/60 rounded-2xl p-8 shadow-soft hover:shadow-glow transition-all duration-300 transform hover:scale-105 border border-white/30 backdrop-blur-sm",
         className,
       )}
     >

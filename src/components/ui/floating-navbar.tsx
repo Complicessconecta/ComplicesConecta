@@ -122,7 +122,7 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
             <button className="relative border border-purple-500/50 text-white rounded-full hover:bg-purple-500/20 transition-colors group h-10 w-10 flex items-center justify-center sm:w-auto sm:h-auto sm:px-4 sm:py-2 text-sm font-medium">
               <LogIn className="w-5 h-5 sm:hidden" />
               <span className="hidden sm:inline">Ingresar</span>
-              <span className="hidden sm:block absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-purple-500 to-transparent h-px" />
+              <span className="hidden sm:block absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-linear-to-r from-transparent via-purple-500 to-transparent h-px" />
             </button>
           </Link>
         </div>

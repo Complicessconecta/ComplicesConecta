@@ -111,7 +111,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
             <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-6 rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-br from-pink-500 to-purple-600 rounded-lg">
                     <Palette className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -200,35 +200,35 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
               </div>
 
               {/* Información adicional */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 space-y-4">
+              <div className="bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 space-y-4">
                 <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-purple-500" />
                   ¿Sabías que...?
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
                   <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 shrink-0"></div>
                     <span>
                       Puedes cambiar tu tema en cualquier momento desde tu
                       perfil
                     </span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 shrink-0"></div>
                     <span>
                       Los temas están diseñados con psicología del color para
                       mayor atractivo
                     </span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 shrink-0"></div>
                     <span>
                       Todos los temas cumplen estándares de accesibilidad WCAG
                       2.1 AA
                     </span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 shrink-0"></div>
                     <span>
                       El tema automático se basa en tu género y tipo de perfil
                     </span>
@@ -240,7 +240,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
                   onClick={onClose}
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3"
+                  className="bg-linear-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   ¡Perfecto! Continuar con el registro

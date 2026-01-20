@@ -105,7 +105,7 @@ export const Gamification = () => {
             </div>
             <div className="text-right">
               <p className="text-sm text-white/80">Puntos totales</p>
-              <p className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+              <p className="text-2xl font-bold bg-linear-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
                 {mockStats.totalPoints.toLocaleString()}
               </p>
             </div>
@@ -364,7 +364,7 @@ export const Gamification = () => {
                   >
                     {user.rank}
                   </div>
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                  <div className="w-8 h-8 bg-linear-to-br from-purple-400 to-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
                     {user.avatar}
                   </div>
                   <div>

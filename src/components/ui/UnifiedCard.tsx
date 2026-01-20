@@ -56,7 +56,7 @@ export const UnifiedCard: FC<UnifiedCardProps> = ({
             "shadow-xl shadow-black/20",
           ],
           gradient && [
-            "bg-gradient-to-br from-white to-gray-50",
+            "bg-linear-to-br from-white to-gray-50",
             "border-gradient-to-r from-fuchsia-200 to-purple-200",
           ],
           hover && "hover:shadow-lg",

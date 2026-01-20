@@ -112,7 +112,7 @@ export const ButtonEffectsTemplate: React.FC<ButtonEffectsTemplateProps> = ({
             <Button
               className={cn(
                 "w-full h-16 text-lg font-semibold relative overflow-hidden group",
-                "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500",
+                "bg-linear-to-r from-purple-500 via-pink-500 to-red-500",
                 "hover:from-red-500 hover:via-pink-500 hover:to-purple-500",
                 "transition-all duration-500 ease-in-out",
                 "shadow-lg hover:shadow-xl hover:shadow-purple-500/25",
@@ -131,7 +131,7 @@ export const ButtonEffectsTemplate: React.FC<ButtonEffectsTemplateProps> = ({
             <Button
               className={cn(
                 "w-full h-16 text-lg font-semibold",
-                "bg-gradient-to-br from-blue-600 to-purple-600",
+                "bg-linear-to-br from-blue-600 to-purple-600",
                 "hover:from-purple-600 hover:to-blue-600",
                 "transition-all duration-300",
                 "shadow-lg hover:shadow-2xl",
@@ -167,7 +167,7 @@ export const ButtonEffectsTemplate: React.FC<ButtonEffectsTemplateProps> = ({
             <Button
               className={cn(
                 "w-full h-16 text-lg font-semibold",
-                "bg-gradient-to-r from-green-400 to-blue-500",
+                "bg-linear-to-r from-green-400 to-blue-500",
                 "hover:from-blue-500 hover:to-green-400",
                 "transition-all duration-300",
                 "shadow-lg hover:shadow-xl",
@@ -190,7 +190,7 @@ export const ButtonEffectsTemplate: React.FC<ButtonEffectsTemplateProps> = ({
         </p>
 
         <div className="flex flex-wrap gap-3">
-          <Button className="btn-animated hover:scale-105 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+          <Button className="btn-animated hover:scale-105 bg-linear-to-r from-purple-500 to-pink-500 text-white">
             Tema Aplicado
           </Button>
           <Button

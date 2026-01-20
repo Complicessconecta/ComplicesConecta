@@ -208,7 +208,7 @@ export const ChatAuthenticated = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-dvh bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-x-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -384,7 +384,7 @@ export const ChatAuthenticated = () => {
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
                           {publicMessages.map((message) => (
                             <div key={message.id} className="flex gap-3">
-                              <Avatar className="h-8 w-8 flex-shrink-0">
+                              <Avatar className="h-8 w-8 shrink-0">
                                 <AvatarImage src={message.senderAvatar} />
                                 <AvatarFallback>
                                   {message.senderName[0]}
@@ -445,7 +445,7 @@ export const ChatAuthenticated = () => {
                               {(privateChats[selectedPrivateChat] || []).map(
                                 (message) => (
                                   <div key={message.id} className="flex gap-3">
-                                    <Avatar className="h-8 w-8 flex-shrink-0">
+                                    <Avatar className="h-8 w-8 shrink-0">
                                       <AvatarImage src={message.senderAvatar} />
                                       <AvatarFallback>
                                         {message.senderName[0]}
@@ -505,7 +505,7 @@ export const ChatAuthenticated = () => {
                           !currentMessage.trim() ||
                           (activeTab === "private" && !selectedPrivateChat)
                         }
-                        className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
+                        className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                       >
                         <Send className="h-4 w-4" />
                       </Button>

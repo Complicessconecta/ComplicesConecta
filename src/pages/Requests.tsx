@@ -269,7 +269,7 @@ const Requests = () => {
 
   if (!features.requests) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
         <Card className="p-8 text-center bg-card/80 backdrop-blur-sm">
           <UserX className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
           <h2 className="text-xl font-semibold mb-2">Función no disponible</h2>
@@ -282,7 +282,7 @@ const Requests = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden pb-20">
+    <div className="min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden pb-20">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
@@ -310,7 +310,7 @@ const Requests = () => {
             )}
           </div>
 
-          <div className="bg-gradient-to-br from-purple-900/40 via-purple-800/30 to-blue-900/40 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+          <div className="bg-linear-to-br from-purple-900/40 via-purple-800/30 to-blue-900/40 backdrop-blur-sm rounded-xl border border-white/10 p-6">
             <Tabs
               value={activeTab}
               onValueChange={(value) =>
@@ -354,7 +354,7 @@ const Requests = () => {
               <TabsContent value="received" className="mt-6">
                 <div className="space-y-4">
                   {receivedInvitations.length === 0 ? (
-                    <Card className="p-8 text-center bg-gradient-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
+                    <Card className="p-8 text-center bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
                       <UserPlus className="h-16 w-16 mx-auto mb-4 text-white/50" />
                       <h3 className="text-xl font-semibold text-white mb-2">
                         No hay invitaciones recibidas
@@ -367,7 +367,7 @@ const Requests = () => {
                     receivedInvitations.map((inv) => (
                       <Card
                         key={inv.id}
-                        className="p-4 bg-gradient-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10 flex flex-col sm:flex-row items-start gap-4 card-accessible"
+                        className="p-4 bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10 flex flex-col sm:flex-row items-start gap-4 card-accessible"
                       >
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-2">
@@ -420,7 +420,7 @@ const Requests = () => {
               <TabsContent value="sent" className="mt-6">
                 <div className="space-y-4">
                   {sentInvitations.length === 0 ? (
-                    <Card className="p-8 text-center bg-gradient-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
+                    <Card className="p-8 text-center bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
                       <Send className="h-16 w-16 mx-auto mb-4 text-white/50" />
                       <h3 className="text-xl font-semibold text-white mb-2">
                         No has enviado invitaciones
@@ -433,7 +433,7 @@ const Requests = () => {
                     sentInvitations.map((inv) => (
                       <Card
                         key={inv.id}
-                        className="p-4 bg-gradient-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10 card-accessible"
+                        className="p-4 bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10 card-accessible"
                       >
                         <div className="flex justify-between items-start">
                           <div className="flex items-center text-sm text-white/80">

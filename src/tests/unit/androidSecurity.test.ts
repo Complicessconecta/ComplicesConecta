@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Tests para AndroidSecurityManager
  * Cobertura de funciones de seguridad anti-root/anti-developer
  */

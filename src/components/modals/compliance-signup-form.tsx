@@ -139,7 +139,7 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({
           <Button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold disabled:opacity-60"
+            className="w-full mt-2 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold disabled:opacity-60"
           >
             {loading ? "Creando perfil…" : "Crear Perfil Anónimo"}
           </Button>

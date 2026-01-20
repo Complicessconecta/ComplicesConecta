@@ -92,7 +92,7 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
   return (
     <div
       className={cn(
-        "bg-black/80 backdrop-blur-md border-b border-white/30 p-3 sm:p-4 shadow-lg flex-shrink-0",
+        "bg-black/80 backdrop-blur-md border-b border-white/30 p-3 sm:p-4 shadow-lg shrink-0",
         className,
       )}
     >
@@ -104,7 +104,7 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
               variant="ghost"
               size="sm"
               onClick={handleBack}
-              className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105 flex-shrink-0"
+              className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105 shrink-0"
             >
               <ArrowLeft className="h-4 w-4 text-white" />
             </Button>
@@ -116,7 +116,7 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {isOwnProfile ? (
             // Own Profile Actions
             <>

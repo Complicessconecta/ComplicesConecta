@@ -730,19 +730,19 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className="flex flex-col h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       <DecorativeHearts />
 
       {/* Background decorativo uniforme */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
+      <div className="fixed inset-0 z-0 bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
+        <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
       </div>
 
       <div
         className={`relative z-10 flex h-screen ${hasActiveSession ? "pt-4" : "pt-16"} ${hasActiveSession ? "pb-4" : "pb-20"}`}
       >
         {/* Chat List Sidebar */}
-        <div className="w-full sm:w-80 flex-shrink-0 bg-gradient-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex flex-col">
+        <div className="w-full sm:w-80 shrink-0 bg-linear-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex flex-col">
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <Button
@@ -785,7 +785,7 @@ const Chat = () => {
             </div>
 
             {/* Tabs para Private/Public */}
-            <div className="flex gap-2 bg-gradient-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-lg p-1 border border-purple-400/20">
+            <div className="flex gap-2 bg-linear-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-lg p-1 border border-purple-400/20">
               <Button
                 variant={activeTab === "private" ? "default" : "ghost"}
                 size="sm"
@@ -943,7 +943,7 @@ const Chat = () => {
                     >
                       <div className="flex items-center space-x-3">
                         <div className="relative">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg border-2 border-white/20">
+                          <div className="w-12 h-12 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg border-2 border-white/20">
                             {chat.name.charAt(0)}
                           </div>
                           <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-black/50"></div>
@@ -978,12 +978,12 @@ const Chat = () => {
 
         {/* rea de chat */}
         <div
-          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 flex flex-col bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 backdrop-blur-sm`}
+          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 flex flex-col bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 backdrop-blur-sm`}
         >
           {selectedChat ? (
             <>
               {/* Header del chat */}
-              <div className="p-4 border-b border-white/10 bg-gradient-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30">
+              <div className="p-4 border-b border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30">
                 <div className="flex items-center space-x-3">
                   <Button
                     variant="ghost"
@@ -994,7 +994,7 @@ const Chat = () => {
                     <ArrowLeft className="h-4 w-4" />
                   </Button>
                   {selectedChat.roomType === "public" ? (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold border-2 border-white/20">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold border-2 border-white/20">
                       {selectedChat.name.charAt(0)}
                     </div>
                   ) : (
@@ -1028,7 +1028,7 @@ const Chat = () => {
 
               {/* Indicador de consentimiento */}
               {isProduction && selectedChat && user?.id && (
-                <div className="px-4 py-2 border-b border-white/10 bg-gradient-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30">
+                <div className="px-4 py-2 border-b border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30">
                   <ConsentIndicator
                     chatId={selectedChat.id.toString()}
                     userId1={user.id}
@@ -1055,7 +1055,7 @@ const Chat = () => {
                       <Button
                         disabled={galleryProcessing}
                         onClick={() => void handleUnlockGallery()}
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                        className="bg-linear-to-r from-purple-600 to-blue-600 text-white"
                       >
                         {galleryProcessing
                           ? "Procesando..."
@@ -1101,8 +1101,8 @@ const Chat = () => {
                               validate: false,
                               defaultValue: "",
                             })
-                              ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                              : "bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
+                              ? "bg-linear-to-r from-purple-500 to-blue-500 text-white shadow-lg"
+                              : "bg-linear-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
                           }`}
                         >
                           <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text">
@@ -1136,8 +1136,8 @@ const Chat = () => {
                         <div
                           className={`max-w-[90%] sm:max-w-[75%] md:max-w-[65%] lg:max-w-[55%] px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
                             String(message.sender_id) === "0"
-                              ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                              : "bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
+                              ? "bg-linear-to-r from-purple-500 to-blue-500 text-white shadow-lg"
+                              : "bg-linear-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
                           }`}
                         >
                           <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text word-break-break-all">
@@ -1158,9 +1158,9 @@ const Chat = () => {
               </div>
 
               {/* Input para enviar mensajes */}
-              <div className="p-4 border-t border-white/10 bg-gradient-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30 chat-input">
+              <div className="p-4 border-t border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30 chat-input">
                 {selectedChat?.isPrivate && !hasChatAccess[selectedChat.id] ? (
-                  <div className="text-center space-y-4 bg-gradient-to-br from-purple-900/50 via-purple-800/50 to-blue-900/50 rounded-lg p-6 border border-white/20">
+                  <div className="text-center space-y-4 bg-linear-to-br from-purple-900/50 via-purple-800/50 to-blue-900/50 rounded-lg p-6 border border-white/20">
                     <div className="flex items-center justify-center text-white mb-3">
                       <Lock className="h-6 w-6 mr-2" />
                       <span className="font-semibold text-lg">
@@ -1188,7 +1188,7 @@ const Chat = () => {
                               "¡Invitación aceptada! Ahora puedes chatear.",
                           });
                         }}
-                        className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                        className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
                         <UserPlus className="h-4 w-4 mr-2" />
                         Aceptar invitacin
@@ -1290,7 +1290,7 @@ const Chat = () => {
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() || isPaused}
                         gradient={true}
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
+                        className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
                       >
                         <Send className="h-4 w-4" />
                       </Button>

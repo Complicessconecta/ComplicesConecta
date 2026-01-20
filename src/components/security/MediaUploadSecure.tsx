@@ -431,7 +431,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
                     variant="ghost"
                     size="sm"
                     onClick={() => removeFile(uploadedFile.file)}
-                    className="flex-shrink-0"
+                    className="shrink-0"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -457,7 +457,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
         {/* Security Information */}
         <div className="text-xs text-muted-foreground bg-muted p-3 rounded-lg">
           <div className="flex items-start gap-2">
-            <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
+            <Shield className="h-4 w-4 mt-0.5 shrink-0" />
             <div>
               <p className="font-medium mb-1">Características de Seguridad:</p>
               <ul className="space-y-1">

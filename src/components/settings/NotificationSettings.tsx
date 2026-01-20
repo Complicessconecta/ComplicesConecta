@@ -284,7 +284,7 @@ export const NotificationSettings = () => {
           <Button
             variant="default"
             size="sm"
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
             onClick={() => navigate("/premium")}
           >
             Upgrade a Premium

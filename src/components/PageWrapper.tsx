@@ -48,14 +48,14 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
     <div
       className={cn(
         "min-h-dvh relative overflow-hidden",
-        "bg-gradient-to-br from-purple-900 via-black to-blue-900",
+        "bg-linear-to-br from-purple-900 via-black to-blue-900",
         className,
       )}
     >
       {/* Background Layer - FULL DESKTOP */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         {/* Gradient Base */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900" />
+        <div className="absolute inset-0 bg-linear-to-br from-purple-900 via-black to-blue-900" />
 
         {/* Overlay Gradients */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />

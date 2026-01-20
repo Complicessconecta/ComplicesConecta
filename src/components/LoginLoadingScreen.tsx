@@ -111,7 +111,7 @@ export const LoginLoadingScreen = ({
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-hero-gradient">
       {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-fuchsia-900/20 to-red-900/20">
+      <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 via-fuchsia-900/20 to-red-900/20">
         <div className="absolute top-20 left-20 w-64 h-64 bg-fuchsia-500/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-20 right-20 w-48 h-48 bg-purple-500/10 rounded-full blur-2xl animate-pulse"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-500/5 rounded-full blur-3xl animate-spin-slow"></div>
@@ -121,8 +121,8 @@ export const LoginLoadingScreen = ({
         {/* Logo/Icon */}
         <div className="relative">
           <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500 to-red-500 rounded-full animate-pulse opacity-20"></div>
-            <div className="absolute inset-2 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-full flex items-center justify-center">
+            <div className="absolute inset-0 bg-linear-to-r from-fuchsia-500 to-red-500 rounded-full animate-pulse opacity-20"></div>
+            <div className="absolute inset-2 bg-linear-to-r from-purple-500 to-fuchsia-500 rounded-full flex items-center justify-center">
               <CurrentIcon className="w-10 h-10 text-white animate-bounce" />
             </div>
           </div>

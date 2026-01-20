@@ -55,7 +55,7 @@ const SwingerDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-dvh relative overflow-x-hidden">
       <div className="relative z-10">
         <Navigation />
 

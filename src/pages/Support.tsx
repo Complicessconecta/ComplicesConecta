@@ -109,11 +109,11 @@ const Support = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <main className="container mx-auto px-4 py-8 pt-24">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full mb-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-purple-500 to-blue-600 rounded-full mb-6">
             <HelpCircle className="w-10 h-10 text-white" />
           </div>
           <h2 className="text-4xl font-bold text-white mb-4">
@@ -141,10 +141,10 @@ const Support = () => {
           {contactMethods.map((method, index) => (
             <Card
               key={index}
-              className="bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border-purple-300/30 hover:shadow-lg transition-shadow"
+              className="bg-linear-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border-purple-300/30 hover:shadow-lg transition-shadow"
             >
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400/30 to-blue-400/30 rounded-xl flex items-center justify-center mx-auto mb-4 border border-purple-300/20">
+                <div className="w-12 h-12 bg-linear-to-br from-purple-400/30 to-blue-400/30 rounded-xl flex items-center justify-center mx-auto mb-4 border border-purple-300/20">
                   <method.icon className="w-6 h-6 text-purple-200" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">
@@ -172,11 +172,11 @@ const Support = () => {
               {filteredFaqs.map((category, categoryIndex) => (
                 <Card
                   key={categoryIndex}
-                  className="bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border-purple-300/30"
+                  className="bg-linear-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border-purple-300/30"
                 >
                   <CardHeader>
                     <CardTitle className="flex items-center gap-3 text-white">
-                      <div className="w-10 h-10 bg-gradient-to-br from-purple-400/30 to-blue-400/30 rounded-lg flex items-center justify-center border border-purple-300/20">
+                      <div className="w-10 h-10 bg-linear-to-br from-purple-400/30 to-blue-400/30 rounded-lg flex items-center justify-center border border-purple-300/20">
                         <category.icon className="w-5 h-5 text-purple-200" />
                       </div>
                       {category.title}
@@ -233,7 +233,7 @@ const Support = () => {
         </div>
 
         {/* Contact Form */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border-purple-300/30">
+        <Card className="bg-linear-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border-purple-300/30">
           <CardHeader>
             <CardTitle className="text-center text-white">
               ¿No encontraste lo que buscabas?
@@ -309,7 +309,7 @@ const Support = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white py-3"
+                className="w-full bg-linear-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white py-3"
               >
                 Enviar Mensaje
               </Button>

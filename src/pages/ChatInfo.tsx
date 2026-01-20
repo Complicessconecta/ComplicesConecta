@@ -8,7 +8,7 @@ export const ChatInfo = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-purple-950 to-black text-zinc-100">
+    <div className="min-h-screen bg-linear-to-br from-gray-950 via-purple-950 to-black text-zinc-100">
       <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-24">
         <Button
           variant="ghost"
@@ -21,7 +21,7 @@ export const ChatInfo = () => {
 
         <div className="rounded-[32px] border border-white/10 bg-black/60 p-8 backdrop-blur-2xl shadow-2xl shadow-purple-900/40">
           <div className="text-center mb-10">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 shadow-lg shadow-purple-900/40">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-purple-500 to-blue-600 shadow-lg shadow-purple-900/40">
               <MessageCircle className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-white">
@@ -131,7 +131,7 @@ export const ChatInfo = () => {
                 >
                   <div className="mb-3 flex items-center gap-3">
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r ${room.tone} text-white font-semibold`}
+                      className={`flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-r ${room.tone} text-white font-semibold`}
                     >
                       ✦
                     </div>
@@ -172,7 +172,7 @@ export const ChatInfo = () => {
             </CardContent>
           </Card>
 
-          <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-purple-900/70 via-indigo-900/60 to-purple-900/70 p-8 text-center shadow-2xl shadow-purple-900/30">
+          <div className="rounded-3xl border border-white/10 bg-linear-to-r from-purple-900/70 via-indigo-900/60 to-purple-900/70 p-8 text-center shadow-2xl shadow-purple-900/30">
             <h2 className="text-2xl font-semibold text-white">
               ¿Listo para enviar tu primer mensaje seguro?
             </h2>
@@ -182,7 +182,7 @@ export const ChatInfo = () => {
             </p>
             <Button
               onClick={() => navigate("/auth")}
-              className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-3 text-white shadow-xl hover:from-purple-500 hover:to-indigo-500"
+              className="mt-6 bg-linear-to-r from-purple-600 to-indigo-600 px-8 py-3 text-white shadow-xl hover:from-purple-500 hover:to-indigo-500"
             >
               <MessageCircle className="mr-2 h-5 w-5" /> Quiero registrarme
               ahora

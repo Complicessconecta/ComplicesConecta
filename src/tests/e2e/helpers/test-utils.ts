@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Test utilities para E2E con Playwright
  * Fecha: 15 Noviembre 2025
  * Propósito: Funciones helper para tests E2E

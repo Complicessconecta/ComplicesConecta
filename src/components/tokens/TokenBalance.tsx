@@ -123,7 +123,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
   return (
     <div className="space-y-6">
       {/* Balance Principal */}
-      <Card className="bg-gradient-to-r from-purple-900/80 to-blue-900/80 backdrop-blur-sm border border-white/10">
+      <Card className="bg-linear-to-r from-purple-900/80 to-blue-900/80 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Coins className="h-6 w-6 text-yellow-400" />
@@ -163,7 +163,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
             </div>
             <div className="w-full bg-white/20 rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-300 progress-bar"
+                className="bg-linear-to-r from-yellow-400 to-orange-500 h-2 rounded-full transition-all duration-300 progress-bar"
                 data-progress={Math.min(progressPercentage, 100)}
               />
             </div>
@@ -180,7 +180,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-green-900/30 to-blue-900/30 rounded-lg">
+          <div className="flex items-center gap-2 p-3 bg-linear-to-r from-green-900/30 to-blue-900/30 rounded-lg">
             <code className="flex-1 text-lg font-mono text-white bg-black/30 px-3 py-2 rounded">
               {balance.referralCode}
             </code>
@@ -235,7 +235,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
           <Button
             onClick={handleReferralSubmit}
             disabled={isProcessing || !referralCode.trim()}
-            className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+            className="w-full bg-linear-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
           >
             {isProcessing
               ? "Procesando..."
@@ -253,7 +253,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
       </Card>
 
       {/* Galerías NFT */}
-      <Card className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 backdrop-blur-sm border border-white/10">
+      <Card className="bg-linear-to-r from-purple-900/80 to-indigo-900/80 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5 text-purple-400" />
@@ -280,7 +280,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
 
           <Button
             onClick={() => navigate("/profile?tab=nft-galleries")}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+            className="w-full bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
           >
             <ImageIcon className="h-4 w-4 mr-2" />
             Gestionar Galerías NFT

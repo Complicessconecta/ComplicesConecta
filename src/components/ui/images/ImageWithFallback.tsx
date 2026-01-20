@@ -73,7 +73,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   if (hasError) {
     return (
       <div
-        className={`w-full h-full bg-gradient-to-br ${fallbackConfig.gradient} backdrop-blur-sm rounded-lg border ${fallbackConfig.border} flex flex-col items-center justify-center text-center p-4 ${onClick ? "cursor-pointer hover:scale-105 transition-transform duration-300" : ""} ${className}`}
+        className={`w-full h-full bg-linear-to-br ${fallbackConfig.gradient} backdrop-blur-sm rounded-lg border ${fallbackConfig.border} flex flex-col items-center justify-center text-center p-4 ${onClick ? "cursor-pointer hover:scale-105 transition-transform duration-300" : ""} ${className}`}
         onClick={onClick}
       >
         {fallbackConfig.icon}
@@ -88,7 +88,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   return (
     <div className={`relative ${className}`}>
       {isLoading && (
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-slate-900/90 backdrop-blur-sm rounded-lg border border-gray-400/30 flex flex-col items-center justify-center animate-pulse">
+        <div className="absolute inset-0 bg-linear-to-br from-gray-900/90 via-gray-800/90 to-slate-900/90 backdrop-blur-sm rounded-lg border border-gray-400/30 flex flex-col items-center justify-center animate-pulse">
           <div className="w-8 h-8 border-2 border-white/30 border-t-white/80 rounded-full animate-spin mb-2"></div>
           <span className="text-xs text-white/60">Cargando...</span>
         </div>

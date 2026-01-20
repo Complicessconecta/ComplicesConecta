@@ -99,7 +99,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        <Card className="overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border-white/20 shadow-xl">
+        <Card className="overflow-hidden bg-linear-to-br from-white/10 to-white/5 backdrop-blur-md border-white/20 shadow-xl">
           {/* Image Container */}
           <div className="relative aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] overflow-hidden">
             <AnimatePresence mode="wait">
@@ -132,7 +132,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 whileTap={animationConfig.enabled ? { scale: 0.95 } : {}}
                 transition={{ delay: 0.2 }}
               >
-                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0 text-xs sm:text-sm">
+                <Badge className="bg-linear-to-r from-yellow-400 to-orange-500 text-white border-0 text-xs sm:text-sm">
                   <Crown className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
                   <span className="hidden sm:inline">Premium</span>
                   <span className="sm:hidden">P</span>
@@ -165,7 +165,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 <button
                   type="button"
                   onClick={prevImage}
-                  className="flex-1 bg-gradient-to-r from-black/20 to-transparent hover:from-black/40 transition-all duration-300"
+                  className="flex-1 bg-linear-to-r from-black/20 to-transparent hover:from-black/40 transition-all duration-300"
                   aria-label="Imagen anterior"
                 />
                 <button
@@ -229,7 +229,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
 
             {/* Location */}
             <div className="flex items-center gap-1 text-white/80">
-              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
               <span className="text-xs sm:text-sm truncate">{location}</span>
             </div>
 

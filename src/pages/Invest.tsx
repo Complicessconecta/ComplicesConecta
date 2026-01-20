@@ -217,14 +217,14 @@ const Invest = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-fuchsia-500 to-indigo-600 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-purple-600 via-fuchsia-500 to-indigo-600 flex items-center justify-center">
         <div className="text-white text-xl">Cargando...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="flex items-center gap-4 mb-8">
@@ -287,7 +287,7 @@ const Invest = () => {
                 )}
 
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${
+                  className={`absolute inset-0 bg-linear-to-br ${
                     tier.tier_key === "basic_10k"
                       ? "from-blue-500 to-cyan-500"
                       : tier.tier_key === "premium_25k"
@@ -364,13 +364,13 @@ const Invest = () => {
                     <ul className="space-y-2 text-sm">
                       {tier.benefits.map((benefit, index) => (
                         <li key={index} className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <CheckCircle className="w-4 h-4 mt-0.5 shrink-0" />
                           <span>{benefit}</span>
                         </li>
                       ))}
                       {tier.includes_vip_dinner && (
                         <li className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <CheckCircle className="w-4 h-4 mt-0.5 shrink-0" />
                           <span>Cena VIP con fundadores</span>
                         </li>
                       )}

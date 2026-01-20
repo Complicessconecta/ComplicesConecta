@@ -227,7 +227,7 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({
             <Button variant="outline" className="btn-animated">
               Outline Style
             </Button>
-            <Button className="btn-animated bg-gradient-to-r from-purple-500 to-fuchsia-500">
+            <Button className="btn-animated bg-linear-to-r from-purple-500 to-fuchsia-500">
               Gradient
             </Button>
             <Button
@@ -373,7 +373,7 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({
                       <ul className="text-xs text-gray-600 space-y-1">
                         {template.issues.map((issue, index) => (
                           <li key={index} className="flex items-start gap-1">
-                            <AlertCircle className="w-3 h-3 mt-0.5 text-orange-500 flex-shrink-0" />
+                            <AlertCircle className="w-3 h-3 mt-0.5 text-orange-500 shrink-0" />
                             {issue}
                           </li>
                         ))}
@@ -389,7 +389,7 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({
                       <ul className="text-xs text-gray-600 space-y-1">
                         {template.adaptations.map((adaptation, index) => (
                           <li key={index} className="flex items-start gap-1">
-                            <CheckCircle className="w-3 h-3 mt-0.5 text-blue-500 flex-shrink-0" />
+                            <CheckCircle className="w-3 h-3 mt-0.5 text-blue-500 shrink-0" />
                             {adaptation}
                           </li>
                         ))}
@@ -501,7 +501,7 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({
                     <ul className="text-xs text-gray-600 space-y-1">
                       {template.issues.map((issue, index) => (
                         <li key={index} className="flex items-start gap-1">
-                          <XCircle className="w-3 h-3 mt-0.5 text-red-500 flex-shrink-0" />
+                          <XCircle className="w-3 h-3 mt-0.5 text-red-500 shrink-0" />
                           {issue}
                         </li>
                       ))}

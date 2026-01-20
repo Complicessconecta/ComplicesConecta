@@ -265,7 +265,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
                         <Badge
                           key={index}
                           variant="secondary"
-                          className="bg-gradient-to-r from-purple-500/20 to-pink-600/20 text-white border-purple-400/30"
+                          className="bg-linear-to-r from-purple-500/20 to-pink-600/20 text-white border-purple-400/30"
                         >
                           {interest}
                         </Badge>
@@ -354,7 +354,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
     return (
       <div className="grid md:grid-cols-2 gap-6">
         {/* Partner 1 */}
-        <Card className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 backdrop-blur-md border-pink-400/30 text-white">
+        <Card className="bg-linear-to-br from-pink-500/20 to-rose-500/20 backdrop-blur-md border-pink-400/30 text-white">
           <CardHeader>
             <CardTitle className="text-white text-center">
               {coupleProfile.partner1_first_name}
@@ -362,7 +362,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+              <div className="w-24 h-24 rounded-full bg-linear-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
                 {coupleProfile.partner1_first_name?.[0]?.toUpperCase()}
               </div>
               <p className="text-white/90 font-medium">
@@ -387,7 +387,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
         </Card>
 
         {/* Partner 2 */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-md border-purple-400/30 text-white">
+        <Card className="bg-linear-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-md border-purple-400/30 text-white">
           <CardHeader>
             <CardTitle className="text-white text-center">
               {coupleProfile.partner2_first_name}
@@ -395,7 +395,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+              <div className="w-24 h-24 rounded-full bg-linear-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
                 {coupleProfile.partner2_first_name?.[0]?.toUpperCase()}
               </div>
               <p className="text-white/90 font-medium">
@@ -454,7 +454,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           {onLike && (
             <Button
               onClick={onLike}
-              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              className="flex-1 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
               <Heart className="h-4 w-4 mr-2" />
               Me Gusta
@@ -463,7 +463,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
           {onMessage && (
             <Button
               onClick={onMessage}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              className="flex-1 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
             >
               <MessageCircle className="h-4 w-4 mr-2" />
               Mensaje

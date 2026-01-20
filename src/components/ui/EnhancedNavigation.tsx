@@ -26,7 +26,7 @@ export const EnhancedNavigation: FC<EnhancedNavigationProps> = ({
   return (
     <nav
       className={cn(
-        "bg-gradient-to-r from-purple-900 to-purple-800 px-6 py-4",
+        "bg-linear-to-r from-purple-900 to-purple-800 px-6 py-4",
         className,
       )}
     >

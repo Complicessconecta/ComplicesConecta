@@ -23,7 +23,7 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="bg-gradient-to-r from-fuchsia-500/95 to-purple-600/95 dark:bg-gray-900/95 backdrop-blur-sm border-fuchsia-400/50 dark:border-gray-700/50 shadow-xl"
+        className="bg-linear-to-r from-fuchsia-500/95 to-purple-600/95 dark:bg-gray-900/95 backdrop-blur-sm border-fuchsia-400/50 dark:border-gray-700/50 shadow-xl"
       >
         <DropdownMenuItem
           onClick={() => {

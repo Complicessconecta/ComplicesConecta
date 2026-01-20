@@ -1,4 +1,4 @@
-﻿// Hook para gestión de fotos de pareja con Supabase
+// Hook para gestión de fotos de pareja con Supabase
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth/useAuth";

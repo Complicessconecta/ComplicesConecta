@@ -63,7 +63,7 @@ vi.mock("@/features/profile/useProfileTheme", () => ({
   }),
   useProfileTheme: () => ({
     backgroundClass:
-      "bg-gradient-to-br from-purple-900 via-pink-900 to-red-900",
+      "bg-linear-to-br from-purple-900 via-pink-900 to-red-900",
     textClass: "text-white",
   }),
   getNavbarStyles: () => ({}),

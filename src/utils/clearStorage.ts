@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Utilidad para limpiar localStorage corrupto y resetear estado de autenticación
  * Utilidades para limpiar el almacenamiento local de forma segura
  */

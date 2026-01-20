@@ -43,7 +43,7 @@ export function UnifiedModal({
           <DialogContent
             className={`
               ${sizeClasses[size]} 
-              bg-gradient-to-br from-purple-900/95 to-pink-900/95 
+              bg-linear-to-br from-purple-900/95 to-pink-900/95 
               backdrop-blur-md 
               border border-white/20 
               text-white 

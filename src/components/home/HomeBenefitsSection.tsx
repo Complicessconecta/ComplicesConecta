@@ -25,7 +25,7 @@ export const HomeBenefitsSection = ({
       description:
         "Algoritmo inteligente que conecta personas con intereses reales en común",
       type: "connections" as const,
-      iconBg: "bg-gradient-to-r from-purple-500 to-purple-600",
+      iconBg: "bg-linear-to-r from-purple-500 to-purple-600",
     },
     {
       icon: Shield,
@@ -33,7 +33,7 @@ export const HomeBenefitsSection = ({
       description:
         "Perfiles verificados con tecnología blockchain y KYC para máxima seguridad y confianza",
       type: "verification" as const,
-      iconBg: "bg-gradient-to-r from-blue-500 to-blue-600",
+      iconBg: "bg-linear-to-r from-blue-500 to-blue-600",
     },
     {
       icon: Users,
@@ -41,7 +41,7 @@ export const HomeBenefitsSection = ({
       description:
         "Accede a fiestas privadas, encuentros y eventos exclusivos para la comunidad swinger",
       type: "events" as const,
-      iconBg: "bg-gradient-to-r from-purple-500 to-purple-600",
+      iconBg: "bg-linear-to-r from-purple-500 to-purple-600",
     },
     {
       icon: Zap,
@@ -49,7 +49,7 @@ export const HomeBenefitsSection = ({
       description:
         "Gana tokens participando, accede a funciones premium y eventos VIP",
       type: "tokens" as const,
-      iconBg: "bg-gradient-to-r from-amber-500 to-orange-500",
+      iconBg: "bg-linear-to-r from-amber-500 to-orange-500",
     },
   ];
 
@@ -73,7 +73,7 @@ export const HomeBenefitsSection = ({
             <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
               <CardHeader>
                 <div className="flex items-center justify-center mb-4">
-                  <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full">
+                  <div className="p-3 bg-linear-to-r from-blue-500 to-cyan-600 rounded-full">
                     <Info className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -88,7 +88,7 @@ export const HomeBenefitsSection = ({
                 </p>
                 <Button
                   variant="default"
-                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                  className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
                   asChild
                 >
                   <Link to="/about">Conocer Más</Link>
@@ -100,7 +100,7 @@ export const HomeBenefitsSection = ({
             <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
               <CardHeader>
                 <div className="flex items-center justify-center mb-4">
-                  <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full">
+                  <div className="p-3 bg-linear-to-r from-purple-500 to-blue-600 rounded-full">
                     <Briefcase className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -115,7 +115,7 @@ export const HomeBenefitsSection = ({
                 </p>
                 <Button
                   variant="default"
-                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                  className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
                   asChild
                 >
                   <Link to="/careers">Ver Vacantes</Link>
@@ -127,7 +127,7 @@ export const HomeBenefitsSection = ({
             <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
               <CardHeader>
                 <div className="flex items-center justify-center mb-4">
-                  <div className="p-3 bg-gradient-to-r from-orange-500 to-red-600 rounded-full">
+                  <div className="p-3 bg-linear-to-r from-orange-500 to-red-600 rounded-full">
                     <UserCheck className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -142,7 +142,7 @@ export const HomeBenefitsSection = ({
                 </p>
                 <Button
                   variant="default"
-                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                  className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
                   onClick={onOpenModeratorForm}
                 >
                   Aplicar Ahora
@@ -154,7 +154,7 @@ export const HomeBenefitsSection = ({
             <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
               <CardHeader>
                 <div className="flex items-center justify-center mb-4">
-                  <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full">
+                  <div className="p-3 bg-linear-to-r from-green-500 to-emerald-600 rounded-full">
                     <DollarSign className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -169,7 +169,7 @@ export const HomeBenefitsSection = ({
                 </p>
                 <Button
                   variant="default"
-                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                  className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
                   asChild
                 >
                   <Link to="/donations">Donar Ahora</Link>
@@ -236,7 +236,7 @@ export const HomeBenefitsSection = ({
               <Button
                 variant="default"
                 size="xl"
-                className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700"
+                className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700"
                 asChild
               >
                 <Link to="/auth">
@@ -248,7 +248,7 @@ export const HomeBenefitsSection = ({
                 <Button
                   variant="outline"
                   size="xl"
-                  className="bg-gradient-to-r from-green-500 to-emerald-600 border-green-400 text-white hover:from-green-600 hover:to-emerald-700 backdrop-blur-sm transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
+                  className="bg-linear-to-r from-green-500 to-emerald-600 border-green-400 text-white hover:from-green-600 hover:to-emerald-700 backdrop-blur-sm transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
                   onClick={onOpenInstall}
                 >
                   <Android className="w-5 h-5 mr-2" />

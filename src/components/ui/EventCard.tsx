@@ -1,4 +1,4 @@
-﻿import type { FC } from "react";
+import type { FC } from "react";
 import { motion } from "framer-motion";
 import { UnifiedCard } from "@/components/ui/UnifiedCard";
 import { Button } from "@/components/ui/buttons/Button";
@@ -87,7 +87,7 @@ export const EventCard: FC<EventCardProps> = ({
       >
         <UnifiedCard glass hover className="p-4">
           <div className="flex gap-4">
-            <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+            <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0">
               <img
                 src={image || "/compliceslogo.png"}
                 alt={title}
@@ -100,7 +100,7 @@ export const EventCard: FC<EventCardProps> = ({
                 <h3 className="font-semibold text-gray-900 truncate pr-2">
                   {title}
                 </h3>
-                <div className="flex gap-1 flex-shrink-0">
+                <div className="flex gap-1 shrink-0">
                   {isPrivate && <Lock className="h-4 w-4 text-gray-500" />}
                   {isPremium && <Star className="h-4 w-4 text-yellow-500" />}
                 </div>

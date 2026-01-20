@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Modal interactivo para mostrar resultados de matching inteligente
  * Integra algoritmos de IA con UI intuitiva para usuarios
  */

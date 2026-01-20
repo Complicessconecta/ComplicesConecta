@@ -187,11 +187,11 @@ const News: FC = () => {
   const getTypeColor = (type: string) => {
     switch (type) {
       case "major":
-        return "bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30";
+        return "bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30";
       case "minor":
-        return "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30";
+        return "bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30";
       case "foundation":
-        return "bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30";
+        return "bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30";
       default:
         return "bg-gray-500/20 text-gray-300 border-gray-400/30";
     }
@@ -222,7 +222,7 @@ const News: FC = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden ${isActive ? "page-active" : ""}`}>
+    <div className={`min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden ${isActive ? "page-active" : ""}`}>
       {/* Background decorativo */}
       <DecorativeHearts count={8} />
 
@@ -231,7 +231,7 @@ const News: FC = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative z-10 bg-gradient-to-r from-purple-900/95 via-purple-800/95 to-blue-900/95 backdrop-blur-xl border-b border-purple-500/30 p-4 sm:p-6 shadow-2xl"
+        className="relative z-10 bg-linear-to-r from-purple-900/95 via-purple-800/95 to-blue-900/95 backdrop-blur-xl border-b border-purple-500/30 p-4 sm:p-6 shadow-2xl"
       >
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <Button
@@ -262,7 +262,7 @@ const News: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl hover:shadow-purple-500/20 transition-all duration-300">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
-                <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-purple-500 to-blue-600 rounded-lg">
                   <Zap className="h-5 w-5 text-white" />
                 </div>
                 Evolucin Continua de ComplicesConecta
@@ -279,15 +279,15 @@ const News: FC = () => {
 
               {/* Badges de estado */}
               <div className="flex flex-wrap gap-2 mt-4">
-                <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30">
+                <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30">
                   <CheckCircle2 className="h-3 w-3 mr-1" />
                   Production Ready
                 </Badge>
-                <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30">
+                <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30">
                   <Rocket className="h-3 w-3 mr-1" />
                   AI-Native
                 </Badge>
-                <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30">
+                <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30">
                   <Shield className="h-3 w-3 mr-1" />
                   Enterprise Grade
                 </Badge>
@@ -311,7 +311,7 @@ const News: FC = () => {
                     {/* Icon con animacin */}
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }}
-                      className={`p-4 rounded-xl bg-gradient-to-r ${update.color} text-white flex-shrink-0 shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300`}
+                      className={`p-4 rounded-xl bg-linear-to-r ${update.color} text-white shrink-0 shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300`}
                     >
                       {update.icon}
                     </motion.div>
@@ -373,7 +373,7 @@ const News: FC = () => {
                                 }}
                                 className="flex items-start gap-3 text-white/85 text-sm sm:text-base leading-relaxed group/item"
                               >
-                                <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-fuchsia-400 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                                <div className="w-2 h-2 bg-linear-to-r from-purple-400 to-fuchsia-400 rounded-full mt-2 shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
                                 <span className="flex-1">{highlight}</span>
                               </motion.div>
                             </li>
@@ -397,7 +397,7 @@ const News: FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-white shadow-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
-                <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                   <BarChart3 className="h-5 w-5 text-white" />
                 </div>
                 Estadsticas de Desarrollo
@@ -407,7 +407,7 @@ const News: FC = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="text-center p-4 sm:p-6 bg-gradient-to-br from-fuchsia-500/20 to-purple-500/20 rounded-xl border border-fuchsia-400/30 hover:border-fuchsia-400/50 transition-all duration-300"
+                  className="text-center p-4 sm:p-6 bg-linear-to-br from-fuchsia-500/20 to-purple-500/20 rounded-xl border border-fuchsia-400/30 hover:border-fuchsia-400/50 transition-all duration-300"
                 >
                   <div className="text-2xl sm:text-3xl font-bold text-fuchsia-300 mb-2">
                     {stats.funcionalidades}+
@@ -418,7 +418,7 @@ const News: FC = () => {
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="text-center p-4 sm:p-6 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300"
+                  className="text-center p-4 sm:p-6 bg-linear-to-br from-purple-500/20 to-blue-500/20 rounded-xl border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300"
                 >
                   <div className="text-2xl sm:text-3xl font-bold text-purple-300 mb-2">
                     {stats.versiones}+
@@ -429,7 +429,7 @@ const News: FC = () => {
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="text-center p-4 sm:p-6 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl border border-blue-400/30 hover:border-blue-400/50 transition-all duration-300"
+                  className="text-center p-4 sm:p-6 bg-linear-to-br from-blue-500/20 to-cyan-500/20 rounded-xl border border-blue-400/30 hover:border-blue-400/50 transition-all duration-300"
                 >
                   <div className="text-2xl sm:text-3xl font-bold text-blue-300 mb-2">
                     {stats.typescript}%
@@ -440,7 +440,7 @@ const News: FC = () => {
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="text-center p-4 sm:p-6 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl border border-green-400/30 hover:border-green-400/50 transition-all duration-300"
+                  className="text-center p-4 sm:p-6 bg-linear-to-br from-green-500/20 to-emerald-500/20 rounded-xl border border-green-400/30 hover:border-green-400/50 transition-all duration-300"
                 >
                   <div className="text-2xl sm:text-3xl font-bold text-green-300 mb-2">
                     {stats.qa}/100
@@ -494,10 +494,10 @@ const News: FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
         >
-          <Card className="bg-gradient-to-r from-fuchsia-500/20 via-purple-500/20 to-blue-500/20 backdrop-blur-xl border border-white/20 text-white shadow-2xl">
+          <Card className="bg-linear-to-r from-fuchsia-500/20 via-purple-500/20 to-blue-500/20 backdrop-blur-xl border border-white/20 text-white shadow-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
-                <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                   <Bell className="h-5 w-5 text-white" />
                 </div>
                 Prximas Actualizaciones
@@ -520,7 +520,7 @@ const News: FC = () => {
                     transition={{ delay: 1.1 + idx * 0.1 }}
                     className="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
                   >
-                    <div className="w-2 h-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full animate-pulse flex-shrink-0" />
+                    <div className="w-2 h-2 bg-linear-to-r from-yellow-400 to-orange-400 rounded-full animate-pulse shrink-0" />
                     <span className="text-white/90 text-sm sm:text-base">
                       {item}
                     </span>
@@ -538,7 +538,7 @@ const News: FC = () => {
           transition={{ duration: 0.6, delay: 1.2 }}
           className="text-center pt-6"
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+          <Card className="bg-linear-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-purple-400/30 shadow-2xl">
             <CardContent className="p-8">
               <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4 animate-pulse" />
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
@@ -551,7 +551,7 @@ const News: FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   onClick={() => navigate("/support")}
-                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                  className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Contactar Soporte

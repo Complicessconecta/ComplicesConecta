@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FC, ReactNode } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
@@ -264,7 +264,7 @@ export const GlobalBackground: FC<{
       >
         {/* Imagen de Fondo (capa más baja) */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-linear-to-br from-purple-900 via-indigo-900 to-blue-900"
           style={{
             backgroundImage:
               bgPrefs.backgroundMode === "solid"

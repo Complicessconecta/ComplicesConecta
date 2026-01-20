@@ -138,7 +138,7 @@ const Legal: FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className="min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={8} />
 
@@ -151,12 +151,12 @@ const Legal: FC = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <Badge className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold mb-4">
+            <Badge className="bg-linear-to-r from-blue-400 to-purple-500 text-white font-bold mb-4">
               ⚖️ MARCO LEGAL COMPLETO
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Documentación
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 {" "}
                 Legal
               </span>
@@ -168,15 +168,15 @@ const Legal: FC = () => {
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <Shield className="h-4 w-4 mr-2" />
                 Ley Olimpia Compliant
               </Badge>
-              <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Lock className="h-4 w-4 mr-2" />
                 GDPR Compliant
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Gavel className="h-4 w-4 mr-2" />
                 México Legal
               </Badge>
@@ -185,7 +185,7 @@ const Legal: FC = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Button
                 onClick={() => navigate("/privacy")}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg font-semibold"
+                className="bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg font-semibold"
               >
                 <Lock className="w-5 h-5 mr-2" />
                 Política de Privacidad
@@ -208,10 +208,10 @@ const Legal: FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-20"
           >
-            <Card className="bg-gradient-to-r from-red-600/20 via-fuchsia-600/20 to-purple-600/20 backdrop-blur-xl border-red-400/30 shadow-2xl">
+            <Card className="bg-linear-to-r from-red-600/20 via-fuchsia-600/20 to-purple-600/20 backdrop-blur-xl border-red-400/30 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-red-500 to-fuchsia-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-red-500 to-fuchsia-600 rounded-lg">
                     <Shield className="h-6 w-6 text-white" />
                   </div>
                   Ley Olimpia - Protección contra Violencia Digital
@@ -280,7 +280,7 @@ const Legal: FC = () => {
                   </h4>
                   <ul className="space-y-2 text-white/90">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Verificador IA de Consentimiento:</strong>{" "}
                         Sistema automático que detecta y previene contenido no
@@ -288,21 +288,21 @@ const Legal: FC = () => {
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Canal de denuncias 24/7:</strong> Reportes
                         inmediatos y respuesta en menos de 2 horas
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Protocolo de actuación:</strong> Procedimientos
                         claros para casos de violencia digital
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Cooperación con autoridades:</strong>{" "}
                         Colaboración directa con fiscalías especializadas
@@ -351,7 +351,7 @@ const Legal: FC = () => {
                     <CardHeader>
                       <CardTitle className="text-xl font-semibold text-white flex items-start gap-3">
                         <div
-                          className={`p-2 rounded-lg ${doc.priority ? "bg-gradient-to-r from-red-500 to-fuchsia-600" : "bg-gradient-to-r from-blue-500 to-purple-600"} text-white flex-shrink-0`}
+                          className={`p-2 rounded-lg ${doc.priority ? "bg-linear-to-r from-red-500 to-fuchsia-600" : "bg-linear-to-r from-blue-500 to-purple-600"} text-white shrink-0`}
                         >
                           {doc.icon}
                         </div>
@@ -379,7 +379,7 @@ const Legal: FC = () => {
                                 key={idx}
                                 className="flex items-start gap-2 text-white/70 text-xs"
                               >
-                                <CheckCircle2 className="h-3 w-3 text-green-400 flex-shrink-0 mt-0.5" />
+                                <CheckCircle2 className="h-3 w-3 text-green-400 shrink-0 mt-0.5" />
                                 <span>{detail}</span>
                               </li>
                             ))}
@@ -442,7 +442,7 @@ const Legal: FC = () => {
                     <CardHeader>
                       <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
                         <div
-                          className={`p-3 rounded-lg bg-gradient-to-r ${area.color} text-white`}
+                          className={`p-3 rounded-lg bg-linear-to-r ${area.color} text-white`}
                         >
                           {area.icon}
                         </div>
@@ -474,10 +474,10 @@ const Legal: FC = () => {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="text-center"
           >
-            <Card className="bg-gradient-to-r from-orange-600/20 via-yellow-600/20 to-red-600/20 backdrop-blur-xl border-orange-400/30 shadow-2xl">
+            <Card className="bg-linear-to-r from-orange-600/20 via-yellow-600/20 to-red-600/20 backdrop-blur-xl border-orange-400/30 shadow-2xl">
               <CardContent className="p-8">
                 <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg">
+                  <div className="p-3 bg-linear-to-r from-orange-500 to-red-600 rounded-lg">
                     <Info className="h-8 w-8 text-white" />
                   </div>
                 </div>
@@ -495,7 +495,7 @@ const Legal: FC = () => {
                     onClick={() =>
                       window.open("mailto:legal@complicesconecta.com")
                     }
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
+                    className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
                   >
                     <Users className="w-5 h-5 mr-2" />
                     Contactar Legal

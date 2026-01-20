@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Dashboard Interactivo de Tokens CMPX/GTK
  * Visualización amigable para usuarios Beta con gráficos y métricas
  */

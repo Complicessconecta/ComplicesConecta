@@ -50,7 +50,7 @@ export const useProfileTheme = (
     const genderConfigs: Record<Gender, ThemeConfig> = {
       male: {
         backgroundClass:
-          "bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900",
+          "bg-linear-to-br from-blue-900 via-gray-800 to-gray-900",
         textClass: "text-white",
         accentClass: "text-blue-200",
         borderClass: "border-blue-700",
@@ -59,7 +59,7 @@ export const useProfileTheme = (
       },
       female: {
         backgroundClass:
-          "bg-gradient-to-br from-pink-400 via-purple-500 to-pink-600",
+          "bg-linear-to-br from-pink-400 via-purple-500 to-pink-600",
         textClass: "text-white",
         accentClass: "text-pink-100",
         borderClass: "border-pink-400",
@@ -72,7 +72,7 @@ export const useProfileTheme = (
     if (theme === "light") {
       return {
         backgroundClass:
-          "bg-gradient-to-br from-pink-300 via-purple-200 to-indigo-200",
+          "bg-linear-to-br from-pink-300 via-purple-200 to-indigo-200",
         textClass: "text-gray-900",
         accentClass: "text-purple-700",
         borderClass: "border-purple-300",
@@ -80,7 +80,7 @@ export const useProfileTheme = (
         gradientTo: "to-indigo-200",
         themeConfig: {
           backgroundClass:
-            "bg-gradient-to-br from-pink-300 via-purple-200 to-indigo-200",
+            "bg-linear-to-br from-pink-300 via-purple-200 to-indigo-200",
           textClass: "text-gray-900",
           accentClass: "text-purple-700",
           borderClass: "border-purple-300",
@@ -93,7 +93,7 @@ export const useProfileTheme = (
     if (theme === "dark") {
       return {
         backgroundClass:
-          "bg-gradient-to-br from-gray-900 via-gray-800 to-black",
+          "bg-linear-to-br from-gray-900 via-gray-800 to-black",
         textClass: "text-white",
         accentClass: "text-gray-300",
         borderClass: "border-gray-700",
@@ -101,7 +101,7 @@ export const useProfileTheme = (
         gradientTo: "to-black",
         themeConfig: {
           backgroundClass:
-            "bg-gradient-to-br from-gray-900 via-gray-800 to-black",
+            "bg-linear-to-br from-gray-900 via-gray-800 to-black",
           textClass: "text-white",
           accentClass: "text-gray-300",
           borderClass: "border-gray-700",
@@ -114,7 +114,7 @@ export const useProfileTheme = (
     if (theme === "elegant") {
       return {
         backgroundClass:
-          "bg-gradient-to-br from-gray-900 via-gray-800 to-black",
+          "bg-linear-to-br from-gray-900 via-gray-800 to-black",
         textClass: "text-white",
         accentClass: "text-gray-300",
         borderClass: "border-gray-700",
@@ -122,7 +122,7 @@ export const useProfileTheme = (
         gradientTo: "to-black",
         themeConfig: {
           backgroundClass:
-            "bg-gradient-to-br from-gray-900 via-gray-800 to-black",
+            "bg-linear-to-br from-gray-900 via-gray-800 to-black",
           textClass: "text-white",
           accentClass: "text-gray-300",
           borderClass: "border-gray-700",
@@ -135,7 +135,7 @@ export const useProfileTheme = (
     if (theme === "modern") {
       return {
         backgroundClass:
-          "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500",
+          "bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500",
         textClass: "text-white",
         accentClass: "text-indigo-100",
         borderClass: "border-indigo-400",
@@ -143,7 +143,7 @@ export const useProfileTheme = (
         gradientTo: "to-pink-500",
         themeConfig: {
           backgroundClass:
-            "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500",
+            "bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500",
           textClass: "text-white",
           accentClass: "text-indigo-100",
           borderClass: "border-indigo-400",
@@ -156,7 +156,7 @@ export const useProfileTheme = (
     if (theme === "vibrant") {
       return {
         backgroundClass:
-          "bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500",
+          "bg-linear-to-br from-pink-500 via-red-500 to-yellow-500",
         textClass: "text-white",
         accentClass: "text-pink-100",
         borderClass: "border-pink-400",
@@ -164,7 +164,7 @@ export const useProfileTheme = (
         gradientTo: "to-yellow-500",
         themeConfig: {
           backgroundClass:
-            "bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500",
+            "bg-linear-to-br from-pink-500 via-red-500 to-yellow-500",
           textClass: "text-white",
           accentClass: "text-pink-100",
           borderClass: "border-pink-400",
@@ -178,7 +178,7 @@ export const useProfileTheme = (
     if (theme === "demo_premium") {
       return {
         backgroundClass:
-          "bg-gradient-to-br from-amber-600 via-orange-600 to-red-600",
+          "bg-linear-to-br from-amber-600 via-orange-600 to-red-600",
         textClass: "text-white",
         accentClass: "text-amber-100",
         borderClass: "border-amber-400",
@@ -186,7 +186,7 @@ export const useProfileTheme = (
         gradientTo: "to-red-600",
         themeConfig: {
           backgroundClass:
-            "bg-gradient-to-br from-amber-600 via-orange-600 to-red-600",
+            "bg-linear-to-br from-amber-600 via-orange-600 to-red-600",
           textClass: "text-white",
           accentClass: "text-amber-100",
           borderClass: "border-amber-400",
@@ -199,7 +199,7 @@ export const useProfileTheme = (
     if (theme === "demo_couple") {
       return {
         backgroundClass:
-          "bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600",
+          "bg-linear-to-br from-emerald-600 via-teal-600 to-cyan-600",
         textClass: "text-white",
         accentClass: "text-emerald-100",
         borderClass: "border-emerald-400",
@@ -207,7 +207,7 @@ export const useProfileTheme = (
         gradientTo: "to-cyan-600",
         themeConfig: {
           backgroundClass:
-            "bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600",
+            "bg-linear-to-br from-emerald-600 via-teal-600 to-cyan-600",
           textClass: "text-white",
           accentClass: "text-emerald-100",
           borderClass: "border-emerald-400",
@@ -240,7 +240,7 @@ export const useProfileTheme = (
       if (genders[0] === "male" && genders[1] === "male") {
         const config = {
           backgroundClass:
-            "bg-gradient-to-br from-blue-900 via-gray-700 to-black",
+            "bg-linear-to-br from-blue-900 via-gray-700 to-black",
           textClass: "text-white",
           accentClass: "text-blue-200",
           borderClass: "border-blue-800",
@@ -257,7 +257,7 @@ export const useProfileTheme = (
       if (genders[0] === "female" && genders[1] === "female") {
         const config = {
           backgroundClass:
-            "bg-gradient-to-br from-pink-500 via-fuchsia-600 to-purple-700",
+            "bg-linear-to-br from-pink-500 via-fuchsia-600 to-purple-700",
           textClass: "text-white",
           accentClass: "text-pink-100",
           borderClass: "border-pink-400",
@@ -273,7 +273,7 @@ export const useProfileTheme = (
       // Pareja mixta (hombre + mujer)
       const config = {
         backgroundClass:
-          "bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-500",
+          "bg-linear-to-br from-purple-500 via-indigo-600 to-blue-500",
         textClass: "text-white",
         accentClass: "text-purple-100",
         borderClass: "border-purple-400",
@@ -288,7 +288,7 @@ export const useProfileTheme = (
 
     // Fallback por defecto
     const defaultConfig = {
-      backgroundClass: "bg-gradient-to-br from-gray-800 to-gray-900",
+      backgroundClass: "bg-linear-to-br from-gray-800 to-gray-900",
       textClass: "text-white",
       accentClass: "text-gray-300",
       borderClass: "border-gray-600",
@@ -410,7 +410,7 @@ export const getNavbarStyles = (style: NavbarStyle) => {
     case "transparent":
       return {
         backgroundClass:
-          "bg-gradient-to-r from-purple-500/80 to-pink-500/80 backdrop-blur-md",
+          "bg-linear-to-r from-purple-500/80 to-pink-500/80 backdrop-blur-md",
         textClass: "text-white",
         shadowClass: "shadow-lg shadow-purple-500/25",
         borderClass: "border-purple-400/30",
@@ -418,7 +418,7 @@ export const getNavbarStyles = (style: NavbarStyle) => {
     case "solid":
       return {
         backgroundClass:
-          "bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600",
+          "bg-linear-to-r from-purple-600 via-indigo-600 to-pink-600",
         textClass: "text-white",
         shadowClass: "shadow-xl shadow-purple-500/30",
         borderClass: "border-purple-400/40",
@@ -426,7 +426,7 @@ export const getNavbarStyles = (style: NavbarStyle) => {
     default:
       return {
         backgroundClass:
-          "bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600",
+          "bg-linear-to-r from-purple-600 via-indigo-600 to-pink-600",
         textClass: "text-white",
         shadowClass: "shadow-xl shadow-purple-500/30",
         borderClass: "border-purple-400/40",

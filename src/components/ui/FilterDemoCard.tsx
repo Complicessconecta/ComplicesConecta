@@ -118,7 +118,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`w-12 h-12 bg-gradient-to-br from-purple-500/20 to-fuchsia-600/20 rounded-full flex items-center justify-center border border-white/20 transition-all duration-300 ${isHovered ? "scale-110 bg-blue-500/30" : ""}`}
+                      className={`w-12 h-12 bg-linear-to-br from-purple-500/20 to-fuchsia-600/20 rounded-full flex items-center justify-center border border-white/20 transition-all duration-300 ${isHovered ? "scale-110 bg-blue-500/30" : ""}`}
                     >
                       <Icon
                         className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? "text-blue-300" : ""}`}
@@ -167,7 +167,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
                       Valor de ejemplo:
                     </span>
                     <Badge
-                      className={`bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white border-0 transition-all duration-300 ${isHovered ? "from-blue-500 to-blue-600" : ""}`}
+                      className={`bg-linear-to-r from-purple-600 to-fuchsia-600 text-white border-0 transition-all duration-300 ${isHovered ? "from-blue-500 to-blue-600" : ""}`}
                     >
                       {card.demoValue}
                     </Badge>
@@ -192,7 +192,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
                       transition={{ delay: index * 0.1 + idx * 0.1 }}
                     >
                       <CheckCircle
-                        className={`h-4 w-4 text-green-400 flex-shrink-0 transition-all duration-300 ${isHovered ? "text-blue-300" : ""}`}
+                        className={`h-4 w-4 text-green-400 shrink-0 transition-all duration-300 ${isHovered ? "text-blue-300" : ""}`}
                       />
                       <span
                         className={`text-white/70 text-xs transition-all duration-300 ${isHovered ? "text-blue-200" : ""}`}
@@ -206,7 +206,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
                 {/* CTA Button */}
                 <Button
                   onClick={() => onCtaClick(card.ctaAction)}
-                  className={`w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 ${isHovered ? "from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700" : ""}`}
+                  className={`w-full bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 ${isHovered ? "from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700" : ""}`}
                 >
                   <span className="flex items-center justify-center space-x-2">
                     <span>{card.ctaText}</span>
@@ -228,7 +228,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
 
               {/* Decorative gradient overlay */}
               <div
-                className={`absolute inset-0 bg-gradient-to-br from-purple-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${isHovered ? "from-blue-500/10 to-blue-600/10" : ""}`}
+                className={`absolute inset-0 bg-linear-to-br from-purple-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${isHovered ? "from-blue-500/10 to-blue-600/10" : ""}`}
               />
             </Card>
           </TooltipTrigger>

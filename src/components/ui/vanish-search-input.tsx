@@ -97,7 +97,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
 
         <button
           type="submit"
-          className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-purple-600 text-white hover:bg-purple-500 transition-colors flex-shrink-0 disabled:opacity-60"
+          className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-purple-600 text-white hover:bg-purple-500 transition-colors shrink-0 disabled:opacity-60"
           disabled={loading}
           aria-label="Buscar"
           title="Buscar"

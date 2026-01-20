@@ -41,10 +41,10 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 to-purple-900 rounded-2xl shadow-2xl border border-purple-500/20"
+            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-linear-to-br from-gray-900 to-purple-900 rounded-2xl shadow-2xl border border-purple-500/20"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-gray-900/95 to-purple-900/95 backdrop-blur-sm border-b border-purple-500/20 p-6">
+            <div className="sticky top-0 bg-linear-to-r from-gray-900/95 to-purple-900/95 backdrop-blur-sm border-b border-purple-500/20 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-500/20 rounded-lg">
@@ -80,7 +80,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
             </div>
 
             {/* Footer */}
-            <div className="sticky bottom-0 bg-gradient-to-r from-gray-900/95 to-purple-900/95 backdrop-blur-sm border-t border-purple-500/20 p-6">
+            <div className="sticky bottom-0 bg-linear-to-r from-gray-900/95 to-purple-900/95 backdrop-blur-sm border-t border-purple-500/20 p-6">
               <div className="flex justify-end gap-4">
                 <button
                   onClick={onClose}
@@ -91,7 +91,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
 
                 <motion.button
                   onClick={onConfirm}
-                  className="px-8 py-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-fuchsia-700 transition-all duration-300 shadow-lg"
+                  className="px-8 py-2 bg-linear-to-r from-purple-600 to-fuchsia-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-fuchsia-700 transition-all duration-300 shadow-lg"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

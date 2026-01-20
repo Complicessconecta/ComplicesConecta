@@ -19,7 +19,7 @@ export default function ProjectInfo() {
   >("readme");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -353,7 +353,7 @@ export default function ProjectInfo() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <Card className="bg-gradient-to-r from-blue-900/80 to-purple-900/80 backdrop-blur-sm border border-blue-400/30">
+            <Card className="bg-linear-to-r from-blue-900/80 to-purple-900/80 backdrop-blur-sm border border-blue-400/30">
               <CardContent className="p-6 text-center">
                 <Code className="h-8 w-8 text-blue-400 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold text-white mb-2">
@@ -376,7 +376,7 @@ export default function ProjectInfo() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-green-900/80 to-blue-900/80 backdrop-blur-sm border border-green-400/30">
+            <Card className="bg-linear-to-r from-green-900/80 to-blue-900/80 backdrop-blur-sm border border-green-400/30">
               <CardContent className="p-6 text-center">
                 <Smartphone className="h-8 w-8 text-green-400 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold text-white mb-2">
@@ -399,7 +399,7 @@ export default function ProjectInfo() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-purple-400/30">
+            <Card className="bg-linear-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-purple-400/30">
               <CardContent className="p-6 text-center">
                 <Info className="h-8 w-8 text-purple-400 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold text-white mb-2">
@@ -518,7 +518,7 @@ const ModeratorApplicationModal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
+        <Button className="bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white">
           <Users className="h-4 w-4 mr-2" />
           Solicitar ser Moderador
         </Button>
@@ -625,7 +625,7 @@ const ModeratorApplicationModal = () => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+            className="w-full bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
           >
             {isSubmitting ? (
               "Enviando solicitud..."

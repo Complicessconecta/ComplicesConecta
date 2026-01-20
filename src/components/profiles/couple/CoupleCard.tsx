@@ -72,7 +72,7 @@ const CoupleCard = ({
             </Badge>
           )}
           {profile.isPremium && (
-            <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+            <Badge className="bg-linear-to-r from-yellow-400 to-orange-500 text-white">
               <Crown className="h-3 w-3 mr-1" />
               Premium
             </Badge>
@@ -142,7 +142,7 @@ const CoupleCard = ({
                   });
                   if (onLike) onLike();
                 }}
-                className="flex-1 bg-gradient-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white"
+                className="flex-1 bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white"
               >
                 <Heart className="h-4 w-4 mr-2" />
                 Me gusta

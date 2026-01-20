@@ -67,7 +67,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
           Envía regalos especiales para expresar tu interés con tu membresía
           Premium.
         </p>
-        <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
+        <Button className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
           <Crown className="h-4 w-4 mr-2" />
           Actualizar a Premium
         </Button>
@@ -104,7 +104,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
 
             <div className="flex items-center justify-between">
               <Badge
-                className={`bg-gradient-to-r ${getCategoryColor(gift.category)} text-white text-xs`}
+                className={`bg-linear-to-r ${getCategoryColor(gift.category)} text-white text-xs`}
               >
                 {gift.category}
               </Badge>
@@ -129,7 +129,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
 
               <div className="flex items-center justify-center space-x-4 mb-6">
                 <Badge
-                  className={`bg-gradient-to-r ${getCategoryColor(selectedGift.category)} text-white`}
+                  className={`bg-linear-to-r ${getCategoryColor(selectedGift.category)} text-white`}
                 >
                   {selectedGift.category}
                 </Badge>
@@ -153,7 +153,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
               <div className="flex space-x-3">
                 <Button
                   onClick={handleSendGift}
-                  className={`flex-1 bg-gradient-to-r ${getCategoryColor(selectedGift.category)} hover:opacity-90 text-white`}
+                  className={`flex-1 bg-linear-to-r ${getCategoryColor(selectedGift.category)} hover:opacity-90 text-white`}
                   disabled={!recipientName}
                 >
                   <Send className="h-4 w-4 mr-2" />

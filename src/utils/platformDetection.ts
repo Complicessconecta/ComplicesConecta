@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Platform detection utilities
  * Provides safe platform and browser detection
  */

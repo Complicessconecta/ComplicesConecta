@@ -128,7 +128,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
+      <DialogContent className="sm:max-w-lg bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
             <Star className="h-6 w-6 text-yellow-400" />
@@ -138,7 +138,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
 
         <div className="space-y-4">
           <div className="text-center">
-            <div className="mx-auto w-20 h-20 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-4 relative shadow-lg shadow-purple-500/50">
+            <div className="mx-auto w-20 h-20 bg-linear-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-4 relative shadow-lg shadow-purple-500/50">
               <span className="text-2xl font-bold text-white drop-shadow-lg">
                 {compatibilityScore}%
               </span>
@@ -179,7 +179,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
                     </p>
                     <div className="w-full bg-white/20 rounded-full h-1.5 mt-2">
                       <div
-                        className={`h-1.5 rounded-full bg-gradient-to-r ${
+                        className={`h-1.5 rounded-full bg-linear-to-r ${
                           factor.score >= 90
                             ? "from-green-400 to-green-500"
                             : factor.score >= 75
@@ -215,7 +215,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
             </div>
           )}
 
-          <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-4 rounded-lg border border-purple-500/30">
+          <div className="bg-linear-to-r from-purple-500/20 to-blue-500/20 p-4 rounded-lg border border-purple-500/30">
             <div className="flex items-center gap-2 mb-2">
               <Zap className="h-4 w-4 text-yellow-400" />
               <span className="font-bold text-sm text-white drop-shadow-md">
@@ -231,7 +231,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
 
           <Button
             onClick={onClose}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/30"
+            className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/30"
           >
             Entendido
           </Button>

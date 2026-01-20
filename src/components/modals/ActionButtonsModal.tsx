@@ -12,7 +12,7 @@ export const ActionButtonsModal = ({
 }: ActionButtonsModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 text-white border-purple-500/30 max-w-sm sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto z-[100]">
+      <DialogContent className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white border-purple-500/30 max-w-sm sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto z-[100]">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl font-bold text-white drop-shadow-lg">
             ¿Qué Hacen los Botones?
@@ -23,7 +23,7 @@ export const ActionButtonsModal = ({
         </DialogHeader>
         <div className="space-y-4 sm:space-y-6 text-white">
           <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white/10 rounded-lg border border-white/20">
-            <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-red-500/30 text-red-300 rounded-full flex items-center justify-center shadow-lg">
+            <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-red-500/30 text-red-300 rounded-full flex items-center justify-center shadow-lg">
               <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
@@ -38,7 +38,7 @@ export const ActionButtonsModal = ({
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white/10 rounded-lg border border-white/20">
-            <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-yellow-500/30 text-yellow-300 rounded-full flex items-center justify-center shadow-lg">
+            <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-yellow-500/30 text-yellow-300 rounded-full flex items-center justify-center shadow-lg">
               <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
@@ -53,7 +53,7 @@ export const ActionButtonsModal = ({
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white/10 rounded-lg border border-white/20">
-            <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-purple-500/30 text-purple-300 rounded-full flex items-center justify-center shadow-lg">
+            <div className="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-purple-500/30 text-purple-300 rounded-full flex items-center justify-center shadow-lg">
               <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>

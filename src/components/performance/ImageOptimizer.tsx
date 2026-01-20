@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Componente optimizado para imágenes con soporte WebP/AVIF y lazy loading
  * Consolida funcionalidad existente sin romper lógica de negocio
  */

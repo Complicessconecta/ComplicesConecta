@@ -47,7 +47,7 @@ export function ContrastFixer({
               backgroundColor.includes("rgb(0, 0, 0)") ||
               backgroundColor.includes("rgba(0, 0, 0") ||
               htmlElement.closest(
-                ".bg-gradient-to-br, .bg-purple-900, .bg-pink-900, .bg-red-900",
+                ".bg-linear-to-br, .bg-purple-900, .bg-pink-900, .bg-red-900",
               ) ||
               htmlElement.closest(
                 '[class*="bg-gray-9"], [class*="bg-slate-9"], [class*="bg-zinc-9"]',

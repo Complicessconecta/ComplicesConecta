@@ -83,7 +83,7 @@ export const TokenAiChat: React.FC = () => {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-md border-white/20 shadow-xl h-[500px] flex flex-col">
+    <Card className="bg-linear-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-md border-white/20 shadow-xl h-[500px] flex flex-col">
       <CardHeader className="border-b border-white/10 pb-3">
         <CardTitle className="flex items-center gap-2 text-white text-lg">
           <Bot className="h-5 w-5 text-cyan-400" />
@@ -110,7 +110,7 @@ export const TokenAiChat: React.FC = () => {
               <div
                 className={`max-w-[80%] rounded-2xl p-3 text-sm ${
                   msg.sender === "user"
-                    ? "bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-tr-none shadow-lg shadow-purple-900/20"
+                    ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white rounded-tr-none shadow-lg shadow-purple-900/20"
                     : "bg-white/10 text-white/90 rounded-tl-none border border-white/10"
                 }`}
               >

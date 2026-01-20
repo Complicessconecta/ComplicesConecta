@@ -378,77 +378,80 @@ const neonOptions = useMemo(
   ];
 
   return (
-    <div
-      className={`fixed inset-0 -z-30 bg-linear-to-br ${
-        preferences.particlesEnabled
-          ? "from-slate-900 via-purple-950 to-slate-900"
-          : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
-      } ${variant === "solid" ? "bg-(--cc-solid-bg)" : ""} ${className || ""}`}
-    >
-      {/* Imagen de fondo con fade-in sólo cuando está cargada */}
-      {variant !== "solid" && resolvedBackground && (
-        <img
-          src={resolvedBackground}
-          alt=""
-          aria-hidden="true"
-          className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-1200 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-        />
-      )}
-
-      {/* Overlay gradiente oscuro para legibilidad */}
-      <div className="fixed inset-0 -z-10 bg-linear-to-br from-black/40 via-black/30 to-black/40" />
-
-      {/* Partículas neón globales (modo Lifestyle Swinger) */}
-      {showNeonParticles && (
-        <div className="fixed inset-0 w-full h-full z-[-3] pointer-events-none">
-          <Particles
-            id="unified-neon"
-            options={{
-              ...neonOptions,
-              fullScreen: { enable: false },
-            }}
-            className="w-full h-full"
+    <div className={`relative min-h-dvh w-full ${className || ""}`}>
+      {/* Fondo (NO afecta layout/scroll) */}
+      <div
+        className={`fixed inset-0 -z-30 bg-linear-to-br ${
+          preferences.particlesEnabled
+            ? "from-slate-900 via-purple-950 to-slate-900"
+            : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
+        } ${variant === "solid" ? "bg-(--cc-solid-bg)" : ""}`}
+      >
+        {/* Imagen de fondo con fade-in sólo cuando está cargada */}
+        {variant !== "solid" && resolvedBackground && (
+          <img
+            src={resolvedBackground}
+            alt=""
+            aria-hidden="true"
+            className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-1200 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
           />
-        </div>
-      )}
+        )}
 
-      {/* Partículas CSS ligeras para dispositivos low-end o fallback */}
-      {(showCssParticles || showFallbackParticles) && (
-        <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
-          {Array.from({ length: showFallbackParticles ? 80 : 60 }).map((_, i) => {
-            const sizeCls = particleSizes[i % particleSizes.length];
-            const posCls = particlePositions[i % particlePositions.length];
-            const colors = ["bg-cyan-400", "bg-purple-400", "bg-pink-400"];
-            const colorCls = colors[i % colors.length];
-            return (
-              <div
-                key={i}
-                className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls} particle`}
-                style={{
-                  '--animation-delay': `${i * 0.1}s`,
-                  '--animation-duration': `${6 + Math.random() * 4}s`,
-                } as React.CSSProperties}
-              />
-            );
-          })}
-        </div>
-      )}
+        {/* Overlay gradiente oscuro para legibilidad */}
+        <div className="fixed inset-0 -z-10 bg-linear-to-br from-black/40 via-black/30 to-black/40" />
 
-      {/* Nieve de alta calidad con tsparticles (modo Navidad) */}
-      {showSnowParticles && (
-        <div className="fixed inset-0 w-full h-full z-[-5] pointer-events-none">
-          <Particles
-            id="unified-snow"
-            options={{
-              ...snowOptions,
-              fullScreen: { enable: false },
-            }}
-            className="w-full h-full"
-          />
-        </div>
-      )}
+        {/* Partículas neón globales (modo Lifestyle Swinger) */}
+        {showNeonParticles && (
+          <div className="fixed inset-0 w-full h-full z-[-3] pointer-events-none">
+            <Particles
+              id="unified-neon"
+              options={{
+                ...neonOptions,
+                fullScreen: { enable: false },
+              }}
+              className="w-full h-full"
+            />
+          </div>
+        )}
 
-      {/* Contenido */}
+        {/* Partículas CSS ligeras para dispositivos low-end o fallback */}
+        {(showCssParticles || showFallbackParticles) && (
+          <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
+            {Array.from({ length: showFallbackParticles ? 80 : 60 }).map((_, i) => {
+              const sizeCls = particleSizes[i % particleSizes.length];
+              const posCls = particlePositions[i % particlePositions.length];
+              const colors = ["bg-cyan-400", "bg-purple-400", "bg-pink-400"];
+              const colorCls = colors[i % colors.length];
+              return (
+                <div
+                  key={i}
+                  className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls} particle`}
+                  style={{
+                    '--animation-delay': `${i * 0.1}s`,
+                    '--animation-duration': `${6 + Math.random() * 4}s`,
+                  } as React.CSSProperties}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {/* Nieve de alta calidad con tsparticles (modo Navidad) */}
+        {showSnowParticles && (
+          <div className="fixed inset-0 w-full h-full z-[-5] pointer-events-none">
+            <Particles
+              id="unified-snow"
+              options={{
+                ...snowOptions,
+                fullScreen: { enable: false },
+              }}
+              className="w-full h-full"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Contenido (SÍ afecta layout/scroll) */}
       <div className="relative z-10 pointer-events-auto">{children}</div>
     </div>
   );

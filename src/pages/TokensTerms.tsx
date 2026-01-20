@@ -1,4 +1,4 @@
-﻿import { Button } from "@/components/ui/buttons/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { ArrowLeft, FileText, AlertTriangle, Shield, Coins, Users, Scale } from "lucide-react";
 import { useNavigate } from "react-router-dom";

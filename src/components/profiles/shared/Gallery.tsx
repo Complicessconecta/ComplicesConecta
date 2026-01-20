@@ -140,14 +140,14 @@ const Gallery = ({
           <div className="flex space-x-2">
             <Button
               onClick={() => handleImageUpload(true)}
-              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
+              className="bg-linear-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Pública
             </Button>
             <Button
               onClick={() => handleImageUpload(false)}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              className="bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Privada
@@ -270,7 +270,7 @@ const Gallery = ({
                 targetProfileId={userId.toString()}
                 targetProfileName={profileName}
               >
-                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
+                <Button className="bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
                   <UserPlus className="h-4 w-4 mr-2" />
                   Solicitar Acceso a Galería
                 </Button>

@@ -55,7 +55,7 @@ export const ExplicitInterestsEditor: React.FC<
         {/* Advertencia de Privacidad */}
         <div className="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="h-5 w-5 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-medium text-purple-800 dark:text-purple-200 mb-1">
                 ⚠️ Información Privada y Segura
@@ -90,7 +90,7 @@ export const ExplicitInterestsEditor: React.FC<
                 variant={isSelected ? "default" : "outline"}
                 className={`cursor-pointer transition-all duration-200 text-center justify-center py-2 px-3 ${
                   isSelected
-                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent hover:from-purple-600 hover:to-pink-600 shadow-md"
+                    ? "bg-linear-to-r from-purple-500 to-pink-500 text-white border-transparent hover:from-purple-600 hover:to-pink-600 shadow-md"
                     : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:border-purple-400 dark:hover:border-purple-500"
                 }`}
                 onClick={() => handleInterestToggle(interest)}
@@ -116,7 +116,7 @@ export const ExplicitInterestsEditor: React.FC<
             <Button
               variant="love"
               onClick={handleSave}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              className="bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
             >
               Guardar Cambios
             </Button>

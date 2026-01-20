@@ -15,9 +15,9 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
   onEdit,
 }) => {
   return (
-    <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden">
+    <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden">
       {/* Cover Image */}
-      <div className="relative h-64 bg-gradient-to-br from-purple-600 to-fuchsia-600">
+      <div className="relative h-64 bg-linear-to-br from-purple-600 to-fuchsia-600">
         {club.cover_image_url ? (
           <img
             src={club.cover_image_url}
@@ -67,8 +67,8 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
       <div className="p-6">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <div className="w-32 h-32 rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center overflow-hidden border-4 border-white/20 shadow-xl">
+          <div className="shrink-0">
+            <div className="w-32 h-32 rounded-xl bg-linear-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center overflow-hidden border-4 border-white/20 shadow-xl">
               {club.logo_url ? (
                 <img
                   src={club.logo_url}

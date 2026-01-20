@@ -56,7 +56,7 @@ const ClubsComingSoon = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -70,7 +70,7 @@ const ClubsComingSoon = () => {
           </div>
           <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
             Clubs
-            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               {" "}
               Verificados
             </span>
@@ -91,7 +91,7 @@ const ClubsComingSoon = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                   <Target className="h-6 w-6 text-white" />
                 </div>
                 Sistema de Clubs Verificados
@@ -115,7 +115,7 @@ const ClubsComingSoon = () => {
                         key={index}
                         className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
                       >
-                        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white flex-shrink-0">
+                        <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg text-white shrink-0">
                           {step.icon}
                         </div>
                         <div>
@@ -143,7 +143,7 @@ const ClubsComingSoon = () => {
                         key={index}
                         className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
                       >
-                        <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white flex-shrink-0">
+                        <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white shrink-0">
                           {benefit.icon}
                         </div>
                         <div>
@@ -170,7 +170,7 @@ const ClubsComingSoon = () => {
           transition={{ delay: 0.3 }}
           className="mb-12"
         >
-          <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-2xl text-white flex items-center gap-3">
                 <Sparkles className="h-6 w-6" />
@@ -184,7 +184,7 @@ const ClubsComingSoon = () => {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                       <Globe className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Página Pública Profesional</h3>
@@ -196,7 +196,7 @@ const ClubsComingSoon = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <MapPin className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Check-ins Verificados</h3>
@@ -208,7 +208,7 @@ const ClubsComingSoon = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                       <Star className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Reseñas Auténticas</h3>
@@ -220,7 +220,7 @@ const ClubsComingSoon = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Camera className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Flyers Editables con IA</h3>
@@ -232,7 +232,7 @@ const ClubsComingSoon = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-pink-500 to-rose-600 rounded-lg">
                       <Award className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Publicidad Premium</h3>
@@ -244,7 +244,7 @@ const ClubsComingSoon = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-lg">
+                    <div className="p-2 bg-linear-to-r from-indigo-500 to-violet-600 rounded-lg">
                       <Building className="h-5 w-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-white">Integración con Tokens</h3>
@@ -264,7 +264,7 @@ const ClubsComingSoon = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 backdrop-blur-xl border-yellow-400/50 shadow-2xl">
+          <Card className="bg-linear-to-br from-yellow-500/20 to-orange-500/20 backdrop-blur-xl border-yellow-400/50 shadow-2xl">
             <CardContent className="p-8 text-center">
               <Clock className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-white mb-4">

@@ -185,7 +185,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               buttonVariants({ variant, size }),
               "relative overflow-hidden transition-all duration-200",
               gradient && [
-                "bg-gradient-to-r from-purple-600 to-blue-600",
+                "bg-linear-to-r from-purple-600 to-blue-600",
                 "hover:from-purple-700 hover:to-blue-700",
                 "text-white border-0",
               ],
@@ -219,7 +219,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             buttonVariants({ variant, size }),
             "relative overflow-hidden transition-all duration-200",
             gradient && [
-              "bg-gradient-to-r from-purple-600 to-blue-600",
+              "bg-linear-to-r from-purple-600 to-blue-600",
               "hover:from-purple-700 hover:to-blue-700",
               "text-white border-0",
             ],

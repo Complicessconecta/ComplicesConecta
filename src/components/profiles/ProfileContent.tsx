@@ -210,7 +210,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               <Card className="bg-white/10 backdrop-blur-md border-white/20">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white font-bold">
                       A
                     </div>
                     <div className="flex-1">
@@ -236,7 +236,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   </div>
 
                   {/* Post Image */}
-                  <div className="aspect-video bg-gradient-to-br from-purple-400 to-fuchsia-600 rounded-lg mb-3 overflow-hidden">
+                  <div className="aspect-video bg-linear-to-br from-purple-400 to-fuchsia-600 rounded-lg mb-3 overflow-hidden">
                     <img
                       src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop"
                       alt="Post"
@@ -327,7 +327,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 <Card className="bg-white/10 backdrop-blur-md border-white/20 mb-4">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center text-white font-bold">
                         D
                       </div>
                       <div className="flex-1">
@@ -344,7 +344,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                         </p>
                       </div>
                     </div>
-                    <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-600 rounded-lg mb-3 flex items-center justify-center">
+                    <div className="aspect-video bg-linear-to-br from-blue-400 to-purple-600 rounded-lg mb-3 flex items-center justify-center">
                       <span className="text-white text-6xl">🎉</span>
                     </div>
                     <div className="flex items-center gap-4">
@@ -423,7 +423,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                           timestamp: new Date().toISOString(),
                         });
                       }}
-                      className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
+                      className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       Crear Post
@@ -447,7 +447,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               {isOwnProfile && (
                 <Button
                   onClick={onUploadImage}
-                  className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
+                  className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Crear Historia
@@ -465,7 +465,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               <div className="flex flex-wrap gap-4 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
                 <Button
                   onClick={onUploadImage}
-                  className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
+                  className="flex-1 bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Subir Foto
@@ -493,7 +493,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
 
                 <Button
                   onClick={() => nftFileInputRef.current?.click()}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                  className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                 >
                   Crear NFT
                 </Button>
@@ -535,7 +535,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 Fotos Públicas
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="aspect-square bg-gradient-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
+                <div className="aspect-square bg-linear-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                     alt="Galería 1"
@@ -546,7 +546,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     }}
                   />
                 </div>
-                <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg overflow-hidden">
+                <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                     alt="Galería 2"
@@ -632,7 +632,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               <div className="text-center py-8">
                 <Button
                   onClick={onUploadImage}
-                  className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
+                  className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Subir Imagen
@@ -707,7 +707,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
             }
             navigate("/auth");
           }}
-          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+          className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
         >
           {isAuthFn ? loginLabel : "Ingresar"}
         </Button>

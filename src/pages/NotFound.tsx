@@ -32,7 +32,7 @@ const NotFound = () => {
   }, [location.pathname, sparkles]);
 
   return (
-    <main className="min-h-dvh grid place-items-center bg-gradient-to-br from-purple-900/30 via-fuchsia-900/20 to-black relative overflow-hidden">
+    <main className="min-h-dvh grid place-items-center bg-linear-to-br from-purple-900/30 via-fuchsia-900/20 to-black relative overflow-x-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -93,7 +93,7 @@ const NotFound = () => {
         {/* Logo */}
         <div className="animate-fade-in">
           <div className="mx-auto w-16 h-16 mb-8 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 rounded-full bg-linear-to-r from-purple-600 to-blue-600 flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-2xl">CC</span>
             </div>
           </div>
@@ -137,7 +137,7 @@ const NotFound = () => {
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white rounded-2xl px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:rotate-1 group"
+                className="bg-linear-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white rounded-2xl px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:rotate-1 group"
               >
                 <Link to="/" className="flex items-center justify-center">
                   <Home className="mr-2 h-5 w-5 group-hover:animate-bounce" />

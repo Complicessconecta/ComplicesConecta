@@ -115,7 +115,7 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(
               loading="lazy"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+            <div className="w-full h-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center">
               <User className="w-16 h-16 text-white" />
             </div>
           )}

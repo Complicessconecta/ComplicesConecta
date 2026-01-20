@@ -1,4 +1,4 @@
-﻿import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
 // ✅ MIGRATED: hCaptcha verification moved to Supabase Edge Function

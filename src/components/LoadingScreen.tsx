@@ -79,10 +79,10 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         {/* Progress Bar */}
         <div className="w-full bg-white/20 rounded-full h-3 mb-4 overflow-hidden backdrop-blur-sm">
           <div
-            className="h-full bg-gradient-to-r from-white to-white/80 rounded-full transition-all duration-300 ease-out relative"
+            className="h-full bg-linear-to-r from-white to-white/80 rounded-full transition-all duration-300 ease-out relative"
             style={{ width: `${progress}%` }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
           </div>
         </div>
 

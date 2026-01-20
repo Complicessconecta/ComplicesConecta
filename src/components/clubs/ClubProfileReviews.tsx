@@ -81,7 +81,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-500 rounded-lg">
               <Star className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -127,7 +127,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
                   <span className="text-white/60 text-sm w-12">{star} ★</span>
                   <div className="flex-1 bg-white/10 rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-gradient-to-r from-yellow-500 to-orange-500 h-full rounded-full transition-all rating-bar-fill"
+                      className="bg-linear-to-r from-yellow-500 to-orange-500 h-full rounded-full transition-all rating-bar-fill"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
@@ -156,8 +156,8 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
               >
                 <div className="flex items-start gap-4">
                   {/* User Avatar */}
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center">
+                  <div className="shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center">
                       {review.userAvatar ? (
                         <img
                           src={review.userAvatar}

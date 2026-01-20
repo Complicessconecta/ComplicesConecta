@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Shield, AlertTriangle, Phone, Mail, ExternalLink, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
@@ -8,7 +8,7 @@ const LeyOlimpia: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center mb-8">

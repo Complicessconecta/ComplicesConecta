@@ -10,10 +10,10 @@ const Events: FC = () => {
   // @isActive - página pública
   const isActive = location.pathname === "/events";
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white p-4 pb-20 ${isActive ? "page-active" : ""}`}>
+    <div className={`min-h-screen bg-linear-to-br from-gray-900 via-purple-900 to-black text-white p-4 pb-20 ${isActive ? "page-active" : ""}`}>
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-4 pt-8">
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-fuchsia-600">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-fuchsia-600">
             Próximos Eventos
           </h1>
           <p className="text-gray-400 text-lg">

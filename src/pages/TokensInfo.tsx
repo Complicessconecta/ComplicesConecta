@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
@@ -404,10 +404,10 @@ export default function TokensInfo() {
   ];
 
   return (
-    <div className={`min-h-screen relative overflow-hidden ${isActive ? "page-active" : ""}`}>
+    <div className={`min-h-dvh relative overflow-x-hidden ${isActive ? "page-active" : ""}`}>
       <TokensSubnav />
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/95 to-purple-800/95 backdrop-blur-xl border-b border-white/30 shadow-2xl">
+      <div className="sticky top-0 z-50 bg-linear-to-r from-purple-900/95 to-purple-800/95 backdrop-blur-xl border-b border-white/30 shadow-2xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
@@ -444,14 +444,14 @@ export default function TokensInfo() {
           className="text-center space-y-6"
         >
           <div className="flex flex-col items-center justify-center mb-6">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 via-purple-500 to-blue-500 rounded-full mb-6 shadow-2xl">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-yellow-400 via-purple-500 to-blue-500 rounded-full mb-6 shadow-2xl">
               <Coins className="h-10 w-10 text-white" />
             </div>
           </div>
 
           <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-4 leading-tight">
             Sistema de Tokens
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-purple-400 to-blue-400">
+            <span className="block text-transparent bg-clip-text bg-linear-to-r from-yellow-400 via-purple-400 to-blue-400">
               CMPX & GTK
             </span>
           </h1>
@@ -469,7 +469,7 @@ export default function TokensInfo() {
               onClick={() => setActiveSection("general")}
               className={`px-6 py-3 rounded-lg transition-all duration-300 ${
                 activeSection === "general"
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                  ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                   : "bg-white/10 text-white/80 hover:bg-white/20 border border-white/20"
               }`}
             >
@@ -480,7 +480,7 @@ export default function TokensInfo() {
               onClick={() => setActiveSection("investors")}
               className={`px-6 py-3 rounded-lg transition-all duration-300 ${
                 activeSection === "investors"
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                  ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                   : "bg-white/10 text-white/80 hover:bg-white/20 border border-white/20"
               }`}
             >
@@ -491,7 +491,7 @@ export default function TokensInfo() {
               onClick={() => setActiveSection("blockchain")}
               className={`px-6 py-3 rounded-lg transition-all duration-300 ${
                 activeSection === "blockchain"
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                  ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                   : "bg-white/10 text-white/80 hover:bg-white/20 border border-white/20"
               }`}
             >
@@ -508,7 +508,7 @@ export default function TokensInfo() {
             <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-purple-500 to-blue-600 rounded-lg">
                     <BarChart3 className="h-6 w-6 text-white" />
                   </div>
                   Estadísticas Globales de Tokens
@@ -527,7 +527,7 @@ export default function TokensInfo() {
                     <div className="space-y-6">
                       {/* Tarjetas de resumen */}
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 p-4 rounded-lg border border-purple-400/30">
+                        <div className="bg-linear-to-r from-purple-900/40 to-blue-900/40 p-4 rounded-lg border border-purple-400/30">
                           <div className="flex items-center justify-between mb-2">
                             <div className="text-purple-300 text-sm">
                               En Circulación
@@ -541,7 +541,7 @@ export default function TokensInfo() {
                             CMPX
                           </div>
                         </div>
-                        <div className="bg-gradient-to-r from-red-900/40 to-orange-900/40 p-4 rounded-lg border border-red-400/30">
+                        <div className="bg-linear-to-r from-red-900/40 to-orange-900/40 p-4 rounded-lg border border-red-400/30">
                           <div className="flex items-center justify-between mb-2">
                             <div className="text-red-300 text-sm">
                               Bloqueados
@@ -553,7 +553,7 @@ export default function TokensInfo() {
                           </div>
                           <div className="text-red-200 text-xs mt-1">CMPX</div>
                         </div>
-                        <div className="bg-gradient-to-r from-blue-900/40 to-cyan-900/40 p-4 rounded-lg border border-blue-400/30">
+                        <div className="bg-linear-to-r from-blue-900/40 to-cyan-900/40 p-4 rounded-lg border border-blue-400/30">
                           <div className="flex items-center justify-between mb-2">
                             <div className="text-blue-300 text-sm">
                               Staking Global
@@ -565,7 +565,7 @@ export default function TokensInfo() {
                           </div>
                           <div className="text-blue-200 text-xs mt-1">CMPX</div>
                         </div>
-                        <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/40 p-4 rounded-lg border border-green-400/30">
+                        <div className="bg-linear-to-r from-green-900/40 to-emerald-900/40 p-4 rounded-lg border border-green-400/30">
                           <div className="flex items-center justify-between mb-2">
                             <div className="text-green-300 text-sm">
                               Liberación Mensual
@@ -579,7 +579,7 @@ export default function TokensInfo() {
                             CMPX
                           </div>
                         </div>
-                        <div className="bg-gradient-to-r from-fuchsia-900/40 to-pink-900/40 p-4 rounded-lg border border-fuchsia-400/30">
+                        <div className="bg-linear-to-r from-fuchsia-900/40 to-pink-900/40 p-4 rounded-lg border border-fuchsia-400/30">
                           <div className="text-fuchsia-300 text-sm mb-1">
                             Total NFTs Creados
                           </div>
@@ -590,7 +590,7 @@ export default function TokensInfo() {
                             NFTs en Blockchain
                           </div>
                         </div>
-                        <div className="bg-gradient-to-r from-amber-900/40 to-yellow-900/40 p-4 rounded-lg border border-amber-400/30">
+                        <div className="bg-linear-to-r from-amber-900/40 to-yellow-900/40 p-4 rounded-lg border border-amber-400/30">
                           <div className="text-amber-300 text-sm mb-1">
                             Holders de NFTs
                           </div>
@@ -604,7 +604,7 @@ export default function TokensInfo() {
                       </div>
 
                       {/* Gráfico de distribución de tokens - Glassmorphism Style */}
-                      <div className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
+                      <div className="bg-linear-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
                         <div className="flex items-center justify-center gap-3 mb-6">
                           <img src="/assets/icons/gtk-token.svg" alt="GTK" className="w-10 h-10" />
                           <h4 className="text-xl font-bold text-white font-sans tracking-tight">
@@ -916,7 +916,7 @@ export default function TokensInfo() {
                       </div>
 
                       {/* Gráfico del Ecosistema de Tokens */}
-                      <div className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
+                      <div className="bg-linear-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
                         <div className="flex items-center justify-center gap-3 mb-6">
                           <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-10 h-10" />
                           <h4 className="text-xl font-bold text-white font-sans tracking-tight">
@@ -942,7 +942,7 @@ export default function TokensInfo() {
             <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                     <DollarSign className="h-6 w-6 text-white" />
                   </div>
                   Token CMPX: La Moneda de Consumo
@@ -956,28 +956,28 @@ export default function TokensInfo() {
                     </h3>
                     <ul className="space-y-2 text-white/80">
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Suministro Ilimitado:</strong> Diseñado para
                           transacciones diarias
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Compra Directa:</strong> Adquiere con dinero
                           real (MXN, USD, criptomonedas)
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Uso Inmediato:</strong> Para funciones premium
                           dentro de la app
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Transferible:</strong> Envía tokens como
                           regalo entre usuarios
@@ -992,32 +992,32 @@ export default function TokensInfo() {
                     </h3>
                     <ul className="space-y-2 text-white/80">
                       <li className="flex items-start gap-2">
-                        <Gift className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <Gift className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Referidos:</strong> 50 CMPX por cada amigo
                           invitado (límite 500/mes)
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <Shield className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                        <Shield className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>World ID:</strong> Próximamente
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <UserPlus className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                        <UserPlus className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Completar Perfil:</strong> 25 CMPX
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <Calendar className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                        <Calendar className="h-5 w-5 text-yellow-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Login Diario:</strong> 5 CMPX
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <DollarSign className="h-5 w-5 text-fuchsia-400 flex-shrink-0 mt-0.5" />
+                        <DollarSign className="h-5 w-5 text-fuchsia-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Compra Directa:</strong> Ver precios abajo
                         </span>
@@ -1038,7 +1038,7 @@ export default function TokensInfo() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: idx * 0.1 }}
-                        className="p-4 bg-gradient-to-br from-blue-900/40 to-purple-900/40 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
+                        className="p-4 bg-linear-to-br from-blue-900/40 to-purple-900/40 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
                       >
                         <div className="flex items-center justify-between mb-3">
                           <div className="text-2xl font-bold text-white">
@@ -1097,7 +1097,7 @@ export default function TokensInfo() {
                 </div>
 
                 {/* Distribución de CMPX */}
-                <div className="mt-6 p-6 bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-xl border border-white/20">
+                <div className="mt-6 p-6 bg-linear-to-r from-purple-900/40 to-blue-900/40 rounded-xl border border-white/20">
                   <h3 className="text-xl font-semibold text-white mb-4">
                     📈 Distribución de CMPX
                   </h3>
@@ -1126,7 +1126,7 @@ export default function TokensInfo() {
                     ].map((item, idx) => (
                       <div key={idx} className="text-center">
                         <div
-                          className={`w-16 h-16 rounded-full bg-gradient-to-r ${item.color} mx-auto mb-2 flex items-center justify-center text-white font-bold text-lg`}
+                          className={`w-16 h-16 rounded-full bg-linear-to-r ${item.color} mx-auto mb-2 flex items-center justify-center text-white font-bold text-lg`}
                         >
                           {item.percentage}%
                         </div>
@@ -1141,10 +1141,10 @@ export default function TokensInfo() {
             </Card>
 
             {/* Token GTK - Staking e Inversión */}
-            <Card className="bg-gradient-to-r from-purple-600/20 via-purple-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+            <Card className="bg-linear-to-r from-purple-600/20 via-purple-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-purple-500 to-blue-600 rounded-lg">
                     <Rocket className="h-6 w-6 text-white" />
                   </div>
                   Token GTK: Staking e Inversión Blockchain
@@ -1158,27 +1158,27 @@ export default function TokensInfo() {
                     </h3>
                     <ul className="space-y-2 text-white/80">
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Suministro Limitado:</strong> Cantidad fija
                           predefinida
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Token de Staking:</strong> Diseñado para
                           ingresos pasivos
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Blockchain ERC-20:</strong> Ethereum/Polygon
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle2 className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Gobernanza DAO:</strong> Votación en
                           decisiones (futuro)
@@ -1201,7 +1201,7 @@ export default function TokensInfo() {
                             <span className="text-white font-semibold">
                               {option.duration} días
                             </span>
-                            <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30">
+                            <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30">
                               {option.apy}% APY
                             </Badge>
                           </div>
@@ -1250,7 +1250,7 @@ export default function TokensInfo() {
             <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                     <Building2 className="h-6 w-6 text-white" />
                   </div>
                   Información para Inversores
@@ -1331,11 +1331,11 @@ export default function TokensInfo() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.1 }}
-                        className="p-4 bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-lg border border-white/20"
+                        className="p-4 bg-linear-to-r from-purple-900/40 to-blue-900/40 rounded-lg border border-white/20"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-600 flex items-center justify-center text-white font-bold">
+                            <div className="w-12 h-12 rounded-full bg-linear-to-r from-purple-500 to-blue-600 flex items-center justify-center text-white font-bold">
                               {item.percentage}%
                             </div>
                             <div>
@@ -1362,7 +1362,7 @@ export default function TokensInfo() {
                             Referencia: https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
                           */}
                           <div
-                            className="bg-gradient-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-1000 progress-bar"
+                            className="bg-linear-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-1000 progress-bar"
                             style={{ '--progress-width': `${item.percentage}%` } as React.CSSProperties}
                           ></div>
                         </div>
@@ -1372,7 +1372,7 @@ export default function TokensInfo() {
                 </div>
 
                 {/* Equipo y Desarrollo */}
-                <div className="mt-6 p-6 bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-xl border border-white/20">
+                <div className="mt-6 p-6 bg-linear-to-r from-purple-900/40 to-blue-900/40 rounded-xl border border-white/20">
                   <h3 className="text-xl font-semibold text-white mb-4">
                     👥 Equipo y Desarrollo
                   </h3>
@@ -1467,7 +1467,7 @@ export default function TokensInfo() {
                               key={itemIdx}
                               className="flex items-start gap-2 text-white/80"
                             >
-                              <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-1" />
+                              <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-1" />
                               <span>{item}</span>
                             </li>
                           ))}
@@ -1520,7 +1520,7 @@ export default function TokensInfo() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: idx * 0.1 }}
-                        className="p-6 bg-gradient-to-br from-purple-900/40 to-blue-900/40 rounded-xl border border-white/20"
+                        className="p-6 bg-linear-to-br from-purple-900/40 to-blue-900/40 rounded-xl border border-white/20"
                       >
                         <h4 className="text-lg font-bold text-white mb-4">
                           {projection.year}
@@ -1574,10 +1574,10 @@ export default function TokensInfo() {
         {activeSection === "blockchain" && (
           <div className="space-y-8">
             {/* Migración a Blockchain */}
-            <Card className="bg-gradient-to-r from-purple-600/20 via-purple-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+            <Card className="bg-linear-to-r from-purple-600/20 via-purple-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-cyan-500 to-blue-600 rounded-lg">
                     <Globe className="h-6 w-6 text-white" />
                   </div>
                   Migración a Blockchain
@@ -1587,7 +1587,7 @@ export default function TokensInfo() {
                 {/* Ilustración Wallet Interna */}
                 <div className="flex justify-center mb-6">
                   <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="absolute -inset-1 bg-linear-to-r from-purple-600 to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                     <img
                       src={WalletInterna}
                       alt="Wallet Interna Blockchain"
@@ -1612,7 +1612,7 @@ export default function TokensInfo() {
                     </p>
 
                     <div className="grid md:grid-cols-2 gap-4 mt-4">
-                      <div className="p-4 bg-gradient-to-r from-blue-900/40 to-purple-900/40 rounded-lg border border-blue-400/30">
+                      <div className="p-4 bg-linear-to-r from-blue-900/40 to-purple-900/40 rounded-lg border border-blue-400/30">
                         <div className="text-blue-300 font-bold text-sm mb-2">
                           ANTES (Beta)
                         </div>
@@ -1626,7 +1626,7 @@ export default function TokensInfo() {
                         </ul>
                       </div>
 
-                      <div className="p-4 bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-lg border border-purple-400/30">
+                      <div className="p-4 bg-linear-to-r from-purple-900/40 to-blue-900/40 rounded-lg border border-purple-400/30">
                         <div className="text-purple-300 font-bold text-sm mb-2">
                           DESPUÉS (Blockchain)
                         </div>
@@ -1662,21 +1662,21 @@ export default function TokensInfo() {
                         </h4>
                         <ul className="space-y-2 text-white/80">
                           <li className="flex items-start gap-2">
-                            <Target className="h-4 w-4 text-purple-400 flex-shrink-0 mt-1" />
+                            <Target className="h-4 w-4 text-purple-400 shrink-0 mt-1" />
                             <span>
                               Cambios en funcionalidades de la plataforma
                             </span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <Target className="h-4 w-4 text-purple-400 flex-shrink-0 mt-1" />
+                            <Target className="h-4 w-4 text-purple-400 shrink-0 mt-1" />
                             <span>Distribución de fondos del treasury</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <Target className="h-4 w-4 text-purple-400 flex-shrink-0 mt-1" />
+                            <Target className="h-4 w-4 text-purple-400 shrink-0 mt-1" />
                             <span>Párametros de staking (APY, duraciones)</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <Target className="h-4 w-4 text-purple-400 flex-shrink-0 mt-1" />
+                            <Target className="h-4 w-4 text-purple-400 shrink-0 mt-1" />
                             <span>Nuevas integraciones blockchain</span>
                           </li>
                         </ul>
@@ -1688,21 +1688,21 @@ export default function TokensInfo() {
                         </h4>
                         <ul className="space-y-2 text-white/80">
                           <li className="flex items-start gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-1" />
+                            <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-1" />
                             <span>
                               <strong>1 GTK = 1 Voto</strong>
                             </span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-1" />
+                            <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-1" />
                             <span>Votación por peso de tokens</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-1" />
+                            <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-1" />
                             <span>Período de votación: 7 días</span>
                           </li>
                           <li className="flex items-start gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-1" />
+                            <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-1" />
                             <span>Mínimo de participación: 10% de supply</span>
                           </li>
                         </ul>
@@ -1745,7 +1745,7 @@ export default function TokensInfo() {
                     ].map((chain, idx) => (
                       <div
                         key={idx}
-                        className={`p-4 rounded-lg bg-gradient-to-r ${chain.color} text-white text-center`}
+                        className={`p-4 rounded-lg bg-linear-to-r ${chain.color} text-white text-center`}
                       >
                         <div className="font-bold text-lg mb-1">
                           {chain.name}
@@ -1762,7 +1762,7 @@ export default function TokensInfo() {
 
         {/* Stats Cards (siempre visible) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-gradient-to-r from-green-900/80 to-blue-900/80 backdrop-blur-sm border border-white/10">
+          <Card className="bg-linear-to-r from-green-900/80 to-blue-900/80 backdrop-blur-sm border border-white/10">
             <CardContent className="p-6 text-center">
               <Gift className="h-8 w-8 text-green-400 mx-auto mb-3" />
               <div className="text-2xl font-bold text-white">
@@ -1772,7 +1772,7 @@ export default function TokensInfo() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-white/10">
+          <Card className="bg-linear-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-white/10">
             <CardContent className="p-6 text-center">
               <TrendingUp className="h-8 w-8 text-purple-400 mx-auto mb-3" />
               <div className="text-2xl font-bold text-white">
@@ -1782,7 +1782,7 @@ export default function TokensInfo() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-r from-orange-900/80 to-red-900/80 backdrop-blur-sm border border-white/10">
+          <Card className="bg-linear-to-r from-orange-900/80 to-red-900/80 backdrop-blur-sm border border-white/10">
             <CardContent className="p-6 text-center">
               <Star className="h-8 w-8 text-orange-400 mx-auto mb-3" />
               <div className="text-2xl font-bold text-white">18%</div>
@@ -1792,10 +1792,10 @@ export default function TokensInfo() {
         </div>
 
         {/* Sección para Creadores de Contenido */}
-        <Card className="bg-gradient-to-br from-fuchsia-900/40 to-pink-900/40 backdrop-blur-xl border border-fuchsia-400/30 shadow-2xl">
+        <Card className="bg-linear-to-br from-fuchsia-900/40 to-pink-900/40 backdrop-blur-xl border border-fuchsia-400/30 shadow-2xl">
           <CardHeader>
             <CardTitle className="text-2xl text-white flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-fuchsia-500 to-pink-600 rounded-lg">
+              <div className="p-2 bg-linear-to-r from-fuchsia-500 to-pink-600 rounded-lg">
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
               Para Creadores de Contenido
@@ -1809,19 +1809,19 @@ export default function TokensInfo() {
                 </h3>
                 <ul className="space-y-2 text-white/80">
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
                       <strong>Comisiones:</strong> 90% para el creador, 5% fee de la app, 5% treasury
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
                       <strong>Retiros:</strong> Semanales (KYC requerido para montos mayores a $1,000 USD)
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
                       <strong>Método de pago:</strong> Stripe (fiat) → conversión automática a CMPX
                     </span>
@@ -1835,19 +1835,19 @@ export default function TokensInfo() {
                 </h3>
                 <ul className="space-y-2 text-white/80">
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
                       <strong>Mint de NFTs:</strong> Gratis o 100 CMPX
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
                       <strong>Venta de NFTs:</strong> 5% fee de la app
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
                       <strong>Staking de NFTs:</strong> 10% APY en CMPX, vesting de 30 días
                     </span>
@@ -1862,19 +1862,19 @@ export default function TokensInfo() {
               </h3>
               <ul className="space-y-2 text-white/80 text-sm">
                 <li className="flex items-start gap-2">
-                  <Shield className="h-4 w-4 text-fuchsia-400 flex-shrink-0 mt-0.5" />
+                  <Shield className="h-4 w-4 text-fuchsia-400 shrink-0 mt-0.5" />
                   <span>
                     <strong>Gas:</strong> Cubierto por la app en testnet, pagado con CMPX en mainnet
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Shield className="h-4 w-4 text-fuchsia-400 flex-shrink-0 mt-0.5" />
+                  <Shield className="h-4 w-4 text-fuchsia-400 shrink-0 mt-0.5" />
                   <span>
                     <strong>NFTs internos:</strong> No transferibles fuera de la app, solo uso interno
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Shield className="h-4 w-4 text-fuchsia-400 flex-shrink-0 mt-0.5" />
+                  <Shield className="h-4 w-4 text-fuchsia-400 shrink-0 mt-0.5" />
                   <span>
                     <strong>Cumplimiento:</strong> Aceptación de términos y condiciones al usar el servicio
                   </span>
@@ -1905,7 +1905,7 @@ export default function TokensInfo() {
                   onClick={() => setSelectedCategory(cat)}
                   className={`text-xs h-9 rounded-md px-3 ${
                     selectedCategory === cat
-                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                      ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                       : "border border-white/20 bg-white/10 text-white hover:bg-white/20"
                   }`}
                 >
@@ -1982,7 +1982,7 @@ export default function TokensInfo() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 h-11 rounded-md px-8"
+              className="bg-linear-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 h-11 rounded-md px-8"
             >
               <UserPlus className="h-5 w-5 mr-2" />
               Registrarse Ahora

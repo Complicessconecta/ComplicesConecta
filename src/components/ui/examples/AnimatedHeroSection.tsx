@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Heart, ArrowRight } from "lucide-react";
-import { FadeInUp, FadeIn, ScaleIn } from "@/components/ui/animations/ScrollAnimations";
+import { FadeInUp, ScaleIn } from "@/components/ui/animations/ScrollAnimations";
 
 /**
  * HeroSection con animaciones suaves de scroll

@@ -78,9 +78,9 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
         )}
       >
         {!isOwn && senderAvatar && (
-          <Avatar className="w-8 h-8 flex-shrink-0">
+          <Avatar className="w-8 h-8 shrink-0">
             <AvatarImage src={senderAvatar} alt={senderName} />
-            <AvatarFallback className="text-xs bg-gradient-to-br from-purple-500 to-blue-600 text-white">
+            <AvatarFallback className="text-xs bg-linear-to-br from-purple-500 to-blue-600 text-white">
               {senderName?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
@@ -103,8 +103,8 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
             className={cn(
               "relative px-4 py-3 rounded-2xl shadow-sm backdrop-blur-sm border border-white/10 transition-all duration-300 ease-out",
               isOwn
-                ? "bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-br-md"
-                : "bg-gradient-to-r from-blue-500/90 to-purple-600/90 text-white rounded-bl-md hover:from-blue-500/95 hover:to-purple-600/95",
+                ? "bg-linear-to-r from-purple-500 to-blue-600 text-white rounded-br-md"
+                : "bg-linear-to-r from-blue-500/90 to-purple-600/90 text-white rounded-bl-md hover:from-blue-500/95 hover:to-purple-600/95",
             )}
           >
             <p className="text-sm leading-relaxed break-words text-white">
@@ -119,9 +119,9 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
         </div>
 
         {isOwn && senderAvatar && (
-          <Avatar className="w-8 h-8 flex-shrink-0">
+          <Avatar className="w-8 h-8 shrink-0">
             <AvatarImage src={senderAvatar} alt="Tú" />
-            <AvatarFallback className="text-xs bg-gradient-to-br from-purple-500 to-blue-600 text-white">
+            <AvatarFallback className="text-xs bg-linear-to-br from-purple-500 to-blue-600 text-white">
               Tú
             </AvatarFallback>
           </Avatar>
@@ -146,7 +146,7 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
       {/* Avatar */}
       {!isOwn && senderAvatar && (
         <motion.div
-          className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden flex-shrink-0"
+          className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden shrink-0"
           whileHover={{ scale: 1.1 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
@@ -183,7 +183,7 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
               "relative px-4 py-2 rounded-2xl shadow-sm",
               isOwn
                 ? isPrivate
-                  ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white"
+                  ? "bg-linear-to-r from-purple-500 to-fuchsia-500 text-white"
                   : "bg-blue-500 text-white"
                 : "bg-white/10 backdrop-blur-md text-white border border-white/20",
             )}

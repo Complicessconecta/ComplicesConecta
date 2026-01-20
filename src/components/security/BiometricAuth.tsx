@@ -300,7 +300,7 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
         {/* Security Info */}
         <div className="text-xs text-muted-foreground bg-muted p-3 rounded-lg">
           <div className="flex items-start gap-2">
-            <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
+            <Shield className="h-4 w-4 mt-0.5 shrink-0" />
             <div>
               <p className="font-medium mb-1">Información de Seguridad:</p>
               <ul className="space-y-1">

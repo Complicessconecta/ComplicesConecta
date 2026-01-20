@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Componente optimizado para lazy loading con fallbacks inteligentes
  * Implementa estrategias de carga progresiva y manejo de errores
  */
@@ -206,7 +206,7 @@ export const ModalLoader: React.FC = () => (
   <div className="flex items-center justify-center p-12">
     <div className="text-center space-y-3">
       <div className="animate-pulse">
-        <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mx-auto flex items-center justify-center">
+        <div className="w-16 h-16 bg-linear-to-r from-purple-400 to-pink-400 rounded-full mx-auto flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>

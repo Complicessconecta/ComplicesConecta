@@ -21,7 +21,7 @@ export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
+      <DialogContent className="sm:max-w-md bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
             <div className="relative">
@@ -57,7 +57,7 @@ export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({
 
           <Button
             onClick={onClose}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/30"
+            className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/30"
           >
             Entendido
           </Button>

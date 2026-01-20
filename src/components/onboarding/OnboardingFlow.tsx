@@ -49,7 +49,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
         icon: <Sparkles className="h-12 w-12 text-purple-500" />,
         content: (
           <div className="text-center space-y-6">
-            <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-8 rounded-2xl">
+            <div className="bg-linear-to-br from-purple-500 to-pink-600 p-8 rounded-2xl">
               <div className="text-6xl mb-4">
                 {profileType === "couple" ? "💑" : "✨"}
               </div>
@@ -85,7 +85,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
         icon: <Heart className="h-12 w-12 text-pink-500" />,
         content: (
           <div className="space-y-6">
-            <div className="aspect-video bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl flex items-center justify-center">
+            <div className="aspect-video bg-linear-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl flex items-center justify-center">
               <div className="text-center">
                 <div className="text-6xl mb-4">📸</div>
                 <p className="text-lg font-medium">Sube tus mejores fotos</p>
@@ -342,7 +342,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+              className="bg-linear-to-r from-purple-500 to-pink-500 h-2 rounded-full"
               transition={{ duration: 0.3 }}
             />
           </div>
@@ -398,7 +398,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 
             <Button
               onClick={handleNext}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              className="bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
             >
               {isLastStep ? (
                 <>

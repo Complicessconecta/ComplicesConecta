@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Asistente IA Interactivo de Tokens CMPX/GTK
  * Flujo wizard paso a paso para usuarios Beta
  */
@@ -465,7 +465,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
                 className={`p-4 rounded-2xl ${
                   message.type === "bot"
                     ? "bg-gray-800/80 text-gray-100 rounded-tl-none border-l-2 border-purple-500/50"
-                    : "bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-tr-none shadow-lg"
+                    : "bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-tr-none shadow-lg"
                 } max-w-[85%]`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
@@ -482,7 +482,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
                             ? "bg-white/10 text-white border border-white/20 hover:bg-white/20"
                             : action.variant === "destructive"
                               ? "bg-red-500/90 text-white hover:bg-red-600"
-                              : "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
+                              : "bg-linear-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600"
                         }`}
                       >
                         {action.label}
@@ -516,7 +516,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
                 className={`px-4 py-3 rounded-r-lg font-medium transition-all duration-200 ${
                   !userInput.trim() || isTyping
                     ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg"
+                    : "bg-linear-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg"
                 }`}
               >
                 {isTyping ? (

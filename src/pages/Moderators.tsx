@@ -146,7 +146,7 @@ const Moderators: FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className="min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={8} />
 
@@ -159,12 +159,12 @@ const Moderators: FC = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <Badge className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold mb-4">
+            <Badge className="bg-linear-to-r from-blue-400 to-purple-500 text-white font-bold mb-4">
               🛡️ SISTEMA DE MODERACIÓN 24/7
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Únete al Equipo de
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 {" "}
                 Moderadores
               </span>
@@ -175,15 +175,15 @@ const Moderators: FC = () => {
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <DollarSign className="h-4 w-4 mr-2" />
                 Pagos Automáticos
               </Badge>
-              <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Timer className="h-4 w-4 mr-2" />
                 Timer Automático
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Shield className="h-4 w-4 mr-2" />
                 Herramientas Pro
               </Badge>
@@ -192,7 +192,7 @@ const Moderators: FC = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Button
                 onClick={() => navigate("/moderator-request")}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg font-semibold"
+                className="bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg font-semibold"
               >
                 <UserCheck className="w-5 h-5 mr-2" />
                 Aplicar Ahora
@@ -232,12 +232,12 @@ const Moderators: FC = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
                   <Card
-                    className={`bg-gradient-to-r ${level.color}/20 backdrop-blur-xl border-white/20 shadow-2xl`}
+                    className={`bg-linear-to-r ${level.color}/20 backdrop-blur-xl border-white/20 shadow-2xl`}
                   >
                     <CardHeader>
                       <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
                         <div
-                          className={`p-3 bg-gradient-to-r ${level.color} rounded-lg text-white`}
+                          className={`p-3 bg-linear-to-r ${level.color} rounded-lg text-white`}
                         >
                           {level.icon}
                         </div>
@@ -292,7 +292,7 @@ const Moderators: FC = () => {
                                   key={idx}
                                   className="flex items-start gap-2 text-white/80 text-sm"
                                 >
-                                  <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
+                                  <CheckCircle className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                                   <span>{responsibility}</span>
                                 </div>
                               ),
@@ -314,10 +314,10 @@ const Moderators: FC = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-20"
           >
-            <Card className="bg-gradient-to-r from-green-600/20 via-emerald-600/20 to-teal-600/20 backdrop-blur-xl border-green-400/30 shadow-2xl">
+            <Card className="bg-linear-to-r from-green-600/20 via-emerald-600/20 to-teal-600/20 backdrop-blur-xl border-green-400/30 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                     <DollarSign className="h-6 w-6 text-white" />
                   </div>
                   Sistema de Pagos Automáticos
@@ -358,7 +358,7 @@ const Moderators: FC = () => {
                           key={index}
                           className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
                         >
-                          <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-white flex-shrink-0 text-sm font-bold">
+                          <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg text-white shrink-0 text-sm font-bold">
                             {index + 1}
                           </div>
                           <div>
@@ -452,7 +452,7 @@ const Moderators: FC = () => {
                   <Card className="bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/15 transition-colors h-full">
                     <CardHeader>
                       <CardTitle className="text-xl font-semibold text-white flex items-start gap-3">
-                        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white flex-shrink-0">
+                        <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg text-white shrink-0">
                           {tool.icon}
                         </div>
                         <div>
@@ -475,7 +475,7 @@ const Moderators: FC = () => {
                               key={idx}
                               className="flex items-start gap-2 text-white/70 text-sm"
                             >
-                              <Zap className="h-3 w-3 text-blue-400 flex-shrink-0 mt-0.5" />
+                              <Zap className="h-3 w-3 text-blue-400 shrink-0 mt-0.5" />
                               <span>{feature}</span>
                             </li>
                           ))}
@@ -495,12 +495,12 @@ const Moderators: FC = () => {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="text-center"
           >
-            <Card className="bg-gradient-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+            <Card className="bg-linear-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
               <CardContent className="p-12">
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  className="inline-flex p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-6"
+                  className="inline-flex p-4 bg-linear-to-r from-blue-500 to-purple-600 rounded-2xl mb-6"
                 >
                   <Sparkles className="h-12 w-12 text-white" />
                 </motion.div>
@@ -515,7 +515,7 @@ const Moderators: FC = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                   <Button
                     onClick={() => navigate("/moderator-request")}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
+                    className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
                   >
                     <UserCheck className="h-5 w-5 mr-2" />
                     Aplicar como Moderador

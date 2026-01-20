@@ -261,7 +261,7 @@ const Matches = () => {
                 onClick={() => setFilter(item.id as any)}
                 className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
                   filter === item.id
-                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
+                    ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                     : "bg-gray-800/50 text-gray-200 hover:bg-gray-700/50 border border-gray-600/50"
                 }`}
               >
@@ -302,7 +302,7 @@ const Matches = () => {
           </div>
         ) : (
           <div className="text-center py-16 bg-gray-800/30 rounded-2xl border border-dashed border-gray-700/50">
-            <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-linear-to-br from-purple-500/10 to-blue-500/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Heart className="h-10 w-10 text-purple-400/50" />
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">
@@ -314,7 +314,7 @@ const Matches = () => {
             </p>
             <button
               onClick={() => setFilter("all")}
-              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full text-sm font-medium hover:from-purple-700 hover:to-blue-700 transition-all"
+              className="px-6 py-2 bg-linear-to-r from-purple-600 to-blue-600 text-white rounded-full text-sm font-medium hover:from-purple-700 hover:to-blue-700 transition-all"
             >
               Ver todos los matches
             </button>
@@ -353,7 +353,7 @@ const MatchCard = ({
 
         {/* Badge de estado */}
         {match.status === "new" && (
-          <div className="absolute top-3 right-3 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center">
+          <div className="absolute top-3 right-3 bg-linear-to-r from-fuchsia-500 to-purple-600 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center">
             <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></span>
             NUEVO
           </div>
@@ -402,7 +402,7 @@ const MatchCard = ({
             onClick={() => onMessage(match.id)}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium transition-all ${
               match.hasUnreadMessage
-                ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg"
+                ? "bg-linear-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg"
                 : "bg-gray-700/50 text-gray-200 hover:bg-gray-600/50 border border-gray-600/30"
             }`}
           >

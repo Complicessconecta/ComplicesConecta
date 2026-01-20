@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Utilidad para capturar y mostrar errores de consola
  * Versión: 3.5.1
  *

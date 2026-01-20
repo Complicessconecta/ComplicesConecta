@@ -648,7 +648,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Avatar Placeholder */}
-                <div className="aspect-square bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                <div className="aspect-square bg-linear-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
                   <Camera className="h-12 w-12 text-white opacity-50" />
                 </div>
 

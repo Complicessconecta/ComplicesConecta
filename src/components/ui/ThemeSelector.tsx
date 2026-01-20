@@ -37,13 +37,13 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
   const getThemePreviewClass = (theme: Theme): string => {
     switch (theme) {
       case "elegant":
-        return "bg-gradient-to-r from-gray-900 via-gray-800 to-black";
+        return "bg-linear-to-r from-gray-900 via-gray-800 to-black";
       case "modern":
-        return "bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500";
+        return "bg-linear-to-r from-indigo-500 via-purple-500 to-fuchsia-500";
       case "vibrant":
-        return "bg-gradient-to-r from-fuchsia-500 via-red-500 to-yellow-500";
+        return "bg-linear-to-r from-fuchsia-500 via-red-500 to-yellow-500";
       default:
-        return "bg-gradient-to-r from-gray-600 to-gray-700";
+        return "bg-linear-to-r from-gray-600 to-gray-700";
     }
   };
 
@@ -92,7 +92,7 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
           onClick={() => onThemeChange(undefined)}
         >
           {showPreview && (
-            <div className="h-8 w-full bg-gradient-to-r from-gray-600 to-gray-700 rounded mb-2" />
+            <div className="h-8 w-full bg-linear-to-r from-gray-600 to-gray-700 rounded mb-2" />
           )}
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-gray-900">
@@ -175,26 +175,26 @@ export const ThemePreviewCard: FC<ThemePreviewCardProps> = ({
 
   const getBackgroundClass = (): string => {
     if (theme === "elegant")
-      return "bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white";
+      return "bg-linear-to-br from-gray-900 via-gray-800 to-black text-white";
     if (theme === "modern")
-      return "bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 text-white";
+      return "bg-linear-to-br from-indigo-500 via-purple-500 to-fuchsia-500 text-white";
     if (theme === "vibrant")
-      return "bg-gradient-to-br from-fuchsia-500 via-red-500 to-yellow-500 text-white";
+      return "bg-linear-to-br from-fuchsia-500 via-red-500 to-yellow-500 text-white";
 
     if (accountType === "single") {
       return gender === "male"
-        ? "bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 text-white"
-        : "bg-gradient-to-br from-fuchsia-400 via-purple-500 to-fuchsia-600 text-white";
+        ? "bg-linear-to-br from-blue-900 via-gray-800 to-gray-900 text-white"
+        : "bg-linear-to-br from-fuchsia-400 via-purple-500 to-fuchsia-600 text-white";
     }
 
     if (accountType === "couple") {
       if (genders[0] === "male" && genders[1] === "male") {
-        return "bg-gradient-to-br from-blue-900 via-gray-700 to-black text-white";
+        return "bg-linear-to-br from-blue-900 via-gray-700 to-black text-white";
       }
       if (genders[0] === "female" && genders[1] === "female") {
-        return "bg-gradient-to-br from-fuchsia-500 via-fuchsia-600 to-purple-700 text-white";
+        return "bg-linear-to-br from-fuchsia-500 via-fuchsia-600 to-purple-700 text-white";
       }
-      return "bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-500 text-white";
+      return "bg-linear-to-br from-purple-500 via-indigo-600 to-blue-500 text-white";
     }
 
     return "bg-gray-800 text-white";

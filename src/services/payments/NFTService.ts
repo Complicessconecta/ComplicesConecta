@@ -249,7 +249,11 @@ export class NFTService {
    */
   public async getUserNFTs(userId: string): Promise<NFTInfo[]> {
     try {
+      const isDemoEnv =
+        import.meta.env.VITE_APP_MODE === "demo" ||
+        import.meta.env.MODE === "development";
       const isDemoAuthActive =
+        isDemoEnv &&
         typeof window !== "undefined" &&
         safeGetItem("demo_authenticated") === "true";
       if (WalletService.isDemoMode() || isDemoAuthActive) {
@@ -257,34 +261,28 @@ export class NFTService {
       }
 
       const { data, error } = await this.blockchainClient
-        .from("nfts")
+        .from("user_nfts")
         .select("*")
-        .eq("owner_id", userId);
+        .eq("user_id", userId);
 
       if (error) throw error;
       return (data || []).map((nft: any) => {
         const base: NFTInfo = {
-          id: nft.id,
-          token_id: nft.token_id,
-          owner_address: typeof nft.owner_address === "string" ? nft.owner_address : "",
-          metadata_uri: nft.metadata_uri,
-          rarity: nft.rarity || "common",
-          is_couple: nft.is_couple || false,
-          created_at: nft.created_at,
+          id: String(nft.id || ""),
+          token_id: typeof nft.token_id === "number" ? nft.token_id : 0,
+          owner_address:
+            typeof nft.contract_address === "string" ? nft.contract_address : "",
+          metadata_uri: typeof nft.metadata_uri === "string" ? nft.metadata_uri : "",
+          rarity: "common",
+          is_couple: Boolean(nft.is_couple),
+          created_at:
+            typeof nft.minted_at === "string" ? nft.minted_at : new Date().toISOString(),
         };
 
-        if (typeof nft.partner_address === "string" && nft.partner_address) {
-          base.partner_address = nft.partner_address;
-        }
-        if (typeof nft.name === "string" && nft.name) {
-          base.name = nft.name;
-        }
-        if (typeof nft.description === "string" && nft.description) {
+        if (typeof nft.name === "string" && nft.name) base.name = nft.name;
+        if (typeof nft.description === "string" && nft.description)
           base.description = nft.description;
-        }
-        if (typeof nft.image === "string" && nft.image) {
-          base.image = nft.image;
-        }
+        if (typeof nft.image_url === "string" && nft.image_url) base.image = nft.image_url;
 
         return base;
       });

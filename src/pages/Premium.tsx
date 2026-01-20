@@ -77,7 +77,7 @@ const Premium = () => {
         <div className="absolute top-40 left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 pb-20">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900 pb-20">
         <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
           {/* Back Button */}
           <div className="mb-6">
@@ -129,7 +129,7 @@ const Premium = () => {
               {/* Supporter Plan */}
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:scale-105">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-linear-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
                     <Heart className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">Supporter</CardTitle>
@@ -163,7 +163,7 @@ const Premium = () => {
                   </ul>
                   <Button
                     asChild
-                    className="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                    className="w-full mt-4 bg-linear-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
                   >
                     <a
                       href="#"
@@ -185,7 +185,7 @@ const Premium = () => {
               {/* Contributor Plan */}
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:scale-105">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-linear-to-r from-purple-500 to-fuchsia-500 flex items-center justify-center">
                     <Users className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">Contributor</CardTitle>
@@ -218,7 +218,7 @@ const Premium = () => {
                     </li>
                   </ul>
                   <Button
-                    className="w-full mt-4 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                    className="w-full mt-4 bg-linear-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
                     onClick={() => {
                       if (isDemoUser) {
                         toast({
@@ -244,7 +244,7 @@ const Premium = () => {
                   </Badge>
                 </div>
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-linear-to-r from-amber-500 to-orange-500 flex items-center justify-center">
                     <Shield className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">VIP Supporter</CardTitle>
@@ -277,7 +277,7 @@ const Premium = () => {
                     </li>
                   </ul>
                   <Button
-                    className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                    className="w-full mt-4 bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
                     onClick={() => {
                       if (isDemoUser) {
                         toast({
@@ -297,7 +297,7 @@ const Premium = () => {
               {/* Founding Member Plan */}
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:scale-105">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-linear-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
                     <Gift className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">Founding Member</CardTitle>
@@ -325,7 +325,7 @@ const Premium = () => {
                     Acceso de por vida a funciones premium
                   </p>
                   <Button
-                    className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                    className="w-full mt-4 bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
                     onClick={() => {
                       if (isDemoUser) {
                         toast({
@@ -359,7 +359,7 @@ const Premium = () => {
           </div>
 
           {/* Future Premium Features */}
-          <Card className="bg-gradient-to-r from-accent/20 to-primary/20 border border-accent/30 mb-12">
+          <Card className="bg-linear-to-r from-accent/20 to-primary/20 border border-accent/30 mb-12">
             <CardContent className="text-center py-8">
               <Lock className="h-12 w-12 text-accent mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -386,7 +386,7 @@ const Premium = () => {
               >
                 <CardContent className="p-6 text-center">
                   <div
-                    className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${benefit.color} flex items-center justify-center`}
+                    className={`w-16 h-16 mx-auto mb-4 rounded-full bg-linear-to-r ${benefit.color} flex items-center justify-center`}
                   >
                     <benefit.icon className="h-8 w-8 text-white" />
                   </div>
@@ -525,7 +525,7 @@ const Premium = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   onClick={() =>
                     handleComingSoon("Planes de Suscripcin Premium")
                   }

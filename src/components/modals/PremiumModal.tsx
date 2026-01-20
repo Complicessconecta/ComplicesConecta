@@ -51,7 +51,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
+      <DialogContent className="sm:max-w-lg bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
             <Crown className="h-6 w-6 text-yellow-400" />
@@ -61,7 +61,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 
         <div className="space-y-4">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-yellow-500/50">
+            <div className="mx-auto w-16 h-16 bg-linear-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-yellow-500/50">
               <Crown className="h-8 w-8 text-white drop-shadow-md" />
             </div>
             <h3 className="text-lg font-bold mb-2 text-white drop-shadow-lg">
@@ -96,7 +96,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
             })}
           </div>
 
-          <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 p-4 rounded-lg border border-yellow-500/30">
+          <div className="bg-linear-to-r from-yellow-500/20 to-orange-500/20 p-4 rounded-lg border border-yellow-500/30">
             <div className="flex items-center justify-between mb-2">
               <span className="font-bold text-white drop-shadow-md">
                 Precio especial de lanzamiento
@@ -135,7 +135,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
             {onSubscribe && (
               <Button
                 onClick={onSubscribe}
-                className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold"
+                className="flex-1 bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold"
               >
                 <Crown className="h-4 w-4 mr-2" />
                 Ser Premium

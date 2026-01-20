@@ -188,14 +188,14 @@ const Shop = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-fuchsia-500 to-indigo-600 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-purple-600 via-fuchsia-500 to-indigo-600 flex items-center justify-center">
         <div className="text-white text-xl">Cargando shop...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
@@ -238,7 +238,7 @@ const Shop = () => {
                   </Badge>
                 )}
 
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/90 to-blue-500/90" />
+                <div className="absolute inset-0 bg-linear-to-br from-purple-500/90 to-blue-500/90" />
 
                 <CardHeader className="relative text-white text-center pb-4">
                   <div className="flex items-center justify-center gap-2 mb-2">

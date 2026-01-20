@@ -352,7 +352,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
                 <button
                   key={index}
                   onClick={() => goToIndex(index)}
-                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                  className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
                     index === currentIndex
                       ? "border-white scale-110"
                       : "border-transparent opacity-50 hover:opacity-100"

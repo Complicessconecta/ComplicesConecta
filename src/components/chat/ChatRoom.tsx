@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ChatRoom - Componente principal de sala de chat con privacidad
  *
  * Funcionalidades:

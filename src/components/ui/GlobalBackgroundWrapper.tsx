@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import type { FC, ReactNode } from "react";
 import { logger } from "@/lib/logger";
 
@@ -25,7 +25,7 @@ export const GlobalBackgroundWrapper: FC<{ children?: ReactNode }> = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900">
+    <div className="fixed inset-0 w-full h-full bg-linear-to-br from-purple-900 via-indigo-900 to-blue-900">
       {/* Fondo de respaldo */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <div

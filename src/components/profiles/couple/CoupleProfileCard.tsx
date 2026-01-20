@@ -111,7 +111,7 @@ const CoupleProfileCard = ({
                   "w-full h-full flex items-center justify-center",
                   useThemeBackground
                     ? themeConfig.backgroundClass
-                    : "bg-gradient-to-br from-purple-400 to-pink-400",
+                    : "bg-linear-to-br from-purple-400 to-pink-400",
                 )}
               >
                 <div
@@ -145,7 +145,7 @@ const CoupleProfileCard = ({
                   "w-full h-full flex items-center justify-center",
                   useThemeBackground
                     ? themeConfig.backgroundClass
-                    : "bg-gradient-to-br from-blue-400 to-indigo-400",
+                    : "bg-linear-to-br from-blue-400 to-indigo-400",
                 )}
               >
                 <div
@@ -238,7 +238,7 @@ const CoupleProfileCard = ({
               useThemeBackground ? themeConfig.accentClass : "text-white",
             )}
           >
-            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
             <span className="text-xs sm:text-sm truncate">
               {profile.location}
             </span>
@@ -289,11 +289,11 @@ const CoupleProfileCard = ({
           <Button
             variant="outline"
             size="sm"
-            className="flex-1 max-w-[120px] bg-gradient-to-r from-pink-500 to-purple-600 border-2 border-pink-400 text-white hover:from-pink-600 hover:to-purple-700 hover:border-pink-500 font-semibold transition-all duration-300 min-h-[40px] flex items-center justify-center"
+            className="flex-1 max-w-[120px] bg-linear-to-r from-pink-500 to-purple-600 border-2 border-pink-400 text-white hover:from-pink-600 hover:to-purple-700 hover:border-pink-500 font-semibold transition-all duration-300 min-h-[40px] flex items-center justify-center"
             onClick={handleDislike}
           >
             <X
-              className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 flex-shrink-0"
+              className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 shrink-0"
               strokeWidth={2.5}
             />
             <span className="hidden sm:inline text-xs">Pasar</span>
@@ -307,7 +307,7 @@ const CoupleProfileCard = ({
             disabled={!onLike}
           >
             <Heart
-              className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 flex-shrink-0"
+              className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 shrink-0"
               strokeWidth={2.5}
             />
             <span className="hidden sm:inline text-xs">Me Gusta</span>
@@ -321,7 +321,7 @@ const CoupleProfileCard = ({
             _e.stopPropagation();
             handleViewProfile();
           }}
-          className="w-full mt-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 text-xs sm:text-sm py-2 rounded-md font-medium border border-purple-500 hover:border-purple-600 shadow-md hover:shadow-lg"
+          className="w-full mt-2 text-white bg-linear-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 text-xs sm:text-sm py-2 rounded-md font-medium border border-purple-500 hover:border-purple-600 shadow-md hover:shadow-lg"
         >
           Ver Perfil Completo
         </button>

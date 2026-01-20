@@ -193,7 +193,7 @@ export const PricingPlans = () => {
                 <div className="space-y-3">
                   {plan.features.map((feature, index) => (
                     <div key={index} className="flex items-start space-x-2">
-                      <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
                       <span className="text-sm text-muted-foreground">
                         {feature}
                       </span>

@@ -162,12 +162,12 @@ export const ParentalControl = ({
   const restrictionGradient = (level: RestrictionLevel) => {
     switch (level) {
       case "soft":
-        return "bg-gradient-to-r from-green-500/20 to-emerald-500/20";
+        return "bg-linear-to-r from-green-500/20 to-emerald-500/20";
       case "medium":
-        return "bg-gradient-to-r from-yellow-500/20 to-orange-500/20";
+        return "bg-linear-to-r from-yellow-500/20 to-orange-500/20";
       case "strict":
       default:
-        return "bg-gradient-to-r from-red-500/20 to-rose-500/20";
+        return "bg-linear-to-r from-red-500/20 to-rose-500/20";
     }
   };
 
@@ -180,7 +180,7 @@ export const ParentalControl = ({
           exit={{ opacity: 0, scale: 0.9 }}
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
-          <Card className="w-full max-w-sm bg-gradient-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
+          <Card className="w-full max-w-sm bg-linear-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
             <CardHeader className="text-center pb-4">
               <div
                 className="mx-auto mb-4 p-3 rounded-full w-fit border-2 border-red-500/40 parental-control-icon"
@@ -221,7 +221,7 @@ export const ParentalControl = ({
               {!showPinInput ? (
                 <Button
                   onClick={() => setShowPinInput(true)}
-                  className="w-full text-white font-semibold py-3 rounded-2xl backdrop-blur-sm border border-white/20 shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-r from-purple-600 to-blue-600"
+                  className="w-full text-white font-semibold py-3 rounded-2xl backdrop-blur-sm border border-white/20 shadow-lg transition-all duration-300 hover:scale-105 bg-linear-to-r from-purple-600 to-blue-600"
                 >
                   <Unlock className="h-4 w-4 mr-2" />
                   🔓 Desbloquear
@@ -265,7 +265,7 @@ export const ParentalControl = ({
                       className={cn(
                         "flex-1 rounded-xl py-2.5 text-xs font-semibold transition-all duration-300",
                         pin.length === 4
-                          ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:scale-105"
+                          ? "bg-linear-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:scale-105"
                           : "bg-white/5 text-white/50 cursor-not-allowed backdrop-blur-sm border border-white/20",
                       )}
                     >
@@ -341,7 +341,7 @@ export const ParentalControl = ({
                     className={cn(
                       "py-2 text-sm font-medium rounded-lg transition-all duration-300 w-full",
                       restrictionLevel === level
-                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-900/40 border border-white/20"
+                        ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-900/40 border border-white/20"
                         : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5 border border-white/5",
                     )}
                   >

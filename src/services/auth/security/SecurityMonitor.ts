@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Security Monitor Service
  * Detecta y registra anomalías de seguridad
  * Fecha: 7 Diciembre 2025

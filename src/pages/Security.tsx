@@ -22,7 +22,7 @@ const SecurityPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
@@ -43,7 +43,7 @@ const SecurityPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
-              <Lock className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <Lock className="h-12 w-12 text-white mx-auto mb-4 shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
                 Encriptación AES-256
               </CardTitle>
@@ -59,7 +59,7 @@ const SecurityPage = () => {
 
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
-              <ShieldAlert className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <ShieldAlert className="h-12 w-12 text-white mx-auto mb-4 shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
                 Protección Anti-DDoS
               </CardTitle>
@@ -74,7 +74,7 @@ const SecurityPage = () => {
 
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
-              <UserCheck className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <UserCheck className="h-12 w-12 text-white mx-auto mb-4 shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
                 Autenticación Biométrica
               </CardTitle>
@@ -89,7 +89,7 @@ const SecurityPage = () => {
 
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
-              <Activity className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <Activity className="h-12 w-12 text-white mx-auto mb-4 shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
                 Monitoreo 24/7
               </CardTitle>
@@ -104,7 +104,7 @@ const SecurityPage = () => {
 
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
-              <FileCheck className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <FileCheck className="h-12 w-12 text-white mx-auto mb-4 shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
                 Cumplimiento Legal
               </CardTitle>
@@ -119,7 +119,7 @@ const SecurityPage = () => {
 
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
-              <Eye className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <Eye className="h-12 w-12 text-white mx-auto mb-4 shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
                 Control de Privacidad
               </CardTitle>
@@ -145,56 +145,56 @@ const SecurityPage = () => {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Protección Anti-Inyección SQL:</strong> Sanitización
                     de inputs, validación de formatos, triggers automáticos
                   </p>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Protección XSS:</strong> Escapado de HTML en todos los
                     outputs, Content Security Policy configurada
                   </p>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Rate Limiting:</strong> 100 requests/minuto por
                     usuario, bloqueo automático de IPs maliciosas
                   </p>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Monitoreo 24/7:</strong> Detección de actividad
                     sospechosa, alertas automáticas, auditoría forense completa
                   </p>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Enmascaramiento de Datos:</strong> Emails enmascarados
                     en logs (ab***@domain.com), datos sensibles protegidos
                   </p>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Row Level Security (RLS):</strong> 65+ políticas RLS
                     activas protegiendo acceso a datos sensibles
                   </p>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Gestión de Administradores:</strong> Tabla
                     admin_users con RLS estricto, auditoría completa de cambios
                   </p>
                 </div>
                 <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
                     <strong>Cumplimiento Legal:</strong> GDPR/LFPDPPP + Ley
                     Olimpia, ISO 27001 Ready, SOC 2 Type II Ready
@@ -339,7 +339,7 @@ const SecurityPage = () => {
           </p>
           <Button
             onClick={() => navigate("/support")}
-            className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white font-semibold px-6 py-3 transition-all duration-300 hover:scale-105"
+            className="bg-linear-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white font-semibold px-6 py-3 transition-all duration-300 hover:scale-105"
           >
             Contactar Soporte
           </Button>

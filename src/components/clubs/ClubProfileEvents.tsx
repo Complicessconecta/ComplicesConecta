@@ -60,7 +60,7 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-500 rounded-lg">
               <Calendar className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -92,7 +92,7 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
             {isOwner && onCreateEvent && (
               <Button
                 onClick={onCreateEvent}
-                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Crear Evento
@@ -135,7 +135,7 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
                 <div className="flex flex-col md:flex-row gap-4">
                   {/* Event Image */}
                   {event.imageUrl && (
-                    <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="w-full md:w-48 h-32 rounded-lg overflow-hidden shrink-0">
                       <img
                         src={event.imageUrl}
                         alt={event.title}
@@ -159,7 +159,7 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
                       </div>
 
                       {event.isVip && (
-                        <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black">
+                        <Badge className="bg-linear-to-r from-yellow-500 to-orange-500 text-black">
                           VIP
                         </Badge>
                       )}

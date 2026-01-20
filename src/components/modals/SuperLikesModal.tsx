@@ -17,7 +17,7 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
+      <DialogContent className="sm:max-w-md bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
             <Flame className="h-6 w-6 text-orange-500" />
@@ -27,7 +27,7 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
 
         <div className="space-y-4">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-orange-500/50">
+            <div className="mx-auto w-16 h-16 bg-linear-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-orange-500/50">
               <Flame className="h-8 w-8 text-white drop-shadow-md" />
             </div>
             <h3 className="text-lg font-bold mb-2 text-white drop-shadow-lg">
@@ -77,7 +77,7 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-orange-500/20 to-red-500/20 p-4 rounded-lg border border-orange-500/30">
+          <div className="bg-linear-to-r from-orange-500/20 to-red-500/20 p-4 rounded-lg border border-orange-500/30">
             <div className="flex items-center justify-between mb-2">
               <span className="font-bold text-white drop-shadow-md">
                 Super Likes disponibles
@@ -105,7 +105,7 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
             {onUpgrade && (
               <Button
                 onClick={onUpgrade}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
+                className="flex-1 bg-linear-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white"
               >
                 <Crown className="h-4 w-4 mr-2" />
                 Ser Premium

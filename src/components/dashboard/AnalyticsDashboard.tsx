@@ -391,7 +391,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                       initial={{ width: 0 }}
                       animate={{ width: `${metrics.engagement.score}%` }}
                       transition={{ duration: 1, delay: 0.5 }}
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full"
+                      className="bg-linear-to-r from-purple-500 to-pink-500 h-3 rounded-full"
                     />
                   </div>
                 </div>

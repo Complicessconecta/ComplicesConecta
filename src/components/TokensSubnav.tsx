@@ -32,7 +32,7 @@ export const TokensSubnav = () => {
                     : "text-white/70 hover:bg-white/5 hover:text-white border border-transparent"
                 }`}
               >
-                <IconComponent className="h-4 w-4 flex-shrink-0" />
+                <IconComponent className="h-4 w-4 shrink-0" />
                 <span>{tab.name}</span>
               </Link>
             );

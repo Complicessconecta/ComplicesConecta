@@ -24,7 +24,7 @@ export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-linear-to-br from-purple-500 to-fuchsia-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-lg">
                   {index + 1}
                 </span>
@@ -49,7 +49,7 @@ export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
           <div className="space-y-2 mb-6">
             {card.features.map((feature, idx) => (
               <div key={idx} className="flex items-center space-x-2">
-                <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                <CheckCircle className="h-4 w-4 text-green-400 shrink-0" />
                 <span className="text-white/70 text-xs">{feature}</span>
               </div>
             ))}
@@ -58,7 +58,7 @@ export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
           {/* CTA Button */}
           <Button
             onClick={() => onCtaClick(card.ctaAction)}
-            className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white border-0 group-hover:shadow-lg transition-all duration-300"
+            className="w-full bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white border-0 group-hover:shadow-lg transition-all duration-300"
           >
             <span className="flex items-center justify-center space-x-2">
               <span>{card.ctaText}</span>
@@ -67,7 +67,7 @@ export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
           </Button>
 
           {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </CardContent>
       </Card>
     </motion.div>

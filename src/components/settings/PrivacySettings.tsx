@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader,  CardTitle } from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/useToast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export const PrivacySettings = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
   const [isDeletingMatches, setIsDeletingMatches] = useState(false);
@@ -42,6 +42,15 @@ export const PrivacySettings = () => {
   };
 
   const handleDownloadData = async () => {
+    if (!isAdmin()) {
+      toast({
+        title: "Acceso denegado",
+        description: "Solo los administradores pueden descargar datos.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!user?.id) {
       toast({
         title: "Error",
@@ -353,16 +362,18 @@ export const PrivacySettings = () => {
             </p>
 
             <div className="space-y-3">
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                size="sm"
-                onClick={handleDownloadData}
-                disabled={isExporting}
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                {isExporting ? "Exportando..." : "Descargar mis datos"}
-              </Button>
+              {isAdmin() && (
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  size="sm"
+                  onClick={handleDownloadData}
+                  disabled={isExporting}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  {isExporting ? "Exportando..." : "Descargar mis datos"}
+                </Button>
+              )}
 
               <AlertDialog>
                 <AlertDialogTrigger asChild>

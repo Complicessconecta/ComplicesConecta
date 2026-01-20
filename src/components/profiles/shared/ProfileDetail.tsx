@@ -202,14 +202,14 @@ const ProfileDetail = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
         <main className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold text-white mb-4">
             Perfil no encontrado
           </h1>
           <Button
             onClick={() => navigate("/profiles")}
-            className="text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700"
+            className="text-white bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700"
           >
             Volver a perfiles
           </Button>
@@ -220,7 +220,7 @@ const ProfileDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={5} />
       {/* Animated Background Elements */}
@@ -238,7 +238,7 @@ const ProfileDetail = () => {
           {/* Back Button */}
           <Button
             onClick={() => navigate("/profiles")}
-            className="mb-6 flex items-center gap-2 text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 border-0"
+            className="mb-6 flex items-center gap-2 text-white bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 border-0"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver a perfiles
@@ -251,7 +251,7 @@ const ProfileDetail = () => {
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6">
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <Avatar className="w-32 h-32">
                         <AvatarImage
                           src={profile.image}
@@ -279,7 +279,7 @@ const ProfileDetail = () => {
                             }
                           }}
                         />
-                        <AvatarFallback className="bg-gradient-to-br from-purple-400 to-fuchsia-400 text-white text-2xl font-bold">
+                        <AvatarFallback className="bg-linear-to-br from-purple-400 to-fuchsia-400 text-white text-2xl font-bold">
                           {profile.name[0]}
                         </AvatarFallback>
                       </Avatar>
@@ -448,7 +448,7 @@ const ProfileDetail = () => {
                           description: `¡Has dado like a ${profile.name}!`,
                         });
                       }}
-                      className="w-full bg-gradient-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg"
+                      className="w-full bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg"
                     >
                       <Heart className="h-5 w-5 mr-2" />
                       Me gusta

@@ -293,7 +293,7 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
       </div>
 
       {/* Información sobre los temas */}
-      <UnifiedCard className="p-6 bg-gradient-to-r from-purple-50 to-pink-50">
+      <UnifiedCard className="p-6 bg-linear-to-r from-purple-50 to-pink-50">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
           ¿Cómo Funcionan los Temas Visuales?
         </h3>

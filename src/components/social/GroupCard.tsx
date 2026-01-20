@@ -1,4 +1,4 @@
-﻿import { Heart, MessageCircle, Users, MapPin, Calendar, Bookmark } from "lucide-react";
+import { Heart, MessageCircle, Users, MapPin, Calendar, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/cards/Card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

@@ -64,7 +64,7 @@ export const ChatMessageSkeleton: FC<{ isOwn?: boolean }> = ({
 }) => (
   <div className={cn("flex gap-2 mb-4", isOwn && "flex-row-reverse")}>
     {/* Avatar */}
-    <Skeleton width={40} height={40} className="rounded-full flex-shrink-0" />
+    <Skeleton width={40} height={40} className="rounded-full shrink-0" />
 
     {/* Mensaje */}
     <div className={cn("flex flex-col", isOwn && "items-end")}>
@@ -81,7 +81,7 @@ export const ChatListSkeleton: FC = () => (
         <Skeleton
           width={50}
           height={50}
-          className="rounded-full flex-shrink-0"
+          className="rounded-full shrink-0"
         />
         <div className="flex-1 space-y-2">
           <Skeleton height={16} width="60%" />
@@ -167,7 +167,7 @@ export const CoupleProfileSkeleton: FC = () => (
 
 export const NotificationSkeleton: FC = () => (
   <div className="flex gap-3 p-3 border rounded-lg">
-    <Skeleton width={40} height={40} className="rounded-full flex-shrink-0" />
+    <Skeleton width={40} height={40} className="rounded-full shrink-0" />
     <div className="flex-1 space-y-1">
       <Skeleton height={16} width="80%" />
       <Skeleton height={12} width="60%" />

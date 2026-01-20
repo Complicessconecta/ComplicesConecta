@@ -150,7 +150,7 @@ export const MatchCard: FC<MatchCardProps> = ({
                 <div
                   className={cn(
                     "px-3 py-1 rounded-full text-white text-sm font-semibold hover:scale-105 transition-transform",
-                    "bg-gradient-to-r shadow-lg",
+                    "bg-linear-to-r shadow-lg",
                     getCompatibilityColor(),
                   )}
                 >
@@ -323,7 +323,7 @@ export const MatchCard: FC<MatchCardProps> = ({
               <motion.div
                 className={cn(
                   "px-4 py-2 rounded-full text-white font-bold text-lg shadow-lg",
-                  "bg-gradient-to-r",
+                  "bg-linear-to-r",
                   getCompatibilityColor(),
                 )}
                 whileHover={{ scale: 1.1 }}
@@ -413,7 +413,7 @@ export const MatchCard: FC<MatchCardProps> = ({
             <Button
               gradient
               size="lg"
-              className="w-16 h-16 rounded-full transition-all duration-200 hover:scale-110 shadow-lg bg-gradient-to-r from-purple-500 to-blue-500"
+              className="w-16 h-16 rounded-full transition-all duration-200 hover:scale-110 shadow-lg bg-linear-to-r from-purple-500 to-blue-500"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -433,7 +433,7 @@ export const MatchCard: FC<MatchCardProps> = ({
 
       {/* Modal de Me Gusta */}
       <Dialog open={showLikeModal} onOpenChange={setShowLikeModal}>
-        <DialogContent className="bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 text-white border-purple-500/30 z-[100]">
+        <DialogContent className="bg-linear-to-br from-purple-900 via-purple-800 to-purple-900 text-white border-purple-500/30 z-[100]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
               <Heart className="h-6 w-6 text-purple-400" fill="currentColor" />
@@ -466,7 +466,7 @@ export const MatchCard: FC<MatchCardProps> = ({
 
       {/* Modal de Super Like */}
       <Dialog open={showSuperLikeModal} onOpenChange={setShowSuperLikeModal}>
-        <DialogContent className="bg-gradient-to-br from-blue-900 via-purple-900 to-blue-900 text-white border-blue-500/30 z-[100]">
+        <DialogContent className="bg-linear-to-br from-blue-900 via-purple-900 to-blue-900 text-white border-blue-500/30 z-[100]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
               <Sparkles className="h-6 w-6 text-blue-400" />

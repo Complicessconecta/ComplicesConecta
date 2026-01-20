@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Dynamic Import Utilities for Heavy Dependencies
  * Carga dinámica de SDKs pesados solo cuando se necesiten
  *

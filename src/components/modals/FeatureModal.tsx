@@ -82,7 +82,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm sm:max-w-md lg:max-w-2xl bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-sm border border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-[100]">
+      <DialogContent className="max-w-sm sm:max-w-md lg:max-w-2xl bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-sm border border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-[100]">
         <DialogHeader>
           <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-4">
             <div className="bg-purple-600/30 p-3 sm:p-4 rounded-full shadow-lg shadow-purple-500/50">
@@ -115,7 +115,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg p-4 sm:p-6 border border-purple-300/30">
+          <div className="bg-linear-to-r from-purple-500/20 to-blue-500/20 rounded-lg p-4 sm:p-6 border border-purple-300/30">
             <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-purple-200 drop-shadow-md">
               ¿Por qué es importante?
             </h3>
@@ -134,7 +134,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({
             </Button>
             {feature === "tokens" ? (
               <Button
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold shadow-lg shadow-yellow-500/30"
+                className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold shadow-lg shadow-yellow-500/30"
                 onClick={() => {
                   onClose();
                   window.location.href = "/tokens-info";
@@ -145,7 +145,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({
               </Button>
             ) : (
               <Button
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/30"
+                className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg shadow-purple-500/30"
                 onClick={onClose}
               >
                 <Crown className="mr-2 h-4 w-4" />

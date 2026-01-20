@@ -251,7 +251,7 @@ export const CreateStory: React.FC<CreateStoryProps> = ({
           <Button
             onClick={handleCreateStory}
             disabled={!selectedImage || isUploading}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+            className="w-full bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
           >
             {isUploading ? (
               <>

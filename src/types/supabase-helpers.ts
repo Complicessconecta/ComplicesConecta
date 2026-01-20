@@ -1,4 +1,4 @@
-﻿// ComplicesConecta v3.7.0 - Helpers para Supabase Types
+// ComplicesConecta v3.7.0 - Helpers para Supabase Types
 // Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
 // Descripción: Helpers para casting seguro de tipos Supabase
 

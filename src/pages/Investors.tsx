@@ -11,7 +11,7 @@ const Investors: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    <div className="min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={12} />
 

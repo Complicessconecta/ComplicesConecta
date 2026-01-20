@@ -430,7 +430,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
               <div className="text-center mt-6">
                 <Button
                   onClick={() => setShowAll(true)}
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
+                  className="bg-linear-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
                 >
                   Ver todas las imágenes ({publicImages.length})
                 </Button>
@@ -519,7 +519,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                   <div className="text-center mt-6">
                     <Button
                       onClick={() => setShowAll(true)}
-                      className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
+                      className="bg-linear-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
                     >
                       Ver todas las imágenes ({privateImages.length})
                     </Button>
@@ -545,7 +545,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                   Esta galería contiene contenido privado. Solicita acceso para
                   ver las imágenes.
                 </p>
-                <Button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
+                <Button className="bg-linear-to-r from-pink-500 to-purple-600 text-white">
                   <UserPlus className="w-4 h-4 mr-2" />
                   Solicitar Acceso
                 </Button>

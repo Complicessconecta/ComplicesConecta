@@ -44,7 +44,7 @@ const TemplateDemo: React.FC = () => {
       ]}
     >
       <div className="space-y-6">
-        <div className="rounded-2xl border border-white/10 bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-white shadow-lg">
+        <div className="rounded-2xl border border-white/10 bg-linear-to-r from-purple-600 to-blue-600 p-6 text-white shadow-lg">
           <h1 className="text-2xl font-bold">Glass App Shell</h1>
           <p className="mt-2 text-white/90">
             Sandbox aislado para evaluar layout estilo glassmorphism, sin tocar

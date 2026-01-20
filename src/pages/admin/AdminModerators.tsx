@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, UserPlus, Shield, Eye, Ban, CheckCircle, XCircle, Mail, Calendar, Activity } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent,CardHeader, CardTitle } from "@/components/ui/cards/Card";

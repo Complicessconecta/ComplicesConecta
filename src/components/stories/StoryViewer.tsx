@@ -266,7 +266,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
               loop
             />
           ) : (
-            <div className="h-full flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-600">
+            <div className="h-full flex items-center justify-center bg-linear-to-br from-purple-600 to-pink-600">
               <div className="text-center px-8">
                 <p className="text-white text-xl font-bold mb-4">
                   {currentStory.content.text}
@@ -349,7 +349,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
                             "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMiIgZmlsbD0iIzkzNkU2RiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiPuKGkiBCPC90ZXh0Pjwvc3ZnPg=="
                           }
                           alt={comment.user.name}
-                          className="w-6 h-6 rounded-full border border-white/20 flex-shrink-0"
+                          className="w-6 h-6 rounded-full border border-white/20 shrink-0"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.src =
@@ -398,7 +398,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
                   onClick={handleComment}
                   disabled={!newComment.trim() || isSubmittingComment}
                   size="sm"
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold shadow-lg drop-shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-linear-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold shadow-lg drop-shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="h-4 w-4 mr-1" />
                   <span className="drop-shadow-md">Enviar</span>

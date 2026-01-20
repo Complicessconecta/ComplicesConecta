@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ConsentIndicator - Componente para mostrar estado de consentimiento en chat
  *
  * Muestra score de consentimiento, estado y permite reanudar si está pausado

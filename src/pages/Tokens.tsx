@@ -437,7 +437,7 @@ export default function Tokens() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden pb-20">
+    <div className="min-h-dvh relative overflow-x-hidden pb-20">
       <TokensSubnav />
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />
@@ -452,12 +452,12 @@ export default function Tokens() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold mb-4">
+            <Badge className="bg-linear-to-r from-yellow-400 to-orange-500 text-black font-bold mb-4">
               💰 SISTEMA DUAL DE TOKENS
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Tokens
-              <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 {" "}
                 CMPX & GTK
               </span>
@@ -469,15 +469,15 @@ export default function Tokens() {
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Coins className="h-4 w-4 mr-2" />
                 CMPX Consumo
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Rocket className="h-4 w-4 mr-2" />
                 GTK Inversión
               </Badge>
-              <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 8-18% APY
               </Badge>
@@ -486,7 +486,7 @@ export default function Tokens() {
             <div className="flex flex-wrap justify-center gap-4">
               <Button
                 onClick={() => navigate("/profile")}
-                className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-8 py-3 text-lg font-semibold flex items-center gap-2"
+                className="bg-linear-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-8 py-3 text-lg font-semibold flex items-center gap-2"
               >
                 <Wallet className="w-5 h-5" />
                 <span>Mi Wallet</span>
@@ -575,7 +575,7 @@ export default function Tokens() {
                   <div className="flex gap-3">
                     <Button
                       onClick={() => navigate("/demo")}
-                      className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                      className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                     >
                       Entrar a Demo
                     </Button>
@@ -612,7 +612,7 @@ export default function Tokens() {
                   <Button
                     onClick={handleCreateWallet}
                     disabled={creatingWallet}
-                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                    className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                   >
                     {creatingWallet ? "Creando..." : "Crear Wallet"}
                   </Button>
@@ -721,7 +721,7 @@ export default function Tokens() {
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
+                    <div className="p-3 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <DollarSign className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -805,7 +805,7 @@ export default function Tokens() {
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
+                    <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Rocket className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -875,7 +875,7 @@ export default function Tokens() {
                           key={index}
                           className="flex items-start gap-3 p-2 bg-white/5 rounded"
                         >
-                          <div className="font-bold text-purple-300 text-sm flex-shrink-0">
+                          <div className="font-bold text-purple-300 text-sm shrink-0">
                             {item.phase}
                           </div>
                           <div className="text-white/80 text-sm">
@@ -900,7 +900,7 @@ export default function Tokens() {
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
+                  <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                     <BarChart3 className="h-6 w-6 text-white" />
                   </div>
                   Modelo de Ingresos Proyectado
@@ -987,7 +987,7 @@ export default function Tokens() {
                   className="p-6 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
                 >
                   <div
-                    className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${advantage.color} text-white mb-4`}
+                    className={`inline-flex p-3 rounded-lg bg-linear-to-r ${advantage.color} text-white mb-4`}
                   >
                     {advantage.icon}
                   </div>
@@ -1009,7 +1009,7 @@ export default function Tokens() {
             transition={{ duration: 0.8, delay: 1.0 }}
             className="mb-12"
           >
-            <Card className="bg-gradient-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+            <Card className="bg-linear-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold text-white mb-6">
                   ¿Listo para Comenzar con Tokens?
@@ -1018,7 +1018,7 @@ export default function Tokens() {
                 <div className="flex flex-wrap justify-center gap-4 mb-6">
                   <Button
                     onClick={() => navigate("/profile")}
-                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-3"
+                    className="bg-linear-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-3"
                   >
                     <Wallet className="w-5 h-5 mr-2" />
                     Ver Mi Wallet
@@ -1026,7 +1026,7 @@ export default function Tokens() {
 
                   <Button
                     onClick={handleOpenStaking}
-                    className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white px-8 py-3"
+                    className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white px-8 py-3"
                   >
                     <TrendingUp className="w-5 h-5 mr-2" />
                     Hacer Staking

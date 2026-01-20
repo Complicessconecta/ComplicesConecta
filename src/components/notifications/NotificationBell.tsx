@@ -315,7 +315,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               className="absolute right-0 top-full mt-2 z-50 w-96 max-w-[90vw]"
             >
-              <Card className="shadow-xl border-0 bg-gradient-to-r from-pink-500/95 to-purple-600/95 dark:bg-gray-900/95 backdrop-blur-md">
+              <Card className="shadow-xl border-0 bg-linear-to-r from-pink-500/95 to-purple-600/95 dark:bg-gray-900/95 backdrop-blur-md">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Notificaciones</CardTitle>
@@ -451,7 +451,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       onClick={handleAction}
     >
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 mt-1">
+        <div className="shrink-0 mt-1">
           {getNotificationIcon(notification.type)}
         </div>
 
@@ -473,7 +473,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
               )}
             </div>
 
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-1 shrink-0">
               <span className="text-xs text-gray-400">
                 {formatTimeAgo(notification.created_at)}
               </span>
@@ -484,7 +484,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           {!notification.read && (
             <Button
               variant="ghost"

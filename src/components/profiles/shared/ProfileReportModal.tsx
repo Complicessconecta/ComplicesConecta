@@ -299,7 +299,7 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
               <div className="px-6 pb-6">
                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
                   <div className="flex items-start space-x-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                    <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
                     <p className="text-xs text-amber-700 dark:text-amber-300">
                       Los reportes falsos pueden resultar en la suspensión de tu
                       cuenta. Solo reporta contenido que realmente viole

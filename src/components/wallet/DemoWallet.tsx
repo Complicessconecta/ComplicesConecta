@@ -40,6 +40,7 @@ export function DemoWallet() {
   const [walletAddress, setWalletAddress] = useState("0x1234...5678");
   const [balance, setBalance] = useState("0.00");
   const [showPolygonModal, setShowPolygonModal] = useState(false);
+  const [selectedNft, setSelectedNft] = useState<DemoNFT | null>(null);
 
   // NFTs mock para demo
   const demoNFTs: DemoNFT[] = [
@@ -118,10 +119,10 @@ export function DemoWallet() {
   return (
     <div className="space-y-6">
       {/* Header de Wallet */}
-      <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
-            <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-purple-500 to-blue-600 rounded-lg">
               <Wallet className="h-6 w-6 text-white" />
             </div>
             Wallet Demo
@@ -134,7 +135,7 @@ export function DemoWallet() {
           {!walletConnected ? (
             <Button
               onClick={handleConnectWallet}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+              className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
             >
               <Wallet className="mr-2 h-4 w-4" />
               Conectar Wallet Demo
@@ -163,10 +164,10 @@ export function DemoWallet() {
       </Card>
 
       {/* Tokens */}
-      <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
-            <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-500 rounded-lg">
               <Coins className="h-6 w-6 text-white" />
             </div>
             Tokens
@@ -179,7 +180,7 @@ export function DemoWallet() {
               className="flex items-center justify-between p-4 bg-white/10 rounded-lg border border-white/20 hover:bg-white/15 transition-all duration-300"
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg">
+                <div className="p-2 bg-linear-to-r from-purple-500 to-blue-600 rounded-lg">
                   <Coins className="h-5 w-5 text-white" />
                 </div>
                 <div>
@@ -207,10 +208,10 @@ export function DemoWallet() {
       </Card>
 
       {/* NFTs */}
-      <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
-            <div className="p-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-pink-500 to-purple-600 rounded-lg">
               <ImageIcon className="h-6 w-6 text-white" />
             </div>
             NFTs
@@ -224,9 +225,18 @@ export function DemoWallet() {
             {demoNFTs.map((nft) => (
               <div
                 key={nft.id}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-900/30 to-blue-900/30 border border-white/20 hover:border-white/40 transition-all duration-300 group"
+                className="relative overflow-hidden rounded-xl bg-linear-to-br from-purple-900/30 to-blue-900/30 border border-white/20 hover:border-white/40 transition-all duration-300 group cursor-pointer"
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedNft(nft)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedNft(nft);
+                  }
+                }}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${rarityColors[nft.rarity]} opacity-20`} />
+                <div className={`absolute inset-0 bg-linear-to-br ${rarityColors[nft.rarity]} opacity-20`} />
                 <div className="relative p-4 space-y-3">
                   <div className="aspect-square rounded-lg bg-white/10 overflow-hidden">
                     <img
@@ -267,10 +277,10 @@ export function DemoWallet() {
       </Card>
 
       {/* Staking Info */}
-      <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
-            <div className="p-2 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-green-500 to-teal-600 rounded-lg">
               <TrendingUp className="h-6 w-6 text-white" />
             </div>
             Staking Activo
@@ -308,7 +318,7 @@ export function DemoWallet() {
           </div>
           <Button 
             onClick={() => setShowPolygonModal(true)}
-            className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold"
+            className="w-full bg-linear-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold"
           >
             <ExternalLink className="mr-2 h-4 w-4" />
             Ver en PolygonScan
@@ -319,7 +329,7 @@ export function DemoWallet() {
       {/* Modal PolygonScan Demo */}
       {showPolygonModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border border-purple-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+          <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 border border-purple-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <ExternalLink className="w-5 h-5 text-green-400" />
@@ -359,9 +369,82 @@ export function DemoWallet() {
                     window.open('https://polygonscan.com', '_blank');
                     setShowPolygonModal(false);
                   }}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                  className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                 >
                   Visitar PolygonScan
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Detalle NFT Demo */}
+      {selectedNft && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 border border-purple-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-purple-300" />
+                Detalle de NFT (Demo)
+              </h3>
+              <button
+                onClick={() => setSelectedNft(null)}
+                className="text-white/60 hover:text-white transition-colors"
+                aria-label="Cerrar detalle"
+                type="button"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="aspect-video rounded-xl overflow-hidden bg-white/10 border border-white/15">
+                <img
+                  src={selectedNft.image}
+                  alt={selectedNft.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-3">
+                  <h4 className="text-lg font-bold text-white truncate">
+                    {selectedNft.name}
+                  </h4>
+                  <Badge className={`${rarityBadges[selectedNft.rarity]} text-white text-xs shrink-0`}>
+                    {selectedNft.rarity.toUpperCase()}
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-white/70">Tipo</span>
+                  <span className="text-white font-semibold">
+                    {selectedNft.isCouple ? "Pareja" : "Single"}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-white/70">Valor estimado</span>
+                  <span className="text-yellow-200 font-semibold">
+                    {selectedNft.value} CMPX
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-yellow-500/15 border border-yellow-500/30 rounded-lg p-4">
+                <p className="text-yellow-100/90 text-xs leading-relaxed">
+                  ⚠️ Este detalle es información simulada para modo demo. En producción, los NFTs se cargan desde la tabla <strong>user_nfts</strong>.
+                </p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setSelectedNft(null)}
+                  className="flex-1 bg-white/10 hover:bg-white/20 text-white"
+                  type="button"
+                >
+                  Cerrar
                 </Button>
               </div>
             </div>

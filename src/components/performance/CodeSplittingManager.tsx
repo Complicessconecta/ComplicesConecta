@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Gestor avanzado de code splitting con estrategias de carga inteligente
  * Implementa route-based y component-based splitting con preloading
  */

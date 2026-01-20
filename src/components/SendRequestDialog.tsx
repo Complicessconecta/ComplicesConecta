@@ -96,7 +96,7 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
                   className="w-16 h-16 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                   {targetUser.profile_type === "couple" ? (
                     <Users className="w-8 h-8 text-white" />
                   ) : (
@@ -196,7 +196,7 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
             <button
               onClick={handleSendRequest}
               disabled={_isLoading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all disabled:opacity-50 font-medium"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-linear-to-r from-purple-500 to-fuchsia-500 text-white rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all disabled:opacity-50 font-medium"
             >
               {_isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

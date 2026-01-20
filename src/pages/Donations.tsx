@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, Star, Crown, Zap, Gift, Users, Shield } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
@@ -71,7 +71,7 @@ const Donations = () => {
   const customAmounts = [25, 75, 150, 300];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="flex items-center gap-4 mb-8">
@@ -141,7 +141,7 @@ const Donations = () => {
                 onClick={() => setSelectedAmount(tier.amount)}
               >
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${tier.color} opacity-90`}
+                  className={`absolute inset-0 bg-linear-to-br ${tier.color} opacity-90`}
                 />
                 <CardHeader className="relative text-white text-center">
                   <Icon className="h-8 w-8 mx-auto mb-2" />
@@ -154,7 +154,7 @@ const Donations = () => {
                   <ul className="space-y-2 text-sm">
                     {tier.benefits.map((benefit, index) => (
                       <li key={index} className="flex items-start gap-2">
-                        <div className="w-1.5 h-1.5 bg-white rounded-full mt-2 flex-shrink-0" />
+                        <div className="w-1.5 h-1.5 bg-white rounded-full mt-2 shrink-0" />
                         {benefit}
                       </li>
                     ))}
@@ -199,7 +199,7 @@ const Donations = () => {
                 className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
                 onChange={(e) => setSelectedAmount(Number(e.target.value))}
               />
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+              <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
                 Seleccionar
               </Button>
             </div>

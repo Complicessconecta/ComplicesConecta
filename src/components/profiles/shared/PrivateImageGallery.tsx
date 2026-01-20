@@ -201,11 +201,11 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                     className="relative aspect-square overflow-hidden rounded-lg"
                   >
                     {/* Placeholder con gradiente (no carga imagen real) */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900" />
+                    <div className="absolute inset-0 bg-linear-to-br from-gray-800 via-gray-700 to-gray-900" />
 
                     {/* Candado y texto ENCIMA del placeholder */}
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 pointer-events-none">
-                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full flex items-center justify-center border-2 border-purple-400/40">
+                      <div className="w-12 h-12 bg-linear-to-r from-purple-500/30 to-pink-500/30 rounded-full flex items-center justify-center border-2 border-purple-400/40">
                         <Lock className="h-6 w-6 text-purple-300" />
                       </div>
                       <p className="text-xs text-white/80 font-medium px-2 text-center">
@@ -224,7 +224,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                   </p>
                   <Button
                     onClick={handleRequestAccess}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                    className="bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                   >
                     <Unlock className="h-4 w-4 mr-2" />
                     Solicitar Acceso

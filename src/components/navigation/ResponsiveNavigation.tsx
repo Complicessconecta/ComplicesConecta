@@ -115,7 +115,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
           </Button>
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-purple-600" />
-            <span className="font-bold text-xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent stable-element">
+            <span className="font-bold text-xl bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent stable-element">
               ComplicesConecta
             </span>
           </div>
@@ -128,7 +128,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                 src={profile?.avatar_url || undefined}
                 alt={profile?.display_name || profile?.first_name || "User"}
               />
-              <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white text-xs">
+              <AvatarFallback className="bg-linear-to-br from-purple-600 to-blue-600 text-white text-xs">
                 {profile?.display_name?.charAt(0)?.toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
@@ -182,7 +182,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                           src={profile?.avatar_url || undefined}
                           alt={profile?.display_name || profile?.first_name || "User"}
                         />
-                        <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+                        <AvatarFallback className="bg-linear-to-br from-purple-600 to-blue-600 text-white">
                           {profile?.display_name?.charAt(0)?.toUpperCase() ||
                             "U"}
                         </AvatarFallback>
@@ -253,11 +253,11 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
       >
         <div className="p-4 h-full flex flex-col">
           <div className="flex items-center gap-3 mb-8 min-h-[48px]">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-linear-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shrink-0">
               <Sparkles className="h-6 w-6 text-white" />
             </div>
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-              <h2 className="font-bold text-lg bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent stable-element">
+              <h2 className="font-bold text-lg bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent stable-element">
                 ComplicesConecta
               </h2>
             </div>
@@ -275,12 +275,12 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
           </nav>
           <div className="border-t border-gray-200 pt-4 space-y-2">
             <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <Avatar className="w-10 h-10 flex-shrink-0">
+              <Avatar className="w-10 h-10 shrink-0">
                 <AvatarImage
                   src={profile?.avatar_url || undefined}
                   alt={profile?.display_name || profile?.first_name || "User"}
                 />
-                <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+                <AvatarFallback className="bg-linear-to-br from-purple-600 to-blue-600 text-white">
                   {profile?.display_name?.charAt(0)?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
@@ -295,7 +295,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
               variant="ghost"
               className="w-full justify-start gap-3 p-3 hover:bg-gray-50"
             >
-              <Settings className="h-5 w-5 flex-shrink-0" />
+              <Settings className="h-5 w-5 shrink-0" />
               <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 Configuración
               </span>
@@ -305,7 +305,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
               className="w-full justify-start gap-3 p-3 text-red-600 hover:text-red-700 hover:bg-red-50"
               onClick={handleLogout}
             >
-              <LogOut className="h-5 w-5 flex-shrink-0" />
+              <LogOut className="h-5 w-5 shrink-0" />
               <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 Cerrar Sesión
               </span>
@@ -362,14 +362,14 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
           isDesktop && "w-full justify-start gap-3 p-3",
 
           isActive &&
-            "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg",
+            "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg",
           !isActive && "hover:bg-purple-50 hover:text-purple-600",
         )}
         onClick={handleClick}
       >
         <div
           className={cn(
-            "relative flex-shrink-0",
+            "relative shrink-0",
             isMobileBottomBar && "mb-0.5",
           )}
         >

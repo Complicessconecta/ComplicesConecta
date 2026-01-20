@@ -74,7 +74,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-[100]">
+      <DialogContent className="sm:max-w-2xl bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-[100]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
             <Calendar className="h-6 w-6 text-purple-400" />
@@ -84,7 +84,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
 
         <div className="space-y-6">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-purple-500/50">
+            <div className="mx-auto w-16 h-16 bg-linear-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-purple-500/50">
               <Calendar className="h-8 w-8 text-white drop-shadow-md" />
             </div>
             <h3 className="text-lg font-bold mb-2 text-white drop-shadow-lg">
@@ -155,7 +155,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
                   <div className="mt-2">
                     <div className="w-full bg-white/20 rounded-full h-1.5">
                       <div
-                        className="h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 attendee-progress"
+                        className="h-1.5 rounded-full bg-linear-to-r from-purple-400 to-blue-400 attendee-progress"
                         style={{ '--progress-width': `${(event.attendees / event.maxAttendees) * 100}%` } as React.CSSProperties}
                       ></div>
                     </div>
@@ -165,7 +165,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 p-4 rounded-lg border border-yellow-500/30">
+          <div className="bg-linear-to-r from-yellow-500/20 to-orange-500/20 p-4 rounded-lg border border-yellow-500/30">
             <div className="flex items-center gap-2 mb-2">
               <Crown className="h-4 w-4 text-yellow-400" />
               <span className="font-medium">Acceso Premium Requerido</span>
@@ -194,7 +194,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
             {onJoinPremium && (
               <Button
                 onClick={onJoinPremium}
-                className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold"
+                className="flex-1 bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold"
               >
                 <Crown className="h-4 w-4 mr-2" />
                 Ser Premium

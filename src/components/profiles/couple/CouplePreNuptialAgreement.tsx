@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CouplePreNuptialAgreement.tsx - Protocolo de Divorcio Digital
  *
  * Propósito: Implementar "Prenupcial Digital" con Cláusula de Muerte Súbita

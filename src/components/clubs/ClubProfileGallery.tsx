@@ -34,7 +34,7 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-lg">
+            <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-500 rounded-lg">
               <ImageIcon className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -48,7 +48,7 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
           {isOwner && onUpload && (
             <Button
               onClick={onUpload}
-              className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
+              className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
             >
               <Camera className="h-4 w-4 mr-2" />
               Subir Foto

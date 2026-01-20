@@ -279,7 +279,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
         {/* Create Gallery Button */}
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+            <Button className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
               <Plus className="h-4 w-4 mr-2" />
               Crear Galería
             </Button>
@@ -341,7 +341,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
                 <Button
                   onClick={handleCreateGallery}
                   disabled={isCreating || !galleryName.trim()}
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500"
+                  className="bg-linear-to-r from-yellow-500 to-orange-500"
                 >
                   {isCreating ? (
                     <>
@@ -384,7 +384,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
             </p>
             <Button
               onClick={() => setShowCreateDialog(true)}
-              className="bg-gradient-to-r from-yellow-500 to-orange-500"
+              className="bg-linear-to-r from-yellow-500 to-orange-500"
             >
               <Plus className="h-4 w-4 mr-2" />
               Crear Primera Galería
@@ -470,7 +470,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
                           setSelectedGallery(gallery);
                           setShowMintDialog(true);
                         }}
-                        className="bg-gradient-to-r from-yellow-500 to-orange-500 flex-1"
+                        className="bg-linear-to-r from-yellow-500 to-orange-500 flex-1"
                       >
                         <Sparkles className="h-4 w-4 mr-2" />
                         Mint
@@ -551,7 +551,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
                     !balance ||
                     balance.gtk < nftGalleryService.getMintCost("gallery")
                   }
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500"
+                  className="bg-linear-to-r from-yellow-500 to-orange-500"
                 >
                   {isMinting ? (
                     <>

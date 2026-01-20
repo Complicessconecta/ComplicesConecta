@@ -310,7 +310,7 @@ export const SwipeCard = ({
             onClick={handleSuperLike}
           >
             <Zap className="w-7 h-7" />
-            <div className="absolute inset-0 bg-gradient-to-r from-accent/20 to-accent/40 opacity-0 hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-linear-to-r from-accent/20 to-accent/40 opacity-0 hover:opacity-100 transition-opacity" />
           </Button>
 
           <Button

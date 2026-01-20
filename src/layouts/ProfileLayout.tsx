@@ -13,7 +13,7 @@ export const ProfileLayout: React.FC = () => {
       <div className="fixed top-4 right-4 z-[60]">
         <Button
           onClick={() => navigate("/demo")}
-          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
+          className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
         >
           Demo User
         </Button>

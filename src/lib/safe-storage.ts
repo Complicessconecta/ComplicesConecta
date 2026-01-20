@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Utilidad segura para localStorage con validación y sanitización
  * Versión: 3.6.3
  *

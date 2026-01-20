@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { createPortal } from "react-dom";
 import { motion, type Variants } from "framer-motion";
 import { AnimationContext } from "@/components/animations/AnimationProvider";

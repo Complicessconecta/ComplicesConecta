@@ -13,7 +13,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <AppSidebar />
         <div className="flex-1 flex flex-col w-full">
           {/* Header with Sidebar Trigger - z-40 para estar encima del contenido */}
-          <header className="min-h-14 h-auto flex items-center border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-40 flex-shrink-0 safe-area-pt safe-area-inset">
+          <header className="min-h-14 h-auto flex items-center border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-40 shrink-0 safe-area-pt safe-area-inset">
             <SidebarTrigger className="ml-4" />
             <div className="flex-1 flex items-center justify-center">
               <h2 className="text-lg font-semibold text-foreground">

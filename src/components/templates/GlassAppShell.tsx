@@ -99,7 +99,7 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
             <source src={backgroundVideoSrc} type="video/mp4" />
           </video>
         ) : null}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-950 via-indigo-950 to-blue-950" />
+        <div className="absolute inset-0 bg-linear-to-br from-purple-950 via-indigo-950 to-blue-950" />
         <div className="absolute inset-0 bg-black/35" />
       </div>
 
@@ -186,7 +186,7 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
                 >
                   <Bell className="h-4 w-4" />
                   {notificationsCount > 0 ? (
-                    <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-blue-600 px-1.5 text-[11px] font-semibold text-white">
+                    <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-linear-to-r from-purple-600 to-blue-600 px-1.5 text-[11px] font-semibold text-white">
                       {notificationsCount}
                     </span>
                   ) : null}

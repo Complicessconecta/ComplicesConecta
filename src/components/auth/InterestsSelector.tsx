@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";

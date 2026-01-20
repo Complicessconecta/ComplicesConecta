@@ -112,7 +112,7 @@ export const PremiumFeatures = () => {
   const hasAccess = hasPremiumAccess(currentPlan);
 
   return (
-    <Card className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-purple-500/30">
+    <Card className="bg-linear-to-br from-purple-900/20 to-blue-900/20 border-purple-500/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-white">
           <Crown className="h-6 w-6 text-yellow-400" />✨ Características
@@ -129,8 +129,8 @@ export const PremiumFeatures = () => {
                 key={feature.id}
                 className={`p-4 rounded-lg border transition-all duration-300 ${
                   isUnlocked
-                    ? "bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30"
-                    : "bg-gradient-to-br from-gray-500/10 to-slate-500/10 border-gray-500/30"
+                    ? "bg-linear-to-br from-green-500/10 to-emerald-500/10 border-green-500/30"
+                    : "bg-linear-to-br from-gray-500/10 to-slate-500/10 border-gray-500/30"
                 }`}
               >
                 <div className="flex items-start justify-between mb-3">
@@ -183,7 +183,7 @@ export const PremiumFeatures = () => {
         </div>
 
         {currentPlan === "beta" && (
-          <div className="mt-6 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg">
+          <div className="mt-6 p-4 bg-linear-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <Crown className="h-5 w-5 text-yellow-400" />
               <span className="font-semibold text-white text-sm sm:text-base">

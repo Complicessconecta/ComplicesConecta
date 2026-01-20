@@ -651,8 +651,8 @@ Información del perfil:
   const canShowBlockchainSection = isOwnProfile || isDemoProfile;
 
   return (
-    <div className="min-h-screen bg-transparent text-white pb-20 md:pb-0 pt-20">
-      <div className="container mx-auto px-4 pb-24">
+    <div className="min-h-dvh bg-transparent text-white pb-20 md:pb-0 pt-20 overflow-x-hidden">
+      <div className="container mx-auto px-4 pb-24 w-full max-w-full">
         <div className="max-w-4xl mx-auto">
           <Card className="bg-white/5 backdrop-blur-xl border border-white/10 overflow-hidden mb-6">
             <CardContent className="p-0">

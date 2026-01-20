@@ -6,17 +6,17 @@ import { LegalChatBox } from "@/components/ai/LegalChatBox";
 
 const AIControlCenter: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 text-white">
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white">
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8 md:space-y-12">
         {/* Hero principal */}
         <header className="text-center space-y-4 md:space-y-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-3xl shadow-2xl shadow-purple-500/50 border border-white/20">
+          <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-linear-to-br from-purple-500 to-blue-500 rounded-3xl shadow-2xl shadow-purple-500/50 border border-white/20">
             <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-white" />
           </div>
           <div className="space-y-3">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Centro de Control de IA
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-300 mt-1">
+              <span className="block text-transparent bg-clip-text bg-linear-to-r from-purple-300 via-fuchsia-200 to-cyan-300 mt-1">
                 Tu asistente legal y operativo en CómplicesConecta
               </span>
             </h1>

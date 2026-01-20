@@ -194,7 +194,7 @@ const MainProfileCardComponent = ({
               "w-full h-full flex items-center justify-center",
               useThemeBackground
                 ? themeConfig.backgroundClass
-                : "bg-gradient-to-br from-purple-400 to-pink-400",
+                : "bg-linear-to-br from-purple-400 to-pink-400",
             )}
           >
             <div
@@ -204,9 +204,9 @@ const MainProfileCardComponent = ({
               )}
             >
               {/* Silueta 3D profesional como en la imagen */}
-              <div className="w-24 h-24 mx-auto mb-3 bg-gradient-to-br from-purple-300 to-pink-300 rounded-full flex items-center justify-center shadow-lg">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full"></div>
+              <div className="w-24 h-24 mx-auto mb-3 bg-linear-to-br from-purple-300 to-pink-300 rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-linear-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-linear-to-br from-purple-500 to-pink-500 rounded-full"></div>
                 </div>
               </div>
               <p className="text-sm opacity-80">Imagen actualizada</p>
@@ -298,7 +298,7 @@ const MainProfileCardComponent = ({
               useThemeBackground ? themeConfig.accentClass : "text-white",
             )}
           >
-            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
             <span className="text-xs sm:text-sm truncate font-medium">
               {location}
             </span>
@@ -309,9 +309,9 @@ const MainProfileCardComponent = ({
         <div className="flex flex-wrap gap-2 sm:gap-2 mb-6">
           {interests?.slice(0, 3).map((interest: string, index: number) => {
             const colors = [
-              "bg-gradient-to-r from-pink-500 to-pink-600 text-white border border-pink-400", // Rosa sólido
-              "bg-gradient-to-r from-orange-500 to-orange-600 text-white border border-orange-400", // Naranja sólido
-              "bg-gradient-to-r from-amber-500 to-yellow-500 text-white border border-amber-400", // Ámbar sólido
+              "bg-linear-to-r from-pink-500 to-pink-600 text-white border border-pink-400", // Rosa sólido
+              "bg-linear-to-r from-orange-500 to-orange-600 text-white border border-orange-400", // Naranja sólido
+              "bg-linear-to-r from-amber-500 to-yellow-500 text-white border border-amber-400", // Ámbar sólido
             ];
             return (
               <span
@@ -334,11 +334,11 @@ const MainProfileCardComponent = ({
           <Button
             variant="outline"
             size="action"
-            className="flex-1 max-w-[220px] min-w-[110px] bg-gradient-to-r from-gray-600 to-gray-700 border-2 border-gray-500 text-white hover:from-gray-700 hover:to-gray-800 hover:border-gray-600 font-semibold transition-all duration-300 min-h-[48px] flex items-center justify-center px-3 sm:px-4 hover:scale-105 shadow-lg"
+            className="flex-1 max-w-[220px] min-w-[110px] bg-linear-to-r from-gray-600 to-gray-700 border-2 border-gray-500 text-white hover:from-gray-700 hover:to-gray-800 hover:border-gray-600 font-semibold transition-all duration-300 min-h-[48px] flex items-center justify-center px-3 sm:px-4 hover:scale-105 shadow-lg"
             onClick={handleDislike}
           >
             <X
-              className="w-5 h-5 sm:w-6 sm:h-6 mr-2 flex-shrink-0"
+              className="w-5 h-5 sm:w-6 sm:h-6 mr-2 shrink-0"
               strokeWidth={2.5}
             />
             <span className="hidden sm:inline text-sm whitespace-nowrap">Pasar</span>
@@ -352,7 +352,7 @@ const MainProfileCardComponent = ({
             disabled={!onLike}
           >
             <Heart
-              className="w-5 h-5 sm:w-6 sm:h-6 mr-2 flex-shrink-0 text-pink-400 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]"
+              className="w-5 h-5 sm:w-6 sm:h-6 mr-2 shrink-0 text-pink-400 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]"
               strokeWidth={2.5}
               fill="currentColor"
             />
@@ -367,7 +367,7 @@ const MainProfileCardComponent = ({
             e.stopPropagation();
             handleViewProfile();
           }}
-          className="w-full text-white bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-sm py-3 rounded-xl font-semibold border border-pink-500 hover:border-pink-600 shadow-lg hover:shadow-xl hover:scale-105"
+          className="w-full text-white bg-linear-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-sm py-3 rounded-xl font-semibold border border-pink-500 hover:border-pink-600 shadow-lg hover:shadow-xl hover:scale-105"
         >
           Ver Perfil Completo
         </button>

@@ -21,7 +21,7 @@ const getRelationshipTheme = (relationshipType: RelationshipType) => {
         border: "border-blue-300",
         text: "text-blue-600",
         hover: "hover:bg-blue-50",
-        accent: "bg-gradient-to-r from-blue-400 to-indigo-500",
+        accent: "bg-linear-to-r from-blue-400 to-indigo-500",
         avatarBg: "from-blue-400 to-indigo-600",
       };
     case "woman-woman":
@@ -31,7 +31,7 @@ const getRelationshipTheme = (relationshipType: RelationshipType) => {
         border: "border-purple-300",
         text: "text-purple-700",
         hover: "hover:bg-purple-50",
-        accent: "bg-gradient-to-r from-purple-600 to-blue-600",
+        accent: "bg-linear-to-r from-purple-600 to-blue-600",
         avatarBg: "from-purple-600 to-blue-600",
       };
     case "man-woman":
@@ -42,7 +42,7 @@ const getRelationshipTheme = (relationshipType: RelationshipType) => {
         border: "border-purple-300",
         text: "text-purple-600",
         hover: "hover:bg-purple-50",
-        accent: "bg-gradient-to-r from-purple-600 to-blue-600",
+        accent: "bg-linear-to-r from-purple-600 to-blue-600",
         avatarBg: "from-purple-600 to-blue-600",
       };
   }
@@ -80,13 +80,13 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
           <div className="flex -space-x-4 mb-2">
             {/* Partner 1 Avatar */}
             <div
-              className={`w-24 h-24 rounded-full bg-gradient-to-br ${theme.avatarBg} flex items-center justify-center text-white text-2xl font-bold border-4 border-white/20 shadow-lg`}
+              className={`w-24 h-24 rounded-full bg-linear-to-br ${theme.avatarBg} flex items-center justify-center text-white text-2xl font-bold border-4 border-white/20 shadow-lg`}
             >
               {profile.partner1_first_name?.[0]?.toUpperCase() || "P"}
             </div>
             {/* Partner 2 Avatar */}
             <div
-              className={`w-24 h-24 rounded-full bg-gradient-to-br ${theme.avatarBg} flex items-center justify-center text-white text-2xl font-bold border-4 border-white/20 shadow-lg`}
+              className={`w-24 h-24 rounded-full bg-linear-to-br ${theme.avatarBg} flex items-center justify-center text-white text-2xl font-bold border-4 border-white/20 shadow-lg`}
             >
               {profile.partner2_first_name?.[0]?.toUpperCase() || "P"}
             </div>
@@ -120,7 +120,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
         <div className="flex-1 text-center lg:text-left">
           {/* Couple Name & Type */}
           <div className="mb-4">
-            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent stable-element">
+            <h1 className="text-3xl font-bold mb-2 bg-linear-to-r from-white to-white/80 bg-clip-text text-transparent stable-element">
               {profile.couple_name}
             </h1>
             <Badge className={`${theme.badge} text-white mb-2`}>

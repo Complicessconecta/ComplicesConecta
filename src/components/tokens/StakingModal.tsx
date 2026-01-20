@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Modal de Staking - Interfaz amigable para usuarios Beta
  * Explicación simple del staking con ejemplos y confirmación
  */
@@ -95,7 +95,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
           <DialogContent
-            className="max-w-md bg-gradient-to-br from-purple-900/95 to-blue-900/95 backdrop-blur-md border border-white/20 text-white"
+            className="max-w-md bg-linear-to-br from-purple-900/95 to-blue-900/95 backdrop-blur-md border border-white/20 text-white"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -222,7 +222,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                           <span className="text-white/90 truncate">
                             Cantidad inicial:
                           </span>
-                          <span className="font-semibold text-white flex-shrink-0 ml-2">
+                          <span className="font-semibold text-white shrink-0 ml-2">
                             {stakingAmount} CMPX
                           </span>
                         </div>
@@ -230,7 +230,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                           <span className="text-white/90 truncate">
                             Duración:
                           </span>
-                          <span className="font-semibold text-white flex-shrink-0 ml-2">
+                          <span className="font-semibold text-white shrink-0 ml-2">
                             30 días
                           </span>
                         </div>
@@ -238,7 +238,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                           <span className="text-white/90 truncate">
                             Recompensa (10%):
                           </span>
-                          <span className="font-semibold text-green-400 flex-shrink-0 ml-2">
+                          <span className="font-semibold text-green-400 shrink-0 ml-2">
                             +{rewardAmount} CMPX
                           </span>
                         </div>
@@ -247,7 +247,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                           <span className="text-white truncate">
                             Total al finalizar:
                           </span>
-                          <span className="text-green-400 flex-shrink-0 ml-2">
+                          <span className="text-green-400 shrink-0 ml-2">
                             {totalReturn} CMPX
                           </span>
                         </div>
@@ -260,7 +260,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                 <Card className="bg-yellow-500/20 backdrop-blur-sm border-yellow-400/30">
                   <CardContent className="p-3">
                     <div className="flex items-start gap-2">
-                      <AlertCircle className="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                      <AlertCircle className="h-4 w-4 text-yellow-400 mt-0.5 shrink-0" />
                       <div className="text-sm text-white flex-1 min-w-0">
                         <p className="font-semibold mb-1">⚠️ Importante:</p>
                         <ul className="text-xs space-y-1 break-words">

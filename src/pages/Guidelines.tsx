@@ -1,4 +1,4 @@
-﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Users, Heart, Shield, AlertCircle, CheckCircle, XCircle, Flag, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { useNavigate } from "react-router-dom";
@@ -7,11 +7,11 @@ const GuidelinesPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-secondary/20"></div>
+    <div className="min-h-screen bg-linear-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="absolute inset-0 bg-linear-to-br from-background via-muted/30 to-secondary/20"></div>
       <div className="container mx-auto px-4 py-6 max-w-4xl relative z-10">
         {/* Header con botn de regreso */}
-        <div className="bg-gradient-to-r from-purple-900/90 to-fuchsia-900/90 backdrop-blur-md border-b border-purple-300/30 p-3 sm:p-4 shadow-lg flex-shrink-0 rounded-t-xl mb-6">
+        <div className="bg-linear-to-r from-purple-900/90 to-fuchsia-900/90 backdrop-blur-md border-b border-purple-300/30 p-3 sm:p-4 shadow-lg shrink-0 rounded-t-xl mb-6">
           <div className="flex items-center justify-between">
             <Button
               onClick={() => navigate("/")}
@@ -107,35 +107,35 @@ const GuidelinesPage = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-white/80">
                       <strong>Comunicacin respetuosa:</strong> Usa un lenguaje
                       corts y considerado
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Perfiles autnticos:</strong> Usa fotos reales y
                       informacin veraz
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Consentimiento mutuo:</strong> Respeta los lmites
                       y decisiones de otros
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Privacidad:</strong> Mantn confidencial la
                       informacin personal compartida
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-green-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Diversidad:</strong> Celebra y respeta las
                       diferentes orientaciones y preferencias
@@ -155,35 +155,35 @@ const GuidelinesPage = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-start">
-                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Acoso o intimidacin:</strong> Cualquier forma de
                       hostigamiento est prohibida
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Perfiles falsos:</strong> No uses identidades
                       falsas o fotos de otras personas
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Contenido inapropiado:</strong> No compartas
                       material ofensivo o ilegal
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Spam o promocin:</strong> No uses la plataforma
                       para publicidad no autorizada
                     </p>
                   </div>
                   <div className="flex items-start">
-                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                    <XCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 shrink-0" />
                     <p className="text-gray-700">
                       <strong>Discriminacin:</strong> No toleramos prejuicios
                       por raza, gnero, orientacin, etc.

@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 //import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield, FileText, ExternalLink, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
@@ -33,16 +33,16 @@ export const TermsModal: React.FC<TermsModalProps> = ({
           onClick={onClose}
         >
           <div
-            className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 rounded-2xl shadow-2xl border border-purple-500/40 max-w-xl md:max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4 sm:mx-0 transform transition-all duration-300 ease-out"
+            className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-2xl shadow-2xl border border-purple-500/40 max-w-xl md:max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4 sm:mx-0 transform transition-all duration-300 ease-out"
             onClick={(e: React.MouseEvent<HTMLDivElement>) =>
               e.stopPropagation()
             }
           >
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-purple-900/95 via-purple-800/95 to-blue-900/95 border-b border-purple-500/40 p-6 rounded-t-2xl backdrop-blur-md">
+            <div className="sticky top-0 bg-linear-to-r from-purple-900/95 via-purple-800/95 to-blue-900/95 border-b border-purple-500/40 p-6 rounded-t-2xl backdrop-blur-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg shadow-lg shadow-purple-500/40">
+                  <div className="p-2 bg-linear-to-br from-purple-600 to-blue-600 rounded-lg shadow-lg shadow-purple-500/40">
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -65,9 +65,9 @@ export const TermsModal: React.FC<TermsModalProps> = ({
 
             <div className="p-6 space-y-6">
               {/* Advertencia +18 */}
-              <div className="bg-gradient-to-r from-red-500/20 via-red-600/15 to-orange-500/20 dark:from-red-900/40 dark:via-red-800/40 dark:to-orange-800/40 rounded-xl p-6 border border-red-400/40 dark:border-red-700/60">
+              <div className="bg-linear-to-r from-red-500/20 via-red-600/15 to-orange-500/20 dark:from-red-900/40 dark:via-red-800/40 dark:to-orange-800/40 rounded-xl p-6 border border-red-400/40 dark:border-red-700/60">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-red-500 rounded-lg flex-shrink-0">
+                  <div className="p-2 bg-red-500 rounded-lg shrink-0">
                     <Shield className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -94,7 +94,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">
                           Edad Mínima
@@ -106,7 +106,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">
                           Contenido Apropiado
@@ -118,7 +118,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">
                           Privacidad
@@ -132,7 +132,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
 
                   <div className="space-y-3">
                     <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">
                           Respeto Mutuo
@@ -144,7 +144,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">
                           Verificación
@@ -156,7 +156,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                     </div>
 
                     <div className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">
                           Responsabilidad
@@ -246,7 +246,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   disabled={!accepted}
                   className={`${
                     accepted
-                      ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+                      ? "bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 >

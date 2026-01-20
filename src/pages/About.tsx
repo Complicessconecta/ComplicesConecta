@@ -11,7 +11,7 @@ const About = () => {
   const isActive = location.pathname === "/about";
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden ${isActive ? "page-active" : ""}`}>
+    <div className={`min-h-dvh bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-x-hidden ${isActive ? "page-active" : ""}`}>
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Elementos fantasma deshabilitados para evitar aparición/desaparición */}
@@ -28,7 +28,7 @@ const About = () => {
           <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-2xl">
             <CardContent className="p-8 text-center">
               <div className="flex justify-center mb-6">
-                <div className="p-4 bg-gradient-to-r from-fuchsia-500 to-purple-600 rounded-full">
+                <div className="p-4 bg-linear-to-r from-fuchsia-500 to-purple-600 rounded-full">
                   <Heart className="h-12 w-12 text-white" fill="currentColor" />
                 </div>
               </div>
@@ -117,7 +117,7 @@ const About = () => {
               </h3>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center group">
-                  <div className="p-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full w-16 h-16 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-4 bg-linear-to-r from-green-500 to-emerald-600 rounded-full w-16 h-16 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                     <Shield className="h-8 w-8 text-white" />
                   </div>
                   <h4 className="text-lg font-semibold text-white mb-2">
@@ -130,7 +130,7 @@ const About = () => {
                 </div>
 
                 <div className="text-center group">
-                  <div className="p-4 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full w-16 h-16 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-4 bg-linear-to-r from-blue-500 to-cyan-600 rounded-full w-16 h-16 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                     <Users className="h-8 w-8 text-white" />
                   </div>
                   <h4 className="text-lg font-semibold text-white mb-2">
@@ -143,7 +143,7 @@ const About = () => {
                 </div>
 
                 <div className="text-center group">
-                  <div className="p-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-full w-16 h-16 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="p-4 bg-linear-to-r from-orange-500 to-red-600 rounded-full w-16 h-16 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                     <Zap className="h-8 w-8 text-white" />
                   </div>
                   <h4 className="text-lg font-semibold text-white mb-2">
@@ -241,23 +241,23 @@ const About = () => {
                 Nuestra Comunidad en Nmeros
               </h3>
               <div className="grid md:grid-cols-4 gap-6 text-center">
-                <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 rounded-lg p-6">
+                <div className="bg-linear-to-br from-purple-500/20 to-fuchsia-500/20 rounded-lg p-6">
                   <div className="text-3xl font-bold text-white mb-2">
                     v3.5.0
                   </div>
                   <div className="text-white/70 text-sm">Versin Actual</div>
                 </div>
-                <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-lg p-6">
+                <div className="bg-linear-to-br from-blue-500/20 to-cyan-500/20 rounded-lg p-6">
                   <div className="text-3xl font-bold text-white mb-2">107</div>
                   <div className="text-white/70 text-sm">
                     Tablas Base de Datos
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg p-6">
+                <div className="bg-linear-to-br from-green-500/20 to-emerald-500/20 rounded-lg p-6">
                   <div className="text-3xl font-bold text-white mb-2">100%</div>
                   <div className="text-white/70 text-sm">Tests Pasando</div>
                 </div>
-                <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-lg p-6">
+                <div className="bg-linear-to-br from-orange-500/20 to-red-500/20 rounded-lg p-6">
                   <div className="text-3xl font-bold text-white mb-2">AI</div>
                   <div className="text-white/70 text-sm">Nativo + Neo4j</div>
                 </div>
@@ -274,7 +274,7 @@ const About = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div className="flex items-start space-x-3">
-                    <Shield className="h-6 w-6 text-green-400 mt-1 flex-shrink-0" />
+                    <Shield className="h-6 w-6 text-green-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
                         Encriptacin AES-GCM
@@ -286,7 +286,7 @@ const About = () => {
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Award className="h-6 w-6 text-yellow-400 mt-1 flex-shrink-0" />
+                    <Award className="h-6 w-6 text-yellow-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
                         Cumplimiento GDPR/LFPDPPP
@@ -297,7 +297,7 @@ const About = () => {
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Eye className="h-6 w-6 text-blue-400 mt-1 flex-shrink-0" />
+                    <Eye className="h-6 w-6 text-blue-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
                         Moderacin IA + Humana
@@ -310,7 +310,7 @@ const About = () => {
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-start space-x-3">
-                    <Users className="h-6 w-6 text-purple-400 mt-1 flex-shrink-0" />
+                    <Users className="h-6 w-6 text-purple-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
                         Verificacin Obligatoria
@@ -321,7 +321,7 @@ const About = () => {
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Zap className="h-6 w-6 text-orange-400 mt-1 flex-shrink-0" />
+                    <Zap className="h-6 w-6 text-orange-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
                         Deteccin de Fraude
@@ -333,7 +333,7 @@ const About = () => {
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Heart className="h-6 w-6 text-red-400 mt-1 flex-shrink-0" />
+                    <Heart className="h-6 w-6 text-red-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
                         Equipo de Moderadores
@@ -350,7 +350,7 @@ const About = () => {
           </Card>
 
           {/* CTA */}
-          <Card className="bg-gradient-to-r from-fuchsia-500/20 to-purple-600/20 backdrop-blur-md border-fuchsia-300/30 shadow-xl">
+          <Card className="bg-linear-to-r from-fuchsia-500/20 to-purple-600/20 backdrop-blur-md border-fuchsia-300/30 shadow-xl">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold text-white mb-4">
                 Listo para Conectar?
@@ -362,7 +362,7 @@ const About = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   onClick={() => navigate("/auth")}
-                  className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white font-semibold px-8 py-3 transition-all duration-300 hover:scale-105"
+                  className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white font-semibold px-8 py-3 transition-all duration-300 hover:scale-105"
                 >
                   Crear Cuenta Gratis
                 </Button>

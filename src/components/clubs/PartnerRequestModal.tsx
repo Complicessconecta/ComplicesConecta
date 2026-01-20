@@ -102,7 +102,7 @@ export const PartnerRequestModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold hover:from-purple-600 hover:to-blue-600">
+        <Button className="bg-linear-to-r from-purple-500 to-blue-500 text-white font-bold hover:from-purple-600 hover:to-blue-600">
           <Building className="mr-2 h-4 w-4" />
           Solicitar Partner
         </Button>

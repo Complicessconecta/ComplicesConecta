@@ -37,7 +37,7 @@ export const HeroSection = () => {
                   />
                 </div>
               </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r from-white via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)] transition-all duration-300 group-hover:scale-105 tracking-wide">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black bg-linear-to-r from-white via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)] transition-all duration-300 group-hover:scale-105 tracking-wide">
                 ComplicesConecta
               </h1>
             </div>
@@ -46,13 +46,13 @@ export const HeroSection = () => {
           {/* Main Headline - Con gradiente y glow */}
           <div className="mb-8">
             <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold mb-6 leading-tight tracking-tight">
-              <span className="block bg-gradient-to-r from-white via-pink-100 to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
+              <span className="block bg-linear-to-r from-white via-pink-100 to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
                 Plataforma Social
               </span>
-              <span className="block bg-gradient-to-r from-pink-200 via-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.6)]">
+              <span className="block bg-linear-to-r from-pink-200 via-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.6)]">
                 Exclusiva
               </span>
-              <span className="block bg-gradient-to-r from-pink-300 via-pink-400 to-pink-500 bg-clip-text text-transparent text-3xl sm:text-4xl md:text-5xl font-medium mt-2 drop-shadow-xl">
+              <span className="block bg-linear-to-r from-pink-300 via-pink-400 to-pink-500 bg-clip-text text-transparent text-3xl sm:text-4xl md:text-5xl font-medium mt-2 drop-shadow-xl">
                 para Adultos +18
               </span>
             </h1>
@@ -60,10 +60,10 @@ export const HeroSection = () => {
 
           {/* Subtitle - Con gradiente */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-8 leading-relaxed">
-            <span className="bg-gradient-to-r from-white via-pink-100 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
+            <span className="bg-linear-to-r from-white via-pink-100 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
               Encuentra tu
             </span>
-            <span className="block bg-gradient-to-r from-pink-200 via-pink-300 to-pink-400 bg-clip-text text-transparent font-bold drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)]">
+            <span className="block bg-linear-to-r from-pink-200 via-pink-300 to-pink-400 bg-clip-text text-transparent font-bold drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)]">
               Conexión Perfecta
             </span>
           </h2>
@@ -72,20 +72,20 @@ export const HeroSection = () => {
           <div className="max-w-4xl mx-auto mb-12">
             {/* Beta Badge */}
             <div className="inline-flex items-center gap-2 mb-6">
-              <span className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide shadow-[0_0_20px_rgba(236,72,153,0.5)] flex items-center gap-2 border border-pink-400/50">
+              <span className="bg-linear-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide shadow-[0_0_20px_rgba(236,72,153,0.5)] flex items-center gap-2 border border-pink-400/50">
                 <span className="w-2 h-2 bg-pink-300 rounded-full animate-pulse"></span>
                 Versión Beta Exclusiva
               </span>
             </div>
 
             <p className="text-lg sm:text-xl md:text-2xl leading-relaxed font-medium mb-4">
-              <span className="bg-gradient-to-r from-white via-pink-50 to-pink-100 bg-clip-text text-transparent drop-shadow-lg">
+              <span className="bg-linear-to-r from-white via-pink-50 to-pink-100 bg-clip-text text-transparent drop-shadow-lg">
                 Conecta con personas afines de manera segura y discreta
               </span>
             </p>
 
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-light">
-              <span className="bg-gradient-to-r from-pink-100 via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
+              <span className="bg-linear-to-r from-pink-100 via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
                 Sistema de verificación KYC, chat encriptado y eventos exclusivos
                 para la comunidad lifestyle
               </span>
@@ -96,26 +96,26 @@ export const HeroSection = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-16 pt-8 border-t border-pink-500/20">
           <div className="text-center group">
-            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
               BETA
             </div>
-            <div className="bg-gradient-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
+            <div className="bg-linear-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
               Versión de Prueba
             </div>
           </div>
           <div className="text-center group">
-            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
               100%
             </div>
-            <div className="bg-gradient-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
+            <div className="bg-linear-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
               Funciones Gratis
             </div>
           </div>
           <div className="text-center group">
-            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-gradient-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
               ∞
             </div>
-            <div className="bg-gradient-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
+            <div className="bg-linear-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
               Posibilidades
             </div>
           </div>

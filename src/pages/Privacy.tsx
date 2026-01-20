@@ -5,13 +5,13 @@ import { Badge } from "@/components/ui/badge";
 
 const Privacy: FC = () => {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="min-h-dvh relative overflow-x-hidden bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <div className="relative z-10">
         <main className="container mx-auto px-4 py-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Política de Privacidad
-              <span className="block bg-gradient-to-r from-fuchsia-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+              <span className="block bg-linear-to-r from-fuchsia-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                 ComplicesConecta
               </span>
             </h1>

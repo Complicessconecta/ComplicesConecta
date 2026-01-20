@@ -199,10 +199,10 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
         className="w-full max-w-xl animate-modal-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <Card className="w-full shadow-2xl shadow-purple-500/30 border-0 overflow-visible relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30 rounded-2xl">
+        <Card className="w-full shadow-2xl shadow-purple-500/30 border-0 overflow-visible relative bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30 rounded-2xl">
           {/* Animated Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 pointer-events-none rounded-lg"></div>
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 pointer-events-none rounded-lg"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-purple-500 via-blue-500 to-purple-500 pointer-events-none"></div>
 
           {/* Floating Elements */}
           <div className="absolute top-4 right-12 opacity-20 pointer-events-none">
@@ -242,9 +242,9 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
           <CardContent className="p-8 text-center relative z-10">
             {/* Icon with Animation */}
             <div
-              className={`relative bg-gradient-to-r from-purple-600 to-blue-600 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/50 animate-float ring-2 ring-white/20 ring-offset-4 ring-offset-purple-900/50`}
+              className={`relative bg-linear-to-r from-purple-600 to-blue-600 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/50 animate-float ring-2 ring-white/20 ring-offset-4 ring-offset-purple-900/50`}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/30 to-blue-400/30 rounded-full animate-pulse blur-sm"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-purple-400/30 to-blue-400/30 rounded-full animate-pulse blur-sm"></div>
               <IconComponent
                 className={`w-12 h-12 text-white drop-shadow-md relative z-10 animate-pulse`}
               />
@@ -258,7 +258,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500/30 to-yellow-600/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  className="px-4 py-2 rounded-full bg-linear-to-r from-yellow-500/30 to-yellow-600/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🪙 TOKENS CMPX
                 </Badge>
@@ -268,7 +268,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-accent/20 to-accent/30 text-accent border-accent/40 shadow-[0_0_20px_rgba(168,85,247,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  className="px-4 py-2 rounded-full bg-linear-to-r from-accent/20 to-accent/30 text-accent border-accent/40 shadow-[0_0_20px_rgba(168,85,247,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   BETA EXCLUSIVA
                 </Badge>
@@ -278,7 +278,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-fuchsia-600/40 to-purple-600/40 text-white border border-white/30 shadow-[0_0_25px_rgba(168,85,247,0.35)] ring-1 ring-purple-400/30 backdrop-blur-sm animate-pulse"
+                  className="px-4 py-2 rounded-full bg-linear-to-r from-fuchsia-600/40 to-purple-600/40 text-white border border-white/30 shadow-[0_0_25px_rgba(168,85,247,0.35)] ring-1 ring-purple-400/30 backdrop-blur-sm animate-pulse"
                 >
                   ⚡ PREMIUM GRATIS
                 </Badge>
@@ -288,7 +288,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  className="px-4 py-2 rounded-full bg-linear-to-r from-blue-500/20 to-blue-600/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🌍 WORLD ID PRÓXIMAMENTE
                 </Badge>
@@ -298,7 +298,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-400/20 to-blue-500/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(96,165,250,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  className="px-4 py-2 rounded-full bg-linear-to-r from-blue-400/20 to-blue-500/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(96,165,250,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🛡️ MODERACIÓN SEGURA
                 </Badge>
@@ -308,7 +308,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500/30 to-orange-500/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  className="px-4 py-2 rounded-full bg-linear-to-r from-yellow-500/30 to-orange-500/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🎯 EXPLORA TODO
                 </Badge>
@@ -319,21 +319,21 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             <div className="space-y-4 animate-slide-up">
               {/* Title con 3 líneas separadas */}
               <div className="space-y-1 text-center flex flex-col items-center justify-center">
-                <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow inline-flex items-center justify-center gap-2">
+                <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow inline-flex items-center justify-center gap-2">
                   {currentStepData.title}
                 </h2>
                 {currentStepData.titleAccent && (
-                  <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+                  <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
                     {currentStepData.titleAccent}
                   </h2>
                 )}
                 {currentStepData.titleAccent2 && (
-                  <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+                  <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
                     {currentStepData.titleAccent2}
                   </h2>
                 )}
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold bg-gradient-to-r from-white/90 to-purple-200/90 bg-clip-text text-transparent drop-shadow-md animate-fade-in animate-bounce">
+              <h3 className="text-xl sm:text-2xl font-semibold bg-linear-to-r from-white/90 to-purple-200/90 bg-clip-text text-transparent drop-shadow-md animate-fade-in animate-bounce">
                 {currentStepData.subtitle}
               </h3>
               <p className="text-white/95 font-medium leading-relaxed drop-shadow-md backdrop-blur-sm bg-black/10 rounded-lg p-4 border border-white/10">
@@ -354,9 +354,9 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                   key={index}
                   className={`relative transition-all duration-300 ${
                     index === currentStep
-                      ? "w-4 h-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full scale-125 shadow-lg shadow-purple-500/50 animate-pulse ring-2 ring-white/30"
+                      ? "w-4 h-4 bg-linear-to-r from-purple-500 to-blue-500 rounded-full scale-125 shadow-lg shadow-purple-500/50 animate-pulse ring-2 ring-white/30"
                       : index < currentStep
-                        ? "w-3 h-3 bg-gradient-to-r from-purple-400/80 to-blue-400/80 rounded-full"
+                        ? "w-3 h-3 bg-linear-to-r from-purple-400/80 to-blue-400/80 rounded-full"
                         : "w-3 h-3 bg-white/30 rounded-full hover:bg-white/50 transition-colors cursor-pointer"
                   }`}
                   onClick={() => setCurrentStep(index)}
@@ -374,7 +374,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                 variant="default"
                 onClick={handlePrevious}
                 disabled={currentStep === 0}
-                className="flex-1 bg-gradient-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white font-semibold border-0 shadow-lg shadow-purple-500/30 backdrop-blur-sm hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="flex-1 bg-linear-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white font-semibold border-0 shadow-lg shadow-purple-500/30 backdrop-blur-sm hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span className="flex items-center gap-2">
                   <Zap className="w-4 h-4" />
@@ -387,8 +387,8 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                 onClick={handleNext}
                 className={`flex-1 relative overflow-hidden group font-semibold border-0 shadow-lg backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 ${
                   currentStep === welcomeSteps.length - 1
-                    ? "bg-gradient-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
-                    : "bg-gradient-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
+                    ? "bg-linear-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
+                    : "bg-linear-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
                 }`}
               >
                 {currentStep === welcomeSteps.length - 1 ? (
@@ -419,7 +419,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
           </CardContent>
 
           {/* Animated Border Effect */}
-          <div className="absolute inset-0 border-2 border-purple-500/30 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 rounded-lg animate-pulse opacity-50"></div>
+          <div className="absolute inset-0 border-2 border-purple-500/30 bg-linear-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 rounded-lg animate-pulse opacity-50"></div>
         </Card>
       </div>
     </div>,

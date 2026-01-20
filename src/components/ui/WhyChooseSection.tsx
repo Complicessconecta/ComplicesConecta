@@ -14,7 +14,7 @@ export const WhyChooseSection: FC<WhyChooseSectionProps> = ({ className }) => {
         {/* Background */}
         <div className="relative">
           {/* Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-violet-800 rounded-3xl"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-blue-900 via-purple-900 to-violet-800 rounded-3xl"></div>
 
           {/* Pink Speckles */}
           <div className="absolute inset-0 opacity-20">

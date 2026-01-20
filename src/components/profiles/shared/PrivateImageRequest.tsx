@@ -76,7 +76,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
     >
       <CardContent className="p-6">
         <div className="text-center mb-6">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-linear-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
             <Lock className="h-8 w-8 text-white" />
           </div>
           <h3 className="text-lg font-semibold text-white mb-2">
@@ -110,7 +110,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
             <Button
               onClick={handleSendRequest}
               disabled={isLoading}
-              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              className="flex-1 bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
             >
               <Send className="h-4 w-4 mr-2" />
               {isLoading ? "Enviando..." : "Enviar Solicitud"}
@@ -130,7 +130,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
 
         <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
           <div className="flex items-start gap-3">
-            <EyeOff className="h-5 w-5 text-purple-400 mt-0.5 flex-shrink-0" />
+            <EyeOff className="h-5 w-5 text-purple-400 mt-0.5 shrink-0" />
             <div className="text-xs text-white/80">
               <p className="font-medium mb-1">Política de Privacidad</p>
               <p>

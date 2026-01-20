@@ -384,7 +384,7 @@ export const PrivateMatches: React.FC = () => {
     return (
       <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
         <div className="flex flex-col items-center space-y-4">
-          <div className="p-4 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+          <div className="p-4 rounded-full bg-linear-to-br from-purple-500/20 to-pink-500/20">
             <Lock className="h-8 w-8 text-purple-400" />
           </div>
           <div>
@@ -395,7 +395,7 @@ export const PrivateMatches: React.FC = () => {
               Descubre conexiones exclusivas con nuestro algoritmo avanzado de
               compatibilidad. Solo disponible para usuarios Premium.
             </p>
-            <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30">
+            <Badge className="bg-linear-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30">
               <Crown className="h-3 w-3 mr-1" />
               Funcionalidad Premium
             </Badge>
@@ -444,7 +444,7 @@ export const PrivateMatches: React.FC = () => {
               {matches.length}
             </Badge>
           </div>
-          <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30">
+          <Badge className="bg-linear-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30">
             <Zap className="h-3 w-3 mr-1" />
             Premium
           </Badge>
@@ -454,7 +454,7 @@ export const PrivateMatches: React.FC = () => {
         {matches.length === 0 ? (
           <div className="text-center py-8">
             <div className="flex flex-col items-center space-y-4">
-              <div className="p-4 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+              <div className="p-4 rounded-full bg-linear-to-br from-purple-500/20 to-pink-500/20">
                 <Users className="h-8 w-8 text-purple-400" />
               </div>
               <div>
@@ -482,7 +482,7 @@ export const PrivateMatches: React.FC = () => {
                           src={match.matched_user.avatar_url}
                           alt={match.matched_user.first_name}
                         />
-                        <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
+                        <AvatarFallback className="bg-linear-to-br from-purple-500 to-pink-500 text-white">
                           {match.matched_user.first_name.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
@@ -545,7 +545,7 @@ export const PrivateMatches: React.FC = () => {
                               handleMatchAction(match.id, "accept")
                             }
                             disabled={isProcessing === match.id}
-                            className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white border-0"
+                            className="bg-linear-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white border-0"
                           >
                             {isProcessing === match.id ? (
                               <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
@@ -574,7 +574,7 @@ export const PrivateMatches: React.FC = () => {
                       {match.status === "accepted" && (
                         <Button
                           size="sm"
-                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
+                          className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
                         >
                           <MessageCircle className="h-4 w-4 mr-1" />
                           Enviar mensaje

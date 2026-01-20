@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { X, Smartphone, Download, Chrome, Globe, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
@@ -164,7 +164,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
             )}
           </div>
 
-          <CardContent className="p-3 sm:p-6 space-y-4 sm:space-y-6 bg-gradient-to-br from-purple-900/20 to-blue-900/20 backdrop-blur-sm">
+          <CardContent className="p-3 sm:p-6 space-y-4 sm:space-y-6 bg-linear-to-br from-purple-900/20 to-blue-900/20 backdrop-blur-sm">
             {isAPK ? (
               <div className="space-y-4 text-center">
                 <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
@@ -200,7 +200,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
 
                 <Button
                   onClick={onClose}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3"
+                  className="w-full bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3"
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Continuar Usando la App
@@ -225,7 +225,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                         }`}
                       >
                         <div
-                          className={`flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
+                          className={`shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                             index < currentStep
                               ? "bg-green-500 text-white"
                               : index === currentStep
@@ -294,7 +294,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                         );
                       }
                     }}
-                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-2 sm:py-3 text-sm sm:text-base"
+                    className="w-full bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-2 sm:py-3 text-sm sm:text-base"
                   >
                     <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                     Descargar APK Ahora

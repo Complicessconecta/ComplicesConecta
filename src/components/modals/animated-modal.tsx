@@ -77,7 +77,7 @@ export const ModalContent: React.FC<ModalContentProps> = ({
 }) => {
   return (
     <div
-      className={`bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 rounded-lg shadow-xl max-w-md w-full mx-4 ${className}`}
+      className={`bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-lg shadow-xl max-w-md w-full mx-4 ${className}`}
     >
       {children}
     </div>

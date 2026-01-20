@@ -65,7 +65,7 @@ export const EnvChecker = () => {
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-red-950 border-2 border-red-500 rounded-lg p-8 max-w-md w-full shadow-2xl">
         <div className="flex items-center gap-3 mb-4">
-          <AlertCircle className="w-8 h-8 text-red-400 flex-shrink-0" />
+          <AlertCircle className="w-8 h-8 text-red-400 shrink-0" />
           <h1 className="text-2xl font-bold text-red-300">
             CRITICAL CONFIG ERROR
           </h1>
@@ -78,9 +78,9 @@ export const EnvChecker = () => {
         <div className="space-y-4 mb-6">
           <div className="flex items-start gap-3">
             {envStatus.supabaseUrl ? (
-              <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
             )}
             <div>
               <p
@@ -100,9 +100,9 @@ export const EnvChecker = () => {
 
           <div className="flex items-start gap-3">
             {envStatus.supabaseAnonKey ? (
-              <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
             ) : (
-              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
             )}
             <div>
               <p

@@ -64,4 +64,4 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER career_applications_updated_at
   BEFORE UPDATE ON career_applications
   FOR EACH ROW
-  EXECUTE FUNCTION update_carear_applications_updated_at();
+  EXECUTE FUNCTION update_career_applications_updated_at();

@@ -59,9 +59,9 @@ const Info = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
+    <div className="min-h-dvh bg-linear-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-x-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
+      <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
 
       <div className="relative z-10">
         <main className="container mx-auto px-4 py-8">
@@ -174,19 +174,19 @@ const Info = () => {
                     </h3>
                     <ul className="space-y-2 text-white font-medium">
                       <li className="flex items-center drop-shadow-sm">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" />
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 shrink-0" />
                         Discrecin y privacidad
                       </li>
                       <li className="flex items-center drop-shadow-sm">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" />
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 shrink-0" />
                         Respeto mutuo
                       </li>
                       <li className="flex items-center drop-shadow-sm">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" />
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 shrink-0" />
                         Autenticidad
                       </li>
                       <li className="flex items-center drop-shadow-sm">
-                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" />
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-2 shrink-0" />
                         Seguridad total
                       </li>
                     </ul>
@@ -198,7 +198,7 @@ const Info = () => {
 
           {/* CTA Section */}
           <section className="text-center">
-            <Card className="bg-gradient-to-r from-purple-600/90 to-blue-700/90 backdrop-blur-sm border border-purple-400/50 shadow-lg">
+            <Card className="bg-linear-to-r from-purple-600/90 to-blue-700/90 backdrop-blur-sm border border-purple-400/50 shadow-lg">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold text-white mb-4 drop-shadow-lg">
                   ¿Listo para unirte a nuestra comunidad?
@@ -210,7 +210,7 @@ const Info = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     onClick={() => navigate("/auth")}
-                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 px-8 py-3"
+                    className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 px-8 py-3"
                   >
                     Crear Cuenta Gratis
                   </Button>

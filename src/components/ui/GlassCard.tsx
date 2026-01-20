@@ -17,7 +17,7 @@ const variantStyles = {
   frosted: "bg-white/20 border-white/30",
   minimal: "bg-white/5 border-white/10",
   colored:
-    "bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 border-white/20",
+    "bg-linear-to-br from-purple-500/20 to-fuchsia-500/20 border-white/20",
 };
 
 const blurStyles = {
@@ -65,7 +65,7 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
           shadowStyles[shadow],
           border && "border",
           gradient
-            ? "bg-gradient-to-br from-white/10 to-white/5"
+            ? "bg-linear-to-br from-white/10 to-white/5"
             : variantStyles[variant],
           className,
         )}
@@ -116,7 +116,7 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
 
         {/* Shimmer Effect */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent rounded-xl pointer-events-none"
+          className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent rounded-xl pointer-events-none"
           initial={{ x: "-100%" }}
           animate={{ x: "100%" }}
           transition={{

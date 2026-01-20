@@ -51,7 +51,7 @@ const VIPEvents = () => {
         <p className="text-white/70 mb-4">
           Accede a eventos privados y experiencias únicas para miembros Premium.
         </p>
-        <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
+        <Button className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
           <Crown className="h-4 w-4 mr-2" />
           Actualizar a Premium
         </Button>
@@ -131,7 +131,7 @@ const VIPEvents = () => {
                 <div className="text-2xl font-bold text-white">
                   {formatPrice(event.price)}
                 </div>
-                <Button className="bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white">
+                <Button className="bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white">
                   <Ticket className="h-4 w-4 mr-2" />
                   Reservar
                 </Button>
@@ -240,7 +240,7 @@ const VIPEvents = () => {
 
               <div className="flex space-x-3">
                 <Button
-                  className="flex-1 bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
+                  className="flex-1 bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
                   size="lg"
                   onClick={() => {
                     toast({

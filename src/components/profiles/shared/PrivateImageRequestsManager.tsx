@@ -189,7 +189,7 @@ export const PrivateImageRequestsManager: React.FC<
                 className="bg-white/5 rounded-xl p-4 border border-white/10"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
                     <span className="text-white font-semibold text-sm">
                       {request.requesterName.charAt(0)}
                     </span>

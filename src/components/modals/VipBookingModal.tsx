@@ -30,7 +30,7 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.25 }}
             className={cn(
-              "relative w-full max-w-lg rounded-3xl border border-purple-500/40 bg-gradient-to-br from-purple-900/90 via-black/90 to-blue-900/90 shadow-[0_20px_60px_rgba(0,0,0,0.9)] p-6 sm:p-8",
+              "relative w-full max-w-lg rounded-3xl border border-purple-500/40 bg-linear-to-br from-purple-900/90 via-black/90 to-blue-900/90 shadow-[0_20px_60px_rgba(0,0,0,0.9)] p-6 sm:p-8",
               className,
             )}
           >
@@ -120,7 +120,7 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({
               >
                 Cerrar
               </Button>
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold">
+              <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold">
                 Solicitar Reservación
               </Button>
             </div>

@@ -224,7 +224,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
       >
-        <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white border-0">
+        <Card className="bg-linear-to-br from-purple-600 to-blue-600 text-white border-0">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-4">
               <div>

@@ -155,7 +155,7 @@ export const AnimatedLoader = React.memo<AnimatedLoaderProps>(
                   key={i}
                   className={cn(
                     dot,
-                    "bg-gradient-to-r from-fuchsia-500 to-red-500 rounded-full",
+                    "bg-linear-to-r from-fuchsia-500 to-red-500 rounded-full",
                   )}
                   animate={{
                     scale: [1, 1.5, 1],

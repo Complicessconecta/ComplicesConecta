@@ -264,7 +264,7 @@ const StoriesContainer: React.FC = () => {
               Ejemplos de Historias Populares
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <div className="aspect-square bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg relative overflow-hidden">
+              <div className="aspect-square bg-linear-to-br from-purple-500 to-pink-500 rounded-lg relative overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Cena íntima"
@@ -277,7 +277,7 @@ const StoriesContainer: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="aspect-square bg-gradient-to-br from-blue-500 to-teal-500 rounded-lg relative overflow-hidden">
+              <div className="aspect-square bg-linear-to-br from-blue-500 to-teal-500 rounded-lg relative overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Viaje de fin de semana"
@@ -290,7 +290,7 @@ const StoriesContainer: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="aspect-square bg-gradient-to-br from-orange-500 to-red-500 rounded-lg relative overflow-hidden">
+              <div className="aspect-square bg-linear-to-br from-orange-500 to-red-500 rounded-lg relative overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Momento especial"
@@ -303,7 +303,7 @@ const StoriesContainer: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="aspect-square bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg relative overflow-hidden">
+              <div className="aspect-square bg-linear-to-br from-green-500 to-emerald-500 rounded-lg relative overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Celebración"
@@ -316,7 +316,7 @@ const StoriesContainer: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="aspect-square bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg relative overflow-hidden">
+              <div className="aspect-square bg-linear-to-br from-indigo-500 to-purple-500 rounded-lg relative overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Video íntimo"
@@ -329,7 +329,7 @@ const StoriesContainer: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="aspect-square bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg relative overflow-hidden">
+              <div className="aspect-square bg-linear-to-br from-yellow-500 to-orange-500 rounded-lg relative overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Aventura compartida"
@@ -346,7 +346,7 @@ const StoriesContainer: React.FC = () => {
           </div>
 
           {/* Tipos de contenido */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-400/20">
+          <div className="mb-6 p-4 bg-linear-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-400/20">
             <h4 className="font-semibold text-white mb-2">
               ¿Qué puedes compartir?
             </h4>
@@ -387,7 +387,7 @@ const StoriesContainer: React.FC = () => {
           </div>
 
           {/* Beneficios adicionales */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-500/10 to-teal-500/10 rounded-lg border border-blue-400/20">
+          <div className="mb-6 p-4 bg-linear-to-r from-blue-500/10 to-teal-500/10 rounded-lg border border-blue-400/20">
             <h4 className="font-semibold text-white mb-2">
               Beneficios de las Historias
             </h4>
@@ -420,7 +420,7 @@ const StoriesContainer: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 text-lg">
+            <Button className="bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 text-lg">
               <Crown className="h-5 w-5 mr-2" />
               Únete para Ver y Crear Historias
             </Button>
@@ -445,7 +445,7 @@ const StoriesContainer: React.FC = () => {
           Comparte momentos que desaparecen en 24 horas con tu membresía
           Premium.
         </p>
-        <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
+        <Button className="bg-linear-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
           <Crown className="h-4 w-4 mr-2" />
           Actualizar a Premium
         </Button>
@@ -477,7 +477,7 @@ const StoriesContainer: React.FC = () => {
 
         <Button
           onClick={handleCreateStory}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+          className="bg-linear-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
           Crear Historia
@@ -487,7 +487,7 @@ const StoriesContainer: React.FC = () => {
       {/* Lista de historias */}
       <div className="flex space-x-4 overflow-x-auto pb-4">
         {/* Tu historia */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <Card
             className="w-24 h-32 bg-black/30 backdrop-blur-sm border-white/10 cursor-pointer hover:scale-105 transition-transform relative overflow-hidden"
             onClick={handleCreateStory}
@@ -504,7 +504,7 @@ const StoriesContainer: React.FC = () => {
 
         {/* Historias de otros usuarios */}
         {stories.map((story) => (
-          <div key={story.id} className="flex-shrink-0">
+          <div key={story.id} className="shrink-0">
             <Card
               className={`w-24 h-32 cursor-pointer hover:scale-105 transition-transform relative overflow-hidden ${
                 story.isViewed

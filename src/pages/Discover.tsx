@@ -702,7 +702,7 @@ export const Discover = () => {
   };
 
   return (
-    <div className="min-h-screen bg-transparent relative overflow-hidden pb-20">
+    <div className="min-h-dvh bg-transparent relative overflow-x-hidden pb-20">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={6} />
       {/* Animated Background */}

@@ -217,7 +217,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
 
                 <div className="space-y-3 text-sm text-gray-600">
                   <div className="flex items-start space-x-2">
-                    <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
                     <span>
                       <strong>Congelamiento Inmediato:</strong> Todos los Tokens
                       CMPX, GTK y NFTs serán bloqueados temporalmente. Nadie
@@ -226,7 +226,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
                   </div>
 
                   <div className="flex items-start space-x-2">
-                    <Timer className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <Timer className="h-4 w-4 text-orange-500 mt-0.5 shrink-0" />
                     <span>
                       <strong>Periodo de Resolución (72 Horas):</strong> Se
                       abrirá una ventana de 3 días para que tú y tu pareja
@@ -236,7 +236,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
                   </div>
 
                   <div className="flex items-start space-x-2">
-                    <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
                     <span>
                       <strong>Consecuencia por Inacción:</strong> Si el contador
                       llega a cero y no han registrado un acuerdo en el sistema,

@@ -1,4 +1,4 @@
-﻿import { lazyWithDefault } from "@/utils/lazyWithDefault";
+import { lazyWithDefault } from "@/utils/lazyWithDefault";
 
 // Lazy loading with chunk names for better debugging
 export const LazyPages = {

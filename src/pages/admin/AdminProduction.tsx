@@ -11,8 +11,6 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-// import { Database } from '@/types/supabase';
-
 
 interface Invitation {
   id: string;

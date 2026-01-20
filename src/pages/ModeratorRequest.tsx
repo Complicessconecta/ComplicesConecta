@@ -202,7 +202,7 @@ const ModeratorRequest = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Descripcin del programa */}
-            <div className="bg-gradient-to-r from-purple-500/10 to-fuchsia-500/10 rounded-lg p-4 border border-purple-400/20">
+            <div className="bg-linear-to-r from-purple-500/10 to-fuchsia-500/10 rounded-lg p-4 border border-purple-400/20">
               <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                 <AlertCircle className="h-5 w-5 text-blue-400" />
                 Por qu necesitamos moderadores?
@@ -318,7 +318,7 @@ const ModeratorRequest = () => {
             </div>
 
             {/* Beneficios y compensacin */}
-            <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg p-4 border border-green-400/20">
+            <div className="bg-linear-to-r from-green-500/10 to-blue-500/10 rounded-lg p-4 border border-green-400/20">
               <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Badge className="h-5 w-5 text-yellow-400" />
                 Beneficios del Programa
@@ -537,7 +537,7 @@ const ModeratorRequest = () => {
                 <Button
                   type="submit"
                   disabled={loading || !formData.agreeToTerms}
-                  className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-semibold py-3"
+                  className="w-full bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-semibold py-3"
                 >
                   {loading ? (
                     <>

@@ -60,7 +60,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   if (hasError) {
     return (
       <div
-        className={`bg-gradient-to-br from-purple-900/50 to-blue-900/50 flex items-center justify-center border border-purple-400/30 rounded-lg ${className}`}
+        className={`bg-linear-to-br from-purple-900/50 to-blue-900/50 flex items-center justify-center border border-purple-400/30 rounded-lg ${className}`}
         style={{ width, height }}
       >
         <div className="flex flex-col items-center justify-center w-full h-full text-white/70">

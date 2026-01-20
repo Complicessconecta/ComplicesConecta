@@ -223,11 +223,11 @@ const GuidelinesPage = () => {
                     Mensajes y Chat
                   </h3>
                   <ul className="space-y-2 text-gray-700">
-                    <li> S respetuoso desde el primer mensaje</li>
-                    <li> No enves contenido no solicitado</li>
+                    <li> Sé respetuoso desde el primer mensaje</li>
+                    <li> No envíes contenido no solicitado</li>
                     <li> Respeta si alguien no responde o declina</li>
-                    <li> Mantn las conversaciones apropiadas al contexto</li>
-                    <li> No compartas informacin de contacto de terceros</li>
+                    <li> Mantén las conversaciones apropiadas al contexto</li>
+                    <li> No compartas información de contacto de terceros</li>
                   </ul>
                 </div>
               </div>
@@ -299,24 +299,24 @@ const GuidelinesPage = () => {
                       Primera Advertencia
                     </h3>
                     <p className="text-yellow-700 text-sm">
-                      Notificacin y orientacin sobre las directrices de la
+                      Notificación y orientacin sobre las directrices de la
                       comunidad.
                     </p>
                   </div>
                   <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
                     <h3 className="font-semibold text-orange-800 mb-2">
-                      Suspensin Temporal
+                      Suspensión Temporal
                     </h3>
                     <p className="text-orange-700 text-sm">
-                      Restriccin de acceso por un perodo determinado (1-30 das).
+                      Restricción de acceso por un período determinado (1-30 días).
                     </p>
                   </div>
                   <div className="bg-red-50 p-6 rounded-lg border border-red-200">
                     <h3 className="font-semibold text-red-800 mb-2">
-                      Expulsin Permanente
+                      Expulsión Permanente
                     </h3>
                     <p className="text-red-700 text-sm">
-                      Eliminacin definitiva de la cuenta por violaciones graves
+                      Eliminación definitiva de la cuenta por violaciones graves
                       o reincidentes.
                     </p>
                   </div>
@@ -324,7 +324,7 @@ const GuidelinesPage = () => {
                 <div className="text-center text-gray-600">
                   <p className="text-sm">
                     Las decisiones se toman caso por caso, considerando la
-                    gravedad y el contexto de cada situacin.
+                    gravedad y el contexto de cada situación.
                   </p>
                 </div>
               </div>
@@ -341,12 +341,12 @@ const GuidelinesPage = () => {
             <CardContent className="text-center">
               <p className="text-white/80 mb-6">
                 Si tienes preguntas sobre estas directrices o deseas apelar una
-                decisin, no dudes en contactarnos:
+                decisión, no dudes en contactarnos:
               </p>
               <div className="space-y-4">
                 <div>
                   <p className="font-semibold text-purple-300">
-                    Equipo de Moderacin
+                    Equipo de Moderación
                   </p>
                   <p className="text-white/70">
                     moderacion@complicesconecta.com
@@ -373,10 +373,10 @@ const GuidelinesPage = () => {
           {/* Footer Note */}
           <div className="text-center mt-12 text-white/70 text-sm">
             <p>
-              Estas directrices pueden actualizarse peridicamente. Te
+              Estas directrices pueden actualizarse periódicamente. Te
               notificaremos sobre cambios importantes.
             </p>
-            <p className="mt-2">ltima actualizacin: Enero 2025</p>
+            <p className="mt-2">Última actualización: Enero 2025</p>
           </div>
         </div>
       </div>

@@ -362,19 +362,6 @@ export const PrivacySettings = () => {
             </p>
 
             <div className="space-y-3">
-              {isAdmin() && (
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  size="sm"
-                  onClick={handleDownloadData}
-                  disabled={isExporting}
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  {isExporting ? "Exportando..." : "Descargar mis datos"}
-                </Button>
-              )}
-
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button

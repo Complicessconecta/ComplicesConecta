@@ -218,7 +218,7 @@ export function useRealtimeNotifications({
         NotificationService.unsubscribeFromNotifications(userId);
       }
     };
-  }, [enabled, userId, loadNotifications, notificationHandler]);
+  }, [enabled, userId]);
 
   // Cleanup on unmount
   useEffect(() => {

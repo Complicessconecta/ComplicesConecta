@@ -316,7 +316,7 @@ export class PostsService {
         id: story.id,
         user_id: story.user_id,
         profile_id: story.user_id,
-        content: story.description || story.caption || "",
+        content: story.content || story.description || story.caption || "",
         post_type: story.content_type || story.media_type || "photo",
         media_urls: Array.isArray(story.media_urls)
           ? story.media_urls
@@ -325,9 +325,14 @@ export class PostsService {
             : [],
         location: story.location || null,
         views_count: story.views_count || 0,
-        likes_count: 0,
-        comments_count: 0,
-        shares_count: 0,
+        likes_count:
+          (Array.isArray(story.story_likes) && story.story_likes[0]?.count) || 0,
+        comments_count:
+          (Array.isArray(story.story_comments) &&
+            story.story_comments[0]?.count) ||
+          0,
+        shares_count:
+          (Array.isArray(story.story_shares) && story.story_shares[0]?.count) || 0,
         created_at: story.created_at,
         updated_at: story.updated_at || story.created_at,
       }));

@@ -145,15 +145,39 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 // Mock IntersectionObserver
-global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+class MockIntersectionObserver {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+
+  constructor(
+    _callback: IntersectionObserverCallback,
+    _options?: IntersectionObserverInit,
+  ) {
+    // noop
+  }
+}
+
+(globalThis as unknown as { IntersectionObserver?: typeof IntersectionObserver }).IntersectionObserver =
+  MockIntersectionObserver as unknown as typeof IntersectionObserver;
+if (typeof window !== "undefined") {
+  window.IntersectionObserver =
+    MockIntersectionObserver as unknown as typeof IntersectionObserver;
+}
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+class MockResizeObserver {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+
+  constructor(_callback: ResizeObserverCallback) {
+    // noop
+  }
+}
+
+(globalThis as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver =
+  MockResizeObserver as unknown as typeof ResizeObserver;
+if (typeof window !== "undefined") {
+  window.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
+}

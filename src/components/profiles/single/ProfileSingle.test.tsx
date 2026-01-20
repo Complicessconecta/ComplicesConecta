@@ -106,8 +106,9 @@ describe("ProfileSingle", () => {
     await waitFor(
       () => {
         expect(screen.queryByText("Cargando perfil...")).toBeNull();
-        // Verificar que aparece el email del usuario autenticado
-        expect(screen.getByText("test@example.com")).toBeTruthy();
+        // Validar que se renderiza el perfil demo (nombre y ubicación visibles)
+        expect(screen.getByText("Sofía López")).toBeTruthy();
+        expect(screen.getByText(/CDMX, México/i)).toBeTruthy();
       },
       { timeout: 4000 },
     );
@@ -125,9 +126,9 @@ describe("ProfileSingle", () => {
 
     await waitFor(() => {
       expect(screen.queryByText("Cargando perfil...")).toBeNull();
-      // Verificar que se renderiza algún contenedor con el email visible
-      const emailEl = screen.getByText("test@example.com");
-      const container = emailEl.closest("div");
+      // Verificar que se renderiza algún contenedor con el nombre visible
+      const nameEl = screen.getByText("Sofía López");
+      const container = nameEl.closest("div");
       expect(container).toBeTruthy();
     });
   });

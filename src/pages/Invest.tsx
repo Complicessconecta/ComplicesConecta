@@ -1,18 +1,56 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, TrendingUp, Shield, CheckCircle, Zap, Crown, Star, Percent } from "lucide-react";
+import {
+  ArrowLeft,
+  TrendingUp,
+  Shield,
+  CheckCircle,
+  Zap,
+  Crown,
+  Star,
+  Percent,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import type { Database } from "@/types/supabase-generated";
 
-type InvestmentTierRow =
-  Database["public"]["Tables"]["investment_tiers"]["Row"];
-type InvestmentRow = Database["public"]["Tables"]["investments"]["Row"];
+type InvestmentTierRow = {
+  id: string;
+  tier_key: string;
+  name: string;
+  description: string | null;
+  amount_mxn: number;
+  return_percentage: number;
+  return_type: string | null;
+  equity_percentage: number | null;
+  cmpx_tokens_rewarded: number;
+  includes_vip_dinner: boolean | null;
+  includes_equity: boolean | null;
+  benefits: unknown;
+  is_active: boolean | null;
+  display_order: number | null;
+};
+
+type InvestmentRow = {
+  id: string;
+  user_id: string;
+  tier: string;
+  amount_mxn: number;
+  return_percentage: number;
+  cmpx_tokens_rewarded: number | null;
+  status: string;
+  created_at: string | null;
+};
 
 interface InvestmentTier extends InvestmentTierRow {
   benefits: string[];
@@ -79,14 +117,22 @@ const Invest = () => {
 
       if (error) throw error;
 
-      const formattedTiers: InvestmentTier[] = (data || []).map((tier) => ({
-        ...tier,
-        benefits: Array.isArray(tier.benefits)
+      const formattedTiers: InvestmentTier[] = (data || []).map((tier) => {
+        const benefits = Array.isArray(tier.benefits)
           ? (tier.benefits as string[])
-          : [],
-      }));
+          : [];
 
-      setTiers(formattedTiers as InvestmentTier[]);
+        return {
+          ...tier,
+          benefits,
+          includes_vip_dinner: tier.includes_vip_dinner ?? false,
+          includes_equity: tier.includes_equity ?? false,
+          is_active: tier.is_active ?? true,
+          display_order: tier.display_order ?? 0,
+        };
+      });
+
+      setTiers(formattedTiers);
     } catch (error) {
       logger.error("Error cargando tiers:", { error });
       toast({
@@ -138,27 +184,40 @@ const Invest = () => {
     const tier = tiers.find((t) => t.tier_key === tierKey);
     if (!tier) return;
 
+    if (!user.email) {
+      toast({
+        title: "Error",
+        description: "No se encontró email del usuario para procesar el pago",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setProcessing(true);
 
       // Crear registro de inversión pendiente
       if (!supabase) throw new Error("No se pudo conectar a la base de datos");
+      const insertValues = {
+        user_id: user.id,
+        tier: tierKey,
+        amount_mxn: tier.amount_mxn,
+        return_percentage: tier.return_percentage,
+        cmpx_tokens_rewarded: tier.cmpx_tokens_rewarded,
+        includes_vip_dinner: tier.includes_vip_dinner ?? false,
+        includes_equity: tier.includes_equity ?? false,
+        benefits: tier.benefits,
+        status: "pending",
+        payment_status: "pending",
+        ...(tier.return_type ? { return_type: tier.return_type } : {}),
+        ...(tier.equity_percentage !== null
+          ? { equity_percentage: tier.equity_percentage }
+          : {}),
+      };
+
       const { data: investment, error: investmentError } = await supabase
         .from("investments")
-        .insert({
-          user_id: user.id,
-          tier: tierKey,
-          amount_mxn: tier.amount_mxn,
-          return_percentage: tier.return_percentage,
-          return_type: tier.return_type,
-          equity_percentage: tier.equity_percentage,
-          cmpx_tokens_rewarded: tier.cmpx_tokens_rewarded,
-          includes_vip_dinner: tier.includes_vip_dinner,
-          includes_equity: tier.includes_equity,
-          benefits: tier.benefits,
-          status: "pending",
-          payment_status: "pending",
-        })
+        .insert(insertValues)
         .select()
         .single();
 
@@ -191,11 +250,15 @@ const Invest = () => {
       } else {
         throw new Error("No se recibió URL de checkout");
       }
-    } catch (error: any) {
-      logger.error("Error procesando inversión:", error);
+    } catch (error: unknown) {
+      logger.error("Error procesando inversión:", { error });
+      const description =
+        error instanceof Error
+          ? error.message
+          : "No se pudo procesar la inversión";
       toast({
         title: "Error",
-        description: error.message || "No se pudo procesar la inversión",
+        description,
         variant: "destructive",
       });
     } finally {

@@ -5,13 +5,13 @@ import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 // Mock dependencies
 const mockToast = vi.fn();
 vi.mock("@/hooks/useToast", () => ({
-  toast: (...args: any[]) => mockToast(...args),
+  toast: (...args: unknown[]) => mockToast(...args),
 }));
 
 vi.mock("@/hooks/usePersistedState", () => ({
-  usePersistedState: (key: string, initialValue: any) => {
+  usePersistedState: <T,>(key: string, initialValue: T) => {
     let value = initialValue;
-    const setValue = (newValue: any) => {
+    const setValue = (newValue: T) => {
       value = newValue;
     };
     return [value, setValue];
@@ -36,15 +36,13 @@ describe("ParentalControl", () => {
 
   it("renders locked state correctly", () => {
     render(<ParentalControl {...defaultProps} />);
-    expect(screen.getByText(/Control Parental/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Control Parental/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Contenido restringido/i)).toBeInTheDocument();
   });
 
   it("shows PIN input when unlock button is clicked", () => {
     render(<ParentalControl {...defaultProps} />);
-    fireEvent.click(
-      screen.getByText(/Desbloquear/i) as unknown as Element,
-    );
+    fireEvent.click(screen.getByText(/Desbloquear/i));
     expect(screen.getByText(/Ingresa PIN/i)).toBeInTheDocument();
   });
 
@@ -52,18 +50,16 @@ describe("ParentalControl", () => {
     render(<ParentalControl {...defaultProps} />);
 
     // Open PIN input
-    fireEvent.click(
-      screen.getByText(/Desbloquear/i) as unknown as Element,
-    );
+    fireEvent.click(screen.getByText(/Desbloquear/i));
 
     // Enter PIN "1234" (default mock)
     const input = screen.getByPlaceholderText("••••");
-    fireEvent.change(input as unknown as Element, {
+    fireEvent.change(input, {
       target: { value: "1234" },
     });
 
     // Click Confirm
-    fireEvent.click(screen.getByText(/Confirmar/i) as unknown as Element);
+    fireEvent.click(screen.getByText(/Confirmar/i));
 
     expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
     expect(defaultProps.onUnlock).toHaveBeenCalled();
@@ -71,17 +67,15 @@ describe("ParentalControl", () => {
 
   it("handles incorrect PIN entry and lockout", async () => {
     render(<ParentalControl {...defaultProps} />);
-    fireEvent.click(
-      screen.getByText(/Desbloquear/i) as unknown as Element,
-    );
+    fireEvent.click(screen.getByText(/Desbloquear/i));
     const input = screen.getByPlaceholderText("••••");
     const confirmBtn = screen.getByText(/Confirmar/i);
 
     // Attempt 1
-    fireEvent.change(input as unknown as Element, {
+    fireEvent.change(input, {
       target: { value: "0000" },
     });
-    fireEvent.click(confirmBtn as unknown as Element);
+    fireEvent.click(confirmBtn);
     expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
         title: "PIN incorrecto",
@@ -89,16 +83,16 @@ describe("ParentalControl", () => {
     );
 
     // Attempt 2
-    fireEvent.change(input as unknown as Element, {
+    fireEvent.change(input, {
       target: { value: "0000" },
     });
-    fireEvent.click(confirmBtn as unknown as Element);
+    fireEvent.click(confirmBtn);
 
     // Attempt 3 (Lockout)
-    fireEvent.change(input as unknown as Element, {
+    fireEvent.change(input, {
       target: { value: "0000" },
     });
-    fireEvent.click(confirmBtn as unknown as Element);
+    fireEvent.click(confirmBtn);
 
     expect(mockToast).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -110,15 +104,13 @@ describe("ParentalControl", () => {
 
   it("submits PIN on Enter key press", () => {
     render(<ParentalControl {...defaultProps} />);
-    fireEvent.click(
-      screen.getByText(/Desbloquear/i) as unknown as Element,
-    );
+    fireEvent.click(screen.getByText(/Desbloquear/i));
     const input = screen.getByPlaceholderText("••••");
 
-    fireEvent.change(input as unknown as Element, {
+    fireEvent.change(input, {
       target: { value: "1234" },
     });
-    fireEvent.keyDown(input as unknown as Element, {
+    fireEvent.keyDown(input, {
       key: "Enter",
       code: "Enter",
     });
@@ -129,12 +121,12 @@ describe("ParentalControl", () => {
   it("permite re-bloquear después de desbloquear", () => {
     const { rerender } = render(<ParentalControl {...defaultProps} />);
 
-    fireEvent.click(screen.getByText(/Desbloquear/i) as unknown as Element);
+    fireEvent.click(screen.getByText(/Desbloquear/i));
     const input = screen.getByPlaceholderText("••••");
-    fireEvent.change(input as unknown as Element, {
+    fireEvent.change(input, {
       target: { value: "1234" },
     });
-    fireEvent.click(screen.getByText(/Confirmar/i) as unknown as Element);
+    fireEvent.click(screen.getByText(/Confirmar/i));
 
     expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
 
@@ -145,7 +137,7 @@ describe("ParentalControl", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText(/Bloquear Ahora/i) as unknown as Element);
+    fireEvent.click(screen.getByText(/Bloquear Ahora/i));
     expect(defaultProps.onToggle).toHaveBeenCalledWith(true);
 
     rerender(

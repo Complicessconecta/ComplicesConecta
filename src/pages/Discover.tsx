@@ -225,9 +225,9 @@ export const Discover = () => {
         return;
       }
 
-      // Agregar timeout de 3 segundos para evitar bloqueo
+      // Agregar timeout de 10 segundos para evitar bloqueo (aumentado de 3s)
       const timeoutPromise = new Promise<null>((_, reject) => {
-        setTimeout(() => reject(new Error("Timeout loading profiles")), 3000);
+        setTimeout(() => reject(new Error("Timeout loading profiles")), 10000);
       });
 
       const profilesPromise = supabase

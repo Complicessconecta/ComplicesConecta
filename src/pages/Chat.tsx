@@ -9,7 +9,7 @@ import { toast } from "@/hooks/useToast";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { mockPrivacySettings } from "@/lib/data";
 import { invitationService } from "@/lib/invitations";
-// import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
+import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
 // Tipos reemplazados con tipos locales para compatibilidad
 export interface SimpleChatRoom {
   id: string;
@@ -161,7 +161,7 @@ const Chat = () => {
     };
 
     resolveRoomId();
-  }, [selectedChat, isProduction, user?.id]);
+  }, [selectedChat?.id, selectedChat?.roomType, isProduction, user?.id]);
 
   // Hook de chat en tiempo real (solo se activará cuando haya userId y chatRoomId)
   const { messages: realtimeMessages, sendMessage: sendRealtimeMessage } =

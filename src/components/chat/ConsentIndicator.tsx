@@ -58,11 +58,11 @@ export function ConsentIndicator({
 
   if (isLoading && !verification) {
     return (
-      <Card className="border-yellow-200 bg-yellow-50">
+      <Card className="border-yellow-400/30 bg-yellow-900/20 backdrop-blur-sm">
         <CardContent className="pt-6">
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 text-yellow-600 animate-pulse" />
-            <p className="text-sm text-yellow-800">
+            <AlertCircle className="h-4 w-4 text-yellow-400 animate-pulse" />
+            <p className="text-sm text-yellow-100">
               Iniciando verificación de consentimiento...
             </p>
           </div>
@@ -73,11 +73,11 @@ export function ConsentIndicator({
 
   if (error) {
     return (
-      <Card className="border-red-200 bg-red-50">
+      <Card className="border-red-400/30 bg-red-900/20 backdrop-blur-sm">
         <CardContent className="pt-6">
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <p className="text-sm text-red-800">
+            <AlertCircle className="h-4 w-4 text-red-400" />
+            <p className="text-sm text-red-100">
               Error en verificación: {error.message}
             </p>
           </div>
@@ -94,25 +94,25 @@ export function ConsentIndicator({
   const { score, status, reasoning, confidence } = currentScore;
 
   // Determinar color y icono según estado
-  let colorClass = "border-gray-200 bg-gray-50";
-  let icon = <AlertCircle className="h-4 w-4 text-gray-600" />;
+  let colorClass = "border-gray-400/30 bg-gray-900/20 backdrop-blur-sm";
+  let icon = <AlertCircle className="h-4 w-4 text-gray-400" />;
   let statusText = "Verificando...";
 
   if (status === "consent" && score >= 80) {
-    colorClass = "border-green-200 bg-green-50";
-    icon = <CheckCircle2 className="h-4 w-4 text-green-600" />;
+    colorClass = "border-green-400/30 bg-green-900/20 backdrop-blur-sm";
+    icon = <CheckCircle2 className="h-4 w-4 text-green-400" />;
     statusText = "Consentimiento verificado";
   } else if (status === "non_consent" || score < 30) {
-    colorClass = "border-red-200 bg-red-50";
-    icon = <AlertTriangle className="h-4 w-4 text-red-600" />;
+    colorClass = "border-red-400/30 bg-red-900/20 backdrop-blur-sm";
+    icon = <AlertTriangle className="h-4 w-4 text-red-400" />;
     statusText = "Consentimiento no verificado";
   } else if (status === "uncertain" || (score >= 30 && score < 80)) {
-    colorClass = "border-yellow-200 bg-yellow-50";
-    icon = <AlertCircle className="h-4 w-4 text-yellow-600" />;
+    colorClass = "border-yellow-400/30 bg-yellow-900/20 backdrop-blur-sm";
+    icon = <AlertCircle className="h-4 w-4 text-yellow-400" />;
     statusText = "Consentimiento incierto";
   } else if (status === "insufficient_data") {
-    colorClass = "border-blue-200 bg-blue-50";
-    icon = <AlertCircle className="h-4 w-4 text-blue-600" />;
+    colorClass = "border-blue-400/30 bg-blue-900/20 backdrop-blur-sm";
+    icon = <AlertCircle className="h-4 w-4 text-blue-400" />;
     statusText = "Datos insuficientes";
   }
 

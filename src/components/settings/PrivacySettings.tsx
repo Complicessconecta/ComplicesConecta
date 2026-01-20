@@ -12,9 +12,8 @@ import { useToast } from "@/hooks/useToast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export const PrivacySettings = () => {
-  const { user, isAdmin } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
-  const [isExporting, setIsExporting] = useState(false);
   const [isDeletingMatches, setIsDeletingMatches] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
@@ -39,55 +38,6 @@ export const PrivacySettings = () => {
       title: "Configuración guardada",
       description: "Tus preferencias de privacidad han sido guardadas",
     });
-  };
-
-  const handleDownloadData = async () => {
-    if (!isAdmin()) {
-      toast({
-        title: "Acceso denegado",
-        description: "Solo los administradores pueden descargar datos.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!user?.id) {
-      toast({
-        title: "Error",
-        description: "Debes estar autenticado para descargar tus datos",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setIsExporting(true);
-      logger.info("Requesting data download...");
-
-      const exportData = await dataPrivacyService.exportUserData(user.id);
-
-      if (exportData) {
-        dataPrivacyService.downloadExport(exportData);
-        toast({
-          title: "✅ Datos descargados",
-          description: "Tus datos han sido exportados exitosamente",
-        });
-      } else {
-        throw new Error("No se pudieron exportar los datos");
-      }
-    } catch (error) {
-      logger.error("Error descargando datos:", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      toast({
-        title: "Error",
-        description:
-          "No se pudieron descargar tus datos. Por favor intenta más tarde.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsExporting(false);
-    }
   };
 
   const handleDeleteMatches = async () => {

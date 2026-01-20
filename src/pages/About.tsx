@@ -124,7 +124,7 @@ const About = () => {
                     Seguridad
                   </h4>
                   <p className="text-white/70 text-sm">
-                    Sistema de verificacin de usuarios y proteccin de datos
+                    Sistema de verificación de usuarios y protección de datos
                     personales.
                   </p>
                 </div>
@@ -137,7 +137,7 @@ const About = () => {
                     Comunidad
                   </h4>
                   <p className="text-white/70 text-sm">
-                    Comunidad lifestyle con cdigos de respeto y tica bien
+                    Comunidad lifestyle con códigos de respeto y ética bien
                     definidos.
                   </p>
                 </div>
@@ -147,7 +147,7 @@ const About = () => {
                     <Zap className="h-8 w-8 text-white" />
                   </div>
                   <h4 className="text-lg font-semibold text-white mb-2">
-                    Innovacin
+                    Innovación
                   </h4>
                   <p className="text-white/70 text-sm">
                     Sistema de matching inteligente basado en compatibilidad e
@@ -197,7 +197,7 @@ const About = () => {
                 <div className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors">
                   <Eye className="h-8 w-8 text-fuchsia-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">
-                    Galeras NFT-Verificadas
+                    Galerías NFT-Verificadas
                   </h4>
                   <p className="text-gray-100 text-sm font-medium">
                     Perfiles y galerías como NFTs mintados con GTK tokens
@@ -238,12 +238,12 @@ const About = () => {
           <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-white mb-6 text-center">
-                Nuestra Comunidad en Nmeros
+                Nuestra Comunidad en Números
               </h3>
               <div className="grid md:grid-cols-4 gap-6 text-center">
                 <div className="bg-linear-to-br from-purple-500/20 to-fuchsia-500/20 rounded-lg p-6">
                   <div className="text-3xl font-bold text-white mb-2">
-                    v3.5.0
+                    v4.0.0
                   </div>
                   <div className="text-white/70 text-sm">Versin Actual</div>
                 </div>
@@ -292,7 +292,7 @@ const About = () => {
                         Cumplimiento GDPR/LFPDPPP
                       </h4>
                       <p className="text-white/70 text-sm">
-                        Certificados en proteccin de datos europea y mexicana
+                        Certificados en protección de datos Europea y Mexicana
                       </p>
                     </div>
                   </div>
@@ -300,10 +300,10 @@ const About = () => {
                     <Eye className="h-6 w-6 text-blue-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
-                        Moderacin IA + Humana
+                        Moderación IA + Humana
                       </h4>
                       <p className="text-white/70 text-sm">
-                        Sistema hbrido de deteccin de contenido inapropiado
+                        Sistema híbrido de detección de contenido inapropiado
                       </p>
                     </div>
                   </div>
@@ -324,7 +324,7 @@ const About = () => {
                     <Zap className="h-6 w-6 text-orange-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
-                        Deteccin de Fraude
+                        Detección de Fraude
                       </h4>
                       <p className="text-white/70 text-sm">
                         IA avanzada para identificar perfiles falsos y
@@ -356,7 +356,7 @@ const About = () => {
                 Listo para Conectar?
               </h3>
               <p className="text-white font-medium mb-6">
-                nete a nuestra creciente comunidad lifestyle en Mxico. Estamos
+                Únete a nuestra creciente comunidad lifestyle en México. Estamos
                 construyendo algo especial juntos.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -9,4 +9,13 @@
   left: var(--left);
   right: var(--right);
   bottom: var(--bottom);
+
+  width: var(--heart-size);
+  height: var(--heart-size);
+  opacity: var(--heart-opacity);
+  animation-delay: var(--heart-delay);
+  animation-duration: var(--heart-duration);
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.6));
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }

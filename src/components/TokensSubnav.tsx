@@ -1,8 +1,12 @@
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, FileText, Scale, Lock, ScrollText } from "lucide-react";
 
 export const TokensSubnav = () => {
   const location = useLocation();
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollYRef = useRef(0);
+  const tickingRef = useRef(false);
 
   const tabs = [
     { name: "Dashboard", path: "/tokens", icon: LayoutDashboard },
@@ -16,8 +20,43 @@ export const TokensSubnav = () => {
     return location.pathname === path;
   };
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    lastScrollYRef.current = window.scrollY;
+    setIsVisible(true);
+
+    const onScroll = () => {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
+
+      window.requestAnimationFrame(() => {
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollYRef.current;
+
+        if (currentY < 16) {
+          setIsVisible(true);
+        } else if (delta > 8) {
+          setIsVisible(false);
+        } else if (delta < -8) {
+          setIsVisible(true);
+        }
+
+        lastScrollYRef.current = currentY;
+        tickingRef.current = false;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <div className="sticky top-16 z-40 bg-black/80 backdrop-blur-xl border-b border-white/10">
+    <div
+      className={`sticky top-16 z-40 bg-black/80 backdrop-blur-xl border-b border-white/10 transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex space-x-1 overflow-x-auto py-2 scrollbar-hide">
           {tabs.map((tab) => {

@@ -72,23 +72,12 @@ export const DecorativeHearts: FC<DecorativeHeartsProps> = ({
             '--left': heart.left || undefined,
             '--right': heart.right || undefined,
             '--bottom': heart.bottom || undefined,
+            '--heart-size': `${heart.size}px`,
+            '--heart-opacity': `${heart.opacity}`,
+            '--heart-delay': `${heart.delay}s`,
+            '--heart-duration': `${heart.duration}s`,
           } as React.CSSProperties}
-        >
-          <style>
-            {`
-              .heart-position {
-                width: ${heart.size}px;
-                height: ${heart.size}px;
-                opacity: ${heart.opacity};
-                animation-delay: ${heart.delay}s;
-                animation-duration: ${heart.duration}s;
-                filter: drop-shadow(0 4px 12px rgba(255,255,255,0.6));
-                will-change: transform, opacity;
-                transform: translateZ(0); /* Force hardware acceleration */
-              }
-            `}
-          </style>
-        </Heart>
+        />
       ))}
     </div>
   );

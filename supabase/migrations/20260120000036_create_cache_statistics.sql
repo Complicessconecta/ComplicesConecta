@@ -22,11 +22,35 @@ CREATE INDEX IF NOT EXISTS idx_cache_statistics_performance_score ON public.cach
 ALTER TABLE public.cache_statistics ENABLE ROW LEVEL SECURITY;
 
 -- Política para que los usuarios puedan ver estadísticas de cache
-CREATE POLICY "Users can view cache statistics"
-  ON public.cache_statistics FOR SELECT
-  USING (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'cache_statistics'
+      AND policyname = 'Users can view cache statistics'
+  ) THEN
+    CREATE POLICY "Users can view cache statistics"
+      ON public.cache_statistics FOR SELECT
+      USING (true);
+  END IF;
+END
+$$;
 
 -- Política para que los usuarios puedan insertar estadísticas de cache
-CREATE POLICY "Users can insert cache statistics"
-  ON public.cache_statistics FOR INSERT
-  WITH CHECK (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'cache_statistics'
+      AND policyname = 'Users can insert cache statistics'
+  ) THEN
+    CREATE POLICY "Users can insert cache statistics"
+      ON public.cache_statistics FOR INSERT
+      WITH CHECK (true);
+  END IF;
+END
+$$;

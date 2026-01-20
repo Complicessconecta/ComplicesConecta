@@ -506,8 +506,16 @@ export class PerformanceMonitoringService {
         tags: { unit: metric.unit || "number" },
       });
     } catch (error) {
-      logger.error("Error persisting performance metric:", {
-        error: String(error),
+      const err = error instanceof Error ? error : new Error(String(error));
+      if (err.name === "AbortError") {
+        logger.debug("Persistencia de métrica cancelada (AbortError)", {
+          metric: metric.name,
+        });
+        return;
+      }
+
+      logger.warn("Error persisting performance metric:", {
+        error: err.message,
       });
     }
   }

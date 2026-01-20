@@ -453,6 +453,10 @@ export const useAuth = () => {
     // Verificar sesión demo usando StorageManager
     const sessionFlags = StorageManager.getSessionFlags();
 
+    if (sessionFlags.demo_authenticated) {
+      return true;
+    }
+
     if (sessionFlags.demo_authenticated && demoUser) {
       const parsedDemoUser =
         typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;

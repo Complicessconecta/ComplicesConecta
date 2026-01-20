@@ -302,6 +302,7 @@ docs-unified/tests/worldid/WORLDID_FUNCTION_TEST.md
 *.patch
 *.diff
 diff.patch
+!patches/*.patch
 project-structure.md
 
 # ============================================================================
@@ -312,6 +313,11 @@ fix-supabase.ps1/
 .GIT_HUB_Menu.ps1/
 .fix-supabase.ps1/
 *GIT_HUB_Menu.ps1*
+
+# ============================================================================
+# ANDROID (TEMP)
+# ============================================================================
+android/.kotlin/
 *fix-supabase.ps1*
 
 # ============================================================================

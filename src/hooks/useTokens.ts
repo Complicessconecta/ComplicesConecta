@@ -7,7 +7,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/features/auth/useAuth";
 import { validateStaking } from "@/lib/zod-schemas";
-import { isDemoMode, shouldUseRealSupabase, getAppConfig } from "@/lib/app-config";
+import { shouldUseRealSupabase, getAppConfig } from "@/lib/app-config";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services/TokenService";
@@ -109,7 +109,7 @@ export const useTokens = () => {
       });
 
       // Si es demo o no debemos usar Supabase real, usar datos mock
-      if (isDemoMode()) {
+      if (isDemo()) {
         logger.info(" Cargando datos de tokens demo", { user: user.email });
 
         // Balance demo basado en el tipo de usuario

@@ -95,7 +95,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
           <DialogContent
-            className="max-w-md bg-linear-to-br from-purple-900/95 to-blue-900/95 backdrop-blur-md border border-white/20 text-white"
+            className="w-[95vw] max-w-md bg-linear-to-br from-purple-900/95 to-blue-900/95 backdrop-blur-md border border-white/20 text-white sm:w-full"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -128,18 +128,18 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                         <TrendingUp className="h-4 w-4" />
                         <span className="font-semibold">¿Qué es staking?</span>
                       </div>
-                      <p className="text-sm text-white/90 break-words">
+                      <p className="text-sm text-white/90 wrap-break-word">
                         Es como una alcancía especial: guardas tus CMPX por 30
                         días y al final recibes un{" "}
                         <strong>+10% de recompensa</strong>.
                       </p>
-                      <p className="text-sm text-white/80 break-words mt-2">
+                      <p className="text-sm text-white/80 wrap-break-word mt-2">
                         💡 <strong>Tip:</strong> Los tokens GTK también se
                         pueden usar para hacer staking (hasta 18% APY) y para
                         mint NFTs de tus galerías (1,000 GTK por galería).
                       </p>
                       <div className="bg-white/20 backdrop-blur-sm p-2 rounded border border-white/30">
-                        <p className="text-xs text-white break-words">
+                        <p className="text-xs text-white wrap-break-word">
                           💡 <strong>Ejemplo:</strong> Si pones 100 CMPX, en 30
                           días tendrás 110 CMPX
                         </p>
@@ -262,8 +262,8 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                     <div className="flex items-start gap-2">
                       <AlertCircle className="h-4 w-4 text-yellow-400 mt-0.5 shrink-0" />
                       <div className="text-sm text-white flex-1 min-w-0">
-                        <p className="font-semibold mb-1">⚠️ Importante:</p>
-                        <ul className="text-xs space-y-1 break-words">
+                        <p className="font-semibold mb-1">Importante:</p>
+                        <ul className="text-xs space-y-1 wrap-break-word">
                           <li>• Los tokens estarán bloqueados por 30 días</li>
                           <li>
                             • No podrás usarlos hasta que termine el período
@@ -280,7 +280,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                 {/* Error message */}
                 {error && (
                   <div className="p-3 bg-red-500/20 backdrop-blur-sm border border-red-400/30 rounded-lg">
-                    <p className="text-white text-sm break-words">❌ {error}</p>
+                    <p className="text-white text-sm wrap-break-word">❌ {error}</p>
                   </div>
                 )}
 

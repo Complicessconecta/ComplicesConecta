@@ -77,7 +77,7 @@ export default function Tokens() {
     };
 
     void loadUserNFTs();
-  }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
+  }, [hasActiveSession, user?.id]);
 
   // Detectar si el usuario ya tiene wallet (real) o demo
   useEffect(() => {
@@ -103,7 +103,7 @@ export default function Tokens() {
       }
     };
     void checkWallet();
-  }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
+  }, [hasActiveSession, user?.id]);
 
   // Cargar evidencia legal (acuerdo activo y IP real) para Wallet / Staking
   useEffect(() => {
@@ -195,7 +195,7 @@ export default function Tokens() {
     };
 
     void loadLegalEvidence();
-  }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
+  }, [hasActiveSession, user?.id]);
 
   // Cargar estadísticas globales
 
@@ -1084,6 +1084,22 @@ export default function Tokens() {
               <Home className="w-4 h-4 mr-2" />
               Inicio
             </Button>
+
+            {hasActiveSession && !shouldUseRealSupabase() && (
+              <Button
+                onClick={() => {
+                  localStorage.removeItem("demo_authenticated");
+                  localStorage.removeItem("demo_user");
+                  localStorage.removeItem("wallet_demo_created");
+                  window.location.href = "/auth";
+                }}
+                variant="outline"
+                className="border-red-400/30 text-red-100 hover:bg-red-400/10"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Cerrar Sesión Demo
+              </Button>
+            )}
           </motion.div>
         </div>
       </div>

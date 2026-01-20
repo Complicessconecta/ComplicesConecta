@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { NotificationService, RealtimeNotificationHandler } from "@/lib/notifications";
 import { logger } from "@/lib/logger";
 
@@ -142,7 +142,7 @@ export function useRealtimeNotifications({
   );
 
   // Realtime notification handler
-  const notificationHandler: RealtimeNotificationHandler = {
+  const notificationHandler: RealtimeNotificationHandler = useMemo(() => ({
     onNewNotification: useCallback(
       async (notification: any) => {
         logger.info("🔔 Nueva notificación recibida:", { notification });
@@ -200,7 +200,7 @@ export function useRealtimeNotifications({
     onUnreadCountChange: useCallback((count: number) => {
       setState((prev) => ({ ...prev, unreadCount: count }));
     }, []),
-  };
+  }), [autoMarkAsRead, markAsRead, sendPushNotification]);
 
   // Subscribe to realtime notifications
   useEffect(() => {

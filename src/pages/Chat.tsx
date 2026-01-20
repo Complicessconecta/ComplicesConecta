@@ -9,7 +9,6 @@ import { toast } from "@/hooks/useToast";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { mockPrivacySettings } from "@/lib/data";
 import { invitationService } from "@/lib/invitations";
-import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
 // Tipos reemplazados con tipos locales para compatibilidad
 export interface SimpleChatRoom {
   id: string;

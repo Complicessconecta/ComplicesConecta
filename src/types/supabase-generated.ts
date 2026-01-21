@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       admin_users: {
@@ -3055,14 +3080,24 @@ export type Database = {
           couple_height_range: string | null
           couple_interests: string[] | null
           couple_lifestyle: string | null
+          couple_name: string | null
           cover_url: string | null
           created_at: string
           display_name: string | null
           dispute_status: string | null
+          email: string | null
           event_types: string[] | null
           experience_level: string | null
+          her_age: number | null
+          her_gender: string | null
+          her_interests: string[] | null
+          her_name: string | null
+          his_age: number | null
+          his_gender: string | null
+          his_interests: string[] | null
+          his_name: string | null
           id: string
-          interested_in: string | null
+          interested_in: string[] | null
           is_active: boolean | null
           is_demo: boolean
           is_public: boolean | null
@@ -3077,11 +3112,14 @@ export type Database = {
           nickname: string | null
           partner_1_id: string | null
           partner_2_id: string | null
+          phone: string | null
           preferences: Json | null
           preferred_theme: string | null
           privacy_settings: Json | null
           profile_completed_at: string | null
           profile_completeness: number | null
+          profile_theme: string | null
+          relationship_type: string | null
           state: string | null
           status: string
           swinger_experience: string | null
@@ -3108,14 +3146,24 @@ export type Database = {
           couple_height_range?: string | null
           couple_interests?: string[] | null
           couple_lifestyle?: string | null
+          couple_name?: string | null
           cover_url?: string | null
           created_at?: string
           display_name?: string | null
           dispute_status?: string | null
+          email?: string | null
           event_types?: string[] | null
           experience_level?: string | null
+          her_age?: number | null
+          her_gender?: string | null
+          her_interests?: string[] | null
+          her_name?: string | null
+          his_age?: number | null
+          his_gender?: string | null
+          his_interests?: string[] | null
+          his_name?: string | null
           id?: string
-          interested_in?: string | null
+          interested_in?: string[] | null
           is_active?: boolean | null
           is_demo?: boolean
           is_public?: boolean | null
@@ -3130,11 +3178,14 @@ export type Database = {
           nickname?: string | null
           partner_1_id?: string | null
           partner_2_id?: string | null
+          phone?: string | null
           preferences?: Json | null
           preferred_theme?: string | null
           privacy_settings?: Json | null
           profile_completed_at?: string | null
           profile_completeness?: number | null
+          profile_theme?: string | null
+          relationship_type?: string | null
           state?: string | null
           status?: string
           swinger_experience?: string | null
@@ -3161,14 +3212,24 @@ export type Database = {
           couple_height_range?: string | null
           couple_interests?: string[] | null
           couple_lifestyle?: string | null
+          couple_name?: string | null
           cover_url?: string | null
           created_at?: string
           display_name?: string | null
           dispute_status?: string | null
+          email?: string | null
           event_types?: string[] | null
           experience_level?: string | null
+          her_age?: number | null
+          her_gender?: string | null
+          her_interests?: string[] | null
+          her_name?: string | null
+          his_age?: number | null
+          his_gender?: string | null
+          his_interests?: string[] | null
+          his_name?: string | null
           id?: string
-          interested_in?: string | null
+          interested_in?: string[] | null
           is_active?: boolean | null
           is_demo?: boolean
           is_public?: boolean | null
@@ -3183,11 +3244,14 @@ export type Database = {
           nickname?: string | null
           partner_1_id?: string | null
           partner_2_id?: string | null
+          phone?: string | null
           preferences?: Json | null
           preferred_theme?: string | null
           privacy_settings?: Json | null
           profile_completed_at?: string | null
           profile_completeness?: number | null
+          profile_theme?: string | null
+          relationship_type?: string | null
           state?: string | null
           status?: string
           swinger_experience?: string | null
@@ -6881,7 +6945,9 @@ export type Database = {
           city: string | null
           consent_status: string | null
           created_at: string | null
+          display_name: string | null
           dispute_id: string | null
+          email: string | null
           email_verified_at: string | null
           first_name: string | null
           full_name: string | null
@@ -6889,7 +6955,7 @@ export type Database = {
           id: string
           id_verified: boolean | null
           id_verified_at: string | null
-          interested_in: string | null
+          interested_in: string[] | null
           interests: string[] | null
           is_active: boolean | null
           is_admin: boolean | null
@@ -6909,15 +6975,18 @@ export type Database = {
           max_distance: number | null
           name: string
           personality_traits: Json | null
+          phone: string | null
           phone_verified_at: string | null
           photo_verified: boolean | null
           photo_verified_at: string | null
           pin_hash: string | null
+          profile_theme: string | null
           role: string | null
           s2_cell_id: string | null
           s2_level: number | null
           score: number
           score_status: Database["public"]["Enums"]["profile_score_status"]
+          sexual_orientation: string[] | null
           suspended: boolean | null
           suspended_at: string | null
           suspended_reason: string | null
@@ -6943,7 +7012,9 @@ export type Database = {
           city?: string | null
           consent_status?: string | null
           created_at?: string | null
+          display_name?: string | null
           dispute_id?: string | null
+          email?: string | null
           email_verified_at?: string | null
           first_name?: string | null
           full_name?: string | null
@@ -6951,7 +7022,7 @@ export type Database = {
           id?: string
           id_verified?: boolean | null
           id_verified_at?: string | null
-          interested_in?: string | null
+          interested_in?: string[] | null
           interests?: string[] | null
           is_active?: boolean | null
           is_admin?: boolean | null
@@ -6971,15 +7042,18 @@ export type Database = {
           max_distance?: number | null
           name: string
           personality_traits?: Json | null
+          phone?: string | null
           phone_verified_at?: string | null
           photo_verified?: boolean | null
           photo_verified_at?: string | null
           pin_hash?: string | null
+          profile_theme?: string | null
           role?: string | null
           s2_cell_id?: string | null
           s2_level?: number | null
           score?: number
           score_status?: Database["public"]["Enums"]["profile_score_status"]
+          sexual_orientation?: string[] | null
           suspended?: boolean | null
           suspended_at?: string | null
           suspended_reason?: string | null
@@ -7005,7 +7079,9 @@ export type Database = {
           city?: string | null
           consent_status?: string | null
           created_at?: string | null
+          display_name?: string | null
           dispute_id?: string | null
+          email?: string | null
           email_verified_at?: string | null
           first_name?: string | null
           full_name?: string | null
@@ -7013,7 +7089,7 @@ export type Database = {
           id?: string
           id_verified?: boolean | null
           id_verified_at?: string | null
-          interested_in?: string | null
+          interested_in?: string[] | null
           interests?: string[] | null
           is_active?: boolean | null
           is_admin?: boolean | null
@@ -7033,15 +7109,18 @@ export type Database = {
           max_distance?: number | null
           name?: string
           personality_traits?: Json | null
+          phone?: string | null
           phone_verified_at?: string | null
           photo_verified?: boolean | null
           photo_verified_at?: string | null
           pin_hash?: string | null
+          profile_theme?: string | null
           role?: string | null
           s2_cell_id?: string | null
           s2_level?: number | null
           score?: number
           score_status?: Database["public"]["Enums"]["profile_score_status"]
+          sexual_orientation?: string[] | null
           suspended?: boolean | null
           suspended_at?: string | null
           suspended_reason?: string | null
@@ -11160,6 +11239,7 @@ export type Database = {
       }
       earth: { Args: never; Returns: number }
       escape_html: { Args: { text: string }; Returns: string }
+      exec_sql: { Args: { sql_query: string }; Returns: undefined }
       generate_couple_report: {
         Args: { couple_id_param: string }
         Returns: Json
@@ -11575,6 +11655,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       couple_agreement_status: [

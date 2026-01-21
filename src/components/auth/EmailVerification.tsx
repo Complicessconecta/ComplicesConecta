@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
@@ -7,11 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
 import { Mail, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
 import { logger } from "@/lib/logger";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_ANON_KEY!,
-);
+import { supabase } from "@/integrations/supabase/client";
 
 interface EmailVerificationProps {
   email: string;

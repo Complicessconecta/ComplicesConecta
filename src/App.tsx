@@ -145,7 +145,7 @@ const AdminAnalytics = lazyWithDefault(
   () => import("@/pages/admin/AdminAnalytics"),
 );
 const ModeratorDashboard = lazyWithDefault(
-  () => import("@/pages/ModeratorDashboard"),
+  () => import("@/pages/moderators/ModeratorDashboard"),
 );
 const ModeratorRequest = lazyWithDefault(
   () => import("@/pages/ModeratorRequest"),

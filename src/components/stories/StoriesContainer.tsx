@@ -492,7 +492,7 @@ const StoriesContainer: React.FC = () => {
             className="w-24 h-32 bg-black/30 backdrop-blur-sm border-white/10 cursor-pointer hover:scale-105 transition-transform relative overflow-hidden"
             onClick={handleCreateStory}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50"></div>
+            <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/50"></div>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
               <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center mb-2">
                 <Plus className="h-4 w-4" />
@@ -527,7 +527,7 @@ const StoriesContainer: React.FC = () => {
                   target.onerror = null;
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"></div>
+              <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/70"></div>
 
               {/* Avatar del usuario */}
               <div className="absolute top-2 left-2">

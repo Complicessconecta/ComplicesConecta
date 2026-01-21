@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
@@ -13,11 +12,10 @@ import { InterestsSelector } from "@/components/auth/InterestsSelector";
 import { NicknameValidator } from "@/components/auth/NicknameValidator";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 
 // Configuración de Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Usar el cliente singleton compartido para evitar múltiples instancias en HMR
 
 interface SingleRegistrationData {
   // Información personal
@@ -51,7 +49,10 @@ interface SingleRegistrationData {
 }
 
 interface SingleRegistrationFormProps {
-  onSuccess: (userData: any) => void;
+  onSuccess: (userData: {
+    user: { id: string };
+    profile: { account_type: "single"; name: string; nickname: string };
+  }) => void;
   onBack?: () => void;
 }
 
@@ -210,16 +211,6 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
     setIsLoading(true);
 
     try {
-      if (!supabase) {
-        toast({
-          variant: "destructive",
-          title: "Error de conexión",
-          description: "No se pudo conectar con el servidor",
-        });
-        setIsLoading(false);
-        return;
-      }
-
       // Registrar usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -242,7 +233,10 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
 
         // Crear perfil en la tabla profiles
         const { error: profileError } = await supabase.from("profiles").insert({
-          id: authData.user.id,
+          user_id: authData.user.id,
+          name: formData.useRealName
+            ? `${formData.firstName} ${formData.lastName}`.trim()
+            : formData.nickname,
           first_name: formData.firstName,
           last_name: formData.lastName,
           display_name: formData.nickname,
@@ -260,8 +254,6 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           role: "user",
           is_verified: false,
           is_demo: false,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
         });
 
         if (profileError) {
@@ -282,11 +274,12 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         // Mostrar pantalla de verificación de email
         setShowEmailVerification(true);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Error desconocido";
       toast({
         variant: "destructive",
         title: "Error al registrarse",
-        description: error.message,
+        description: message,
       });
     } finally {
       setIsLoading(false);

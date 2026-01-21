@@ -21,5 +21,5 @@ export type UserRole = Tables<"user_roles">;
 // Extended or custom types can be defined here as well.
 // For example, if a profile needs to be combined with user data:
 export interface ProfileWithUser extends Profile {
-  email?: string;
+  email: string | null;
 }

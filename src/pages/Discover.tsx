@@ -31,6 +31,13 @@ import { generalInterests } from "@/constants/discover/generalInterests";
 import { explicitInterests } from "@/constants/discover/explicitInterests";
 import { generateRandomProfiles } from "@/utils/discover/generateRandomProfiles";
 
+const normalizeGender = (value: unknown): Gender => {
+  const raw = typeof value === "string" ? value.trim().toLowerCase() : "";
+  if (raw === "male" || raw === "m" || raw === "hombre" || raw === "man") return "male";
+  if (raw === "female" || raw === "f" || raw === "mujer" || raw === "woman") return "female";
+  return "unknown";
+};
+
 export const Discover = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -254,9 +261,13 @@ export const Discover = () => {
       if (realProfiles && realProfiles.length > 0) {
         logger.info(`? ${realProfiles.length} perfiles reales cargados`);
 
+        const usedImages = new Set<string>();
+
         // Convertir perfiles de Supabase al formato esperado
         const convertedProfiles: Profile[] = realProfiles.map(
-          (profile: any) => ({
+          (profile: any) => {
+            const normalizedGender = normalizeGender(profile.gender);
+            return ({
             id: profile.id,
             name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
             age: profile.age || 25,
@@ -275,9 +286,9 @@ export const Discover = () => {
                 id: profile.id,
                 name: profile.first_name,
                 type: "single",
-                gender: profile.gender as Gender,
+                gender: normalizedGender,
               },
-              new Set(),
+              usedImages,
             ), // Avatar URL desde Supabase profiles
             bio: profile.bio || "Sin descripcin",
             isOnline: profile.is_online || false,
@@ -294,8 +305,9 @@ export const Discover = () => {
             rating: 4.5,
             matchScore: Math.floor(Math.random() * 40) + 60,
             profileType: (profile.account_type as any) || "single",
-            gender: (profile.gender as Gender) || "other",
-          }),
+            gender: normalizedGender === "unknown" ? undefined : normalizedGender,
+            });
+          },
         );
 
         setProfiles(convertedProfiles);

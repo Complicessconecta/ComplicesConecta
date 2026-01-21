@@ -86,7 +86,7 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
   children,
 }) => {
   return (
-    <div className={cn("relative min-h-[100dvh] w-full", className)}>
+    <div className={cn("relative min-h-dvh w-full", className)}>
       <div className="fixed inset-0 -z-10">
         {backgroundVideoSrc ? (
           <video

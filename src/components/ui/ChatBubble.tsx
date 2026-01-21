@@ -107,7 +107,7 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
                 : "bg-linear-to-r from-blue-500/90 to-purple-600/90 text-white rounded-bl-md hover:from-blue-500/95 hover:to-purple-600/95",
             )}
           >
-            <p className="text-sm leading-relaxed break-words text-white">
+            <p className="text-sm leading-relaxed wrap-break-word text-white">
               {message}
             </p>
             <span
@@ -197,7 +197,7 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
               />
             )}
 
-            <p className="text-sm leading-relaxed break-words">{message}</p>
+            <p className="text-sm leading-relaxed wrap-break-word">{message}</p>
 
             {/* Message Status & Timestamp */}
             <div

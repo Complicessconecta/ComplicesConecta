@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Check, X, Loader2, RefreshCw } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
 
 // Configuración de Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Usar el cliente singleton compartido para evitar múltiples instancias en HMR
 
 interface NicknameValidatorProps {
   value: string;

@@ -21,7 +21,10 @@ export const LazyPages = {
       import(/* webpackChunkName: "admin" */ "@/pages/admin/AdminModerators"),
   ),
   ModeratorDashboard: lazyWithDefault(
-    () => import(/* webpackChunkName: "admin" */ "@/pages/ModeratorDashboard"),
+    () =>
+      import(
+        /* webpackChunkName: "admin" */ "@/pages/moderators/ModeratorDashboard"
+      ),
   ),
 
   // Token system - separate chunk

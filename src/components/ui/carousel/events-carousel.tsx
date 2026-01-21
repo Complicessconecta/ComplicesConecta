@@ -37,7 +37,7 @@ export const EventsCarousel: React.FC<EventsCarouselProps> = ({
                 className="w-full h-full object-cover"
               />
             </AnimatePresence>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
             <div className="absolute bottom-4 left-4 flex items-center gap-2 text-xs text-zinc-200">
               <MapPin className="w-4 h-4" />
               <span>{current.subtitle}</span>

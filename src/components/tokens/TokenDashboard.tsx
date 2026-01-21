@@ -28,7 +28,7 @@ const MOCK_DEMO_DATA = {
     monthlyEarned: 800,
     monthlyLimit: 1000,
     monthlyRemaining: 200,
-    referralCode: "DEMO2024",
+    referralCode: "DEMO2026",
     totalReferrals: 5,
   },
   transactions: [
@@ -556,7 +556,7 @@ export function TokenDashboard({
                     </span>
                   </div>
                   {/* Hover info */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
                     <p className="text-white font-bold text-sm truncate">
                       {nft.name || "NFT Item"}
                     </p>

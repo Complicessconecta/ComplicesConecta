@@ -95,7 +95,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               <span className={badgeClassName}>{tab.count}</span>
 
               {/* Active Indicator Gradient Background for better visibility */}
-              <div className="absolute inset-0 bg-gradient-to-t from-fuchsia-500/10 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-linear-to-t from-fuchsia-500/10 to-transparent pointer-events-none" />
             </button>
           );
         }

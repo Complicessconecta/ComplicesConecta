@@ -7,9 +7,9 @@ import { logger } from "@/lib/logger";
 
 // Fallback logger si el import falla (no debería pasar, pero por seguridad)
 const safeLogger = logger || {
-  info: (...args: any[]) => console.log("[INFO]", ...args),
-  warn: (...args: any[]) => console.warn("[WARN]", ...args),
-  error: (...args: any[]) => console.error("[ERROR]", ...args),
+  info: (...args: unknown[]) => console.log("[INFO]", ...args),
+  warn: (...args: unknown[]) => console.warn("[WARN]", ...args),
+  error: (...args: unknown[]) => console.error("[ERROR]", ...args),
 };
 
 // Obtener las credenciales de Supabase desde variables de entorno con fallback a AppConfig
@@ -60,8 +60,21 @@ safeLogger.info("🔗 Conectando a Supabase:", { url: supabaseUrl });
 // Variable global para almacenar la instancia única del cliente
 let supabaseInstance: SupabaseClient<Database> | null = null;
 
+declare global {
+  var __cc_supabaseClient:
+    | SupabaseClient<Database>
+    | null
+    | undefined;
+}
+
 // Función para crear o retornar la instancia única del cliente
 function getSupabaseClient(): SupabaseClient<Database> {
+  if (globalThis.__cc_supabaseClient) {
+    supabaseInstance = globalThis.__cc_supabaseClient;
+    safeLogger.info("♻️ Reutilizando instancia global de Supabase", {});
+    return supabaseInstance;
+  }
+
   if (supabaseInstance) {
     safeLogger.info("♻️ Reutilizando instancia existente de Supabase", {});
     return supabaseInstance;
@@ -101,6 +114,7 @@ function getSupabaseClient(): SupabaseClient<Database> {
         "⚠️ Cliente stub de Supabase creado - modo demo activo",
         {},
       );
+      globalThis.__cc_supabaseClient = supabaseInstance;
       return supabaseInstance;
     }
 
@@ -186,6 +200,8 @@ function getSupabaseClient(): SupabaseClient<Database> {
     safeLogger.info("✅ Cliente de Supabase creado exitosamente", {
       url: finalUrl,
     });
+
+    globalThis.__cc_supabaseClient = supabaseInstance;
     return supabaseInstance;
   } catch (error) {
     safeLogger.error("❌ Error crítico creando cliente de Supabase:", {
@@ -209,6 +225,7 @@ function getSupabaseClient(): SupabaseClient<Database> {
         },
       });
       safeLogger.warn("⚠️ Usando cliente stub de Supabase debido a error", {});
+      globalThis.__cc_supabaseClient = supabaseInstance;
       return supabaseInstance;
     } catch (fallbackError) {
       safeLogger.error("❌ Error crítico creando cliente stub:", {
@@ -218,49 +235,29 @@ function getSupabaseClient(): SupabaseClient<Database> {
             : String(fallbackError),
       });
       // Retornar un stub mínimo que no cause errores
-      throw new Error("Failed to create Supabase client");
+      const stubUrl = "https://demo.supabase.co";
+      const stubKey = "demo-anon-key-stub";
+      supabaseInstance = createClient<Database>(stubUrl, stubKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+        global: {
+          fetch: () =>
+            Promise.reject(
+              new Error("Supabase not configured - using stub client"),
+            ),
+        },
+      });
+      globalThis.__cc_supabaseClient = supabaseInstance;
+      return supabaseInstance;
     }
   }
 }
 
 // Exportar la instancia única del cliente
 // CRÍTICO: Crear instancia de forma segura sin bloquear la carga
-let supabase: SupabaseClient<Database> | null = null;
-
-try {
-  supabase = getSupabaseClient();
-} catch (error) {
-  safeLogger.error("❌ Error creando cliente de Supabase:", {
-    error: error instanceof Error ? error.message : String(error),
-  });
-  // Crear cliente stub mínimo en caso de error
-  try {
-    const stubUrl = "https://demo.supabase.co";
-    const stubKey = "demo-anon-key-stub";
-    supabase = createClient<Database>(stubUrl, stubKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-      global: {
-        fetch: () =>
-          Promise.reject(
-            new Error("Supabase not configured - using stub client"),
-          ),
-      },
-    });
-    safeLogger.warn("⚠️ Usando cliente stub de Supabase", {});
-  } catch (fallbackError) {
-    safeLogger.error("❌ Error crítico creando cliente stub:", {
-      error:
-        fallbackError instanceof Error
-          ? fallbackError.message
-          : String(fallbackError),
-    });
-    // No exportar null, crear un stub mínimo
-    supabase = null as any;
-  }
-}
+const supabase: SupabaseClient<Database> = getSupabaseClient();
 
 export { supabase };
 
@@ -279,28 +276,33 @@ const initializeSupabase = async () => {
     if (!checkDemoMode()) {
       try {
         // Timeout de 5 segundos para evitar que se quede colgado
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), 5000),
-        );
-
-        // CRÍTICO: Verificar que supabase no sea null antes de usarlo
-        if (!supabase) {
-          safeLogger.warn(
-            "⚠️ Supabase no está disponible, activando modo demo",
-            {},
-          );
-          isDemoMode = true;
-          return;
-        }
+        const timeoutPromise: Promise<Error> = new Promise((resolve) => {
+          setTimeout(() => resolve(new Error("Timeout")), 5000);
+        });
 
         const sessionPromise = supabase.auth.getSession();
 
-        const { data: _data, error: _error } = (await Promise.race([
-          sessionPromise,
-          timeoutPromise,
-        ])) as any;
+        const raceResult = await Promise.race([sessionPromise, timeoutPromise]);
+        if (raceResult instanceof Error) {
+          safeLogger.warn("⚠️ Problema de conectividad con Supabase:", {
+            error: raceResult.message,
+          });
+          if (
+            raceResult.message.includes("Failed to fetch") ||
+            raceResult.message.includes("CONNECTION_REFUSED") ||
+            raceResult.message.includes("Invalid Refresh Token") ||
+            raceResult.message.includes("Timeout")
+          ) {
+            isDemoMode = true;
+            safeLogger.info("🔄 Activando modo demo offline", {});
+          } else {
+            safeLogger.info("✅ Conectado exitosamente a Supabase", {});
+          }
+          return;
+        }
 
-        if (_error) {
+        if ("error" in raceResult && raceResult.error) {
+          const _error = raceResult.error;
           safeLogger.warn("⚠️ Problema de conectividad con Supabase:", {
             error: _error.message,
           });

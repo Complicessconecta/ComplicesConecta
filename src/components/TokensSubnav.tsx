@@ -1,19 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, FileText, Scale, Lock, ScrollText } from "lucide-react";
+import { useAuth } from "@/features/auth/useAuth";
 
 export const TokensSubnav = () => {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollYRef = useRef(0);
   const tickingRef = useRef(false);
 
+  const hasSession =
+    typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : Boolean(isAuthenticated);
+
   const tabs = [
-    { name: "Dashboard", path: "/tokens", icon: LayoutDashboard },
-    { name: "Info", path: "/tokens/info", icon: FileText },
-    { name: "Legal", path: "/tokens/legal", icon: Scale },
-    { name: "Privacidad", path: "/tokens/privacy", icon: Lock },
-    { name: "Términos", path: "/tokens/terms", icon: ScrollText },
+    ...(hasSession ? [{ name: "Dashboard", path: "/tokens", icon: LayoutDashboard }] : []),
+    { name: "Info", path: "/tokens-info", icon: FileText },
+    { name: "Legal", path: "/tokens-legal", icon: Scale },
+    { name: "Privacidad", path: "/tokens-privacy", icon: Lock },
+    { name: "Términos", path: "/tokens-terms", icon: ScrollText },
   ];
 
   const isActive = (path: string) => {

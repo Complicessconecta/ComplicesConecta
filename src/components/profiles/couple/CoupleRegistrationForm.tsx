@@ -11,13 +11,11 @@ import { NicknameValidator } from "@/components/auth/NicknameValidator";
 import { InterestsSelector } from "@/components/auth/InterestsSelector";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { Users } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
 import { toast } from "@/hooks/useToast";
+import { supabase } from "@/integrations/supabase/client";
 
 // Configuración de Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Usar el cliente singleton compartido para evitar múltiples instancias en HMR
 
 interface CoupleRegistrationData {
   // Información de él
@@ -52,7 +50,10 @@ interface CoupleRegistrationData {
 }
 
 interface CoupleRegistrationFormProps {
-  onSuccess: (userData: any) => void;
+  onSuccess: (userData: {
+    user: { id: string };
+    profile: { account_type: "couple"; name: string; nickname: string };
+  }) => void;
   onBack?: () => void;
 }
 
@@ -217,16 +218,6 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     setIsLoading(true);
 
     try {
-      if (!supabase) {
-        toast({
-          variant: "destructive",
-          title: "Error de conexión",
-          description: "No se pudo conectar con el servidor",
-        });
-        setIsLoading(false);
-        return;
-      }
-
       // Registrar usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -244,10 +235,6 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
 
       if (authData.user) {
         // Crear perfil de pareja en la tabla couple_profiles
-        if (!supabase) {
-          throw new Error("Supabase no está disponible");
-        }
-
         const { error: coupleProfileError } = await supabase
           .from("couple_profiles")
           .insert({
@@ -309,11 +296,12 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           },
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Error desconocido";
       toast({
         variant: "destructive",
         title: "Error al registrarse",
-        description: error.message,
+        description: message,
       });
     } finally {
       setIsLoading(false);

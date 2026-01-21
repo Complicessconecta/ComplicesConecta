@@ -46,6 +46,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   const isHomeRoute = location.pathname === "/";
 
   const chatPath = hasSession ? "/chat" : "/chat-info";
+  const tokensPath = hasSession ? "/tokens" : "/tokens-info";
+
+  const isTokensRoute = location.pathname === "/tokens" || location.pathname.startsWith("/tokens-");
 
   // C) Menú principal REDUCIDO a 5 items para evitar overflow
   const mainNavItems = [
@@ -59,7 +62,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   // D) Dropdown "Más" con TODOS los items restantes organizados por categorías
   const secondaryNavItems = [
     // Tokens & Marketplace
-    { name: "Tokens", path: "/tokens", icon: DollarSign, category: "Tokens & Marketplace" },
+    { name: "Tokens", path: tokensPath, icon: DollarSign, category: "Tokens & Marketplace" },
     { name: "Marketplace", path: "/marketplace", icon: ShoppingBag, category: "Tokens & Marketplace" },
     { name: "NFTs", path: "/nfts", icon: Image, category: "Tokens & Marketplace" },
     { name: "Premium", path: "/premium", icon: Crown, category: "Tokens & Marketplace" },
@@ -131,6 +134,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   // Ocultar HeaderNav cuando el usuario está autenticado
   // Solo mostrar en páginas públicas (no autenticadas)
   if (hasSession) {
+    return null;
+  }
+
+  // Evitar doble header en páginas de Tokens públicas
+  if (isTokensRoute) {
     return null;
   }
 

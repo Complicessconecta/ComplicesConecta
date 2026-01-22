@@ -15,12 +15,15 @@
   justify-content: space-between;
   padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.05);
-  /* Fallback para navegadores antiguos */
-  background-color: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .accessibility-audit-header {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
 }
 
 .accessibility-audit-title {
@@ -51,12 +54,17 @@
 
 .accessibility-audit-card {
   background: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.5rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .accessibility-audit-card {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
 }
 
 .accessibility-audit-card:hover {
@@ -197,12 +205,15 @@
   gap: 1rem;
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.05);
-  /* Fallback para navegadores antiguos */
-  background-color: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .accessibility-audit-summary {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
 }
 
 .accessibility-audit-summary-item {

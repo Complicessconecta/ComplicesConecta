@@ -1,91 +1,51 @@
-# Reporte de Cambios - CómplicesConecta v3.8.3
+# Reporte de Cambios - CómplicesConecta v3.9.2
 
-**Fecha:** 21 de Enero, 2026  
-**Versión:** v3.8.3 (Refactorización Estructural)  
+**Fecha:** 21 de Enero, 2026
+**Versión:** v3.9.2 (Auditoría Estructural)
 **Responsable:** Ingeniero de Software - Juan Carlos Mendez Nataren
 
 ## Resumen Ejecutivo
 
-En esta sesión se realizó una auditoría y refactorización estructural profunda del directorio `src/`, enfocándose en la eliminación de deuda técnica relacionada con archivos proxy redundantes en la raíz de `src/services/` y la corrección de anomalías de ubicación de componentes. Se consolidaron las exportaciones en `src/services/index.ts` (Patrón Barril), se eliminó un directorio "sombra" (`src/services/couple/`) que duplicaba funcionalidad, y se corrigieron las importaciones en múltiples archivos críticos para asegurar el cumplimiento estricto de las reglas del proyecto (TypeScript strict, no any, rutas absolutas).
+Se realizó una auditoría estructural completa del directorio `src/`, identificando y corrigiendo problemas de duplicidad, exports incorrectos en archivos index.ts y estructura de directorios. Se consolidaron 6 archivos de auditoría resueltos en `docs-unified/auditorias/` y se creó un documento consolidado con 15 problemas pendientes.
 
-Se han eliminado 21 archivos redundantes y un directorio duplicado, mejorando la mantenibilidad y reduciendo la confusión en la arquitectura del sistema.
-
-## Registro de Cambios Detallado
+## Registro de Cambios Detallados
 
 | Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
 | :--- | :--- | :--- | :--- | :--- |
-| **AdminNav.tsx** | `src/components/admin/AdminNav.tsx` | Ubicado incorrectamente en `src/components/` (raíz) siendo un componente específico de administración. | **Movido** a `src/components/admin/`. Actualizadas 8 referencias en páginas dependientes. | Mejor organización modular. Los componentes de dominio específico deben estar en su módulo correspondiente. |
-| **Services Index** | `src/services/index.ts` | No exportaba todos los servicios necesarios, obligando a usar archivos proxy o imports profundos. | **Consolidado**. Se agregaron exports para Core, Features, Analytics y Payments. | Centralización de la API de servicios (Patrón Barril) para facilitar imports limpios y reducir acoplamiento. |
-| **Proxy Files** | `src/services/*.ts` (Raíz) | 19 archivos (ej. `TokenService.ts`, `WalletService.ts`) que solo re-exportaban contenido de subdirectorios. | **Eliminados**. Se reemplazaron por exports directos en `src/services/index.ts`. | Eliminación de código muerto y redundancia. Reduce la carga de mantenimiento y evita confusión sobre cuál archivo importar. |
-| **Shadow Directory** | `src/services/couple/` | Directorio que duplicaba `src/services/social/couple/` vía re-exports. | **Eliminado**. Se redirigieron los imports de 5 archivos a la ruta canónica `src/services/social/couple/`. | Eliminación de duplicidad estructural crítica. Evita inconsistencias en el estado de la aplicación al asegurar una única fuente de verdad. |
-| **DesktopNotificationSettings** | `src/components/admin/DesktopNotificationSettings.tsx` | Importaba desde la raíz `src/services/` (ahora eliminada) o rutas incorrectas. | **Corregido**. Import actualizado a `@/services/core/DesktopNotificationService`. | Reparación de imports rotos tras la eliminación de proxies. Asegura acceso al Singleton correcto. |
-| **NFTMintButton** | `src/components/ui/buttons/NFTMintButton.tsx` | Importaba desde la raíz `src/services/` (ahora eliminada). | **Corregido**. Imports actualizados a `@/services/payments/WalletService` y `NFTService`. | Reparación de imports rotos. Asegura funcionalidad crítica de pagos y NFTs. |
-| **Performance Test** | `src/tests/unit/performance.test.ts` | Importaba desde la raíz `src/services/` (ahora eliminada). | **Corregido**. Imports actualizados a `@/services/core/PerformanceMonitoringService` y `AnalyticsService`. | Reparación de tests unitarios. Asegura que el monitoreo de rendimiento funcione correctamente. |
-| **DesktopNotificationService** | `src/services/core/DesktopNotificationService.ts` | No exportaba una instancia Singleton por defecto. | **Modificado**. Se añadió `export const desktopNotificationService = new DesktopNotificationService();`. | Facilita el uso del servicio sin necesidad de instanciarlo manualmente en cada componente. |
-| **DesktopNotificationService** (Lint) | `src/services/core/DesktopNotificationService.ts` | Error de sintaxis (brace extra y tipo `ZodBoolean` residual). | **Corregido**. Eliminación de código inválido. | Corrección de error de compilación detectado por `npm run lint`. |
-| **PerformanceMonitoringService** | `src/services/core/PerformanceMonitoringService.ts` | Método `destroy()` ineficiente y falta de export Singleton consistente. | **Refactorizado**. Optimización de `destroy()` y añadido export Singleton. | Mejora de rendimiento y consistencia en el acceso al servicio de monitoreo. |
+| **AppLayout.tsx** | `src/components/AppLayout.tsx` | Duplicado de `src/layouts/AppLayout.tsx` | **Eliminado**. Versión en layouts/ más completa (34 vs 32 líneas) | Eliminar duplicidad estructural |
+| **ChatPrivacyService.ts** | `src/services/chat/ChatPrivacyService.ts` | Proxy innecesario que re-exporta desde `src/services/social/chat/ChatPrivacyService.ts` | **Eliminado**. Actualizado import en ChatRoom.tsx | Eliminar código muerto |
+| **auth/index.ts** | `src/components/auth/index.ts` | Exporta ThemeInfoModal (componente de modals, no de auth) | **Corregido**. Eliminado línea 5 | Corregir exports incorrectos |
+| **lib/index.ts** | `src/lib/index.ts` | Rutas incorrectas para buttons/ y cards/ | **Corregido**. Líneas 5-6 actualizadas a plural | Corregir rutas de imports |
+| **clubs/index.ts** | `src/components/clubs/` | Directorio con 6 archivos .tsx sin index.ts | **Creado**. Index.ts con exports de todos los componentes | Seguir patrón barril |
+| **ChatRoom.tsx** | `src/components/chat/ChatRoom.tsx` | Import de ChatPrivacyService desde ruta proxy | **Corregido**. Import actualizado a `@/services/social/chat/ChatPrivacyService` | Actualizar imports tras eliminación |
 
-## Archivos Eliminados (Proxy/Redundantes)
+## Archivos Consolidados en docs-unified/auditorias/
 
-*   `src/services/AdvancedCacheService.ts`
-*   `src/services/AnalyticsService.ts`
-*   `src/services/BannerManagementService.ts`
-*   `src/services/ConsentService.ts`
-*   `src/services/ContentModerationService.ts`
-*   `src/services/DataPrivacyService.ts`
-*   `src/services/DesktopNotificationService.ts`
-*   `src/services/ErrorAlertService.ts`
-*   `src/services/GlobalSearchService.ts`
-*   `src/services/HistoricalMetricsService.ts`
-*   `src/services/NFTGalleryService.ts`
-*   `src/services/NFTService.ts`
-*   `src/services/NotificationService.ts`
-*   `src/services/PerformanceMonitoringService.ts`
-*   `src/services/ProfileStatsService.ts`
-*   `src/services/SecurityService.ts`
-*   `src/services/TokenAnalyticsService.ts`
-*   `src/services/TokenService.ts`
-*   `src/services/UserVerificationService.ts`
-*   `src/services/VirtualEventsService.ts`
-*   `src/services/WalletService.ts`
-*   `src/services/couple/` (Directorio completo)
+Los siguientes archivos de auditoría han sido movidos a `docs-unified/auditorias/`:
+- reporte-final-auditoria.md (Auditoría Estructural v3.9.2)
+- AUDITORIA_SEGURIDAD_SUPABASE_v3_9_2.md (Seguridad DB)
+- AUDITORIA_SEGURIDAD_SRC_v3_9_2.md (Seguridad SRC)
+- DIAGNOSTICO_ICONOS_Y_VISIBILIDAD.md (Íconos y Visibilidad)
+- ELIMINACIONES_PROPUESTAS.md (Eliminaciones de Variables)
 
-## Ejemplos de Código Clave
+## Documentos Creados
 
-### 1. Patrón Singleton (DesktopNotificationService.ts)
-```typescript
-export class DesktopNotificationService {
-  // ... implementación ...
-}
+- **PROBLEMAS_PENDIENTES_CONSOLIDADOS.md**: Consolidación de 15 problemas pendientes (5 alta, 7 media, 3 baja prioridad)
 
-// Exportación Singleton por defecto
-export const desktopNotificationService = new DesktopNotificationService();
-```
+## Estadísticas
 
-### 2. Consolidación de Servicios (src/services/index.ts)
-```typescript
-// Core Services
-export * from "@/services/core/ErrorAlertService";
-export * from "@/services/core/PerformanceMonitoringService";
-// ...
+| Categoría | Total | Solucionados | Pendientes |
+|-----------|-------|--------------|------------|
+| Seguridad | 20 | 19 | 1 |
+| Estructural | 8 | 8 | 0 |
+| Funcionalidad | 7 | 0 | 7 |
+| UX/UI | 3 | 3 | 0 |
+| **TOTAL** | **38** | **30** | **8** |
 
-// Features
-export * from "@/services/features/events/VirtualEventsService";
-export * from "@/services/features/BannerManagementService";
-// ...
-```
+## Próximos Pasos Prioritarios
 
-### 3. Corrección de Imports (Ejemplo en componentes)
-```typescript
-// ANTES (Incorrecto/Roto):
-// import { desktopNotificationService } from "../../../services/DesktopNotificationService";
-
-// AHORA (Correcto/Absoluto):
-import { desktopNotificationService } from "@/services/core/DesktopNotificationService";
-```
-
-## Próximos Pasos
-
-1.  **Verificación**: `npm run lint` y `npm run type-check` ejecutados exitosamente (0 errores).
-2.  **Documentación**: `.windsurfrules` actualizado con reglas de estructura.
-3.  **Despliegue**: Cambios integrados en rama `master`.
+1. Implementar lógica de Match (Alta) - Core del flujo principal
+2. Implementar galería privada en Chat (Alta) - Mecánica de monetización
+3. Fix encoding UTF-8 masivo (Alta) - Profesionalismo
+4. Implementar backend proxy para API key de Pinata (Alta) - Seguridad
+5. Crear tablas faltantes en DB (Media) - Bloquea features

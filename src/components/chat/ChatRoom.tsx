@@ -21,7 +21,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/features/auth/useAuth";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/hooks/useToast";
-import { chatPrivacyService, type ChatRequest } from "@/services/chat/ChatPrivacyService";
+import { chatPrivacyService, type ChatRequest } from "@/services/social/chat/ChatPrivacyService";
 import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { supabase } from "@/integrations/supabase/client";

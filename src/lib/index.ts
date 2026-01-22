@@ -2,8 +2,8 @@
 // USO: import { Button, Card, useAuth } from '@/lib'
 
 // UI
-export * from "@/components/ui/buttons/Button";
-export * from "@/components/ui/cards/Card";
+export * from "@/components/ui/buttons";
+export * from "@/components/ui/cards";
 export * from "@/components/ui/forms/Input";
 export * from "@/components/ui/Modal";
 

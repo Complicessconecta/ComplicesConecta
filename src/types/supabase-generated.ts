@@ -7,30 +7,10 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
@@ -491,7 +471,7 @@ export type Database = {
       app_metrics: {
         Row: {
           created_at: string | null
-          id: string
+          id: number
           metadata: Json | null
           metric_name: string
           metric_type: string | null
@@ -500,7 +480,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          id?: string
+          id?: number
           metadata?: Json | null
           metric_name: string
           metric_type?: string | null
@@ -509,7 +489,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
-          id?: string
+          id?: number
           metadata?: Json | null
           metric_name?: string
           metric_type?: string | null
@@ -760,6 +740,51 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      biometric_auth: {
+        Row: {
+          biometric_data: string
+          created_at: string | null
+          device_fingerprint: string | null
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          biometric_data: string
+          created_at?: string | null
+          device_fingerprint?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          biometric_data?: string
+          created_at?: string | null
+          device_fingerprint?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "biometric_auth_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "biometric_auth_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe"
             referencedColumns: ["id"]
           },
         ]
@@ -6132,7 +6157,7 @@ export type Database = {
         Row: {
           created_at: string | null
           data: Json | null
-          id: string
+          id: number
           is_read: boolean | null
           message: string
           read: boolean | null
@@ -6144,7 +6169,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           data?: Json | null
-          id?: string
+          id?: number
           is_read?: boolean | null
           message: string
           read?: boolean | null
@@ -6156,7 +6181,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           data?: Json | null
-          id?: string
+          id?: number
           is_read?: boolean | null
           message?: string
           read?: boolean | null
@@ -7490,7 +7515,7 @@ export type Database = {
           ai_model_version: string | null
           ai_severity: string
           ai_summary: string | null
-          ai_tags: string[] | null
+          ai_tags: Json | null
           created_at: string
           detected_explicit: number | null
           detected_harassment: number | null
@@ -7514,7 +7539,7 @@ export type Database = {
           ai_model_version?: string | null
           ai_severity: string
           ai_summary?: string | null
-          ai_tags?: string[] | null
+          ai_tags?: Json | null
           created_at?: string
           detected_explicit?: number | null
           detected_harassment?: number | null
@@ -7538,7 +7563,7 @@ export type Database = {
           ai_model_version?: string | null
           ai_severity?: string
           ai_summary?: string | null
-          ai_tags?: string[] | null
+          ai_tags?: Json | null
           created_at?: string
           detected_explicit?: number | null
           detected_harassment?: number | null
@@ -8881,7 +8906,7 @@ export type Database = {
           category: string
           created_at: string | null
           description: string | null
-          id: string
+          id: number
           is_active: boolean | null
           is_explicit: boolean | null
           name: string
@@ -8892,7 +8917,7 @@ export type Database = {
           category: string
           created_at?: string | null
           description?: string | null
-          id?: string
+          id?: number
           is_active?: boolean | null
           is_explicit?: boolean | null
           name: string
@@ -8903,7 +8928,7 @@ export type Database = {
           category?: string
           created_at?: string | null
           description?: string | null
-          id?: string
+          id?: number
           is_active?: boolean | null
           is_explicit?: boolean | null
           name?: string
@@ -9618,26 +9643,33 @@ export type Database = {
       user_interests: {
         Row: {
           created_at: string | null
-          id: string
+          id: number
           interest_id: number | null
           privacy_level: string | null
           user_id: string | null
         }
         Insert: {
           created_at?: string | null
-          id?: string
+          id?: number
           interest_id?: number | null
           privacy_level?: string | null
           user_id?: string | null
         }
         Update: {
           created_at?: string | null
-          id?: string
+          id?: number
           interest_id?: number | null
           privacy_level?: string | null
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "user_interests_interest_id_fkey"
+            columns: ["interest_id"]
+            isOneToOne: false
+            referencedRelation: "swinger_interests"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_interests_user_id_fkey"
             columns: ["user_id"]
@@ -11401,20 +11433,20 @@ export type Database = {
       log_security_event:
         | {
             Args: {
-              p_action: string
-              p_details: Json
-              p_ip_address: string
-              p_resource: string
-              p_severity?: string
+              p_details?: Json
+              p_event_type: string
+              p_risk_level?: string
               p_user_id: string
             }
             Returns: string
           }
         | {
             Args: {
-              p_details?: Json
-              p_event_type: string
-              p_risk_level?: string
+              p_action: string
+              p_details: Json
+              p_ip_address: string
+              p_resource: string
+              p_severity?: string
               p_user_id: string
             }
             Returns: string
@@ -11643,9 +11675,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       couple_agreement_status: [
@@ -11673,4 +11702,3 @@ export const Constants = {
     },
   },
 } as const
-

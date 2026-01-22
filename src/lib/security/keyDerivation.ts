@@ -2,7 +2,7 @@
  * Derivación de claves de encriptación usando PBKDF2
  * 
  * Mejoras de seguridad 2025-2026:
- * - Iteraciones aumentadas a 600000 (recomendado NIST 2025+)
+ * - Iteraciones aumentadías a 600000 (recomendado NIST 2025+)
  * - Password base mejorado con constante de aplicación + userId
  * - Validación de versiones en decrypt
  * 
@@ -38,7 +38,7 @@ export function checkCryptoSupport(): boolean {
  * Genera una clave de encriptación derivada de contraseña usando PBKDF2
  * 
  * Mejoras de seguridad:
- * - Iteraciones aumentadas a 600000 (recomendado NIST 2025+)
+ * - Iteraciones aumentadías a 600000 (recomendado NIST 2025+)
  * - SHA-256 para hash
  * - AES-GCM 256-bit para clave final
  * 
@@ -67,7 +67,7 @@ export async function deriveKey(
     ["deriveKey"],
   );
 
-  // Derivar clave final usando PBKDF2 con iteraciones aumentadas
+  // Derivar clave final usando PBKDF2 con iteraciones aumentadías
   const key = await window.crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
@@ -174,3 +174,4 @@ export async function reconstructEncryptionKey(
 export function validateEncryptionVersion(version: string): boolean {
   return version === "1.0" || version === "fallback";
 }
+

@@ -60,7 +60,7 @@ export const usePWA = () => {
       setStatus((prev) => ({ ...prev, isOnline: true }));
       toast({
         title: "🌐 Conexión restaurada",
-        description: "Ya puedes usar todas las funciones",
+        description: "Ya puedes usar todías las funciones",
       });
     };
 
@@ -68,7 +68,7 @@ export const usePWA = () => {
       setStatus((prev) => ({ ...prev, isOnline: false }));
       toast({
         title: "📡 Sin conexión",
-        description: "Algunas funciones pueden estar limitadas",
+        description: "Algunas funciones pueden estar limitadías",
         variant: "destructive",
       });
     };
@@ -132,7 +132,7 @@ export const usePWA = () => {
   const requestNotificationPermission = async () => {
     if (!("Notification" in window)) {
       toast({
-        title: "❌ Notificaciones no soportadas",
+        title: "❌ Notificaciones no soportadías",
         description: "Tu navegador no soporta notificaciones",
         variant: "destructive",
       });
@@ -147,19 +147,19 @@ export const usePWA = () => {
 
       if (enabled) {
         toast({
-          title: "🔔 Notificaciones habilitadas",
+          title: "🔔 Notificaciones habilitadías",
           description: "Recibirás alertas de nuevos mensajes y matches",
         });
 
         // Enviar notificación de prueba
         new Notification("ComplicesConecta", {
-          body: "¡Notificaciones configuradas correctamente!",
+          body: "¡Notificaciones configuradías correctamente!",
           icon: "/compliceslogo.png",
           badge: "/compliceslogo.png",
         });
       } else {
         toast({
-          title: "🔕 Notificaciones bloqueadas",
+          title: "🔕 Notificaciones bloqueadías",
           description:
             "Puedes habilitarlas desde la configuración del navegador",
           variant: "destructive",
@@ -236,7 +236,7 @@ export const PWAManager: React.FC = () => {
           {status.notificationsEnabled ? (
             <Badge variant="default" className="bg-blue-500">
               <Bell className="h-3 w-3 mr-1" />
-              Habilitadas
+              Habilitadías
             </Badge>
           ) : (
             <Button
@@ -405,3 +405,4 @@ export const usePWAUpdates = () => {
 };
 
 export default PWAManager;
+

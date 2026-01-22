@@ -260,7 +260,7 @@ class SmartMatchingEngine {
       return 95;
     }
 
-    // Si tenemos coordenadas, calcular distancia real
+    // Si tenemos coordenadías, calcular distancia real
     if (user1.location.coordinates && user2.location.coordinates) {
       const distance = this.calculateDistance(
         user1.location.coordinates,
@@ -277,7 +277,7 @@ class SmartMatchingEngine {
       return Math.max(0, 100 - distance * this.DISTANCE_DECAY_FACTOR);
     }
 
-    // Fallback: score moderado si no tenemos coordenadas exactas
+    // Fallback: score moderado si no tenemos coordenadías exactas
     return 60;
   }
 
@@ -329,7 +329,7 @@ class SmartMatchingEngine {
   }
 
   /**
-   * Calcula distancia entre coordenadas (fórmula de Haversine)
+   * Calcula distancia entre coordenadías (fórmula de Haversine)
    */
   private calculateDistance(
     coord1: { lat: number; lng: number },
@@ -481,7 +481,7 @@ class SmartMatchingEngine {
 
     // Red flags por verificación
     if (!user2.verification.photoVerified) {
-      redFlags.push("Fotos no verificadas");
+      redFlags.push("Fotos no verificadías");
     }
 
     // Red flags por incompatibilidad de preferencias
@@ -644,3 +644,4 @@ export {
 };
 
 export default SmartMatchingEngine;
+

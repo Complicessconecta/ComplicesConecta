@@ -9,7 +9,7 @@ import { FadeInUp, ScaleIn } from "@/components/ui/animations/ScrollAnimations";
 export const AnimatedHeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-24">
-      {/* Contenido principal con animaciones escalonadas */}
+      {/* Contenido principal con animaciones escalonadías */}
       <div className="relative text-center px-4 max-w-6xl mx-auto w-full">
         
         {/* Logo ComplicesConecta - Animación 1 */}
@@ -160,3 +160,4 @@ export const AnimatedHeroSection = () => {
     </section>
   );
 };
+

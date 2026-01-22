@@ -22,7 +22,7 @@ export const localStorageSchemas = {
 };
 
 /**
- * Tipo para las claves válidas de localStorage
+ * Tipo para las claves válidías de localStorage
  */
 export type LocalStorageKey = keyof typeof localStorageSchemas | string;
 
@@ -179,3 +179,4 @@ export function safeClear(): void {
     logger.error("❌ Error limpiando localStorage:", { error });
   }
 }
+

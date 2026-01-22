@@ -70,7 +70,7 @@ const LeyOlimpia: React.FC = () => {
                       ✅ Cumplimiento Total
                     </h4>
                     <p className="text-sm">
-                      Respetamos y aplicamos estrictamente todas las
+                      Respetamos y aplicamos estrictamente todías las
                       disposiciones de la Ley Olimpia.
                     </p>
                   </div>
@@ -79,7 +79,7 @@ const LeyOlimpia: React.FC = () => {
                       🔒 Protección Avanzada
                     </h4>
                     <p className="text-sm">
-                      Implementamos medidas técnicas para prevenir la difusión
+                      Implementamos medidías técnicas para prevenir la difusión
                       no consensuada.
                     </p>
                   </div>
@@ -105,12 +105,12 @@ const LeyOlimpia: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Medidas de Protección */}
+            {/* Medidías de Protección */}
             <Card className="bg-white/10 border-cyan-400/30">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Shield className="w-5 h-5 text-cyan-400 mr-2" />
-                  Medidas de Protección Implementadas
+                  Medidías de Protección Implementadías
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90">
@@ -118,8 +118,8 @@ const LeyOlimpia: React.FC = () => {
                   <li className="flex items-start">
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
-                      <strong>Marca de agua obligatoria:</strong> Todas las
-                      imágenes privadas incluyen marca de agua "ComplicesConecta
+                      <strong>Marca de agua obligatoria:</strong> Todías las
+                      imágenes privadías incluyen marca de agua "ComplicesConecta
                       © Privado"
                     </span>
                   </li>
@@ -286,3 +286,4 @@ const LeyOlimpia: React.FC = () => {
 };
 
 export default LeyOlimpia;
+

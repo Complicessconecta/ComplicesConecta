@@ -2,7 +2,7 @@
  * NFTVerificationService - Verificación de NFTs con GTK Staking
  *
  * Requiere 100 GTK en staking para mint NFT
- * Solo usuarios con NFT pueden ver galerías privadas
+ * Solo usuarios con NFT pueden ver galerías privadías
  *
  * @version 3.5.0
  */
@@ -261,3 +261,4 @@ export class NFTVerificationService {
 }
 
 export const nftVerificationService = NFTVerificationService.getInstance();
+

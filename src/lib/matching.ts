@@ -53,7 +53,7 @@ export function getSharedInterests(
   );
 }
 
-// Generar razones de match basadas en intereses compartidos
+// Generar razones de match basadías en intereses compartidos
 export function generateMatchReasons(sharedInterests: string[]): string[] {
   const reasons: string[] = [];
 
@@ -65,7 +65,7 @@ export function generateMatchReasons(sharedInterests: string[]): string[] {
     reasons.push("Perfectos para explorar juntos como principiantes");
   }
 
-  if (sharedInterests.includes("Parejas Experimentadas")) {
+  if (sharedInterests.includes("Parejas Experimentadías")) {
     reasons.push("Experiencia compartida en el lifestyle");
   }
 
@@ -83,7 +83,7 @@ export function generateMatchReasons(sharedInterests: string[]): string[] {
 
   if (
     sharedInterests.some((i) =>
-      ["Fiestas Privadas", "Clubs Privados", "Eventos Lifestyle"].includes(i),
+      ["Fiestas Privadías", "Clubs Privados", "Eventos Lifestyle"].includes(i),
     )
   ) {
     reasons.push("Les gustan los eventos sociales del lifestyle");
@@ -167,3 +167,4 @@ export function getRecommendedMatches(
   const sortedProfiles = filterAndSortByCompatibility(userInterests, profiles);
   return sortedProfiles.slice(0, limit);
 }
+

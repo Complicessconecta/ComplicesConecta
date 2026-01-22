@@ -108,7 +108,7 @@ const ProfileSingle: FC = () => {
     "none" | "pending" | "approved" | "denied"
   >("private_image_access", "none");
   
-  // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
+  // Demo: controlar desbloqueo visual de fotos privadías en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
@@ -174,7 +174,7 @@ const ProfileSingle: FC = () => {
   const demoTheme = isDemoProfile ? "demo_premium" : undefined;
   useProfileTheme("single", ["male"], demoTheme);
 
-  // Datos de imágenes privadas para el carrusel
+  // Datos de imágenes privadías para el carrusel
   type PrivateImageItem = {
     id?: string;
     url?: string;
@@ -379,7 +379,7 @@ Información del perfil:
     if (!privateGalleryRef.current) {
       toast({
         title: "Galería privada",
-        description: "No se pudo ubicar la sección de fotos privadas.",
+        description: "No se pudo ubicar la sección de fotos privadías.",
         variant: "destructive",
       });
       return;
@@ -392,7 +392,7 @@ Información del perfil:
 
     toast({
       title: "Galería privada",
-      description: "Desplazándote a tus fotos privadas.",
+      description: "Desplazándote a tus fotos privadías.",
     });
   };
 
@@ -814,7 +814,7 @@ Información del perfil:
                       </DropdownMenu>
                     )}
 
-                    {/* Botón para solicitar acceso a fotos privadas */}
+                    {/* Botón para solicitar acceso a fotos privadías */}
                     {privateImageAccess === "none" && (
                       <Button
                         onClick={handleViewPrivatePhotos}
@@ -822,9 +822,9 @@ Información del perfil:
                       >
                         <Lock className="w-4 h-4" />
                         <span className="hidden sm:inline">
-                          Ver Fotos Privadas
+                          Ver Fotos Privadías
                         </span>
-                        <span className="sm:hidden">Privadas</span>
+                        <span className="sm:hidden">Privadías</span>
                       </Button>
                     )}
 
@@ -849,8 +849,8 @@ Información del perfil:
                         className="bg-white/10 hover:bg-white/20 text-green-200 border border-green-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       >
                         <Images className="w-4 h-4" />
-                        <span className="hidden sm:inline">Fotos Privadas</span>
-                        <span className="sm:hidden">Privadas</span>
+                        <span className="hidden sm:inline">Fotos Privadías</span>
+                        <span className="sm:hidden">Privadías</span>
                       </Button>
                     )}
                   </div>
@@ -859,7 +859,7 @@ Información del perfil:
             </CardContent>
           </Card>
 
-          {/* Estadísticas mejoradas */}
+          {/* Estadísticas mejoradías */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -1326,14 +1326,14 @@ Información del perfil:
                   {
                     title: "Lifestyle Exclusivo",
                     description:
-                      "Conexiones seleccionadas para un círculo íntimo y sofisticado.",
+                      "Conexiones seleccionadías para un círculo íntimo y sofisticado.",
                     link: "#",
                     icon: <TrendingUp className="w-5 h-5" />,
                   },
                   {
                     title: "Eventos VIP",
                     description:
-                      "Acceso prioritario a fiestas privadas y experiencias lifestyle.",
+                      "Acceso prioritario a fiestas privadías y experiencias lifestyle.",
                     link: "#",
                     icon: <Calendar className="w-5 h-5" />,
                   },
@@ -1361,7 +1361,7 @@ Información del perfil:
                   {
                     title: "Match Inteligente",
                     description:
-                      "Recomendaciones basadas en intereses y compatibilidad real.",
+                      "Recomendaciones basadías en intereses y compatibilidad real.",
                     link: "#",
                     icon: <Users className="w-5 h-5" />,
                   },
@@ -1396,7 +1396,7 @@ Información del perfil:
                         </h4>
                         <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
                           <p className="text-center">
-                            Accede a eventos exclusivos, fiestas privadas y
+                            Accede a eventos exclusivos, fiestas privadías y
                             matchmaking prioritario.
                           </p>
                           {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
@@ -1446,7 +1446,7 @@ Información del perfil:
                     Acceso Denegado
                   </h3>
                   <p className="text-white/70">
-                    Tu solicitud para ver las fotos privadas fue denegada.
+                    Tu solicitud para ver las fotos privadías fue denegada.
                   </p>
                 </div>
               )}
@@ -1481,7 +1481,7 @@ Información del perfil:
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <Lock className="w-4 h-4" />
-                    Fotos Privadas ({galleryImages.length})
+                    Fotos Privadías ({galleryImages.length})
                   </h4>
                   <Button
                     onClick={() => {
@@ -1625,7 +1625,7 @@ Información del perfil:
         </div>
       </div>
 
-      {/* Modal de solicitud de acceso a fotos privadas */}
+      {/* Modal de solicitud de acceso a fotos privadías */}
       {showPrivateImageRequest && (
         <PrivateImageRequest
           isOpen={showPrivateImageRequest}
@@ -1646,11 +1646,11 @@ Información del perfil:
           isLocked={isParentalLocked}
           onToggle={(locked) => {
             setIsParentalLocked(locked);
-            // Si se desbloquea, permitir acceso a imágenes privadas
+            // Si se desbloquea, permitir acceso a imágenes privadías
             if (!locked) {
               setDemoPrivateUnlocked(true);
             } else {
-              // Si se bloquea, ocultar imágenes privadas
+              // Si se bloquea, ocultar imágenes privadías
               setDemoPrivateUnlocked(false);
             }
           }}
@@ -1767,3 +1767,4 @@ Información del perfil:
 };
 
 export default ProfileSingle;
+

@@ -45,7 +45,7 @@ const News: FC = () => {
       icon: <Brain className="h-6 w-6" />,
       highlights: [
         "✅ Verificador IA de Consentimiento en Chats - Servicio + Migración + Integración",
-        "✅ Galerías NFT-Verificadas - Servicio + Migración + UI completa",
+        "✅ Galerías NFT-Verificadías - Servicio + Migración + UI completa",
         "✅ Matching Predictivo con Graphs Sociales - Neo4j + IA integrado",
         "✅ Eventos Virtuales Sostenibles con Tokens - Servicio completo",
         "✅ Neo4j Graph Database 100% operativo - Docker + Scripts + Sincronización",
@@ -74,7 +74,7 @@ const News: FC = () => {
         "Google S2 Geosharding implementado - Cell ID generation (niveles 10-20)",
         "Database Migration - s2_cell_id y s2_level agregados a profiles",
         "Backfill Script preparado - Batch processing (100 perfiles/vez)",
-        "Mejoras de performance esperadas: 50-100x ms rpido en queries geogrficas",
+        "Mejoras de performance esperadías: 50-100x ms rpido en queries geogrficas",
         "AI Model Metrics - Seguimiento completo de predicciones ML",
       ],
       color: "from-blue-500 to-cyan-600",
@@ -270,7 +270,7 @@ const News: FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-white/90 leading-relaxed text-base sm:text-lg">
-                Descubre todas las mejoras, nuevas funcionalidades y
+                Descubre todías las mejoras, nuevas funcionalidades y
                 optimizaciones que hemos implementado desde el lanzamiento de
                 ComplicesConecta. Cada actualizacin est diseada para mejorar tu
                 experiencia, la seguridad de la plataforma y el rendimiento del
@@ -388,7 +388,7 @@ const News: FC = () => {
           ))}
         </div>
 
-        {/* Estadsticas de Desarrollo mejoradas */}
+        {/* Estadsticas de Desarrollo mejoradías */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -488,7 +488,7 @@ const News: FC = () => {
           </Card>
         </motion.div>
 
-        {/* Prximas Actualizaciones mejoradas */}
+        {/* Prximas Actualizaciones mejoradías */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -509,7 +509,7 @@ const News: FC = () => {
                   "Integracin MongoDB Atlas para analytics avanzados",
                   "Sistema de video chat P2P con WebRTC",
                   "Marketplace de productos premium",
-                  "Notificaciones push nativas mejoradas",
+                  "Notificaciones push nativas mejoradías",
                   "Expansin internacional (ms pases)",
                   "App iOS nativa para iPhone y iPad",
                 ].map((item, idx) => (
@@ -573,3 +573,4 @@ const News: FC = () => {
 };
 
 export default News;
+

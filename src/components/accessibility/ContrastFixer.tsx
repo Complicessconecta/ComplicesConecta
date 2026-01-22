@@ -107,7 +107,7 @@ export function ContrastFixer({
           }
         });
 
-        logger.info("✅ Correcciones de contraste aplicadas", {
+        logger.info("✅ Correcciones de contraste aplicadías", {
           level,
           elementsFixed: document.querySelectorAll(".contrast-fixed").length,
         });
@@ -161,3 +161,4 @@ export function ContrastFixer({
 }
 
 export default ContrastFixer;
+

@@ -71,7 +71,7 @@ const Legal: FC = () => {
       details: [
         "Recopilación y uso de datos personales",
         "Derechos de los usuarios sobre sus datos",
-        "Medidas de seguridad implementadas",
+        "Medidías de seguridad implementadías",
         "Compartición de datos con terceros",
         "Cumplimiento GDPR y normativas mexicanas",
       ],
@@ -305,7 +305,7 @@ const Legal: FC = () => {
                       <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Cooperación con autoridades:</strong>{" "}
-                        Colaboración directa con fiscalías especializadas
+                        Colaboración directa con fiscalías especializadías
                       </span>
                     </li>
                   </ul>
@@ -326,7 +326,7 @@ const Legal: FC = () => {
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
               Accede a toda nuestra documentación legal, términos y políticas
-              actualizadas
+              actualizadías
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -519,3 +519,4 @@ const Legal: FC = () => {
 };
 
 export default Legal;
+

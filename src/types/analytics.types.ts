@@ -16,7 +16,7 @@ export interface AnalyticsProperties {
   session_id?: string;
   page_path?: string;
   page_title?: string;
-  [key: string]: unknown; // Para propiedades adicionales desconocidas
+  [key: string]: unknown; // Para propiedades adicionales desconocidías
 }
 
 /**
@@ -28,7 +28,7 @@ export interface AnalyticsItem {
   item_category?: string;
   price?: number;
   quantity?: number;
-  [key: string]: unknown; // Para propiedades adicionales desconocidas
+  [key: string]: unknown; // Para propiedades adicionales desconocidías
 }
 
 /**
@@ -39,3 +39,4 @@ export interface BrowserPerformanceMemory {
   totalJSHeapSize?: number;
   jsHeapSizeLimit?: number;
 }
+

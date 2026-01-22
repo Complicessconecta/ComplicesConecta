@@ -197,7 +197,7 @@ const About = () => {
                 <div className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors">
                   <Eye className="h-8 w-8 text-fuchsia-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">
-                    Galerías NFT-Verificadas
+                    Galerías NFT-Verificadías
                   </h4>
                   <p className="text-gray-100 text-sm font-medium">
                     Perfiles y galerías como NFTs mintados con GTK tokens
@@ -382,3 +382,4 @@ const About = () => {
 };
 
 export default About;
+

@@ -272,7 +272,7 @@ class ReportManagementService {
   }
 
   /**
-   * Obtener leyes relacionadas
+   * Obtener leyes relacionadías
    */
   private getRelatedLaws(type: ReportType): string[] {
     const laws: Record<ReportType, string[]> = {
@@ -555,3 +555,4 @@ class ReportManagementService {
 }
 
 export const reportManagementService = ReportManagementService.getInstance();
+

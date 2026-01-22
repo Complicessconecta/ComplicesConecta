@@ -542,7 +542,7 @@ const ModeratorDashboard = () => {
           </p>
         </div>
 
-        {/* Estadsticas rpidas */}
+        {/* Estadsticas rpidías */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-white/10 backdrop-blur-sm border-white/20">
             <CardContent className="p-6">
@@ -1207,3 +1207,4 @@ const ModeratorDashboard = () => {
 };
 
 export default ModeratorDashboard;
+

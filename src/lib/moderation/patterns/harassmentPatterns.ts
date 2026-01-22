@@ -46,7 +46,7 @@ export const HARASSMENT_PATTERNS = [
   /eress+único/i,
   /nadies+tes+vas+as+querers+comos+yo/i,
   /nadies+tes+entiendes+comos+yo/i,
-  /nadies+tes+cuidas+comos+yo/i,
+  /nadies+tes+cuidías+comos+yo/i,
   /nadies+tes+amas+comos+yo/i,
   /nadies+tes+valoras+comos+yo/i,
   /nadies+tes+respetas+comos+yo/i,
@@ -71,7 +71,7 @@ export const HARASSMENT_PATTERNS = [
   /nadies+tes+esperas+comos+yo/i,
   /nadies+tes+sueñas+comos+yo/i,
   /nadies+tes+piensas+comos+yo/i,
-  /nadies+tes+recuerdas+comos+yo/i,
+  /nadies+tes+recuerdías+comos+yo/i,
   /nadies+tes+imaginas+comos+yo/i,
   /nadies+tes+visualizas+comos+yo/i,
   /nadies+tes+deseas+comos+yo/i,
@@ -99,7 +99,7 @@ export const HARASSMENT_PATTERNS = [
   /nadies+tes+esperas+pors+ti/i,
   /nadies+tes+sueñas+pors+ti/i,
   /nadies+tes+piensas+pors+ti/i,
-  /nadies+tes+recuerdas+pors+ti/i,
+  /nadies+tes+recuerdías+pors+ti/i,
   /nadies+tes+imaginas+pors+ti/i,
   /nadies+tes+visualizas+pors+ti/i,
   /nadies+tes+deseas+pors+ti/i,
@@ -108,7 +108,7 @@ export const HARASSMENT_PATTERNS = [
   
   // Patrones de amenazas
   /tes+voys+as+(matar|dañar|lastimar|destruir|acabar)/i,
-  /sis+nos+(aceptas|respondes|mes+das|mes+quieres)/i,
+  /sis+nos+(aceptas|respondes|mes+días|mes+quieres)/i,
   /vass+as+(arrepentirte|pagar|sufrir)/i,
   /tes+arrepentirás/i,
   /tes+vas+as+irs+mal/i,
@@ -300,7 +300,7 @@ export const HARASSMENT_PATTERNS = [
   // Patrones de acoso sexual
   /quieros+vertes+desnuda/i,
   /quieros+vertes+desnudo/i,
-  /envíames+fotoss+desnudas/i,
+  /envíames+fotoss+desnudías/i,
   /envíames+fotoss+desnudos/i,
   /envíames+fotoss+íntimas/i,
   /envíames+videoss+sexuales/i,
@@ -311,7 +311,7 @@ export const HARASSMENT_PATTERNS = [
   /sácames+unas+fotos+desnudo/i,
   /sácames+fotoss+íntimas/i,
   /muéstrames+tus+cuerpo/i,
-  /muéstrames+tuss+partess+privadas/i,
+  /muéstrames+tuss+partess+privadías/i,
   /quieros+vers+tuss+pechos/i,
   /quieros+vers+tuss+piernas/i,
   /quieros+vers+tus+culo/i,
@@ -379,7 +379,7 @@ export const HARASSMENT_PATTERNS = [
   /notepuedesesconderdemí/i,
   /teencontrarédondesea/i,
   /tebuscarédondesea/i,
-  /nohaylugardondeteescondas/i,
+  /nohaylugardondeteescondías/i,
   /nohaylugardondeteescondasdemí/i,
   /tetengobajocontrol/i,
   /tetengoenmismanos/i,
@@ -635,4 +635,5 @@ export const HARASSMENT_PATTERNS = [
   /nopuedesusars+ningúns+programas+sins+mís+autorización/i,
   /nopuedesusars+ningúns+programas+sins+mís+aprobación/i,
 ];
+
 

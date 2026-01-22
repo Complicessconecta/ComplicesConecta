@@ -88,7 +88,7 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
   ];
 
   const bios = [
-    "Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones auténticas y experiencias compartidas.",
+    "Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones auténticas y experiencias compartidías.",
     "Pareja liberal en busca de otras parejas afines para intercambios. Discreción y comunicación abierta son clave.",
     "Nuevo en el lifestyle swinger, pero con muchas ganas de conocer gente interesante y vivir nuevas experiencias.",
     "Experiencia en el lifestyle, buscando parejas y singles para momentos únicos. Siempre con respeto mutuo.",
@@ -182,7 +182,7 @@ export const demoProfiles = [
         minted_at: "2025-06-15T10:30:00Z",
         images_count: 12,
         description:
-          "Galería NFT verificada de experiencias compartidas en el lifestyle",
+          "Galería NFT verificada de experiencias compartidías en el lifestyle",
       },
     ],
   },
@@ -283,17 +283,17 @@ export const demoProfiles = [
         minted_at: "2025-08-10T16:45:00Z",
         images_count: 20,
         description:
-          "Galería NFT verificada de encuentros y experiencias compartidas",
+          "Galería NFT verificada de encuentros y experiencias compartidías",
       },
       {
         id: "nft-demo-couple-2",
-        gallery_name: "Fiestas Privadas",
+        gallery_name: "Fiestas Privadías",
         is_verified: true,
         nft_network: "polygon",
         nft_token_id: "#22222",
         minted_at: "2025-09-05T11:20:00Z",
         images_count: 15,
-        description: "Galería NFT de fiestas privadas y eventos exclusivos",
+        description: "Galería NFT de fiestas privadías y eventos exclusivos",
       },
     ],
   },
@@ -451,3 +451,4 @@ export const demoMatches = [
     status: "pending",
   },
 ];
+

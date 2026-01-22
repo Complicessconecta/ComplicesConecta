@@ -44,7 +44,7 @@ const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
   // APIs de perfil y matching
   "/api/profiles/search": {
     windowMs: 60 * 1000, // 1 minuto
-    maxRequests: 30, // 30 búsquedas por minuto
+    maxRequests: 30, // 30 búsquedías por minuto
     skipSuccessfulRequests: false,
   },
 
@@ -86,7 +86,7 @@ class RateLimiter {
   private cleanupInterval: NodeJS.Timeout;
 
   constructor() {
-    // Limpiar entradas expiradas cada 5 minutos
+    // Limpiar entradías expiradías cada 5 minutos
     this.cleanupInterval = setInterval(
       () => {
         this.cleanup();
@@ -322,3 +322,4 @@ export const useRateLimitInfo = (endpoint: string) => {
 
 export { rateLimiter, RATE_LIMIT_CONFIGS };
 export default RateLimiter;
+

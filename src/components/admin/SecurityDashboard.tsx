@@ -317,7 +317,7 @@ export const SecurityDashboard: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Ban className="mr-2 h-5 w-5" />
-                Amenazas Detectadas
+                Amenazas Detectadías
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -519,3 +519,4 @@ export const SecurityDashboard: React.FC = () => {
     </div>
   );
 };
+

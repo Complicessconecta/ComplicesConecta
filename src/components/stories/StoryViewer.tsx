@@ -411,7 +411,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
           {isDemoMode && (
             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-2">
               <p className="text-yellow-200 text-xs text-center">
-                📱 Modo Demo: Las interacciones son simuladas
+                📱 Modo Demo: Las interacciones son simuladías
               </p>
             </div>
           )}
@@ -420,3 +420,4 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
     </div>
   );
 };
+

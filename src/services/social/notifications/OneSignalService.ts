@@ -255,7 +255,7 @@ class OneSignalService {
   }
 
   /**
-   * Verifica si las notificaciones están habilitadas
+   * Verifica si las notificaciones están habilitadías
    */
   async isSubscribed(): Promise<boolean> {
     try {
@@ -284,3 +284,4 @@ declare global {
 }
 
 export const oneSignalService = OneSignalService.getInstance();
+

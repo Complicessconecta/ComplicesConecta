@@ -153,7 +153,7 @@ export function ImageGallery({
         </div>
       )}
 
-      {/* Imágenes privadas */}
+      {/* Imágenes privadías */}
       {privateImages.length > 0 && (
         <div>
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -196,7 +196,7 @@ export function ImageGallery({
             <div>
               <h4 className="font-semibold">Galería Privada</h4>
               <p className="text-sm text-muted-foreground">
-                Este perfil tiene imágenes privadas. Solicita acceso para
+                Este perfil tiene imágenes privadías. Solicita acceso para
                 verlas.
               </p>
             </div>
@@ -374,3 +374,4 @@ function ImageCard({
     </Card>
   );
 }
+

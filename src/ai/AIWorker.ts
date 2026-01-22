@@ -247,9 +247,10 @@ export class LocalLegalAIWorker {
     } catch (error) {
       logger.error("Error generando respuesta con WebLLM:", { error: String(error) });
       return (
-        "Soy el auditor legal de Cómplices. Puedo explicarte por qué ciertas acciones (staking, compra de NFTs de pareja, desbloqueo de galería) están bloqueadas según tu contrato y el estado de disputas. " +
+        "Soy el auditor legal de Cómplices. Puedo explicarte por qué ciertas acciones (staking, compra de NFTs de pareja, desbloqueo de galería) están bloqueadías según tu contrato y el estado de disputas. " +
         'Pregúntame, por ejemplo: "¿Por qué mis activos están congelados?" o "Qué acepté en los 5 puntos de consentimiento?".'
       );
     }
   }
 }
+

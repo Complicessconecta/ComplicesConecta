@@ -348,7 +348,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
                     : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200"
                 }`}
               >
-                {cat === "all" && "Todas"}
+                {cat === "all" && "Todías"}
                 {cat === "social" && "Social"}
                 {cat === "activity" && "Actividad"}
                 {cat === "milestone" && "Hitos"}
@@ -464,3 +464,4 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
     </div>
   );
 };
+

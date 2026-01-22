@@ -35,7 +35,7 @@ const Support = () => {
       icon: Shield,
       questions: [
         {
-          q: "¿Qué medidas de seguridad tienen implementadas?",
+          q: "¿Qué medidías de seguridad tienen implementadías?",
           a: "Utilizamos verificación KYC, tecnología blockchain, cifrado end-to-end para mensajes y moderación 24/7 para garantizar un ambiente seguro.",
         },
         {
@@ -44,7 +44,7 @@ const Support = () => {
         },
         {
           q: "¿Mis datos personales están protegidos?",
-          a: "Absolutamente. Cumplimos con todas las regulaciones de protección de datos y nunca compartimos información personal sin tu consentimiento.",
+          a: "Absolutamente. Cumplimos con todías las regulaciones de protección de datos y nunca compartimos información personal sin tu consentimiento.",
         },
       ],
     },
@@ -62,7 +62,7 @@ const Support = () => {
         },
         {
           q: "¿Qué funciones premium están disponibles?",
-          a: "Con CMPX puedes acceder a Super Like (10 CMPX), Boost de Perfil (50 CMPX), Regalos Virtuales (50-500 CMPX), Video Llamadas (75-200 CMPX), Eventos VIP (200-1000 CMPX), Galerías NFT (100-1000 CMPX), Chat Premium (100 CMPX/mes), y más. Ver guía completa en /tokens-info.",
+          a: "Con CMPX puedes acceder a Super Like (10 CMPX), Boost de Perfil (50 CMPX), Regalos Virtuales (50-500 CMPX), Video Llamadías (75-200 CMPX), Eventos VIP (200-1000 CMPX), Galerías NFT (100-1000 CMPX), Chat Premium (100 CMPX/mes), y más. Ver guía completa en /tokens-info.",
         },
       ],
     },
@@ -120,7 +120,7 @@ const Support = () => {
             ¿En qué podemos ayudarte?
           </h2>
           <p className="text-xl text-white font-medium max-w-2xl mx-auto mb-8">
-            Encuentra respuestas rápidas a las preguntas más frecuentes o
+            Encuentra respuestas rápidías a las preguntas más frecuentes o
             contáctanos directamente
           </p>
 
@@ -322,3 +322,4 @@ const Support = () => {
 };
 
 export default Support;
+

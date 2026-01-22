@@ -127,7 +127,7 @@ export const PricingPlans = () => {
           <h2 className="text-2xl font-bold">Fase Beta - Acceso Gratuito</h2>
         </div>
         <p className="text-white/90 mb-4">
-          Durante la Beta, todas las funciones están disponibles gratuitamente.
+          Durante la Beta, todías las funciones están disponibles gratuitamente.
           Apóyanos para acelerar el desarrollo y recibir recompensas especiales.
         </p>
         <Button
@@ -240,3 +240,4 @@ export const PricingPlans = () => {
     </div>
   );
 };
+

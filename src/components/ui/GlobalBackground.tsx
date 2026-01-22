@@ -74,7 +74,7 @@ export const GlobalBackground: FC<{
         setEngineReady(true);
       } catch (error) {
         logger.error("Error initializing particles engine", { error });
-        // Fallback: mostrar partículas de todas formas
+        // Fallback: mostrar partículas de todías formas
         setEngineReady(true);
       }
     };
@@ -305,3 +305,4 @@ export const GlobalBackground: FC<{
 };
 
 export default GlobalBackground;
+

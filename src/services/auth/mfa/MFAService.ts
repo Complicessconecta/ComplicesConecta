@@ -281,7 +281,7 @@ export class MFAService {
   }
 
   /**
-   * Limpiar sesiones expiradas
+   * Limpiar sesiones expiradías
    */
   cleanup(): void {
     const now = new Date();
@@ -325,3 +325,4 @@ setInterval(
   },
   5 * 60 * 1000,
 );
+

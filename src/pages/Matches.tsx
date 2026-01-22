@@ -35,7 +35,7 @@ const Matches = () => {
       image:
         "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=600&fit=crop&crop=face",
       compatibility: 98,
-      mutualInterests: ["Fiestas Privadas", "Intercambio", "Eventos VIP"],
+      mutualInterests: ["Fiestas Privadías", "Intercambio", "Eventos VIP"],
       distance: 1.2,
       matchedAt: "Hace 2 horas",
       hasUnreadMessage: true,
@@ -64,10 +64,10 @@ const Matches = () => {
       mutualInterests: [
         "Intercambio Suave",
         "Clubs Exclusivos",
-        "Parejas Verificadas",
+        "Parejas Verificadías",
       ],
       distance: 5.8,
-      matchedAt: "Hace 3 das",
+      matchedAt: "Hace 3 días",
       hasUnreadMessage: false,
       status: "viewed",
     },
@@ -110,7 +110,7 @@ const Matches = () => {
         "Eventos Exclusivos",
       ],
       distance: 6.8,
-      matchedAt: "Hace 2 das",
+      matchedAt: "Hace 2 días",
       hasUnreadMessage: false,
       status: "viewed",
     },
@@ -431,3 +431,4 @@ const MatchCard = ({
 };
 
 export default Matches;
+

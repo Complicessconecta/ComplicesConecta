@@ -128,7 +128,7 @@ const AdminModerators = () => {
 
       if (error) throw error;
       setRequests(data || []);
-      logger.info("? Solicitudes cargadas:", { count: data?.length || 0 });
+      logger.info("? Solicitudes cargadías:", { count: data?.length || 0 });
     } catch (error: any) {
       logger.error("? Error al cargar solicitudes:", { error: error.message });
       toast({
@@ -692,3 +692,4 @@ const AdminModerators = () => {
 };
 
 export default AdminModerators;
+

@@ -126,7 +126,7 @@ export default function TokensTerms() {
               <div className="space-y-3">
                 <h4 className="font-semibold text-white">Funciones Premium:</h4>
                 <p className="text-sm">
-                  Características avanzadas de la plataforma que requieren
+                  Características avanzadías de la plataforma que requieren
                   tokens CMPX para su activación durante la fase beta.
                 </p>
               </div>
@@ -222,7 +222,7 @@ export default function TokensTerms() {
                   <li>Un solo código de referido por usuario nuevo</li>
                   <li>No se permiten auto-referidos ni cuentas múltiples</li>
                   <li>
-                    Funciones premium limitadas a disponibilidad de tokens
+                    Funciones premium limitadías a disponibilidad de tokens
                   </li>
                 </ul>
               </div>
@@ -281,7 +281,7 @@ export default function TokensTerms() {
                   </p>
                   <ul className="list-disc list-inside space-y-1 text-sm mt-2 ml-4 text-red-200">
                     <li>
-                      Pérdidas financieras derivadas del uso de tokens CMPX
+                      Pérdidías financieras derivadías del uso de tokens CMPX
                     </li>
                     <li>
                       Interrupciones temporales del servicio durante
@@ -289,7 +289,7 @@ export default function TokensTerms() {
                     </li>
                     <li>Cambios en el valor o utilidad de los tokens</li>
                     <li>
-                      Decisiones de inversión basadas en la posesión de tokens
+                      Decisiones de inversión basadías en la posesión de tokens
                     </li>
                     <li>Problemas técnicos fuera de nuestro control</li>
                   </ul>
@@ -311,7 +311,7 @@ export default function TokensTerms() {
             <div className="space-y-4">
               <div>
                 <h4 className="font-semibold text-white mb-2">
-                  Conductas Prohibidas:
+                  Conductas Prohibidías:
                 </h4>
                 <ul className="list-disc list-inside space-y-1 text-sm ml-4">
                   <li>
@@ -488,3 +488,4 @@ export default function TokensTerms() {
     </div>
   );
 }
+

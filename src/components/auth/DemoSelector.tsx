@@ -55,7 +55,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
           : import.meta.env.VITE_DEMO_PASSWORD_SINGLE_OUTLOOK_ES;
 
       if (!demoPassword) {
-        throw new Error("Credenciales demo no configuradas");
+        throw new Error("Credenciales demo no configuradías");
       }
 
       // Configurar credenciales demo según el tipo
@@ -142,7 +142,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
             <p className="text-white/90 text-sm leading-relaxed">
               <strong>💡 Modo Demo:</strong> Explora ComplicesConecta sin crear
               una cuenta. Puedes navegar por la aplicación, ver perfiles de
-              ejemplo y probar todas las funcionalidades.
+              ejemplo y probar todías las funcionalidades.
             </p>
           </div>
 
@@ -270,3 +270,4 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
 };
 
 export default DemoSelector;
+

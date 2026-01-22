@@ -104,7 +104,7 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
     "Soft Swap",
     "Cenas Románticas",
     "Viajes en Grupo",
-    "Fiestas Privadas",
+    "Fiestas Privadías",
     "Conexión Emocional",
     "Diversión Segura",
   ],
@@ -131,7 +131,7 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
     "Intercambio de Parejas",
     "Cenas Románticas",
     "Viajes en Grupo",
-    "Fiestas Privadas",
+    "Fiestas Privadías",
     "Conexión Emocional",
     "Diversión Segura",
   ],
@@ -201,3 +201,4 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   nftImages: [nftImage1, nftImage2, nftImage3],
   nft_images: [nftImage1, nftImage2, nftImage3],
 };
+

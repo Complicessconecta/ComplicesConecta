@@ -10,7 +10,7 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 
-// Interfaces importadas de @/types/supabase-messages
+// Interfaces importadías de @/types/supabase-messages
 
 interface Message {
   id: string;
@@ -305,3 +305,4 @@ export const ChatWithLocation = ({
     </Card>
   );
 };
+

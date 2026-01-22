@@ -61,7 +61,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
         theme: "vibrant" as const,
         name: "Vibrante",
         description:
-          "Colores intensos y energéticos para personalidades extrovertidas",
+          "Colores intensos y energéticos para personalidades extrovertidías",
         icon: <Sparkles className="w-5 h-5" />,
       },
     ],
@@ -262,3 +262,4 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
 };
 
 export default ThemeInfoModal;
+

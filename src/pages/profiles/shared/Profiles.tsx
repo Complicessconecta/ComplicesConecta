@@ -50,7 +50,7 @@ const Profiles: React.FC = () => {
   const [userType, setUserType] = useState<"demo" | "real" | null>(null);
   const profilesPerPage = 9;
 
-  // Datos de ejemplo con coordenadas para búsqueda por distancia
+  // Datos de ejemplo con coordenadías para búsqueda por distancia
   const mockProfiles: Profile[] = [
     {
       id: "1",
@@ -137,7 +137,7 @@ const Profiles: React.FC = () => {
       name: "Laura",
       age: 29,
       location: "Tijuana",
-      bio: "Bailarina profesional que organiza eventos privados para parejas aventureras. Discreta y respetuosa, creo experiencias únicas en el ambiente swinger. Busco conexiones maduras basadas en el respeto mutuo y la discreción.",
+      bio: "Bailarina profesional que organiza eventos privados para parejas aventureras. Discreta y respetuosa, creo experiencias únicas en el ambiente swinger. Busco conexiones maduras basadías en el respeto mutuo y la discreción.",
       images: [
         "https://images.unsplash.com/photo-1488716820095-cbe80883c496?w=400&h=600&fit=crop&crop=face",
       ],
@@ -177,7 +177,7 @@ const Profiles: React.FC = () => {
       name: "Carmen",
       age: 31,
       location: "Mérida",
-      bio: "Profesional discreta con amplia experiencia en el lifestyle alternativo. Busco parejas maduras para eventos exclusivos y conexiones auténticas. Valoro la discreción, la comunicación abierta y el respeto mutuo en todas las interacciones.",
+      bio: "Profesional discreta con amplia experiencia en el lifestyle alternativo. Busco parejas maduras para eventos exclusivos y conexiones auténticas. Valoro la discreción, la comunicación abierta y el respeto mutuo en todías las interacciones.",
       images: [
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
       ],
@@ -197,7 +197,7 @@ const Profiles: React.FC = () => {
       name: "Pablo",
       age: 33,
       location: "León",
-      bio: "Emprendedor discreto que organiza eventos privados para parejas aventureras en el ambiente swinger. Profesional y respetuoso, creo experiencias únicas basadas en la discreción y el respeto mutuo. Busco conexiones maduras y auténticas.",
+      bio: "Emprendedor discreto que organiza eventos privados para parejas aventureras en el ambiente swinger. Profesional y respetuoso, creo experiencias únicas basadías en la discreción y el respeto mutuo. Busco conexiones maduras y auténticas.",
       images: [
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
       ],
@@ -217,7 +217,7 @@ const Profiles: React.FC = () => {
       name: "Isabella",
       age: 26,
       location: "Playa del Carmen",
-      bio: "Instructora de yoga especializada en wellness para parejas en el lifestyle swinger. Discreta y profesional, busco conexiones auténticas basadas en el respeto mutuo y la discreción. Experiencia en eventos privados y sesiones íntimas.",
+      bio: "Instructora de yoga especializada en wellness para parejas en el lifestyle swinger. Discreta y profesional, busco conexiones auténticas basadías en el respeto mutuo y la discreción. Experiencia en eventos privados y sesiones íntimas.",
       images: [
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
       ],
@@ -284,7 +284,7 @@ const Profiles: React.FC = () => {
             : ["Swinger", "Discreción"],
           isOnline: Math.random() > 0.5, // Simular estado online
           verified: p.is_verified || false,
-          coordinates: { lat: 19.4326, lng: -99.1332 }, // Coordenadas por defecto
+          coordinates: { lat: 19.4326, lng: -99.1332 }, // Coordenadías por defecto
         })) || [];
 
       logger.info("✅ Perfiles reales cargados:", {
@@ -350,7 +350,7 @@ const Profiles: React.FC = () => {
     initializeProfiles();
   }, [isAuthenticated, user, profile, navigate]);
 
-  // Función para calcular distancia entre coordenadas
+  // Función para calcular distancia entre coordenadías
   const calculateDistance = (
     lat1: number,
     lng1: number,
@@ -382,10 +382,10 @@ const Profiles: React.FC = () => {
     return intersection.size / union.size;
   };
 
-  // Sugerencias de IA actualizadas para tema swinger
+  // Sugerencias de IA actualizadías para tema swinger
   const _generateAiSuggestions = (query: string) => {
     const suggestions = [
-      "Parejas swinger experimentadas",
+      "Parejas swinger experimentadías",
       "Eventos privados discretos",
       "Intercambio consensual",
       "Lifestyle alternativo",
@@ -424,7 +424,7 @@ const Profiles: React.FC = () => {
 
       // Si es usuario real, usar su ubicación del perfil
       if (userType === "real" && profile?.location && typeof profile.location === 'string') {
-        // Mapear ubicaciones conocidas a coordenadas
+        // Mapear ubicaciones conocidías a coordenadías
         const locationMap: { [key: string]: { lat: number; lng: number } } = {
           "Ciudad de México": { lat: 19.4326, lng: -99.1332 },
           Guadalajara: { lat: 20.6597, lng: -103.3496 },
@@ -457,7 +457,7 @@ const Profiles: React.FC = () => {
         );
         score += similarity * 50; // 50% del score por similitud
 
-        // Calcular distancia si tiene coordenadas
+        // Calcular distancia si tiene coordenadías
         if (profile.coordinates) {
           const distance = calculateDistance(
             userLocation.lat,
@@ -815,7 +815,7 @@ const Profiles: React.FC = () => {
                           handleFilterChange(filters);
                         }}
                       >
-                        <option value="all">Todas las ubicaciones</option>
+                        <option value="all">Todías las ubicaciones</option>
                         <option value="Ciudad de México">
                           Ciudad de México
                         </option>
@@ -966,3 +966,4 @@ const Profiles: React.FC = () => {
 };
 
 export default Profiles;
+

@@ -1,5 +1,5 @@
 /**
- * AI Services - Tipos y Interfaces Compartidas
+ * AI Services - Tipos y Interfaces Compartidías
  *
  * Archivo creado para romper dependencia circular entre:
  * - AILayerService.ts
@@ -67,3 +67,4 @@ export interface ProfileWithInterests {
   longitude?: number | null;
   [key: string]: any;
 }
+

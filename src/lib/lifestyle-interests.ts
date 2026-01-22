@@ -14,10 +14,10 @@ export const SAFE_INTERESTS = [
   "Experiencias Nuevas",
   "Conexiones Auténticas",
   "Diversión Adulta",
-  "Aventuras Compartidas",
+  "Aventuras Compartidías",
 
   // Niveles de experiencia
-  "Parejas Experimentadas",
+  "Parejas Experimentadías",
   "Principiantes Curiosos",
   "Explorando el Lifestyle",
 
@@ -28,7 +28,7 @@ export const SAFE_INTERESTS = [
   "Lifestyle México",
   "Eventos Exclusivos",
   "Clubs Swinger México",
-  "Fiestas Privadas CDMX",
+  "Fiestas Privadías CDMX",
   "Encuentros Guadalajara",
   "Eventos Monterrey",
 
@@ -122,14 +122,14 @@ export const interestCategories = {
   ],
   experimentado: [
     "Intercambio de Parejas",
-    "Parejas Experimentadas",
+    "Parejas Experimentadías",
     "Clubs Swinger México",
     "Eventos Exclusivos",
     "Sin Prejuicios",
-    "Fiestas Privadas CDMX",
+    "Fiestas Privadías CDMX",
   ],
   terceras_personas: [
-    "Aventuras Compartidas",
+    "Aventuras Compartidías",
     "Reuniones Sociales",
     "Espacios Privados",
     "Cenas Temáticas",
@@ -188,3 +188,4 @@ export function getAutoInterests(
   const combined = [...new Set([...baseInterests, ...additionalInterests])];
   return combined.slice(0, 8);
 }
+

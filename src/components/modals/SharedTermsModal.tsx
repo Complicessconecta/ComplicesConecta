@@ -103,7 +103,7 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
                   <h4 className="font-medium">1. Aceptación de Términos</h4>
                   <p>
                     Al registrarte en ComplicesConecta, aceptas cumplir con
-                    estos términos de uso y todas las políticas aplicables.
+                    estos términos de uso y todías las políticas aplicables.
                   </p>
 
                   <h4 className="font-medium">2. Elegibilidad</h4>
@@ -122,7 +122,7 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
                   <h4 className="font-medium">4. Contenido del Perfil</h4>
                   <p>
                     Toda la información de tu perfil debe ser veraz y
-                    actualizada. Las fotos deben ser tuyas y apropiadas.
+                    actualizada. Las fotos deben ser tuyas y apropiadías.
                   </p>
 
                   <h4 className="font-medium">5. Privacidad y Seguridad</h4>
@@ -183,8 +183,8 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
                     según tu configuración
                   </p>
                   <p>
-                    • <strong>Seguridad:</strong> Encriptación y medidas de
-                    protección implementadas
+                    • <strong>Seguridad:</strong> Encriptación y medidías de
+                    protección implementadías
                   </p>
                   <p>
                     • <strong>Tus derechos:</strong> Acceso, corrección y
@@ -217,7 +217,7 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
 
                   <h4 className="font-medium">4. Seguridad de Datos</h4>
                   <p>
-                    Implementamos medidas de seguridad técnicas y
+                    Implementamos medidías de seguridad técnicas y
                     organizacionales para proteger tu información personal.
                   </p>
 
@@ -275,3 +275,4 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
     </Dialog>
   );
 };
+

@@ -1,7 +1,7 @@
 /**
  * Test E2E - Chat en Tiempo Real Completo
  * Fecha: 15 Noviembre 2025
- * Propósito: Validar TODAS las funcionalidades del chat en tiempo real
+ * Propósito: Validar TOdías las funcionalidades del chat en tiempo real
  * Cobertura: 40 tests - Mensajes, medios, estados, moderación, chatbot IA
  *
  * SEMANA 1 del Plan Completo (455 tests)
@@ -617,3 +617,4 @@ test.describe("Chat - Chat Grupal", () => {
 });
 
 // TOTAL: 40 tests implementados para Chat en Tiempo Real ✅
+

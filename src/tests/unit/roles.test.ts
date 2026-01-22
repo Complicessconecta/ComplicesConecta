@@ -233,13 +233,13 @@ describe("Roles y Permisos", () => {
       expect(checkPermission("demo", "view_demo_profiles")).toBe(true);
       expect(checkPermission("demo", "limited_interactions")).toBe(true);
 
-      // Acciones no permitidas para demo
+      // Acciones no permitidías para demo
       expect(checkPermission("demo", "send_invitations")).toBe(false);
       expect(checkPermission("demo", "upload_images")).toBe(false);
       expect(checkPermission("demo", "access_admin_panel")).toBe(false);
     });
 
-    it("debe denegar acciones no autorizadas", () => {
+    it("debe denegar acciones no autorizadías", () => {
       expect(checkPermission("user", "access_admin_panel")).toBe(false);
       expect(checkPermission("user", "delete_profiles")).toBe(false);
       expect(checkPermission("user", "manage_users")).toBe(false);
@@ -458,3 +458,4 @@ describe("Roles y Permisos", () => {
     });
   });
 });
+

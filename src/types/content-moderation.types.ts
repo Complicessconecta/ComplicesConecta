@@ -18,7 +18,7 @@ export interface ProfileData {
   preferences?: Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
-  [key: string]: unknown; // Para propiedades adicionales desconocidas
+  [key: string]: unknown; // Para propiedades adicionales desconocidías
 }
 
 /**
@@ -51,3 +51,4 @@ export interface MessageMetadata {
   messageType?: "private" | "public" | "group";
   [key: string]: unknown;
 }
+

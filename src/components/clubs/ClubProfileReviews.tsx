@@ -99,8 +99,8 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
             aria-label="Ordenar reseñas por"
           >
             <option value="recent">Más recientes</option>
-            <option value="highest">Mejor calificadas</option>
-            <option value="lowest">Peor calificadas</option>
+            <option value="highest">Mejor calificadías</option>
+            <option value="lowest">Peor calificadías</option>
           </select>
         </div>
 
@@ -225,3 +225,4 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
     </Card>
   );
 };
+

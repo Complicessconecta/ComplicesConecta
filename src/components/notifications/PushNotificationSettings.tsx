@@ -78,7 +78,7 @@ PushNotificationSettingsProps
           <AlertCircle className="h-5 w-5 text-yellow-600" />
           <div>
             <h3 className="text-sm font-medium text-yellow-800">
-              Notificaciones no soportadas
+              Notificaciones no soportadías
             </h3>
             <p className="text-sm text-yellow-700 mt-1">
               Tu navegador no soporta notificaciones push.
@@ -260,3 +260,4 @@ PushNotificationSettingsProps
 };
 
 export default PushNotificationSettings;
+

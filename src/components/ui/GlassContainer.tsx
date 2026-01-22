@@ -28,7 +28,7 @@ export const GlassContainer: FC<GlassContainerProps> = ({
 }) => {
   const { tier, isLow, isMid, isHigh } = useAdaptiveBackground();
 
-  // Determinar clases basadas en Tier
+  // Determinar clases basadías en Tier
   const glassClasses = useMemo(() => {
     if (isLow) {
       // LOW Tier: Fondos sólidos sin glassmorphism
@@ -169,3 +169,4 @@ export const GlassText: FC<GlassTextProps> = ({
     </div>
   );
 };
+

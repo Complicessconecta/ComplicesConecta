@@ -145,7 +145,7 @@ export const ReportsPanel: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Estadísticas rápidas - Responsive */}
+      {/* Estadísticas rápidías - Responsive */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-gray-800/50 rounded-lg p-4">
           <div className="flex items-center">
@@ -233,7 +233,7 @@ export const ReportsPanel: React.FC = () => {
           }
           className="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-pink-500"
         >
-          <option value="all">Todas las severidades</option>
+          <option value="all">Todías las severidades</option>
           <option value="low">Baja</option>
           <option value="medium">Media</option>
           <option value="high">Alta</option>
@@ -330,3 +330,4 @@ export const ReportsPanel: React.FC = () => {
     </div>
   );
 };
+

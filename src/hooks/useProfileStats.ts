@@ -79,7 +79,7 @@ export function useProfileStats(
   }, []);
 
   /**
-   * Cargar todas las estadísticas
+   * Cargar todías las estadísticas
    */
   const loadAllStats = useCallback(async () => {
     try {
@@ -223,3 +223,4 @@ export function clearProfileStatsCacheFor(cacheKey: string): void {
   statsCache.delete(`achievements-${cacheKey}`);
   logger.info("[useProfileStats] Cache cleared for:", { cacheKey });
 }
+

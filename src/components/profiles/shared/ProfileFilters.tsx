@@ -32,7 +32,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
   });
 
   const locations = [
-    "Todas",
+    "Todías",
     "Ciudad de México",
     "Guadalajara",
     "Monterrey",
@@ -139,7 +139,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
               <SelectValue placeholder="Ubicación" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todas</SelectItem>
+              <SelectItem value="all">Todías</SelectItem>
               {locations.slice(1).map((location) => (
                 <SelectItem key={location} value={location.toLowerCase()}>
                   {location}
@@ -207,3 +207,4 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
     </Card>
   );
 };
+

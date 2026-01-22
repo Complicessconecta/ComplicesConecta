@@ -39,7 +39,7 @@ export const HomeBenefitsSection = ({
       icon: Users,
       title: "Eventos Swinger Exclusivos",
       description:
-        "Accede a fiestas privadas, encuentros y eventos exclusivos para la comunidad swinger",
+        "Accede a fiestas privadías, encuentros y eventos exclusivos para la comunidad swinger",
       type: "events" as const,
       iconBg: "bg-linear-to-r from-purple-500 to-purple-600",
     },
@@ -262,3 +262,4 @@ export const HomeBenefitsSection = ({
     </>
   );
 };
+

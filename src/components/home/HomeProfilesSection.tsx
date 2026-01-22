@@ -36,13 +36,13 @@ export const HomeProfilesSection = ({
       location: "Ciudad de México",
       interests: [
         "Intercambio de Parejas",
-        "Fiestas Privadas",
+        "Fiestas Privadías",
         "Encuentros Íntimos",
       ],
       image: femaleImages[0] ?? fallbackFemaleImage, // Forzar pool women/*
       rating: 4.9,
       isOnline: true,
-      bio: "Apasionada por la naturaleza y la creatividad. Buscando a alguien con quien compartir aventuras y conversaciones profundas.",
+      bio: "Apasionada por la naturaleza y la creatividad. Buscando a alguien con quien compartir aventuras y conversaciones profundías.",
       profession: "Arquitecta",
       verified: true,
       gender: "female" as const,
@@ -90,7 +90,7 @@ export const HomeProfilesSection = ({
       location: "Puebla",
       interests: [
         "Encuentros Casuales",
-        "Fantasías Compartidas",
+        "Fantasías Compartidías",
         "Vida Nocturna Liberal",
       ],
       image: maleImages[1] ?? fallbackMaleImage, // Forzar pool men/* (diferente a Antonio)
@@ -145,3 +145,4 @@ export const HomeProfilesSection = ({
     </section>
   );
 };
+

@@ -77,7 +77,7 @@ const ClubsComingSoon = () => {
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
             Descubre clubs auténticos con check-ins geolocalizados, reseñas
-            verificadas y sistema de watermark automático
+            verificadías y sistema de watermark automático
           </p>
         </motion.div>
 
@@ -283,3 +283,4 @@ const ClubsComingSoon = () => {
 };
 
 export default ClubsComingSoon;
+

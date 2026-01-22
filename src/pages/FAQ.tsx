@@ -41,7 +41,7 @@ const FAQ = () => {
         {
           question: "¿Cómo funciona la verificación KYC?",
           answer:
-            "Utilizamos tecnologa blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
+            "Utilizamos tecnologa blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadías accedan a la plataforma.",
         },
         {
           question: "¿Qué documentos necesito para verificarme?",
@@ -63,7 +63,7 @@ const FAQ = () => {
         {
           question: "Es seguro el chat privado?",
           answer:
-            "Absolutamente. Todas las conversaciones estn encriptadas end-to-end con AES-GCM. Adems, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discrecin son nuestra mxima prioridad.",
+            "Absolutamente. Todías las conversaciones estn encriptadías end-to-end con AES-GCM. Adems, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discrecin son nuestra mxima prioridad.",
         },
         {
           question: "Cmo protegen mis datos personales?",
@@ -73,19 +73,19 @@ const FAQ = () => {
         {
           question: "Puedo controlar quin ve mi perfil?",
           answer:
-            "S, tienes control total sobre tu privacidad. Puedes configurar quin puede ver tu perfil, fotos privadas y contactarte.",
+            "S, tienes control total sobre tu privacidad. Puedes configurar quin puede ver tu perfil, fotos privadías y contactarte.",
         },
       ],
     },
     galerias: {
-      title: "Galeras Privadas",
+      title: "Galeras Privadías",
       icon: GalleryHorizontal,
       color: "text-purple-500",
       faqs: [
         {
-          question: "Como funcionan las galeras privadas?",
+          question: "Como funcionan las galeras privadías?",
           answer:
-            "Las galeras privadas te permiten compartir fotos ntimas solo con personas que hayas autorizado. Tienes control total sobre quin puede acceder. Adems, puedes crear Galeras NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificacin de tus galeras.",
+            "Las galeras privadías te permiten compartir fotos ntimas solo con personas que hayas autorizado. Tienes control total sobre quin puede acceder. Adems, puedes crear Galeras NFT-Verificadías usando tokens GTK, lo que garantiza autenticidad y verificacin de tus galeras.",
         },
         {
           question: "Como envio una invitacion de galera?",
@@ -107,17 +107,17 @@ const FAQ = () => {
         {
           question: "Como funcionan las invitaciones?",
           answer:
-            "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos.",
+            "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadías o participar en eventos exclusivos.",
         },
         {
           question: "Que tipos de invitaciones existen?",
           answer:
-            "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadas) y de chat (para conversaciones privadas).",
+            "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadías) y de chat (para conversaciones privadías).",
         },
         {
           question: "Puedo rechazar una invitacin?",
           answer:
-            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo.",
+            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadías no pueden volver a enviarte invitaciones del mismo tipo.",
         },
       ],
     },
@@ -129,12 +129,12 @@ const FAQ = () => {
         {
           question: "Como son los eventos VIP?",
           answer:
-            "Son fiestas privadas y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas ntimas y experiencias nicas para la comunidad swinger.",
+            "Son fiestas privadías y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas ntimas y experiencias nicas para la comunidad swinger.",
         },
         {
           question: "Como puedo acceder a eventos VIP?",
           answer:
-            "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias.",
+            "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadías en tu ubicación y preferencias.",
         },
         {
           question: "Los eventos son seguros y discretos?",
@@ -178,7 +178,7 @@ const FAQ = () => {
         {
           question: "Que hago si alguien me acosa?",
           answer:
-            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rpidas para proteger a nuestra comunidad.",
+            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidías rpidías para proteger a nuestra comunidad.",
         },
         {
           question: "Hay moderadores activos?",
@@ -671,3 +671,4 @@ Fecha: ${new Date().toLocaleString()}
 };
 
 export default FAQ;
+

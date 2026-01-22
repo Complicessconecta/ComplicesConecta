@@ -52,7 +52,7 @@ interface AnimationContextType {
 const defaultConfig: AnimationConfig = {
   reducedMotion: false,
   animationSpeed: "normal",
-  enableParticles: true, // ✅ ALWAYS TRUE - Partículas habilitadas por defecto
+  enableParticles: true, // ✅ ALWAYS TRUE - Partículas habilitadías por defecto
   enableBackgroundAnimations: true,
 };
 
@@ -332,3 +332,4 @@ export const useScrollAnimation = (threshold: number = 0.1) => {
 
   return { ref, isVisible };
 };
+

@@ -202,7 +202,7 @@ describe.skip("Send-Email Edge Function - Templates Externos", () => {
     const result = await response.json();
 
     expect(result.success).toBe(true);
-    console.info("📨 Variables reemplazadas correctamente en template");
+    console.info("📨 Variables reemplazadías correctamente en template");
   });
 
   it("debe manejar CORS OPTIONS request", async () => {
@@ -233,3 +233,4 @@ describe.skip("Send-Email Edge Function - Templates Externos", () => {
     console.error("❌ Error manejado correctamente: JSON malformado");
   });
 });
+

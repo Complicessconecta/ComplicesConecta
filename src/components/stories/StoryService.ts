@@ -145,7 +145,7 @@ class StoryService {
   async getStories(_userId?: number): Promise<Story[]> {
     if (this.isDemoMode()) {
       const stories = this.getDemoStories();
-      // Filtrar historias expiradas
+      // Filtrar historias expiradías
       const activeStories = stories.filter(
         (story) => new Date(story.expiresAt) > new Date(),
       );
@@ -414,3 +414,4 @@ class StoryService {
 
 export const storyService = new StoryService();
 export default StoryService;
+

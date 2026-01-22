@@ -30,7 +30,7 @@ describe("Profiles - Generación y Validación", () => {
       expect(profile.age).toBeLessThanOrEqual(65);
     });
 
-    it("debe generar perfiles únicos en múltiples llamadas", () => {
+    it("debe generar perfiles únicos en múltiples llamadías", () => {
       const profile1 = generateMockSingle();
       const profile2 = generateMockSingle();
 
@@ -91,7 +91,7 @@ describe("Profiles - Generación y Validación", () => {
       expect(Array.isArray(profile.photos)).toBe(true);
     });
 
-    it("debe tener edades válidas para ambos miembros", () => {
+    it("debe tener edades válidías para ambos miembros", () => {
       const profile = generateMockCouple();
 
       profile.ages.forEach((age) => {
@@ -271,7 +271,7 @@ describe("Profiles - Generación y Validación", () => {
   });
 
   describe("Localización Mexicana", () => {
-    it("debe usar ubicaciones mexicanas válidas", () => {
+    it("debe usar ubicaciones mexicanas válidías", () => {
       const profile = generateMockSingle();
 
       const _mexicanCities = [
@@ -328,3 +328,4 @@ describe("Profiles - Generación y Validación", () => {
     });
   });
 });
+

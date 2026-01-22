@@ -36,7 +36,7 @@ export interface ActivityMetadata {
   deviceType?: string;
   browser?: string;
   os?: string;
-  [key: string]: unknown; // Para propiedades adicionales desconocidas
+  [key: string]: unknown; // Para propiedades adicionales desconocidías
 }
 
 /**
@@ -47,7 +47,7 @@ export interface AuditEventDetails {
   resource?: string;
   resourceId?: string;
   metadata?: ActivityMetadata;
-  [key: string]: unknown; // Para propiedades adicionales desconocidas
+  [key: string]: unknown; // Para propiedades adicionales desconocidías
 }
 
 /**
@@ -64,3 +64,4 @@ export interface MappedAuditLog {
   timestamp: string;
   riskScore: number;
 }
+

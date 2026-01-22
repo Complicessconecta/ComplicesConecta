@@ -37,6 +37,7 @@ import { matchService } from "@/services/social/MatchService";
 import { tokenService } from "@/services/payments/TokenService";
 import { recordGalleryCommission } from "@/services/payments/galleryCommission";
 import { supabase } from "@/integrations/supabase/client";
+import { PrivateGallery } from "@/components/chat/PrivateGallery";
 
 export interface ChatUser {
   id: string;
@@ -150,7 +151,7 @@ const Chat = () => {
              setActiveRoomId(matchId);
           } else {
              logger.warn("No match found for chat", { partnerId: selectedChat.id });
-             setActiveRoomId(null); 
+             setActiveRoomId(null);
           }
         } catch (err) {
           logger.error("Error resolving match ID", { error: err });
@@ -180,7 +181,7 @@ const Chat = () => {
     const mapped: SimpleChatMessage[] = realtimeMessages.map((m: any) => ({
       id: String(m.id),
       sender_id: String(m.sender_id),
-      sender_name: "", 
+      sender_name: "",
       room_id: String(activeRoomId ?? ""),
       content: String(m.content ?? ""),
       created_at: String(m.created_at ?? new Date().toISOString()),
@@ -266,7 +267,7 @@ const Chat = () => {
   const { verification, isPaused, startMonitoring, stopMonitoring } =
     useConsentVerification(currentRoomId);
 
-  // Verificar si hay sesin activa (demo o produccin)
+  // Verificar si hay sesión activa (demo o produccin)
   const hasActiveSession =
     typeof isAuthenticated === "function"
       ? isAuthenticated()
@@ -451,7 +452,7 @@ const Chat = () => {
     }
   }, [chatPartnerId, location.key, selectedChat]);
 
-  // Private chats - conexiones verificadas
+  // Private chats - conexiones verificadías
   const privateChats: ChatUser[] = [
     {
       id: "1",
@@ -1044,45 +1045,20 @@ const Chat = () => {
                 </div>
               )}
 
-              {selectedChat?.roomType === "private" &&
-                (!unlockedGalleries.has(getGalleryOwnerId() ?? "") ? (
-                  <div className="p-4 border-b border-white/10 bg-white/5">
-                    <div className="flex items-center justify-between">
-                      <div className="text-white/90 text-sm font-medium">
-                        Galería privada
-                      </div>
-                      <Button
-                        disabled={galleryProcessing}
-                        onClick={() => void handleUnlockGallery()}
-                        className="bg-linear-to-r from-purple-600 to-blue-600 text-white"
-                      >
-                        {galleryProcessing
-                          ? "Procesando..."
-                          : `Desbloquear · ${galleryPrice} CMPX`}
-                      </Button>
-                    </div>
-                    <div className="mt-3 grid grid-cols-3 gap-2">
-                      <div className="h-16 rounded-lg bg-white/10 blur-sm" />
-                      <div className="h-16 rounded-lg bg-white/10 blur-sm" />
-                      <div className="h-16 rounded-lg bg-white/10 blur-sm" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-4 border-b border-white/10 bg-white/5">
-                    <div className="text-white/90 text-sm font-medium mb-2">
-                      Galería privada desbloqueada
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <img
-                        src={selectedChat.image}
-                        alt="media-1"
-                        className="h-16 w-full object-cover rounded-lg"
-                      />
-                      <div className="h-16 rounded-lg bg-white/10" />
-                      <div className="h-16 rounded-lg bg-white/10" />
-                    </div>
-                  </div>
-                ))}
+              {selectedChat?.roomType === "private" && (
+                <PrivateGallery
+                  galleryItems={[
+                    {
+                      id: "1",
+                      url: selectedChat.image,
+                      thumbnail_url: selectedChat.image,
+                      caption: "Foto privada 1",
+                    },
+                  ]}
+                  creatorId={getGalleryOwnerId() ?? ""}
+                  currentUserId={user?.id ?? ""}
+                />
+              )}
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 chat-messages scroll-container btn-animated chat-scroll-smooth">
@@ -1332,7 +1308,7 @@ const Chat = () => {
                   <div className="flex items-center text-white/90">
                     <Globe className="h-4 w-4 mr-1 text-green-300" />
                     <span className="drop-shadow-md">
-                      Salas pblicas moderadas
+                      Salas pblicas moderadías
                     </span>
                   </div>
                 </div>
@@ -1349,20 +1325,20 @@ const Chat = () => {
           scrollbar-width: thin;
           scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
         }
-        
+
         .chat-container::-webkit-scrollbar {
           width: 6px;
         }
-        
+
         .chat-container::-webkit-scrollbar-track {
           background: transparent;
         }
-        
+
         .chat-container::-webkit-scrollbar-thumb {
           background: rgba(255, 255, 255, 0.3);
           border-radius: 3px;
         }
-        
+
         .chat-container::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.5);
         }
@@ -1372,3 +1348,4 @@ const Chat = () => {
 };
 
 export default Chat;
+

@@ -9,7 +9,7 @@ const Blog = () => {
       id: 1,
       title: "Guia Completa para Conexiones Seguras en el Lifestyle - v3.8.0",
       excerpt:
-        "Aprende las mejores prcticas para conectar de manera segura y discreta en la comunidad lifestyle. Conoce las nuevas features: Verificador IA de Consentimiento, Galerias NFT-Verificadas, Matching Predictivo con Neo4j y Eventos Virtuales Sostenibles.",
+        "Aprende las mejores prcticas para conectar de manera segura y discreta en la comunidad lifestyle. Conoce las nuevas features: Verificador IA de Consentimiento, Galerias NFT-Verificadías, Matching Predictivo con Neo4j y Eventos Virtuales Sostenibles.",
       author: "Equipo ComplicesConecta",
       date: "2025-11-05",
       category: "Seguridad",
@@ -144,3 +144,4 @@ const Blog = () => {
 };
 
 export default Blog;
+

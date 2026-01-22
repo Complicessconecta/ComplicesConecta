@@ -232,7 +232,7 @@ export class PushNotificationService {
       }
 
       // TODO: Enviar subscriptionData al servidor para asociarlo con el usuario
-      logger.info("🔔 Push notifications configuradas para usuario:", {
+      logger.info("🔔 Push notifications configuradías para usuario:", {
         userId,
       });
 
@@ -325,9 +325,10 @@ export class PushNotificationService {
         notification.close();
       });
 
-      logger.info("🧹 Todas las notificaciones limpiadas");
+      logger.info("🧹 Todías las notificaciones limpiadías");
     } catch (error) {
       logger.error("Error limpiando notificaciones:", { error: String(error) });
     }
   }
 }
+

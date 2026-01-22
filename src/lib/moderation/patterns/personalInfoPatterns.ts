@@ -52,7 +52,7 @@ export const PERSONAL_INFO_PATTERNS = [
   // Patrones de dirección (calle, número, colonia)
   /\b(?:calle|avenida|blvd|boulevard|av\.|c\.|col\.|colonia)\s+[A-Za-záéíóúñÁÉÍÓÚÑ\s]+\s*\d+/i,
   
-  // Patrones de coordenadas GPS
+  // Patrones de coordenadías GPS
   /\b\d{1,3}\.\d+,\s*-?\d{1,3}\.\d+\b/,
   
   // Patrones de fechas de nacimiento
@@ -222,7 +222,7 @@ export const PERSONAL_INFO_PATTERNS = [
   // Patrones de lugar de encuentro
   /\b(?:lugar|sitio|ubicación|dirección|punto de encuentro|encuentro)\s+[A-Za-záéíóúñÁÉÍÓÚÑ\s]+/i,
   
-  // Patrones de coordenadas GPS con formato
+  // Patrones de coordenadías GPS con formato
   /\b(?:lat|latitud|lng|longitud|long)\s*[:=]\s*-?\d{1,3}\.\d+,\s*-?\d{1,3}\.\d+\b/i,
   
   // Patrones de mapa
@@ -232,7 +232,7 @@ export const PERSONAL_INFO_PATTERNS = [
   /\b(?:ubicación exacta|dirección exacta|localización exacta)\s+[A-Za-záéíóúñÁÉÍÓÚÑ\s]+/i,
   
   // Patrones de geolocalización
-  /\b(?:geolocalización|gps|ubicación|localización|coordenadas)\b/i,
+  /\b(?:geolocalización|gps|ubicación|localización|coordenadías)\b/i,
   
   // Patrones de código QR
   /\b(?:qr|código qr|qrcode)\b/i,
@@ -414,3 +414,4 @@ export const PERSONAL_INFO_PATTERNS = [
   // Patrones de número de visa ordinaria con país
   /\b(?:visa ordinaria|ordinary visa)\s*[A-Z]{2}\s*[A-Z0-9]{7,12}\b/i,
 ];
+

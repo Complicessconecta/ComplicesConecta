@@ -286,7 +286,7 @@ export const ReportsManagement: React.FC = () => {
                 <SelectValue placeholder="Severidad" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas las severidades</SelectItem>
+                <SelectItem value="all">Todías las severidades</SelectItem>
                 <SelectItem value="critical">Crítica</SelectItem>
                 <SelectItem value="high">Alta</SelectItem>
                 <SelectItem value="medium">Media</SelectItem>
@@ -517,3 +517,4 @@ export const ReportsManagement: React.FC = () => {
     </div>
   );
 };
+

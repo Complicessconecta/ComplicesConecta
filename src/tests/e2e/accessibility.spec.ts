@@ -60,13 +60,13 @@ test.describe("Accessibility Tests", () => {
   });
 
   test("should have alt text for images", async ({ page }) => {
-    // Obtener todas las imágenes
+    // Obtener todías las imágenes
     const images = await page.locator("img").all();
 
     for (const image of images) {
       const altText = await image.getAttribute("alt");
 
-      // Todas las imágenes deben tener atributo alt (puede estar vacío para decorativas)
+      // Todías las imágenes deben tener atributo alt (puede estar vacío para decorativas)
       expect(altText).not.toBeNull();
     }
   });
@@ -94,7 +94,7 @@ test.describe("Accessibility Tests", () => {
       .all();
 
     for (const element of lowContrastElements) {
-      // Verificar que el elemento tiene correcciones de contraste aplicadas
+      // Verificar que el elemento tiene correcciones de contraste aplicadías
       const hasContrastFix = await element.evaluate((el) => {
         const style = window.getComputedStyle(el);
         const color = style.color;
@@ -112,7 +112,7 @@ test.describe("Accessibility Tests", () => {
     // Simular preferencia de movimiento reducido
     await page.emulateMedia({ reducedMotion: "reduce" });
 
-    // Verificar que las animaciones están deshabilitadas o reducidas
+    // Verificar que las animaciones están deshabilitadías o reducidías
     const animatedElements = await page.locator('[class*="animate-"]').all();
 
     for (const element of animatedElements) {
@@ -121,7 +121,7 @@ test.describe("Accessibility Tests", () => {
         return style.animationDuration;
       });
 
-      // Las animaciones deberían estar muy reducidas o deshabilitadas
+      // Las animaciones deberían estar muy reducidías o deshabilitadías
       expect(
         animationDuration === "0s" || animationDuration === "0.01s",
       ).toBeTruthy();
@@ -282,3 +282,4 @@ test.describe("Accessibility Tests", () => {
     expect(bodyScrollWidth).toBeLessThanOrEqual(windowInnerWidth * 1.1); // Permitir 10% de tolerancia
   });
 });
+

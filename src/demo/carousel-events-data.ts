@@ -33,9 +33,10 @@ export const demoEvents: EventSlide[] = [
     title: "Cena Sensorial",
     subtitle: "Restaurante clandestino",
     description:
-      "Maridaje a ciegas con dinámicas guiadas para parejas afines, música en vivo y códigos privados.",
+      "Maridaje a ciegas con dinámicas guiadías para parejas afines, música en vivo y códigos privados.",
     imageUrl:
       "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1000&auto=format&fit=crop&q=80",
     meta: "Reservación previa · Confidencialidad total",
   },
 ];
+

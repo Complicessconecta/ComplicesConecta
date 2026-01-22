@@ -186,7 +186,7 @@ const Investors: FC = () => {
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                       <span>
-                        Compra directa con dinero real (MXN, USD, criptomonedas)
+                        Compra directa con dinero real (MXN, USD, criptomonedías)
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -387,7 +387,7 @@ const Investors: FC = () => {
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
-                        <strong>107 tablas</strong> optimizadas para
+                        <strong>107 tablas</strong> optimizadías para
                         escalabilidad masiva
                       </span>
                     </li>
@@ -402,7 +402,7 @@ const Investors: FC = () => {
                       <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Google S2 Geosharding</strong> - Consultas
-                        50-300x más rápidas
+                        50-300x más rápidías
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -578,7 +578,7 @@ const Investors: FC = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="text-lg font-semibold text-white mb-4">
-                    Áreas Completadas ✅
+                    Áreas Completadías ✅
                   </h4>
                   <ul className="space-y-2 text-white/80">
                     {[
@@ -744,13 +744,13 @@ const Investors: FC = () => {
                   },
                   {
                     title: "Comunidad Respetuosa",
-                    desc: "Zero tolerancia a acoso. Ambiente seguro y discreto. Conexiones consensuadas y auténticas.",
+                    desc: "Zero tolerancia a acoso. Ambiente seguro y discreto. Conexiones consensuadías y auténticas.",
                     icon: <Users className="h-6 w-6" />,
                     color: "from-purple-500 to-fuchsia-600",
                   },
                   {
                     title: "Innovación Continua",
-                    desc: "Mejoras constantes basadas en tecnología de punta. Feedback de usuarios integrado al desarrollo.",
+                    desc: "Mejoras constantes basadías en tecnología de punta. Feedback de usuarios integrado al desarrollo.",
                     icon: <Zap className="h-6 w-6" />,
                     color: "from-orange-500 to-red-600",
                   },
@@ -803,7 +803,7 @@ const Investors: FC = () => {
                     points: [
                       "Mercado de apps sociales para adultos en expansión global",
                       "México: 40M+ usuarios potenciales",
-                      "Creciente demanda de plataformas seguras y verificadas",
+                      "Creciente demanda de plataformas seguras y verificadías",
                       "Mercado blockchain social: $50B+ proyectado para 2026",
                     ],
                     icon: <TrendingUp className="h-6 w-6" />,
@@ -991,3 +991,4 @@ const Investors: FC = () => {
 };
 
 export default Investors;
+

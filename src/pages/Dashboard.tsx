@@ -221,7 +221,7 @@ const DashboardCore = () => {
                 Analytics Detallados
               </h3>
               <p className="text-white/80">
-                Esta sección mostrará estadísticas avanzadas de tu perfil y
+                Esta sección mostrará estadísticas avanzadías de tu perfil y
                 actividad
               </p>
             </div>
@@ -259,3 +259,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

@@ -56,7 +56,7 @@ export const useSupabaseTheme = () => {
         setUserTheme(data.preferred_theme || "dark");
         setNavbarStyle(data.navbar_style || "solid");
 
-        logger.info("Preferencias de tema cargadas", {
+        logger.info("Preferencias de tema cargadías", {
           userId: user.id,
           theme: data.preferred_theme,
           navbarStyle: data.navbar_style,
@@ -215,3 +215,4 @@ export const useSupabaseTheme = () => {
     refreshTheme: loadThemePreferences,
   };
 };
+

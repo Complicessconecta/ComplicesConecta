@@ -97,7 +97,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                         <span className="font-semibold">¿Qué es staking?</span>
                       </div>
                       <p className="text-sm text-white/90 break-words">
-                        Es como una alcancía especial: guardas tus CMPX por 30
+                        Es como una alcancía especial: guardías tus CMPX por 30
                         días y al final recibes un{" "}
                         <strong>+10% de recompensa</strong>.
                       </p>
@@ -287,3 +287,4 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
     </AnimatePresence>
   );
 }
+

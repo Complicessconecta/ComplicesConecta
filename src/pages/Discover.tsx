@@ -88,7 +88,7 @@ export const Discover = () => {
       }) === "true";
     const isDemoUser =
       user.email === "single@outlook.es" || user.email === "pareja@outlook.es";
-    // Tambin considerar usuarios de produccin (que tienen cuenta real)
+    // también considerar usuarios de produccin (que tienen cuenta real)
     return (demoAuth && isDemoUser) || (authStatus && !isDemoUser);
   };
 
@@ -153,7 +153,7 @@ export const Discover = () => {
           if (profile.distance !== undefined) {
             distanceMatch = profile.distance <= filters.distance;
           } else {
-            // Si no tiene distancia pero tiene coordenadas, calcularla
+            // Si no tiene distancia pero tiene coordenadías, calcularla
             // Esto se maneja en loadRealProfiles, as que aqu solo verificamos la distancia ya calculada
             distanceMatch = true; // Permitir si no hay distancia disponible
           }
@@ -189,9 +189,9 @@ export const Discover = () => {
         // Filtro de distancia para parejas
         let distanceMatch = true;
         if (location && couple.location) {
-          // Calcular distancia - los perfiles de pareja pueden no tener coordenadas exactas
-          // Usar la distancia calculada previamente o permitir el match si no hay coordenadas
-          distanceMatch = true; // Por ahora permitir todos si no hay coordenadas precisas
+          // Calcular distancia - los perfiles de pareja pueden no tener coordenadías exactas
+          // Usar la distancia calculada previamente o permitir el match si no hay coordenadías
+          distanceMatch = true; // Por ahora permitir todos si no hay coordenadías precisas
         }
 
         // Los perfiles de pareja no tienen interests en el tipo actual, permitir match
@@ -277,7 +277,7 @@ export const Discover = () => {
               profile.latitude && profile.longitude
                 ? { latitude: profile.latitude, longitude: profile.longitude }
                 : null,
-            ), // Clculo de distancia implementado con coordenadas reales
+            ), // Clculo de distancia implementado con coordenadías reales
             interests: Array.isArray(profile.interests)
               ? profile.interests
               : [], // Sistema de intereses conectado con Supabase
@@ -659,7 +659,7 @@ export const Discover = () => {
                 {/* Edad */}
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-white mb-3">
-                    Edad: {filters.ageRange[0]} - {filters.ageRange[1]} aos
+                    Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
                   </label>
                   <Slider
                     value={filters.ageRange}
@@ -975,3 +975,4 @@ export const Discover = () => {
     </div>
   );
 };
+

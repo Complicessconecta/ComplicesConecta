@@ -37,7 +37,7 @@ export interface CoupleProfile {
   is_premium: boolean;
   created_at: string;
   updated_at: string;
-  // Campos adicionales para funcionalidades avanzadas
+  // Campos adicionales para funcionalidades avanzadías
   photos: string[];
   videos: string[];
   preferences: CouplePreferences;
@@ -838,3 +838,4 @@ export class AdvancedCoupleService {
 }
 
 export const advancedCoupleService = AdvancedCoupleService.getInstance();
+

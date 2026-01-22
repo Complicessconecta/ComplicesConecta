@@ -286,7 +286,7 @@ export class PerformanceMonitoringService {
   }
 
   /**
-   * Obtener métricas filtradas
+   * Obtener métricas filtradías
    */
   getMetrics(filter?: {
     category?: PerformanceMetric["category"];
@@ -556,7 +556,7 @@ export class PerformanceMonitoringService {
   }
 
   /**
-   * Persistir todas las métricas actuales en batch
+   * Persistir todías las métricas actuales en batch
    */
   async persistAllMetrics(): Promise<void> {
     try {
@@ -597,3 +597,4 @@ export class PerformanceMonitoringService {
 // =====================================================
 
 export const performanceMonitoring = PerformanceMonitoringService.getInstance();
+

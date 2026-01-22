@@ -187,7 +187,7 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 
     const message = document.createElement("div");
     message.textContent =
-      "Las capturas de pantalla están restringidas en este contenido";
+      "Las capturas de pantalla están restringidías en este contenido";
 
     warning.appendChild(title as Node);
     warning.appendChild(message as Node);
@@ -315,3 +315,4 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 };
 
 export default ProtectedMedia;
+

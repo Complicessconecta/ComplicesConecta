@@ -28,7 +28,7 @@ const TemplateDemo: React.FC = () => {
         {
           title: "Apps",
           items: [
-            { label: "Todas", icon: LayoutGrid },
+            { label: "Todías", icon: LayoutGrid },
             { label: "Actualizaciones", icon: RefreshCw, badge: 3 },
           ],
         },
@@ -93,3 +93,4 @@ const TemplateDemo: React.FC = () => {
 };
 
 export default TemplateDemo;
+

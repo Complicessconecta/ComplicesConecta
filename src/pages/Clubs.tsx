@@ -438,7 +438,7 @@ export const Clubs = () => {
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
             Descubre clubs auténticos con check-ins geolocalizados, reseñas
-            verificadas y sistema de watermark automático
+            verificadías y sistema de watermark automático
           </p>
         </motion.div>
 
@@ -554,7 +554,7 @@ export const Clubs = () => {
                     className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
                   >
                     <option value="all" className="bg-purple-900">
-                      Todas las ciudades
+                      Todías las ciudades
                     </option>
                     {cities.map((city) => (
                       <option key={city} value={city || ""} className="bg-purple-900">
@@ -1334,3 +1334,4 @@ export const Clubs = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
+

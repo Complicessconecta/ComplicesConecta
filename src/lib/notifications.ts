@@ -960,7 +960,7 @@ export class NotificationService {
         }
       }
 
-      logger.info("⏰ Procesadas notificaciones programadas:", {
+      logger.info("⏰ Procesadías notificaciones programadías:", {
         count: (data || []).length,
       });
     } catch (error) {
@@ -1116,7 +1116,7 @@ export class NotificationService {
           error: error.message,
         });
       } else {
-        logger.info("🧹 Notificaciones expiradas eliminadas");
+        logger.info("🧹 Notificaciones expiradías eliminadías");
       }
     } catch (error) {
       logger.error("Error in cleanupExpiredNotifications:", {
@@ -1127,3 +1127,4 @@ export class NotificationService {
 }
 
 export default NotificationService;
+

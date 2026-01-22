@@ -135,7 +135,7 @@ const Auth = () => {
 
       if (result && result.user) {
         toast({
-          title: "Inicio de sesin exitoso",
+          title: "Inicio de sesión exitoso",
           description: "Bienvenido de vuelta a ComplicesConecta",
         });
 
@@ -160,7 +160,7 @@ const Auth = () => {
       }
     } catch (error: any) {
       // Mejorar mensajes de error
-      let errorMessage = "Error al iniciar sesin";
+      let errorMessage = "Error al iniciar sesión";
 
       if (error?.message) {
         if (error.message.includes("Invalid API key")) {
@@ -176,7 +176,7 @@ const Auth = () => {
           errorMessage = "Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e intenta nuevamente.";
         } else if (error.message.includes("Email not confirmed")) {
           errorMessage =
-            "Por favor, confirma tu correo electrnico antes de iniciar sesin";
+            "Por favor, confirma tu correo electrnico antes de iniciar sesión";
         } else if (error.message.includes("User not found")) {
           errorMessage = "Usuario no encontrado. Verifica tu correo electrnico";
         } else {
@@ -186,7 +186,7 @@ const Auth = () => {
 
       toast({
         variant: "destructive",
-        title: "Error al iniciar sesin",
+        title: "Error al iniciar sesión",
         description: errorMessage,
       });
     } finally {
@@ -602,3 +602,4 @@ const Auth = () => {
 };
 
 export default Auth;
+

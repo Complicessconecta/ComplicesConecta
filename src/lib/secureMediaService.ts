@@ -3,7 +3,7 @@ import { logger } from "@/lib/logger";
 
 /**
  * Servicio de seguridad multimedia avanzada
- * Gestiona URLs firmadas temporales y permisos de descarga
+ * Gestiona URLs firmadías temporales y permisos de descarga
  */
 
 export interface MediaPermissions {
@@ -279,7 +279,7 @@ export class SecureMediaService {
     reason: string,
   ): Promise<boolean> {
     try {
-      // En Supabase, las URLs firmadas expiran automáticamente
+      // En Supabase, las URLs firmadías expiran automáticamente
       // Aquí podríamos implementar una blacklist temporal
       logger.info("Acceso a media revocado:", { mediaPath, reason });
       return true;
@@ -305,3 +305,4 @@ export const useSecureMedia = () => {
     revokeAccess: SecureMediaService.revokeMediaAccess,
   };
 };
+

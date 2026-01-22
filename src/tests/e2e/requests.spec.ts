@@ -49,10 +49,10 @@ test.describe("Sistema de Solicitudes", () => {
     );
   });
 
-  test("debe mostrar solicitudes enviadas", async ({ page }) => {
+  test("debe mostrar solicitudes enviadías", async ({ page }) => {
     await page.goto("/requests");
 
-    // Verificar sección de enviadas
+    // Verificar sección de enviadías
     await page.click('[data-testid="sent-tab"]');
 
     await expect(
@@ -62,10 +62,10 @@ test.describe("Sistema de Solicitudes", () => {
     await expect(page.locator('[data-testid="request-date"]')).toBeVisible();
   });
 
-  test("debe mostrar solicitudes recibidas", async ({ page }) => {
+  test("debe mostrar solicitudes recibidías", async ({ page }) => {
     await page.goto("/requests");
 
-    // Verificar sección de recibidas
+    // Verificar sección de recibidías
     await page.click('[data-testid="received-tab"]');
 
     await expect(
@@ -133,13 +133,13 @@ test.describe("Sistema de Solicitudes", () => {
     await page.click('[data-testid="filter-pending"]');
     await expect(page.locator('[data-testid="pending-request"]')).toBeVisible();
 
-    // Filtrar por aceptadas
+    // Filtrar por aceptadías
     await page.click('[data-testid="filter-accepted"]');
     await expect(
       page.locator('[data-testid="accepted-request"]'),
     ).toBeVisible();
 
-    // Filtrar por rechazadas
+    // Filtrar por rechazadías
     await page.click('[data-testid="filter-rejected"]');
     await expect(
       page.locator('[data-testid="rejected-request"]'),
@@ -163,7 +163,7 @@ test.describe("Sistema de Solicitudes", () => {
     ).toBeVisible();
   });
 
-  test("debe prevenir solicitudes duplicadas", async ({ page }) => {
+  test("debe prevenir solicitudes duplicadías", async ({ page }) => {
     await page.goto("/profiles");
 
     // Intentar enviar solicitud a perfil ya solicitado
@@ -253,3 +253,4 @@ test.describe("Sistema de Solicitudes", () => {
     );
   });
 });
+

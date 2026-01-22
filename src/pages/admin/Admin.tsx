@@ -540,7 +540,7 @@ export const Admin = () => {
           <TabsContent value="stats">
             <Card>
               <CardHeader>
-                <CardTitle>Estadsticas Detalladas</CardTitle>
+                <CardTitle>Estadsticas Detalladías</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -572,7 +572,7 @@ export const Admin = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Recompensas distribuidas:</span>
+                        <span>Recompensas distribuidías:</span>
                         <span className="font-bold">
                           {stats.rewardsDistributed.toLocaleString()}
                         </span>
@@ -739,3 +739,4 @@ export const Admin = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
+

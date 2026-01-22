@@ -88,7 +88,7 @@ const Moderators: FC = () => {
     {
       title: "Panel de Control 24/7",
       description:
-        "Dashboard completo con métricas en tiempo real y herramientas avanzadas",
+        "Dashboard completo con métricas en tiempo real y herramientas avanzadías",
       icon: <Settings className="h-8 w-8" />,
       features: [
         "Monitoreo en tiempo real",
@@ -100,7 +100,7 @@ const Moderators: FC = () => {
     {
       title: "Sistema de Timer Automático",
       description:
-        "Tracking preciso de horas trabajadas con pagos automáticos semanales",
+        "Tracking preciso de horas trabajadías con pagos automáticos semanales",
       icon: <Timer className="h-8 w-8" />,
       features: [
         "Inicio/pausa automático",
@@ -123,7 +123,7 @@ const Moderators: FC = () => {
     {
       title: "Sistema de Pagos Automático",
       description:
-        "Pagos semanales automáticos basados en revenue y horas trabajadas",
+        "Pagos semanales automáticos basados en revenue y horas trabajadías",
       icon: <DollarSign className="h-8 w-8" />,
       features: [
         "Pagos cada lunes 00:00",
@@ -171,7 +171,7 @@ const Moderators: FC = () => {
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
               Sistema profesional con jerarquía de 5 niveles, pagos automáticos
-              basados en revenue y herramientas avanzadas de moderación 24/7.
+              basados en revenue y herramientas avanzadías de moderación 24/7.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -343,7 +343,7 @@ const Moderators: FC = () => {
                         },
                         {
                           step: "3. Distribución",
-                          detail: "Según nivel y horas trabajadas",
+                          detail: "Según nivel y horas trabajadías",
                         },
                         {
                           step: "4. Pago",
@@ -398,7 +398,7 @@ const Moderators: FC = () => {
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Horas trabajadas:</span>
+                          <span>Horas trabajadías:</span>
                           <span className="font-bold text-white">
                             {paymentExample.hoursWorked}
                           </span>
@@ -437,7 +437,7 @@ const Moderators: FC = () => {
               Herramientas Profesionales
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Suite completa de herramientas avanzadas para moderación eficiente
+              Suite completa de herramientas avanzadías para moderación eficiente
               y profesional
             </p>
 
@@ -553,3 +553,4 @@ const Moderators: FC = () => {
 };
 
 export default Moderators;
+

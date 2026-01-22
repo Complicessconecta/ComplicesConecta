@@ -64,7 +64,7 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
     [id, onReact],
   );
 
-  // Componente simple integrado (sin funcionalidades avanzadas)
+  // Componente simple integrado (sin funcionalidades avanzadías)
   if (!reactions?.length && !onReact && !onReply && !isPrivate) {
     return (
       <motion.div
@@ -311,3 +311,4 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
 });
 
 export default ChatBubble;
+

@@ -109,7 +109,7 @@ function ProfileCouple() {
     !isParentalLocked &&
     (isOwnProfile || demoPrivateUnlocked || privateImageAccess === "approved");
 
-  // Función para hacer funcional el botón "Ver Fotos Privadas"
+  // Función para hacer funcional el botón "Ver Fotos Privadías"
   const handleViewPrivatePhotos = async () => {
     if (isParentalLocked) return;
 
@@ -933,7 +933,7 @@ function ProfileCouple() {
                         </Button>
                       )}
 
-                      {/* Botón para solicitar acceso a fotos privadas */}
+                      {/* Botón para solicitar acceso a fotos privadías */}
                       {privateImageAccess === "none" && (
                         <Button
                           onClick={handleViewPrivatePhotos}
@@ -941,9 +941,9 @@ function ProfileCouple() {
                         >
                           <Lock className="w-4 h-4" />
                           <span className="hidden sm:inline">
-                            Ver Fotos Privadas
+                            Ver Fotos Privadías
                           </span>
-                          <span className="sm:hidden">Privadas</span>
+                          <span className="sm:hidden">Privadías</span>
                         </Button>
                       )}
 
@@ -969,9 +969,9 @@ function ProfileCouple() {
                         >
                           <Images className="w-4 h-4" />
                           <span className="hidden sm:inline">
-                            Fotos Privadas
+                            Fotos Privadías
                           </span>
-                          <span className="sm:hidden">Privadas</span>
+                          <span className="sm:hidden">Privadías</span>
                         </Button>
                       )}
                     </div>
@@ -985,7 +985,7 @@ function ProfileCouple() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Lock className="w-4 h-4" />
-                    <span className="font-semibold">Fotos Privadas</span>
+                    <span className="font-semibold">Fotos Privadías</span>
                   </div>
                   <Button
                     onClick={() => {
@@ -1012,7 +1012,7 @@ function ProfileCouple() {
                 {privateImageAccess === "denied" && (
                   <div className="text-center py-6">
                     <p className="text-white/70 text-sm">
-                      Tu solicitud para ver las fotos privadas fue denegada.
+                      Tu solicitud para ver las fotos privadías fue denegada.
                     </p>
                   </div>
                 )}
@@ -1230,3 +1230,4 @@ function ProfileCouple() {
 }
 
 export default ProfileCouple;
+

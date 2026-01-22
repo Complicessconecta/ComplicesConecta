@@ -46,7 +46,7 @@ export const ChatInfo = () => {
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-zinc-200">
                 <p>
-                  Conversaciones intimas con verificado KYC, encriptadas punto a
+                  Conversaciones intimas con verificado KYC, encriptadías punto a
                   punto y con filtros de privacidad dinámicos.
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm">
@@ -56,7 +56,7 @@ export const ChatInfo = () => {
                   </li>
                   <li className="flex items-center gap-2">
                     <UserCheck className="h-4 w-4 text-blue-400" /> Solo
-                    conexiones aprobadas
+                    conexiones aprobadías
                   </li>
                   <li className="flex items-center gap-2">
                     <Eye className="h-4 w-4 text-purple-400" /> Control de
@@ -103,7 +103,7 @@ export const ChatInfo = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-xl">
                 <Zap className="h-6 w-6 text-amber-300" />
-                Salas destacadas
+                Salas destacadías
               </CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -178,7 +178,7 @@ export const ChatInfo = () => {
             </h2>
             <p className="mt-3 text-sm text-zinc-300">
               Crea tu perfil, verifica tu identidad y desbloquea las salas
-              privadas y matchmaking en tiempo real.
+              privadías y matchmaking en tiempo real.
             </p>
             <Button
               onClick={() => navigate("/auth")}
@@ -199,3 +199,4 @@ export const ChatInfo = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
+

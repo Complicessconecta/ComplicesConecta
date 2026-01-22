@@ -153,7 +153,7 @@ export function ImageGallery({
         toast({
           title: "Galería Desbloqueada",
           description:
-            "Ahora tienes acceso a todas las imágenes privadas de este perfil.",
+            "Ahora tienes acceso a todías las imágenes privadías de este perfil.",
         });
       } else {
         throw new Error("La transacción de tokens falló.");
@@ -215,7 +215,7 @@ export function ImageGallery({
         </div>
       )}
 
-      {/* Imágenes privadas */}
+      {/* Imágenes privadías */}
       {privateImages.length > 0 && (
         <div>
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -263,7 +263,7 @@ export function ImageGallery({
                 <h4 className="font-semibold">Galería Privada</h4>
                 <p className="text-sm text-muted-foreground">
                   Desbloquea la galería por {GALLERY_UNLOCK_COST} CMPX para ver
-                  todas las imágenes.
+                  todías las imágenes.
                 </p>
               </div>
               <Button
@@ -440,3 +440,4 @@ function ImageCard({
     </Card>
   );
 }
+

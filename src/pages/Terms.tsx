@@ -105,7 +105,7 @@ const Terms: FC = () => {
                   Mantenga siempre un trato respetuoso hacia otros usuarios.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Consentimiento:</strong> Todas
+                  <strong className="text-white">Consentimiento:</strong> Todías
                   las interacciones deben ser consensuales. No se tolerar el
                   acoso o comportamiento no deseado.
                 </p>
@@ -133,7 +133,7 @@ const Terms: FC = () => {
               <CardContent className="space-y-4">
                 <p className="text-white/80">
                   <strong className="text-white">Protección de datos:</strong>{" "}
-                  Implementamos medidas de seguridad para proteger su
+                  Implementamos medidías de seguridad para proteger su
                   información personal.
                 </p>
                 <p className="text-white/80">
@@ -215,7 +215,7 @@ const Terms: FC = () => {
                 <p className="text-white/80">
                   Nos reservamos el derecho de modificar estos trminos en
                   cualquier momento. Los cambios importantes sern notificados
-                  con al menos 30 das de anticipacin.
+                  con al menos 30 días de anticipacin.
                 </p>
                 <p className="text-white/80">
                   El uso continuado del servicio despus de las modificaciones
@@ -277,3 +277,4 @@ const Terms: FC = () => {
 };
 
 export default Terms;
+

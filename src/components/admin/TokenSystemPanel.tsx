@@ -665,7 +665,7 @@ export function TokenSystemPanel() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Transacciones completadas:</span>
+                    <span className="text-sm">Transacciones completadías:</span>
                     <div className="flex items-center gap-1">
                       <CheckCircle2 className="w-4 h-4 text-green-600" />
                       <span className="font-semibold">
@@ -689,7 +689,7 @@ export function TokenSystemPanel() {
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Transacciones fallidas:</span>
+                    <span className="text-sm">Transacciones fallidías:</span>
                     <div className="flex items-center gap-1">
                       <AlertTriangle className="w-4 h-4 text-red-600" />
                       <span className="font-semibold">
@@ -755,3 +755,4 @@ export function TokenSystemPanel() {
     </div>
   );
 }
+

@@ -1,7 +1,7 @@
 /**
  * NFTGalleryManager - Componente para crear y gestionar galerías NFT
  *
- * Feature: Galerías NFT-Verificadas con GTK
+ * Feature: Galerías NFT-Verificadías con GTK
  * - Crear galerías NFT
  * - Mint galerías usando GTK tokens
  * - Gestionar imágenes en galerías
@@ -258,7 +258,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
             Galerías NFT
           </h2>
           <p className="text-white/70">
-            Crea y gestiona tus galerías NFT verificadas con GTK tokens
+            Crea y gestiona tus galerías NFT verificadías con GTK tokens
           </p>
         </div>
 
@@ -636,3 +636,4 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
     </div>
   );
 };
+

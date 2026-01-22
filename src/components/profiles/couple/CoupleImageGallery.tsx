@@ -56,7 +56,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 
     const fileArray = Array.from(files);
     if (images.length + fileArray.length > maxImages) {
-      onError(`Máximo ${maxImages} imágenes permitidas en la galería`);
+      onError(`Máximo ${maxImages} imágenes permitidías en la galería`);
       return;
     }
 
@@ -90,7 +90,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
       onImagesUpdated(updatedImages);
 
       toast({
-        title: "Imágenes subidas",
+        title: "Imágenes subidías",
         description: `${newImages.length} imagen(es) añadida(s) a la galería de pareja`,
       });
     } catch (_error) {
@@ -272,7 +272,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
             <Label htmlFor="new-image-public" className="text-sm">
               {newImagePublic
                 ? "Nuevas imágenes públicas"
-                : "Nuevas imágenes privadas"}
+                : "Nuevas imágenes privadías"}
             </Label>
           </div>
         </div>
@@ -358,7 +358,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
       {/* Gallery Info */}
       <div className="text-center">
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Las imágenes públicas son visibles para todos. Las privadas requieren
+          Las imágenes públicas son visibles para todos. Las privadías requieren
           solicitud de acceso.
         </p>
       </div>
@@ -367,3 +367,4 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 };
 
 export default CoupleImageGallery;
+

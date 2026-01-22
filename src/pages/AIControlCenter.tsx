@@ -23,7 +23,7 @@ const AIControlCenter: React.FC = () => {
             <p className="text-sm md:text-base text-white/75 max-w-2xl mx-auto">
               Aquí puedes hablar con la IA Local de CómplicesConecta, entender
               cómo funciona la seguridad forense de tus tokens y contratos, y
-              resolver dudas antes de firmar o invertir.
+              resolver dudías antes de firmar o invertir.
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-2 mt-2">
@@ -53,7 +53,7 @@ const AIControlCenter: React.FC = () => {
               </p>
               <p>
                 Tus interacciones, tokens y NFTs están protegidos por un sistema
-                de contratos digitales y evidencias forenses pensadas para
+                de contratos digitales y evidencias forenses pensadías para
                 evitar abusos y fraudes.
               </p>
             </CardContent>
@@ -99,7 +99,7 @@ const AIControlCenter: React.FC = () => {
                   Staking.
                 </li>
                 <li>
-                  Visita esta página cuando tengas dudas legales u operativas.
+                  Visita esta página cuando tengas dudías legales u operativas.
                 </li>
               </ol>
               <p className="flex items-center gap-1 text-[11px] text-white/70">
@@ -152,3 +152,4 @@ const AIControlCenter: React.FC = () => {
 };
 
 export default AIControlCenter;
+

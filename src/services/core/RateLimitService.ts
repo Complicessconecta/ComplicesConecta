@@ -244,7 +244,7 @@ export class RateLimitService {
   }
 
   /**
-   * Obtener todas las configuraciones de rate limit
+   * Obtener todías las configuraciones de rate limit
    */
   getAllConfigs(): Map<string, RateLimitConfig> {
     return new Map(this.configs);
@@ -278,3 +278,4 @@ export const checkTokensRateLimit = (userId: string) =>
 
 export const checkAdminRateLimit = (userId: string) =>
   rateLimitService.checkRateLimit("admin", userId);
+

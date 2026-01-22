@@ -317,7 +317,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
             {/* Content */}
             <div className="space-y-4 animate-slide-up">
-              {/* Title con 3 líneas separadas */}
+              {/* Title con 3 líneas separadías */}
               <div className="space-y-1 text-center flex flex-col items-center justify-center">
                 <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow inline-flex items-center justify-center gap-2">
                   {currentStepData.title}
@@ -426,3 +426,4 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
     document.body,
   );
 };
+

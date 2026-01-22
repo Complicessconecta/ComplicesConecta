@@ -369,7 +369,7 @@ export const ParentalControl = ({
         </div>
         <p className="text-xs text-zinc-300 leading-relaxed">
           Protección activa contra contenido sensible. Se requerirá PIN para
-          acceder a galerías privadas.
+          acceder a galerías privadías.
         </p>
       </div>
 
@@ -445,3 +445,4 @@ export const ParentalControl = ({
     </div>
   );
 };
+

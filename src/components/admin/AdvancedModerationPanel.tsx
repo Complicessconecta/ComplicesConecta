@@ -504,7 +504,7 @@ export const AdvancedModerationPanel: React.FC = () => {
 
                   {moderationResult.flags.length > 0 && (
                     <div>
-                      <h5 className="font-medium mb-2">Banderas detectadas:</h5>
+                      <h5 className="font-medium mb-2">Banderas detectadías:</h5>
                       <div className="space-y-2">
                         {moderationResult.flags.map((flag, index) => (
                           <div
@@ -621,3 +621,4 @@ export const AdvancedModerationPanel: React.FC = () => {
     </div>
   );
 };
+

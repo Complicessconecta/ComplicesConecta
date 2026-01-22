@@ -182,7 +182,7 @@ a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cu
 DISPOSICIÓN DE ACTIVOS:
 - Método: ADMIN_FORFEIT (Transferencia a la plataforma)
 - Plazo de resolución: 30 días calendario
-- Notificación: Ambas partes serán notificadas del inicio de disputa
+- Notificación: Ambas partes serán notificadías del inicio de disputa
 
 EVIDENCIA LEGAL:
 - Timestamp de firma
@@ -512,7 +512,7 @@ EVIDENCIA LEGAL:
           <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
             <Users className="h-5 w-5 text-purple-600" />
             <div>
-              <p className="font-medium text-gray-900">Firmas Requeridas</p>
+              <p className="font-medium text-gray-900">Firmas Requeridías</p>
               <p className="text-sm text-gray-600">Ambos partners</p>
             </div>
           </div>
@@ -573,3 +573,4 @@ EVIDENCIA LEGAL:
 };
 
 export default CouplePreNuptialAgreement;
+

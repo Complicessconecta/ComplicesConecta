@@ -101,7 +101,7 @@ export const preventInfiniteLoop = (maxIterations: number = 100) => {
       iterations++;
       if (iterations > maxIterations) {
         throw new Error(
-          `⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadas`,
+          `⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadías`,
         );
       }
       return iterations;
@@ -181,3 +181,4 @@ class MockResizeObserver {
 if (typeof window !== "undefined") {
   window.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
 }
+

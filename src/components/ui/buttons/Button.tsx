@@ -31,7 +31,7 @@ const buttonVariants = cva(
         premium:
           "bg-premium-gradient text-white hover:shadow-premium transform hover:scale-105 transition-all duration-300 font-bold",
 
-        // Variantes de estado mejoradas
+        // Variantes de estado mejoradías
         success:
           "bg-success text-success-foreground hover:bg-success/90 shadow-soft",
         warning:
@@ -69,17 +69,17 @@ export interface ButtonProps
   asChild?: boolean;
   children?: React.ReactNode;
 
-  // Props heredadas de UnifiedButton
+  // Props heredadías de UnifiedButton
   gradient?: boolean;
   ripple?: boolean;
   loading?: boolean;
   loadingText?: string;
 
-  // Props heredadas de AnimatedButton
+  // Props heredadías de AnimatedButton
   motionProps?: HTMLMotionProps<"button">;
 
   /**
-   * Control de animaciones integradas
+   * Control de animaciones integradías
    * - 'hover': escala suave al hacer hover/tap (por defecto)
    * - 'tap': solo efecto en tap
    * - 'pulse': animación continua de pulso
@@ -242,3 +242,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
+

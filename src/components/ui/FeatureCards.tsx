@@ -62,7 +62,7 @@ export const FeatureCards: FC<FeatureCardsProps> = ({ className }) => {
       icon: <Users className="w-6 h-6" />,
       title: "Eventos Swinger Exclusivos",
       description:
-        "Accede a fiestas privadas, encuentros y eventos exclusivos para la comunidad swinger",
+        "Accede a fiestas privadías, encuentros y eventos exclusivos para la comunidad swinger",
     },
     {
       icon: <Zap className="w-6 h-6" />,
@@ -94,3 +94,4 @@ export const FeatureCards: FC<FeatureCardsProps> = ({ className }) => {
     </div>
   );
 };
+

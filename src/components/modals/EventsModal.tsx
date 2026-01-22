@@ -21,7 +21,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
       icon: Crown,
       title: "Fiestas VIP Exclusivas",
       description:
-        "Eventos privados en ubicaciones premium con parejas verificadas",
+        "Eventos privados en ubicaciones premium con parejas verificadías",
       color: "text-yellow-400",
     },
     {
@@ -172,7 +172,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
             </div>
             <p className="text-xs text-white/70 mb-3">
               Los eventos VIP están disponibles exclusivamente para miembros
-              Premium verificados. Incluye entrada, bebidas de bienvenida y
+              Premium verificados. Incluye entrada, bebidías de bienvenida y
               ambiente 100% seguro.
             </p>
             <div className="flex items-center gap-2 text-xs">
@@ -208,3 +208,4 @@ const EventsModal: React.FC<EventsModalProps> = ({
 };
 
 export default EventsModal;
+

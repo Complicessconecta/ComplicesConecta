@@ -23,7 +23,7 @@ const featureData = {
       "📍 Geolocalización para encuentros locales",
     ],
     benefits:
-      "Encuentra parejas y solteros que compartan tus mismos intereses en el intercambio, soft swap, full swap y experiencias grupales.",
+      "Encuentra parejas y solteros que compartan tus mísimos intereses en el intercambio, soft swap, full swap y experiencias grupales.",
   },
   verification: {
     icon: Shield,
@@ -45,7 +45,7 @@ const featureData = {
     title: "Eventos Swinger Exclusivos",
     description: "Acceso VIP a la mejor vida nocturna lifestyle",
     features: [
-      "🎉 Fiestas privadas en clubs exclusivos",
+      "🎉 Fiestas privadías en clubs exclusivos",
       "🏖️ Descuentos exclusivos en clubs lifestyle",
       "🍾 Eventos VIP solo para miembros verificados",
       "🎭 Fiestas temáticas y de disfraces",
@@ -158,3 +158,4 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({
     </Dialog>
   );
 };
+

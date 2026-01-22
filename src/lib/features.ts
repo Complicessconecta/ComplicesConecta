@@ -18,7 +18,7 @@ export interface FeatureFlags {
   tokens: boolean;
   referrals: boolean;
 
-  // Funciones premium (deshabilitadas en beta)
+  // Funciones premium (deshabilitadías en beta)
   premiumChat: boolean;
   vipEvents: boolean;
   prioritySupport: boolean;
@@ -46,7 +46,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     tokens: true,
     referrals: true,
 
-    // Premium (HABILITADAS EN BETA - Solo con tokens, sin Stripe)
+    // Premium (HABILITAdías EN BETA - Solo con tokens, sin Stripe)
     premiumChat: true,
     vipEvents: true,
     prioritySupport: true,
@@ -54,7 +54,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     unlimitedLikes: true,
     readReceipts: true,
 
-    // VIP (DESHABILITADAS)
+    // VIP (DESHABILITAdías)
     exclusiveEvents: false,
     personalConcierge: false,
     customBadges: false,
@@ -72,7 +72,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     tokens: true,
     referrals: true,
 
-    // Premium (HABILITADAS)
+    // Premium (HABILITAdías)
     premiumChat: true,
     vipEvents: true,
     prioritySupport: true,
@@ -80,14 +80,14 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     unlimitedLikes: true,
     readReceipts: true,
 
-    // VIP (DESHABILITADAS)
+    // VIP (DESHABILITAdías)
     exclusiveEvents: false,
     personalConcierge: false,
     customBadges: false,
   },
 
   vip: {
-    // Todas habilitadas
+    // Todías habilitadías
     chat: true,
     profiles: true,
     discover: true,
@@ -154,7 +154,7 @@ export function useFeatures() {
 }
 
 /**
- * Obtiene mensaje explicativo para funciones deshabilitadas
+ * Obtiene mensaje explicativo para funciones deshabilitadías
  */
 export function getFeatureDisabledMessage(
   _feature: keyof FeatureFlags,
@@ -177,7 +177,7 @@ export function getFeatureDisabledMessage(
 export const PREMIUM_FEATURES_LIST = [
   {
     name: "Chat Premium",
-    description: "Mensajes ilimitados y funciones avanzadas",
+    description: "Mensajes ilimitados y funciones avanzadías",
     icon: "💬",
     key: "premiumChat" as keyof FeatureFlags,
   },
@@ -195,7 +195,7 @@ export const PREMIUM_FEATURES_LIST = [
   },
   {
     name: "Filtros Avanzados",
-    description: "Búsquedas más precisas y detalladas",
+    description: "Búsquedías más precisas y detalladías",
     icon: "🔍",
     key: "advancedFilters" as keyof FeatureFlags,
   },
@@ -218,3 +218,4 @@ logger.info(`🪙 Tokens enabled: ${isFeatureEnabled("tokens")}`);
 logger.info(
   `👑 Premium features: ${isFeatureEnabled("premiumChat") ? "enabled" : "disabled"}`,
 );
+

@@ -85,7 +85,7 @@ export const usePushNotifications = ({
   const requestPermission =
     useCallback(async (): Promise<NotificationPermission> => {
       if (!isSupported) {
-        setError("Las notificaciones push no están soportadas");
+        setError("Las notificaciones push no están soportadías");
         return "denied";
       }
 
@@ -403,3 +403,4 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 export default usePushNotifications;
+

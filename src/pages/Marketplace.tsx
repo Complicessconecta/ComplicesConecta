@@ -24,7 +24,7 @@ const Marketplace = () => {
       id: 1,
       name: "Paquete Premium Mensual",
       description:
-        "Acceso completo a todas las funciones premium por 30 das. Incluye matches ilimitados, mensajes prioritarios y eventos VIP.",
+        "Acceso completo a todías las funciones premium por 30 días. Incluye matches ilimitados, mensajes prioritarios y eventos VIP.",
       price: 299,
       currency: "CMPX",
       category: "premium",
@@ -116,7 +116,7 @@ const Marketplace = () => {
       id: 6,
       name: "Paquete de Tokens CMPX",
       description:
-        "Compra tokens CMPX para usar en todas las funciones premium de la plataforma.",
+        "Compra tokens CMPX para usar en todías las funciones premium de la plataforma.",
       price: 500,
       currency: "CMPX",
       category: "premium",
@@ -319,7 +319,7 @@ const Marketplace = () => {
                     </h3>
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    Acceso completo a todas las funciones premium, eventos VIP,
+                    Acceso completo a todías las funciones premium, eventos VIP,
                     y beneficios exclusivos por 3 meses.
                   </p>
                   <div className="flex items-center justify-between">
@@ -446,3 +446,4 @@ const Marketplace = () => {
 };
 
 export default Marketplace;
+

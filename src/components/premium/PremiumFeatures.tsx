@@ -72,7 +72,7 @@ const premiumFeatures = [
   {
     id: "analytics",
     title: "Análisis de Perfil",
-    description: "Estadísticas detalladas de tu actividad",
+    description: "Estadísticas detalladías de tu actividad",
     icon: BarChart3,
     requiredPlan: "silver",
   },
@@ -86,7 +86,7 @@ const premiumFeatures = [
   {
     id: "ai-assistant",
     title: "Asistente IA",
-    description: "Sugerencias personalizadas",
+    description: "Sugerencias personalizadías",
     icon: MessageCircle,
     requiredPlan: "premium",
   },
@@ -191,9 +191,9 @@ export const PremiumFeatures = () => {
               </span>
             </div>
             <p className="text-xs sm:text-sm text-white/80">
-              Como usuario Beta, tienes acceso completo a todas las
+              Como usuario Beta, tienes acceso completo a todías las
               características Premium. ¡Disfruta de la experiencia completa
-              mientras ayudas a mejorar la plataforma!
+              mientras ayudías a mejorar la plataforma!
             </p>
           </div>
         )}
@@ -201,3 +201,4 @@ export const PremiumFeatures = () => {
     </Card>
   );
 };
+

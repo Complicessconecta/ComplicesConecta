@@ -143,7 +143,7 @@ const ModeratorRequest = () => {
                 <div className="bg-white/5 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Qu sigue?</h3>
                   <ul className="text-white/70 text-sm space-y-2 text-left">
-                    <li> Revisaremos tu solicitud en 2-3 das hbiles</li>
+                    <li> Revisaremos tu solicitud en 2-3 días hbiles</li>
                     <li> Te contactaremos por email con la decisin</li>
                     <li> Si eres aprobado, recibirs un enlace de activacin</li>
                     <li>
@@ -209,7 +209,7 @@ const ModeratorRequest = () => {
               </h3>
               <p className="text-white/80 text-sm leading-relaxed">
                 ComplicesConecta es una plataforma para adultos que facilita
-                conexiones autnticas y respetuosas. Nuestros moderadores son
+                conexiones auténticas y respetuosas. Nuestros moderadores son
                 fundamentales para mantener un ambiente seguro, donde todos los
                 miembros puedan interactuar con confianza y respeto mutuo.
               </p>
@@ -293,7 +293,7 @@ const ModeratorRequest = () => {
                 <ul className="text-white/70 text-sm space-y-2">
                   <li>
                     {" "}
-                    <strong>Edad:</strong> Mayor de 21 aos (preferible)
+                    <strong>Edad:</strong> Mayor de 21 años (preferible)
                   </li>
                   <li>
                     {" "}
@@ -329,7 +329,7 @@ const ModeratorRequest = () => {
                     Compensacin
                   </h4>
                   <p className="text-white/70">
-                    Tokens CMPX mensuales segn horas dedicadas
+                    Tokens CMPX mensuales segn horas dedicadías
                   </p>
                 </div>
                 <div>
@@ -368,7 +368,7 @@ const ModeratorRequest = () => {
                   <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold">
                     2
                   </div>
-                  <p className="text-white/70">Revisin (2-3 das)</p>
+                  <p className="text-white/70">Revisin (2-3 días)</p>
                 </div>
                 <div className="text-center">
                   <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold">
@@ -566,3 +566,4 @@ const ModeratorRequest = () => {
 };
 
 export default ModeratorRequest;
+

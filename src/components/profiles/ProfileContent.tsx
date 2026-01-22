@@ -565,7 +565,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Upload className="w-4 h-4" />
                 <span className="inline-flex items-center gap-2">
-                  <span>Fotos Privadas</span>
+                  <span>Fotos Privadías</span>
                   <LockIcon className="w-4 h-4" />
                 </span>
               </h4>
@@ -575,7 +575,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadas",
+                      description: "Solicita acceso para ver fotos privadías",
                     })
                   }
                 >
@@ -596,7 +596,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadas",
+                      description: "Solicita acceso para ver fotos privadías",
                     })
                   }
                 >
@@ -614,7 +614,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadas",
+                      description: "Solicita acceso para ver fotos privadías",
                     })
                   }
                 >
@@ -742,3 +742,4 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
     </div>
   );
 };
+

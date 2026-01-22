@@ -17,7 +17,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || AppConfig.supabase.url;
 const supabaseAnonKey =
   import.meta.env.VITE_SUPABASE_ANON_KEY || AppConfig.supabase.anonKey;
 
-// Validar que las variables de entorno estén configuradas
+// Validar que las variables de entorno estén configuradías
 const isPlaceholderUrl =
   !supabaseUrl ||
   (typeof supabaseUrl === "string" &&
@@ -118,7 +118,7 @@ function getSupabaseClient(): SupabaseClient<Database> {
       return supabaseInstance;
     }
 
-    // Si las credenciales son válidas, crear el cliente normalmente
+    // Si las credenciales son válidías, crear el cliente normalmente
     const finalUrl = supabaseUrl!;
     const finalKey = supabaseAnonKey!;
 
@@ -336,3 +336,4 @@ const initializeSupabase = async () => {
 initializeSupabase();
 
 export { isDemoMode };
+

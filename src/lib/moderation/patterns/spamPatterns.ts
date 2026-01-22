@@ -382,7 +382,7 @@ export const SPAM_PATTERNS = [
   /localización\s*\d+/i,
   /geolocalización\s*\d+/i,
   /gps\s*\d+/i,
-  /coordenadas\s*\d+/i,
+  /coordenadías\s*\d+/i,
   /mapa\s*\d+/i,
   /ubicación\s+exacta\s*\d+/i,
   /dirección\s+exacta\s*\d+/i,
@@ -622,7 +622,7 @@ export const SPAM_PATTERNS = [
   /binarias\s*\d+/i,
   /opciones\s+binarias\s*\d+/i,
   /cripto\s*\d+/i,
-  /criptomonedas\s*\d+/i,
+  /criptomonedías\s*\d+/i,
   /bitcoin\s*\d+/i,
   /ethereum\s*\d+/i,
   /litecoin\s*\d+/i,
@@ -937,7 +937,7 @@ export const SPAM_PATTERNS = [
   /localización\s*\d+/i,
   /geolocalización\s*\d+/i,
   /gps\s*\d+/i,
-  /coordenadas\s*\d+/i,
+  /coordenadías\s*\d+/i,
   /mapa\s*\d+/i,
   /ubicación\s+exacta\s*\d+/i,
   /dirección\s+exacta\s*\d+/i,
@@ -1093,5 +1093,6 @@ export const SPAM_PATTERNS = [
   /pactado\s*\d+/i,
   /tratado\s*\d+/i,
 ];
+
 
 

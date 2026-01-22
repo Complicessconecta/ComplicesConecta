@@ -440,7 +440,7 @@ export class LoadBalancingService {
   }
 
   /**
-   * Limpieza de sesiones expiradas
+   * Limpieza de sesiones expiradías
    */
   private startSessionCleanup(): void {
     setInterval(() => {
@@ -538,3 +538,4 @@ export class LoadBalancingService {
 }
 
 export const loadBalancingService = new LoadBalancingService();
+

@@ -218,14 +218,14 @@ export const invitationService = {
         throw new Error("Supabase no está disponible");
       }
 
-      // Obtener invitaciones recibidas - usar solo columnas que existen
+      // Obtener invitaciones recibidías - usar solo columnas que existen
       const { data: receivedData, error: receivedError } = await supabase
         .from("invitations")
         .select("*")
         .eq("to_profile", profileId)
         .order("created_at", { ascending: false });
 
-      // Obtener invitaciones enviadas - usar solo columnas que existen
+      // Obtener invitaciones enviadías - usar solo columnas que existen
       const { data: sentData, error: sentError } = await supabase
         .from("invitations")
         .select("*")
@@ -431,3 +431,4 @@ export const invitationService = {
     });
   },
 };
+

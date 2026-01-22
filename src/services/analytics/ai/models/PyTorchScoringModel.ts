@@ -102,7 +102,7 @@ export class PyTorchScoringModel {
   /**
    * Predice compatibilidad usando el modelo ML
    *
-   * @param features - Features extraídas de perfiles (8 dimensiones)
+   * @param features - Features extraídías de perfiles (8 dimensiones)
    * @returns Score de compatibilidad (0-1)
    */
   async predict(features: CompatibilityFeatures): Promise<number> {
@@ -232,3 +232,4 @@ export class PyTorchScoringModel {
 // Singleton instance para reutilizar modelo en toda la app
 // Solo se carga una vez en memoria
 export const pytorchModel = new PyTorchScoringModel();
+

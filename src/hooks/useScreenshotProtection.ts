@@ -64,7 +64,7 @@ export const useScreenshotProtection = (
             margin: 0 0 20px 0;
             line-height: 1.5;
           ">
-            Las capturas de pantalla están restringidas en este contenido.<br>
+            Las capturas de pantalla están restringidías en este contenido.<br>
             Método detectado: <strong>${method}</strong>
           </p>
           <button onclick="this.parentElement.parentElement.remove()" style="
@@ -314,3 +314,4 @@ export const useScreenshotProtection = (
     showWarning: showWarningModal,
   };
 };
+

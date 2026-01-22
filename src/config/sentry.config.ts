@@ -125,7 +125,7 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
       /chrome-extension/,
       /moz-extension/,
 
-      // Errores de redes sociales embebidas
+      // Errores de redes sociales embebidías
       /fb_xd_fragment/,
 
       // Errores de cancelación de fetch (usuario intencional)
@@ -254,3 +254,4 @@ export function startSpan(name: string, callback: () => void): void {
  */
 export { Sentry };
 export default Sentry;
+

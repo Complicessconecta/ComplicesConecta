@@ -394,7 +394,7 @@ export function TokenDashboard({
                 💡 <strong>¿Qué es staking?</strong>
               </p>
               <p className="text-sm text-white/90 wrap-break-word">
-                Guardas tus CMPX por 30 días y recibes +10% de recompensa.
+                Guardías tus CMPX por 30 días y recibes +10% de recompensa.
                 Ejemplo: 100 CMPX → 110 CMPX después de 30 días.
               </p>
             </div>
@@ -511,8 +511,8 @@ export function TokenDashboard({
         <CardContent className="p-6 md:p-8">
           <p className="text-sm text-white/70 mb-4">
             {isDemoMode
-              ? "Vista de ejemplo de cómo se verán tus galerías NFT verificadas cuando conectes tu wallet real."
-              : "Estos son algunos de los NFTs y galerías verificadas asociados a tu wallet en ComplicesConecta."}
+              ? "Vista de ejemplo de cómo se verán tus galerías NFT verificadías cuando conectes tu wallet real."
+              : "Estos son algunos de los NFTs y galerías verificadías asociados a tu wallet en ComplicesConecta."}
           </p>
 
           {/* Estado de cuenta NFT */}
@@ -522,7 +522,7 @@ export function TokenDashboard({
               <span className="font-semibold text-white">{displayNfts.length}</span>
             </span>
             <span className="truncate text-right">
-              Galerías NFT verificadas:{" "}
+              Galerías NFT verificadías:{" "}
               <span className="font-semibold text-white">
                 {isDemoMode ? "4/4" : "próximamente"}
               </span>
@@ -599,12 +599,12 @@ export function TokenDashboard({
         </CardContent>
       </Card>
 
-      {/* Galerías NFT-Verificadas */}
+      {/* Galerías NFT-Verificadías */}
       <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5" />
-            🎨 Galerías NFT-Verificadas
+            🎨 Galerías NFT-Verificadías
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
@@ -703,3 +703,4 @@ export function TokenDashboard({
     </main>
   );
 }
+

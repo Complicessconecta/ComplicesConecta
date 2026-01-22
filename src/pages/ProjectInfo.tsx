@@ -104,7 +104,7 @@ export default function ProjectInfo() {
                     plataforma integral diseñada específicamente para la
                     comunidad swinger mexicana, ofreciendo un espacio seguro,
                     verificado y discreto para intercambio de parejas y
-                    conexiones autnticas.
+                    conexiones auténticas.
                   </p>
 
                   <h2 className="text-2xl font-bold text-white mb-4">
@@ -136,7 +136,7 @@ export default function ProjectInfo() {
                     <li> Video chat P2P con WebRTC</li>
                     <li> Push notifications nativas</li>
                     <li> Sistema de conexiones y privacidad</li>
-                    <li> Galerías privadas con NFT</li>
+                    <li> Galerías privadías con NFT</li>
                     <li> Perfiles de pareja avanzados</li>
                     <li> Eventos VIP exclusivos</li>
                     <li> Sistema de tokens CMPX y GTK</li>
@@ -195,7 +195,7 @@ export default function ProjectInfo() {
                   </h2>
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> ? Verificador IA de Consentimiento en Chats</li>
-                    <li> ? Galeras NFT-Verificadas con GTK</li>
+                    <li> ? Galeras NFT-Verificadías con GTK</li>
                     <li> ? Matching Predictivo con Graphs Sociales (Neo4j)</li>
                     <li> ? Eventos Virtuales Sostenibles con Tokens</li>
                     <li> ? Neo4j Graph Database 100% operativo</li>
@@ -220,7 +220,7 @@ export default function ProjectInfo() {
                   </h2>
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> ?? Perfiles de pareja completos</li>
-                    <li> ??? Galeras pblicas y privadas</li>
+                    <li> ??? Galeras pblicas y privadías</li>
                     <li> ?? Sistema de verificacin</li>
                     <li> ?? Eventos y experiencias</li>
                   </ul>
@@ -258,7 +258,7 @@ export default function ProjectInfo() {
                     <li> Revisar reportes de usuarios y contenido</li>
                     <li> Mantener un ambiente seguro y respetuoso</li>
                     <li> Aplicar las polticas de la comunidad</li>
-                    <li> Asistir a usuarios con dudas o problemas</li>
+                    <li> Asistir a usuarios con dudías o problemas</li>
                     <li> Colaborar con el equipo de desarrollo</li>
                   </ul>
 
@@ -277,7 +277,7 @@ export default function ProjectInfo() {
                     ?? Requisitos
                   </h2>
                   <ul className="text-white/90 mb-6 space-y-2">
-                    <li> Mayor de 21 aos</li>
+                    <li> Mayor de 21 años</li>
                     <li> Usuario activo de la plataforma</li>
                     <li> Disponibilidad de al menos 10 horas semanales</li>
                     <li> Excelente comunicacin y criterio</li>
@@ -641,3 +641,4 @@ const ModeratorApplicationModal = () => {
     </Dialog>
   );
 };
+

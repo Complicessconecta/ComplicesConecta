@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Servicio de compatibilidad para perfiles de pareja
- * Garantiza que todas las funciones de invitaciones y permisos
+ * Garantiza que todías las funciones de invitaciones y permisos
  * funcionen correctamente con perfiles individuales y de pareja
  *
  * NOTA: Implementación temporal con fallbacks hasta que el esquema
@@ -303,3 +303,4 @@ export const coupleProfileUtils = {
     }
   },
 };
+

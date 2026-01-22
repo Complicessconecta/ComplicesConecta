@@ -15,7 +15,7 @@ export interface Match {
   created_at: string;
 }
 
-// Extender el tipo Database de forma segura preservando todas las claves de 'public'
+// Extender el tipo Database de forma segura preservando todías las claves de 'public'
 type ExtendedPublic = Omit<GeneratedDatabase["public"], "Tables"> & {
   Tables: GeneratedDatabase["public"]["Tables"] & {
     likes: {
@@ -34,3 +34,4 @@ type ExtendedPublic = Omit<GeneratedDatabase["public"], "Tables"> & {
 export type Database = Omit<GeneratedDatabase, "public"> & {
   public: ExtendedPublic;
 };
+

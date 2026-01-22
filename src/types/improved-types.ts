@@ -1,4 +1,4 @@
-// Definiciones de tipos mejoradas para reducir 'as any'
+// Definiciones de tipos mejoradías para reducir 'as any'
 // Generado automáticamente por el refactor
 
 declare global {
@@ -52,3 +52,4 @@ export type AuthSession = {
 };
 
 export {};
+

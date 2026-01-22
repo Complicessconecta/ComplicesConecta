@@ -183,16 +183,19 @@ export class NFTService {
       });
       formData.append("pinataOptions", pinataOptions);
 
-      const response = await fetch(
-        `${NFTService.PINATA_API_URL}/pinning/pinFileToIPFS`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_PINATA_JWT}`,
-          },
-          body: formData,
+      const pinataProxyUrl = import.meta.env.VITE_PINATA_PROXY_URL || '/functions/v1/pinata-proxy';
+
+      const response = await fetch(pinataProxyUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          method: 'pinning/pinFileToIPFS',
+          path: '/pinning/pinFileToIPFS',
+          body: formData,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error(`Error en Pinata: ${response.statusText}`);

@@ -44,8 +44,8 @@ const Premium = () => {
   const premiumBenefits = [
     {
       icon: Heart,
-      title: "Conexiones Ilimitadas",
-      description: "Intercambio sin lmites con parejas verificadas",
+      title: "Conexiones Ilimitadías",
+      description: "Intercambio sin lmites con parejas verificadías",
       color: "from-fuchsia-500 to-rose-500",
     },
     {
@@ -57,7 +57,7 @@ const Premium = () => {
     {
       icon: Calendar,
       title: "Eventos Exclusivos",
-      description: "Fiestas privadas y orgas VIP",
+      description: "Fiestas privadías y orgas VIP",
       color: "from-amber-500 to-orange-500",
     },
     {
@@ -224,7 +224,7 @@ const Premium = () => {
                         toast({
                           title: "Premium Activado! (Modo Demo)",
                           description:
-                            "En modo demo tienes acceso completo a todas las funciones premium.",
+                            "En modo demo tienes acceso completo a todías las funciones premium.",
                           duration: 3000,
                         });
                       }
@@ -283,7 +283,7 @@ const Premium = () => {
                         toast({
                           title: "Premium VIP Activado! (Modo Demo)",
                           description:
-                            "En modo demo tienes acceso completo a todas las funciones VIP.",
+                            "En modo demo tienes acceso completo a todías las funciones VIP.",
                           duration: 3000,
                         });
                       }
@@ -331,7 +331,7 @@ const Premium = () => {
                         toast({
                           title: "Founding Member Activado! (Modo Demo)",
                           description:
-                            "En modo demo tienes acceso completo a todas las funciones de miembro fundador.",
+                            "En modo demo tienes acceso completo a todías las funciones de miembro fundador.",
                           duration: 3000,
                         });
                       }
@@ -346,7 +346,7 @@ const Premium = () => {
             <div className="text-center">
               <p className="text-sm text-white mb-4">
                 🔒 Pagos seguros procesados por Stripe ✅ Transacciones
-                encriptadas 🇲🇽 Precios en pesos mexicanos
+                encriptadías 🇲🇽 Precios en pesos mexicanos
               </p>
               <Badge
                 variant="outline"
@@ -366,7 +366,7 @@ const Premium = () => {
                 Funciones Premium - Post Beta
               </h2>
               <p className="text-white mb-4">
-                Las funciones Premium avanzadas se activarn al finalizar la fase
+                Las funciones Premium avanzadías se activarn al finalizar la fase
                 beta. Los donantes tendrn acceso prioritario y beneficios
                 exclusivos.
               </p>
@@ -414,7 +414,7 @@ const Premium = () => {
                   <Users className="h-5 w-5 text-accent mt-1" />
                   <div>
                     <h4 className="font-medium text-foreground">
-                      Parejas Verificadas Premium
+                      Parejas Verificadías Premium
                     </h4>
                     <p className="text-sm text-white">
                       Acceso a perfiles ultra-verificados con experiencia
@@ -429,7 +429,7 @@ const Premium = () => {
                       Eventos VIP Exclusivos
                     </h4>
                     <p className="text-sm text-white">
-                      Invitaciones a fiestas privadas, orgas y clubs swinger de
+                      Invitaciones a fiestas privadías, orgas y clubs swinger de
                       lite
                     </p>
                   </div>
@@ -593,3 +593,4 @@ const Premium = () => {
 };
 
 export default Premium;
+

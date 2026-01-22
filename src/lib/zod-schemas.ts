@@ -171,7 +171,7 @@ export const InterestsSchema = z.object({
   social: z
     .array(
       z.enum([
-        "Fiestas privadas",
+        "Fiestas privadías",
         "Clubs swingers",
         "Eventos temáticos",
         "Cenas íntimas",
@@ -591,3 +591,4 @@ export function safeValidate<T>(
   );
   return { success: false, errors };
 }
+

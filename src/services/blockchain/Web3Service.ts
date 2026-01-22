@@ -50,7 +50,7 @@ export interface NetworkInfo {
 }
 
 /**
- * Redes soportadas
+ * Redes soportadías
  */
 export const SUPPORTED_NETWORKS: Record<number, NetworkInfo> = {
   137: {
@@ -451,3 +451,4 @@ export class Web3Service {
 
 // Exportar instancia singleton
 export const web3Service = Web3Service.getInstance();
+

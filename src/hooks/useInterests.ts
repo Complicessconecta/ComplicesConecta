@@ -4,7 +4,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 
-// Interfaces actualizadas para coincidir con el schema de Supabase
+// Interfaces actualizadías para coincidir con el schema de Supabase
 
 export interface Interest {
   id: number; // ID numérico en la BD
@@ -308,3 +308,4 @@ export const useInterests = () => {
     syncProfileInterests,
   };
 };
+

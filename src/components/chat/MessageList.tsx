@@ -5,7 +5,7 @@
  * - Muestra lista de mensajes con formato adecuado
  * - Soporte para mensajes propios y ajenos
  * - Indicadores de tiempo y estado
- * - Soporte para ubicaciones compartidas
+ * - Soporte para ubicaciones compartidías
  *
  * @version 3.5.0
  */
@@ -150,3 +150,4 @@ export const MessageList: React.FC<MessageListProps> = ({
     </div>
   );
 };
+

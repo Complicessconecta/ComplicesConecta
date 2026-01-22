@@ -83,14 +83,14 @@ test.describe("🔐 Flujos de Autenticación E2E - Mejorados", () => {
 
       const config = TEST_CONFIGS.single;
 
-      // Verificar rutas permitidas
+      // Verificar rutas permitidías
       for (const route of config.expectedRoutes) {
         await page.goto(route);
         await expect(page).not.toHaveURL(/\/auth/);
         console.log(`✅ Ruta permitida: ${route}`);
       }
 
-      // Verificar rutas restringidas
+      // Verificar rutas restringidías
       for (const route of config.restrictedRoutes) {
         await page.goto(route);
         // Debe redirigir o mostrar error 403
@@ -196,7 +196,7 @@ test.describe("🔐 Flujos de Autenticación E2E - Mejorados", () => {
 
       const config = TEST_CONFIGS.admin;
 
-      // Verificar todas las rutas están disponibles
+      // Verificar todías las rutas están disponibles
       for (const route of config.expectedRoutes) {
         await page.goto(route);
         await expect(page).not.toHaveURL(/\/auth/);
@@ -338,3 +338,4 @@ test.describe("🔐 Flujos de Autenticación E2E - Mejorados", () => {
     });
   });
 });
+

@@ -20,7 +20,7 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
   console.warn(
-    "⚠️ Variables de entorno de Supabase no configuradas. Saltando tests de RLS.",
+    "⚠️ Variables de entorno de Supabase no configuradías. Saltando tests de RLS.",
   );
 }
 
@@ -158,3 +158,4 @@ describe("RLS Policies", () => {
     });
   });
 });
+

@@ -88,7 +88,7 @@ const VideoChat = () => {
       id: 3,
       participants: ["Anabella & Julio"],
       duration: "22:15",
-      date: "2 das",
+      date: "2 días",
       type: "video",
     },
   ];
@@ -117,8 +117,8 @@ const VideoChat = () => {
               </h1>
             </div>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Llamadas de video seguras y privadas con tecnologa WebRTC para
-              conexiones autnticas
+              Llamadías de video seguras y privadías con tecnologa WebRTC para
+              conexiones auténticas
             </p>
           </div>
 
@@ -351,7 +351,7 @@ const VideoChat = () => {
           {/* Call History */}
           <section className="mt-16">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">
-              Historial de Llamadas
+              Historial de Llamadías
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {callHistory.map((call) => (
@@ -405,3 +405,4 @@ const VideoChat = () => {
 };
 
 export default VideoChat;
+

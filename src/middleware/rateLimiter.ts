@@ -14,7 +14,7 @@ export const rateLimiterConfig = {
   api: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 100, // 100 requests
-    message: "Demasiadas solicitudes, intenta más tarde",
+    message: "Demasiadías solicitudes, intenta más tarde",
   },
   auth: {
     windowMs: 15 * 60 * 1000, // 15 minutos
@@ -28,13 +28,13 @@ export const rateLimiterConfig = {
   },
   search: {
     windowMs: 1 * 60 * 1000, // 1 minuto
-    max: 60, // 60 búsquedas
-    message: "Demasiadas búsquedas, intenta más tarde",
+    max: 60, // 60 búsquedías
+    message: "Demasiadías búsquedías, intenta más tarde",
   },
   profile: {
     windowMs: 5 * 60 * 1000, // 5 minutos
     max: 20, // 20 actualizaciones
-    message: "Demasiadas actualizaciones de perfil, intenta más tarde",
+    message: "Demasiadías actualizaciones de perfil, intenta más tarde",
   },
 };
 
@@ -143,3 +143,4 @@ export const useRateLimiter = (
     resetTime: info?.resetTime,
   };
 };
+

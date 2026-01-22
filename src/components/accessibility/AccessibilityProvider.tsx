@@ -71,7 +71,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
   const [settings, setSettings] =
     useState<AccessibilitySettings>(defaultSettings);
 
-  // Cargar configuraciones guardadas
+  // Cargar configuraciones guardadías
   useEffect(() => {
     const savedSettings = safeGetItem<AccessibilitySettings>(
       "accessibility-settings",
@@ -255,3 +255,4 @@ export const useKeyboardNavigation = () => {
 };
 
 export default AccessibilityProvider;
+

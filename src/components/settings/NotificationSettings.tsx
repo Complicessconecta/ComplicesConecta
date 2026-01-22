@@ -273,7 +273,7 @@ export const NotificationSettings = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-white/90">
-            Obtén notificaciones avanzadas con la membresía Premium:
+            Obtén notificaciones avanzadías con la membresía Premium:
           </p>
           <ul className="space-y-2 text-sm text-white/80">
             <li>• Notificaciones cuando alguien ve tu perfil</li>
@@ -301,3 +301,4 @@ export const NotificationSettings = () => {
     </div>
   );
 };
+

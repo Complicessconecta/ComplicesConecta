@@ -305,7 +305,7 @@ browsers.forEach(({ name, ...device }) => {
       });
       expect(reducedMotion).toBeTruthy();
 
-      // Verificar que las animaciones están reducidas
+      // Verificar que las animaciones están reducidías
       const animatedElements = page.locator('[class*="animate-"]');
       if ((await animatedElements.count()) > 0) {
         const animationDuration = await animatedElements
@@ -321,7 +321,7 @@ browsers.forEach(({ name, ...device }) => {
 
 // Test específico para verificar compatibilidad de características
 test.describe("Verificación de características del navegador", () => {
-  test("debería detectar características soportadas", async ({ page }) => {
+  test("debería detectar características soportadías", async ({ page }) => {
     await page.goto("/");
 
     const features = await page.evaluate(() => {
@@ -351,3 +351,4 @@ test.describe("Verificación de características del navegador", () => {
     console.log("Características del navegador:", features);
   });
 });
+

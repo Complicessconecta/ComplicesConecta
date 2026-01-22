@@ -94,7 +94,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Lock className="h-5 w-5 text-purple-400" />
-            <h3 className="font-semibold text-white">Imágenes Privadas</h3>
+            <h3 className="font-semibold text-white">Imágenes Privadías</h3>
             <Badge
               variant="secondary"
               className="bg-purple-500/20 text-purple-300"
@@ -166,8 +166,8 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
             <Lock className="h-12 w-12 text-white/30 mx-auto mb-4" />
             <p className="text-white/60">
               {isOwner
-                ? "No has subido imágenes privadas"
-                : "No hay imágenes privadas disponibles"}
+                ? "No has subido imágenes privadías"
+                : "No hay imágenes privadías disponibles"}
             </p>
           </div>
         ) : (
@@ -273,3 +273,4 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
 };
 
 export default PrivateImageGallery;
+

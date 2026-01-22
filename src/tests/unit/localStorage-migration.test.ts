@@ -265,7 +265,7 @@ describe("localStorage Migration Tests", () => {
 
       // Verificar que el uso de localStorage es mínimo
       const totalKeys = Object.keys(localStorage).length;
-      expect(totalKeys).toBeLessThanOrEqual(10); // Máximo 10 keys permitidas (ajustado para tests)
+      expect(totalKeys).toBeLessThanOrEqual(10); // Máximo 10 keys permitidías (ajustado para tests)
 
       // Verificar tamaño total aproximado
       const totalSize = Object.values(localStorage).join("").length;
@@ -273,3 +273,4 @@ describe("localStorage Migration Tests", () => {
     });
   });
 });
+

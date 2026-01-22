@@ -562,7 +562,7 @@ export class AdvancedAnalyticsService {
         timeframe: "14 días",
         factors: ["Baja actividad", "Falta de engagement", "Tiempo sin login"],
         recommendations: [
-          "Enviar notificaciones personalizadas",
+          "Enviar notificaciones personalizadías",
           "Ofrecer incentivos de retención",
           "Mejorar experiencia del usuario",
         ],
@@ -574,7 +574,7 @@ export class AdvancedAnalyticsService {
   }
 
   /**
-   * Verifica alertas basadas en métricas
+   * Verifica alertas basadías en métricas
    */
   private async checkAlerts(metrics: RealTimeMetrics): Promise<void> {
     try {
@@ -801,3 +801,4 @@ export class AdvancedAnalyticsService {
 }
 
 export const advancedAnalytics = AdvancedAnalyticsService.getInstance();
+

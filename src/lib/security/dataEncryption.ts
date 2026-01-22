@@ -3,7 +3,7 @@
  * Protege información crítica sin modificar lógica de autenticación existente
  * 
  * Mejoras de seguridad 2025-2026:
- * - Iteraciones PBKDF2 aumentadas a 600000 (recomendado NIST 2025+)
+ * - Iteraciones PBKDF2 aumentadías a 600000 (recomendado NIST 2025+)
  * - Password base mejorado con constante de aplicación + userId
  * - IV único y aleatorio garantizado por cada encrypt
  * - Validación extra en decrypt
@@ -351,3 +351,4 @@ export {
   ENCRYPTION_FALLBACK_VERSION,
 };
 export default DataEncryption;
+

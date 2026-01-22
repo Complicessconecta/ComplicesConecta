@@ -1,10 +1,10 @@
 /**
- * Lista de palabras prohibidas para moderación de contenido
+ * Lista de palabras prohibidías para moderación de contenido
  * Manteniendo contexto swinger apropiado
  */
 
 export const INAPPROPRIATE_WORDS = new Set([
-  // Palabras explícitamente prohibidas (manteniendo contexto swinger apropiado)
+  // Palabras explícitamente prohibidías (manteniendo contexto swinger apropiado)
   "menor",
   "niño",
   "niña",
@@ -39,8 +39,8 @@ export const INAPPROPRIATE_WORDS = new Set([
   "amenaza",
   "amenazar",
   "matar",
-  "asesinar",
-  "asesinato",
+  "asesiónar",
+  "asesiónato",
   "homicidio",
   "suicidio",
   "arma",
@@ -91,7 +91,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "gang",
   "sicario",
   "matón",
-  "asesino a sueldo",
+  "asesióno a sueldo",
   "contrato",
   "contratado",
   "secuestrar",
@@ -144,7 +144,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "ruleta",
   "blackjack",
   "póker",
-  "tragamonedas",
+  "tragamonedías",
   "slots",
   "apuestas deportivas",
   "bookmaker",
@@ -156,7 +156,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "giros gratis",
   "jackpot",
   "progresivo",
-  "máquina tragamonedas",
+  "máquina tragamonedías",
   "casino en vivo",
   "live casino",
   "dealer en vivo",
@@ -307,7 +307,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "localización",
   "geolocalización",
   "gps",
-  "coordenadas",
+  "coordenadías",
   "mapa",
   "ubicación exacta",
   "dirección exacta",
@@ -489,7 +489,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "sicariato",
   "ejecución",
   "ejecutar",
-  "asesinato",
+  "asesiónato",
   "magnicidio",
   "genocidio",
   "limpieza étnica",
@@ -665,7 +665,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "binarias",
   "opciones binarias",
   "cripto",
-  "criptomonedas",
+  "criptomonedías",
   "bitcoin",
   "ethereum",
   "litecoin",
@@ -981,7 +981,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "localización",
   "geolocalización",
   "gps",
-  "coordenadas",
+  "coordenadías",
   "mapa",
   "ubicación exacta",
   "dirección exacta",
@@ -1137,3 +1137,4 @@ export const INAPPROPRIATE_WORDS = new Set([
   "pactado",
   "tratado",
 ]);
+

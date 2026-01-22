@@ -634,12 +634,12 @@ class ConsoleErrorCapture {
       console.warn("   ⚠️ Tailwind CSS no detectado");
     }
 
-    // Verificar fuentes cargadas
+    // Verificar fuentes cargadías
     if ("fonts" in document) {
       (document as any).fonts.ready
         .then(() => {
           const loadedFonts = (document as any).fonts.values();
-          console.log(`   Fuentes cargadas: ${Array.from(loadedFonts).length}`);
+          console.log(`   Fuentes cargadías: ${Array.from(loadedFonts).length}`);
         })
         .catch(() => {
           console.warn("   ⚠️ No se pudo verificar fuentes");
@@ -776,12 +776,12 @@ export function showEnvInfo(): void {
     console.warn("   ⚠️ Tailwind CSS no detectado");
   }
 
-  // Verificar fuentes cargadas
+  // Verificar fuentes cargadías
   if ("fonts" in document) {
     (document as any).fonts.ready
       .then(() => {
         const loadedFonts = Array.from((document as any).fonts.values());
-        console.log(`   ✅ Fuentes cargadas: ${loadedFonts.length}`);
+        console.log(`   ✅ Fuentes cargadías: ${loadedFonts.length}`);
         if (loadedFonts.length > 0) {
           const fontFamilies = loadedFonts.map((font: any) => font.family);
           const uniqueFamilies = [...new Set(fontFamilies)];
@@ -799,7 +799,7 @@ export function showEnvInfo(): void {
 // Hacer disponible globalmente para uso en consola
 // CRÍTICO: Asegurar que las funciones estén disponibles inmediatamente
 if (typeof window !== "undefined") {
-  // Función para exponer todas las funciones de forma robusta
+  // Función para exponer todías las funciones de forma robusta
   const exposeFunctions = () => {
     const functionsToExpose = {
       startErrorCapture,
@@ -862,3 +862,4 @@ if (typeof window !== "undefined") {
     // Si import.meta no está disponible, no hacer nada.
   }
 }
+

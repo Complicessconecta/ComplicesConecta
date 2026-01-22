@@ -24,7 +24,7 @@ const ALLOWED_MIME_TYPES = {
   audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp4"],
 } as const;
 
-// Extensiones permitidas por categoría
+// Extensiones permitidías por categoría
 const ALLOWED_EXTENSIONS = {
   images: ["jpg", "jpeg", "png", "webp", "avif", "gif"],
   documents: ["pdf", "txt", "doc", "docx"],
@@ -445,3 +445,4 @@ export const useFileValidator = () => {
 
 export { ALLOWED_MIME_TYPES, ALLOWED_EXTENSIONS, SIZE_LIMITS };
 export default FileValidator;
+

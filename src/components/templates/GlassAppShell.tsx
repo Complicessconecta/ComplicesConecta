@@ -52,7 +52,7 @@ const DEFAULT_SIDEBAR_SECTIONS: GlassSidebarSection[] = [
   {
     title: "Apps",
     items: [
-      { label: "Todas", icon: LayoutGrid },
+      { label: "Todías", icon: LayoutGrid },
       { label: "Actualizaciones", icon: RefreshCw, badge: 3 },
     ],
   },
@@ -286,3 +286,4 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
     </div>
   );
 };
+

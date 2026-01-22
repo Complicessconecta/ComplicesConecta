@@ -216,7 +216,7 @@ export const PinSettings: React.FC = () => {
             Úsalo para desbloquear contenido sensible y confirmar acciones.
           </li>
           <li>
-            Si olvidas tu PIN, tendrás que restablecerlo autenticándote
+            Si olvidías tu PIN, tendrás que restablecerlo autenticándote
             nuevamente.
           </li>
         </ul>
@@ -224,3 +224,4 @@ export const PinSettings: React.FC = () => {
     </div>
   );
 };
+

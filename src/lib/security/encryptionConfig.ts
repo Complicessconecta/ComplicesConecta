@@ -7,7 +7,7 @@
  * - Para protección real, usar encriptación del lado del servidor + TLS
  * 
  * Mejoras de seguridad 2025-2026:
- * - Iteraciones PBKDF2 aumentadas a 600000 (recomendado NIST 2025+ para resistencia a GPU/ASIC brute-force)
+ * - Iteraciones PBKDF2 aumentadías a 600000 (recomendado NIST 2025+ para resistencia a GPU/ASIC brute-force)
  * - Password base mejorado con constante de aplicación + userId
  * - IV único y aleatorio garantizado por cada encrypt
  */
@@ -40,7 +40,7 @@ export const ENCRYPTION_CONFIG = {
  * - TRANSACTION_HISTORY: Historial de transacciones
  * - STAKING_INFO: Información de staking
  * - CHAT_MESSAGES: Mensajes de chat privados
- * - PRIVATE_NOTES: Notas privadas del usuario
+ * - PRIVATE_NOTES: Notas privadías del usuario
  * - USER_PREFERENCES: Preferencias del usuario
  * - SECURITY_SETTINGS: Configuraciones de seguridad
  */
@@ -86,3 +86,4 @@ export const ENCRYPTION_VERSION = "1.0" as const;
  * Versión fallback para navegadores sin Web Crypto API
  */
 export const ENCRYPTION_FALLBACK_VERSION = "fallback" as const;
+

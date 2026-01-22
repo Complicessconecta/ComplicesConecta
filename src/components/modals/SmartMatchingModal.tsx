@@ -569,7 +569,7 @@ const MatchAnalysisDetail: React.FC<{
                 💬 Rompehielos sugeridos
               </CardTitle>
               <CardDescription>
-                Preguntas pensadas para iniciar conversación con respeto,
+                Preguntas pensadías para iniciar conversación con respeto,
                 consentimiento y buena vibra.
               </CardDescription>
             </CardHeader>
@@ -622,3 +622,4 @@ const MatchAnalysisDetail: React.FC<{
 };
 
 export default SmartMatchingModal;
+

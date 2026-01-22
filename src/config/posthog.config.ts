@@ -141,7 +141,7 @@ export function setUserProperties(properties: Record<string, unknown>): void {
     }
 
     posthog.setPersonProperties(properties);
-    logger.debug("Propiedades de usuario actualizadas en PostHog");
+    logger.debug("Propiedades de usuario actualizadías en PostHog");
   } catch (error) {
     logger.error("Error estableciendo propiedades de usuario en PostHog", {
       error: error instanceof Error ? error.message : String(error),
@@ -192,3 +192,4 @@ declare global {
     };
   }
 }
+

@@ -114,7 +114,7 @@ export const generateBrowserFingerprint = (): BrowserFingerprint => {
 };
 
 /**
- * Generar hash combinado de todas las huellas
+ * Generar hash combinado de todías las huellas
  */
 export const generateCombinedHash = (
   canvasHash: string,
@@ -250,3 +250,4 @@ export const saveDigitalFingerprint = async (
     throw error;
   }
 };
+

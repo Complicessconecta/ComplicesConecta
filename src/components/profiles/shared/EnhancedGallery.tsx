@@ -178,7 +178,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
         });
       }
 
-      // Cargar imágenes privadas si es el propietario o tiene acceso
+      // Cargar imágenes privadías si es el propietario o tiene acceso
       let privateImages: unknown[] = [];
       if (isOwner) {
         const { data: privateData, error: privateError } = await supabase
@@ -189,7 +189,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
           .order("created_at", { ascending: false });
 
         if (privateError) {
-          logger.error("Error cargando imágenes privadas:", {
+          logger.error("Error cargando imágenes privadías:", {
             error: String(privateError),
           });
         } else {
@@ -367,7 +367,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
               className="text-white data-[state=active]:bg-primary"
             >
               <Lock className="w-4 h-4 mr-2" />
-              Privadas ({privateImages.length})
+              Privadías ({privateImages.length})
             </TabsTrigger>
           </TabsList>
 
@@ -432,7 +432,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                   onClick={() => setShowAll(true)}
                   className="bg-linear-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
                 >
-                  Ver todas las imágenes ({publicImages.length})
+                  Ver todías las imágenes ({publicImages.length})
                 </Button>
               </div>
             )}
@@ -458,7 +458,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                     : privateImages.slice(0, imagesPerPage)
                   ).map((image) => (
                     <div key={image.id} className="relative group">
-                      {/* Blur overlay para imágenes privadas */}
+                      {/* Blur overlay para imágenes privadías */}
                       <div className="relative overflow-hidden rounded-lg">
                         <img
                           src={
@@ -475,7 +475,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                             target.onerror = null;
                           }}
                         />
-                        {/* Candado icono para privadas - siempre visible */}
+                        {/* Candado icono para privadías - siempre visible */}
                         <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm rounded-full p-2 z-20">
                           <Lock
                             className="w-4 h-4 text-white"
@@ -521,7 +521,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                       onClick={() => setShowAll(true)}
                       className="bg-linear-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
                     >
-                      Ver todas las imágenes ({privateImages.length})
+                      Ver todías las imágenes ({privateImages.length})
                     </Button>
                   </div>
                 )}
@@ -598,3 +598,4 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
 };
 
 export default EnhancedGallery;
+

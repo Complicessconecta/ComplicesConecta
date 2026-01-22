@@ -226,7 +226,7 @@ class Neo4jService {
       }
 
       // Simular actualización
-      logger.info(`Actualizadas ${entities.length} interacciones para usuario ${userId}`);
+      logger.info(`Actualizadías ${entities.length} interacciones para usuario ${userId}`);
       
       // Invalidar cache
       this.cache.delete(`context_${userId}`);
@@ -325,3 +325,4 @@ class Neo4jService {
 // Exportar instancia singleton
 export const neo4jService = new Neo4jService();
 export default Neo4jService;
+

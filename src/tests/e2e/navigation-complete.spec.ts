@@ -1,7 +1,7 @@
 /**
  * Test E2E - Navegación completa de la aplicación
  * Fecha: 15 Noviembre 2025
- * Propósito: Verificar que todas las rutas principales funcionen correctamente
+ * Propósito: Verificar que todías las rutas principales funcionen correctamente
  */
 
 import { test, expect } from "@playwright/test";
@@ -152,3 +152,4 @@ test.describe("Navegación Completa de la Aplicación", () => {
     expect(criticalErrors.length).toBe(0);
   });
 });
+

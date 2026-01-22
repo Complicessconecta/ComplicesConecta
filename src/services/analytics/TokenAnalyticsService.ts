@@ -131,7 +131,7 @@ export class TokenAnalyticsService {
         return { success: false, error: "Supabase no está disponible" };
       }
 
-      // Obtener métricas reales de las tablas de Supabase con consultas optimizadas
+      // Obtener métricas reales de las tablas de Supabase con consultas optimizadías
       const results = await Promise.allSettled([
         // Obtener balances totales de usuarios (optimizado)
         supabase
@@ -641,3 +641,4 @@ export class TokenAnalyticsService {
 }
 
 export const tokenAnalyticsService = TokenAnalyticsService.getInstance();
+

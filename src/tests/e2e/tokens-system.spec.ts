@@ -189,7 +189,7 @@ test.describe("Tokens - Staking Básico", () => {
     expect(await stakedTokens.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test("debe calcular recompensas acumuladas", async ({ page }) => {
+  test("debe calcular recompensas acumuladías", async ({ page }) => {
     const rewards = await page.locator('[data-testid="rewards"]').first();
     expect(await rewards.count()).toBeGreaterThanOrEqual(0);
   });
@@ -215,3 +215,4 @@ test.describe("Tokens - Refunds", () => {
 });
 
 // TOTAL: 35 tests - SEMANA 4 ✅
+

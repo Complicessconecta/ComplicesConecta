@@ -1,5 +1,5 @@
 /**
- * AI Services - Utilidades Compartidas
+ * AI Services - Utilidades Compartidías
  *
  * Funciones helper reutilizables entre servicios AI
  * Evita duplicación de código entre AILayerService y PyTorchScoringModel
@@ -51,7 +51,7 @@ export function calculateDistance(
  * - Big Five: ya normalizado (0-1)
  *
  * @param features Features sin normalizar
- * @returns Features normalizadas (0-1)
+ * @returns Features normalizadías (0-1)
  */
 export interface NormalizedFeatures {
   likesGiven: number;
@@ -86,7 +86,7 @@ export function normalizeFeatures(
 
 /**
  * Algoritmo de predicción fallback cuando ML no está disponible
- * Usa weighted sum de features normalizadas
+ * Usa weighted sum de features normalizadías
  *
  * @param features Features de compatibilidad
  * @returns Score de compatibilidad (0-1)
@@ -115,7 +115,7 @@ export function fallbackPrediction(features: CompatibilityFeatures): number {
  * Útil para debugging y validación de datos
  *
  * @param features Features a validar
- * @returns true si son válidas, false si hay problemas
+ * @returns true si son válidías, false si hay problemas
  */
 export function validateFeatures(features: CompatibilityFeatures): boolean {
   const issues: string[] = [];
@@ -146,7 +146,7 @@ export function validateFeatures(features: CompatibilityFeatures): boolean {
 /**
  * Genera features dummy para testing y warmup
  *
- * @returns Features de ejemplo válidas
+ * @returns Features de ejemplo válidías
  */
 export function generateDummyFeatures(): CompatibilityFeatures {
   return {
@@ -161,3 +161,4 @@ export function generateDummyFeatures(): CompatibilityFeatures {
     swingerTraitsScore: 0.75,
   };
 }
+

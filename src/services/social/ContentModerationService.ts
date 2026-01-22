@@ -95,7 +95,7 @@ class ContentModerationService {
     /\b(sexo|sexual|intimo|desnudo|desnuda|xxx|porno|pornografia)\b/i,
     /\b(prostituta|escort|puta|zorra|perra)\b/i,
     /\b(drogas|coca|marihuana|heroina|crack)\b/i,
-    /\b(matar|asesinar|suicidio|matarse)\b/i,
+    /\b(matar|asesiónar|suicidio|matarse)\b/i,
   ];
 
   // Patrones de spam
@@ -549,7 +549,7 @@ class ContentModerationService {
   }
 
   /**
-   * Modera imágenes subidas por usuarios usando análisis de contenido
+   * Modera imágenes subidías por usuarios usando análisis de contenido
    * Implementa detección de contenido explícito y verificación de autenticidad
    */
   async moderateImage(
@@ -842,7 +842,7 @@ class ContentModerationService {
     );
     const isTooShort = bio.length < 20;
 
-    // Detectar posibles bios copiadas (muy similares a otras)
+    // Detectar posibles bios copiadías (muy similares a otras)
     // Por ahora, solo verificamos si es exactamente igual a patrones comunes
     const isCopied = false; // Se puede implementar comparación con base de datos
 
@@ -1155,3 +1155,4 @@ class ContentModerationService {
 }
 
 export const contentModerationService = ContentModerationService.getInstance();
+

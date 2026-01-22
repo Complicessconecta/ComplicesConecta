@@ -192,7 +192,7 @@ const MainProfileCardComponent = ({
               const nextIndex = (currentIndex + 1) % fallbackImages.length;
 
               if (currentIndex === -1 || nextIndex === 0) {
-                // Si no es una imagen de respaldo o ya probamos todas, usar fallback visual
+                // Si no es una imagen de respaldo o ya probamos todías, usar fallback visual
                 setImageError(true);
               } else {
                 // Intentar con la siguiente imagen de respaldo
@@ -398,3 +398,4 @@ export const MainProfileCard = memo(MainProfileCardComponent);
 
 // Export alias for backward compatibility
 export { MainProfileCard as ProfileCard };
+

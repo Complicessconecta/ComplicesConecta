@@ -431,7 +431,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
             <div>
               <div className="font-medium">Modo Demo Activo</div>
               <div className="text-xs text-yellow-300/80">
-                Las operaciones son simuladas. No se consumen tokens reales.
+                Las operaciones son simuladías. No se consumen tokens reales.
               </div>
             </div>
           </div>
@@ -442,3 +442,4 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
 };
 
 export default StakingWidget;
+

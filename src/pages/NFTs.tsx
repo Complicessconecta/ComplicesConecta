@@ -20,7 +20,7 @@ const NFTs: FC = () => {
     {
       step: "1. Crear Galería",
       description:
-        "Crea una galería de fotos en tu perfil con imágenes públicas o privadas",
+        "Crea una galería de fotos en tu perfil con imágenes públicas o privadías",
       icon: <Camera className="h-6 w-6" />,
       details: [
         "Sube tus imágenes favoritas",
@@ -125,7 +125,7 @@ const NFTs: FC = () => {
       price: "100 CMPX",
       description: "Mint con tokens CMPX para galerías premium",
       features: [
-        "Galerías ilimitadas",
+        "Galerías ilimitadías",
         "Hasta 20 imágenes por galería",
         "Metadata enriquecida",
         "Prioridad en verificación",
@@ -140,7 +140,7 @@ const NFTs: FC = () => {
       description: "Mint con tokens GTK para colecciones profesionales",
       features: [
         "Colecciones profesionales",
-        "Galerías ilimitadas",
+        "Galerías ilimitadías",
         "Metadata completa",
         "Verificación prioritaria",
         "Herramientas de creador",
@@ -199,13 +199,13 @@ const NFTs: FC = () => {
             className="text-center mb-16"
           >
             <Badge className="bg-linear-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
-              🎨 GALERÍAS NFT-VERIFICADAS
+              🎨 GALERÍAS NFT-VERIFICAdías
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Galerías
               <span className="bg-linear-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
                 {" "}
-                NFT-Verificadas
+                NFT-Verificadías
               </span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
@@ -586,3 +586,4 @@ const NFTs: FC = () => {
 };
 
 export default NFTs;
+

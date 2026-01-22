@@ -7,7 +7,7 @@ export const explicitInterests = [
   "Hard Swap",
   "Clubs Exclusivos",
   "Eventos VIP",
-  "Fiestas Privadas",
+  "Fiestas Privadías",
   "Tantra",
   "BDSM",
   "Poliamor",
@@ -15,3 +15,4 @@ export const explicitInterests = [
   "Hotwife",
   "Lifestyle Swinger",
 ] as const;
+

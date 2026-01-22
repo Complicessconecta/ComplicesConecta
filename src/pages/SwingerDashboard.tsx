@@ -35,7 +35,7 @@ const SwingerDashboard = () => {
       icon: MessageSquare,
       title: "Chat íntimo Encriptado",
       description:
-        "Conversaciones privadas entre parejas con encriptación militar para máxima discreción",
+        "Conversaciones privadías entre parejas con encriptación militar para máxima discreción",
       status: "Activo",
     },
     {
@@ -47,9 +47,9 @@ const SwingerDashboard = () => {
     },
     {
       icon: Calendar,
-      title: "Fiestas Privadas VIP",
+      title: "Fiestas Privadías VIP",
       description:
-        "Acceso exclusivo a eventos swinger, even privadas y clubs de intercambio",
+        "Acceso exclusivo a eventos swinger, even privadías y clubs de intercambio",
       status: "Premium",
     },
   ];
@@ -90,7 +90,7 @@ const SwingerDashboard = () => {
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Parejas Registradas
+                  Parejas Registradías
                 </CardTitle>
                 <Heart className="h-4 w-4 text-primary" fill="currentColor" />
               </CardHeader>
@@ -168,7 +168,7 @@ const SwingerDashboard = () => {
                   {swingerStats.monthlyEvents}
                 </div>
                 <p className="text-xs text-white/80">
-                  Fiestas privadas y encuentros
+                  Fiestas privadías y encuentros
                 </p>
               </CardContent>
             </Card>
@@ -185,7 +185,7 @@ const SwingerDashboard = () => {
                   {swingerStats.satisfactionRate}/5
                 </div>
                 <p className="text-xs text-white/80">
-                  Experiencias swinger valoradas
+                  Experiencias swinger valoradías
                 </p>
               </CardContent>
             </Card>
@@ -294,7 +294,7 @@ const SwingerDashboard = () => {
                           feature.title === "Encuentros Gelocalizados"
                         ) {
                           navigate("/discover");
-                        } else if (feature.title === "Fiestas Privadas VIP") {
+                        } else if (feature.title === "Fiestas Privadías VIP") {
                           navigate("/events");
                         }
                       }}
@@ -336,7 +336,7 @@ const SwingerDashboard = () => {
             <CardContent className="text-center space-y-6">
               <p className="text-white/90 text-lg max-w-2xl mx-auto">
                 Accede a la élite swinger: fiestas VIP exclusivas, parejas
-                verificadas premium y experiencias íntimas que transformarán tu
+                verificadías premium y experiencias íntimas que transformarán tu
                 vida sexual.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -396,3 +396,4 @@ const SwingerDashboard = () => {
 };
 
 export default SwingerDashboard;
+

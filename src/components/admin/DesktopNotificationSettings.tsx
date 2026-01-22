@@ -51,7 +51,7 @@ export const DesktopNotificationSettings: React.FC = () => {
 
       toast({
         title: "✅ Permisos otorgados",
-        description: "Las notificaciones de escritorio están habilitadas",
+        description: "Las notificaciones de escritorio están habilitadías",
       });
     } else {
       toast({
@@ -137,7 +137,7 @@ export const DesktopNotificationSettings: React.FC = () => {
             <BellOff className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
             <div>
               <h3 className="font-semibold text-yellow-900 dark:text-yellow-200">
-                Notificaciones no soportadas
+                Notificaciones no soportadías
               </h3>
               <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
                 Tu navegador no soporta notificaciones de escritorio. Actualiza
@@ -307,3 +307,4 @@ export const DesktopNotificationSettings: React.FC = () => {
 };
 
 export default DesktopNotificationSettings;
+

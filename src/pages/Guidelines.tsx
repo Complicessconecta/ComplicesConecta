@@ -208,7 +208,7 @@ const GuidelinesPage = () => {
                     Fotos de Perfil
                   </h3>
                   <ul className="space-y-2 text-gray-700">
-                    <li> Usa fotos claras y recientes (mximo 2 aos)</li>
+                    <li> Usa fotos claras y recientes (mximo 2 años)</li>
                     <li> Incluye al menos una foto de rostro visible</li>
                     <li> Las fotos deben ser tuyas o de tu pareja</li>
                     <li>
@@ -226,7 +226,7 @@ const GuidelinesPage = () => {
                     <li> Sé respetuoso desde el primer mensaje</li>
                     <li> No envíes contenido no solicitado</li>
                     <li> Respeta si alguien no responde o declina</li>
-                    <li> Mantén las conversaciones apropiadas al contexto</li>
+                    <li> Mantén las conversaciones apropiadías al contexto</li>
                     <li> No compartas información de contacto de terceros</li>
                   </ul>
                 </div>
@@ -385,3 +385,4 @@ const GuidelinesPage = () => {
 };
 
 export default GuidelinesPage;
+

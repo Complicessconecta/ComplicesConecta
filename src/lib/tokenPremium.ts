@@ -39,7 +39,7 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
     id: "premium_chat",
     name: "Chat Premium",
     description:
-      "Mensajes ilimitados, confirmación de lectura y funciones avanzadas",
+      "Mensajes ilimitados, confirmación de lectura y funciones avanzadías",
     cost: 100,
     duration: 30,
     category: "chat",
@@ -49,7 +49,7 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
     id: "advanced_filters",
     name: "Filtros Avanzados",
     description:
-      "Búsquedas más precisas por edad, ubicación, intereses y preferencias",
+      "Búsquedías más precisas por edad, ubicación, intereses y preferencias",
     cost: 75,
     duration: 30,
     category: "discovery",
@@ -86,7 +86,7 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
   {
     id: "profile_boost",
     name: "Impulso de Perfil",
-    description: "Tu perfil aparece primero en búsquedas y descubrimiento",
+    description: "Tu perfil aparece primero en búsquedías y descubrimiento",
     cost: 60,
     duration: 7,
     category: "profile",
@@ -173,7 +173,7 @@ export function purchasePremiumFeature(
 }
 
 /**
- * Obtiene todas las funciones premium del usuario
+ * Obtiene todías las funciones premium del usuario
  */
 export function getUserPremiumFeatures(userId: string): UserPremiumAccess[] {
   const userAccess = userPremiumAccess.get(userId) || [];
@@ -226,7 +226,7 @@ export function getPremiumStats(userId: string) {
 }
 
 /**
- * Verifica si funciones premium están habilitadas
+ * Verifica si funciones premium están habilitadías
  */
 export function isPremiumEnabled(): boolean {
   // En beta: habilitado con tokens, sin Stripe
@@ -243,7 +243,7 @@ export function isPremiumEnabled(): boolean {
 export function getPremiumBetaMessage(): string {
   return (
     "Durante la fase beta, las funciones premium se pueden adquirir únicamente con tokens CMPX. " +
-    "No se requieren pagos con tarjeta. ¡Aprovecha para probar todas las funciones!"
+    "No se requieren pagos con tarjeta. ¡Aprovecha para probar todías las funciones!"
   );
 }
 
@@ -268,3 +268,4 @@ export function initializeMockPremiumData() {
     `🪙 Payment method: ${import.meta.env.VITE_APP_PHASE === "beta" ? "CMPX Tokens" : "Stripe + Tokens"}`,
   );
 }
+

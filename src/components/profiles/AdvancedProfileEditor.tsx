@@ -67,7 +67,7 @@ const LOOKING_FOR_OPTIONS = [
   "Full swap",
   "Juego suave / voyeur",
   "Eventos en clubs swinger",
-  "Citas privadas en hotel",
+  "Citas privadías en hotel",
   "Tríos y más dinámicas",
 ];
 
@@ -733,3 +733,4 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
 };
 
 export default AdvancedProfileEditor;
+

@@ -500,7 +500,7 @@ export const AlertConfigPanel: React.FC = () => {
         <div className="text-center py-12">
           <ExclamationTriangleIcon className="h-12 w-12 text-gray-500 mx-auto mb-3" />
           <p className="text-gray-400">
-            No hay alertas configuradas para {activeTab}
+            No hay alertas configuradías para {activeTab}
           </p>
           <Button
             onClick={() => setShowAddDialog(true)}
@@ -789,3 +789,4 @@ export const AlertConfigPanel: React.FC = () => {
 };
 
 export default AlertConfigPanel;
+

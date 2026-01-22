@@ -38,7 +38,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
     {
       icon: Calendar,
       title: "Eventos VIP Exclusivos",
-      description: "Acceso a fiestas privadas y encuentros premium",
+      description: "Acceso a fiestas privadías y encuentros premium",
       color: "text-yellow-400",
     },
     {
@@ -149,3 +149,4 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 };
 
 export default PremiumModal;
+

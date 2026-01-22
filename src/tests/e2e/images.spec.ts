@@ -95,14 +95,14 @@ test.describe("Sistema de Imágenes", () => {
     await expect(page.locator('[data-testid="gallery-image"]')).toBeVisible();
   });
 
-  test("debe solicitar acceso a imágenes privadas", async ({ page }) => {
+  test("debe solicitar acceso a imágenes privadías", async ({ page }) => {
     await page.goto("/profiles");
 
-    // Acceder a perfil con imágenes privadas
+    // Acceder a perfil con imágenes privadías
     await page.locator('[data-testid="profile-card"]').first().click();
     await page.click('[data-testid="gallery-tab"]');
 
-    // Intentar ver imágenes privadas
+    // Intentar ver imágenes privadías
     await page.click('[data-testid="private-images-section"]');
 
     // Verificar solicitud de acceso
@@ -308,3 +308,4 @@ test.describe("Sistema de Imágenes", () => {
     );
   });
 });
+

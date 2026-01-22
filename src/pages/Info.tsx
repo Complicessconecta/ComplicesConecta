@@ -39,7 +39,7 @@ const Info = () => {
       icon: <Star className="h-6 w-6" />,
       title: "Experiencia Premium",
       description:
-        "Interfaz elegante, eventos exclusivos y funcionalidades avanzadas.",
+        "Interfaz elegante, eventos exclusivos y funcionalidades avanzadías.",
       color: "text-yellow-400",
     },
     {
@@ -232,3 +232,4 @@ const Info = () => {
 };
 
 export default Info;
+

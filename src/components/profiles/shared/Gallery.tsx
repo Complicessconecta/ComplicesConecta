@@ -131,8 +131,8 @@ const Gallery = ({
           <h2 className="text-2xl font-bold text-white mb-1">Galería</h2>
           <p className="text-white/70">
             {isOwner
-              ? "Gestiona tus fotos públicas y privadas"
-              : "Explora las fotos compartidas"}
+              ? "Gestiona tus fotos públicas y privadías"
+              : "Explora las fotos compartidías"}
           </p>
         </div>
 
@@ -176,7 +176,7 @@ const Gallery = ({
             disabled={!isOwner && !hasGalleryAccess}
           >
             <Lock className="h-4 w-4" />
-            Privadas ({isOwner || hasGalleryAccess ? privateImages.length : "?"}
+            Privadías ({isOwner || hasGalleryAccess ? privateImages.length : "?"}
             )
           </TabsTrigger>
         </TabsList>
@@ -263,7 +263,7 @@ const Gallery = ({
                 Contenido Privado
               </h3>
               <p className="text-white/70 mb-4">
-                Necesitas una invitación aceptada para ver las fotos privadas de
+                Necesitas una invitación aceptada para ver las fotos privadías de
                 este usuario.
               </p>
               <InvitationDialog
@@ -280,12 +280,12 @@ const Gallery = ({
             <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
               <Lock className="h-16 w-16 mx-auto mb-4 text-white/50" />
               <h3 className="text-xl font-semibold text-white mb-2">
-                No hay fotos privadas
+                No hay fotos privadías
               </h3>
               <p className="text-white/70">
                 {isOwner
-                  ? "Sube fotos privadas para compartir solo con tus conexiones."
-                  : "Este usuario no ha compartido fotos privadas contigo aún."}
+                  ? "Sube fotos privadías para compartir solo con tus conexiones."
+                  : "Este usuario no ha compartido fotos privadías contigo aún."}
               </p>
             </Card>
           ) : (
@@ -444,3 +444,4 @@ const Gallery = ({
 };
 
 export default memo(Gallery);
+

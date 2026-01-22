@@ -60,7 +60,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
     };
   }, []);
 
-  // Funciones puras memoizadas
+  // Funciones puras memoizadías
   const getStatusColor = useCallback(
     (status: InvitationStatus | null): string => {
       switch (status) {
@@ -318,7 +318,7 @@ export default RequestCard;
  * ✅ Tipos Estrictos:
  * - Importados tipos de Supabase Database
  * - Definidos tipos InvitationStatus y SafeProfile
- * - Eliminadas referencias a campos inexistentes (avatar_url)
+ * - Eliminadías referencias a campos inexistentes (avatar_url)
  *
  * ✅ Optional Chaining y Null-Safe:
  * - Reemplazado || por ?? donde corresponde
@@ -328,7 +328,7 @@ export default RequestCard;
  * ✅ Memoización y Performance:
  * - useCallback en todos los handlers async
  * - useCallback en funciones puras (getStatusColor, getStatusText, formatDate)
- * - Prevención de operaciones duplicadas con isLoading check
+ * - Prevención de operaciones duplicadías con isLoading check
  *
  * ✅ Cleanup de Estados Async:
  * - AbortController para cancelar operaciones
@@ -346,3 +346,4 @@ export default RequestCard;
  * - Verificación is_verified antes de mostrar badge
  * - Manejo de errores en formatDate con try/catch
  */
+

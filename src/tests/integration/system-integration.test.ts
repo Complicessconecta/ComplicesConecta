@@ -102,7 +102,7 @@ describe("Sistema de Integración Completo", () => {
 
       try {
         const stats = redisCache.getStats();
-        testLogger.info("Estadísticas del cache obtenidas", stats);
+        testLogger.info("Estadísticas del cache obtenidías", stats);
 
         expect(stats).toHaveProperty("isRedisAvailable");
         expect(stats).toHaveProperty("memoryItems");
@@ -134,7 +134,7 @@ describe("Sistema de Integración Completo", () => {
 
         // Obtener métricas del usuario
         const userMetrics = analyticsMetrics.getUserMetrics(userId);
-        testLogger.info("Métricas del usuario obtenidas", userMetrics);
+        testLogger.info("Métricas del usuario obtenidías", userMetrics);
 
         expect(userMetrics).toBeTruthy();
         expect(userMetrics?.userId).toBe(userId);
@@ -153,7 +153,7 @@ describe("Sistema de Integración Completo", () => {
 
       try {
         const realTimeMetrics = analyticsMetrics.getRealTimeMetrics();
-        testLogger.info("Métricas en tiempo real obtenidas", realTimeMetrics);
+        testLogger.info("Métricas en tiempo real obtenidías", realTimeMetrics);
 
         expect(realTimeMetrics).toHaveProperty("activeUsers");
         expect(realTimeMetrics).toHaveProperty("recentEvents");
@@ -267,7 +267,7 @@ describe("Sistema de Integración Completo", () => {
       // DEPRECATED: ML matching moved to respaldo_auditoria
       // try {
       //   const modelStats = mlMatchingEngine.getModelStats();
-      //   testLogger.info('Estadísticas del modelo ML obtenidas', modelStats);
+      //   testLogger.info('Estadísticas del modelo ML obtenidías', modelStats);
 
       //   expect(modelStats).toHaveProperty('weights');
       //   expect(modelStats).toHaveProperty('trainingExamples');
@@ -308,7 +308,7 @@ describe("Sistema de Integración Completo", () => {
 
       try {
         const backupStats = getBackupStats();
-        testLogger.info("Estadísticas de backup obtenidas", backupStats);
+        testLogger.info("Estadísticas de backup obtenidías", backupStats);
 
         expect(backupStats).toHaveProperty("total");
         expect(backupStats).toHaveProperty("successful");
@@ -360,7 +360,7 @@ describe("Sistema de Integración Completo", () => {
 
         if (userMetrics) {
           await redisCache.set(cacheKey, userMetrics, CacheTTL.MEDIUM);
-          testLogger.info("Métricas cacheadas exitosamente");
+          testLogger.info("Métricas cacheadías exitosamente");
 
           // Recuperar del cache
           const cachedMetrics = await redisCache.get(cacheKey);
@@ -490,7 +490,7 @@ describe("Sistema de Integración Completo", () => {
         ).length;
         const failed = results.filter((r) => r.status === "rejected").length;
 
-        testLogger.info("Operaciones concurrentes completadas", {
+        testLogger.info("Operaciones concurrentes completadías", {
           successful,
           failed,
         });
@@ -542,3 +542,4 @@ describe("Sistema de Integración Completo", () => {
     });
   });
 });
+

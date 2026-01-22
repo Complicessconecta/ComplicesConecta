@@ -307,7 +307,7 @@ export class DesktopNotificationService {
 
       this.showNotification({
         title: "✅ Test Notification",
-        body: "Notificaciones configuradas correctamente",
+        body: "Notificaciones configuradías correctamente",
         tag: "test",
         icon: "/icon-success.png",
       });
@@ -360,3 +360,4 @@ export class DesktopNotificationService {
 
 // Exportar instancia singleton
 export const desktopNotificationService = new DesktopNotificationService();
+

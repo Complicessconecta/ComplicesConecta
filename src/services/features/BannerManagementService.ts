@@ -65,7 +65,7 @@ export type UpdateBannerInput = Partial<CreateBannerInput>;
 
 class BannerManagementServiceClass {
   /**
-   * Obtener todas las configuraciones de banners
+   * Obtener todías las configuraciones de banners
    */
   async getAllBanners(): Promise<BannerConfig[]> {
     try {
@@ -308,3 +308,4 @@ class BannerManagementServiceClass {
 }
 
 export const BannerManagementService = new BannerManagementServiceClass();
+

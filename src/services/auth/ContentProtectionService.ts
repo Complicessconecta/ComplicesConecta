@@ -157,7 +157,7 @@ export class ContentProtectionService {
 
         toast.error("⚠️ CAPTURA DE PANTALLA NO PERMITIDA", {
           description:
-            "Por protección legal (Ley Olimpia), las capturas de pantalla están deshabilitadas. Violación puede resultar en suspensión de cuenta o acciones legales.",
+            "Por protección legal (Ley Olimpia), las capturas de pantalla están deshabilitadías. Violación puede resultar en suspensión de cuenta o acciones legales.",
           duration: 5000,
         });
 
@@ -241,7 +241,7 @@ export class ContentProtectionService {
 
         toast.error("🔒 ACCESO RESTRINGIDO", {
           description:
-            "Las herramientas de desarrollador están deshabilitadas para proteger el contenido de los usuarios. Cumplimiento: Ley Olimpia (México)",
+            "Las herramientas de desarrollador están deshabilitadías para proteger el contenido de los usuarios. Cumplimiento: Ley Olimpia (México)",
           duration: 5000,
         });
       }
@@ -519,7 +519,7 @@ export class ContentProtectionService {
 
     toast.error("⚠️ VIOLACIÓN DETECTADA", {
       description:
-        "Se ha reportado una violación de las políticas de seguridad.\n\nTu cuenta será revisada por el equipo de moderación.\n\nViolaciones repetidas resultarán en suspensión permanente.",
+        "Se ha reportado una violación de las políticas de seguridad.\n\nTu cuenta será revisada por el equipo de moderación.\n\nViolaciones repetidías resultarán en suspensión permanente.",
       duration: 10000,
     });
   }
@@ -542,3 +542,4 @@ export class ContentProtectionService {
 }
 
 export const contentProtectionService = ContentProtectionService.getInstance();
+

@@ -71,9 +71,9 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({
               <div className="flex items-start gap-2">
                 <Music className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
-                  <p className="font-medium">Experiencias Curadas</p>
+                  <p className="font-medium">Experiencias Curadías</p>
                   <p className="text-xs text-zinc-400">
-                    Playlists, performances y dinámicas guiadas por hosts
+                    Playlists, performances y dinámicas guiadías por hosts
                     expertos.
                   </p>
                 </div>
@@ -130,3 +130,4 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({
     </AnimatePresence>
   );
 };
+

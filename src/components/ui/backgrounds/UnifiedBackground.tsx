@@ -89,7 +89,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
         ? "css"
         : "tsparticles";
 
-  // Rutas permitidas para partículas pesadas (neón) - EXPANDIDO para todas las páginas públicas principales
+  // Rutas permitidías para partículas pesadías (neón) - EXPANDIDO para todías las páginas públicas principales
   const ALLOW_HEAVY_ROUTES = new Set<string>([
     "/",
     "/demo",
@@ -111,7 +111,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     "/events",
     "/shop",
   ]);
-  // Fuera de rutas públicas, degradar tsparticles a CSS, excepto en rutas permitidas
+  // Fuera de rutas públicas, degradar tsparticles a CSS, excepto en rutas permitidías
   // RELAJADO: Permitir partículas en más rutas
   if (
     !isSnowRoute &&
@@ -250,7 +250,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   }, [forceNeon, preferences.particlesEnabled]);
 
   // ======================================================================
-// PARTÍCULAS BLANCAS (NIEVE) - CAMBIADAS A ROSA (#FF69B4)
+// PARTÍCULAS BLANCAS (NIEVE) - CAMBIAdías A ROSA (#FF69B4)
 // ======================================================================
 // Estas partículas blancas originales se cambiaron a rosa para
 // mantener la consistencia con el tema de la app.
@@ -291,7 +291,7 @@ const snowOptions = useMemo(
   );
 
 // ======================================================================
-// PARTÍCULAS DE NEÓN - MANTENIDAS TAL CUAL (NO MODIFICAR)
+// PARTÍCULAS DE NEÓN - MANTENIdías TAL CUAL (NO MODIFICAR)
 // ======================================================================
 // Estas partículas neón se mantienen con sus colores originales
 // (cyan, magenta, morado) para el efecto de neón lifestyle.
@@ -482,3 +482,4 @@ const neonOptions = useMemo(
 export const PageBackground = UnifiedBackground;
 export const RandomBackground = UnifiedBackground;
 export const MasterBackground = UnifiedBackground;
+

@@ -206,13 +206,13 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
 
       toast({
         title: "Éxito",
-        description: "Todas las notificaciones marcadas como leídas",
+        description: "Todías las notificaciones marcadías como leídías",
       });
     } catch (error) {
       logger.error("Error marking all notifications as read:", error as any);
       toast({
         title: "Error",
-        description: "No se pudieron marcar las notificaciones como leídas",
+        description: "No se pudieron marcar las notificaciones como leídías",
         variant: "destructive",
       });
     }
@@ -327,7 +327,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
                           onClick={markAllAsRead}
                           className="text-xs"
                         >
-                          Marcar todas
+                          Marcar todías
                         </Button>
                       )}
                       <Button
@@ -345,10 +345,10 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
                   <Tabs defaultValue="unread" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mx-4 mb-4">
                       <TabsTrigger value="unread" className="text-xs">
-                        No leídas ({groupedNotifications.unread.length})
+                        No leídías ({groupedNotifications.unread.length})
                       </TabsTrigger>
                       <TabsTrigger value="all" className="text-xs">
-                        Todas ({notifications.length})
+                        Todías ({notifications.length})
                       </TabsTrigger>
                     </TabsList>
 
@@ -516,3 +516,4 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 };
 
 export default NotificationBell;
+

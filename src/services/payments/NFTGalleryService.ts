@@ -1,5 +1,5 @@
 /**
- * NFTGalleryService - Servicio para Galerías NFT-Verificadas
+ * NFTGalleryService - Servicio para Galerías NFT-Verificadías
  *
  * Feature Innovadora: Perfiles/galerías como NFTs mintados con GTK
  * - Mint NFTs con GTK tokens
@@ -461,3 +461,4 @@ export class NFTGalleryService {
 }
 
 export const nftGalleryService = NFTGalleryService.getInstance();
+

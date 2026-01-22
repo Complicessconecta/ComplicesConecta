@@ -2,7 +2,7 @@
  * Utilidades criptográficas para conversión de datos
  * 
  * Funciones auxiliares para convertir entre ArrayBuffer y Base64
- * Usadas por el sistema de encriptación
+ * Usadías por el sistema de encriptación
  */
 
 /**
@@ -77,3 +77,4 @@ export function arrayBufferLikeToArrayBuffer(bufferLike: ArrayBufferLike): Array
   new Uint8Array(arrayBuffer).set(uint8Array);
   return arrayBuffer;
 }
+

@@ -5,7 +5,7 @@ test.describe("Login de Administrador", () => {
     await page.goto("/auth");
   });
 
-  test("debe permitir login de admin con credenciales válidas", async ({
+  test("debe permitir login de admin con credenciales válidías", async ({
     page,
   }) => {
     // Cambiar a modo login
@@ -199,3 +199,4 @@ test.describe("Login de Administrador", () => {
     await expect(page).not.toHaveURL(/\/admin/);
   });
 });
+

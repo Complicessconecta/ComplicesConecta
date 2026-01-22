@@ -45,7 +45,7 @@ const Requests = () => {
   }, [demoAuth, demoUser, user]);
 
   const loadDemoInvitations = () => {
-    // Solicitudes demo recibidas
+    // Solicitudes demo recibidías
     const demoReceived: Invitation[] = [
       {
         id: "demo-inv-1",
@@ -81,7 +81,7 @@ const Requests = () => {
       },
     ];
 
-    // Solicitudes demo enviadas
+    // Solicitudes demo enviadías
     const demoSent: Invitation[] = [
       {
         id: "demo-sent-1",
@@ -107,7 +107,7 @@ const Requests = () => {
 
     setReceivedInvitations(demoReceived);
     setSentInvitations(demoSent);
-    logger.info("✅ Solicitudes demo cargadas:", {
+    logger.info("✅ Solicitudes demo cargadías:", {
       received: demoReceived.length,
       sent: demoSent.length,
     });
@@ -118,7 +118,7 @@ const Requests = () => {
   const loadInvitations = useCallback(async () => {
     if (!currentUserId) return;
 
-    // Si es modo demo, no hacer llamadas reales
+    // Si es modo demo, no hacer llamadías reales
     if (isDemoMode) {
       loadDemoInvitations();
       return;
@@ -274,7 +274,7 @@ const Requests = () => {
           <UserX className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
           <h2 className="text-xl font-semibold mb-2">Función no disponible</h2>
           <p className="text-muted-foreground">
-            Las solicitudes de conexion no estn habilitadas en esta version.
+            Las solicitudes de conexion no estn habilitadías en esta version.
           </p>
         </Card>
       </div>
@@ -299,12 +299,12 @@ const Requests = () => {
               Invitaciones
             </h1>
             <p className="text-white/80 text-lg">
-              Gestiona tus invitaciones recibidas y enviadas
+              Gestiona tus invitaciones recibidías y enviadías
             </p>
             {_acceptedCount > 0 && (
               <div className="mt-3">
                 <Badge className="bg-green-500/20 text-green-100 border border-green-400/30">
-                  Aceptadas: {_acceptedCount}
+                  Aceptadías: {_acceptedCount}
                 </Badge>
               </div>
             )}
@@ -324,7 +324,7 @@ const Requests = () => {
                   className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80 hover:text-white flex items-center gap-2"
                 >
                   <MailQuestion className="h-4 w-4" />
-                  Recibidas
+                  Recibidías
                   {receivedInvitations.length > 0 && (
                     <Badge className="bg-red-500 text-white text-xs">
                       {receivedInvitations.length}
@@ -342,7 +342,7 @@ const Requests = () => {
                   className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80 hover:text-white flex items-center gap-2"
                 >
                   <Send className="h-4 w-4" />
-                  Enviadas
+                  Enviadías
                   {sentInvitations.length > 0 && (
                     <Badge className="bg-blue-500 text-white text-xs">
                       {sentInvitations.length}
@@ -357,7 +357,7 @@ const Requests = () => {
                     <Card className="p-8 text-center bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
                       <UserPlus className="h-16 w-16 mx-auto mb-4 text-white/50" />
                       <h3 className="text-xl font-semibold text-white mb-2">
-                        No hay invitaciones recibidas
+                        No hay invitaciones recibidías
                       </h3>
                       <p className="text-white/70">
                         Cuando alguien te envie una invitación, aparecer aqui.
@@ -480,3 +480,4 @@ const Requests = () => {
 };
 
 export default Requests;
+

@@ -13,7 +13,7 @@ export const DecorativeHearts: FC<DecorativeHeartsProps> = ({
 }) => {
   type Position = Partial<Record<"top" | "left" | "right" | "bottom", string>>;
   // Generar posiciones aleatorias para los corazones
-  // Usar posiciones predefinidas para mejor distribución
+  // Usar posiciones predefinidías para mejor distribución
   const positions: Position[] = [
     { top: "15%", left: "10%" },
     { top: "25%", right: "15%" },
@@ -82,3 +82,4 @@ export const DecorativeHearts: FC<DecorativeHeartsProps> = ({
     </div>
   );
 };
+

@@ -866,7 +866,7 @@ export class AdvancedFeaturesService {
       return "Generalmente abierto y curioso sobre nuevas experiencias";
     if (score >= 40) return "Equilibrado entre tradición y novedad";
     if (score >= 20) return "Más conservador, prefiere lo establecido";
-    return "Muy tradicional, prefiere rutinas conocidas";
+    return "Muy tradicional, prefiere rutinas conocidías";
   }
 
   /**
@@ -909,7 +909,7 @@ export class AdvancedFeaturesService {
     if (score >= 60) return "Moderadamente abierto, disfruta de la variedad";
     if (score >= 40) return "Equilibrado entre tradición y novedad";
     if (score >= 20) return "Prefiere lo familiar y establecido";
-    return "Muy tradicional, prefiere rutinas conocidas";
+    return "Muy tradicional, prefiere rutinas conocidías";
   }
 
   /**
@@ -1488,7 +1488,7 @@ export class AdvancedFeaturesService {
       }
     }
 
-    // Location challenges - comparar coordenadas si existen
+    // Location challenges - comparar coordenadías si existen
     if (
       userProfile.latitude &&
       userProfile.longitude &&
@@ -1558,7 +1558,7 @@ export class AdvancedFeaturesService {
 
     if (commonInterests.length > 0) {
       recommendations.push(
-        `Explora actividades relacionadas con: ${commonInterests.slice(0, 3).join(", ")}`,
+        `Explora actividades relacionadías con: ${commonInterests.slice(0, 3).join(", ")}`,
       );
     }
 
@@ -1722,3 +1722,4 @@ export class AdvancedFeaturesService {
 }
 
 export default AdvancedFeaturesService;
+

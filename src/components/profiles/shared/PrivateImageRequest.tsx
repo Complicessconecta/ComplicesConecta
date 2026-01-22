@@ -41,7 +41,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Log de la solicitud
-      logger.info("Solicitud de acceso a imágenes privadas enviada", {
+      logger.info("Solicitud de acceso a imágenes privadías enviada", {
         profileId,
         profileName,
         profileType,
@@ -50,7 +50,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
 
       toast({
         title: "Solicitud enviada",
-        description: `Tu solicitud de acceso a las imágenes privadas de ${profileName} ha sido enviada.`,
+        description: `Tu solicitud de acceso a las imágenes privadías de ${profileName} ha sido enviada.`,
       });
 
       onRequestSent?.();
@@ -80,10 +80,10 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
             <Lock className="h-8 w-8 text-white" />
           </div>
           <h3 className="text-lg font-semibold text-white mb-2">
-            Imágenes Privadas
+            Imágenes Privadías
           </h3>
           <p className="text-sm text-white/80">
-            {profileName} tiene imágenes privadas. Envía una solicitud para
+            {profileName} tiene imágenes privadías. Envía una solicitud para
             acceder a ellas.
           </p>
         </div>
@@ -134,7 +134,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
             <div className="text-xs text-white/80">
               <p className="font-medium mb-1">Política de Privacidad</p>
               <p>
-                Las imágenes privadas son contenido exclusivo que requiere
+                Las imágenes privadías son contenido exclusivo que requiere
                 autorización. El usuario puede aceptar o rechazar tu solicitud.
                 Respeta siempre las decisiones de otros miembros de la
                 comunidad.
@@ -148,3 +148,4 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
 };
 
 export default PrivateImageRequest;
+

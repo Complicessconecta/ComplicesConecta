@@ -4,7 +4,7 @@
  * Feature Innovadora: Usa Neo4j + IA para "friends-of-friends" emocional
  * - Análisis de conexiones emocionales en grafo
  * - Predicción de compatibilidad basada en red social
- * - Recomendaciones basadas en patrones de comportamiento
+ * - Recomendaciones basadías en patrones de comportamiento
  *
  * Impacto: Matches +40%, único con graphs seguros
  *
@@ -514,3 +514,4 @@ class PredictiveMatchingService {
 
 export const predictiveMatchingService =
   PredictiveMatchingService.getInstance();
+

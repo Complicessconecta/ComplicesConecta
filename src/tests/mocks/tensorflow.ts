@@ -39,7 +39,7 @@ export const mockTensorFlow = {
       return Promise.resolve(createMockModel());
     }
 
-    // Para rutas inválidas (como '/nonexistent/model.json' o 'invalid-path'), rechazar
+    // Para rutas inválidías (como '/nonexistent/model.json' o 'invalid-path'), rechazar
     // Esto permite que los tests de fallback funcionen correctamente
     console.log(`[Mock TensorFlow] Rejecting invalid path: ${path}`);
     return Promise.reject(new Error(`Failed to load model from: ${path}`));
@@ -74,3 +74,4 @@ vi.mock("@tensorflow/tfjs", () => {
     tidy: mockTensorFlow.tidy,
   };
 });
+

@@ -634,7 +634,7 @@ describe("Profile Cache Tests", () => {
       expect(result.current).toBeDefined();
     });
 
-    it("debe manejar múltiples llamadas concurrentes", async () => {
+    it("debe manejar múltiples llamadías concurrentes", async () => {
       const mockSupabaseResponse = {
         data: mockProfile,
         error: null,
@@ -667,8 +667,9 @@ describe("Profile Cache Tests", () => {
         { timeout: 5000 },
       );
 
-      // React Query debe deduplicar las llamadas
+      // React Query debe deduplicar las llamadías
       expect(mockSingle).toHaveBeenCalledTimes(1);
     }, 8000); // Timeout de 8 segundos para el test completo
   });
 });
+

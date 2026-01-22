@@ -171,7 +171,7 @@ export class IntelligentAutomationService {
       },
       {
         name: "Sugerencias de Match Inteligentes",
-        description: "Crea sugerencias de match basadas en compatibilidad",
+        description: "Crea sugerencias de match basadías en compatibilidad",
         trigger: {
           type: "profile_updated",
           config: {},
@@ -827,3 +827,4 @@ IntelligentAutomationService.initialize().catch((error) => {
 });
 
 export default IntelligentAutomationService;
+

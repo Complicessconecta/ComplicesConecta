@@ -31,7 +31,7 @@ const Donations = () => {
       benefits: [
         "Todos los beneficios del Apoyo Basico",
         "100 tokens CMPX de regalo",
-        "Perfil destacado por 30 das",
+        "Perfil destacado por 30 días",
         "Acceso a eventos exclusivos",
         "Chat directo con desarrolladores",
       ],
@@ -47,7 +47,7 @@ const Donations = () => {
         "300 tokens CMPX de regalo",
         "Perfil destacado por 90 días",
         "Participación en decisiones de desarrollo",
-        "Acceso beta a todas las funciones",
+        "Acceso beta a todías las funciones",
       ],
     },
     {
@@ -114,7 +114,7 @@ const Donations = () => {
             <CardContent className="p-6 text-center">
               <Heart className="h-8 w-8 mx-auto mb-3 text-red-300" />
               <div className="text-2xl font-bold">25,000+</div>
-              <div className="text-sm text-white/70">Conexiones realizadas</div>
+              <div className="text-sm text-white/70">Conexiones realizadías</div>
             </CardContent>
           </Card>
           <Card className="bg-white/10 border-white/20 text-white">
@@ -294,7 +294,7 @@ const Donations = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  No, todas las donaciones son unicas. Puedes donar cuando
+                  No, todías las donaciones son unicas. Puedes donar cuando
                   quieras y la cantidad que desees.
                 </p>
               </CardContent>
@@ -333,3 +333,4 @@ const Donations = () => {
 };
 
 export default Donations;
+

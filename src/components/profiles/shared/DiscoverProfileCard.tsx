@@ -84,7 +84,7 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(
       [profile, onSuperLike],
     );
 
-    // Funciones puras memoizadas
+    // Funciones puras memoizadías
     const getLocationText = useCallback((): string => {
       if (profile.latitude && profile.longitude) {
         // En una implementación real, aquí se haría geocoding reverso
@@ -222,8 +222,9 @@ DiscoverProfileCard.displayName = "DiscoverProfileCard";
 // ✅ Memoización: Componente envuelto en React.memo, callbacks memoizados con useCallback
 // ✅ Imports: Agregado alias @/ para imports internos, importado tipos de Supabase
 // ✅ Null-safe: Manejo seguro de image_url, bio, rating, badges de verificación
-// ✅ Performance: Funciones puras memoizadas (getLocationText, getFullName)
+// ✅ Performance: Funciones puras memoizadías (getLocationText, getFullName)
 // ✅ Async cleanup: AbortController para prevenir memory leaks
 // ✅ Arquitectura: Mantenida ubicación en discover/, preparado para unificación con ProfileCard.tsx
-// ✅ Campos corregidos: Eliminado 'name' → 'first_name + last_name', 'location' → coordenadas
+// ✅ Campos corregidos: Eliminado 'name' → 'first_name + last_name', 'location' → coordenadías
 // ✅ Event handling: Agregado stopPropagation en botones para evitar conflictos con click del card
+

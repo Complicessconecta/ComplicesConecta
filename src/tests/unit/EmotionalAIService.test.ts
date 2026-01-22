@@ -112,7 +112,7 @@ describe("EmotionalAIService", () => {
       // 'odio' -> -5, 'adiós' -> -5. Score 50 - 10 = 40.
 
       expect(result.sentiment).toBeDefined();
-      expect(result.reasons[0]).toContain("Detectadas");
+      expect(result.reasons[0]).toContain("Detectadías");
     });
 
     it("should analyze with patterns correctly (positive)", async () => {
@@ -160,3 +160,4 @@ describe("EmotionalAIService", () => {
     });
   });
 });
+

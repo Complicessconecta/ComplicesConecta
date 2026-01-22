@@ -433,7 +433,7 @@ const AdminProduction = () => {
       const totalTokens = tokenData?.length || 0;
       const stakedTokens = getMetricValue("staked_tokens");
 
-      logger.info("📊 Estadísticas cargadas:", {
+      logger.info("📊 Estadísticas cargadías:", {
         totalUsers: totalUsers || 0,
         premiumUsers: premiumUsers || 0,
         activeUsers: activeUsers || 0,
@@ -516,7 +516,7 @@ const AdminProduction = () => {
       }));
 
       setInvitations(mappedInvitations);
-      logger.info(" Cargando invitaciones, total encontradas:", {
+      logger.info(" Cargando invitaciones, total encontradías:", {
         count: data?.length || 0,
       });
     } catch (_error) {
@@ -680,11 +680,11 @@ const AdminProduction = () => {
                   <p className="text-2xl font-bold text-purple-400">{auditReport.totalActions}</p>
                 </div>
                 <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-                  <h3 className="text-white font-semibold mb-2">Aprobadas</h3>
+                  <h3 className="text-white font-semibold mb-2">Aprobadías</h3>
                   <p className="text-2xl font-bold text-green-400">{auditReport.approvedActions}</p>
                 </div>
                 <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                  <h3 className="text-white font-semibold mb-2">Rechazadas</h3>
+                  <h3 className="text-white font-semibold mb-2">Rechazadías</h3>
                   <p className="text-2xl font-bold text-red-400">{auditReport.rejectedActions}</p>
                 </div>
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
@@ -775,11 +775,11 @@ const AdminProduction = () => {
               <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
                 <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-400" />
-                  Acciones Aprobadas
+                  Acciones Aprobadías
                 </h3>
                 <p className="text-2xl font-bold text-green-400">127</p>
                 <p className="text-white/60 text-sm">
-                  Decisiones validadas hoy
+                  Decisiones validadías hoy
                 </p>
               </div>
 
@@ -795,17 +795,17 @@ const AdminProduction = () => {
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
                 <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                   <XCircle className="h-5 w-5 text-red-400" />
-                  Acciones Rechazadas
+                  Acciones Rechazadías
                 </h3>
                 <p className="text-2xl font-bold text-red-400">8</p>
-                <p className="text-white/60 text-sm">Decisiones revertidas</p>
+                <p className="text-white/60 text-sm">Decisiones revertidías</p>
               </div>
             </div>
 
             <div className="mt-6 flex gap-4">
               <Button className="bg-green-600 hover:bg-green-700 text-white">
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Aprobar Todas las Pendientes
+                Aprobar Todías las Pendientes
               </Button>
               <Button className="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10 border bg-transparent">
                 <Eye className="h-4 w-4 mr-2" />
@@ -1137,7 +1137,7 @@ const AdminProduction = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-white/70">
-                        Recompensas distribuidas:
+                        Recompensas distribuidías:
                       </span>
                       <span className="text-white font-semibold">
                         {stats.rewardsDistributed.toLocaleString()}
@@ -1226,3 +1226,4 @@ const AdminProduction = () => {
 };
 
 export default AdminProduction;
+

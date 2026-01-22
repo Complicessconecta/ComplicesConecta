@@ -1,10 +1,10 @@
 /**
  * S2 Geometry Service - Geosharding para escalabilidad
- * Inspirado en Grindr 2025: Celdas geográficas para queries paralelas
+ * Inspirado en Grindr 2025: Celdías geográficas para queries paralelas
  *
  * Features:
  * - Conversión lat/lng → S2 cell ID
- * - Celdas vecinas (9 celdas: actual + 8 adyacentes)
+ * - Celdías vecinas (9 celdías: actual + 8 adyacentes)
  * - Nivel óptimo según radio de búsqueda
  * - Queries paralelas por celda
  *
@@ -38,7 +38,7 @@ interface S2Cell {
 
 /**
  * S2Service - Servicio principal de geosharding
- * Maneja conversión lat/lng a celdas S2 y queries optimizadas
+ * Maneja conversión lat/lng a celdías S2 y queries optimizadías
  */
 export class S2Service {
   private config: S2Config;
@@ -47,7 +47,7 @@ export class S2Service {
     this.config = {
       defaultLevel: 15, // ~1km² (ideal para matching urbano)
       maxLevel: 20, // ~100m² (muy preciso)
-      minLevel: 10, // ~100km² (búsquedas amplias)
+      minLevel: 10, // ~100km² (búsquedías amplias)
       ...config,
     };
   }
@@ -65,7 +65,7 @@ export class S2Service {
     level: number = this.config.defaultLevel,
   ): string {
     try {
-      // Validar coordenadas
+      // Validar coordenadías
       if (lat < -90 || lat > 90) {
         throw new Error(
           `Invalid latitude: ${lat}. Must be between -90 and 90.`,
@@ -123,8 +123,8 @@ export class S2Service {
   }
 
   /**
-   * Obtiene celdas vecinas (9 celdas: actual + 8 adyacentes)
-   * Útil para búsquedas que cruzan fronteras de celdas
+   * Obtiene celdías vecinas (9 celdías: actual + 8 adyacentes)
+   * Útil para búsquedías que cruzan fronteras de celdías
    *
    * @param cellId S2 cell ID token
    * @returns Array de cell IDs vecinos (incluye la celda original)
@@ -145,7 +145,7 @@ export class S2Service {
   }
 
   /**
-   * Verifica si dos celdas son vecinas o iguales
+   * Verifica si dos celdías son vecinas o iguales
    * @param cell1 Primera celda
    * @param cell2 Segunda celda
    * @returns true si son vecinas o iguales
@@ -159,7 +159,7 @@ export class S2Service {
 
   /**
    * Calcula nivel óptimo según radio de búsqueda
-   * Optimiza balance entre precisión y cantidad de celdas
+   * Optimiza balance entre precisión y cantidad de celdías
    *
    * Niveles S2:
    * - 10: ~100km² (ciudades grandes)
@@ -182,8 +182,8 @@ export class S2Service {
   }
 
   /**
-   * Obtiene todas las celdas en un radio específico
-   * NOTA: Para radios grandes, puede generar muchas celdas
+   * Obtiene todías las celdías en un radio específico
+   * NOTA: Para radios grandes, puede generar muchas celdías
    *
    * @param lat Latitud central
    * @param lng Longitud central
@@ -199,7 +199,7 @@ export class S2Service {
       return this.getNeighborCells(centralCell);
     }
 
-    // Para radios grandes, calcular grid de celdas
+    // Para radios grandes, calcular grid de celdías
     // (implementación simplificada: vecinos + vecinos de vecinos)
     const cells = new Set<string>([centralCell]);
     const neighbors = this.getNeighborCells(centralCell);
@@ -216,7 +216,7 @@ export class S2Service {
   /**
    * Convierte S2 cell ID de vuelta a lat/lng (centro de la celda)
    * @param cellId S2 cell ID token
-   * @returns {lat, lng} coordenadas del centro de la celda
+   * @returns {lat, lng} coordenadías del centro de la celda
    */
   cellToLatLng(cellId: string): { lat: number; lng: number } {
     try {
@@ -239,7 +239,7 @@ export class S2Service {
    * @returns Área aproximada en km²
    */
   getCellArea(level: number): number {
-    // Áreas aproximadas por nivel (S2 estándar)
+    // Áreas aproximadías por nivel (S2 estándar)
     const areas: { [key: number]: number } = {
       10: 100, // ~100km²
       11: 50, // ~50km²
@@ -253,9 +253,9 @@ export class S2Service {
   }
 
   /**
-   * Estima cantidad de celdas necesarias para cubrir un radio
+   * Estima cantidad de celdías necesarias para cubrir un radio
    * @param radiusKm Radio en kilómetros
-   * @returns Cantidad aproximada de celdas necesarias
+   * @returns Cantidad aproximada de celdías necesarias
    */
   estimateCellCount(radiusKm: number): number {
     const level = this.getOptimalLevel(radiusKm);
@@ -279,3 +279,4 @@ export const s2Service = new S2Service();
 
 // Export types
 export type { S2Config, S2Cell };
+

@@ -33,8 +33,8 @@ const SecurityPage = () => {
             Seguridad y Protección
           </h1>
           <p className="text-xl text-white font-medium max-w-3xl mx-auto">
-            Tu seguridad y privacidad son nuestra máxima prioridad. Conoce todas
-            las medidas que implementamos para proteger tu información y
+            Tu seguridad y privacidad son nuestra máxima prioridad. Conoce todías
+            las medidías que implementamos para proteger tu información y
             garantizar una experiencia segura.
           </p>
         </div>
@@ -51,7 +51,7 @@ const SecurityPage = () => {
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
                 Todos tus datos están protegidos con encriptación de nivel
-                bancario AES-256. TLS 1.3 en todas las conexiones.
+                bancario AES-256. TLS 1.3 en todías las conexiones.
                 65+ políticas RLS activas.
               </p>
             </CardContent>
@@ -264,7 +264,7 @@ const SecurityPage = () => {
                 </h3>
                 <ul className="space-y-2 text-white font-medium">
                   <li> Fotos públicas: visibles para todos los usuarios</li>
-                  <li> Fotos privadas: requieren solicitud de acceso</li>
+                  <li> Fotos privadías: requieren solicitud de acceso</li>
                   <li> Control total sobre quién puede ver tu contenido</li>
                   <li> Eliminacin permanente cuando lo desees</li>
                 </ul>
@@ -350,3 +350,4 @@ const SecurityPage = () => {
 };
 
 export default SecurityPage;
+

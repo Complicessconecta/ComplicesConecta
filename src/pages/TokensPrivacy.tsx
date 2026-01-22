@@ -103,7 +103,7 @@ export default function TokensPrivacy() {
               </h4>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Relaciones de referido entre usuarios</li>
-                <li>Fechas y montos de recompensas otorgadas</li>
+                <li>Fechas y montos de recompensas otorgadías</li>
                 <li>Estadísticas de referidos exitosos</li>
               </ul>
             </div>
@@ -161,7 +161,7 @@ export default function TokensPrivacy() {
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <Lock className="h-6 w-6 text-red-400" />
-              Medidas de Seguridad
+              Medidías de Seguridad
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
@@ -264,7 +264,7 @@ export default function TokensPrivacy() {
                 </li>
                 <li>El sistema puede experimentar cambios y actualizaciones</li>
                 <li>Los datos se migrarán al sistema de producción</li>
-                <li>Algunas funciones pueden estar limitadas o en prueba</li>
+                <li>Algunas funciones pueden estar limitadías o en prueba</li>
               </ul>
             </div>
 
@@ -333,3 +333,4 @@ export default function TokensPrivacy() {
     </div>
   );
 }
+

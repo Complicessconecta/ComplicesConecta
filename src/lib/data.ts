@@ -95,7 +95,7 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
     "Terceras Personas",
 
     // Niveles de experiencia
-    "Parejas Experimentadas",
+    "Parejas Experimentadías",
     "Principiantes Curiosos",
     "Mentalidad Abierta",
     "Sin Prejuicios",
@@ -108,11 +108,11 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
     "Experiencias Nuevas",
     "Conexiones Auténticas",
     "Diversión Adulta",
-    "Aventuras Compartidas",
+    "Aventuras Compartidías",
 
     // Lugares y eventos mexicanos
     "Clubs Swinger México",
-    "Fiestas Privadas CDMX",
+    "Fiestas Privadías CDMX",
     "Encuentros Guadalajara",
     "Eventos Monterrey",
     "Reuniones Íntimas",
@@ -157,7 +157,7 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
   const apellido =
     apellidos[Math.floor((Math.random() * Date.now()) % apellidos.length)];
 
-  // Generar coordenadas aleatorias para ciudades mexicanas
+  // Generar coordenadías aleatorias para ciudades mexicanas
   const coordinates = getRandomMexicanCoordinates();
 
   // Generar imágenes dinámicas
@@ -258,7 +258,7 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     "Terceras Personas",
 
     // Niveles de experiencia
-    "Parejas Experimentadas",
+    "Parejas Experimentadías",
     "Principiantes Curiosos",
     "Mentalidad Abierta",
     "Sin Prejuicios",
@@ -271,11 +271,11 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     "Experiencias Nuevas",
     "Conexiones Auténticas",
     "Diversión Adulta",
-    "Aventuras Compartidas",
+    "Aventuras Compartidías",
 
     // Lugares y eventos mexicanos
     "Clubs Swinger México",
-    "Fiestas Privadas CDMX",
+    "Fiestas Privadías CDMX",
     "Encuentros Guadalajara",
     "Eventos Monterrey",
     "Reuniones Íntimas",
@@ -564,3 +564,4 @@ export const mockStories: Story[] = [
     isViewed: false,
   },
 ];
+

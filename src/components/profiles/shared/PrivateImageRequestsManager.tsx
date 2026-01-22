@@ -46,7 +46,7 @@ export const PrivateImageRequestsManager: React.FC<
             requesterId: "user-123",
             requesterName: "María García",
             requesterAvatar: "/assets/people/single/1.jpg",
-            message: "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
+            message: "Hola, me gustaría ver tus fotos privadías para conocerte mejor.",
             timestamp: Date.now() - 3600000, // Hace 1 hora
             status: "pending",
           },
@@ -85,7 +85,7 @@ export const PrivateImageRequestsManager: React.FC<
 
       toast({
         title: "Solicitud aprobada",
-        description: "El usuario ahora puede ver tus imágenes privadas.",
+        description: "El usuario ahora puede ver tus imágenes privadías.",
       });
 
       onAccessGranted?.(requesterId);
@@ -112,7 +112,7 @@ export const PrivateImageRequestsManager: React.FC<
 
       toast({
         title: "Solicitud denegada",
-        description: "El usuario no podrá ver tus imágenes privadas.",
+        description: "El usuario no podrá ver tus imágenes privadías.",
       });
 
       onAccessDenied?.(requesterId);
@@ -235,11 +235,11 @@ export const PrivateImageRequestsManager: React.FC<
           </div>
         )}
 
-        {/* Solicitudes Aprobadas */}
+        {/* Solicitudes Aprobadías */}
         {approvedRequests.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">
-              Aprobadas
+              Aprobadías
             </p>
             {approvedRequests.map((request) => (
               <div
@@ -269,11 +269,11 @@ export const PrivateImageRequestsManager: React.FC<
           </div>
         )}
 
-        {/* Solicitudes Denegadas */}
+        {/* Solicitudes Denegadías */}
         {deniedRequests.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">
-              Denegadas
+              Denegadías
             </p>
             {deniedRequests.map((request) => (
               <div
@@ -308,3 +308,4 @@ export const PrivateImageRequestsManager: React.FC<
 };
 
 export default PrivateImageRequestsManager;
+

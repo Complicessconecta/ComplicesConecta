@@ -151,12 +151,12 @@ const StoriesContainer: React.FC = () => {
           },
         ];
 
-        logger.info("🎬 Demo stories cargadas:", { count: demoStories.length });
+        logger.info("🎬 Demo stories cargadías:", { count: demoStories.length });
         setStories(demoStories);
       } else {
         // Production stories from database
         const fetchedStories = await storyService.getStories();
-        logger.info("🎬 Stories cargadas:", { count: fetchedStories.length });
+        logger.info("🎬 Stories cargadías:", { count: fetchedStories.length });
         setStories(fetchedStories);
       }
     } catch (error) {
@@ -373,7 +373,7 @@ const StoriesContainer: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-cyan-400" />
-                <span>Viajes y escapadas</span>
+                <span>Viajes y escapadías</span>
               </div>
               <div className="flex items-center gap-2">
                 <Crown className="h-4 w-4 text-orange-400" />
@@ -661,3 +661,4 @@ const StoriesContainer: React.FC = () => {
 };
 
 export default StoriesContainer;
+

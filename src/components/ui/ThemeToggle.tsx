@@ -63,6 +63,7 @@ export function ThemeToggle() {
             const root = document.documentElement;
             root.classList.remove("light");
             root.classList.add("dark");
+            toast({ title: "Tema", description: "🌙 Tema OSCURO activado" });
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >

@@ -3,6 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/hooks/useToast";
 
+// NOTA: Este hook está acoplado a src/pages/admin/AdminDashboard.tsx.
+// Síntoma: el dashboard no está routeado/importado desde src/App.tsx actualmente, por lo que este hook puede parecer “sin uso”.
+// Además existe un hook similar en src/app/(admin)/hooks/useAdminDashboard.ts (posible duplicidad por estructura mixta).
+
 // Interfaces para los datos del dashboard
 export interface DashboardStats {
   totalUsers: number;
@@ -117,7 +121,7 @@ export const useAdminDashboard = (dateRange: string) => {
         .from("user_roles")
         .select("id", { count: "exact", head: true })
         .eq("role", "moderator");
-      
+
       // Intentar obtener career_applications si la tabla existe
       let careerApplications = 0;
       try {
@@ -129,7 +133,7 @@ export const useAdminDashboard = (dateRange: string) => {
         // Tabla career_applications no existe, mantener valor 0
         careerApplications = 0;
       }
-      
+
       // Intentar obtener moderator_requests si la tabla existe
       let moderatorRequests = 0;
       try {

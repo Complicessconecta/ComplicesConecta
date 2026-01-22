@@ -12,6 +12,9 @@ import { RecentActivityList } from "@/components/admin/dashboard/RecentActivityL
 import { ReportsPanel } from "@/components/admin/dashboard/ReportsPanel";
 import { SystemHealthWidget } from "@/components/admin/dashboard/SystemHealthWidget";
 
+// NOTA: Este dashboard no está routeado/importado desde src/App.tsx actualmente.
+// Síntoma: existe implementación completa pero no hay Route activa que lo monte.
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();

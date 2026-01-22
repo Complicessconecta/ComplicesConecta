@@ -107,7 +107,7 @@ const ProfileSingle: FC = () => {
   const [privateImageAccess, setPrivateImageAccess] = usePersistedState<
     "none" | "pending" | "approved" | "denied"
   >("private_image_access", "none");
-  
+
   // Demo: controlar desbloqueo visual de fotos privadías en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
@@ -665,7 +665,7 @@ Información del perfil:
                     fallbackType="avatar"
                     className="w-full h-full object-cover"
                   />
-                  
+
                   {SHOW_ONLINE_BADGE && currentProfile.is_online && (
                     <div className="absolute -top-2 -right-2 bg-blue-500 rounded-full p-1">
                       <CheckCircle className="w-6 h-6 text-white" />
@@ -1566,7 +1566,6 @@ Información del perfil:
                                 <img
                                   src={imageSource}
                                   alt="Private content"
-                                  loading="lazy"
                                   onError={(e) => {
                                     (e.currentTarget as HTMLImageElement).src =
                                       "/assets/people/single/privado/aprivadosingle1.jpg";
@@ -1767,4 +1766,6 @@ Información del perfil:
 };
 
 export default ProfileSingle;
+
+
 

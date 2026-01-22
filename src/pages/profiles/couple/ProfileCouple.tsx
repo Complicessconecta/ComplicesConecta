@@ -1037,7 +1037,6 @@ function ProfileCouple() {
                       <img
                         src={imageSource}
                         alt="Private content"
-                        loading="lazy"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src =
                             "/assets/people/couple/privado/privadocouple1.jpg";
@@ -1230,4 +1229,6 @@ function ProfileCouple() {
 }
 
 export default ProfileCouple;
+
+
 

@@ -1,6 +1,14 @@
 /* TokensInfo Component Styles */
 
 .progress-bar {
-  width: var(--progress-width, 0%);
   transition: width 1s ease-in-out;
 }
+
+.progress-bar--0 { width: 0%; }
+.progress-bar--5 { width: 5%; }
+.progress-bar--10 { width: 10%; }
+.progress-bar--15 { width: 15%; }
+.progress-bar--20 { width: 20%; }
+.progress-bar--25 { width: 25%; }
+.progress-bar--40 { width: 40%; }
+.progress-bar--60 { width: 60%; }

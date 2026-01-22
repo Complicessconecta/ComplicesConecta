@@ -6,6 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, UserPlus, Coins, Shield, Gift, TrendingUp, Lock, ChevronDown, ChevronUp, Star, Zap, Users, Calendar, FileText, Scale, Globe, DollarSign, Rocket, Building2, Target, BarChart3, Heart, Video, MessageSquare, Crown, Ticket, Sparkles, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "@/styles/TokensInfo.css";
+import { useAuth } from "@/features/auth/useAuth";
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from "recharts";
+import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
+import { TokensSubnav } from "@/components/TokensSubnav";
 // import { TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado - usar src/services/TokenService.ts
 // Mock TOKEN_CONFIG para compatibilidad
 const TOKEN_CONFIG = {
@@ -14,15 +18,11 @@ const TOKEN_CONFIG = {
   MONTHLY_LIMIT: 500,
   RESET_DAY: 1,
 };
-import { useAuth } from "@/features/auth/useAuth";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
-import { TokensSubnav } from "@/components/TokensSubnav";
 
 // CustomLabel component para PieChart con color blanco
 const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
   if (percent < 0.01) return null;
-  
+
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -1354,16 +1354,8 @@ export default function TokensInfo() {
                           </div>
                         </div>
                         <div className="w-full bg-white/10 rounded-full h-2 mt-2">
-                          {/* 
-                            ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - NO CORREGIR
-                            Razón: Ancho dinámico calculado en runtime (item.percentage)
-                            Alternativa: CSS Variables no soportadías en Tailwind para este caso
-                            Estado: APROBADO - Warning esperado y documentado
-                            Referencia: https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
-                          */}
                           <div
-                            className="bg-linear-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-1000 progress-bar"
-                            style={{ '--progress-width': `${item.percentage}%` } as React.CSSProperties}
+                            className={`bg-linear-to-r from-purple-500 to-blue-600 h-2 rounded-full transition-all duration-1000 progress-bar progress-bar--${item.percentage}`}
                           ></div>
                         </div>
                       </motion.div>
@@ -2002,4 +1994,6 @@ export default function TokensInfo() {
     </div>
   );
 }
+
+
 

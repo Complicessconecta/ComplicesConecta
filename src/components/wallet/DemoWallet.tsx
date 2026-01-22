@@ -433,7 +433,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
               </div>
             </div>
           </div>
-          <Button 
+          <Button
             onClick={() => setShowPolygonModal(true)}
             className="w-full bg-linear-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold"
           >

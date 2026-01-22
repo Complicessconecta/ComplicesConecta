@@ -173,12 +173,12 @@ const CoupleProfileCard = ({
           </span>
         </div>
 
-        {/* Verification Badge - Sincronizado con MainProfileCard */}
+        {/* Verification Badge */}
         {profile.is_verified && (
           <div className="absolute bottom-12 sm:bottom-16 left-2 sm:left-4 bg-blue-500 text-white px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-1">
             <Verified className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             <span className="hidden sm:inline">Verificado</span>
-            <span className="sm:hidden">✓</span>
+            <span className="sm:hidden sr-only">Verificado</span>
           </div>
         )}
 
@@ -186,7 +186,7 @@ const CoupleProfileCard = ({
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
 
         {/* Quick Actions - Sincronizado con MainProfileCard */}
-        <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4 flex justify-center items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4 flex justify-center items-end opacity-100 pointer-events-auto sm:opacity-0 sm:pointer-events-none sm:group-hover:opacity-100 sm:group-hover:pointer-events-auto transition-opacity duration-300">
           <div className="flex space-x-1 sm:space-x-2">
             <Button
               size="icon"
@@ -241,19 +241,19 @@ const CoupleProfileCard = ({
         </div>
 
         {/* Interests - Sincronizado con MainProfileCard */}
-        <div className="flex flex-wrap gap-1 sm:gap-2 mb-4">
+        <div className="flex flex-wrap items-start gap-1.5 sm:gap-2 mb-4">
           {profile.interests
             ?.slice(0, 3)
             .map((interest: string, index: number) => (
               <span
                 key={index}
-                className="px-2 sm:px-3 py-1 bg-purple-100 text-purple-700 text-[10px] sm:text-xs rounded-full transition-colors hover:bg-purple-200 truncate max-w-[80px] sm:max-w-none"
+                className="inline-flex items-center px-2 sm:px-3 py-1 bg-purple-100 text-purple-700 text-[10px] sm:text-xs rounded-full transition-colors hover:bg-purple-200 font-medium leading-snug max-w-full whitespace-normal break-words"
               >
                 {interest}
               </span>
             ))}
           {profile.interests && profile.interests.length > 3 && (
-            <span className="px-2 sm:px-3 py-1 bg-white/20 text-white text-[10px] sm:text-xs rounded-full">
+            <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-white/20 text-white text-[10px] sm:text-xs rounded-full leading-snug">
               +{profile.interests.length - 3}
             </span>
           )}
@@ -292,7 +292,7 @@ const CoupleProfileCard = ({
               strokeWidth={2.5}
             />
             <span className="hidden sm:inline text-xs">Pasar</span>
-            <span className="sm:hidden text-xs">✕</span>
+            <span className="sm:hidden text-xs sr-only">Pasar</span>
           </Button>
           <Button
             variant="love"
@@ -306,7 +306,7 @@ const CoupleProfileCard = ({
               strokeWidth={2.5}
             />
             <span className="hidden sm:inline text-xs">Me Gusta</span>
-            <span className="sm:hidden text-xs">♥</span>
+            <span className="sm:hidden text-xs sr-only">Me Gusta</span>
           </Button>
         </div>
 

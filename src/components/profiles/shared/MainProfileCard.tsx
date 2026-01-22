@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { useProfileTheme, Gender, ProfileType, Theme } from "@/features/profile/useProfileTheme";
+import { inferProfileKind } from "@/lib/media";
 import { cn } from "@/shared/lib/cn";
 import { validateProfileCard } from "@/lib/zod-schemas";
 
@@ -78,6 +79,13 @@ const MainProfileCardComponent = ({
   const [_imageError, setImageError] = useState(false);
   const [currentImageSrc, setCurrentImageSrc] = useState(image);
 
+  const resolvedGender: Gender = useMemo(() => {
+    if (profile.gender) return profile.gender;
+    const inferred = inferProfileKind({ name, type: accountType }).gender;
+    if (inferred === "male" || inferred === "female") return inferred;
+    return gender;
+  }, [profile.gender, name, accountType, gender]);
+
   useEffect(() => {
     setCurrentImageSrc(image);
     setImageError(false);
@@ -87,9 +95,9 @@ const MainProfileCardComponent = ({
   const genders: Gender[] = useMemo(
     () =>
       accountType === "couple" && partnerGender
-        ? [gender, partnerGender]
-        : [gender],
-    [accountType, gender, partnerGender],
+        ? [resolvedGender, partnerGender]
+        : [resolvedGender],
+    [accountType, resolvedGender, partnerGender],
   );
 
   // Obtener configuración de tema
@@ -168,7 +176,7 @@ const MainProfileCardComponent = ({
 
               // Intentar con imagen de respaldo
               const fallbackImages =
-                gender === "female"
+                resolvedGender === "female"
                   ? [
                       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=700&fit=crop&crop=face&q=80&auto=format",
                       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&h=700&fit=crop&crop=face&q=80&auto=format",
@@ -246,7 +254,7 @@ const MainProfileCardComponent = ({
 
         {/* Quick Actions */}
         {showQuickActions && (
-          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-center items-end opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-center items-end opacity-100 pointer-events-auto sm:opacity-0 sm:pointer-events-none sm:group-hover:opacity-100 sm:group-hover:pointer-events-auto transition-all duration-300 transform translate-y-0">
             <div className="flex space-x-2 sm:space-x-3">
               <Button
                 size="icon"
@@ -285,7 +293,7 @@ const MainProfileCardComponent = ({
           <div className="absolute bottom-14 sm:bottom-16 left-3 sm:left-4 bg-blue-500 text-white px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-1 shadow-sm">
             <Verified className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             <span className="hidden sm:inline">Verificado</span>
-            <span className="sm:hidden">✓</span>
+            <span className="sm:hidden sr-only">Verificado</span>
           </div>
         )}
       </div>
@@ -315,7 +323,7 @@ const MainProfileCardComponent = ({
         </div>
 
         {/* Interests - Corregido para coincidir con imagen */}
-        <div className="flex flex-wrap gap-2 sm:gap-2 mb-6">
+        <div className="flex flex-wrap items-start gap-1.5 sm:gap-2 mb-6">
           {interests?.slice(0, 3).map((interest: string, index: number) => {
             const colors = [
               "bg-linear-to-r from-pink-500 to-pink-600 text-white border border-pink-400", // Rosa sólido
@@ -325,14 +333,14 @@ const MainProfileCardComponent = ({
             return (
               <span
                 key={index}
-                className={`px-3 py-1.5 ${colors[index % colors.length]} text-[11px] sm:text-xs rounded-full font-medium truncate max-w-[100px] sm:max-w-none`}
+                className={`inline-flex items-center px-3 py-1.5 ${colors[index % colors.length]} text-[11px] sm:text-xs rounded-full font-medium leading-snug max-w-full whitespace-normal break-words`}
               >
                 {interest}
               </span>
             );
           })}
           {interests && interests.length > 3 && (
-            <span className="px-3 py-1.5 bg-white/20 text-white text-[11px] sm:text-xs rounded-full font-medium border border-white/30">
+            <span className="inline-flex items-center px-3 py-1.5 bg-white/20 text-white text-[11px] sm:text-xs rounded-full font-medium border border-white/30 leading-snug">
               +{interests.length - 3}
             </span>
           )}
@@ -351,7 +359,7 @@ const MainProfileCardComponent = ({
               strokeWidth={2.5}
             />
             <span className="hidden sm:inline text-sm whitespace-nowrap">Pasar</span>
-            <span className="sm:hidden text-sm">✕</span>
+            <span className="sm:hidden text-sm sr-only">Pasar</span>
           </Button>
           <Button
             variant="love"
@@ -366,7 +374,7 @@ const MainProfileCardComponent = ({
               fill="currentColor"
             />
             <span className="hidden sm:inline text-sm whitespace-nowrap">Me Gusta</span>
-            <span className="sm:hidden text-sm">♥</span>
+            <span className="sm:hidden text-sm sr-only">Me Gusta</span>
           </Button>
         </div>
 

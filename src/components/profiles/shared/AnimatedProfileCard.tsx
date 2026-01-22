@@ -248,7 +248,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
             {/* Interests */}
             {interests.length > 0 && (
               <motion.div
-                className="flex flex-wrap gap-1"
+                className="flex flex-wrap items-start gap-1.5 sm:gap-2"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -257,17 +257,15 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   <Badge
                     key={index}
                     variant="secondary"
-                    className="text-xs bg-white/10 text-white border-white/20 px-1.5 py-0.5"
+                    className="inline-flex items-center text-xs bg-white/10 text-white border-white/20 px-2 py-1 leading-snug max-w-full whitespace-normal break-words"
                   >
-                    {interest.length > 12
-                      ? `${interest.slice(0, 12)}...`
-                      : interest}
+                    {interest}
                   </Badge>
                 ))}
                 {interests.length > 3 && (
                   <Badge
                     variant="secondary"
-                    className="text-xs bg-white/10 text-white border-white/20 px-1.5 py-0.5"
+                    className="inline-flex items-center text-xs bg-white/10 text-white border-white/20 px-2 py-1 leading-snug"
                   >
                     +{interests.length - 3}
                   </Badge>
@@ -301,7 +299,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   />
                 </motion.div>
                 <span className="hidden sm:inline font-medium">{isLiked ? "Te Gusta" : "Me Gusta"}</span>
-                <span className="sm:hidden">{isLiked ? "❤️" : "🤍"}</span>
+                <span className="sm:hidden sr-only">{isLiked ? "Te Gusta" : "Me Gusta"}</span>
               </Button>
 
               <Button
@@ -329,7 +327,9 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 <span className="hidden sm:inline font-medium">
                   {isPrivate && !canMessage ? "Solicitar Acceso" : "Chat"}
                 </span>
-                <span className="sm:hidden">{isPrivate && !canMessage ? "🔒" : "💬"}</span>
+                <span className="sm:hidden sr-only">
+                  {isPrivate && !canMessage ? "Solicitar Acceso" : "Chat"}
+                </span>
               </Button>
 
               <Button

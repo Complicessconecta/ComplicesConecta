@@ -1,4 +1,4 @@
-import { Moon, Sun, Monitor } from "lucide-react";
+import { Moon, Sun, Monitor, Check } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { useToast } from "@/hooks/useToast";
@@ -52,7 +52,7 @@ export function ThemeToggle() {
           <span className="font-medium drop-shadow-sm">Claro</span>
           {theme === "light" && (
             <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">
-              ✓
+              <Check className="h-4 w-4" />
             </span>
           )}
         </DropdownMenuItem>
@@ -70,7 +70,7 @@ export function ThemeToggle() {
           <span className="font-medium drop-shadow-sm">Oscuro</span>
           {theme === "dark" && (
             <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">
-              ✓
+              <Check className="h-4 w-4" />
             </span>
           )}
         </DropdownMenuItem>
@@ -95,7 +95,7 @@ export function ThemeToggle() {
           <span className="font-medium drop-shadow-sm">Sistema</span>
           {theme === "system" && (
             <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">
-              ✓
+              <Check className="h-4 w-4" />
             </span>
           )}
         </DropdownMenuItem>

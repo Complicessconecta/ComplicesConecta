@@ -64,9 +64,10 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    Omit<HTMLMotionProps<"button">, "ref" | "children">,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  children?: React.ReactNode;
 
   // Props heredadas de UnifiedButton
   gradient?: boolean;
@@ -75,7 +76,7 @@ export interface ButtonProps
   loadingText?: string;
 
   // Props heredadas de AnimatedButton
-  motionProps?: HTMLMotionProps<"div">;
+  motionProps?: HTMLMotionProps<"button">;
 
   /**
    * Control de animaciones integradas
@@ -107,8 +108,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const Comp = "button";
-
     const [rippleEffect, setRippleEffect] = React.useState<{
       x: number;
       y: number;
@@ -165,55 +164,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     // Modo asChild: delegar completamente al hijo, asegurando un único elemento
     if (asChild) {
       return (
-        <motion.div
-          {...restMotionProps}
-          {...(resolvedWhileHover !== undefined
-            ? { whileHover: resolvedWhileHover }
-            : {})}
-          {...(resolvedWhileTap !== undefined ? { whileTap: resolvedWhileTap } : {})}
-          {...(resolvedAnimate !== undefined ? { animate: resolvedAnimate } : {})}
-          transition={
-            motionTransition ?? {
-              duration: 0.2,
-              ease: [0.25, 0.46, 0.45, 0.94],
-            }
-          }
-        >
-          <Slot
-            ref={ref}
-            className={cn(
-              buttonVariants({ variant, size }),
-              "relative overflow-hidden transition-all duration-200",
-              gradient && [
-                "bg-linear-to-r from-purple-600 to-blue-600",
-                "hover:from-purple-700 hover:to-blue-700",
-                "text-white border-0",
-              ],
-              className,
-            )}
-          >
-            {children}
-          </Slot>
-        </motion.div>
-      );
-    }
-
-    return (
-      <motion.div
-        {...restMotionProps}
-        {...(resolvedWhileHover !== undefined
-          ? { whileHover: resolvedWhileHover }
-          : {})}
-        {...(resolvedWhileTap !== undefined ? { whileTap: resolvedWhileTap } : {})}
-        {...(resolvedAnimate !== undefined ? { animate: resolvedAnimate } : {})}
-        transition={
-          motionTransition ?? {
-            duration: 0.2,
-            ease: [0.25, 0.46, 0.45, 0.94],
-          }
-        }
-      >
-        <Comp
+        <Slot
           ref={ref}
           className={cn(
             buttonVariants({ variant, size }),
@@ -225,39 +176,65 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             ],
             className,
           )}
-          disabled={isDisabled}
-          onClick={handleClick}
-          {...props}
         >
-          <span
-            className={cn("flex items-center gap-2", loading && "opacity-0")}
-          >
-            {children}
+          {children}
+        </Slot>
+      );
+    }
+
+    return (
+      <motion.button
+        ref={ref}
+        {...restMotionProps}
+        {...(resolvedWhileHover !== undefined ? { whileHover: resolvedWhileHover } : {})}
+        {...(resolvedWhileTap !== undefined ? { whileTap: resolvedWhileTap } : {})}
+        {...(resolvedAnimate !== undefined ? { animate: resolvedAnimate } : {})}
+        transition={
+          motionTransition ?? {
+            duration: 0.2,
+            ease: [0.25, 0.46, 0.45, 0.94],
+          }
+        }
+        className={cn(
+          buttonVariants({ variant, size }),
+          "relative overflow-hidden transition-all duration-200",
+          gradient && [
+            "bg-linear-to-r from-purple-600 to-blue-600",
+            "hover:from-purple-700 hover:to-blue-700",
+            "text-white border-0",
+          ],
+          className,
+        )}
+        disabled={isDisabled}
+        onClick={handleClick}
+        {...props}
+      >
+        <span className={cn("flex items-center gap-2", loading && "opacity-0")}>
+          {children}
+        </span>
+
+        {loading && (
+          <span className="absolute inset-0 flex items-center justify-center">
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            {loadingText}
           </span>
+        )}
 
-          {loading && (
-            <span className="absolute inset-0 flex items-center justify-center">
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              {loadingText}
-            </span>
-          )}
-
-          {ripple && rippleEffect.show && (
-            <motion.span
-              className="absolute bg-white/30 rounded-full pointer-events-none"
-              style={{
-                left: rippleEffect.x - 25,
-                top: rippleEffect.y - 25,
-                width: 50,
-                height: 50,
-              }}
-              initial={{ scale: 0, opacity: 1 }}
-              animate={{ scale: 4, opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            />
-          )}
-        </Comp>
-      </motion.div>
+        {ripple && rippleEffect.show && (
+          <motion.span
+            className="absolute bg-white/30 rounded-full pointer-events-none"
+            style={{
+              left: rippleEffect.x - 25,
+              top: rippleEffect.y - 25,
+              width: 50,
+              height: 50,
+            }}
+            initial={{ scale: 0, opacity: 1 }}
+            animate={{ scale: 4, opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          />
+        )}
+      </motion.button>
     );
   },
 );

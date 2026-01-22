@@ -77,10 +77,10 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   // RELAJADO: Permitir partículas en más situaciones
   const shouldAvoidHeavyParticles =
     reducedMotion || (isLowEnd && !allowParticles);
-  
+
   // FORZAR: Siempre usar tsparticles en homepage y demo
   const forceNeon = location.pathname === "/" || location.pathname === "/demo";
-  
+
   let variant: "solid" | "css" | "tsparticles" = userForcesSolid
     ? "solid"
     : forceNeon
@@ -127,7 +127,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   if (forceImageAndNeon) {
     variant = "tsparticles";
   }
-  
+
   // FORZAR: Siempre usar tsparticles en homepage
   if (forceNeon) {
     variant = "tsparticles";
@@ -342,30 +342,52 @@ const neonOptions = useMemo(
   const showNeonParticles =
     engineReady &&
     (forceNeon || preferences.particlesEnabled || forceImageAndNeon);
-  
+
   // Fallback CSS: Mostrar partículas CSS si el motor no está listo pero se forzaron partículas
   const showFallbackParticles =
     !engineReady && forceNeon && preferences.particlesEnabled;
 
   // LOGGING: Diagnosticar por qué no se muestran las partículas
-  if (import.meta.env.DEV) { console.log("🔍 ParticlesNeon Debug:", 
+  if (import.meta.env.DEV) { console.log("🔍 ParticlesNeon Debug:",
   { pathname: location.pathname, engineReady, shouldAvoidHeavyParticles, forceImageAndNeon, forceNeon, references:
   { particlesEnabled: preferences.particlesEnabled, backgroundMode: preferences.backgroundMode }
-  , isLowEnd, reducedMotion, allowParticles, variant, showNeonParticles, showFallbackParticles, isSnowRoute, 
+  , isLowEnd, reducedMotion, allowParticles, variant, showNeonParticles, showFallbackParticles, isSnowRoute,
   inAllowedRoutes: ALLOW_HEAVY_ROUTES.has(location.pathname), isPremium: profile?.is_premium  });
   }
 
   // Predefined utility class sets for CSS particles (avoid inline styles)
   const particleSizes = [
-    "w-[1px] h-[1px]",
-    "w-[2px] h-[2px]",
-    "w-[3px] h-[3px]",
-    "w-[4px] h-[4px]",
+    "w-1 h-1",
+    "w-1.5 h-1.5",
+    "w-2 h-2",
+    "w-2.5 h-2.5",
   ];
+
+  const particleDelayClasses = [
+    "particle-delay-0",
+    "particle-delay-1",
+    "particle-delay-2",
+    "particle-delay-3",
+    "particle-delay-4",
+    "particle-delay-5",
+    "particle-delay-6",
+    "particle-delay-7",
+    "particle-delay-8",
+    "particle-delay-9",
+  ];
+
+  const particleDurationClasses = [
+    "particle-duration-0",
+    "particle-duration-1",
+    "particle-duration-2",
+    "particle-duration-3",
+    "particle-duration-4",
+  ];
+
   const particlePositions = [
-    "left-[5%] top-[10%]",
-    "left-[12%] top-[25%]",
-    "left-[20%] top-[40%]",
+    "left-[10%] top-[15%]",
+    "left-[80%] top-[25%]",
+    "left-[25%] top-[70%]",
     "left-[28%] top-[65%]",
     "left-[35%] top-[15%]",
     "left-[42%] top-[55%]",
@@ -420,16 +442,16 @@ const neonOptions = useMemo(
             {Array.from({ length: showFallbackParticles ? 80 : 60 }).map((_, i) => {
               const sizeCls = particleSizes[i % particleSizes.length];
               const posCls = particlePositions[i % particlePositions.length];
+              const delayCls =
+                particleDelayClasses[i % particleDelayClasses.length] ?? "";
+              const durationCls =
+                particleDurationClasses[i % particleDurationClasses.length] ?? "";
               const colors = ["bg-cyan-400", "bg-purple-400", "bg-pink-400"];
               const colorCls = colors[i % colors.length];
               return (
                 <div
                   key={i}
-                  className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls} particle`}
-                  style={{
-                    '--animation-delay': `${i * 0.1}s`,
-                    '--animation-duration': `${6 + Math.random() * 4}s`,
-                  } as React.CSSProperties}
+                  className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls} ${delayCls} ${durationCls} particle`}
                 />
               );
             })}

@@ -140,7 +140,7 @@ export function TokenDashboard({
         role="main"
         className="p-4 bg-red-500/20 backdrop-blur-md border border-red-300/30 rounded-lg"
       >
-        <p className="text-white">❌ {error}</p>
+        <p className="text-white">{error}</p>
         <Button
           onClick={refreshTokens}
           className="mt-2 bg-white/20 hover:bg-white/30 text-white border-white/30"
@@ -158,7 +158,7 @@ export function TokenDashboard({
         role="main"
         className="p-4 bg-yellow-500/20 backdrop-blur-md border border-yellow-300/30 rounded-lg"
       >
-        <p className="text-white">⚠️ No se pudo cargar el balance</p>
+        <p className="text-white">No se pudo cargar el balance</p>
       </main>
     );
   }
@@ -329,11 +329,11 @@ export function TokenDashboard({
       {(isWorldIdEligible || hasPendingRewards) && (
         <Card className="bg-white/5 backdrop-blur-xl border border-green-400/40 shadow-xl rounded-2xl">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Gift className="h-5 w-5" />
-              🎁 Recompensas Disponibles
-            </CardTitle>
-          </CardHeader>
+          <CardTitle className="flex items-center gap-2 text-white">
+            <Gift className="h-5 w-5" />
+            🎁 Recompensas Disponibles
+          </CardTitle>
+        </CardHeader>
           <CardContent className="space-y-3 p-6 md:p-8">
             {isWorldIdEligible && (
               <div className="flex items-center justify-between p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">

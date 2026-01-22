@@ -6,6 +6,7 @@ import type { FC } from "react";
 import { IDKitWidget, VerificationLevel, ISuccessResult } from "@worldcoin/idkit";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
+import { Check } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
@@ -104,7 +105,7 @@ export const WorldIDButton: FC<WorldIDButtonProps> = ({
         setIsVerified(true);
 
         toast({
-          title: "🎉 Verificación Exitosa",
+          title: "Verificación Exitosa",
           description: `Has recibido ${response.data?.rewards.total || 0} CMPX por verificarte con World ID`,
           variant: "default",
         });
@@ -184,7 +185,7 @@ export const WorldIDButton: FC<WorldIDButtonProps> = ({
           variant="secondary"
           className="ml-1 sm:ml-2 bg-green-100 text-green-800 text-xs"
         >
-          ✓
+          <Check className="h-3 w-3" />
         </Badge>
       </Button>
     );

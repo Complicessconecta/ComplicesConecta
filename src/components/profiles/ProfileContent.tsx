@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import { Grid3X3, Play, Upload, Trash2, MessageCircle, Heart, Share, MoreHorizontal, Sparkles } from "lucide-react";
+import { Grid3X3, Play, Upload, Trash2, MessageCircle, Heart, Share, MoreHorizontal, Sparkles, Lock as LockIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import StoriesContainer from "@/components/stories/StoriesContainer";
 import { ComingSoonModal } from "@/components/modals/ComingSoonModal";
@@ -138,7 +138,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
 
   const nftFileInputRef = useRef<HTMLInputElement | null>(null);
   const [nftImageFile, setNftImageFile] = useState<File | undefined>(undefined);
-  
+
   // State lifted or managed here
   const [activeTab, setActiveTab] = useState<TabType>("posts");
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -345,7 +345,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                       </div>
                     </div>
                     <div className="aspect-video bg-linear-to-br from-blue-400 to-purple-600 rounded-lg mb-3 flex items-center justify-center">
-                      <span className="text-white text-6xl">🎉</span>
+                      <Sparkles className="h-14 w-14 text-white" />
                     </div>
                     <div className="flex items-center gap-4">
                       <motion.div whileTap={{ scale: 0.9 }}>
@@ -419,7 +419,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                         onUploadImage?.();
                         setDemoPost({
                           id: `demo-${Date.now()}`,
-                          content: "¡Nuevo post demo creado! 🎉",
+                          content: "¡Nuevo post demo creado!",
                           timestamp: new Date().toISOString(),
                         });
                       }}
@@ -564,7 +564,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
             <div>
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Upload className="w-4 h-4" />
-                Fotos Privadas 🔒
+                <span className="inline-flex items-center gap-2">
+                  <span>Fotos Privadas</span>
+                  <LockIcon className="w-4 h-4" />
+                </span>
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div
@@ -572,7 +575,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "🔒 Solicita acceso para ver fotos privadas",
+                      description: "Solicita acceso para ver fotos privadas",
                     })
                   }
                 >
@@ -582,7 +585,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     className="w-full h-full object-cover filter blur-lg"
                   />
                   <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
-                    <span className="text-6xl mb-2">🔒</span>
+                    <LockIcon className="w-14 h-14 text-white mb-2" />
                     <span className="text-white text-sm">
                       Click para solicitar
                     </span>
@@ -593,7 +596,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "🔒 Solicita acceso para ver fotos privadas",
+                      description: "Solicita acceso para ver fotos privadas",
                     })
                   }
                 >
@@ -603,7 +606,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     className="w-full h-full object-cover filter blur-lg"
                   />
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span className="text-6xl">🔒</span>
+                    <LockIcon className="w-14 h-14 text-white" />
                   </div>
                 </div>
                 <div
@@ -611,7 +614,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "🔒 Solicita acceso para ver fotos privadas",
+                      description: "Solicita acceso para ver fotos privadas",
                     })
                   }
                 >
@@ -621,7 +624,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     className="w-full h-full object-cover filter blur-lg"
                   />
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span className="text-6xl">🔒</span>
+                    <LockIcon className="w-14 h-14 text-white" />
                   </div>
                 </div>
               </div>

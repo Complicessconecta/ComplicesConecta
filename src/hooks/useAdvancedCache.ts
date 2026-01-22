@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { advancedCacheService, CacheConfig, CacheStats } from "@/services/AdvancedCacheService";
+import { advancedCacheService, CacheConfig, CacheStats } from "@/services";
 import { logger } from "@/lib/logger";
 
 export interface UseAdvancedCacheOptions {

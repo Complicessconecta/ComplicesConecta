@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/useToast";
-import { contentModerationService, ModerationResult } from "@/services/ContentModerationService";
+import { contentModerationService, ModerationResult } from "@/services";
 import { Shield, AlertTriangle, CheckCircle, Clock, TrendingUp, Activity, RefreshCw, Eye, Ban, Lock, FileText, Image, User, Flag } from "lucide-react";
 
 interface ModerationQueue {

@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from "react";
 import { LineChart,  Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from "recharts";
-import { historicalMetricsService, type PerformanceTrendData, type ErrorTrendData, type TimeSeriesDataPoint,  type WebVitalsTrendData, type ModerationTrendData } from "@/services/HistoricalMetricsService";
+import { historicalMetricsService, type PerformanceTrendData, type ErrorTrendData, type TimeSeriesDataPoint,  type WebVitalsTrendData, type ModerationTrendData } from "@/services";
 import { logger } from "@/lib/logger";
 
 // =====================================================

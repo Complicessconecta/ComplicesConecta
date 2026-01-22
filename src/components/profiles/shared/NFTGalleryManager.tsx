@@ -20,8 +20,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Image as ImageIcon, Plus, Coins, CheckCircle, Loader2, Eye, Globe, Lock,Sparkles } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
-import { nftGalleryService, NFTGallery, NFTGalleryImage } from "@/services/NFTGalleryService";
-import { tokenService } from "@/services/TokenService";
+import { nftGalleryService, NFTGallery, NFTGalleryImage, tokenService } from "@/services";
 import { logger } from "@/lib/logger";
 
 interface NFTGalleryManagerProps {

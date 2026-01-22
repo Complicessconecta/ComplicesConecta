@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
-import { AdminNav } from "@/components/AdminNav";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { safeGetItem } from "@/lib/safe-storage";
 import { Users,Shield, BarChart3, Plus, Trash2, Settings, Crown } from "lucide-react";
 

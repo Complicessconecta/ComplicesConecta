@@ -17,7 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Edit2, Trash2, Plus, Eye, EyeOff, Save, X, AlertCircle } from "lucide-react";
-import { BannerManagementService, BannerConfig, CreateBannerInput } from "@/services/BannerManagementService";
+import { BannerManagementService, BannerConfig, CreateBannerInput } from "@/services";
 import { logger } from "@/lib/logger";
 
 // ============================================================================

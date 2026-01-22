@@ -399,12 +399,8 @@ export class PerformanceMonitoringService {
    * Destruir observadores
    */
   destroy(): void {
-    for (const observer of this.observers) {
-      observer.disconnect();
-    }
+    this.observers.forEach((obs) => obs.disconnect());
     this.observers = [];
-    this.metrics = [];
-    logger.info("✅ Performance monitoring service destroyed");
   }
 
   /**

@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader,CardTitle } from "@/comp
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSmartMatching, type UserProfile, type MatchScore } from "@/lib/ai/smartMatching";
 import { logger } from "@/lib/logger";
-import { smartMatchingService } from "@/services/SmartMatchingService";
+import { smartMatchingService } from "@/services";
 import type { ConversationStarter } from "@/lib/advancedFeatures";
 
 interface SmartMatchingModalProps {

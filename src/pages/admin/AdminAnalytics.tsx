@@ -9,7 +9,7 @@
  */
 
 import React, { useEffect } from "react";
-import { AdminNav } from "@/components/AdminNav";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { logger } from "@/lib/logger";
 import { ChartBarIcon } from "@heroicons/react/24/outline";

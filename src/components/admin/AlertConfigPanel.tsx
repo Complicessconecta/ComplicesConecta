@@ -21,7 +21,7 @@ import { errorAlertService, type AlertRule } from "@/services/core/ErrorAlertSer
 import { useToast } from "@/hooks/useToast";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 // performanceMonitoring - preparado para uso futuro en configuración avanzada
-// import performanceMonitoring from '@/services/PerformanceMonitoringService';
+// import performanceMonitoring from '@/services/core/PerformanceMonitoringService';
 
 // =====================================================
 // INTERFACES

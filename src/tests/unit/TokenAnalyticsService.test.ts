@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { TokenAnalyticsService } from "@/services/TokenAnalyticsService";
+import { TokenAnalyticsService } from "@/services";
 
 // Mock de Supabase
 const mockAnalyticsData = [

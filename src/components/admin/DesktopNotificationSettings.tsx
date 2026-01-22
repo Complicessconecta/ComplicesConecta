@@ -16,8 +16,8 @@ import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
-import { desktopNotificationService } from "@/services/DesktopNotificationService";
-import type { NotificationConfig } from "@/services/DesktopNotificationService";
+import { desktopNotificationService } from "@/services/core/DesktopNotificationService";
+import type { NotificationConfig } from "@/services/core/DesktopNotificationService";
 import { logger } from "@/lib/logger";
 
 // =====================================================

@@ -11,6 +11,7 @@
 import { logger } from "@/lib/logger";
 import type { ErrorAlert } from "@/services/core/ErrorAlertService";
 import type { PerformanceMetric } from "@/services/core/PerformanceMonitoringService";
+import { ZodBoolean } from "zod";
 
 // =====================================================
 // INTERFACES

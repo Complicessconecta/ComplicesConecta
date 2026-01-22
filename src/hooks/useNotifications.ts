@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { notificationService, type Notification, type NotificationType } from "@/services/NotificationService";
+import { notificationService, type Notification, type NotificationType } from "@/services";
 import { logger } from "@/lib/logger";
 
 interface UseNotificationsOptions {

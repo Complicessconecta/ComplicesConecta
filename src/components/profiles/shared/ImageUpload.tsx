@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { ProfileImageService, ImageUploadResult } from "@/lib/storage";
-import { contentModerationService } from "@/services/ContentModerationService";
+import { contentModerationService } from "@/services";
 import { safeGetItem } from "@/lib/safe-storage";
 
 interface ImageUploadProps {

@@ -8,7 +8,7 @@ import { getUserImages, deleteImage, ImageUpload } from "@/lib/images";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
-import { tokenService } from "@/services/TokenService";
+import { tokenService } from "@/services";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ImageGalleryProps {

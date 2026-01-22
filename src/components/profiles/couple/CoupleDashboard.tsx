@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/useToast";
-import { advancedCoupleService, CoupleProfile, CoupleEvent, CoupleMatch } from "@/services/couple/AdvancedCoupleService";
+import { advancedCoupleService, CoupleProfile, CoupleEvent, CoupleMatch } from "@/services/social/couple/AdvancedCoupleService";
 import { Users, Heart, Calendar, Star, TrendingUp, MessageCircle, Eye, Gift, Plus, Search, RefreshCw, AlertTriangle, CheckCircle } from "lucide-react";
 
 export const CoupleDashboard: React.FC = () => {

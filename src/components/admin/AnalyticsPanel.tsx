@@ -27,7 +27,7 @@ import { BarChart3, Users, Activity, UserPlus, TrendingUp, Download, RefreshCw, 
 import { logger } from "@/lib/logger";
 
 // Importaciones para analytics de tokens
-import { TokenAnalyticsService, type TokenMetrics } from "@/services/TokenAnalyticsService";
+import { TokenAnalyticsService, type TokenMetrics } from "@/services";
 import { analyticsMetrics } from "@/lib/analytics-metrics";
 
 // Tipos de datos para analytics

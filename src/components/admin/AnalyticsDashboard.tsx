@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from "react";
 import { ChartBarIcon, ExclamationTriangleIcon, CheckCircleIcon, ClockIcon, ServerIcon, SignalIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
-import { performanceMonitoring } from "@/services/PerformanceMonitoringService";
+import { performanceMonitoring } from "@/services";
 import { errorAlertService, type ErrorAlert } from "@/services/core/ErrorAlertService";
 import { logger } from "@/lib/logger";
 import { AlertConfigPanel } from "@/components/admin/AlertConfigPanel";

@@ -22,7 +22,7 @@ Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compli
 - Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones correctas
 - No crear ni eliminar archivos sin verificar existencia previa
 - No eliminr variables , implementar variables que no estan declaradas
-- No eliminar variables que estan declaradas, agregar variables que no estan declaradas
+- No eliminar variables que no estan declaradas, agregar el compomnete o funcion de la variable no declarada justificando el cambio realizado 
 
 **Marca de progreso:**
 * **[Completo/Verificado✅]**
@@ -59,6 +59,8 @@ Alinear tablas locales/remotas antes de modificar
 Notificar tablas faltantes antes de crearlas
 al finalizar el uso de Doker-Desktop verificar que todo esta en orden
 y hacer kill para sair
+
+No usar en los archivos que dependan de la base de datos el uso de "as any","any","null" verifica en el directorio src/types/ que exista primero la tabla ,columna, RLS, etc.. de no existir Crear la Tabla,Columna, etc.. correspondiente y migrar con docker-compose up -d , o docker-desktop, recrear la base de datos y agregar la tabla columna faltante, verificar la  estructura de las tablas sea la correcta y si no es asi actualizarla
 
 
 
@@ -98,6 +100,10 @@ Al finalizar cualquier sesión de desarrollo que involucre cambios en la estruct
 2. `project-structure-tree.md` (si existe) con la estructura actualizada
 3. `README.md` si la estructura afecta la documentación general
 4. `DIAGRAMAS_FLUJOS_CONSOLIDADO.md` si la estructura afecta los flujos
+5. `COMPLICESCONECTA_PRESENTACION_PUBLICA.md` si la estructura afecta la presentación pública 
+6. `CHANGELOG.md` si la estructura afecta los cambios
+7. `CONTRIBUTING.md` si la estructura afecta la contribución 
+8.  `RELEASE_NOTES_v3.8.0.md` si la estructura afecta las notas de lanzamiento 
 
 **Verificación:**
 
@@ -180,7 +186,7 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
     Al crear archivos verificar que no existan, si existen preguntar al usuario si desea sobreescribirlos, si no desea sobreescribirlos preguntar al usuario si desea crear un nuevo archivo con un nombre diferente justificando la necesidad de crear un nuevo archivo , se agrega comentario general del archivo y su uso por ejemplo:
 
     " /**
-    * Google Services Integration - ComplicesConecta v3.3.0
+    * Google Services Integration - ComplicesConecta v3.8.0
     * Servicios de Google (Analytics, Push Notifications) - Sin Firebase
     * Nota: Este proyecto usa Supabase, no Firebase
     *
@@ -223,6 +229,22 @@ Verificar edge cases
 Tests de integración para flujos completos
 npm run type-check debe pasar siempre
 npm run lint sin errores ni warnings
+
+
+6. ESTRUCTURA Y PATRONES
+
+Organización de Archivos
+
+Patrón Barril (Barrel Pattern) OBLIGATORIO en src/services/index.ts.
+NO crear archivos proxy en la raíz de src/services/ (ej: src/services/TokenService.ts que solo re-exporta).
+Los servicios deben residir en su subdirectorio correspondiente (core/, features/, auth/, etc.).
+Imports siempre absolutos usando alias @/ (ej: @/components/ui/Button).
+Evitar rutas relativas profundas (../../../).
+
+Patrones de Diseño
+
+Singleton para servicios Core: Exportar una instancia por defecto (export const serviceName = new ServiceName();) además de la clase.
+Componentes por dominio: Admin en src/components/admin/, UI en src/components/ui/, etc.
 
 
 ¡ESTAS REGLAS SON INQUEBRANTABLES!

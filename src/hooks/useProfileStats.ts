@@ -10,7 +10,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { profileStatsService, type ProfileStats, type ActivityItem, type Achievement } from "@/services/ProfileStatsService";
+import { profileStatsService, type ProfileStats, type ActivityItem, type Achievement } from "@/services";
 import { logger } from "@/lib/logger";
 
 interface UseProfileStatsOptions {

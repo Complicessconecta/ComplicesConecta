@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { AdminNav } from "@/components/AdminNav";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { AlertCircle, ArrowLeft, CheckCircle, Mail, Shield, User, Clock, DollarSign, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { Link } from "react-router-dom";

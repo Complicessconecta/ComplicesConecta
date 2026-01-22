@@ -34,7 +34,6 @@ src/                          # Directorio raíz del frontend
 │       ├── flujo-trabajo-usuario-final.webp
 │       └── flujo-trabajo-doble-economia.svg
 ├── components/               # Componentes reutilizables (UI + features)
-│   ├── AdminNav.tsx         # Navegación de administración
 │   ├── AppInitializer.tsx    # Inicializador de la aplicación
 │   ├── AppLayout.tsx        # Layout principal de la app
 │   ├── AppSidebar.tsx       # Sidebar de la app
@@ -58,6 +57,7 @@ src/                          # Directorio raíz del frontend
 │   ├── TokensSubnav.tsx     # Subnavegación de tokens
 │   ├── access/             # Componentes de accesibilidad
 │   ├── admin/               # Componentes de administración
+│   │   ├── AdminNav.tsx
 │   ├── ai/                  # Componentes de IA
 │   ├── analytics/           # Componentes de analíticas
 │   ├── android/             # Componentes optimizados para Android
@@ -93,78 +93,7 @@ src/                          # Directorio raíz del frontend
 │   ├── routing/             # Routing
 │   ├── search/              # Búsqueda
 │   ├── security/            # Seguridad
-│   ├── services/            # Servicios de negocio (AI, matching, NFT, etc.)
-│   ├── AdvancedCacheService.ts
-│   ├── BannerManagementService.ts
-│   ├── ContentModerationService.ts
-│   ├── DataPrivacyService.ts
-│   ├── DesktopNotificationService.ts
-│   ├── ErrorAlertService.ts
-│   ├── GlobalSearchService.ts
-│   ├── HistoricalMetricsService.ts
-│   ├── NFTGalleryService.ts
-│   ├── NFTService.ts
-│   ├── NotificationService.ts
-│   ├── PerformanceMonitoringService.ts
-│   ├── ProfileStatsService.ts
-│   ├── SecurityAuditService.ts
-│   ├── SmartMatchingService.ts
-│   ├── TokenAnalyticsService.ts
-│   ├── TokenService.ts
-│   ├── WalletService.ts
-│   ├── WebhookService.ts
-│   ├── ai/                  # Servicios de IA
-│   │   ├── AIIntegrationService.ts
-│   │   └── ConsentVerificationService.ts
-│   ├── analytics/           # Servicios de analíticas
-│   │   ├── AdvancedAnalyticsService.ts
-│   │   ├── AnalyticsService.ts
-│   │   ├── HistoricalMetricsService.ts
-│   │   ├── ModerationMetricsService.ts
-│   │   ├── ProfileStatsService.ts
-│   │   ├── TokenAnalyticsService.ts
-│   │   ├── ai/
-│   │   └── index.ts
-│   ├── auth/                # Servicios de autenticación
-│   │   ├── ContentProtectionService.ts
-│   │   ├── MFAService.ts
-│   │   ├── SecurityAuditService.ts
-│   │   ├── SecurityService.ts
-│   │   ├── UserIdentificationService.ts
-│   │   ├── UserVerificationService.ts
-│   │   ├── digitalFingerprint.ts
-│   │   ├── index.ts
-│   │   ├── mfa/
-│   │   ├── permanentBan.ts
-│   │   └── security/
-│   ├── social/              # Servicios sociales
-│   │   ├── ContentModerationService.ts
-│   │   ├── InvitationsService.ts
-│   │   ├── MatchService.ts
-│   │   ├── PredictiveMatchingService.ts
-│   │   ├── ReportManagementService.ts
-│   │   ├── ReportService.ts
-│   │   ├── SmartMatchingService.ts
-│   │   ├── VideoChatService.ts
-│   │   ├── chat/
-│   │   ├── couple/
-│   │   ├── moderatorTimer.ts
-│   │   ├── notifications/
-│   │   ├── postsService.ts
-│   │   └── reportAIClassification.ts
-│   ├── tokens/              # Servicios de tokens
-│   │   └── TokenService.ts
-│   ├── payments/            # Servicios de pagos
-│   │   ├── NFTGalleryService.ts
-│   │   ├── NFTService.ts
-│   │   ├── ReferralTokensService.ts
-│   │   ├── TokenService.ts
-│   │   ├── WalletProtectionService.ts
-│   │   ├── WalletService.ts
-│   │   ├── galleryCommission.ts
-│   │   └── nft/
-│   ├── verification/        # Servicios de verificación
-│   └── index.ts/              # Wallet
+
 │   ├── settings/            # Configuraciones
 │   ├── sharing/             # Compartir
 │   ├── sidebar/             # Sidebar
@@ -398,6 +327,112 @@ src/                          # Directorio raíz del frontend
 │       └── single/          # Páginas individuales
 │           ├── EditProfileSingle.tsx
 │           └── ProfileSingle.tsx
+├── services/                  # Servicios de negocio
+│   ├── index.ts
+│   ├── moderatorTimer.ts
+│   ├── ai/
+│   │   ├── AIIntegrationService.ts
+│   │   └── ConsentVerificationService.ts
+│   ├── analytics/
+│   │   ├── AdvancedAnalyticsService.ts
+│   │   ├── AnalyticsService.ts
+│   │   ├── HistoricalMetricsService.ts
+│   │   ├── ModerationMetricsService.ts
+│   │   ├── ProfileStatsService.ts
+│   │   ├── TokenAnalyticsService.ts
+│   │   ├── ai/
+│   │   └── index.ts
+│   ├── auth/
+│   │   ├── ContentProtectionService.ts
+│   │   ├── MFAService.ts
+│   │   ├── SecurityAuditService.ts
+│   │   ├── SecurityService.ts
+│   │   ├── UserIdentificationService.ts
+│   │   ├── UserVerificationService.ts
+│   │   ├── digitalFingerprint.ts
+│   │   ├── index.ts
+│   │   ├── mfa/
+│   │   ├── permanentBan.ts
+│   │   └── security/
+│   ├── blockchain/
+│   │   ├── ContractService.ts
+│   │   ├── Web3Service.ts
+│   │   └── Web3WalletService.ts
+│   ├── chat/
+│   │   ├── ChatPrivacyService.ts
+│   │   └── ChatRoomService.ts
+│   ├── core/
+│   │   ├── APMService.ts
+│   │   ├── AdvancedCacheService.ts
+│   │   ├── CDNService.ts
+│   │   ├── DataPrivacyService.ts
+│   │   ├── DesktopNotificationService.ts
+│   │   ├── ErrorAlertService.ts
+│   │   ├── GoogleServices.ts
+│   │   ├── LoadBalancingService.ts
+│   │   ├── NotificationService.ts
+│   │   ├── PerformanceMonitoringService.ts
+│   │   ├── PushNotificationService.ts
+│   │   ├── QueryOptimizationService.ts
+│   │   ├── RateLimitService.ts
+│   │   ├── SecureStorageService.ts
+│   │   ├── TestingService.ts
+│   │   ├── WebhookService.ts
+│   │   ├── geo/
+│   │   ├── graph/
+│   │   └── legal/
+│   ├── features/
+│   │   ├── BannerManagementService.ts
+│   │   ├── GlobalSearchService.ts
+│   │   ├── SustainableEventsService.ts
+│   │   └── events/
+│   ├── geo/
+│   │   └── S2Service.ts
+│   ├── legal/
+│   │   ├── ConsentService.ts
+│   │   └── CoupleDissolutionService.ts
+│   ├── neo4j/
+│   │   └── Neo4jService.ts
+│   ├── notifications/
+│   │   └── OneSignalService.ts
+│   ├── payments/
+│   │   ├── NFTGalleryService.ts
+│   │   ├── NFTService.ts
+│   │   ├── ReferralTokensService.ts
+│   │   ├── TokenService.ts
+│   │   ├── WalletProtectionService.ts
+│   │   ├── WalletService.ts
+│   │   ├── galleryCommission.ts
+│   │   └── nft/
+│   ├── rag/
+│   │   └── RAGService.ts
+│   ├── social/
+│   │   ├── chat/
+│   │   │   └── ChatPrivacyService.ts
+│   │   ├── couple/
+│   │   │   ├── AdvancedCoupleService.ts
+│   │   │   └── CoupleProfilesService.ts
+│   │   ├── notifications/
+│   │   │   └── OneSignalService.ts
+│   │   ├── ContentModerationService.ts
+│   │   ├── InvitationsService.ts
+│   │   ├── MatchService.ts
+│   │   ├── PredictiveMatchingService.ts
+│   │   ├── ReportManagementService.ts
+│   │   ├── ReportService.ts
+│   │   ├── SmartMatchingService.ts
+│   │   ├── VideoChatService.ts
+│   │   ├── chat/
+│   │   ├── moderatorTimer.ts
+│   │   ├── notifications/
+│   │   ├── postsService.ts
+│   │   └── reportAIClassification.ts
+│   ├── tokens/
+│   │   └── TokenService.ts
+│   └── verification/
+│       ├── FaceRecognitionService.ts
+│       ├── OCRService.ts
+│       └── SMSService.ts
 ├── components/android/       # Componentes optimizados para Android
 │   ├── AndroidOptimizedApp.tsx
 │   ├── AndroidThemeProvider.tsx

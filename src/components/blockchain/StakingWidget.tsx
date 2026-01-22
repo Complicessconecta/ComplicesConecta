@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Coins, TrendingUp, Lock, Unlock, Calendar, Percent, Loader2, CheckCircle, AlertCircle, Info } from "lucide-react";
-import { walletService, WalletService } from "@/services/WalletService";
+import { walletService, WalletService } from "@/services";
 import { logger } from "@/lib/logger";
 
 interface StakingNFT {

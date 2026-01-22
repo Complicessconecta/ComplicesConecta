@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PlusIcon, TrashIcon, CheckCircleIcon, XCircleIcon, CogIcon } from "@heroicons/react/24/outline";
-import { webhookService,  type WebhookConfig, type WebhookProvider, type WebhookEventType } from "@/services/WebhookService";
+import { webhookService,  type WebhookConfig, type WebhookProvider, type WebhookEventType } from "@/services";
 import { toast } from "@/hooks/useToast";
 
 // =====================================================

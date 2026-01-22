@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Lock, Clock, CheckCircle, XCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
-import { nftService } from "@/services/NFTService";
+import { nftService } from "@/services";
 import { logger } from "@/lib/logger";
 
 /**

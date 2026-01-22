@@ -5,8 +5,8 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { postsService } from "@/services/social/postsService";
-import performanceMonitoring from "@/services/PerformanceMonitoringService";
-import { TokenAnalyticsService } from "@/services/TokenAnalyticsService";
+import { performanceMonitoring } from "@/services/core/PerformanceMonitoringService";
+import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
 import "@/tests/mocks/performance";
 
 // Usar performanceMonitoring como performanceMonitor para compatibilidad con tests

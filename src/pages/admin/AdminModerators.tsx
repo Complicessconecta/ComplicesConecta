@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AdminNav } from "@/components/AdminNav";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";

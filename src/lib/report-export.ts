@@ -11,8 +11,8 @@
 import type {
   PerformanceMetric,
   PerformanceReport,
-} from "@/services/PerformanceMonitoringService";
-import type { ErrorAlert } from "@/services/ErrorAlertService";
+} from "@/services";
+import type { ErrorAlert } from "@/services";
 import { logger } from "@/lib/logger";
 
 // =====================================================

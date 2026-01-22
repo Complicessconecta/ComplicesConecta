@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Heart, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { walletService, WalletService } from "@/services/WalletService";
-import { nftService } from "@/services/NFTService";
+import { walletService, WalletService } from "@/services/payments/WalletService";
+import { nftService } from "@/services/payments/NFTService";
 import { logger } from "@/lib/logger";
 
 // Imágenes de NFTs mock para modo demo

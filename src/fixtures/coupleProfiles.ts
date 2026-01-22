@@ -1,4 +1,4 @@
-import type { CoupleProfileWithPartners } from "@/services/couple/CoupleProfilesService";
+import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
 
 export const generateMockCoupleProfiles = (): CoupleProfileWithPartners[] => {
   return [

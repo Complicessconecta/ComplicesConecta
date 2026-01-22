@@ -15,9 +15,9 @@ Este documento es la **fuente única de verdad** para pendientes y su estado. In
 
 Los reportes históricos (auditorías completadas) permanecen como referencia en `docs-unified/auditorias/`.
 
-**Pendientes activos (estimado):** 7
+**Pendientes activos (estimado):** 8
 
-- **Prioridad Alta:** 0
+- **Prioridad Alta:** 1 (TestSprite Frontend Test)
 - **Prioridad Media:** 5
 - **Prioridad Baja:** 2
 
@@ -71,6 +71,27 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
 ---
 
 ## 🚨 Prioridad Alta - Problemas Críticos
+
+### 0. TestSprite Frontend Test - CRÍTICO
+- **Fuente:** TestSprite MCP (22 Ene 2026)
+- **Descripción:** Test ejecutado: 4/20 tests pasaron (20%), 16/20 fallaron (80%)
+- **Resultados:**
+  - ✅ Tests pasados: Demo Mode, Responsive Navigation, AI Help Center, Marketplace/NFTs
+  - ❌ Tests fallados: Autenticación (8), Interactividad (3), Pagos/Galerías (2), Navegación Legal (1)
+- **Problemas Críticos Identificados:**
+  1. **Autenticación rota:** Login/registro no funcionales (TC001, TC002, TC003, TC004, TC011, TC012, TC013, TC017)
+  2. **Botón "Acceso Demo" no clickeable** (TC005, TC012)
+  3. **Navegación incorrecta:** Botón "Ingresar" redirige a `/news` en lugar de `/auth` (TC008)
+  4. **Discover vacío:** No muestra perfiles ni botones de like (TC006)
+  5. **Matching no funciona:** Likes mutuos no generan matches (TC007)
+  6. **Galerías privadas/pagos inconsistentes** (TC009, TC010)
+  7. **Navegación legal rota:** Botón "Más" no funciona (TC018)
+- **Problemas de Configuración (Afectan todos los tests):**
+  - OneSignal App ID no configurada
+  - PostHog API key no configurada
+- **Solución Propuesta:** Ver `testsprite_tests/INFORME_CORRECCIONES_TESTSPRITE.md` para detalle completo
+- **Impacto:** Alto - 80% de flujos principales fallan
+- **Estado:** ⏳ Pendiente (requiere correcciones priorizadas)
 
 ### 1. Lógica de Match Ausente - CRÍTICO
 - **Fuente:** REPORTE_DISCREPANCIAS_FLUJOS.md
@@ -281,21 +302,22 @@ Los siguientes problemas han sido solucionados y sus archivos han sido movidos a
 |-----------|-------|--------------|------------|
 | Seguridad | 20 | 20 | 0 |
 | Estructural | 8 | 8 | 0 |
-| Funcionalidad | 7 | 7 | 0 |
+| Funcionalidad | 8 | 7 | 1 |
 | UX/UI | 3 | 3 | 0 |
 | Mantenimiento | 2 | 0 | 2 |
 | Arquitectura | 2 | 0 | 2 |
-| **TOTAL** | **42** | **35** | **7** |
+| **TOTAL** | **43** | **38** | **5** |
 
 ---
 
 ## 🎯 Próximos Pasos Prioritarios
 
-1. **Nav Responsive** (Media) - Ajustes UX móvil
-2. **ThemeToggle funcional** (Media) - Persistencia y UX
-3. **Archivos huérfanos** (Media) - Reducir ruido
-4. **Refactor directorios monolíticos** (Media) - Mantenibilidad
-5. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
+1. **TestSprite Frontend Test correcciones** (Alta) - Autenticación, interactividad, configuración
+2. **Nav Responsive** (Media) - Ajustes UX móvil
+3. **ThemeToggle funcional** (Media) - Persistencia y UX
+4. **Archivos huérfanos** (Media) - Reducir ruido
+5. **Refactor directorios monolíticos** (Media) - Mantenibilidad
+6. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
 
 ---
 

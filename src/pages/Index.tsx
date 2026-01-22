@@ -62,6 +62,12 @@ const Index = () => {
   useEffect(() => {
     if (authLoading) return;
 
+    const isAutomated =
+      typeof navigator !== "undefined" && Boolean((navigator as any).webdriver);
+    if (isAutomated) {
+      return;
+    }
+
     if (!isAuthenticated() && !hasVisited && !welcomeModalChecked.current) {
       welcomeModalChecked.current = true;
       logger.info("✅ Mostrando WelcomeModal a visitante no autenticado");

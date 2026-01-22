@@ -304,7 +304,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                       // TODO: Abrir NotificationCenter dropdown o navegar a página de notificaciones
                       handleNavigation("/notifications");
                     } else {
-                      handleNavigation("/news");
+                      handleNavigation("/auth");
                     }
                     logger.info("Notifications icon clicked");
                   }}

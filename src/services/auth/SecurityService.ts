@@ -5,10 +5,116 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import * as speakeasy from "speakeasy";
 import * as QRCode from "qrcode";
 import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails } from "@/types/security.types";
 import type { Json } from "@/types/supabase-generated";
+
+ const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+ const base32Encode = (bytes: Uint8Array): string => {
+   let bits = 0;
+   let value = 0;
+   let output = "";
+
+   for (const byte of bytes) {
+     value = (value << 8) | byte;
+     bits += 8;
+     while (bits >= 5) {
+       output += BASE32_ALPHABET[(value >>> (bits - 5)) & 31] ?? "";
+       bits -= 5;
+     }
+   }
+
+   if (bits > 0) {
+     output += BASE32_ALPHABET[(value << (5 - bits)) & 31] ?? "";
+   }
+
+   return output;
+ };
+
+ const base32Decode = (input: string): Uint8Array => {
+   const normalized = input.replace(/=+$/g, "").replace(/\s+/g, "").toUpperCase();
+   let bits = 0;
+   let value = 0;
+   const out: number[] = [];
+
+   for (const ch of normalized) {
+     const idx = BASE32_ALPHABET.indexOf(ch);
+     if (idx === -1) continue;
+     value = (value << 5) | idx;
+     bits += 5;
+     if (bits >= 8) {
+       out.push((value >>> (bits - 8)) & 255);
+       bits -= 8;
+     }
+   }
+
+   return new Uint8Array(out);
+ };
+
+ const generateBase32Secret = async (lengthBytes: number = 20): Promise<string> => {
+   const cryptoObj = globalThis.crypto;
+   const bytes = new Uint8Array(lengthBytes);
+   cryptoObj.getRandomValues(bytes);
+   return base32Encode(bytes);
+ };
+
+ const buildOtpAuthUrl = (issuer: string, accountName: string, secret: string): string => {
+   const issuerEnc = encodeURIComponent(issuer);
+   const accountEnc = encodeURIComponent(accountName);
+   return `otpauth://totp/${issuerEnc}:${accountEnc}?secret=${secret}&issuer=${issuerEnc}`;
+ };
+
+ const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer => {
+   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+ };
+
+ const totpToken = async (secretBase32: string, timeStep: number, digits: number = 6): Promise<string> => {
+   const cryptoObj = globalThis.crypto;
+   const keyBytes = base32Decode(secretBase32);
+
+   const counter = new ArrayBuffer(8);
+   const view = new DataView(counter);
+   view.setUint32(4, timeStep, false);
+
+   const key = await cryptoObj.subtle.importKey(
+     "raw",
+     toArrayBuffer(keyBytes),
+     { name: "HMAC", hash: "SHA-1" },
+     false,
+     ["sign"],
+   );
+
+   const sig = new Uint8Array(await cryptoObj.subtle.sign("HMAC", key, counter));
+   const offset = sig[sig.length - 1]! & 0x0f;
+   const binCode =
+     ((sig[offset]! & 0x7f) << 24) |
+     ((sig[offset + 1]! & 0xff) << 16) |
+     ((sig[offset + 2]! & 0xff) << 8) |
+     (sig[offset + 3]! & 0xff);
+
+   const mod = 10 ** digits;
+   const token = (binCode % mod).toString().padStart(digits, "0");
+   return token;
+ };
+
+ const verifyTotp = async (
+   secretBase32: string,
+   token: string,
+   window: number = 2,
+   stepSeconds: number = 30,
+   digits: number = 6,
+ ): Promise<boolean> => {
+   const now = Math.floor(Date.now() / 1000);
+   const timeStep = Math.floor(now / stepSeconds);
+
+   for (let w = -window; w <= window; w++) {
+     const expected = await totpToken(secretBase32, timeStep + w, digits);
+     if (expected === token) return true;
+   }
+
+   return false;
+ };
 
 export interface SecurityAnalysis {
   riskScore: number;
@@ -186,8 +292,8 @@ export class SecurityService {
     }
 
     // Verificar si hay metadatos sospechosos (ej. intentos fallidos)
-    const failedAttempts = activity.metadata && typeof activity.metadata === 'object' 
-      ? (activity.metadata as Record<string, unknown>).failedAttempts as number ?? 0 
+    const failedAttempts = activity.metadata && typeof activity.metadata === 'object'
+      ? (activity.metadata as Record<string, unknown>).failedAttempts as number ?? 0
       : 0;
     if (failedAttempts > 3) {
       return {
@@ -283,12 +389,7 @@ export class SecurityService {
     error?: string;
   }> {
     try {
-      // Generar secret real usando speakeasy
-      const secret = speakeasy.generateSecret({
-        name: `ComplicesConecta (${userId})`,
-        issuer: "ComplicesConecta",
-        length: 32,
-      });
+      const secretBase32 = await generateBase32Secret(20);
 
       const backupCodes = this.generateBackupCodes();
 
@@ -299,7 +400,7 @@ export class SecurityService {
         isEnabled: false,
       };
       if (method === "2fa_app") {
-        setup = { ...setup, secret: secret.base32 };
+        setup = { ...setup, secret: secretBase32 };
       }
 
       // Guardar en base de datos real
@@ -328,9 +429,10 @@ export class SecurityService {
 
       // Generar QR code real para apps de autenticación
       let qrCode: string | undefined;
-      if (method === "2fa_app" && secret.otpauth_url) {
+      if (method === "2fa_app") {
         try {
-          qrCode = await QRCode.toDataURL(secret.otpauth_url);
+          const otpauthUrl = buildOtpAuthUrl("ComplicesConecta", userId, secretBase32);
+          qrCode = await QRCode.toDataURL(otpauthUrl);
         } catch (qrError) {
           logger.error("Error generating QR code:", { error: qrError });
         }
@@ -379,12 +481,7 @@ export class SecurityService {
       }
 
       // Verificación real con TOTP usando speakeasy
-      const isValidCode = speakeasy.totp.verify({
-        secret: settings.secret ?? "",
-        encoding: "base32",
-        token: code,
-        window: 2, // Permitir ventana de ±2 períodos de tiempo
-      });
+      const isValidCode = settings.secret ? await verifyTotp(settings.secret, code, 2, 30, 6) : false;
 
       // Verificar si es un código de respaldo
       const isBackupCode = settings.backup_codes

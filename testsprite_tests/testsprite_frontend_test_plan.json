@@ -1,0 +1,534 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Registration with Valid Data",
+    "description": "Verify that a new user can successfully register with valid credentials and mandatory information.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the registration page"
+      },
+      {
+        "type": "action",
+        "description": "Input valid user details including email, password, and profile info"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that registration is successful and redirects user to login or onboarding"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "User Login with Correct Credentials",
+    "description": "Check that users can log in successfully with valid username/email and password.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid username/email and password"
+      },
+      {
+        "type": "action",
+        "description": "Click the login button"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm successful login and landing on the dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "User Login with Multi-Factor Authentication Enabled",
+    "description": "Validate login flow when MFA is enabled, ensuring MFA challenge is presented and validated.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid credentials for user with MFA enabled"
+      },
+      {
+        "type": "action",
+        "description": "Submit login"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that MFA prompt is shown"
+      },
+      {
+        "type": "action",
+        "description": "Enter correct MFA code"
+      },
+      {
+        "type": "assertion",
+        "description": "Check user is successfully logged in after MFA verification"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "User Login Fails with Incorrect Password",
+    "description": "Ensure that login attempts with invalid password display appropriate error without granting access.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid username/email with incorrect password"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to login"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm error message is displayed and login is denied"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Demo Mode Access Without Credentials",
+    "description": "Verify that users can access the demo mode and explore features without real credentials.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the landing page"
+      },
+      {
+        "type": "action",
+        "description": "Select the demo mode option"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to demo environment is granted with demo profiles loaded"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Discover Profiles and Like Functionality",
+    "description": "Confirm user can browse profiles and successfully like profiles in the discover module.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to the Discover screen"
+      },
+      {
+        "type": "action",
+        "description": "Browse through available profiles"
+      },
+      {
+        "type": "action",
+        "description": "Select a profile and perform a like action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the like action is acknowledged with UI feedback and recorded"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Match Generation and Visibility in Matches Screen",
+    "description": "Validate that when two users like each other, a match is created and visible in Matches screen.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "User A likes User B's profile"
+      },
+      {
+        "type": "action",
+        "description": "User B likes User A's profile"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to Matches screen"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm the matched profile appears in the user's Matches list"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Real-Time Chat Between Matched Users",
+    "description": "Check that matched users can send and receive real-time messages in the chat interface.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as matched User A and open chat with User B"
+      },
+      {
+        "type": "action",
+        "description": "Send a text message to User B"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify User B receives the message instantly"
+      },
+      {
+        "type": "action",
+        "description": "Login as User B and send a reply message"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm User A receives the reply in real-time"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Private Gallery Access Denied Without Token Payment",
+    "description": "Ensure private galleries are blurred and access is denied unless token payment is made.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open chat with matched user who has a private gallery"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm private gallery is displayed blurred and access is locked"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to view private gallery without token payment"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is denied and prompt for token payment is shown"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Unlock Private Gallery Via Token Payment",
+    "description": "Validate that users can unlock private galleries by paying with CMPX tokens successfully.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a matched user's private gallery"
+      },
+      {
+        "type": "action",
+        "description": "Initiate token payment to unlock gallery"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm token balance is correctly deducted"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify private gallery unlocks and contents are visible"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Token Wallet Dashboard Displays Correct Balances",
+    "description": "Check that user's token dashboard displays correct CMPX and GTK token balances and transaction history.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to Token Wallet dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify CMPX and GTK token balances are accurate and up to date"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate transaction history is correctly displayed and scrollable"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Profile Editing for Single Profile",
+    "description": "Ensure users can edit their single profiles and updates are saved correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to single profile edit screen"
+      },
+      {
+        "type": "action",
+        "description": "Modify profile fields including name, description, and preferences"
+      },
+      {
+        "type": "action",
+        "description": "Save changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify profile data is updated and persists upon reload"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Role-Based Access Control for Admin Routes",
+    "description": "Verify that admin and moderation pages are only accessible by users with appropriate roles.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as regular user and attempt to access /admin route"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm access is denied with appropriate message or redirect"
+      },
+      {
+        "type": "action",
+        "description": "Login as admin user and access /admin route"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify admin dashboard and moderation tools load correctly"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Responsive Navigation Menus On Different Devices",
+    "description": "Test that navigation menus render correctly and are fully functional on mobile, tablet, and desktop viewports.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access app on desktop viewport"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify top navigation menu layout and interactivity"
+      },
+      {
+        "type": "action",
+        "description": "Resize to tablet viewport and reload"
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure navigation adapts responsively and remains usable"
+      },
+      {
+        "type": "action",
+        "description": "Access app on mobile viewport"
+      },
+      {
+        "type": "assertion",
+        "description": "Check bottom navigation menu is visible and functional"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "AI Help Center Accessibility and Functionality",
+    "description": "Validate that the AI Help Center screen is accessible from the app and provides functioning assistance features.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to AI Help Center page"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm AI help interface loads with expected UI components"
+      },
+      {
+        "type": "action",
+        "description": "Use AI assistance features such as submitting a query"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify AI responds appropriately and timely"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Marketplace and NFTs Screens Load Correctly",
+    "description": "Confirm the marketplace, shop, and NFTs pages render and display relevant content to users.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Marketplace page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify marketplace listings are displayed with images and details"
+      },
+      {
+        "type": "action",
+        "description": "Access the NFTs page"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm NFTs are shown properly with relevant metadata"
+      },
+      {
+        "type": "action",
+        "description": "Visit the Shop page"
+      },
+      {
+        "type": "assertion",
+        "description": "Check premium shop products are listed and navigable"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Parental Controls Enforce Access Restrictions on Private Galleries",
+    "description": "Test that parental controls are effectively restricting access to private galleries as per settings.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as user with parental controls enabled"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access a private gallery"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm access is blocked and parental controls warning is displayed"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Loading Legal and Compliance Pages Correctly",
+    "description": "Verify all legal, privacy, Ley Olimpia, and related info pages render and content is readable.",
+    "category": "functional",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Legal hub page"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm the page content loads without broken elements"
+      },
+      {
+        "type": "action",
+        "description": "Visit Privacy Policy page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify privacy text is displayed and scrollable"
+      },
+      {
+        "type": "action",
+        "description": "Access Ley Olimpia compliance page"
+      },
+      {
+        "type": "assertion",
+        "description": "Check for presence of compliance statements and readability"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Secure Routing Prevents Unauthorized Access",
+    "description": "Ensure protected routes redirect unauthorized users to login or show access denied messages.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt to access a protected route without authentication"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is redirected to login or access denied page"
+      },
+      {
+        "type": "action",
+        "description": "Login as normal user and attempt to access admin route"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm access is denied or redirected from admin routes"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Automated Tests Coverage Verification",
+    "description": "Confirm that all critical flows (authentication, discover-match-chat, tokens, navigation) have automated unit, integration, and E2E test coverage documented and executable.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Run unit tests from src/tests/unit folder"
+      },
+      {
+        "type": "assertion",
+        "description": "All tests pass with coverage report generated"
+      },
+      {
+        "type": "action",
+        "description": "Run integration tests in src/tests/integration"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify test suite passes with expected coverage"
+      },
+      {
+        "type": "action",
+        "description": "Execute E2E tests from src/tests/e2e"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm critical user flows execute successfully without failures"
+      }
+    ]
+  }
+]

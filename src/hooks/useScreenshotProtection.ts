@@ -27,65 +27,61 @@ export const useScreenshotProtection = (
     (method: string) => {
       if (!showWarnings) return;
 
-      const warningDiv = document.createElement("div");
-      warningDiv.innerHTML = `
-      <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Arial, sans-serif;
-      ">
-        <div style="
-          background: white;
-          padding: 30px;
-          border-radius: 12px;
-          text-align: center;
-          max-width: 400px;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        ">
-          <div style="
-            font-size: 48px;
-            margin-bottom: 15px;
-          ">🛡️</div>
-          <h2 style="
-            color: #dc2626;
-            margin: 0 0 15px 0;
-            font-size: 20px;
-          ">CONTENIDO PROTEGIDO</h2>
-          <p style="
-            color: #374151;
-            margin: 0 0 20px 0;
-            line-height: 1.5;
-          ">
-            Las capturas de pantalla están restringidías en este contenido.<br>
-            Método detectado: <strong>${method}</strong>
-          </p>
-          <button onclick="this.parentElement.parentElement.remove()" style="
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-          ">Entendido</button>
-        </div>
-      </div>
-    `;
+      const root = document.createElement("div");
 
-      document.body.appendChild(warningDiv as Node);
+      const overlay = document.createElement("div");
+      overlay.style.cssText =
+        "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;";
+
+      const card = document.createElement("div");
+      card.style.cssText =
+        "background:white;padding:30px;border-radius:12px;text-align:center;max-width:400px;box-shadow:0 20px 40px rgba(0,0,0,0.3);";
+
+      const icon = document.createElement("div");
+      icon.style.cssText = "font-size:48px;margin-bottom:15px;";
+      icon.textContent = "🛡️";
+
+      const title = document.createElement("h2");
+      title.style.cssText = "color:#dc2626;margin:0 0 15px 0;font-size:20px;";
+      title.textContent = "CONTENIDO PROTEGIDO";
+
+      const message = document.createElement("p");
+      message.style.cssText = "color:#374151;margin:0 0 20px 0;line-height:1.5;";
+
+      const line1 = document.createElement("span");
+      line1.textContent = "Las capturas de pantalla están restringidías en este contenido.";
+      const br = document.createElement("br");
+      const line2 = document.createElement("span");
+      line2.textContent = "Método detectado: ";
+      const strong = document.createElement("strong");
+      strong.textContent = method;
+
+      message.appendChild(line1);
+      message.appendChild(br);
+      message.appendChild(line2);
+      message.appendChild(strong);
+
+      const button = document.createElement("button");
+      button.style.cssText =
+        "background:#dc2626;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-size:14px;";
+      button.textContent = "Entendido";
+      button.addEventListener("click", () => {
+        root.remove();
+      });
+
+      card.appendChild(icon);
+      card.appendChild(title);
+      card.appendChild(message);
+      card.appendChild(button);
+      overlay.appendChild(card);
+      root.appendChild(overlay);
+
+      document.body.appendChild(root);
 
       // Auto-remove después de 5 segundos
       setTimeout(() => {
-        if (warningDiv.parentNode) {
-          warningDiv.parentNode.removeChild(warningDiv as Node);
+        if (root.parentNode) {
+          root.parentNode.removeChild(root);
         }
       }, 5000);
     },
@@ -248,7 +244,7 @@ export const useScreenshotProtection = (
         user-drag: none !important;
         pointer-events: auto !important;
       }
-      
+
       .protected-content {
         -webkit-touch-callout: none !important;
         -webkit-user-select: none !important;
@@ -257,11 +253,11 @@ export const useScreenshotProtection = (
         -ms-user-select: none !important;
         user-select: none !important;
       }
-      
+
       .protected-content::selection {
         background: transparent !important;
       }
-      
+
       .protected-content::-moz-selection {
         background: transparent !important;
       }

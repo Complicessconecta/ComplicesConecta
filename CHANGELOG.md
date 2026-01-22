@@ -2,7 +2,7 @@
 
 **Fecha:** 21 de Enero, 2026  
 **Versión:** v3.8.3 (Refactorización Estructural)  
-**Responsable:** Lead Architect IA
+**Responsable:** Ingeniero de Software - Juan Carlos Mendez Nataren
 
 ## Resumen Ejecutivo
 
@@ -22,6 +22,7 @@ Se han eliminado 21 archivos redundantes y un directorio duplicado, mejorando la
 | **NFTMintButton** | `src/components/ui/buttons/NFTMintButton.tsx` | Importaba desde la raíz `src/services/` (ahora eliminada). | **Corregido**. Imports actualizados a `@/services/payments/WalletService` y `NFTService`. | Reparación de imports rotos. Asegura funcionalidad crítica de pagos y NFTs. |
 | **Performance Test** | `src/tests/unit/performance.test.ts` | Importaba desde la raíz `src/services/` (ahora eliminada). | **Corregido**. Imports actualizados a `@/services/core/PerformanceMonitoringService` y `AnalyticsService`. | Reparación de tests unitarios. Asegura que el monitoreo de rendimiento funcione correctamente. |
 | **DesktopNotificationService** | `src/services/core/DesktopNotificationService.ts` | No exportaba una instancia Singleton por defecto. | **Modificado**. Se añadió `export const desktopNotificationService = new DesktopNotificationService();`. | Facilita el uso del servicio sin necesidad de instanciarlo manualmente en cada componente. |
+| **DesktopNotificationService** (Lint) | `src/services/core/DesktopNotificationService.ts` | Error de sintaxis (brace extra y tipo `ZodBoolean` residual). | **Corregido**. Eliminación de código inválido. | Corrección de error de compilación detectado por `npm run lint`. |
 | **PerformanceMonitoringService** | `src/services/core/PerformanceMonitoringService.ts` | Método `destroy()` ineficiente y falta de export Singleton consistente. | **Refactorizado**. Optimización de `destroy()` y añadido export Singleton. | Mejora de rendimiento y consistencia en el acceso al servicio de monitoreo. |
 
 ## Archivos Eliminados (Proxy/Redundantes)
@@ -49,8 +50,42 @@ Se han eliminado 21 archivos redundantes y un directorio duplicado, mejorando la
 *   `src/services/WalletService.ts`
 *   `src/services/couple/` (Directorio completo)
 
+## Ejemplos de Código Clave
+
+### 1. Patrón Singleton (DesktopNotificationService.ts)
+```typescript
+export class DesktopNotificationService {
+  // ... implementación ...
+}
+
+// Exportación Singleton por defecto
+export const desktopNotificationService = new DesktopNotificationService();
+```
+
+### 2. Consolidación de Servicios (src/services/index.ts)
+```typescript
+// Core Services
+export * from "@/services/core/ErrorAlertService";
+export * from "@/services/core/PerformanceMonitoringService";
+// ...
+
+// Features
+export * from "@/services/features/events/VirtualEventsService";
+export * from "@/services/features/BannerManagementService";
+// ...
+```
+
+### 3. Corrección de Imports (Ejemplo en componentes)
+```typescript
+// ANTES (Incorrecto/Roto):
+// import { desktopNotificationService } from "../../../services/DesktopNotificationService";
+
+// AHORA (Correcto/Absoluto):
+import { desktopNotificationService } from "@/services/core/DesktopNotificationService";
+```
+
 ## Próximos Pasos
 
-1.  **Verificación**: Ejecutar `npm run buildcheck` y `npm run type-check` para confirmar que no quedan referencias rotas.
-2.  **Documentación**: Actualizar `.windsurfrules` para reflejar la prohibición de archivos proxy en la raíz de servicios.
-3.  **Despliegue**: Merge a `master` tras validación exitosa.
+1.  **Verificación**: `npm run lint` y `npm run type-check` ejecutados exitosamente (0 errores).
+2.  **Documentación**: `.windsurfrules` actualizado con reglas de estructura.
+3.  **Despliegue**: Cambios integrados en rama `master`.

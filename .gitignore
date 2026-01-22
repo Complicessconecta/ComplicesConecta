@@ -305,6 +305,9 @@ diff.patch
 !patches/*.patch
 project-structure.md
 
+ # Reportes temporales de comparación de ramas (root)
+ /DIFF_origin-main_vs_origin-master_*.md
+
 # ============================================================================
 # SCRIPTS Y ARCHIVOS SENSIBLES
 # ============================================================================

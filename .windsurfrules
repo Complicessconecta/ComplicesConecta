@@ -25,15 +25,15 @@ Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compli
 - No eliminar variables que estan declaradas, agregar variables que no estan declaradas
 
 **Marca de progreso:**
-* **[Completo/Verificado✅]** 
-* **[EnProceso🚧]**  
+* **[Completo/Verificado✅]**
+* **[EnProceso🚧]**
 * **[ADVERTENCIA⚠️]**
-* **[Incompleto❌]** 
+* **[Incompleto❌]**
 
 1.2 Gestión de Ramas y Commits
 
 Rama master = PRODUCCIÓN (desplegada en Vercel)
-Trabajo activo en   refact-inteligente-Tra-2025-12-26 (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA CAMBIAR DE RAMA  o TRABAJR EN LA ACTUAL 
+Trabajo activo en   refact-inteligente-Tra-2025-12-26 (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA CAMBIAR DE RAMA  o TRABAJR EN LA ACTUAL
 
 Commits en español MX con fecha y hora:
 feat: agrega check-in clubs - 16 Dic 2025 14:30
@@ -53,12 +53,12 @@ CHANGELOG.md
 
 1.4 Supabase, Docker y Base de Datos
 
-Verificar Docker en línea  de lo contrario indicarle al usuario iniciar para hacer 
+Verificar Docker en línea  de lo contrario indicarle al usuario iniciar para hacer
 y login a Supabase antes de cambios
 Alinear tablas locales/remotas antes de modificar
 Notificar tablas faltantes antes de crearlas
 al finalizar el uso de Doker-Desktop verificar que todo esta en orden
-y hacer kill para sair 
+y hacer kill para sair
 
 
 
@@ -67,6 +67,41 @@ y hacer kill para sair
 Trabajar en rama separada (solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA
 Verificar que master esté operativa antes de continuar
 Al finalizar: si todo funciona → merge a master; si no → crear .md con detalles del problema
+
+1.6 Documentación de Estructura del Proyecto
+
+**Archivo de referencia:** `Project-Structure-Tree-files.md`
+
+Este archivo contiene el barrido completo del directorio `src/` con todos los archivos, directorios y subdirectorios del proyecto. Es la referencia oficial para la documentación de la estructura del proyecto.
+
+**Reglas de actualización:**
+
+- Al crear nuevos archivos o directorios en `src/`: actualizar `Project-Structure-Tree-files.md` agregando la nueva entrada en la ubicación correspondiente
+- Al eliminar archivos o directorios en `src/`: actualizar `Project-Structure-Tree-files.md` eliminando la entrada correspondiente
+- Al renombrar archivos o directorios en `src/`: actualizar `Project-Structure-Tree-files.md` reflejando el nuevo nombre
+- Al reorganizar la estructura de directorios: actualizar `Project-Structure-Tree-files.md` manteniendo la jerarquía correcta
+
+**Formato del archivo:**
+
+```markdown
+src/                          # Directorio raíz del frontend
+├── archivo.tsx               # Descripción del archivo
+├── directorio/               # Descripción del directorio
+│   ├── archivo.tsx          # Descripción del archivo
+│   └── subdirectorio/       # Descripción del subdirectorio
+```
+
+**Actualización de documentación obligatoria:**
+
+Al finalizar cualquier sesión de desarrollo que involucre cambios en la estructura de archivos (creación, eliminación, renombrado, reorganización), actualizar:
+1. `Project-Structure-Tree-files.md` con los cambios realizados
+2. `project-structure-tree.md` (si existe) con la estructura actualizada
+3. `README.md` si la estructura afecta la documentación general
+4. `DIAGRAMAS_FLUJOS_CONSOLIDADO.md` si la estructura afecta los flujos
+
+**Verificación:**
+
+Antes de crear un commit, verificar que `Project-Structure-Tree-files.md` esté actualizado con la estructura actual del directorio `src/`.
 
 
 2. REGLAS DE IA PARA DESARROLLO
@@ -77,7 +112,7 @@ CERO verborrea → respuestas directas, sin saludos innecesarios
 NO reescribir archivos completos → usar bloques modificados o "Search & Replace"
 Respuestas cortas → listas con bullet points
 Leer los archivos completos antes de modificarlos
- 
+
 
 TypeScript y Código Limpio
 
@@ -123,11 +158,11 @@ Consola: PowerShell (Windows) – nunca Linux
 Idioma: Español MX UTF-8
 Dudas → PREGUNTAR ANTES de proceder
 Proteger  los archivos con caractes " ` " para que no se corrompan
-Ejemplo: "copílot" correcto , incorrecto "coplot" 
+Ejemplo: "copílot" correcto , incorrecto "coplot"
 Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
 
 
- 
+
 
  Comentarios y su uso
 
@@ -142,8 +177,8 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
         cleanedCount++;"
 
     Si se detecta comentarios en el archivos en ingles cambialos a español ES-MX UTF-8
-    Al crear archivos verificar que no existan, si existen preguntar al usuario si desea sobreescribirlos, si no desea sobreescribirlos preguntar al usuario si desea crear un nuevo archivo con un nombre diferente justificando la necesidad de crear un nuevo archivo , se agrega comentario general del archivo y su uso por ejemplo: 
-    
+    Al crear archivos verificar que no existan, si existen preguntar al usuario si desea sobreescribirlos, si no desea sobreescribirlos preguntar al usuario si desea crear un nuevo archivo con un nombre diferente justificando la necesidad de crear un nuevo archivo , se agrega comentario general del archivo y su uso por ejemplo:
+
     " /**
     * Google Services Integration - ComplicesConecta v3.3.0
     * Servicios de Google (Analytics, Push Notifications) - Sin Firebase
@@ -154,7 +189,7 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
     * - Comunicación segura
     * - Análisis de comportamiento lifestyle
     * - Notificaciones discretas
-    
+
 
     // FIX: Estructura de DOM ideal para modales modernos:
     // 1. Modal renderizado fuera del layout principal usando createPortal
@@ -163,9 +198,9 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
     // 4. Bloqueo de scroll del body mientras el modal está abierto
     // 5. Manejo de tecla ESC y click en overlay para cerrar
     // 6. Animaciones suaves de entrada/salida (fade + scale)"
- 
-    
-        
+
+
+
 MPC y Audio (Music Production)
 
 Proteger procesos MPC y controladores MIDI

@@ -1,19 +1,64 @@
-# 📋 Problemas Pendientes - ComplicesConecta v3.9.2
+# 📋 Problemas Pendientes Consolidados - ComplicesConecta v3.9.2
 
 **Fecha:** 21 de Enero, 2026
 **Versión:** v3.9.2
-**Estado:** Consolidación de problemas pendientes
+**Estado:** Consolidación de problemas pendientes tras análisis de 9 archivos .md
 
 ---
 
 ## 🎯 Resumen Ejecutivo
 
-Este documento consolida todos los problemas pendientes identificados en las auditorías previas que aún requieren solución. Los problemas ya resueltos han sido movidos a `docs-unified/auditorias/`.
+Este documento consolida todos los problemas pendientes identificados en las auditorías previas que aún requieren solución. Los problemas ya resueltos han sido consolidados en `docs-unified/auditorias/`.
 
+**Archivos Analizados:** 9 archivos .md
 **Total de Problemas Pendientes:** 15
 **Prioridad Alta:** 5
 **Prioridad Media:** 7
 **Prioridad Baja:** 3
+
+---
+
+## 📊 Análisis de Archivos .md
+
+### ✅ Archivos Solucionados (Movidos a docs-unified/auditorias/)
+1. **reporte-final-auditoria.md** - Auditoría Estructural v3.9.2 completada
+2. **AUDITORIA_SEGURIDAD_SUPABASE_v3_9_2.md** - Seguridad DB completada
+3. **AUDITORIA_SEGURIDAD_SRC_v3_9_2.md** - Seguridad SRC completada
+4. **DIAGNOSTICO_ICONOS_Y_VISIBILIDAD.md** - Íconos y visibilidad corregidos
+5. **ELIMINACIONES_PROPUESTAS.md** - ~25 errores TypeScript corregidos
+
+### ⏳ Archivos Pendientes (Sin problemas nuevos)
+1. **REPORTE_DISCREPANCIAS_FLUJOS.md** - Problemas de lógica de negocio (match, chat, galería)
+2. **PLAN_CLIENTE_INVERSOR.md** - Plan histórico con pendientes (encoding UTF-8, nav responsive)
+3. **ESTADO_MAESTRO_UNIFICADO_v3.7.0.md** - Estado general (95% ready)
+4. **Eres_un_experto_en_desarrollo.md** - Instrucciones de barrido profundo
+5. **audit-report.md** - Auditoría general de código (completa)
+6. **audit-hallazgos.md** - Hallazgos de auditoría estructural (aplicados)
+
+### ✅ Reportes Técnicos Completados (Movidos a docs-unified/auditorias/)
+1. **ruta_solucion.md** - Análisis de castings `as any` y tablas faltantes ✅
+2. **PROBLEMAS_ANALISIS.md** - Verificación de errores TypeScript (0 en producción) ✅
+3. **PENDIENTES.md** - Lista de pendientes de desarrollo (v3.8.3) ✅
+
+---
+
+## 🗑️ Archivos Obsoletos Eliminados
+
+Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y eliminados de la raíz del proyecto:
+
+1. `reporte-final-auditoria.md` → `docs-unified/auditorias/`
+2. `AUDITORIA_SEGURIDAD_SUPABASE_v3_9_2.md` → `docs-unified/auditorias/`
+3. `AUDITORIA_SEGURIDAD_SRC_v3_9_2.md` → `docs-unified/auditorias/`
+4. `DIAGNOSTICO_ICONOS_Y_VISIBILIDAD.md` → `docs-unified/auditorias/`
+5. `ELIMINACIONES_PROPUESTAS.md` → `docs-unified/auditorias/`
+6. `VERIFICACION_IMPLEMENTACION_MD_Enero2026.md` → `docs-unified/auditorias/`
+7. `VERIFICACION_CODIGO_PRODUCCION_Enero2026.md` → `docs-unified/auditorias/`
+8. `VALIDATION_CHECKLIST_COUPLE_DISPUTES_v3_9_2.md` → `docs-unified/auditorias/`
+9. `ruta_solucion.md` → `docs-unified/auditorias/`
+10. `PROBLEMAS_ANALISIS.md` → `docs-unified/auditorias/`
+11. `PENDIENTES.md` → `docs-unified/auditorias/`
+
+**Nota:** Los archivos en `docs-unified/auditorias/` deben mantenerse como referencia histórica de auditorías completadas.
 
 ---
 

@@ -4,7 +4,17 @@
 -- =====================================================
 
 -- PASO 1: Eliminar triggers problemáticos
-DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name = 'club_reviews'
+    ) THEN
+        DROP TRIGGER IF EXISTS trigger_update_club_ratings ON public.club_reviews;
+    END IF;
+END $$;
 -- PASO 2: Crear tablas básicas sin conflictos
 CREATE TABLE IF NOT EXISTS couple_nft_requests (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -48,37 +58,37 @@ CREATE TABLE IF NOT EXISTS user_wallets (
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 -- PASO 3: Actualizar daily_token_claims existente
-DO $$ 
+DO $$
 BEGIN
     -- Agregar token_type si no existe
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'daily_token_claims' AND column_name = 'token_type') THEN
         ALTER TABLE daily_token_claims ADD COLUMN token_type TEXT DEFAULT 'CMPX';
     END IF;
-    
+
     -- Agregar network si no existe
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'daily_token_claims' AND column_name = 'network') THEN
         ALTER TABLE daily_token_claims ADD COLUMN network TEXT DEFAULT 'mumbai';
     END IF;
 END $$;
 -- PASO 4: Actualizar testnet_token_claims existente
-DO $$ 
+DO $$
 BEGIN
     -- Agregar wallet_address si no existe
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'testnet_token_claims' AND column_name = 'wallet_address') THEN
         ALTER TABLE testnet_token_claims ADD COLUMN wallet_address TEXT;
     END IF;
-    
+
     -- Agregar network si no existe
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'testnet_token_claims' AND column_name = 'network') THEN
         ALTER TABLE testnet_token_claims ADD COLUMN network TEXT DEFAULT 'mumbai';
     END IF;
-    
+
     -- Agregar token_type si no existe
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'testnet_token_claims' AND column_name = 'token_type') THEN
         ALTER TABLE testnet_token_claims ADD COLUMN token_type TEXT DEFAULT 'CMPX';
     END IF;

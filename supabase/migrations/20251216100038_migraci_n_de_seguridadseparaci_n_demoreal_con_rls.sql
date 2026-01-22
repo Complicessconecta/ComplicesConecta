@@ -130,25 +130,36 @@ DROP POLICY IF EXISTS "Users can view public profiles" ON profiles;
     END IF;
     END $$;
 -- 8. Crear índices para optimizar las consultas RLS
-    CREATE INDEX IF NOT EXISTS idx_profiles_user_id_is_demo 
+    CREATE INDEX IF NOT EXISTS idx_profiles_user_id_is_demo
     ON profiles(user_id, is_demo);
-CREATE INDEX IF NOT EXISTS idx_profiles_is_demo_active 
-    ON profiles(is_demo, is_active) 
-    WHERE is_active = true;
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'profiles'
+          AND column_name = 'is_active'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_profiles_is_demo_active
+            ON profiles(is_demo, is_active)
+            WHERE is_active = true;
+    END IF;
+END $$;
 -- 9. Comentarios para documentación
-    COMMENT ON POLICY "Real users only see real profiles" ON profiles IS 
+    COMMENT ON POLICY "Real users only see real profiles" ON profiles IS
     'Política de seguridad: Usuarios reales (is_demo=false) solo pueden ver otros perfiles reales. Previene que usuarios reales vean perfiles demo.';
-COMMENT ON POLICY "Demo users only see demo profiles" ON profiles IS 
+COMMENT ON POLICY "Demo users only see demo profiles" ON profiles IS
     'Política de seguridad: Usuarios demo (is_demo=true) solo pueden ver otros perfiles demo. Mantiene aislamiento completo entre ecosistemas.';
-COMMENT ON POLICY "Users can view own profile" ON profiles IS 
+COMMENT ON POLICY "Users can view own profile" ON profiles IS
     'Permite que cualquier usuario autenticado pueda ver su propio perfil, independientemente del tipo (demo/real).';
 -- 10. Verificación de la migración
     DO $$
     BEGIN
     -- Verificar que RLS está habilitado
     IF NOT EXISTS (
-        SELECT 1 FROM pg_tables 
-        WHERE tablename = 'profiles' 
+        SELECT 1 FROM pg_tables
+        WHERE tablename = 'profiles'
         AND rowsecurity = true
     ) THEN
         RAISE EXCEPTION 'ERROR: RLS no se habilitó correctamente en tabla profiles';
@@ -156,16 +167,16 @@ COMMENT ON POLICY "Users can view own profile" ON profiles IS
 
     -- Verificar que las políticas se crearon
     IF NOT EXISTS (
-        SELECT 1 FROM pg_policies 
-        WHERE tablename = 'profiles' 
+        SELECT 1 FROM pg_policies
+        WHERE tablename = 'profiles'
         AND policyname = 'Real users only see real profiles'
     ) THEN
         RAISE EXCEPTION 'ERROR: Política para usuarios reales no se creó';
     END IF;
 
     IF NOT EXISTS (
-        SELECT 1 FROM pg_policies 
-        WHERE tablename = 'profiles' 
+        SELECT 1 FROM pg_policies
+        WHERE tablename = 'profiles'
         AND policyname = 'Demo users only see demo profiles'
     ) THEN
         RAISE EXCEPTION 'ERROR: Política para usuarios demo no se creó';

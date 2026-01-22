@@ -25,8 +25,21 @@ CREATE INDEX IF NOT EXISTS idx_chat_members_last_seen ON chat_members(last_seen)
 -- Crear índice para is_owner
 CREATE INDEX IF NOT EXISTS idx_chat_members_is_owner ON chat_members(is_owner);
 
--- Crear índice compuesto para room_id y profile_id
-CREATE INDEX IF NOT EXISTS idx_chat_members_room_profile ON chat_members(room_id, profile_id);
+-- Crear índice compuesto para room_id y profile_id - solo si las columnas existen
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'chat_members' AND column_name = 'room_id'
+  ) AND EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'chat_members' AND column_name = 'profile_id'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_chat_members_room_profile ON chat_members(room_id, profile_id);
+  ELSE
+    RAISE NOTICE 'Columnas room_id o profile_id no existen en chat_members - skipping index creation';
+  END IF;
+END $$;
 
 -- Comentarios
 COMMENT ON COLUMN chat_members.is_owner IS 'Indica si el miembro es el propietario de la sala';

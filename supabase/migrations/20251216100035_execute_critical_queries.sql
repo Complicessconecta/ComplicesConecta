@@ -7,58 +7,99 @@
 
 -- Query 1.1: Feed público ordenado por fecha
 -- Usa media_url (compatible con ambos entornos: local y remoto)
-EXPLAIN ANALYZE
-SELECT 
-  id,
-  user_id,
-  description as content,
-  content_type as post_type,
-  media_url,
-  views_count,
-  created_at,
-  updated_at
-FROM stories
-WHERE is_public = true
-ORDER BY created_at DESC
-LIMIT 20;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'stories')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'stories' AND column_name = 'description')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'stories' AND column_name = 'content_type')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'stories' AND column_name = 'media_url')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'stories' AND column_name = 'is_public')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'stories' AND column_name = 'created_at')
+  THEN
+    EXECUTE 'EXPLAIN ANALYZE
+      SELECT id, user_id, description as content, content_type as post_type, media_url, views_count, created_at, updated_at
+      FROM stories
+      WHERE is_public = true
+      ORDER BY created_at DESC
+      LIMIT 20';
+  END IF;
+END $$;
+
 -- Query 2.1: Perfiles con filtros básicos
 -- NOTA: Aplicar migración 20251103000001_fix_profiles_online_column.sql primero
 -- para agregar la columna is_online si no existe
-EXPLAIN ANALYZE
-SELECT *
-FROM profiles
-WHERE age >= 18 
-  AND age <= 35
-  AND gender = 'male'
-  AND is_verified = true
-ORDER BY updated_at DESC
-LIMIT 20;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'age')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'gender')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'is_verified')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'updated_at')
+  THEN
+    EXECUTE 'EXPLAIN ANALYZE
+      SELECT *
+      FROM profiles
+      WHERE age >= 18
+        AND age <= 35
+        AND gender = ''male''
+        AND is_verified = true
+      ORDER BY updated_at DESC
+      LIMIT 20';
+  END IF;
+END $$;
+
 -- Query 3.1: Mensajes por chat
 -- Nota: Usar un room_id real de tu base de datos
-EXPLAIN ANALYZE
-SELECT 
-  id,
-  room_id,
-  sender_id,
-  content,
-  created_at
-FROM messages
-WHERE room_id IN (
-  SELECT id FROM chat_rooms LIMIT 1
-)
-ORDER BY created_at DESC
-LIMIT 50;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'messages')
+     AND EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'chat_rooms')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'messages' AND column_name = 'room_id')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'messages' AND column_name = 'created_at')
+  THEN
+    EXECUTE 'EXPLAIN ANALYZE
+      SELECT id, room_id, sender_id, content, created_at
+      FROM messages
+      WHERE room_id IN (SELECT id FROM chat_rooms LIMIT 1)
+      ORDER BY created_at DESC
+      LIMIT 50';
+  END IF;
+END $$;
+
 -- Query 7.1: Usuarios en S2 cell
 -- Nota: Usar un s2_cell_id real de tu base de datos
-EXPLAIN ANALYZE
-SELECT *
-FROM profiles
-WHERE s2_cell_id IS NOT NULL
-ORDER BY updated_at DESC
-LIMIT 20;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 's2_cell_id')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'updated_at')
+  THEN
+    EXECUTE 'EXPLAIN ANALYZE
+      SELECT *
+      FROM profiles
+      WHERE s2_cell_id IS NOT NULL
+      ORDER BY updated_at DESC
+      LIMIT 20';
+  END IF;
+END $$;
+
 -- Query 7.3: Función get_profiles_in_cells
-EXPLAIN ANALYZE
-SELECT * FROM get_profiles_in_cells(
-  (SELECT ARRAY_AGG(DISTINCT s2_cell_id) FROM profiles WHERE s2_cell_id IS NOT NULL LIMIT 3),
-  20
-);
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'profiles')
+     AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 's2_cell_id')
+     AND EXISTS (
+        SELECT 1
+        FROM pg_proc p
+        JOIN pg_namespace n ON n.oid = p.pronamespace
+        WHERE n.nspname = 'public'
+          AND p.proname = 'get_profiles_in_cells'
+     )
+  THEN
+    EXECUTE 'EXPLAIN ANALYZE
+      SELECT * FROM get_profiles_in_cells(
+        (SELECT ARRAY_AGG(DISTINCT s2_cell_id) FROM profiles WHERE s2_cell_id IS NOT NULL LIMIT 3),
+        20
+      )';
+  END IF;
+END $$;

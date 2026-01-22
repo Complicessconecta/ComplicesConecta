@@ -29,35 +29,71 @@ CREATE INDEX IF NOT EXISTS idx_sensitive_data_is_active ON public.sensitive_data
 ALTER TABLE public.sensitive_data ENABLE ROW LEVEL SECURITY;
 
 -- Crear políticas RLS
-CREATE POLICY users_can_view_own_sensitive_data ON public.sensitive_data
-FOR SELECT
-USING (auth.uid() = user_id);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'sensitive_data' AND policyname = 'users_can_view_own_sensitive_data'
+  ) THEN
+    CREATE POLICY users_can_view_own_sensitive_data ON public.sensitive_data
+    FOR SELECT
+    USING (auth.uid() = user_id);
+  END IF;
 
-CREATE POLICY admins_can_view_all_sensitive_data ON public.sensitive_data
-FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'sensitive_data' AND policyname = 'users_can_insert_own_sensitive_data'
+  ) THEN
+    CREATE POLICY users_can_insert_own_sensitive_data ON public.sensitive_data
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+  END IF;
 
-CREATE POLICY users_can_insert_own_sensitive_data ON public.sensitive_data
-FOR INSERT
-WITH CHECK (auth.uid() = user_id);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'sensitive_data' AND policyname = 'users_can_update_own_sensitive_data'
+  ) THEN
+    CREATE POLICY users_can_update_own_sensitive_data ON public.sensitive_data
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+  END IF;
 
-CREATE POLICY users_can_update_own_sensitive_data ON public.sensitive_data
-FOR UPDATE
-USING (auth.uid() = user_id);
+  -- Políticas de admin - solo si existe la columna user_role en profiles
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'user_role'
+  ) THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_policies
+      WHERE schemaname = 'public' AND tablename = 'sensitive_data' AND policyname = 'admins_can_view_all_sensitive_data'
+    ) THEN
+      CREATE POLICY admins_can_view_all_sensitive_data ON public.sensitive_data
+      FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
+        )
+      );
+    END IF;
 
-CREATE POLICY admins_can_update_all_sensitive_data ON public.sensitive_data
-FOR UPDATE
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_policies
+      WHERE schemaname = 'public' AND tablename = 'sensitive_data' AND policyname = 'admins_can_update_all_sensitive_data'
+    ) THEN
+      CREATE POLICY admins_can_update_all_sensitive_data ON public.sensitive_data
+      FOR UPDATE
+      USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
+        )
+      );
+    END IF;
+  ELSE
+    RAISE NOTICE 'Columna user_role no existe en profiles - skipping admin policies for sensitive_data';
+  END IF;
+END $$;
 
 -- Crear trigger para updated_at automático
 CREATE OR REPLACE FUNCTION public.update_sensitive_data_updated_at()

@@ -2,10 +2,10 @@
 -- Fecha: 14 de Enero, 2026
 
 -- Agregar columnas para compatibilidad con postsService.ts
-ALTER TABLE public.stories 
+ALTER TABLE public.stories
 ADD COLUMN IF NOT EXISTS description text,
 ADD COLUMN IF NOT EXISTS content_type text DEFAULT 'image',
-ADD COLUMN IF NOT EXISTS media_urls text[] DEFAULT ARRAY[media_url],
+ADD COLUMN IF NOT EXISTS media_urls text[] DEFAULT ARRAY[]::text[],
 ADD COLUMN IF NOT EXISTS location text,
 ADD COLUMN IF NOT EXISTS views_count integer DEFAULT 0,
 ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT now();

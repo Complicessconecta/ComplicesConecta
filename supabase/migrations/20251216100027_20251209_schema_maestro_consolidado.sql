@@ -35,19 +35,19 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
         CREATE TYPE user_role AS ENUM ('user', 'moderator', 'admin');
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'report_status') THEN
         CREATE TYPE report_status AS ENUM ('pending', 'reviewing', 'resolved', 'dismissed');
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'match_status') THEN
         CREATE TYPE match_status AS ENUM ('pending', 'accepted', 'rejected', 'blocked');
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'transaction_type') THEN
         CREATE TYPE transaction_type AS ENUM ('referral_bonus', 'withdrawal', 'adjustment', 'earn', 'spend', 'transfer');
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'event_type') THEN
         CREATE TYPE event_type AS ENUM ('meetup', 'party', 'dinner', 'travel', 'other');
     END IF;
@@ -651,15 +651,15 @@ BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'email') THEN
         CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
     END IF;
-    
+
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'is_active') THEN
         CREATE INDEX IF NOT EXISTS idx_profiles_is_active ON profiles(is_active);
     END IF;
-    
+
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'is_demo') THEN
         CREATE INDEX IF NOT EXISTS idx_profiles_is_demo ON profiles(is_demo);
     END IF;
-    
+
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'created_at') THEN
         CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON profiles(created_at DESC);
     END IF;
@@ -673,17 +673,27 @@ BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_profiles' AND column_name = 'is_active') THEN
         CREATE INDEX IF NOT EXISTS idx_couple_profiles_is_active ON couple_profiles(is_active);
     END IF;
-    
+
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_profiles' AND column_name = 'is_demo') THEN
         CREATE INDEX IF NOT EXISTS idx_couple_profiles_is_demo ON couple_profiles(is_demo);
     END IF;
-    
+
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_profiles' AND column_name = 'status') THEN
         CREATE INDEX IF NOT EXISTS idx_couple_profiles_status ON couple_profiles(status);
     END IF;
 END $$;
--- Índices para matches
-CREATE INDEX IF NOT EXISTS idx_matches_status ON matches(status);
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'matches'
+          AND column_name = 'status'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_matches_status ON matches(status);
+    END IF;
+END $$;
 -- Índices para reports
 CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status);
 CREATE INDEX IF NOT EXISTS idx_reports_created_at ON reports(created_at DESC);
@@ -821,14 +831,14 @@ BEGIN
     ) THEN
         ALTER TABLE profiles ADD COLUMN email_verified_at TIMESTAMPTZ;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'profiles' AND column_name = 'phone_verified_at'
     ) THEN
         ALTER TABLE profiles ADD COLUMN phone_verified_at TIMESTAMPTZ;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'profiles' AND column_name = 'role'
@@ -845,63 +855,63 @@ BEGIN
     ) THEN
         ALTER TABLE reports ADD COLUMN reporter_user_id UUID REFERENCES auth.users(id);
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'reported_content_id'
     ) THEN
         ALTER TABLE reports ADD COLUMN reported_content_id UUID;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'content_type'
     ) THEN
         ALTER TABLE reports ADD COLUMN content_type TEXT;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'report_type'
     ) THEN
         ALTER TABLE reports ADD COLUMN report_type TEXT;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'severity'
     ) THEN
         ALTER TABLE reports ADD COLUMN severity TEXT;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'reviewed_by'
     ) THEN
         ALTER TABLE reports ADD COLUMN reviewed_by UUID REFERENCES auth.users(id);
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'reviewed_at'
     ) THEN
         ALTER TABLE reports ADD COLUMN reviewed_at TIMESTAMPTZ;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'resolution_notes'
     ) THEN
         ALTER TABLE reports ADD COLUMN resolution_notes TEXT;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'action_taken'
     ) THEN
         ALTER TABLE reports ADD COLUMN action_taken TEXT;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'reports' AND column_name = 'is_false_positive'
@@ -918,7 +928,7 @@ BEGIN
     ) THEN
         ALTER TABLE matches ADD COLUMN user1_id UUID;
     END IF;
-    
+
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns
         WHERE table_name = 'matches' AND column_name = 'user2_id'
@@ -956,9 +966,9 @@ CREATE INDEX IF NOT EXISTS idx_banner_config_priority ON public.banner_config(pr
 CREATE INDEX IF NOT EXISTS idx_banner_config_updated_at ON public.banner_config(updated_at DESC);
 -- Trigger para actualizar updated_at en banner_config
 DROP TRIGGER IF EXISTS update_banner_config_updated_at ON public.banner_config;
-CREATE TRIGGER update_banner_config_updated_at 
+CREATE TRIGGER update_banner_config_updated_at
     BEFORE UPDATE ON public.banner_config
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 -- ============================================================================
 -- SECCIÓN 4: ROW LEVEL SECURITY (RLS)
@@ -1003,44 +1013,44 @@ ALTER TABLE IF EXISTS user_identifiers ENABLE ROW LEVEL SECURITY;
 
 -- Triggers para actualizar updated_at (idempotentes)
 DROP TRIGGER IF EXISTS update_profiles_updated_at ON profiles;
-CREATE TRIGGER update_profiles_updated_at 
+CREATE TRIGGER update_profiles_updated_at
     BEFORE UPDATE ON profiles
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 DROP TRIGGER IF EXISTS update_couple_profiles_updated_at ON couple_profiles;
-CREATE TRIGGER update_couple_profiles_updated_at 
+CREATE TRIGGER update_couple_profiles_updated_at
     BEFORE UPDATE ON couple_profiles
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 DROP TRIGGER IF EXISTS update_reports_updated_at ON reports;
-CREATE TRIGGER update_reports_updated_at 
+CREATE TRIGGER update_reports_updated_at
     BEFORE UPDATE ON reports
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 DROP TRIGGER IF EXISTS update_referral_transactions_updated_at ON referral_transactions;
-CREATE TRIGGER update_referral_transactions_updated_at 
+CREATE TRIGGER update_referral_transactions_updated_at
     BEFORE UPDATE ON referral_transactions
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 DROP TRIGGER IF EXISTS update_user_wallets_updated_at ON user_wallets;
-CREATE TRIGGER update_user_wallets_updated_at 
+CREATE TRIGGER update_user_wallets_updated_at
     BEFORE UPDATE ON user_wallets
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 DROP TRIGGER IF EXISTS update_user_referral_balances_updated_at ON user_referral_balances;
-CREATE TRIGGER update_user_referral_balances_updated_at 
+CREATE TRIGGER update_user_referral_balances_updated_at
     BEFORE UPDATE ON user_referral_balances
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 DROP TRIGGER IF EXISTS update_user_token_balances_updated_at ON user_token_balances;
-CREATE TRIGGER update_user_token_balances_updated_at 
+CREATE TRIGGER update_user_token_balances_updated_at
     BEFORE UPDATE ON user_token_balances
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 DROP TRIGGER IF EXISTS update_staking_records_updated_at ON staking_records;
-CREATE TRIGGER update_staking_records_updated_at 
+CREATE TRIGGER update_staking_records_updated_at
     BEFORE UPDATE ON staking_records
-    FOR EACH ROW 
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 -- ============================================================================
 -- SECCIÓN 6: POLÍTICAS RLS (ROW LEVEL SECURITY) - IDEMPOTENTES
@@ -1148,7 +1158,7 @@ CREATE POLICY "Users can update own notifications" ON notifications
 -- Índices: 50+
 -- RLS: Habilitado en todas las tablas
 -- Idempotencia: 100%
--- 
+--
 -- TABLAS NUEVAS AGREGADAS:
 -- 1. user_token_balances - Balance de tokens CMPX/GTK
 -- 2. token_transactions - Historial de transacciones

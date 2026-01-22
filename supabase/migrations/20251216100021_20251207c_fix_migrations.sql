@@ -19,7 +19,21 @@ END $$;
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'couple_disputes') THEN
-    CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON couple_disputes(agreement_id);
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'couple_disputes'
+          AND column_name = 'couple_agreement_id'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON couple_disputes(couple_agreement_id);
+    ELSIF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'couple_disputes'
+          AND column_name = 'agreement_id'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON couple_disputes(agreement_id);
+    END IF;
     CREATE INDEX IF NOT EXISTS idx_couple_disputes_couple_id ON couple_disputes(couple_id);
     CREATE INDEX IF NOT EXISTS idx_couple_disputes_status ON couple_disputes(status);
   END IF;
@@ -35,10 +49,17 @@ BEGIN
     ) THEN
         ALTER TABLE frozen_assets ADD COLUMN couple_id UUID REFERENCES couple_profiles(id) ON DELETE CASCADE;
     END IF;
-    
+
     CREATE INDEX IF NOT EXISTS idx_frozen_assets_couple_id ON frozen_assets(couple_id);
     CREATE INDEX IF NOT EXISTS idx_frozen_assets_dispute_id ON frozen_assets(dispute_id);
-    CREATE INDEX IF NOT EXISTS idx_frozen_assets_status ON frozen_assets(status);
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'frozen_assets'
+          AND column_name = 'status'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_frozen_assets_status ON frozen_assets(status);
+    END IF;
   END IF;
 END $$;
 -- Índices para user_consents (si la tabla existe)
@@ -47,7 +68,14 @@ BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_consents') THEN
     CREATE INDEX IF NOT EXISTS idx_user_consents_user_id ON user_consents(user_id);
     CREATE INDEX IF NOT EXISTS idx_user_consents_consent_type ON user_consents(consent_type);
-    CREATE INDEX IF NOT EXISTS idx_user_consents_status ON user_consents(status);
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'user_consents'
+          AND column_name = 'status'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_user_consents_status ON user_consents(status);
+    END IF;
     CREATE INDEX IF NOT EXISTS idx_user_consents_created_at ON user_consents(created_at DESC);
   END IF;
 END $$;

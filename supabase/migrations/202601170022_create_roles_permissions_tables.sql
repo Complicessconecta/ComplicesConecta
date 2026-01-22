@@ -47,9 +47,40 @@ CREATE INDEX IF NOT EXISTS idx_permissions_resource ON public.permissions(resour
 CREATE INDEX IF NOT EXISTS idx_permissions_action ON public.permissions(action);
 CREATE INDEX IF NOT EXISTS idx_role_permissions_role_id ON public.role_permissions(role_id);
 CREATE INDEX IF NOT EXISTS idx_role_permissions_permission_id ON public.role_permissions(permission_id);
-CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON public.user_roles(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_roles_role_id ON public.user_roles(role_id);
-CREATE INDEX IF NOT EXISTS idx_user_roles_is_active ON public.user_roles(is_active);
+
+-- Índices en user_roles - verificar que columnas existan antes de crear
+DO $$
+BEGIN
+  -- Verificar si existe la tabla user_roles
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'user_roles'
+  ) THEN
+    -- Crear índice en user_id si existe la columna
+    IF EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'user_roles' AND column_name = 'user_id'
+    ) THEN
+      EXECUTE 'CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON public.user_roles(user_id)';
+    END IF;
+
+    -- Crear índice en role_id si existe la columna
+    IF EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'user_roles' AND column_name = 'role_id'
+    ) THEN
+      EXECUTE 'CREATE INDEX IF NOT EXISTS idx_user_roles_role_id ON public.user_roles(role_id)';
+    END IF;
+
+    -- Crear índice en is_active si existe la columna
+    IF EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'user_roles' AND column_name = 'is_active'
+    ) THEN
+      EXECUTE 'CREATE INDEX IF NOT EXISTS idx_user_roles_is_active ON public.user_roles(is_active)';
+    END IF;
+  END IF;
+END $$;
 
 -- Insertar roles por defecto
 INSERT INTO public.roles (name, description, permissions) VALUES
@@ -85,67 +116,87 @@ ALTER TABLE public.permissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.role_permissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 
--- Crear políticas RLS para roles
-CREATE POLICY admins_can_view_roles ON public.roles
-FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+-- Crear políticas RLS para roles - solo si existe la columna user_role en profiles
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'user_role'
+  ) THEN
+    -- Crear políticas RLS para roles
+    EXECUTE 'CREATE POLICY IF NOT EXISTS admins_can_view_roles ON public.roles
+      FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = ''admin''::user_role
+        )
+      )';
 
-CREATE POLICY admins_can_update_roles ON public.roles
-FOR UPDATE
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+    EXECUTE 'CREATE POLICY IF NOT EXISTS admins_can_update_roles ON public.roles
+      FOR UPDATE
+      USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = ''admin''::user_role
+        )
+      )';
 
--- Crear políticas RLS para permisos
-CREATE POLICY admins_can_view_permissions ON public.permissions
-FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+    -- Crear políticas RLS para permisos
+    EXECUTE 'CREATE POLICY IF NOT EXISTS admins_can_view_permissions ON public.permissions
+      FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = ''admin''::user_role
+        )
+      )';
 
--- Crear políticas RLS para roles_permisos
-CREATE POLICY admins_can_view_role_permissions ON public.role_permissions
-FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+    -- Crear políticas RLS para roles_permisos
+    EXECUTE 'CREATE POLICY IF NOT EXISTS admins_can_view_role_permissions ON public.role_permissions
+      FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = ''admin''::user_role
+        )
+      )';
 
--- Crear políticas RLS para roles de usuario
-CREATE POLICY users_can_view_own_roles ON public.user_roles
-FOR SELECT
-USING (auth.uid() = user_id);
+    -- Crear políticas RLS para roles de usuario
+    EXECUTE 'CREATE POLICY IF NOT EXISTS admins_can_view_all_user_roles ON public.user_roles
+      FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = ''admin''::user_role
+        )
+      )';
 
-CREATE POLICY admins_can_view_all_user_roles ON public.user_roles
-FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+    EXECUTE 'CREATE POLICY IF NOT EXISTS admins_can_assign_roles ON public.user_roles
+      FOR INSERT
+      WITH CHECK (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE user_id = auth.uid() AND user_role = ''admin''::user_role
+        )
+      )';
+  ELSE
+    RAISE NOTICE 'Columna user_role no existe en profiles - skipping RLS policies creation';
+  END IF;
+END $$;
 
-CREATE POLICY admins_can_assign_roles ON public.user_roles
-FOR INSERT
-WITH CHECK (
-  EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE user_id = auth.uid() AND user_role = 'admin'::user_role
-  )
-);
+-- Política básica para user_roles (no depende de user_role)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'user_roles' AND policyname = 'users_can_view_own_roles'
+  ) THEN
+    CREATE POLICY users_can_view_own_roles ON public.user_roles
+    FOR SELECT
+    USING (auth.uid() = user_id);
+  END IF;
+END $$;
 
 -- Crear trigger para updated_at automático en roles
 CREATE OR REPLACE FUNCTION public.update_roles_updated_at()

@@ -81,32 +81,32 @@ CREATE TABLE IF NOT EXISTS public.consent_evidence (
 -- ============================================================================
 
 -- Agregar columnas a profiles si no existen
-DO $$ 
+DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'profiles' AND column_name = 'agreement_id') THEN
         ALTER TABLE public.profiles ADD COLUMN agreement_id UUID REFERENCES public.couple_agreements(id) ON DELETE SET NULL;
     END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'profiles' AND column_name = 'dispute_id') THEN
         ALTER TABLE public.profiles ADD COLUMN dispute_id UUID REFERENCES public.couple_disputes(id) ON DELETE SET NULL;
     END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'profiles' AND column_name = 'consent_status') THEN
         ALTER TABLE public.profiles ADD COLUMN consent_status TEXT DEFAULT 'PENDING' CHECK (consent_status IN ('PENDING', 'ACCEPTED', 'REJECTED'));
     END IF;
 END $$;
 -- Agregar columnas a couple_profiles si no existen
-DO $$ 
+DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'couple_profiles' AND column_name = 'agreement_id') THEN
         ALTER TABLE public.couple_profiles ADD COLUMN agreement_id UUID REFERENCES public.couple_agreements(id) ON DELETE SET NULL;
     END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns
                    WHERE table_name = 'couple_profiles' AND column_name = 'dispute_status') THEN
         ALTER TABLE public.couple_profiles ADD COLUMN dispute_status TEXT DEFAULT 'NONE' CHECK (dispute_status IN ('NONE', 'ACTIVE', 'RESOLVED'));
     END IF;
@@ -156,7 +156,18 @@ CREATE INDEX IF NOT EXISTS idx_frozen_assets_asset_type ON public.frozen_assets(
 -- Índices para user_consents
 CREATE INDEX IF NOT EXISTS idx_user_consents_user_id ON public.user_consents(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_consents_consent_type ON public.user_consents(consent_type);
-CREATE INDEX IF NOT EXISTS idx_user_consents_accepted ON public.user_consents(accepted);
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'user_consents'
+          AND column_name = 'accepted'
+    ) THEN
+        CREATE INDEX IF NOT EXISTS idx_user_consents_accepted ON public.user_consents(accepted);
+    END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS idx_user_consents_created_at ON public.user_consents(created_at);
 -- Índices para consent_evidence
 CREATE INDEX IF NOT EXISTS idx_consent_evidence_consent_id ON public.consent_evidence(consent_id);
@@ -221,34 +232,84 @@ EXECUTE FUNCTION update_user_consents_timestamp();
 -- Habilitar RLS en couple_agreements
 ALTER TABLE public.couple_agreements ENABLE ROW LEVEL SECURITY;
 -- Policy: Los partners pueden ver su propio acuerdo
-CREATE POLICY couple_agreements_partner_access ON public.couple_agreements
-FOR SELECT USING (
-    auth.uid() = partner_1_id OR auth.uid() = partner_2_id
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'public'
+          AND tablename = 'couple_agreements'
+          AND policyname = 'couple_agreements_partner_access'
+    ) THEN
+        CREATE POLICY couple_agreements_partner_access ON public.couple_agreements
+        FOR SELECT USING (
+            auth.uid() = partner_1_id OR auth.uid() = partner_2_id
+        );
+    END IF;
+END $$;
 -- Policy: Los partners pueden actualizar su propio acuerdo
-CREATE POLICY couple_agreements_partner_update ON public.couple_agreements
-FOR UPDATE USING (
-    auth.uid() = partner_1_id OR auth.uid() = partner_2_id
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'public'
+          AND tablename = 'couple_agreements'
+          AND policyname = 'couple_agreements_partner_update'
+    ) THEN
+        CREATE POLICY couple_agreements_partner_update ON public.couple_agreements
+        FOR UPDATE USING (
+            auth.uid() = partner_1_id OR auth.uid() = partner_2_id
+        );
+    END IF;
+END $$;
 -- Habilitar RLS en couple_disputes
 ALTER TABLE public.couple_disputes ENABLE ROW LEVEL SECURITY;
 -- Policy: Los partners pueden ver disputas de sus acuerdos
-CREATE POLICY couple_disputes_partner_access ON public.couple_disputes
-FOR SELECT USING (
-    EXISTS (
-        SELECT 1 FROM public.couple_agreements ca
-        WHERE ca.id = couple_disputes.agreement_id
-        AND (ca.partner_1_id = auth.uid() OR ca.partner_2_id = auth.uid())
-    )
-);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'public'
+          AND tablename = 'couple_disputes'
+          AND policyname = 'couple_disputes_partner_access'
+    ) THEN
+        CREATE POLICY couple_disputes_partner_access ON public.couple_disputes
+        FOR SELECT USING (
+            EXISTS (
+                SELECT 1 FROM public.couple_agreements ca
+                WHERE ca.id = couple_disputes.agreement_id
+                AND (ca.partner_1_id = auth.uid() OR ca.partner_2_id = auth.uid())
+            )
+        );
+    END IF;
+END $$;
 -- Habilitar RLS en user_consents
 ALTER TABLE public.user_consents ENABLE ROW LEVEL SECURITY;
 -- Policy: Los usuarios pueden ver sus propios consentimientos
-CREATE POLICY user_consents_self_access ON public.user_consents
-FOR SELECT USING (auth.uid() = user_id);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'public'
+          AND tablename = 'user_consents'
+          AND policyname = 'user_consents_self_access'
+    ) THEN
+        CREATE POLICY user_consents_self_access ON public.user_consents
+        FOR SELECT USING (auth.uid() = user_id);
+    END IF;
+END $$;
 -- Policy: Los usuarios pueden actualizar sus propios consentimientos
-CREATE POLICY user_consents_self_update ON public.user_consents
-FOR UPDATE USING (auth.uid() = user_id);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'public'
+          AND tablename = 'user_consents'
+          AND policyname = 'user_consents_self_update'
+    ) THEN
+        CREATE POLICY user_consents_self_update ON public.user_consents
+        FOR UPDATE USING (auth.uid() = user_id);
+    END IF;
+END $$;
 -- ============================================================================
 -- FASE 6: VERIFICACIÓN FINAL
 -- ============================================================================
@@ -262,7 +323,7 @@ BEGIN
     FROM information_schema.tables
     WHERE table_schema = 'public'
     AND table_name IN ('couple_agreements', 'couple_disputes', 'frozen_assets', 'user_consents', 'consent_evidence');
-    
+
     IF v_table_count = 5 THEN
         RAISE NOTICE 'OK: Todas las tablas creadas correctamente';
     ELSE
@@ -278,7 +339,7 @@ BEGIN
     FROM pg_indexes
     WHERE schemaname = 'public'
     AND indexname LIKE 'idx_%';
-    
+
     RAISE NOTICE 'OK: % índices encontrados', v_index_count;
 END $$;
 -- ============================================================================

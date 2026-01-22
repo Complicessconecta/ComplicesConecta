@@ -27,9 +27,9 @@ DO $$
 BEGIN
   -- Columna type
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_schema = 'public' 
-    AND table_name = 'invitations' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'invitations'
     AND column_name = 'type'
   ) THEN
     ALTER TABLE public.invitations ADD COLUMN type TEXT NOT NULL DEFAULT 'connection';
@@ -38,9 +38,9 @@ BEGIN
 
   -- Columna status
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_schema = 'public' 
-    AND table_name = 'invitations' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'invitations'
     AND column_name = 'status'
   ) THEN
     ALTER TABLE public.invitations ADD COLUMN status TEXT NOT NULL DEFAULT 'pending';
@@ -49,9 +49,9 @@ BEGIN
 
   -- Columna message
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_schema = 'public' 
-    AND table_name = 'invitations' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'invitations'
     AND column_name = 'message'
   ) THEN
     ALTER TABLE public.invitations ADD COLUMN message TEXT;
@@ -60,9 +60,9 @@ BEGIN
 
   -- Columna updated_at
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_schema = 'public' 
-    AND table_name = 'invitations' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'invitations'
     AND column_name = 'updated_at'
   ) THEN
     ALTER TABLE public.invitations ADD COLUMN updated_at TIMESTAMPTZ DEFAULT NOW();
@@ -71,9 +71,9 @@ BEGIN
 
   -- Columna decided_at
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_schema = 'public' 
-    AND table_name = 'invitations' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+    AND table_name = 'invitations'
     AND column_name = 'decided_at'
   ) THEN
     ALTER TABLE public.invitations ADD COLUMN decided_at TIMESTAMPTZ;
@@ -134,68 +134,68 @@ DO $$
 BEGIN
   -- Columna gallery_owner_id
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'gallery_permissions' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'gallery_permissions'
     AND column_name = 'gallery_owner_id'
   ) THEN
     ALTER TABLE public.gallery_permissions ADD COLUMN gallery_owner_id UUID;
     RAISE NOTICE '✅ Columna gallery_owner_id agregada a gallery_permissions';
   END IF;
-    
+
   -- Columna granted_by
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'gallery_permissions' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'gallery_permissions'
     AND column_name = 'granted_by'
   ) THEN
     ALTER TABLE public.gallery_permissions ADD COLUMN granted_by UUID NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000';
     RAISE NOTICE '✅ Columna granted_by agregada a gallery_permissions';
   END IF;
-    
+
   -- Columna granted_to
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'gallery_permissions' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'gallery_permissions'
     AND column_name = 'granted_to'
   ) THEN
     ALTER TABLE public.gallery_permissions ADD COLUMN granted_to UUID NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000';
     RAISE NOTICE '✅ Columna granted_to agregada a gallery_permissions';
   END IF;
-    
+
   -- Columna permission_type
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'gallery_permissions' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'gallery_permissions'
     AND column_name = 'permission_type'
   ) THEN
     ALTER TABLE public.gallery_permissions ADD COLUMN permission_type TEXT NOT NULL DEFAULT 'view';
     RAISE NOTICE '✅ Columna permission_type agregada a gallery_permissions';
   END IF;
-    
+
   -- Columna status
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'gallery_permissions' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'gallery_permissions'
     AND column_name = 'status'
   ) THEN
     ALTER TABLE public.gallery_permissions ADD COLUMN status TEXT NOT NULL DEFAULT 'active';
     RAISE NOTICE '✅ Columna status agregada a gallery_permissions';
   END IF;
-    
+
   -- Columna expires_at
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'gallery_permissions' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'gallery_permissions'
     AND column_name = 'expires_at'
   ) THEN
     ALTER TABLE gallery_permissions ADD COLUMN expires_at TIMESTAMPTZ;
     RAISE NOTICE '✅ Columna expires_at agregada a gallery_permissions';
   END IF;
-    
+
   -- Columna updated_at
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'gallery_permissions' 
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'gallery_permissions'
     AND column_name = 'updated_at'
   ) THEN
     ALTER TABLE gallery_permissions ADD COLUMN updated_at TIMESTAMPTZ DEFAULT NOW();
@@ -245,7 +245,7 @@ DROP POLICY IF EXISTS "Users can view their invitations" ON public.invitations;
 CREATE POLICY "Users can view their invitations" ON public.invitations
   FOR SELECT
   USING (
-    auth.uid() = from_profile 
+    auth.uid() = from_profile
     OR auth.uid() = to_profile
   );
 
@@ -269,7 +269,7 @@ DROP POLICY IF EXISTS "Users can view their gallery permissions" ON public.galle
 CREATE POLICY "Users can view their gallery permissions" ON public.gallery_permissions
   FOR SELECT
   USING (
-    auth.uid() = gallery_owner_id 
+    auth.uid() = gallery_owner_id
     OR auth.uid() = granted_to
   );
 
@@ -294,4 +294,7 @@ CREATE POLICY "Users can delete gallery permissions they granted" ON public.gall
 -- ============================================================================
 -- NOTIFICACIÓN FINAL
 -- ============================================================================
-RAISE NOTICE '✅ Migración completada: Tablas invitations y gallery_permissions creadas/actualizadas';
+DO $$
+BEGIN
+  RAISE NOTICE '✅ Migración completada: Tablas invitations y gallery_permissions creadas/actualizadas';
+END $$;

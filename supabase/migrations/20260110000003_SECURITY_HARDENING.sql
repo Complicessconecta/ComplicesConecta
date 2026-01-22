@@ -12,19 +12,28 @@ DROP VIEW IF EXISTS public.profiles_safe;
 DROP VIEW IF EXISTS public.users_safe;
 
 -- Vista segura de profiles (sin datos sensibles)
-CREATE OR REPLACE VIEW public.profiles_safe AS
-SELECT
-    id,
-    user_id,
-    is_verified,
-    is_premium,
-    created_at,
-    updated_at
-FROM public.profiles;
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'is_verified'
+    ) AND EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'profiles' AND column_name = 'is_premium'
+    ) THEN
+        EXECUTE 'CREATE OR REPLACE VIEW public.profiles_safe AS
+        SELECT id, user_id, is_verified, is_premium, created_at, updated_at
+        FROM public.profiles';
+    ELSE
+        EXECUTE 'CREATE OR REPLACE VIEW public.profiles_safe AS
+        SELECT id, user_id, created_at, updated_at
+        FROM public.profiles';
+    END IF;
+END $$;
 
 -- Vista segura de auth.users (sin emails ni contraseñas)
 CREATE OR REPLACE VIEW public.users_safe AS
-SELECT 
+SELECT
     id,
     created_at,
     updated_at,
@@ -91,18 +100,18 @@ BEGIN
     IF email IS NULL THEN
         RETURN NULL;
     END IF;
-    
+
     -- Extraer local part y domain
     local_part := split_part(email, '@', 1);
     domain := split_part(email, '@', 2);
-    
+
     -- Enmascarar local part (mostrar solo primeros 2 caracteres)
     IF length(local_part) > 2 THEN
         local_part := substring(local_part, 1, 2) || '***';
     ELSE
         local_part := '***';
     END IF;
-    
+
     RETURN local_part || '@' || domain;
 END;
 $$;
@@ -117,7 +126,7 @@ BEGIN
     IF data IS NULL THEN
         RETURN NULL;
     END IF;
-    
+
     CASE data_type
         WHEN 'email' THEN
             RETURN mask_email(data);
@@ -175,11 +184,11 @@ BEGIN
     IF NEW.first_name IS NOT NULL THEN
         NEW.first_name := sanitize_input(NEW.first_name);
     END IF;
-    
+
     IF NEW.last_name IS NOT NULL THEN
         NEW.last_name := sanitize_input(NEW.last_name);
     END IF;
-    
+
     RETURN NEW;
 END;
 $$;
@@ -246,45 +255,45 @@ BEGIN
     -- Definir ventana de tiempo (1 minuto)
     v_window_start := date_trunc('minute', NOW());
     v_window_end := v_window_start + INTERVAL '1 minute';
-    
+
     -- Buscar o crear registro de rate limit
-    SELECT 
+    SELECT
         request_count,
-        CASE 
+        CASE
             WHEN request_count < p_max_requests THEN TRUE
             ELSE FALSE
         END,
         p_max_requests - request_count,
         window_end
-    INTO 
+    INTO
         v_request_count,
         v_allowed,
         v_remaining,
         v_window_end
     FROM public.rate_limits
-    WHERE 
-        user_id = p_user_id 
+    WHERE
+        user_id = p_user_id
         AND window_start = v_window_start
         AND endpoint = p_endpoint;
-    
+
     -- Si no existe registro, crear uno nuevo
     IF NOT FOUND THEN
         INSERT INTO public.rate_limits (
-            user_id, 
-            ip_address, 
-            endpoint, 
-            request_count, 
-            window_start, 
+            user_id,
+            ip_address,
+            endpoint,
+            request_count,
+            window_start,
             window_end
         ) VALUES (
-            p_user_id, 
-            p_ip_address, 
-            p_endpoint, 
-            1, 
-            v_window_start, 
+            p_user_id,
+            p_ip_address,
+            p_endpoint,
+            1,
+            v_window_start,
             v_window_end
         );
-        
+
         v_allowed := TRUE;
         v_remaining := p_max_requests - 1;
         v_window_end := v_window_start + INTERVAL '1 minute';
@@ -292,17 +301,17 @@ BEGIN
         -- Incrementar contador si está permitido
         IF v_allowed THEN
             UPDATE public.rate_limits
-            SET 
+            SET
                 request_count = request_count + 1,
                 updated_at = NOW()
-            WHERE 
-                user_id = p_user_id 
+            WHERE
+                user_id = p_user_id
                 AND window_start = v_window_start
                 AND endpoint = p_endpoint;
         END IF;
     END IF;
-    
-    RETURN QUERY SELECT 
+
+    RETURN QUERY SELECT
         v_allowed AS allowed,
         v_remaining AS remaining_requests,
         v_window_end AS reset_at;
@@ -319,9 +328,9 @@ BEGIN
     -- Crear registro de bloqueo
     INSERT INTO public.rate_limits (ip_address, endpoint, request_count, is_blocked)
     VALUES (p_ip_address, 'BLOCKED', 999999, TRUE);
-    
+
     RAISE NOTICE 'IP bloqueada: % - Razón: %', p_ip_address, p_reason;
-    
+
     RETURN TRUE;
 END;
 $$;
@@ -337,12 +346,12 @@ DECLARE
 BEGIN
     SELECT is_blocked INTO v_blocked
     FROM public.rate_limits
-    WHERE 
-        ip_address = p_ip_address 
+    WHERE
+        ip_address = p_ip_address
         AND is_blocked = TRUE
         AND window_end > NOW()
     LIMIT 1;
-    
+
     RETURN COALESCE(v_blocked, FALSE);
 END;
 $$;
@@ -377,7 +386,7 @@ CREATE POLICY "Users can view own audit logs" ON public.security_audit_log
     USING (
         user_id = auth.uid() OR
         EXISTS (
-            SELECT 1 FROM public.admin_users 
+            SELECT 1 FROM public.admin_users
             WHERE user_id = auth.uid() AND is_active = TRUE
         )
     );
@@ -403,22 +412,22 @@ DECLARE
     v_log_id UUID;
 BEGIN
     INSERT INTO public.security_audit_log (
-        user_id, 
-        ip_address, 
-        action, 
-        resource, 
-        details, 
+        user_id,
+        ip_address,
+        action,
+        resource,
+        details,
         severity
     ) VALUES (
-        p_user_id, 
-        p_ip_address, 
-        p_action, 
-        p_resource, 
-        p_details, 
+        p_user_id,
+        p_ip_address,
+        p_action,
+        p_resource,
+        p_details,
         p_severity
     )
     RETURNING id INTO v_log_id;
-    
+
     RETURN v_log_id;
 END;
 $$;
@@ -437,7 +446,7 @@ BEGIN
     IF text IS NULL THEN
         RETURN NULL;
     END IF;
-    
+
     -- Escapar caracteres HTML peligrosos
     RETURN replace(
         replace(
@@ -465,7 +474,7 @@ BEGIN
     IF content IS NULL THEN
         RETURN NULL;
     END IF;
-    
+
     -- Sanitizar contra inyección SQL y XSS
     RETURN escape_html(sanitize_input(content));
 END;
@@ -496,15 +505,15 @@ BEGIN
     IF p_target_user_id = auth.uid() THEN
         RETURN TRUE;
     END IF;
-    
+
     -- Los admins pueden acceder a cualquier dato
     IF EXISTS (
-        SELECT 1 FROM public.admin_users 
+        SELECT 1 FROM public.admin_users
         WHERE user_id = auth.uid() AND is_active = TRUE
     ) THEN
         RETURN TRUE;
     END IF;
-    
+
     -- Para datos específicos, verificar permisos adicionales
     CASE p_data_type
         WHEN 'email' THEN
@@ -570,7 +579,7 @@ BEGIN
             'info'
         );
     END IF;
-    
+
     IF TG_OP = 'DELETE' THEN
         RETURN OLD;
     ELSE
@@ -608,30 +617,30 @@ BEGIN
     -- Verificar múltiples IPs en corto tiempo
     SELECT COUNT(DISTINCT ip_address) INTO v_multiple_ips
     FROM public.rate_limits
-    WHERE 
-        user_id = p_user_id 
+    WHERE
+        user_id = p_user_id
         AND window_start > NOW() - INTERVAL '1 hour';
-    
+
     IF v_multiple_ips > 5 THEN
         v_suspicious := TRUE;
         v_reason := 'Múltiples IPs detectadas en 1 hora: ' || v_multiple_ips;
         v_severity := 'high';
     END IF;
-    
+
     -- Verificar alta tasa de requests
     SELECT COUNT(*) INTO v_high_request_rate
     FROM public.rate_limits
-    WHERE 
-        user_id = p_user_id 
+    WHERE
+        user_id = p_user_id
         AND window_start > NOW() - INTERVAL '5 minutes';
-    
+
     IF v_high_request_rate > 500 THEN
         v_suspicious := TRUE;
         v_reason := COALESCE(v_reason || ', ', '') || 'Alta tasa de requests: ' || v_high_request_rate;
         v_severity := 'high';
     END IF;
-    
-    RETURN QUERY SELECT 
+
+    RETURN QUERY SELECT
         v_suspicious AS is_suspicious,
         v_reason AS reason,
         v_severity AS severity;

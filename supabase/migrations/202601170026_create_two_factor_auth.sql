@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS two_factor_auth (
 );
 
 -- Crear índices
-CREATE INDEX idx_two_factor_auth_user_id ON two_factor_auth(user_id);
-CREATE INDEX idx_two_factor_auth_enabled ON two_factor_auth(is_enabled);
+CREATE INDEX IF NOT EXISTS idx_two_factor_auth_user_id ON two_factor_auth(user_id);
+CREATE INDEX IF NOT EXISTS idx_two_factor_auth_enabled ON two_factor_auth(is_enabled);
 
 -- Crear trigger para updated_at
 CREATE OR REPLACE FUNCTION update_two_factor_auth_updated_at()
@@ -25,22 +25,48 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_update_two_factor_auth_updated_at
-  BEFORE UPDATE ON two_factor_auth
-  FOR EACH ROW
-  EXECUTE FUNCTION update_two_factor_auth_updated_at();
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger
+    WHERE tgname = 'trigger_update_two_factor_auth_updated_at'
+  ) THEN
+    CREATE TRIGGER trigger_update_two_factor_auth_updated_at
+      BEFORE UPDATE ON two_factor_auth
+      FOR EACH ROW
+      EXECUTE FUNCTION update_two_factor_auth_updated_at();
+  END IF;
+END $$;
 
 -- Crear políticas RLS
 ALTER TABLE two_factor_auth ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "users_can_view_own_2fa"
-  ON two_factor_auth FOR SELECT
-  USING (auth.uid() = user_id);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'two_factor_auth' AND policyname = 'users_can_view_own_2fa'
+  ) THEN
+    CREATE POLICY "users_can_view_own_2fa"
+      ON two_factor_auth FOR SELECT
+      USING (auth.uid() = user_id);
+  END IF;
 
-CREATE POLICY "users_can_insert_own_2fa"
-  ON two_factor_auth FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'two_factor_auth' AND policyname = 'users_can_insert_own_2fa'
+  ) THEN
+    CREATE POLICY "users_can_insert_own_2fa"
+      ON two_factor_auth FOR INSERT
+      WITH CHECK (auth.uid() = user_id);
+  END IF;
 
-CREATE POLICY "users_can_update_own_2fa"
-  ON two_factor_auth FOR UPDATE
-  USING (auth.uid() = user_id);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'two_factor_auth' AND policyname = 'users_can_update_own_2fa'
+  ) THEN
+    CREATE POLICY "users_can_update_own_2fa"
+      ON two_factor_auth FOR UPDATE
+      USING (auth.uid() = user_id);
+  END IF;
+END $$;

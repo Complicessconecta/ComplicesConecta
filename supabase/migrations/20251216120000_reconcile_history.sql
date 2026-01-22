@@ -2,7 +2,7 @@
 -- RECONCILIACIÓN DE HISTORIAL DE MIGRACIONES
 -- ComplicesConecta v3.9.0 - Consolidated & Clean
 -- ============================================================================
--- 
+--
 -- Este script sincroniza el historial de migraciones en supabase_migrations
 -- con los archivos renombrados durante la limpieza masiva del 2025-12-16.
 --
@@ -13,27 +13,6 @@
 --
 -- ============================================================================
 
--- Verificar si la tabla supabase_migrations existe
--- Si no existe, crear una tabla de control simple
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.tables 
-    WHERE table_schema = 'auth' AND table_name = 'schema_migrations'
-  ) AND NOT EXISTS (
-    SELECT 1 FROM information_schema.tables 
-    WHERE table_schema = 'public' AND table_name = 'supabase_migrations'
-  ) THEN
-    -- Crear tabla de control si no existe
-    CREATE TABLE IF NOT EXISTS public.supabase_migrations (
-      version BIGINT PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE,
-      applied_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-    );
-    
-    RAISE NOTICE 'Tabla supabase_migrations creada';
-  END IF;
-END $$;
 -- ============================================================================
 -- REGISTRAR MIGRACIONES RENOMBRADAS (2025-12-16)
 -- ============================================================================
@@ -41,9 +20,19 @@ END $$;
 
 -- Insertar registros de migraciones renombradas
 -- Usar ON CONFLICT DO NOTHING para evitar errores si ya existen
-INSERT INTO public.supabase_migrations (version, name, applied_at) VALUES
-  (20251216100001, 'solucion_definitiva_consolidada', NOW())
-ON CONFLICT (version) DO NOTHING;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'supabase_migrations'
+      AND table_name = 'schema_migrations'
+  ) THEN
+    INSERT INTO supabase_migrations.schema_migrations(version, name)
+    VALUES
+      ('20251216100001', 'solucion_definitiva_consolidada')
+    ON CONFLICT (version) DO NOTHING;
+  END IF;
+END $$;
 -- ============================================================================
 -- VERIFICAR TABLAS CRÍTICAS EXISTENTES
 -- ============================================================================
@@ -57,26 +46,26 @@ DECLARE
 BEGIN
   -- Verificar existencia de tablas críticas
   SELECT EXISTS (
-    SELECT 1 FROM information_schema.tables 
+    SELECT 1 FROM information_schema.tables
     WHERE table_schema = 'public' AND table_name = 'profiles'
   ) INTO v_profiles_exists;
-  
+
   SELECT EXISTS (
-    SELECT 1 FROM information_schema.tables 
+    SELECT 1 FROM information_schema.tables
     WHERE table_schema = 'public' AND table_name = 'couple_profiles'
   ) INTO v_couple_profiles_exists;
-  
+
   SELECT EXISTS (
-    SELECT 1 FROM information_schema.tables 
+    SELECT 1 FROM information_schema.tables
     WHERE table_schema = 'public' AND table_name = 'security_logs'
   ) INTO v_security_logs_exists;
-  
+
   -- Registrar estado
   RAISE NOTICE 'Estado de tablas críticas:';
   RAISE NOTICE '  - profiles: %', CASE WHEN v_profiles_exists THEN 'EXISTS' ELSE 'MISSING' END;
   RAISE NOTICE '  - couple_profiles: %', CASE WHEN v_couple_profiles_exists THEN 'EXISTS' ELSE 'MISSING' END;
   RAISE NOTICE '  - security_logs: %', CASE WHEN v_security_logs_exists THEN 'EXISTS' ELSE 'MISSING' END;
-  
+
   -- Si todas existen, la BD está sincronizada
   IF v_profiles_exists AND v_couple_profiles_exists AND v_security_logs_exists THEN
     RAISE NOTICE '✅ Base de datos está sincronizada - todas las tablas críticas existen';

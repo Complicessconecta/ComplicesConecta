@@ -1,43 +1,74 @@
 # Hallazgos del Barrido Inicial - ComplicesConecta
 
 ## 1. Archivos en Directorio Incorrecto
-- **Nombre:** AdminNav.tsx
-  - **Ruta Actual:** src/components/AdminNav.tsx
-  - **Síntoma:** Componente específico de administración ubicado en la raíz de components/ en lugar del módulo de administración existente.
-  - **Solución Propuesta:** Mover a src/components/admin/AdminNav.tsx y actualizar paths.
+
+### AppLayout.tsx duplicado
+- **Nombre**: AppLayout.tsx
+- **Ruta Actual**: src/components/AppLayout.tsx
+- **Síntoma**: Archivo duplicado en src/layouts/AppLayout.tsx
+- **Análisis**: La versión en layouts/ es más completa (34 líneas vs 32 líneas) con mejoras como min-h-dvh, overflow-y-auto, safe-area-pb, safe-area-inset
+- **Solución Propuesta**: Eliminar src/components/AppLayout.tsx, mantener src/layouts/AppLayout.tsx. Actualizar imports en dependientes que importen de @/components/AppLayout a @/layouts/AppLayout
+
+### ChatPrivacyService.ts duplicado (proxy innecesario)
+- **Nombre**: ChatPrivacyService.ts
+- **Ruta Actual**: src/services/chat/ChatPrivacyService.ts
+- **Síntoma**: Archivo solo re-exporta desde src/services/social/chat/ChatPrivacyService.ts (implementación real)
+- **Análisis**: El archivo en chat/ solo contiene `export * from "@/services/social/chat/ChatPrivacyService";` - es un proxy innecesario
+- **Solución Propuesta**: Eliminar src/services/chat/ChatPrivacyService.ts. Actualizar imports en dependientes para que apunten directamente a @/services/social/chat/ChatPrivacyService
 
 ## 2. Problemas en Index.ts
-- **Nombre:** src/services/index.ts
-  - **Ruta:** src/services/index.ts
-  - **Síntoma:** Funciona correctamente como barril central, pero coexiste con archivos "proxy" en el mismo directorio que causan duplicidad conceptual.
-  - **Solución Propuesta:** Consolidar el uso de este index.ts y eliminar los archivos proxy individuales.
+
+### src/components/auth/index.ts
+- **Nombre**: index.ts
+- **Ruta**: src/components/auth/index.ts
+- **Síntoma**: Línea 5 exporta ThemeInfoModal de "@/components/modals/ThemeInfoModal"
+- **Análisis**: ThemeInfoModal es un componente de modals, no de auth. Este export no pertenece a este index.ts
+- **Solución Propuesta**: Eliminar línea 5 `export { ThemeInfoModal } from "@/components/modals/ThemeInfoModal";` de src/components/auth/index.ts
+
+### src/lib/index.ts
+- **Nombre**: index.ts
+- **Ruta**: src/lib/index.ts
+- **Síntoma**: Líneas 5-8 exportan de rutas incorrectas
+- **Análisis**:
+  - Línea 5: `export * from "@/components/ui/buttons/Button";` - ruta incorrecta, debería ser `@/components/ui/buttons/Button` (plural)
+  - Línea 6: `export * from "@/components/ui/cards/Card";` - ruta incorrecta, debería ser `@/components/ui/cards/Card` (plural)
+  - Línea 7: `export * from "@/components/ui/forms/Input";` - ruta correcta
+  - Línea 8: `export * from "@/components/ui/Modal";` - ruta correcta (Modal.tsx existe en ui/)
+- **Solución Propuesta**: Corregir líneas 5-6 para usar rutas correctas con plural (buttons/, cards/)
 
 ## 3. Otros Problemas Estructurales
-- **Nombre:** Proxies de Servicios (Root)
-  - **Archivos:** 
-    - src/services/AdvancedCacheService.ts
-    - src/services/TokenService.ts
-    - src/services/NFTService.ts
-    - src/services/ContentModerationService.ts
-    - src/services/SmartMatchingService.ts
-    - src/services/BannerManagementService.ts
-    - src/services/DataPrivacyService.ts
-    - src/services/DesktopNotificationService.ts
-    - src/services/ErrorAlertService.ts
-    - src/services/GlobalSearchService.ts
-    - src/services/HistoricalMetricsService.ts
-    - src/services/NFTGalleryService.ts
-    - src/services/NotificationService.ts
-    - src/services/PerformanceMonitoringService.ts
-    - src/services/ProfileStatsService.ts
-    - src/services/SecurityAuditService.ts
-    - src/services/TokenAnalyticsService.ts
-    - src/services/WalletService.ts
-    - src/services/WebhookService.ts
-  - **Síntoma:** Archivos "proxy" que solo re-exportan servicios desde subdirectorios (ej: `export * from "@/services/core/..."`). Generan ruido y duplicidad conceptual.
-  - **Solución Propuesta:** Eliminar archivos proxy y actualizar imports en dependientes para apuntar a la ruta canónica o usar `src/services/index.ts`.
 
-- **Nombre:** Directorio Shadow "couple"
-  - **Ruta:** src/services/couple/
-  - **Síntoma:** Directorio completo que duplica `src/services/social/couple/` mediante re-exports.
-  - **Solución Propuesta:** Eliminar `src/services/couple/` y redirigir referencias a `src/services/social/couple/`.
+### Directorios sin index.ts con múltiples archivos
+- **Nombre**: clubs/
+- **Ruta**: src/components/clubs/
+- **Síntoma**: Directorio con 6 archivos .tsx pero sin index.ts
+- **Archivos**: ClubProfileAdmin.tsx, ClubProfileEvents.tsx, ClubProfileGallery.tsx, ClubProfileHeader.tsx, ClubProfileReviews.tsx, PartnerRequestModal.tsx
+- **Solución Propuesta**: Crear src/components/clubs/index.ts con exports de todos los componentes
+
+### Archivos referenciados en index.ts pero no encontrados
+- **Nombre**: cn, format, validation
+- **Ruta**: src/shared/lib/
+- **Síntoma**: src/lib/index.ts:17-19 exporta de @/shared/lib/cn, @/shared/lib/format, @/shared/lib/validation
+- **Análisis**: Project-Structure-Tree-files.md muestra src/shared/ui/ pero no src/shared/lib/
+- **Solución Propuesta**: Verificar si existen estos archivos en src/shared/lib/ o si deben crearse
+
+- **Nombre**: user
+- **Ruta**: src/entities/user
+- **Síntoma**: src/lib/index.ts:22 exporta de @/entities/user
+- **Análisis**: Project-Structure-Tree-files.md muestra src/entities/ como directorio sin archivos específicos
+- **Solución Propuesta**: Verificar si existe src/entities/user.ts o si debe crearse
+
+## Resumen Estadístico
+
+- **Archivos duplicados encontrados**: 2 (AppLayout.tsx, ChatPrivacyService.ts)
+- **Problemas en index.ts**: 2 (auth/index.ts, lib/index.ts)
+- **Directorios sin index.ts**: 1+ (clubs/)
+- **Archivos faltantes**: 4+ (cn, format, validation, user)
+- **Total de hallazgos**: 8 problemas estructurales identificados
+
+## Prioridad de Corrección
+
+1. **Alta**: Eliminar duplicados (AppLayout.tsx en components/, ChatPrivacyService.ts en services/chat/)
+2. **Media**: Corregir index.ts con exports incorrectos (auth/, lib/)
+3. **Media**: Crear index.ts faltantes en directorios con múltiples archivos (clubs/)
+4. **Baja**: Verificar archivos faltantes en shared/lib/ y entities/

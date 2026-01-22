@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS user_wallets (
     network VARCHAR(20) NOT NULL DEFAULT 'mumbai', -- Red blockchain (mumbai, polygon)
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     -- Índices para optimización
     CONSTRAINT unique_user_wallet UNIQUE(user_id, network)
 );
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS testnet_token_claims (
     amount_claimed BIGINT NOT NULL DEFAULT 0, -- Cantidad reclamada en wei
     claimed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     transaction_hash VARCHAR(66), -- Hash de la transacción blockchain
-    
+
     -- Constraint para evitar duplicados
     CONSTRAINT unique_user_testnet_claim UNIQUE(user_id)
 );
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS daily_token_claims (
     amount_claimed BIGINT NOT NULL DEFAULT 0, -- Cantidad reclamada en wei
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     transaction_hash VARCHAR(66), -- Hash de la transacción blockchain
-    
+
     -- Constraint para evitar duplicados por día
     CONSTRAINT unique_user_daily_claim UNIQUE(user_id, claim_date)
 );
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS user_nfts (
     network VARCHAR(20) NOT NULL DEFAULT 'mumbai', -- Red blockchain
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     -- Constraints
     CHECK (rarity IN ('common', 'rare', 'epic', 'legendary')),
     CHECK (network IN ('mumbai', 'polygon'))
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS couple_nft_requests (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL, -- Expira en 24 horas
     transaction_hash VARCHAR(66), -- Hash de la transacción de mint
-    
+
     -- Constraints
     CHECK (status IN ('pending', 'approved', 'minted', 'cancelled', 'expired')),
     CHECK (partner1_address != partner2_address),
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS nft_staking (
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     unstaked_at TIMESTAMP WITH TIME ZONE,
     network VARCHAR(20) NOT NULL DEFAULT 'mumbai',
-    
+
     -- Constraints
     CHECK (vesting_period_days >= 30 AND vesting_period_days <= 365),
     CHECK (rarity_multiplier >= 100 AND rarity_multiplier <= 300)
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS token_staking (
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     unstaked_at TIMESTAMP WITH TIME ZONE,
     network VARCHAR(20) NOT NULL DEFAULT 'mumbai',
-    
+
     -- Constraints
     CHECK (vesting_period_days >= 30 AND vesting_period_days <= 365),
     CHECK (amount_staked > 0)
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS blockchain_transactions (
     metadata JSONB, -- Datos adicionales específicos del tipo de transacción
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     confirmed_at TIMESTAMP WITH TIME ZONE,
-    
+
     -- Constraints
     CHECK (status IN ('pending', 'confirmed', 'failed'))
 );
@@ -299,11 +299,11 @@ RETURNS INTEGER AS $$
 DECLARE
     expired_count INTEGER;
 BEGIN
-    UPDATE couple_nft_requests 
+    UPDATE couple_nft_requests
     SET status = 'expired'
-    WHERE status = 'pending' 
+    WHERE status = 'pending'
     AND expires_at < NOW();
-    
+
     GET DIAGNOSTICS expired_count = ROW_COUNT;
     RETURN expired_count;
 END;
@@ -318,7 +318,7 @@ RETURNS TABLE(
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         (SELECT COUNT(DISTINCT user_id) FROM testnet_token_claims)::INTEGER,
         (SELECT COALESCE(SUM(amount_claimed), 0) FROM testnet_token_claims),
         (SELECT COUNT(*) FROM daily_token_claims)::INTEGER,
@@ -338,15 +338,32 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 -- Triggers para actualizar updated_at automáticamente
-CREATE TRIGGER update_user_wallets_updated_at
-    BEFORE UPDATE ON user_wallets
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_user_nfts_updated_at
-    BEFORE UPDATE ON user_nfts
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_daily_token_claims_updated_at
-    BEFORE UPDATE ON daily_token_claims
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'user_wallets') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_user_wallets_updated_at') THEN
+            CREATE TRIGGER update_user_wallets_updated_at
+                BEFORE UPDATE ON user_wallets
+                FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+        END IF;
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'user_nfts') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_user_nfts_updated_at') THEN
+            CREATE TRIGGER update_user_nfts_updated_at
+                BEFORE UPDATE ON user_nfts
+                FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+        END IF;
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'daily_token_claims') THEN
+        IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_daily_token_claims_updated_at') THEN
+            CREATE TRIGGER update_daily_token_claims_updated_at
+                BEFORE UPDATE ON daily_token_claims
+                FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+        END IF;
+    END IF;
+END $$;
 -- =====================================================
 -- COMENTARIOS EN TABLAS
 -- =====================================================
@@ -364,7 +381,7 @@ COMMENT ON TABLE blockchain_transactions IS 'Registro completo de transacciones 
 -- =====================================================
 
 -- Insertar configuración inicial si es necesario
--- INSERT INTO system_config (key, value, description) VALUES 
+-- INSERT INTO system_config (key, value, description) VALUES
 -- ('testnet_mode', 'true', 'Indica si el sistema está en modo testnet'),
 -- ('daily_claim_limit', '2500000000000000000000000', 'Límite diario de tokens en wei (2.5M CMPX)'),
 -- ('testnet_free_limit', '1000000000000000000000', 'Límite de tokens gratuitos por usuario en wei (1000 CMPX)')

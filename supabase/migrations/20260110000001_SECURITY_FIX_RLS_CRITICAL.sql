@@ -187,35 +187,44 @@ CREATE POLICY "Users can view own profile" ON public.profiles
 -- 5.1 gallery_access_requests
 -- Nota: gallery_access_requests se crea en migración 20260111031129
 -- Solo admins pueden ver requests
-DROP POLICY IF EXISTS "Admins can view gallery requests" ON public.gallery_access_requests;
-CREATE POLICY "Admins can view gallery requests" ON public.gallery_access_requests
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name = 'gallery_access_requests'
+    ) THEN
+        DROP POLICY IF EXISTS "Admins can view gallery requests" ON public.gallery_access_requests;
+        CREATE POLICY "Admins can view gallery requests" ON public.gallery_access_requests
+            FOR SELECT
+            USING (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
 
-DROP POLICY IF EXISTS "Admins can insert gallery requests" ON public.gallery_access_requests;
-CREATE POLICY "Admins can insert gallery requests" ON public.gallery_access_requests
-    FOR INSERT
-    WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+        DROP POLICY IF EXISTS "Admins can insert gallery requests" ON public.gallery_access_requests;
+        CREATE POLICY "Admins can insert gallery requests" ON public.gallery_access_requests
+            FOR INSERT
+            WITH CHECK (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
 
-DROP POLICY IF EXISTS "Admins can update gallery requests" ON public.gallery_access_requests;
-CREATE POLICY "Admins can update gallery requests" ON public.gallery_access_requests
-    FOR UPDATE
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+        DROP POLICY IF EXISTS "Admins can update gallery requests" ON public.gallery_access_requests;
+        CREATE POLICY "Admins can update gallery requests" ON public.gallery_access_requests
+            FOR UPDATE
+            USING (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
+    END IF;
+END $$;
 
 -- 5.2 gallery_commissions
 ALTER TABLE public.gallery_commissions ENABLE ROW LEVEL SECURITY;
@@ -252,71 +261,107 @@ CREATE POLICY "Admins can update commissions" ON public.gallery_commissions
     );
 
 -- 5.3 swinger_interests
-ALTER TABLE public.swinger_interests ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name = 'swinger_interests'
+    ) THEN
+        ALTER TABLE public.swinger_interests ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Users can view all interests" ON public.swinger_interests;
-CREATE POLICY "Users can view all interests" ON public.swinger_interests
-    FOR SELECT
-    USING (is_active = TRUE OR EXISTS (
-        SELECT 1 FROM public.admin_users
-        WHERE user_id = auth.uid() AND is_active = TRUE
-    ));
+        DROP POLICY IF EXISTS "Users can view all interests" ON public.swinger_interests;
+        IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+              AND table_name = 'swinger_interests'
+              AND column_name = 'is_active'
+        ) THEN
+            CREATE POLICY "Users can view all interests" ON public.swinger_interests
+                FOR SELECT
+                USING (
+                    is_active = TRUE OR EXISTS (
+                        SELECT 1 FROM public.admin_users
+                        WHERE user_id = auth.uid() AND is_active = TRUE
+                    )
+                );
+        ELSE
+            CREATE POLICY "Users can view all interests" ON public.swinger_interests
+                FOR SELECT
+                USING (
+                    EXISTS (
+                        SELECT 1 FROM public.admin_users
+                        WHERE user_id = auth.uid() AND is_active = TRUE
+                    )
+                );
+        END IF;
 
-DROP POLICY IF EXISTS "Admins can insert interests" ON public.swinger_interests;
-CREATE POLICY "Admins can insert interests" ON public.swinger_interests
-    FOR INSERT
-    WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+        DROP POLICY IF EXISTS "Admins can insert interests" ON public.swinger_interests;
+        CREATE POLICY "Admins can insert interests" ON public.swinger_interests
+            FOR INSERT
+            WITH CHECK (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
 
-DROP POLICY IF EXISTS "Admins can update interests" ON public.swinger_interests;
-CREATE POLICY "Admins can update interests" ON public.swinger_interests
-    FOR UPDATE
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+        DROP POLICY IF EXISTS "Admins can update interests" ON public.swinger_interests;
+        CREATE POLICY "Admins can update interests" ON public.swinger_interests
+            FOR UPDATE
+            USING (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
+    END IF;
+END $$;
 
 -- 5.4 couple_profile_likes
 -- Nota: couple_profile_likes se crea en migración 20260111031120
 -- Solo admins pueden ver likes
-DROP POLICY IF EXISTS "Users can view own likes" ON public.couple_profile_likes;
-DROP POLICY IF EXISTS "Admins can view likes" ON public.couple_profile_likes;
-CREATE POLICY "Admins can view likes" ON public.couple_profile_likes
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.tables
+        WHERE table_schema = 'public'
+          AND table_name = 'couple_profile_likes'
+    ) THEN
+        DROP POLICY IF EXISTS "Users can view own likes" ON public.couple_profile_likes;
+        DROP POLICY IF EXISTS "Admins can view likes" ON public.couple_profile_likes;
+        CREATE POLICY "Admins can view likes" ON public.couple_profile_likes
+            FOR SELECT
+            USING (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
 
-DROP POLICY IF EXISTS "Users can insert own likes" ON public.couple_profile_likes;
-DROP POLICY IF EXISTS "Admins can insert likes" ON public.couple_profile_likes;
-CREATE POLICY "Admins can insert likes" ON public.couple_profile_likes
-    FOR INSERT
-    WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+        DROP POLICY IF EXISTS "Users can insert own likes" ON public.couple_profile_likes;
+        DROP POLICY IF EXISTS "Admins can insert likes" ON public.couple_profile_likes;
+        CREATE POLICY "Admins can insert likes" ON public.couple_profile_likes
+            FOR INSERT
+            WITH CHECK (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
 
-DROP POLICY IF EXISTS "Users can delete own likes" ON public.couple_profile_likes;
-DROP POLICY IF EXISTS "Admins can delete likes" ON public.couple_profile_likes;
-CREATE POLICY "Admins can delete likes" ON public.couple_profile_likes
-    FOR DELETE
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.admin_users
-            WHERE user_id = auth.uid() AND is_active = TRUE
-        )
-    );
+        DROP POLICY IF EXISTS "Users can delete own likes" ON public.couple_profile_likes;
+        DROP POLICY IF EXISTS "Admins can delete likes" ON public.couple_profile_likes;
+        CREATE POLICY "Admins can delete likes" ON public.couple_profile_likes
+            FOR DELETE
+            USING (
+                EXISTS (
+                    SELECT 1 FROM public.admin_users
+                    WHERE user_id = auth.uid() AND is_active = TRUE
+                )
+            );
+    END IF;
+END $$;
 
 -- 5.5 biometric_auth
 -- Nota: biometric_auth se crea en migración 20260111031125
@@ -330,13 +375,13 @@ BEGIN
     ) THEN
         EXECUTE 'DROP POLICY IF EXISTS "Users can view own biometric data" ON public.biometric_auth';
         EXECUTE 'CREATE POLICY "Admins can view biometric data" ON public.biometric_auth FOR SELECT USING (EXISTS (SELECT 1 FROM public.admin_users WHERE user_id = auth.uid() AND is_active = TRUE))';
-        
+
         EXECUTE 'DROP POLICY IF EXISTS "Users can insert own biometric data" ON public.biometric_auth';
         EXECUTE 'CREATE POLICY "Admins can insert biometric data" ON public.biometric_auth FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.admin_users WHERE user_id = auth.uid() AND is_active = TRUE))';
-        
+
         EXECUTE 'DROP POLICY IF EXISTS "Users can update own biometric data" ON public.biometric_auth';
         EXECUTE 'CREATE POLICY "Admins can update biometric data" ON public.biometric_auth FOR UPDATE USING (EXISTS (SELECT 1 FROM public.admin_users WHERE user_id = auth.uid() AND is_active = TRUE))';
-        
+
         EXECUTE 'DROP POLICY IF EXISTS "Users can delete own biometric data" ON public.biometric_auth';
         EXECUTE 'CREATE POLICY "Admins can delete biometric data" ON public.biometric_auth FOR DELETE USING (EXISTS (SELECT 1 FROM public.admin_users WHERE user_id = auth.uid() AND is_active = TRUE))';
     END IF;
@@ -348,9 +393,9 @@ END $$;
 
 -- Insertar administradores existentes basados en emails conocidos
 INSERT INTO public.admin_users (user_id, role, granted_by, notes)
-SELECT 
+SELECT
     id,
-    CASE 
+    CASE
         WHEN email = 'complicesconectasw@outlook.es' THEN 'super_admin'
         WHEN email = 'djwacko28@gmail.com' THEN 'admin'
         ELSE 'admin'
@@ -358,7 +403,7 @@ SELECT
     id,
     'Migrado desde raw_user_meta_data'
 FROM auth.users
-WHERE 
+WHERE
     email IN ('complicesconectasw@outlook.es', 'djwacko28@gmail.com') OR
     (raw_user_meta_data->>'role')::text IN ('admin', 'super_admin')
 ON CONFLICT (user_id) DO NOTHING;
@@ -374,7 +419,7 @@ SECURITY DEFINER
 AS $$
 BEGIN
     RETURN EXISTS (
-        SELECT 1 FROM public.admin_users 
+        SELECT 1 FROM public.admin_users
         WHERE user_id = auth.uid() AND is_active = TRUE
     );
 END;
@@ -387,7 +432,7 @@ SECURITY DEFINER
 AS $$
 BEGIN
     RETURN EXISTS (
-        SELECT 1 FROM public.admin_users 
+        SELECT 1 FROM public.admin_users
         WHERE user_id = auth.uid() AND role = 'super_admin' AND is_active = TRUE
     );
 END;

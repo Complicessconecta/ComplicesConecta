@@ -6,7 +6,7 @@
 -- PASO 1: Insertar todas las migraciones en supabase_migrations.schema_migrations
 -- Esto le dice a Supabase que ya fueron aplicadas
 
-INSERT INTO supabase_migrations.schema_migrations (version) VALUES 
+INSERT INTO supabase_migrations.schema_migrations (version) VALUES
 ('20251106050000'),
 ('20251106060000'),
 ('20251106070000'),
@@ -23,11 +23,10 @@ INSERT INTO supabase_migrations.schema_migrations (version) VALUES
 ('20251113080002')
 ON CONFLICT (version) DO NOTHING;
 -- PASO 2: Verificar que las migraciones se marcaron correctamente
-SELECT 
+SELECT
     version,
-    inserted_at,
     'Migración marcada como aplicada' as status
-FROM supabase_migrations.schema_migrations 
+FROM supabase_migrations.schema_migrations
 WHERE version IN (
     '20251106050000',
     '20251106060000',

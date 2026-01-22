@@ -318,11 +318,20 @@ export class MFAService {
 // Instancia global
 export const mfaService = new MFAService();
 
-// Limpiar sesiones cada 5 minutos
-setInterval(
-  () => {
+let mfaCleanupInterval: ReturnType<typeof setInterval> | null = null;
+
+export const startCleanupScheduler = () => {
+  if (mfaCleanupInterval) return;
+  mfaCleanupInterval = setInterval(() => {
     mfaService.cleanup();
-  },
-  5 * 60 * 1000,
-);
+  }, 5 * 60 * 1000);
+};
+
+export const stopCleanupScheduler = () => {
+  if (!mfaCleanupInterval) return;
+  clearInterval(mfaCleanupInterval);
+  mfaCleanupInterval = null;
+};
+
+startCleanupScheduler();
 

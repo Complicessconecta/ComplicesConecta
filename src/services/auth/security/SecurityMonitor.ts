@@ -230,21 +230,35 @@ export class SecurityMonitor {
 // Instancia global
 export const securityMonitor = new SecurityMonitor();
 
-// Limpiar eventos cada hora
-setInterval(
-  () => {
-    securityMonitor.cleanup(24);
-  },
-  60 * 60 * 1000,
-);
+let securityCleanupInterval: ReturnType<typeof setInterval> | null = null;
+let anomalyDetectionInterval: ReturnType<typeof setInterval> | null = null;
 
-// Detectar anomalías cada 5 minutos
-setInterval(
-  () => {
-    const anomalies = securityMonitor.detectAnomalies();
-    if (anomalies.length > 0) {
-      logger.warn("🚨 Security Anomalies Detected", { anomalies });
-    }
-  },
-  5 * 60 * 1000,
-);
+export const startSecurityMonitorSchedulers = () => {
+  if (!securityCleanupInterval) {
+    securityCleanupInterval = setInterval(() => {
+      securityMonitor.cleanup(24);
+    }, 60 * 60 * 1000);
+  }
+
+  if (!anomalyDetectionInterval) {
+    anomalyDetectionInterval = setInterval(() => {
+      const anomalies = securityMonitor.detectAnomalies();
+      if (anomalies.length > 0) {
+        logger.warn("🚨 Security Anomalies Detected", { anomalies });
+      }
+    }, 5 * 60 * 1000);
+  }
+};
+
+export const stopSecurityMonitorSchedulers = () => {
+  if (securityCleanupInterval) {
+    clearInterval(securityCleanupInterval);
+    securityCleanupInterval = null;
+  }
+  if (anomalyDetectionInterval) {
+    clearInterval(anomalyDetectionInterval);
+    anomalyDetectionInterval = null;
+  }
+};
+
+startSecurityMonitorSchedulers();

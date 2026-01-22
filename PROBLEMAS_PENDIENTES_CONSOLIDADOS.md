@@ -1,24 +1,29 @@
-# 📋 Problemas Pendientes Consolidados - ComplicesConecta v3.9.2
+# 📋 Pendientes Consolidados (Fuente Única) - ComplicesConecta v3.9.2
 
-**Fecha:** 21 de Enero, 2026
+**Fecha (última actualización):** 22 de Enero, 2026
 **Versión:** v3.9.2
-**Estado:** Consolidación de problemas pendientes tras análisis de 9 archivos .md
+**Estado:** Documento único consolidado (pendientes + completados recientes)
 
 ---
 
 ## 🎯 Resumen Ejecutivo
 
-Este documento consolida todos los problemas pendientes identificados en las auditorías previas que aún requieren solución. Los problemas ya resueltos han sido consolidados en `docs-unified/auditorias/`.
+Este documento es la **fuente única de verdad** para pendientes y su estado. Integra y reemplaza el contenido operativo de:
 
-**Archivos Analizados:** 9 archivos .md
-**Total de Problemas Pendientes:** 15
-**Prioridad Alta:** 5
-**Prioridad Media:** 7
-**Prioridad Baja:** 3
+- `docs-unified/auditorias/REPORTE_DISCREPANCIAS_FLUJOS.md`
+- `docs-unified/auditorias/PLANIFICACION_IMPLEMENTACION_PRIORIDADES_ALTA.md`
+
+Los reportes históricos (auditorías completadas) permanecen como referencia en `docs-unified/auditorias/`.
+
+**Pendientes activos (estimado):** 7
+
+- **Prioridad Alta:** 0
+- **Prioridad Media:** 5
+- **Prioridad Baja:** 2
 
 ---
 
-## 📊 Análisis de Archivos .md
+## 📊 Estado de fuentes .md (consolidación)
 
 ### ✅ Archivos Solucionados (Movidos a docs-unified/auditorias/)
 1. **reporte-final-auditoria.md** - Auditoría Estructural v3.9.2 completada
@@ -27,13 +32,16 @@ Este documento consolida todos los problemas pendientes identificados en las aud
 4. **DIAGNOSTICO_ICONOS_Y_VISIBILIDAD.md** - Íconos y visibilidad corregidos
 5. **ELIMINACIONES_PROPUESTAS.md** - ~25 errores TypeScript corregidos
 
-### ⏳ Archivos Pendientes (Sin problemas nuevos)
-1. **REPORTE_DISCREPANCIAS_FLUJOS.md** - Problemas de lógica de negocio (match, chat, galería)
-2. **PLAN_CLIENTE_INVERSOR.md** - Plan histórico con pendientes (encoding UTF-8, nav responsive)
-3. **ESTADO_MAESTRO_UNIFICADO_v3.7.0.md** - Estado general (95% ready)
-4. **Eres_un_experto_en_desarrollo.md** - Instrucciones de barrido profundo
-5. **audit-report.md** - Auditoría general de código (completa)
-6. **audit-hallazgos.md** - Hallazgos de auditoría estructural (aplicados)
+### ⏳ Archivos Pendientes (sin consolidar a docs-unified)
+1. **PLAN_CLIENTE_INVERSOR.md** - Plan histórico con pendientes (nav responsive)
+2. **ESTADO_MAESTRO_UNIFICADO_v3.7.0.md** - Estado general
+3. **Eres_un_experto_en_desarrollo.md** - Instrucciones de barrido profundo
+4. **audit-report.md** - Auditoría general de código
+5. **audit-hallazgos.md** - Hallazgos aplicados
+
+### ✅ Archivos ya implementados (obsoletos como “pendientes”)
+1. **docs-unified/auditorias/REPORTE_DISCREPANCIAS_FLUJOS.md** - Ya reflejado aquí (match/chat/galería)
+2. **docs-unified/auditorias/PLANIFICACION_IMPLEMENTACION_PRIORIDADES_ALTA.md** - Ya ejecutado (DB, Match, Chat, Galería, Proxy, Encoding)
 
 ### ✅ Reportes Técnicos Completados (Movidos a docs-unified/auditorias/)
 1. **ruta_solucion.md** - Análisis de castings `as any` y tablas faltantes ✅
@@ -76,7 +84,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   5. Modificar `handleLike` en Discover.tsx para usar MatchService
   6. Notificación de match en tiempo real a ambos usuarios
 - **Impacto:** Alto - Rompe el flujo "Discover → Match → Chat"
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (Ene 2026)
 
 ### 2. Acceso a Chat sin Match Previo - CRÍTICO
 - **Fuente:** REPORTE_DISCREPANCIAS_FLUJOS.md
@@ -87,7 +95,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   2. Verificar si existe registro en tabla `matches` antes de renderizar chat
   3. Deshabilitar botón de mensaje en Discover.tsx para perfiles sin match
 - **Impacto:** Medio - Permite comunicación no solicitada
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (Ene 2026)
 
 ### 3. Funcionalidad de Galería Privada en Chat - CRÍTICO
 - **Fuente:** REPORTE_DISCREPANCIAS_FLUJOS.md
@@ -100,7 +108,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   4. Implementar blur CSS si no pagado
   5. Cobro 90% a creador
 - **Impacto:** Alto - Mecánica principal de monetización
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (Ene 2026)
 
 ### 4. API Key de Pinata en Variables de Entorno - CRÍTICO
 - **Fuente:** AUDITORIA_SEGURIDAD_SRC_v3_9_2.md
@@ -111,7 +119,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   2. Implementar rotación de API keys
   3. Verificar que `.env` está en `.gitignore` (ya está)
 - **Impacto:** Alto - Riesgo de uso no autorizado
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (Ene 2026)
 
 ### 5. Encoding UTF-8 Masivo - CRÍTICO
 - **Fuente:** PLAN_CLIENTE_INVERSOR.md
@@ -130,7 +138,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   }
   ```
 - **Impacto:** Alto - Afecta legibilidad y profesionalismo
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (Ene 2026)
 
 ---
 
@@ -184,7 +192,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   - `src/services/auth/security/SecurityMonitor.ts` - 2 intervalos globales
 - **Solución Propuesta:** Exponer `startCleanupScheduler/stopCleanupScheduler`
 - **Impacto:** Medio - Riesgo teórico en hot-reload
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (22 Ene 2026)
 
 ### 11. Botón/Flujo de Billetera y Creación de NFT - MEDIA
 - **Fuente:** Eres_un_experto_en_desarrollo.md
@@ -206,7 +214,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   - `biometric_auth` - Para autenticación biométrica
 - **Solución Propuesta:** Crear migraciones SQL para tablas faltantes
 - **Impacto:** Medio - Bloquea implementación de features
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (Ene 2026)
 
 ---
 
@@ -271,24 +279,26 @@ Los siguientes problemas han sido solucionados y sus archivos han sido movidos a
 
 | Categoría | Total | Solucionados | Pendientes |
 |-----------|-------|--------------|------------|
-| Seguridad | 20 | 19 | 1 |
+| Seguridad | 20 | 20 | 0 |
 | Estructural | 8 | 8 | 0 |
-| Funcionalidad | 7 | 0 | 7 |
+| Funcionalidad | 7 | 7 | 0 |
 | UX/UI | 3 | 3 | 0 |
-| **TOTAL** | **38** | **30** | **8** |
+| Mantenimiento | 2 | 0 | 2 |
+| Arquitectura | 2 | 0 | 2 |
+| **TOTAL** | **42** | **35** | **7** |
 
 ---
 
 ## 🎯 Próximos Pasos Prioritarios
 
-1. **Implementar lógica de Match** (Alta) - Core del flujo principal
-2. **Implementar galería privada en Chat** (Alta) - Mecánica de monetización
-3. **Fix encoding UTF-8 masivo** (Alta) - Profesionalismo
-4. **Implementar backend proxy para API key de Pinata** (Alta) - Seguridad
-5. **Crear tablas faltantes en DB** (Media) - Bloquea features
+1. **Nav Responsive** (Media) - Ajustes UX móvil
+2. **ThemeToggle funcional** (Media) - Persistencia y UX
+3. **Archivos huérfanos** (Media) - Reducir ruido
+4. **Refactor directorios monolíticos** (Media) - Mantenibilidad
+5. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
 
 ---
 
-**Documento Generado:** 21 de Enero, 2026
+**Documento Generado:** 22 de Enero, 2026
 **Versión del Proyecto:** v3.9.2
-**Estado:** Consolidación de problemas pendientes
+**Estado:** Documento único consolidado

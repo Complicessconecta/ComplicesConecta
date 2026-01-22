@@ -1,4 +1,4 @@
-##                **Cómplices Conecta (v3.9.2) 🚀:**
+##                **Cómplices Conecta (v3.9.x) 🚀:**
 ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase BETA activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama main para la versión más estable
 
 
@@ -203,7 +203,7 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - **I** – Principio de Segregación de Interfaces: Los clientes no deben depender de interfaces que no utilizan; es mejor tener interfaces más pequeñas y específicas.
 - **D** – Principio de Inversión de Dependencias: Los módulos de alto nivel no deben depender de los de bajo nivel; ambos deben depender de abstracciones.
 
-# 🎯 ComplicesConecta - Plataforma Swinger Premium v3.7.0
+# 🎯 ComplicesConecta - Plataforma Swinger Premium v3.9.x
 
 <div align="center">
 
@@ -219,10 +219,10 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 ### 📱 ¡Descarga la App Ahora!
 
 <a href="https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest" target="_blank">
-  <img src="https://img.shields.io/badge/📱_Descargar_APK-v3.7.0-3DDC84?style=for-the-badge&logo=android&logoColor=white&labelColor=1976D2" alt="Descargar APK" />
+  <img src="https://img.shields.io/badge/📱_Descargar_APK-v3.9.x-3DDC84?style=for-the-badge&logo=android&logoColor=white&labelColor=1976D2" alt="Descargar APK" />
 </a>
 
-**SHA256:** `Verificado - Build v3.7.0 - Sistema Legal Enterprise + Protocolo de Disolución Ready`
+**SHA256:** `Verificado - Build v3.9.x - Sistema Legal Enterprise + Protocolo de Disolución Ready`
 
 _🔒 Aplicación segura y verificada para Android - Disponible en [GitHub Releases](https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest)_
 

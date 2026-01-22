@@ -1,5 +1,13 @@
 # RELEASE NOTES v3.9.4
 
+## 📅 Bitácora 22 Ene 2026
+
+- **✅ build:check:** `npm run build:check` pasa sin warnings (incluye eliminación de warning por `speakeasy`).
+- **🧪 TestSprite:** ejecución MCP realizada; la repetición posterior puede requerir créditos (403 en dashboard de billing).
+- **🔐 Auth / E2E:** mejoras para automatización (feedback visible en login, ajuste de tabs, bypass de WelcomeModal en `navigator.webdriver`).
+- **🛡️ Seguridad Frontend:** removidos patrones inseguros (`innerHTML`, `dangerouslySetInnerHTML`).
+- **🗂️ Git hygiene:** `testsprite_tests/tmp/` ignorado en `.gitignore`.
+
 ## 🚀 Highlights
 - **✅ TypeScript Clean:** Solucionados todos los errores TypeScript en 11 archivos
 - **✅ Lint Clean:** Lint pasa exitosamente sin errores

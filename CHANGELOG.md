@@ -49,3 +49,12 @@ Los siguientes archivos de auditoría han sido movidos a `docs-unified/auditoria
 3. Fix encoding UTF-8 masivo (Alta) - Profesionalismo
 4. Implementar backend proxy para API key de Pinata (Alta) - Seguridad
 5. Crear tablas faltantes en DB (Media) - Bloquea features
+
+## Actualización 22 de Enero, 2026
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **SecurityService.ts (TOTP)** | `src/services/auth/SecurityService.ts` | Warning de Vite por módulos Node (`crypto`, `url`) vía `speakeasy` | Reemplazo de TOTP con WebCrypto (browser-safe) | Eliminar warnings y asegurar compatibilidad browser |
+| **Auth Tabs + E2E** | `src/pages/Auth.tsx`, `src/pages/Index.tsx` | TestSprite bloqueado por UI (tabs/feedback/modal) | Tabs ajustados + feedback visible + bypass WelcomeModal en webdriver | Mejorar automatización y UX sin afectar producción |
+| **Seguridad UI** | `src/hooks/useScreenshotProtection.ts`, `src/components/ui/charts/chart.tsx` | Riesgos XSS (`innerHTML` / `dangerouslySetInnerHTML`) | Reemplazado por render seguro (DOM/textContent + `<style>` seguro) | Reducir superficie de ataque |
+| **TestSprite tmp** | `.gitignore` | Artefactos temporales en `testsprite_tests/tmp` | Ignorado completo de `testsprite_tests/tmp/` | Evitar comitear config/resultados temporales |

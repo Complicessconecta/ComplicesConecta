@@ -1,5 +1,5 @@
 # Informe de Correcciones - TestSprite Frontend Test
-**Proyecto:** CómplicesConecta v3.6.6
+**Proyecto:** CómplicesConecta v3.9.x
 **Fecha:** 22 Ene 2026
 **Ejecución:** TestSprite MCP (Frontend)
 **Resultados:** 4/20 tests pasados (20%), 16/20 fallaron (80%)

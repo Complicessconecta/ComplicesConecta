@@ -1,5 +1,5 @@
 🧠 CONFIGURACIÓN CONSOLIDADA DE IA Y REGLAS DE PROYECTO
-CómplicesConecta v3.6.6
+CómplicesConecta v3.9.x
 Fecha de consolidación: 16 de Diciembre, 2025
 
 0. ROL Y CONTEXTO GENERAL
@@ -22,10 +22,10 @@ No romper el flujo ni logica de los perfiles de produccion
 Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones correctas
 
 **Marca de progreso:**
-* **[Completo/Verificado✅]** 
-* **[EnProceso🚧]**  
+* **[Completo/Verificado✅]**
+* **[EnProceso🚧]**
 * **[ADVERTENCIA⚠️]**
-* **[Incompleto❌]** 
+* **[Incompleto❌]**
 
 1.2 Gestión de Ramas y Commits
 
@@ -39,12 +39,12 @@ Al finalizar sesión o avance significativo: actualizar memorias y documentos cl
 1.3 Documentación OBLIGATORIA
 Verificar y actualizar al inicio/final de sesión:
 
-RELEASE_NOTES_v3.x.x.md
+RELEASE_NOTES_v3.9.x.md
 README.md
 README_IA.md
 README_DEVOPS.md
 project-structure-tree.md
-DIAGRAMAS_FLUJOS_v3.x.x.md
+DIAGRAMAS_FLUJOS_v3.9.x.md
 COMPLICESCONECTA_PRESENTACION_PUBLICA.md
 CHANGELOG.md
 

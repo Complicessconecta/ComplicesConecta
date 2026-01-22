@@ -2,7 +2,6 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import tailwindcss from "tailwindcss";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
@@ -67,8 +66,8 @@ export default defineConfig(({ mode }) => {
             ],
             // Separar servicios complejos
             "services-advanced": [
-              "./src/services/AdvancedCacheService",
-              "./src/services/ContentModerationService",
+              "./src/services/core/AdvancedCacheService",
+              "./src/services/social/ContentModerationService",
             ],
           },
         },

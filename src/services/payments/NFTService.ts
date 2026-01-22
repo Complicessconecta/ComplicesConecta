@@ -193,6 +193,7 @@ export class NFTService {
         body: JSON.stringify({
           method: 'pinning/pinFileToIPFS',
           path: '/pinning/pinFileToIPFS',
+          apiBase: NFTService.PINATA_API_URL,
           body: formData,
         }),
       });

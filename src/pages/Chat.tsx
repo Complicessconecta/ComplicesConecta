@@ -129,6 +129,74 @@ const Chat = () => {
     }
   };
 
+  const handleUnlockGalleryItem = async (itemId: string): Promise<void> => {
+    if (!user || !selectedChat) return;
+    try {
+      setGalleryProcessing(true);
+      const ownerId = getGalleryOwnerId();
+      if (!ownerId) {
+        throw new Error("No se pudo determinar el dueño de la galería.");
+      }
+
+      const balance = await tokenService.getBalance(user.id);
+      if (!balance || balance.cmpx < galleryPrice) {
+        toast({
+          title: "CMPX insuficientes",
+          description: "Compra tokens en el Shop.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const spent = await tokenService.spendTokens(
+        user.id,
+        "cmpx",
+        galleryPrice,
+        "Desbloqueo galería privada",
+        { gallery_owner_id: ownerId, chat_partner_id: chatPartnerId, gallery_item_id: itemId },
+      );
+      if (!spent) throw new Error("No se pudo realizar el cobro");
+
+      if (supabase) {
+        const { error } = await (supabase as any)
+          .from("gallery_unlocks")
+          .insert({ user_id: user.id, profile_id: itemId });
+        if (error && error.code !== "23505") {
+          throw error;
+        }
+      }
+
+      await recordGalleryCommission({
+        galleryId: `profile-${ownerId}`,
+        creatorId: ownerId,
+        transactionType: "purchase",
+        amountCMPX: galleryPrice,
+      });
+
+      setUnlockedGalleries((prev) => {
+        const next = new Set(prev);
+        next.add(itemId);
+        return next;
+      });
+
+      toast({
+        title: "Galería desbloqueada",
+        description: "Disfruta el contenido privado.",
+      });
+    } catch (error) {
+      logger.error("Error desbloqueando galería", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      toast({
+        title: "Error",
+        description: "No se pudo desbloquear la galería.",
+        variant: "destructive",
+      });
+    } finally {
+      setGalleryProcessing(false);
+    }
+  };
+
   // Determinar ID de sala activo
   useEffect(() => {
     const resolveRoomId = async () => {
@@ -1057,6 +1125,9 @@ const Chat = () => {
                   ]}
                   creatorId={getGalleryOwnerId() ?? ""}
                   currentUserId={user?.id ?? ""}
+                  unlockedItems={unlockedGalleries}
+                  unlockingItemId={galleryProcessing ? "1" : null}
+                  onUnlock={handleUnlockGalleryItem}
                 />
               )}
 
@@ -1192,6 +1263,11 @@ const Chat = () => {
                       <Button
                         onClick={() => {
                           if (selectedChat?.roomType === "private") {
+                            handleUnlockGallery().catch((err) => {
+                              logger.error("Error en handleUnlockGallery", {
+                                error: err,
+                              });
+                            });
                             toast({
                               title: "Galería Privada",
                               description: `Ver galería privada de ${selectedChat.name}`,

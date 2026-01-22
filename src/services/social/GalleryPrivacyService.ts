@@ -4,9 +4,7 @@ import { logger } from '@/lib/logger';
 export interface GalleryUnlock {
   id: string;
   user_id: string;
-  gallery_item_id: string;
-  cmpx_amount: number;
-  creator_id: string;
+  profile_id: string;
   created_at: string;
 }
 
@@ -29,7 +27,7 @@ class GalleryPrivacyService {
         .from('gallery_unlocks')
         .select('id')
         .eq('user_id', userId)
-        .eq('gallery_item_id', galleryItemId)
+        .eq('profile_id', galleryItemId)
         .maybeSingle();
 
       if (error) {
@@ -78,7 +76,11 @@ class GalleryPrivacyService {
         return { success: false, error: 'Error al desbloquear galería' };
       }
 
-      logger.info('Gallery unlocked', { userId: userId.substring(0, 8) + '***', galleryItemId: galleryItemId.substring(0, 8) + '***' });
+      logger.info('Gallery unlocked', {
+        userId: userId.substring(0, 8) + '***',
+        galleryItemId: galleryItemId.substring(0, 8) + '***',
+        creatorId: creatorId.substring(0, 8) + '***',
+      });
       return { success: true };
     } catch (error) {
       logger.error('Error unlocking gallery', { error });

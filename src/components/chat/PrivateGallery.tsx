@@ -15,20 +15,38 @@ interface PrivateGalleryProps {
   galleryItems: GalleryItem[];
   creatorId: string;
   currentUserId: string;
+  unlockedItems?: Set<string>;
+  unlockingItemId?: string | null;
+  onUnlock?: (itemId: string) => Promise<void>;
 }
 
-export function PrivateGallery({ galleryItems, creatorId, currentUserId }: PrivateGalleryProps) {
-  const [unlockedItems, setUnlockedItems] = useState<Set<string>>(new Set());
-  const [unlocking, setUnlocking] = useState<string | null>(null);
+export function PrivateGallery({
+  galleryItems,
+  creatorId,
+  currentUserId,
+  unlockedItems: externalUnlockedItems,
+  unlockingItemId: externalUnlockingItemId,
+  onUnlock,
+}: PrivateGalleryProps) {
+  const [internalUnlockedItems, setInternalUnlockedItems] = useState<Set<string>>(new Set());
+  const [internalUnlocking, setInternalUnlocking] = useState<string | null>(null);
+
+  const unlockedItems = externalUnlockedItems ?? internalUnlockedItems;
+  const unlocking = externalUnlockingItemId ?? internalUnlocking;
 
   const handleUnlock = async (itemId: string) => {
-    setUnlocking(itemId);
+    if (onUnlock) {
+      await onUnlock(itemId);
+      return;
+    }
+
+    setInternalUnlocking(itemId);
 
     try {
       const result = await galleryPrivacyService.unlockGallery(currentUserId, itemId, creatorId);
 
       if (result.success) {
-        setUnlockedItems(prev => new Set(prev).add(itemId));
+        setInternalUnlockedItems((prev) => new Set(prev).add(itemId));
         toast({
           title: 'Galería desbloqueada',
           description: 'Ahora puedes ver el contenido privado',
@@ -47,7 +65,7 @@ export function PrivateGallery({ galleryItems, creatorId, currentUserId }: Priva
         description: 'Error al desbloquear',
       });
     } finally {
-      setUnlocking(null);
+      setInternalUnlocking(null);
     }
   };
 

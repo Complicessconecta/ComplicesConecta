@@ -203,18 +203,16 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  html, body {
-    height: 100%;
-  }
+* {
+  @apply border-border outline-ring/50;
+}
+body {
+  @apply bg-background text-foreground;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+html, body {
+  height: 100%;
 }
 
 /* Animations */
@@ -412,11 +410,6 @@ button:active:not(:disabled),
 }
 
 /* Estilos personalizados para scrollbar del dropdown */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(168, 85, 247, 0.3) transparent;
-}
-
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -434,11 +427,6 @@ button:active:not(:disabled),
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(168, 85, 247, 0.6);
-}
-
-.custom-scrollbar-inner {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(168, 85, 247, 0.3) transparent;
 }
 
 .custom-scrollbar-inner::-webkit-scrollbar {
@@ -462,17 +450,11 @@ button:active:not(:disabled),
 
 /* Ocultar scrollbar por defecto, mostrar al hover */
 .custom-scrollbar-hide {
-  scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
 .custom-scrollbar-hide::-webkit-scrollbar {
   display: none;
-}
-
-.custom-scrollbar-hide:hover {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(168, 85, 247, 0.3) transparent;
 }
 
 .custom-scrollbar-hide:hover::-webkit-scrollbar {
@@ -882,37 +864,35 @@ button:active:not(:disabled),
   animation: fade-in 0.3s ease-out forwards;
 }
 
-@layer components {
-  /* Profiles - Single */
-  .profile-single {
-    @apply container mx-auto px-4 py-8;
-  }
-  .profile-single-header {
-    @apply mb-8 text-center;
-  }
-  .profile-single-content {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
-  }
+/* Profiles - Single */
+.profile-single {
+  @apply container mx-auto px-4 py-8;
+}
+.profile-single-header {
+  @apply mb-8 text-center;
+}
+.profile-single-content {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
 
-  /* Profiles - Couple */
-  .profile-couple {
-    @apply container mx-auto px-4 py-8;
-  }
-  .profile-couple-header {
-    @apply mb-8 text-center;
-  }
-  .profile-couple-content {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
-  }
+/* Profiles - Couple */
+.profile-couple {
+  @apply container mx-auto px-4 py-8;
+}
+.profile-couple-header {
+  @apply mb-8 text-center;
+}
+.profile-couple-content {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}
 
-  /* UI Components */
-  .button {
-    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold;
-  }
-  .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
-  }
-  .input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2;
-  }
+/* UI Components */
+.button {
+  @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold;
+}
+.card {
+  @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+}
+.input {
+  @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2;
 }

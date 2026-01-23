@@ -176,12 +176,11 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
       <div className="relative w-full max-w-md h-full max-h-[90vh] mx-4">
         {/* Barra de progreso */}
         <div className="absolute top-4 left-4 right-4 z-10">
-          <div className="w-full h-1 bg-white/30 rounded-full">
-            <div
-              className="h-full bg-white rounded-full transition-all duration-100 ease-linear progress-bar"
-              style={{ '--progress-width': `${progress}%` } as React.CSSProperties}
-            />
-          </div>
+          <progress
+            className="w-full h-1 rounded-full overflow-hidden bg-white/30 accent-white"
+            value={progress}
+            max={100}
+          />
         </div>
 
         {/* Header */}

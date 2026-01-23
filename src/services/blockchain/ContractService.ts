@@ -6,12 +6,27 @@
 import { web3Service } from "@/services/blockchain/Web3Service";
 import { logger } from "@/lib/logger";
 
+ type AbiInput = {
+   type: string;
+ };
+
+ type AbiFunctionItem = {
+   name?: string;
+   inputs?: AbiInput[];
+ };
+
+ type AbiItem = string | AbiFunctionItem;
+
+ const isAbiFunctionItem = (item: AbiItem): item is AbiFunctionItem => {
+   return typeof item !== "string";
+ };
+
 /**
  * Interfaz para configuración de contrato
  */
 export interface ContractConfig {
   address: string;
-  abi: any[];
+  abi: AbiItem[];
 }
 
 /**
@@ -116,8 +131,8 @@ export class ContractService {
   public async callReadFunction(
     contractName: string,
     functionName: string,
-    params: any[] = []
-  ): Promise<any> {
+    params: unknown[] = []
+  ): Promise<unknown> {
     if (!web3Service.isWeb3Connected()) {
       throw new Error("Web3 no está conectado");
     }
@@ -157,7 +172,7 @@ export class ContractService {
   public async callWriteFunction(
     contractName: string,
     functionName: string,
-    params: any[] = []
+    params: unknown[] = []
   ): Promise<TransactionResult> {
     if (!web3Service.isWeb3Connected()) {
       throw new Error("Web3 no está conectado");
@@ -237,21 +252,26 @@ export class ContractService {
    */
   private encodeFunctionCall(
     functionName: string,
-    params: any[],
-    abi: any[]
+    params: unknown[],
+    abi: AbiItem[]
   ): string {
     // Buscar la función en el ABI
-    const funcAbi = abi.find((item: any) => item.name === functionName);
+    const funcAbi = abi.find(
+      (item): item is AbiFunctionItem =>
+        isAbiFunctionItem(item) && item.name === functionName,
+    );
     if (!funcAbi) {
       throw new Error(`Función ${functionName} no encontrada en ABI`);
     }
 
+    const inputs = funcAbi.inputs ?? [];
+
     // Codificar selector de función
-    const functionSignature = `${functionName}(${funcAbi.inputs.map((input: any) => input.type).join(",")})`;
+    const functionSignature = `${functionName}(${inputs.map((input) => input.type).join(",")})`;
     const functionSelector = this.keccak256(functionSignature).slice(0, 10);
 
     // Codificar parámetros
-    const encodedParams = this.encodeParams(params, funcAbi.inputs);
+    const encodedParams = this.encodeParams(params, inputs);
 
     return `0x${functionSelector}${encodedParams}`;
   }
@@ -259,27 +279,31 @@ export class ContractService {
   /**
    * Codifica parámetros
    */
-  private encodeParams(params: any[], inputs: any[]): string {
+  private encodeParams(params: unknown[], inputs: AbiInput[]): string {
     let encoded = "";
     let offset = inputs.length * 32;
 
     params.forEach((param, index) => {
       const input = inputs[index];
 
+      if (!input) return;
+
       if (input.type === "address") {
-        encoded += param.slice(2).padStart(64, "0");
+        const address = String(param);
+        encoded += address.slice(2).padStart(64, "0");
       } else if (input.type === "uint256") {
-        encoded += BigInt(param).toString(16).padStart(64, "0");
+        encoded += BigInt(String(param)).toString(16).padStart(64, "0");
       } else if (input.type === "string") {
         // Para strings, primero codificamos el offset y luego el string
         const offsetHex = offset.toString(16).padStart(64, "0");
         encoded += offsetHex;
 
         // Codificar el string
-        const stringHex = this.encodeString(param);
+        const stringValue = String(param);
+        const stringHex = this.encodeString(stringValue);
         encoded += stringHex;
 
-        offset += Math.ceil(param.length / 32) * 32;
+        offset += Math.ceil(stringValue.length / 32) * 32;
       } else if (input.type === "bool") {
         encoded += param ? "1".padStart(64, "0") : "0".padStart(64, "0");
       }
@@ -316,7 +340,7 @@ export class ContractService {
   public async getCMPXBalance(address: string): Promise<string> {
     try {
       const balance = await this.callReadFunction("CMPX", "balanceOf", [address]);
-      const balanceInTokens = parseInt(balance, 16) / 10 ** 18;
+      const balanceInTokens = parseInt(String(balance), 16) / 10 ** 18;
       return balanceInTokens.toFixed(2);
     } catch (error) {
       logger.error("Error obteniendo balance CMPX:", { error });

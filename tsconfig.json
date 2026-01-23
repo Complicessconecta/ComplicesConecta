@@ -15,5 +15,5 @@
     "exactOptionalPropertyTypes": true
   },
   "include": ["src", "src/types/global.d.ts"],
-  "exclude": ["**/*.stories.ts", "**/*.stories.tsx", "src/tests/**", "node_modules"]
+  "exclude": ["**/*.stories.ts", "**/*.stories.tsx", "src/tests/**", "node_modules", "duplicates_quarantine/**"]
 }

@@ -5,7 +5,7 @@
  */
 
 import { logger } from '@/lib/logger';
-import { neo4jService } from "@/services/neo4j/Neo4jService";
+import { neo4jService, type UserProfile, type UserContext } from "@/services/neo4j/Neo4jService";
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { pipeline } from '@huggingface/transformers';
 import * as toxicity from '@tensorflow-models/toxicity';
@@ -53,11 +53,47 @@ export interface QAContext {
   relatedTopics: string[];
 }
 
+// Interfaces para datos internos (tipos estrictos)
+type ProfileForCompatibility = UserProfile | {
+  id: string;
+  username?: string;
+  sharedInterests?: string[];
+  recommendations?: string[];
+  compatibilityScore?: number;
+  reasoning?: string;
+};
+
+interface TokenUsageRecord {
+  amount: number;
+  balance?: number;
+  timestamp?: string;
+}
+
+interface BehaviorProfile {
+  currentBalance: number;
+  avgDailyUsage: number;
+  usagePattern: string;
+  riskProfile: string;
+}
+
+interface ParsedTokenPrediction {
+  predictedUsage: number;
+  recommendedStake: number;
+  riskLevel: 'low' | 'medium' | 'high';
+  timeframe: string;
+}
+
+interface ApplicationContext {
+  appSection: string;
+  relevantFeatures: string[];
+}
+
 class AIIntegrationService {
-  private webLLM: any;
-  private hfPipeline: any;
-  private toxicityModel: any;
-  private modelCache = new Map<string, any>();
+  // Modelos externos: usamos any porque no podemos tiparlos fácilmente
+  private webLLM: any = null;
+  private hfPipeline: any = null;
+  private toxicityModel: any = null;
+  private modelCache = new Map<string, { data: unknown; timestamp: number }>();
 
   constructor() {
     this.initializeModels();
@@ -75,7 +111,7 @@ class AIIntegrationService {
         logger.warn('WebLLM no disponible, usando fallback:', webLLMError as Error);
         this.webLLM = null;
       }
-      
+
       // Inicializar modelo de Hugging Face para Q&A
       try {
         this.hfPipeline = await pipeline('question-answering', 'distilbert-base-uncased-distilled-squad');
@@ -83,7 +119,7 @@ class AIIntegrationService {
         logger.warn('HuggingFace pipeline no disponible, usando fallback:', hfError as Error);
         this.hfPipeline = null;
       }
-      
+
       // Inicializar modelo de toxicidad para moderación
       try {
         this.toxicityModel = await toxicity.load(0.9, ['toxicity', 'severe_toxicity', 'identity_attack', 'insult', 'profanity', 'threat']);
@@ -91,7 +127,7 @@ class AIIntegrationService {
         logger.warn('Modelo de toxicidad no disponible, usando fallback:', toxicityError as Error);
         this.toxicityModel = null;
       }
-      
+
       logger.info('✅ Modelos de IA inicializados correctamente');
     } catch (error) {
       logger.error('❌ Error inicializando modelos de IA:', error as Error);
@@ -140,7 +176,7 @@ class AIIntegrationService {
       await this.updateKnowledgeGraph(userId, message, response.content);
 
       return {
-        id: crypto.randomUUID(),
+        id: Date.now().toString(),
         role: 'assistant',
         content: response.content,
         timestamp: new Date().toISOString(),
@@ -161,8 +197,9 @@ class AIIntegrationService {
    */
   private async checkToxicity(message: string): Promise<boolean> {
     try {
+      if (!this.toxicityModel?.classify) return false;
       const predictions = await this.toxicityModel.classify(message);
-      return predictions.some((prediction: any) => prediction.results[0].match);
+      return predictions.some((prediction: { results: Array<{ match: boolean }> }) => prediction.results[0]?.match ?? false);
     } catch (error) {
       logger.error('Error verificando toxicidad:', error as Error);
       return false; // Por seguridad, si falla el modelo, permitimos el mensaje
@@ -176,7 +213,7 @@ class AIIntegrationService {
     try {
       // Obtener perfil completo del usuario
       const userProfile = await neo4jService.getUserProfile(userId);
-      
+
       // Encontrar usuarios similares en el grafo
       const similarUsers = await neo4jService.findSimilarUsers(userId, {
         interests: userProfile.interests,
@@ -187,7 +224,7 @@ class AIIntegrationService {
 
       // Calcular scores de compatibilidad con IA
       const recommendations: MatchingProfile[] = [];
-      
+
       for (const similarUser of similarUsers) {
         const compatibilityScore = await this.calculateCompatibilityScore(
           userProfile,
@@ -237,10 +274,10 @@ class AIIntegrationService {
       // Predicción con modelo de series temporales
       const prediction = await this.webLLM.generate(`
         Analiza el siguiente historial de uso de tokens y predice el uso futuro:
-        
+
         Historial: ${JSON.stringify(usageHistory?.slice(-30))}
         Perfil de comportamiento: ${JSON.stringify(behaviorProfile)}
-        
+
         Predice:
         1. Uso esperado para los próximos 7 días
         2. Stake recomendado
@@ -291,7 +328,7 @@ class AIIntegrationService {
           Contexto de la app: ${JSON.stringify(appContext)}
           Pregunta: ${question}
         `;
-        
+
         const result = await this.hfPipeline(context, {
           topk: 3,
           maxAnswerTokens: 200,
@@ -300,8 +337,8 @@ class AIIntegrationService {
       }
 
       // Combinar resultados
-      const finalAnswer = hfAnswer 
-        ? hfAnswer.answer 
+      const finalAnswer = hfAnswer
+        ? hfAnswer.answer
         : internalResults.answer;
 
       const sources = [
@@ -325,7 +362,7 @@ class AIIntegrationService {
   /**
    * Optimización de rendimiento
    */
-  async generatePerformanceReport(): Promise<Record<string, any>> {
+  async generatePerformanceReport(): Promise<Record<string, unknown>> {
     try {
       const startTime = performance.now();
 
@@ -366,39 +403,39 @@ class AIIntegrationService {
   // Métodos privados de ayuda
   private buildContextualPrompt(
     message: string,
-    userProfile: any,
-    userContext: any,
+    userProfile: UserProfile,
+    userContext: UserContext,
     conversationHistory: ChatMessage[]
   ): string {
     return `
       Eres un asistente de IA para CómplicesConecta, una app de conexiones discretas.
-      
+
       Perfil del usuario:
       ${JSON.stringify(userProfile, null, 2)}
-      
+
       Contexto relevante:
       ${JSON.stringify(userContext, null, 2)}
-      
+
       Historial reciente:
       ${conversationHistory.slice(-5).map(msg => `${msg.role}: ${msg.content}`).join('\n')}
-      
+
       Mensaje actual: ${message}
-      
+
       Responde de manera: discreta, respetuosa, útil y considerando el contexto del usuario.
     `;
   }
 
   private async calculateCompatibilityScore(
-    profile1: any,
-    profile2: any
+    profile1: ProfileForCompatibility,
+    profile2: ProfileForCompatibility
   ): Promise<number> {
     // Implementar algoritmo de compatibilidad con IA
     const prompt = `
       Calcula score de compatibilidad (0-1) entre estos dos perfiles:
-      
+
       Perfil 1: ${JSON.stringify(profile1)}
       Perfil 2: ${JSON.stringify(profile2)}
-      
+
       Considera: intereses, ubicación, preferencias, valores, estilo de vida.
       Responde solo con el número decimal.
     `;
@@ -412,16 +449,16 @@ class AIIntegrationService {
   }
 
   private async generateCompatibilityReasoning(
-    profile1: any,
-    profile2: any,
+    profile1: ProfileForCompatibility,
+    profile2: ProfileForCompatibility,
     score: number
   ): Promise<string> {
     const prompt = `
       Explica por qué estos dos perfiles son compatibles con score ${score}:
-      
+
       Perfil 1: ${JSON.stringify(profile1)}
       Perfil 2: ${JSON.stringify(profile2)}
-      
+
       Sé específico sobre intereses compartidos y valores compatibles.
       Máximo 100 palabras.
     `;
@@ -450,7 +487,7 @@ class AIIntegrationService {
   ): Promise<void> {
     // Extraer entidades y relaciones del mensaje
     const entities = await this.extractEntities(userMessage);
-    
+
     // Actualizar grafo en Neo4j
     await neo4jService.updateUserInteractions(userId, entities);
   }
@@ -460,7 +497,7 @@ class AIIntegrationService {
     const prompt = `
       Extrae entidades clave (intereses, actividades, valores) de este texto:
       "${text}"
-      
+
       Responde solo con un array JSON de strings.
     `;
 
@@ -484,14 +521,14 @@ class AIIntegrationService {
     logger.info(`Guardando ${recommendations.length} recomendaciones para usuario ${userId}`);
   }
 
-  private async getTokenUsageHistory(_userId: string): Promise<any[]> {
+  private async getTokenUsageHistory(_userId: string): Promise<TokenUsageRecord[]> {
     // Implementar obtención de historial desde Supabase
     return [];
   }
 
   private async analyzeUserBehavior(
-    usageHistory: any[]
-  ): Promise<any> {
+    usageHistory: TokenUsageRecord[]
+  ): Promise<BehaviorProfile> {
     // Análisis de patrones de uso
     const recentUsage = usageHistory.slice(-30);
     const avgDailyUsage = recentUsage.reduce((sum, tx) => sum + tx.amount, 0) / 30;
@@ -505,7 +542,7 @@ class AIIntegrationService {
     };
   }
 
-  private parseTokenPrediction(predictionText: string): any {
+  private parseTokenPrediction(predictionText: string): ParsedTokenPrediction {
     try {
       return JSON.parse(predictionText);
     } catch {
@@ -519,7 +556,7 @@ class AIIntegrationService {
     }
   }
 
-  private async getApplicationContext(question: string): Promise<any> {
+  private async getApplicationContext(question: string): Promise<ApplicationContext> {
     // Obtener contexto relevante de la aplicación
     return {
       appSection: this.detectAppSection(question),
@@ -534,7 +571,7 @@ class AIIntegrationService {
   }> {
     // Buscar en base de conocimiento interna
     // Implementar búsqueda vectorial o por keywords
-    
+
     return {
       answer: 'Respuesta base de conocimiento interna',
       confidence: 0.6,
@@ -550,7 +587,7 @@ class AIIntegrationService {
       Extrae 5 temas relacionados de esta Q&A:
       Pregunta: ${question}
       Respuesta: ${answer}
-      
+
       Responde solo con un array JSON de strings.
     `;
 
@@ -576,7 +613,7 @@ class AIIntegrationService {
     return 0.85; // Placeholder
   }
 
-  private async getSupabasePerformanceMetrics(): Promise<any> {
+  private async getSupabasePerformanceMetrics(): Promise<{ avgQueryTime: number; cacheHitRate: number; connectionPoolUsage: number }> {
     // Obtener métricas de rendimiento de Supabase
     return {
       avgQueryTime: 45,
@@ -586,9 +623,9 @@ class AIIntegrationService {
   }
 
   private async generateOptimizationRecommendations(
-    neo4jMetrics: any,
-    aiMetrics: any,
-    supabaseMetrics: any
+    neo4jMetrics: { queryTime: number },
+    aiMetrics: { cacheHitRate: number },
+    supabaseMetrics: { avgQueryTime: number }
   ): Promise<string[]> {
     const recommendations: string[] = [];
 

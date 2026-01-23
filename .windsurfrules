@@ -13,16 +13,17 @@ Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compli
 1. REGLAS INQUEBRANTABLES DEL PROYECTO
 1.1 Lógica de Negocio y Flujos Críticos
 
+
+- Leer y analizar los comentarios dentro de los archivos para toma de deciciones correctas
 - NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, moderación con IA)
 - NO romper flujos principales: registro → discover → match → chat → check-in
 - NO crear ni eliminar archivos sin verificar existencia previa
 - NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
 - NO romper la logica de los perfiles "demo"
 - No romper el flujo ni logica de los perfiles de produccion
-- Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones correctas
 - No crear ni eliminar archivos sin verificar existencia previa
 - No eliminr variables , implementar variables que no estan declaradas
-- No eliminar variables que no estan declaradas, agregar el compomnete o funcion de la variable no declarada justificando el cambio realizado 
+- No eliminar variables que no estan declaradas, agregar el compomnete o funcion de la variable no declarada justificando el cambio realizado
 
 **Marca de progreso:**
 * **[Completo/Verificado✅]**
@@ -53,14 +54,17 @@ CHANGELOG.md
 
 1.4 Supabase, Docker y Base de Datos
 
-Verificar Docker en línea  de lo contrario indicarle al usuario iniciar para hacer
+- Verificar Docker en línea  de lo contrario indicarle al usuario iniciar para hacer
 y login a Supabase antes de cambios
-Alinear tablas locales/remotas antes de modificar
-Notificar tablas faltantes antes de crearlas
+- Alinear tablas locales/remotas antes de modificar
+- Notificar tablas faltantes antes de crearlas
 al finalizar el uso de Doker-Desktop verificar que todo esta en orden
 y hacer kill para sair
 
-No usar en los archivos que dependan de la base de datos el uso de "as any","any","null" verifica en el directorio src/types/ que exista primero la tabla ,columna, RLS, etc.. de no existir Crear la Tabla,Columna, etc.. correspondiente y migrar con docker-compose up -d , o docker-desktop, recrear la base de datos y agregar la tabla columna faltante, verificar la  estructura de las tablas sea la correcta y si no es asi actualizarla
+ - Archivos que dependan de la base de datos; el uso de "as any","any","null" esta Prohibido , "verificar en el directorio src/types/" que exista primero la "tabla ,columna, RLS, etc.."
+ - De No existir; Crear la T"abla,Columna, etc.. correspondiente"
+ - Migrar con docker-compose up -d , o docker-desktop, recrear la base de datos y "agregar la tabla columna faltante"
+ - Verificar la  estructura de las tablas sea la correcta de no ser asi actualizarla
 
 
 
@@ -100,14 +104,46 @@ Al finalizar cualquier sesión de desarrollo que involucre cambios en la estruct
 2. `project-structure-tree.md` (si existe) con la estructura actualizada
 3. `README.md` si la estructura afecta la documentación general
 4. `DIAGRAMAS_FLUJOS_CONSOLIDADO.md` si la estructura afecta los flujos
-5. `COMPLICESCONECTA_PRESENTACION_PUBLICA.md` si la estructura afecta la presentación pública 
+5. `COMPLICESCONECTA_PRESENTACION_PUBLICA.md` si la estructura afecta la presentación pública
 6. `CHANGELOG.md` si la estructura afecta los cambios
-7. `CONTRIBUTING.md` si la estructura afecta la contribución 
-8.  `RELEASE_NOTES_v3.8.0.md` si la estructura afecta las notas de lanzamiento 
+7. `CONTRIBUTING.md` si la estructura afecta la contribución
+8.  `RELEASE_NOTES_v3.8.0.md` si la estructura afecta las notas de lanzamiento
 
 **Verificación:**
 
 Antes de crear un commit, verificar que `Project-Structure-Tree-files.md` esté actualizado con la estructura actual del directorio `src/`.
+
+
+1.7 Política de NO borrado (Cuarentena de archivos)
+
+Regla obligatoria para auditorías/refactors (seguridad y estabilidad):
+
+- NO eliminar archivos si existe cualquier riesgo de dependencia implícita.
+- En lugar de eliminar:
+  1) Mover el archivo a `duplicates_quarantine/` (manteniendo su ruta original bajo esa carpeta).
+  2) Justificar la acción en `duplicates_quarantine/DUPLICATES_QUARANTINE.md`.
+  3) Asegurar que `duplicates_quarantine/` esté en `.gitignore`.
+  4) Asegurar que `duplicates_quarantine/**` esté excluido en `tsconfig.json` para evitar falsos positivos.
+  5) Comentar el archivo completo dentro de `duplicates_quarantine/` (prefijo `// , */ ,**/` línea) para evitar falsos positivos al abrirlo en el IDE.
+
+Ejemplo (mejor práctica) para mover + comentar:
+
+1) Crear carpetas destino:
+   - `duplicates_quarantine/src/...`
+
+2) Mover archivo:
+   - `src/components/ai/Foo.tsx` -> `duplicates_quarantine/src/components/ai/Foo.tsx`
+
+3) Comentar todo el contenido del archivo en cuarentena (PowerShell):
+   - `$p="c:\\ruta\\al\\repo\\duplicates_quarantine\\src\\components\\ai\\Foo.tsx"; (Get-Content -LiteralPath $p) | ForEach-Object { "// " + $_ } | Set-Content -LiteralPath $p -Encoding UTF8 `,` */ import React, { useState, useEffect } from "react";`
+     `//import { Button } from "@/components/ui/buttons/Button";`
+     ` //import { Badge } from "@/components/ui/badge";`
+     `//import { Heart, Users, Lock, Clock, CheckCircle, XCircle, AlertTriangle, Info,     ` `Loader2 }  from "lucide-react";`
+     `//import { nftService } from "@/services";`
+     ` //import { logger } from "@/lib/logger"; /** `
+
+4) Documentar en `duplicates_quarantine/DUPLICATES_QUARANTINE.md`:
+   - motivo, evidencia de imports (grep), y ruta canónica equivalente.
 
 
 2. REGLAS DE IA PARA DESARROLLO
@@ -122,14 +158,42 @@ Leer los archivos completos antes de modificarlos
 
 TypeScript y Código Limpio
 
-TypeScript estricto → tipos explícitos, sin any
-Interfaces para todos los tipos de datos
-async/await preferido sobre Promises
-logger para todos los logs (nunca console.log en producción)
-Validar inputs y manejar errores con try-catch
-Early returns para reducir anidación
-Event handlers tipados
-Si se corrompe el archivo restaurar y volver a corregir
+1. TypeScript estricto → tipos explícitos, sin any
+2. Interfaces para todos los tipos de datos
+3. async/await preferido sobre Promises
+3. logger para todos los logs (nunca console.log en producción)
+4. Validar inputs y manejar errores con try-catch
+5. Early returns para reducir anidación
+6. Event handlers tipados
+7. Si se corrompe el archivo restaurar y volver a corregir
+8.  No simplifiques
+9.  No ignores contexto
+10. No introduzcas regresiones
+11. Nunca propongas “soluciones cosméticas”.
+12. No elimines código si no estás seguro; propone alternativas seguras.
+13. Si un archivo parece obsoleto, explica por qué y qué impacto tiene eliminarlo.
+14. Si detectas dependencias implícitas entre archivos, respétalas.
+15. Prioriza primero:
+   - Seguridad
+   - Flujos rotos
+   - Errores de lógica
+   - Tipado débil (any, as any, null)
+   - Arquitectura y deuda técnica
+16. Nunca propongas “soluciones cosméticas”.
+17. No elimines código si no estás seguro; propone alternativas seguras.
+18. Si un archivo parece obsoleto, explica por qué y qué impacto tiene eliminarlo.
+19. Si detectas dependencias implícitas entre archivos, respétalas.
+20. No uses any, as any ni casts inseguros.
+21. Prefiere tipos explícitos, interfaces y esquemas.
+22. Si usas null/undefined, justifica por qué.
+23. Mantén compatibilidad con el resto del proyecto.
+24. Si algo no puede resolverse sin más contexto, dilo explícitamente.
+25. tu objetivo no es “hacer que compile”, sino dejar el proyecto:
+- Más seguro
+- Más mantenible
+- Más coherente
+- Con menos deuda técnica
+
 
 Optimización
 
@@ -144,17 +208,20 @@ verifiar que los placeholders esten correctamente implementados
 Seguridad y Cumplimiento
 
 Nunca exponer API keys
-ni datos sensibles
+no exponer datos sensibles
 Validar y sanitizar inputs del usuario
 Verificar permisos antes de operaciones sensibles
 Cumplimiento total con Ley Olimpia (consentimiento explícito en chat)
-
+verifcar vulnerabilidades y corregirlas en el momento,
+uso de obligatorio de seguridad de privacidad y proteccion de datos
 
 3. ESTILO Y UI
 
 Colores prohibidos: ❌ Rosa (#ec4899) - EXCEPCIÓN: Se permite el rosa primario de la marca (hsl(340 85% 65%)) definido en tailwind.config.ts, ya que es fundamental para la identidad visual del proyecto.
 Colores permitidos: ✅ Gradientes from-purple-600 to-blue-600 o neón cyan-magenta
 Contenido private → requiere verificación de NFT o suscripción premium
+No mofificar la animacion de particulas salvo que se te solicite, no rompas la logica
+
 
 
 4. CONFIGURACIÓN DE HERRAMIENTAS
@@ -164,8 +231,9 @@ Consola: PowerShell (Windows) – nunca Linux
 Idioma: Español MX UTF-8
 Dudas → PREGUNTAR ANTES de proceder
 Proteger  los archivos con caractes " ` " para que no se corrompan
-Ejemplo: "copílot" correcto , incorrecto "coplot"
-Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
+protejer archivos con ´ en las vocales "á,é,í,ó,ú,ñ" , si hay archivos que fallte vocales por
+caracter corrupto o no se leen correctamente Ejemplo: "copíloto" correcto , incorrecto "coplot", país "país" correcto, incorrecto "pais o pas", "mañanero" correcto, incorrecto "manero", etc...
+Durante el analisis o crrecion de archivos si hay palabras sin vocales agregalas o preseten los sintomas antes mencionados correjir si no asbes que vocal o palabra es notificar primero antes de hacer cambio
 
 
 
@@ -174,10 +242,10 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
 
  Ageragr comentarios a los archivos que no cuenten con ellos
  y en donde se requiera y sea importante para justificacr que accion se realiza por ejemplo "
-    for (const [sessionId, _serverId] of this.sessionMap.entries()) {
+    for (const [sessionId, _serverId] of this.sessionMap.entries())
       // Simple cleanup based on session timeout
       // In a real implementation, you'd track session creation time
-      if (Math.random() < 0.1) {
+      if (Math.random() < 0.1)
         // 10% chance to clean up (simulate expired sessions)
         this.sessionMap.delete(sessionId);
         cleanedCount++;"
@@ -195,6 +263,8 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
     * - Comunicación segura
     * - Análisis de comportamiento lifestyle
     * - Notificaciones discretas
+    import .....
+    */
 
 
     // FIX: Estructura de DOM ideal para modales modernos:
@@ -206,13 +276,6 @@ Durante el analisis o crrecion de archivos  hay palabras sin vocales agregalas
     // 6. Animaciones suaves de entrada/salida (fade + scale)"
 
 
-
-MPC y Audio (Music Production)
-
-Proteger procesos MPC y controladores MIDI
-Optimizar latencia de audio
-No cerrar procesos de VirtualDJ ni servicios de audio
-Prioridad alta para procesos de audio
 
 API y Scripts Privados
 
@@ -229,7 +292,7 @@ Verificar edge cases
 Tests de integración para flujos completos
 npm run type-check debe pasar siempre
 npm run lint sin errores ni warnings
-
+usar mpc para verificar que todo funcione correctamente
 
 6. ESTRUCTURA Y PATRONES
 

@@ -115,7 +115,6 @@ sentry-wizard.exe
 
 # ============================================================================
 # LOGS & TEMPORARY FILES
-# ============================================================================
 logs/
 *.log
 npm-debug.log*
@@ -123,6 +122,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+duplicates_quarantine/
 
 # Temporary & Cache
 .cache/

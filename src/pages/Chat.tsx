@@ -148,12 +148,19 @@ const Chat = () => {
         return;
       }
 
+      const metadata: Record<string, string | number | boolean> = {
+        gallery_owner_id: ownerId,
+        gallery_item_id: itemId,
+      };
+      if (chatPartnerId) {
+        metadata.chat_partner_id = chatPartnerId;
+      }
       const spent = await tokenService.spendTokens(
         user.id,
         "cmpx",
         galleryPrice,
         "Desbloqueo galería privada",
-        { gallery_owner_id: ownerId, chat_partner_id: chatPartnerId, gallery_item_id: itemId },
+        metadata,
       );
       if (!spent) throw new Error("No se pudo realizar el cobro");
 
@@ -277,12 +284,18 @@ const Chat = () => {
         });
         return;
       }
+      const metadata: Record<string, string | number | boolean> = {
+        gallery_owner_id: ownerId,
+      };
+      if (chatPartnerId) {
+        metadata.chat_partner_id = chatPartnerId;
+      }
       const spent = await tokenService.spendTokens(
         user.id,
         "cmpx",
         galleryPrice,
         "Desbloqueo galería privada",
-        { gallery_owner_id: ownerId, chat_partner_id: chatPartnerId },
+        metadata,
       );
       if (!spent) throw new Error("No se pudo realizar el cobro");
 

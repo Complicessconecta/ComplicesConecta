@@ -210,7 +210,7 @@ export class DataPrivacyService {
               }
 
               const filesToDelete = images
-                .map((img: any) => {
+                .map((img: { url?: string }) => {
                   const fileName = img.url?.split("/").pop();
                   return fileName ? `${userId}/${fileName}` : null;
                 })

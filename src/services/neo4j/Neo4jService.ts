@@ -4,6 +4,7 @@
  */
 
 import { logger } from '@/lib/logger';
+import type { Driver } from 'neo4j-driver';
 
 // Interfaces para tipos de datos
 export interface UserProfile {
@@ -11,7 +12,7 @@ export interface UserProfile {
   username: string;
   interests: string[];
   location: string;
-  preferences: Record<string, any>;
+  preferences: Record<string, string | number | boolean>;
   age?: number;
   relationshipType?: string;
   discretionLevel?: number;
@@ -20,7 +21,7 @@ export interface UserProfile {
 export interface UserContext {
   userId: string;
   recentInteractions: string[];
-  preferences: Record<string, any>;
+  preferences: Record<string, string | number | boolean>;
   behaviorPatterns: string[];
   compatibilityFactors: Record<string, number>;
 }
@@ -43,9 +44,12 @@ export interface SimilarUser {
 }
 
 class Neo4jService {
-  private driver: any = null;
+  private driver: Driver | null = null;
   private isConnected = false;
-  private cache = new Map<string, any>();
+  private cache = new Map<string, {
+    data: UserProfile | UserContext | SimilarUser[];
+    timestamp: number;
+  }>();
   private metrics: PerformanceMetrics[] = [];
 
   constructor() {
@@ -64,14 +68,14 @@ class Neo4jService {
 
       // Importación dinámica de neo4j-driver
       const neo4j = await import('neo4j-driver');
-      
+
       this.driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
-      
+
       // Verificar conexión
       const session = this.driver.session();
       await session.run('RETURN 1');
       session.close();
-      
+
       this.isConnected = true;
       logger.info('✅ Conexión a Neo4j establecida');
     } catch (error) {
@@ -86,8 +90,10 @@ class Neo4jService {
   async getUserProfile(userId: string): Promise<UserProfile> {
     try {
       const cacheKey = `profile_${userId}`;
-      if (this.cache.has(cacheKey)) {
-        return this.cache.get(cacheKey);
+      const cached = this.cache.get(cacheKey);
+
+      if (cached && Date.now() - cached.timestamp < 5 * 60 * 1000) {
+        return cached.data as UserProfile;
       }
 
       if (!this.isConnected) {
@@ -104,13 +110,13 @@ class Neo4jService {
         };
 
         // Cache por 5 minutos
-        this.cache.set(cacheKey, mockProfile);
+        this.cache.set(cacheKey, { data: mockProfile, timestamp: Date.now() });
         setTimeout(() => this.cache.delete(cacheKey), 5 * 60 * 1000);
 
         return mockProfile;
       }
 
-      const session = this.driver.session();
+      const session = this.driver!.session();
       const query = 'MATCH (u:User {id: $id}) RETURN u LIMIT 1';
       const result = await session.run(query, { id: userId });
       session.close();
@@ -132,7 +138,7 @@ class Neo4jService {
       };
 
       // Cache por 5 minutos
-      this.cache.set(cacheKey, userProfile);
+      this.cache.set(cacheKey, { data: userProfile, timestamp: Date.now() });
       setTimeout(() => this.cache.delete(cacheKey), 5 * 60 * 1000);
 
       return userProfile;
@@ -148,8 +154,10 @@ class Neo4jService {
   async getUserContext(userId: string): Promise<UserContext> {
     try {
       const cacheKey = `context_${userId}`;
-      if (this.cache.has(cacheKey)) {
-        return this.cache.get(cacheKey);
+      const cached = this.cache.get(cacheKey);
+
+      if (cached && Date.now() - cached.timestamp < 3 * 60 * 1000) {
+        return cached.data as UserContext;
       }
 
       // Simular contexto si Neo4j no está conectado
@@ -162,7 +170,7 @@ class Neo4jService {
       };
 
       // Cache por 3 minutos
-      this.cache.set(cacheKey, mockContext);
+      this.cache.set(cacheKey, { data: mockContext, timestamp: Date.now() });
       setTimeout(() => this.cache.delete(cacheKey), 3 * 60 * 1000);
 
       return mockContext;
@@ -180,7 +188,7 @@ class Neo4jService {
     criteria: {
       interests: string[];
       location: string;
-      preferences: Record<string, any>;
+      preferences: Record<string, string | number | boolean>;
       compatibilityThreshold: number;
     }
   ): Promise<SimilarUser[]> {
@@ -227,7 +235,7 @@ class Neo4jService {
 
       // Simular actualización
       logger.info(`Actualizadías ${entities.length} interacciones para usuario ${userId}`);
-      
+
       // Invalidar cache
       this.cache.delete(`context_${userId}`);
     } catch (error) {

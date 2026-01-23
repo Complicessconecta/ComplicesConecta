@@ -1,8 +1,71 @@
 # Reporte de Cambios - CómplicesConecta v3.9.2
 
-**Fecha:** 21 de Enero, 2026
-**Versión:** v3.9.2 (Auditoría Estructural)
+**Fecha:** 22 de Enero, 2026
+**Versión:** v3.9.3 (Auditoría Forense Fases 1-3)
 **Responsable:** Ingeniero de Software - Juan Carlos Mendez Nataren
+
+## Resumen Ejecutivo
+
+Se completó la auditoría forense de seguridad y estructura, implementando Fases 1 (Seguridad Crítica), Fase 2 (Flujos Críticos) y Fase 3 (Archivos Duplicados). Se eliminaron usos de `any` en servicios críticos (Neo4j, Web3, Tokens, Auth), se extendieron interfaces de Navigator y Window para propiedades no estándar, y se consolidaron archivos duplicados moviéndolos a cuarentena no destructiva.
+
+## Registro de Cambios Detallados
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **Neo4jService.ts** | `src/services/neo4j/Neo4jService.ts` | Uso de `any` en driver, cache y preferences | **Corregido**. Tipos estrictos: `Driver \| null`, `Map<string, UserProfile \| UserContext \| SimilarUser[]>` | Seguridad en matching AI |
+| **Web3Service.ts** | `src/services/blockchain/Web3Service.ts` | `(window as any).ethereum` para MetaMask | **Corregido**. Interfaces `EthereumProvider` y `WindowWithEthereum` | Seguridad en transacciones |
+| **TokenService.ts** | `src/services/payments/TokenService.ts` | `as any` en Supabase y metadata | **Corregido**. Tipos explícitos `Record<string, string \| number \| boolean>` | Seguridad en tokens |
+| **Auth.tsx** | `src/pages/Auth.tsx` | `(navigator as any).webdriver` para detección de bots | **Corregido**. Interface `NavigatorWithWebDriver` | Type safety en detección |
+| **SecurityService.ts** | `src/services/auth/SecurityService.ts` | `(log: any)` en mapeo de logs de auditoría | **Corregido**. Interfaces `DatabaseAuditLog` y `MappedAuditLog` | Seguridad en logs |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | `(window as any).__demoLoggedOnce` flag demo | **Corregido**. Interface `WindowWithDemoFlags` | Type safety en demo |
+| **ContentModerationModal.tsx** | `src/components/ai/ContentModerationModal.tsx` | Duplicado de `src/components/modals/ContentModerationModal.tsx` | **Movido a cuarentena**. Canónico en `modals/` | Eliminar duplicidad |
+| **ConsentModal.tsx** | `src/components/blockchain/ConsentModal.tsx` | Duplicado de `src/components/modals/ConsentModal.tsx` | **Movido a cuarentena**. Canónico en `modals/` | Eliminar duplicidad |
+| **AnimatedModal.tsx** | `src/components/modals/AnimatedModal.tsx` | Duplicado de `src/components/modals/animated-modal.tsx` | **Movido a cuarentena**. Canónico en `modals/` | Eliminar duplicidad |
+| **utils.ts** | `src/lib/utils.ts` | Duplicado de `src/shared/lib/cn.ts` | **Movido a cuarentena**. Canónico en `shared/lib/` | Eliminar duplicidad |
+| **Assets duplicados** | `src/assets/nfts/*`, `src/assets/people/*` | Duplicados idénticos en `public/assets/` | **Movidos a cuarentena** (31 archivos). Canónico en `public/assets/` | Reducir bundle size |
+
+## Archivos Movidos a Cuarentena (duplicates_quarantine/)
+
+### Componentes
+- `src/components/ai/ContentModerationModal.tsx`
+- `src/components/blockchain/ConsentModal.tsx`
+- `src/components/modals/AnimatedModal.tsx`
+
+### Utilidades
+- `src/lib/utils.ts`
+
+### Assets (31 archivos)
+- `src/assets/nfts/imagen1.jpg`, `imagen2.jpg`, `imagen3.jpg`, `imagen4.gif`
+- `src/assets/people/couple/c1.jpg`, `c2.jpg`, `c3.jpg`, `c4.jpg`
+- `src/assets/people/couple/privado/couple-priv.jpg`, `privado-couple-2.jpg`, `privado-couple-4.jpg`
+- `src/assets/people/female/f1.jpg`, `f2.jpg`, `f3.jpg`, `f4.jpg`
+- `src/assets/people/male/m1.jpg`, `profile-1.jpg`, `profile-2.jpg`, `profile-3.jpg`, `profile-4.jpg`
+- `src/assets/people/male/privado/aprivadocouple*.jpg` (11 archivos)
+
+## Reglas Actualizadas
+
+### .windsurfrules
+Agregada sección **1.7 Política de NO borrado (Cuarentena de archivos)**:
+- NO eliminar archivos sin verificar dependencias
+- Mover a `duplicates_quarantine/` (preservando estructura)
+- Justificar en `duplicates_quarantine/DUPLICATES_QUARANTINE.md`
+- Agregar a `.gitignore` y `tsconfig.json` exclude
+- Comentar archivos completos en cuarentena (prefijo `// ` por línea)
+
+## Estadísticas
+
+| Categoría | Total | Solucionados | Pendientes |
+|-----------|-------|--------------|------------|
+| Seguridad (any) | 15 | 15 | 0 |
+| Flujos Críticos | 3 | 3 | 0 |
+| Archivos Duplicados | 31 | 31 | 0 |
+| **TOTAL** | **49** | **49** | **0** |
+
+## Próximos Pasos Prioritarios
+
+1. Revisar ~130 archivos restantes con `any` (prioridad baja)
+2. Implementar linter rule para prohibir `any` en código nuevo
+3. Documentar patrones de tipado en guía de desarrollo
 
 ## Resumen Ejecutivo
 

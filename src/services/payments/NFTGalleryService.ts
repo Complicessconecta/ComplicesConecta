@@ -145,15 +145,19 @@ export class NFTGalleryService {
       }
 
       // 2. Gastar GTK tokens
+      const metadata: Record<string, string | number | boolean> = {};
+      if (request.network) {
+        metadata.nft_network = request.network;
+      }
+      if (request.galleryId) {
+        metadata.gallery_id = request.galleryId;
+      }
       await tokenService.spendTokens(
         request.userId,
         "gtk",
         request.gtkAmount,
         `Mint NFT Gallery - ${request.galleryId || "new"}`,
-        {
-          nft_network: request.network,
-          gallery_id: request.galleryId,
-        },
+        metadata,
       );
 
       // 3. Actualizar galería con información de NFT

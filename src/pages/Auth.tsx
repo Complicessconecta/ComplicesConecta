@@ -46,6 +46,11 @@ interface FormData {
   profileTheme: string;
 }
 
+// Interfaces para tipos extendidos
+type NavigatorWithWebDriver = Navigator & {
+  webdriver?: boolean;
+};
+
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -88,7 +93,7 @@ const Auth = () => {
 
   useEffect(() => {
     const isAutomated =
-      typeof navigator !== "undefined" && Boolean((navigator as any).webdriver);
+      typeof navigator !== "undefined" && Boolean((navigator as NavigatorWithWebDriver).webdriver);
     if (!isAutomated) return;
 
     const testEmail = import.meta.env.VITE_TESTSPRITE_EMAIL as string | undefined;
@@ -109,6 +114,7 @@ const Auth = () => {
       };
     });
   }, []);
+
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Baby, Lock, Unlock, Shield, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/cn";
 import "@/styles/ParentalControl.css";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { toast } from "@/hooks/useToast";

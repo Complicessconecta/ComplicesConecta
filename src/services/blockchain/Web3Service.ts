@@ -20,7 +20,7 @@ export type Web3EventType =
  */
 export interface Web3Event {
   type: Web3EventType;
-  data?: any;
+  data?: Record<string, unknown>;
   timestamp: number;
 }
 
@@ -100,6 +100,22 @@ export const SUPPORTED_NETWORKS: Record<number, NetworkInfo> = {
 };
 
 /**
+ * Interfaz para Ethereum Provider (MetaMask)
+ */
+interface EthereumProvider {
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+  on: (event: string, callback: (...args: unknown[]) => void) => void;
+  removeAllListeners: () => void;
+}
+
+/**
+ * Interfaz para Window con Ethereum
+ */
+interface WindowWithEthereum extends Window {
+  ethereum?: EthereumProvider;
+}
+
+/**
  * Servicio para gestión de Web3 y conexión con MetaMask
  */
 export class Web3Service {
@@ -107,7 +123,7 @@ export class Web3Service {
   private isConnected: boolean = false;
   private currentAccount: string | null = null;
   private currentChainId: number | null = null;
-  private eventListeners: Map<Web3EventType, Set<(...args: any[]) => any>> = new Map();
+  private eventListeners: Map<Web3EventType, Set<(...args: unknown[]) => void>> = new Map();
 
   private constructor() {
     this.initializeEventListeners();
@@ -128,7 +144,7 @@ export class Web3Service {
    */
   public isMetaMaskAvailable(): boolean {
     if (typeof window === "undefined") return false;
-    return typeof (window as any).ethereum !== "undefined";
+    return typeof (window as WindowWithEthereum).ethereum !== "undefined";
   }
 
   /**
@@ -169,10 +185,13 @@ export class Web3Service {
     }
 
     try {
-      const balance = await (window as any).ethereum.request({
+      const ethereum = (window as WindowWithEthereum).ethereum;
+      if (!ethereum) throw new Error("Ethereum provider not available");
+
+      const balance = await ethereum.request({
         method: "eth_getBalance",
         params: [this.currentAccount, "latest"],
-      });
+      }) as string;
 
       // Convertir de Wei a Ether/MATIC
       const balanceInEther = parseInt(balance, 16) / 10 ** 18;
@@ -211,21 +230,24 @@ export class Web3Service {
     }
 
     try {
-      const accounts = await (window as any).ethereum.request({
+      const ethereum = (window as WindowWithEthereum).ethereum;
+      if (!ethereum) throw new Error("Ethereum provider not available");
+
+      const accounts = await ethereum.request({
         method: "eth_requestAccounts",
-      });
+      }) as string[];
 
       if (accounts.length === 0) {
         throw new Error("No se seleccionó ninguna cuenta");
       }
 
-      this.currentAccount = accounts[0];
+      this.currentAccount = accounts[0] ?? null;
       this.isConnected = true;
 
       // Obtener chain ID
-      const chainId = await (window as any).ethereum.request({
+      const chainId = await ethereum.request({
         method: "eth_chainId",
-      });
+      }) as string;
       this.currentChainId = parseInt(chainId, 16);
 
       logger.info("Web3 conectado exitosamente", {
@@ -233,9 +255,9 @@ export class Web3Service {
         chainId: this.currentChainId,
       });
 
-      this.emitEvent("connect", { account: this.currentAccount || "" });
+      this.emitEvent("connect", { account: this.currentAccount ?? "" });
 
-      return this.currentAccount || "";
+      return this.currentAccount ?? "";
     } catch (error) {
       logger.error("Error conectando a Web3:", { error });
       throw new Error("Error al conectar a MetaMask");
@@ -264,15 +286,19 @@ export class Web3Service {
     }
 
     try {
-      await (window as any).ethereum.request({
+      const ethereum = (window as WindowWithEthereum).ethereum;
+      if (!ethereum) throw new Error("Ethereum provider not available");
+
+      await ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: `0x${chainId.toString(16)}` }],
       });
 
       logger.info("Red cambiada exitosamente", { chainId });
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as { code?: number };
       // Si la red no está agregada, intentar agregarla
-      if (error.code === 4902) {
+      if (err.code === 4902) {
         await this.addNetwork(chainId);
       } else {
         logger.error("Error cambiando de red:", { error });
@@ -291,7 +317,10 @@ export class Web3Service {
     }
 
     try {
-      await (window as any).ethereum.request({
+      const ethereum = (window as WindowWithEthereum).ethereum;
+      if (!ethereum) throw new Error("Ethereum provider not available");
+
+      await ethereum.request({
         method: "wallet_addEthereumChain",
         params: [
           {
@@ -320,10 +349,13 @@ export class Web3Service {
     }
 
     try {
-      const signature = await (window as any).ethereum.request({
+      const ethereum = (window as WindowWithEthereum).ethereum;
+      if (!ethereum) throw new Error("Ethereum provider not available");
+
+      const signature = await ethereum.request({
         method: "personal_sign",
         params: [message, this.currentAccount],
-      });
+      }) as string;
 
       logger.info("Mensaje firmado exitosamente", { message });
       return signature;
@@ -336,16 +368,19 @@ export class Web3Service {
   /**
    * Envía una transacción
    */
-  public async sendTransaction(transaction: any): Promise<string> {
+  public async sendTransaction(transaction: Record<string, unknown>): Promise<string> {
     if (!this.currentAccount) {
       throw new Error("No hay cuenta conectada");
     }
 
     try {
-      const txHash = await (window as any).ethereum.request({
+      const ethereum = (window as WindowWithEthereum).ethereum;
+      if (!ethereum) throw new Error("Ethereum provider not available");
+
+      const txHash = await ethereum.request({
         method: "eth_sendTransaction",
         params: [transaction],
-      });
+      }) as string;
 
       logger.info("Transacción enviada exitosamente", { txHash });
       return txHash;
@@ -358,7 +393,7 @@ export class Web3Service {
   /**
    * Añade un listener de eventos
    */
-  public addEventListener(type: Web3EventType, callback: (...args: any[]) => any): void {
+  public addEventListener(type: Web3EventType, callback: (...args: unknown[]) => void): void {
     if (!this.eventListeners.has(type)) {
       this.eventListeners.set(type, new Set());
     }
@@ -368,7 +403,7 @@ export class Web3Service {
   /**
    * Remueve un listener de eventos
    */
-  public removeEventListener(type: Web3EventType, callback: (...args: any[]) => any): void {
+  public removeEventListener(type: Web3EventType, callback: (...args: unknown[]) => void): void {
     const listeners = this.eventListeners.get(type);
     if (listeners) {
       listeners.delete(callback);
@@ -378,12 +413,12 @@ export class Web3Service {
   /**
    * Emite un evento
    */
-  private emitEvent(type: Web3EventType, data?: any): void {
+  private emitEvent(type: Web3EventType, data?: Record<string, unknown>): void {
     const listeners = this.eventListeners.get(type);
     if (listeners) {
       const event: Web3Event = {
         type,
-        data,
+        data: data ?? {},
         timestamp: Date.now(),
       };
 
@@ -403,31 +438,36 @@ export class Web3Service {
   private initializeEventListeners(): void {
     if (!this.isMetaMaskAvailable()) return;
 
-    const ethereum = (window as any).ethereum;
+    const ethereum = (window as WindowWithEthereum).ethereum;
+    if (!ethereum) return;
 
     // Listener para cambio de cuenta
-    ethereum.on("accountsChanged", (accounts: string[]) => {
+    ethereum.on("accountsChanged", (...args: unknown[]) => {
+      const accounts = args[0] as string[];
       if (accounts.length === 0) {
         this.disconnect();
       } else {
-        this.currentAccount = accounts[0] || null;
-        this.emitEvent("accountChanged", { account: accounts[0] || "" });
+        this.currentAccount = accounts[0] ?? null;
+        this.emitEvent("accountChanged", { account: accounts[0] ?? "" });
       }
     });
 
     // Listener para cambio de red
-    ethereum.on("chainChanged", (chainId: string) => {
+    ethereum.on("chainChanged", (...args: unknown[]) => {
+      const chainId = args[0] as string;
       this.currentChainId = parseInt(chainId, 16);
       this.emitEvent("chainChanged", { chainId: this.currentChainId });
     });
 
     // Listener para mensajes
-    ethereum.on("message", (message: any) => {
+    ethereum.on("message", (...args: unknown[]) => {
+      const message = args[0] as Record<string, unknown>;
       this.emitEvent("message", message);
     });
 
     // Listener para desconexión
-    ethereum.on("disconnect", (error: any) => {
+    ethereum.on("disconnect", (...args: unknown[]) => {
+      const error = args[0] as Error;
       logger.warn("MetaMask desconectado", { error });
       this.disconnect();
     });
@@ -441,7 +481,9 @@ export class Web3Service {
   public cleanup(): void {
     if (!this.isMetaMaskAvailable()) return;
 
-    const ethereum = (window as any).ethereum;
+    const ethereum = (window as WindowWithEthereum).ethereum;
+    if (!ethereum) return;
+
     ethereum.removeAllListeners();
 
     this.eventListeners.clear();

@@ -202,7 +202,6 @@ src/                          # Directorio raíz del frontend
 │   ├── tiktok-share.ts
 │   ├── tokenPremium.ts
 │   ├── userAgent.ts
-│   ├── utils.ts
 │   ├── validation.ts
 │   ├── validations/
 │   ├── visual-validation.ts
@@ -457,7 +456,6 @@ src/                          # Directorio raíz del frontend
 │   ├── ContrastFixer.tsx
 │   └── index.ts
 ├── components/ai/            # Componentes de IA
-│   ├── ContentModerationModal.tsx
 │   ├── LegalChatBox.tsx
 │   └── SmartMatchingModal.tsx
 ├── components/dashboard/     # Dashboard
@@ -490,7 +488,6 @@ src/                          # Directorio raíz del frontend
 │   ├── Gamification.tsx
 │   ├── RewardsSystem.tsx
 │   └── index.ts
-│   ├── ConsentModal.tsx
 │   ├── StakingWidget.tsx
 │   └── index.ts
 │   ├── ReportDialog.tsx

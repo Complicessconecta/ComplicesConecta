@@ -14,6 +14,11 @@ import { Profile } from "@/types/supabase-custom";
 
 
 
+// Interfaces para tipos extendidos
+interface WindowWithDemoFlags extends Window {
+  __demoLoggedOnce?: boolean;
+}
+
 export const useAuth = () => {
   // Migración a usePersistedState para tokens y sesión
   const [_authTokens, _setAuthTokens] = usePersistedState<{
@@ -536,14 +541,14 @@ export const useAuth = () => {
     const isDemoActive = sessionFlags.demo_authenticated && demoUser;
 
     // Solo log una vez por sesión para evitar spam
-    if (isDemoActive && !(window as any).__demoLoggedOnce) {
+    if (isDemoActive && !(window as WindowWithDemoFlags).__demoLoggedOnce) {
       const parsedDemoUser =
         typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
       logger.info("🎭 Demo mode active", {
         email: parsedDemoUser?.email,
         role: parsedDemoUser?.role,
       });
-      (window as any).__demoLoggedOnce = true;
+      (window as WindowWithDemoFlags).__demoLoggedOnce = true;
     }
     return isDemoActive;
   };

@@ -6,8 +6,22 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import * as QRCode from "qrcode";
-import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails } from "@/types/security.types";
+import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails, MappedAuditLog } from "@/types/security.types";
 import type { Json } from "@/types/supabase-generated";
+
+// Tipo para logs de auditoría desde la base de datos
+interface DatabaseAuditLog {
+  id: string;
+  user_id: string;
+  action: string;
+  created_at: string | null;
+  details: Json;
+  ip_address: unknown;
+  resource: string;
+  risk_score: number | null;
+  session_id: string | null;
+  user_agent: string | null;
+}
 
  const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
@@ -703,17 +717,17 @@ export class SecurityService {
       }
 
       // Mapear los datos de la base de datos al formato esperado
-      const mappedLogs: AuditLogEntry[] = (data || []).map((log: any) => {
+      const mappedLogs: MappedAuditLog[] = (data || []).map((log: DatabaseAuditLog) => {
         return {
           id: log.id,
-          userId: log.user_id || "",
-          action: log.action || "",
-          resource: log.resource || "security",
+          userId: log.user_id,
+          action: log.action,
+          resource: log.resource,
           details: (log.details as AuditEventDetails) || {
-            action: log.action || "",
+            action: log.action,
           },
-          ipAddress: (log.ip_address as string) || "",
-          userAgent: log.user_agent || "",
+          ipAddress: String(log.ip_address || ""),
+          userAgent: String(log.user_agent || ""),
           timestamp: log.created_at || new Date().toISOString(),
           riskScore: typeof log.risk_score === "number" ? log.risk_score : 0.3,
         };

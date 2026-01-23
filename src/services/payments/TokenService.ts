@@ -22,7 +22,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
 
 export interface TokenBalance {
   cmpx: number;
@@ -44,7 +43,7 @@ export interface TokenTransaction {
   amount: number;
   balance_after: number;
   description?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string | number | boolean>;
   created_at: string;
 }
 
@@ -76,10 +75,9 @@ export interface Reward {
 
 export class TokenService {
   private static instance: TokenService;
-  private analyticsService: TokenAnalyticsService;
 
   private constructor() {
-    this.analyticsService = TokenAnalyticsService.getInstance();
+    // Singleton pattern
   }
 
   /**
@@ -90,7 +88,7 @@ export class TokenService {
     type: "cmpx" | "gtk",
     amount: number,
     description = "Token credit",
-    metadata: Record<string, any> = {},
+    metadata: Record<string, string | number | boolean> = {},
   ): Promise<boolean> {
     return this.recordTransaction(
       userId,
@@ -110,7 +108,7 @@ export class TokenService {
     type: "cmpx" | "gtk",
     amount: number,
     description = "Token debit",
-    metadata: Record<string, any> = {},
+    metadata: Record<string, string | number | boolean> = {},
   ): Promise<boolean> {
     return this.recordTransaction(
       userId,
@@ -142,8 +140,7 @@ export class TokenService {
         logger.error("Supabase no está disponible");
         return null;
       }
-      const sb = supabase as any;
-      const { data, error } = await sb
+      const { data, error } = await supabase
         .from("user_token_balances")
         .select("cmpx_balance, gtk_balance")
         .eq("user_id", userId)
@@ -184,8 +181,7 @@ export class TokenService {
         logger.error("Supabase no está disponible");
         return null;
       }
-      const sb = supabase as any;
-      const { data, error } = await sb
+      const { data, error } = await supabase
         .from("user_token_balances")
         .insert({ user_id: userId, cmpx_balance: 0, gtk_balance: 0 })
         .select("cmpx_balance, gtk_balance")
@@ -215,7 +211,7 @@ export class TokenService {
     amount: number,
     transactionType: TokenTransaction["transaction_type"],
     description: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, string | number | boolean> = {},
   ): Promise<boolean> {
     try {
       if (!supabase) {
@@ -270,13 +266,8 @@ export class TokenService {
         // No revertimos el balance, pero logueamos el error crítico
       }
 
-      // 4. Analytics
-      (this.analyticsService as any)?.trackTransaction?.({
-        userId,
-        tokenType: type,
-        amount,
-        type: transactionType,
-      });
+      // 4. Analytics - Nota: trackTransaction no existe en TokenAnalyticsService
+      // Si se requiere tracking de transacciones, agregar el método correspondiente
 
       return true;
     } catch (error) {

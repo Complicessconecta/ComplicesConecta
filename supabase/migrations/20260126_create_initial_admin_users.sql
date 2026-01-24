@@ -4,11 +4,12 @@
 
 -- Insertar administrador 1 (complicesconectasw@outlook.es)
 -- NOTA: Usamos gen_random_uuid() para generar UUIDs válidos en lugar de strings personalizados
+-- La columna granted_by también debe ser un UUID válido
 INSERT INTO admin_users (id, user_id, granted_by, role, is_unique, granted_at, created_at)
 SELECT
   gen_random_uuid() as id,
   u.id as user_id,
-  'system' as granted_by,
+  gen_random_uuid() as granted_by,
   'super_admin' as role,
   true as is_unique,
   NOW() as granted_at,
@@ -23,7 +24,7 @@ INSERT INTO admin_users (id, user_id, granted_by, role, is_unique, granted_at, c
 SELECT
   gen_random_uuid() as id,
   u.id as user_id,
-  'system' as granted_by,
+  gen_random_uuid() as granted_by,
   'super_admin' as role,
   true as is_unique,
   NOW() as granted_at,

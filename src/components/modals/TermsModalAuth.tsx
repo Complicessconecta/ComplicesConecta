@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { X, FileText, Shield, ExternalLink, CheckCircle } from "lucide-react";
+import React from "react";
+import { X, Shield, FileText, ExternalLink, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 interface TermsModalProps {
   isOpen: boolean;

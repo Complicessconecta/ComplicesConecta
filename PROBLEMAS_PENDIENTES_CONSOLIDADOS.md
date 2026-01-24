@@ -86,7 +86,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   5. **Matching no funciona:** Likes mutuos no generan matches (TC007)
   6. **Galerías privadas/pagos inconsistentes** (TC009, TC010)
   7. **Navegación legal:** Dropdown "Más" existe en HeaderNav y navegación legal ya aparece como PASSED en reporte (TC018).
-  - **Problemas de Configuración (Afectan todos los tests):**
+- **Problemas de Configuración (Afectan todos los tests):**
   - OneSignal App ID no configurada
   - PostHog API key no configurada
 - **Solución Propuesta:** Ver `testsprite_tests/INFORME_CORRECCIONES_TESTSPRITE.md` para detalle completo

@@ -365,9 +365,8 @@ export default function ProjectInfo() {
                 </p>
                 <Button
                   onClick={() =>
-                    window.open(
+                    safeOpenUrl(
                       "https://github.com/complicesconecta/conecta-social-comunidad",
-                      "_blank",
                     )
                   }
                   className="bg-blue-600 hover:bg-blue-700"
@@ -394,7 +393,7 @@ export default function ProjectInfo() {
                   }
                   className="bg-green-600 hover:bg-green-700"
                 >
-                  Descargar v3.3.0
+                  Descargar v4.0.0
                 </Button>
               </CardContent>
             </Card>
@@ -406,7 +405,7 @@ export default function ProjectInfo() {
                   Soporte
                 </h3>
                 <p className="text-purple-200 text-sm mb-4">
-                  Obtn ayuda y reporta problemas
+                  Obten ayuda y reporta problemas
                 </p>
                 <Button
                   onClick={() => navigate("/support")}

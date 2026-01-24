@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 interface ShareProfileProps {
   isOpen: boolean;
@@ -46,14 +47,12 @@ export const ShareProfile = ({
 
     switch (platform) {
       case "facebook":
-        window.open(
+        safeOpenUrl(
           `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`,
         );
         break;
       case "whatsapp":
-        window.open(
-          `https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`,
-        );
+        safeOpenUrl(`https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`);
         break;
       case "instagram":
         // Instagram no permite compartir enlaces directamente, copiamos el link

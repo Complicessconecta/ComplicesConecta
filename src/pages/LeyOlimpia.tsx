@@ -184,9 +184,8 @@ const LeyOlimpia: React.FC = () => {
                   <Button
                     className="w-full bg-green-600 hover:bg-green-700 text-white"
                     onClick={() =>
-                      window.open(
+                      safeOpenUrl(
                         "https://wa.me/5617184109?text=Reporte%20Ley%20Olimpia",
-                        "_blank",
                       )
                     }
                   >
@@ -212,10 +211,7 @@ const LeyOlimpia: React.FC = () => {
                   variant="outline"
                   className="w-full text-white border-white/30 hover:bg-white/10"
                   onClick={() =>
-                    window.open(
-                      "https://www.gob.mx/inmujeres/articulos/ley-olimpia",
-                      "_blank",
-                    )
+                    safeOpenUrl("https://www.gob.mx/inmujeres/articulos/ley-olimpia")
                   }
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />

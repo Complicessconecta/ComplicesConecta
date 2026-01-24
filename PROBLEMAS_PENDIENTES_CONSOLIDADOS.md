@@ -6,6 +6,20 @@
 
 ---
 
+## ✅ Actualización 24 Ene 2026 (Hardening + verificación)
+
+- **window.open:** ✅ Hardening aplicado (migración a `safeOpenUrl(...)` en páginas/componentes principales). Solo queda uso explícito seguro con `noopener,noreferrer`.
+- **H001 (innerHTML):** ✅ Verificado que no existen asignaciones `innerHTML =` en `src/`.
+- **H002 (dangerouslySetInnerHTML):** ✅ Verificado que no existen usos de `dangerouslySetInnerHTML` en `src/`.
+
+Pendientes que permanecen:
+
+- **TestSprite (Alta):** re-ejecución + correcciones restantes en autenticación/interactividad (flujos core).
+- **npm audit (Alta/Media):** 3 High (tar, @capacitor/cli, supabase) → mitigar sin breaking changes (p. ej. overrides si aplica).
+- **Arquitectura (Media):** refactor de directorios monolíticos `src/lib/` y `src/services/` (PR dedicado).
+
+---
+
 ## 🎯 Resumen Ejecutivo
 
 Este documento es la **fuente única de verdad** para pendientes y su estado. Integra y reemplaza el contenido operativo de:
@@ -398,5 +412,5 @@ Pendientes activos restantes para siguiente sesión/sprint:
 ---
 
 **Documento Generado:** 22 de Enero, 2026
-**Versión del Proyecto:** v3.9.2
+**Versión del Proyecto:** v4.0.0
 **Estado:** Documento único consolidado

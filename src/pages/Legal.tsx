@@ -403,7 +403,7 @@ const Legal: FC = () => {
                       <Button
                         className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30"
                         onClick={() =>
-                          window.open(`/docs/legal/${doc.file}`, "_blank")
+                          safeOpenUrl(`/docs/legal/${doc.file}`)
                         }
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />

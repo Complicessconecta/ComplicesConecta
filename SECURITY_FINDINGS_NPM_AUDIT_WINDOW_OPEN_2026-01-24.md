@@ -1,6 +1,6 @@
 # Reporte de Hallazgos de Seguridad - npm audit y window.open
 **Fecha:** 24 Enero 2026
-**Estado:** Pendiente de resolución
+**Estado:** Parcialmente resuelto (window.open hardening ✅ / npm audit ⏳)
 
 ---
 
@@ -155,6 +155,20 @@ window.open(shareUrl.toString(), "_blank", "noopener,noreferrer");
 
 ---
 
+## 2.3 Estado actual (Verificación)
+
+- ✅ Se reemplazaron los usos directos de `window.open(...)` por `safeOpenUrl(...)` en:
+  - `src/pages/Legal.tsx`
+  - `src/pages/ProjectInfo.tsx`
+  - `src/pages/LeyOlimpia.tsx`
+  - `src/components/profiles/shared/ShareProfile.tsx`
+  - `src/components/modals/InstallAppModal.tsx`
+  - `src/components/modals/TermsModalAuth.tsx`
+- ✅ `npm run lint` / `npm run type-check` / `npm run build:check` pasan.
+- ℹ️ Excepción válida: `src/lib/tiktok-share.ts` conserva `window.open(..., "noopener,noreferrer")` explícito (ya es seguro).
+
+---
+
 ## 3. Plan de Acción
 
 ### 3.1 Prioridad Alta - window.open hardening
@@ -164,10 +178,10 @@ window.open(shareUrl.toString(), "_blank", "noopener,noreferrer");
 - Phishing (la nueva ventana puede manipular la URL de la ventana opener)
 - XSS (la nueva ventana puede ejecutar código en el contexto de la ventana opener)
 
-**Acciones:**
-1. Crear helper function `safeOpenUrl` que siempre agregue `noopener,noreferrer`
-2. Reemplazar todos los usos de `window.open` con el helper
-3. Verificar que todos los usos estén cubiertos
+**Acciones (estado):**
+1. ✅ Crear helper `safeOpenUrl` (ya existe en `src/utils/safeOpenUrl.ts`)
+2. ✅ Reemplazar usos directos de `window.open` por `safeOpenUrl` en componentes/páginas
+3. ✅ Verificar lint/type-check/build
 
 ### 3.2 Prioridad Media - npm audit mitigación
 
@@ -219,5 +233,5 @@ window.open(shareUrl.toString(), "_blank", "noopener,noreferrer");
 - **Build:** ✅ `npm run build:check` pasa
 - **TypeScript Errors:** 0
 - **npm audit:** 3 High (tar, @capacitor/cli, supabase)
-- **window.open:** 12 usos sin `noopener,noreferrer`
+- **window.open:** ✅ hardening aplicado (solo queda uso explícito seguro con `noopener,noreferrer`)
 - **Supabase MCP:** Bloqueado por configuración de `SUPABASE_ACCESS_TOKEN`

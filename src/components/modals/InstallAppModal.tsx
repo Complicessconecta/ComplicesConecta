@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { logger } from "@/lib/logger";
 import { isRunningFromAPK, getPlatformInfo } from "@/lib/userAgent";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 interface InstallAppModalProps {
   isOpen: boolean;
@@ -157,7 +158,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                     variant="secondary"
                     className="bg-green-500/20 text-green-100 border-green-400/30 text-xs sm:text-sm"
                   >
-                    v2.1.2 (stable)
+                    v4.0.0 (Beta)
                   </Badge>
                 </div>
               </>
@@ -179,7 +180,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                     dispositivo Android.
                   </p>
                   <div className="space-y-2 text-xs text-green-200">
-                    <p>✅ Versión instalada: v2.1.2</p>
+                    <p>✅ Versión instalada: v4.0.0 </p>
                     <p>✅ Plataforma: Android APK</p>
                     <p>✅ Estado: Funcionando correctamente</p>
                   </div>
@@ -288,9 +289,8 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                               : String(error),
                         });
                         // Fallback: abrir en nueva ventana
-                        window.open(
+                        safeOpenUrl(
                           "https://github.com/ComplicesConectaSw/ComplicesConecta/releases/download/v.3.3.0/app-release.apk",
-                          "_blank",
                         );
                       }
                     }}

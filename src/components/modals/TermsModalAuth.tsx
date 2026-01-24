@@ -46,7 +46,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      Términos y Condiciones
+                      Términos & Condiciones
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
                       Plataforma +18 - Contenido para Adultos
@@ -77,7 +77,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       Esta plataforma contiene contenido para adultos y está
                       destinada exclusivamente a personas mayores de 18 años. Al
                       registrarte, confirmas que tienes la edad legal para
-                      acceder a este tipo de contenido en tu jurisdicción.
+                      acceder a este tipo de contenido en tu Jurisdicción.
                     </p>
                   </div>
                 </div>
@@ -99,7 +99,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                           Edad Mínima:
                         </h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Debes ser mayor de 18 años para usar la plataforma
+                          Debes ser mayor de +18 años para usar la plataforma
                         </p>
                       </div>
                     </div>
@@ -111,7 +111,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                           Contenido Apropiado
                         </h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Prohibido contenido ilegal, abusivo o no consensual
+                          Prohibido contenido Ilegal, abusivo o no consensual
                         </p>
                       </div>
                     </div>
@@ -161,7 +161,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                           Responsabilidad
                         </h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Eres responsable de tu comportamiento en la plataforma
+                          Eres Responsable de tu comportamiento en la Plataforma.
                         </p>
                       </div>
                     </div>
@@ -197,7 +197,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   className="border border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900/20 px-2 py-1 rounded"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
-                  Ver Términos y Condiciones Completos
+                  Ver Términos & Condiciones Completos
                 </Button>
               </div>
 
@@ -215,7 +215,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       htmlFor="acceptTerms"
                       className="text-sm font-medium text-gray-900 dark:text-white cursor-pointer"
                     >
-                      Acepto los Términos y Condiciones
+                      Acepto los Términos & Condiciones
                     </label>
                     <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                       Al marcar esta casilla, confirmo que:
@@ -225,6 +225,9 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       <li>• He leído y acepto los términos y condiciones</li>
                       <li>• Acepto las políticas de privacidad y cookies</li>
                       <li>• Entiendo que esta es una plataforma para adultos</li>
+                      <li>• Acepto que mi comportamiento sea respetuoso</li>
+                      <li>• Acepto es mi Responsabilidad el uso en la Plataforma</li>
+                      <li>• Acepto que el quebrantar cualquier Regla , Politca , Condicion Infrigir las Normas y uso de La Plataforma Causria Concecuecias legales y/o Penalizacoines Acorde a las Rglas establecidas.</li>
                     </ul>
                   </div>
                 </div>

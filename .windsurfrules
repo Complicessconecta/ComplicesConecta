@@ -193,6 +193,8 @@ TypeScript y Código Limpio
 - Más mantenible
 - Más coherente
 - Con menos deuda técnica
+26. No Realizar Cambios minimos, siempre son completos, sin inventar tood a base del proyecto y lo  que se requiera
+
 
 
 Optimización

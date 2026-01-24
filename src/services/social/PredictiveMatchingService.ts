@@ -19,7 +19,7 @@
 import { logger } from "@/lib/logger";
 import { neo4jService } from "@/services/core/graph/Neo4jService";
 import { smartMatchingEngine, type UserProfile, type MatchScore } from "@/lib/ai/smartMatching";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/supabase";
 
 export interface EmotionalConnection {
   userId: string;

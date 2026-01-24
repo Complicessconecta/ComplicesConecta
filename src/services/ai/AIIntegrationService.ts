@@ -9,6 +9,7 @@ import { neo4jService, type UserProfile, type UserContext } from "@/services/neo
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { pipeline } from '@huggingface/transformers';
 import * as toxicity from '@tensorflow-models/toxicity';
+import { LOCAL_MODEL_NAME } from '@/ai/ai-worker-config';
 
 // Interfaces para tipos de datos
 export interface ChatMessage {
@@ -106,7 +107,7 @@ class AIIntegrationService {
     try {
       // Inicializar WebLLM
       try {
-        this.webLLM = await CreateMLCEngine("Phi-3-mini-4k-instruct-q4f16_1-MLC");
+        this.webLLM = await CreateMLCEngine(LOCAL_MODEL_NAME);
       } catch (webLLMError) {
         logger.warn('WebLLM no disponible, usando fallback:', webLLMError as Error);
         this.webLLM = null;

@@ -3,7 +3,7 @@
  * Import paths estables para migración futura
  */
 
-export * from '../storage';
-export * from '../storage-manager';
-export * from '../redis-cache';
-// export * from '../images'; // Excluido: deleteImage y uploadImage conflictivos
+export * from '@/lib/storage';
+export * from '@/lib/storage-manager';
+export * from '@/lib/redis-cache';
+// export * from '@/lib/images'; // Excluido: deleteImage y uploadImage conflictivos

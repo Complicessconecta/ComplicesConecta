@@ -3,26 +3,26 @@
  * Import paths estables para migración futura
  */
 
-export * from '../advancedFeatures';
-export * from '../asset-loader';
-export * from '../capture-console-errors';
-export * from '../data';
-export * from '../demo-uuid';
-export * from '../email-service';
-export * from '../features';
-// export * from '../imageService'; // Excluido: uploadImage y deleteImage conflictivos
-export * from '../images';
-export * from '../infoCards';
-export * from '../intelligentAutomation';
-export * from '../invitations';
-export * from '../lifestyle-interests';
-export * from '../matching';
-// export * from '../media'; // Excluido: LocationCoordinates conflictivo
-export * from '../notifications';
-export * from '../report-export';
-export * from '../requests';
-export * from '../roles';
-export * from '../supabase-logger';
-export * from '../supabase';
-export * from '../tiktok-share';
-export * from '../tokenPremium';
+export * from '@/lib/advancedFeatures';
+export * from '@/lib/asset-loader';
+export * from '@/lib/capture-console-errors';
+export * from '@/lib/data';
+export * from '@/lib/demo-uuid';
+export * from '@/lib/email-service';
+export * from '@/lib/features';
+// export * from '@/lib/imageService'; // Excluido: uploadImage y deleteImage conflictivos
+export * from '@/lib/images';
+export * from '@/lib/infoCards';
+export * from '@/lib/intelligentAutomation';
+export * from '@/lib/invitations';
+export * from '@/lib/lifestyle-interests';
+export * from '@/lib/matching';
+// export * from '@/lib/media'; // Excluido: LocationCoordinates conflictivo
+export * from '@/lib/notifications';
+export * from '@/lib/report-export';
+export * from '@/lib/requests';
+export * from '@/lib/roles';
+export * from '@/lib/supabase-logger';
+export * from '@/lib/supabase';
+export * from '@/lib/tiktok-share';
+export * from '@/lib/tokenPremium';

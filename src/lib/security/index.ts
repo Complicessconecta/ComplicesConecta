@@ -3,9 +3,9 @@
  * Import paths estables para migración futura
  */
 
-export * from '../errorHandling';
-export * from '../multimediaSecurity';
-export * from '../safe-storage';
-export * from '../secureMediaService';
-export * from '../sentry';
-export * from '../wallet-silencer';
+export * from '@/lib/errorHandling';
+export * from '@/lib/multimediaSecurity';
+export * from '@/lib/safe-storage';
+export * from '@/lib/secureMediaService';
+export * from '@/lib/sentry';
+export * from '@/lib/wallet-silencer';

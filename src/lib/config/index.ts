@@ -3,5 +3,5 @@
  * Import paths estables para migración futura
  */
 
-export * from '../app-config';
-export * from '../env-utils';
+export * from '@/lib/app-config';
+export * from '@/lib/env-utils';

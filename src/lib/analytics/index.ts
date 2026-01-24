@@ -3,4 +3,4 @@
  * Import paths estables para migración futura
  */
 
-export * from '../analytics-metrics';
+export * from '@/lib/analytics-metrics';

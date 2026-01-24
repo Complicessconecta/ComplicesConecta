@@ -134,7 +134,7 @@ export const useAuth = () => {
       logger.info("🔍 Resultado data", { data });
 
       if (error) {
-        logger.error("❌ Error fetching profile:", error);
+        logger.error("❌ Error fetching profile:", { error: error.message, details: error.details });
         // Si no se encuentra el perfil, crear uno básico
         if (error.code === "PGRST116") {
           logger.info("🆆 Perfil no encontrado - creando perfil básico");

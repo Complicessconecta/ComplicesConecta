@@ -299,7 +299,7 @@ export class ProfileReportService {
         .eq("report_type", "profile");
 
       if (error) {
-        logger.error("Error getting profile score count", error);
+        logger.error("Error getting profile score count", { error: error.message, details: error.details });
         return 100;
       }
 

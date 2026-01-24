@@ -196,7 +196,7 @@ export class UserIdentificationService {
 
       if (error) {
         if (error.code === "PGRST116") return null; // No results
-        logger.error("[UserIdentification] Error finding by unique ID:", error);
+        logger.error("[UserIdentification] Error finding by unique ID:", { error: error.message, details: error.details });
         return null;
       }
 
@@ -319,7 +319,7 @@ export class UserIdentificationService {
         .eq("profile_type", profileType);
 
       if (error) {
-        logger.error("[UserIdentification] Error listing by type:", error);
+        logger.error("[UserIdentification] Error listing by type:", { error: error.message, details: error.details });
         return [];
       }
 

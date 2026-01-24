@@ -109,7 +109,7 @@ export const checkUserBanned = async (
       .single();
 
     if (error && error.code !== "PGRST116") {
-      logger.error("Error obteniendo detalles de baneo:", error);
+      logger.error("Error obteniendo detalles de baneo:", { error: error.message, details: error.details });
     }
 
     const result: BanCheckResult = {

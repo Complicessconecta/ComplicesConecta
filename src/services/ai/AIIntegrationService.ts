@@ -131,7 +131,7 @@ class AIIntegrationService {
 
       logger.info('✅ Modelos de IA inicializados correctamente');
     } catch (error) {
-      logger.error('❌ Error inicializando modelos de IA:', error as Error);
+      logger.error('❌ Error inicializando modelos de IA:', { error: error.message, stack: error.stack });
     }
   }
 
@@ -188,7 +188,7 @@ class AIIntegrationService {
         },
       };
     } catch (error) {
-      logger.error('Error procesando mensaje de chat:', error as Error);
+      logger.error('Error procesando mensaje de chat:', { error: error.message, stack: error.stack });
       throw error;
     }
   }
@@ -202,7 +202,7 @@ class AIIntegrationService {
       const predictions = await this.toxicityModel.classify(message);
       return predictions.some((prediction: { results: Array<{ match: boolean }> }) => prediction.results[0]?.match ?? false);
     } catch (error) {
-      logger.error('Error verificando toxicidad:', error as Error);
+      logger.error('Error verificando toxicidad:', { error: error.message, stack: error.stack });
       return false; // Por seguridad, si falla el modelo, permitimos el mensaje
     }
   }
@@ -256,7 +256,7 @@ class AIIntegrationService {
 
       return recommendations.slice(0, 10); // Top 10 recomendaciones
     } catch (error) {
-      logger.error('Error generando recomendaciones AI:', error as Error);
+      logger.error('Error generando recomendaciones AI:', { error: error.message, stack: error.stack });
       throw error;
     }
   }
@@ -301,7 +301,7 @@ class AIIntegrationService {
         timeframe: predictionData.timeframe,
       };
     } catch (error) {
-      logger.error('Error prediciendo uso de tokens:', error as Error);
+      logger.error('Error prediciendo uso de tokens:', { error: error.message, stack: error.stack });
       throw error;
     }
   }
@@ -355,7 +355,7 @@ class AIIntegrationService {
         relatedTopics: await this.extractRelatedTopics(question, finalAnswer),
       };
     } catch (error) {
-      logger.error('Error en Q&A:', error as Error);
+      logger.error('Error en Q&A:', { error: error.message, stack: error.stack });
       throw error;
     }
   }
@@ -396,7 +396,7 @@ class AIIntegrationService {
         ),
       };
     } catch (error) {
-      logger.error('Error generando reporte de rendimiento:', error as Error);
+      logger.error('Error generando reporte de rendimiento:', { error: error.message, stack: error.stack });
       throw error;
     }
   }

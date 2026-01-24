@@ -708,7 +708,7 @@ export class ErrorAlertService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error fetching alerts from database:", error);
+        logger.error("Error fetching alerts from database:", { error: error.message, details: error.details });
         return [];
       }
 

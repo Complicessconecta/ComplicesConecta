@@ -327,7 +327,7 @@ class SmartMatchingService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error obteniendo candidatos:", error);
+        logger.error("Error obteniendo candidatos:", { error: error.message, details: error.details });
         return [];
       }
 

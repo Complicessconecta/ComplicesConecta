@@ -441,7 +441,7 @@ export class ContentProtectionService {
         });
 
       if (error) {
-        logger.error("[ContentProtection] Error logging access to DB:", error);
+        logger.error("[ContentProtection] Error logging access to DB:", { error: error.message, details: error.details });
       } else {
         logger.info("[ContentProtection] Content access logged to DB", data);
       }

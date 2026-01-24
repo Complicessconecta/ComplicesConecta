@@ -3,4 +3,4 @@
  * Import paths estables para migración futura
  */
 
-export * from './supabase.ts';
+export { supabase } from './supabase';

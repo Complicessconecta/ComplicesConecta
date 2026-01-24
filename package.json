@@ -140,6 +140,7 @@
     "glob": "^13.0.0",
     "hcaptcha": "^0.2.0",
     "input-otp": "^1.4.2",
+    "lodash": "^4.17.23",
     "lucide-react": "^0.561.0",
     "neo4j-driver": "^6.0.1",
     "newrelic": "^13.8.0",

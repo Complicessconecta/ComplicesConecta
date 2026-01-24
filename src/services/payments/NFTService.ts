@@ -1,11 +1,20 @@
-// ------------------------------------------------------------------
-// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
-// Sistema operando bajo reglas de determinismo y robustez v4.0
-// ------------------------------------------------------------------
-// ComplicesConecta v3.7.0 - NFTService
-// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
-// Descripción: Servicio para gestión de NFTs, IPFS y lógica de parejas
-// Funcionalidades: Mint NFT, upload IPFS, consentimiento doble, metadata
+/** ------------------------------------------------------------------
+* COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+* Sistema operando bajo reglas de determinismo y robustez v4.0
+ ------------------------------------------------------------------
+ * ComplicesConecta v3.7.0 - NFTService
+ * Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
+ * Descripción: Servicio para gestión de NFTs, IPFS y lógica de parejas
+ * Funcionalidades: Mint NFT, upload IPFS, consentimiento doble, metadata
+ * CoupleNFTRequest ya está importado desde @/types/blockchain
+ * Servicio de NFTs para ComplicesConecta
+ * Características principales:
+ * - Mint de NFTs individuales y de pareja
+ * - Upload a IPFS con Pinata
+ * - Sistema de consentimiento doble
+ * - Gestión de metadata y rareza
+ * - Integración con contratos inteligentes
+ */
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -93,18 +102,7 @@ interface NFTInfo {
   created_at: string;
 }
 
-// CoupleNFTRequest ya está importado desde @/types/blockchain
 
-/**
- * Servicio de NFTs para ComplicesConecta
- *
- * Características principales:
- * - Mint de NFTs individuales y de pareja
- * - Upload a IPFS con Pinata
- * - Sistema de consentimiento doble
- * - Gestión de metadata y rareza
- * - Integración con contratos inteligentes
- */
 export class NFTService {
   private static instance: NFTService;
   private walletService: WalletService;
@@ -267,34 +265,51 @@ export class NFTService {
       const wallet = await this.walletService
         .getOrCreateWallet(userId)
         .catch(() => null);
-      const ownerAddress = (wallet as any)?.address;
-      if (typeof ownerAddress !== "string" || !ownerAddress) {
+      if (!wallet) return [];
+
+      const ownerAddress =
+        wallet && typeof wallet === "object" && "address" in wallet && typeof wallet.address === "string"
+          ? wallet.address
+          : undefined;
+      if (!ownerAddress) {
         return [];
       }
 
       const { data, error } = await this.blockchainClient
-        .from("user_nfts")
+        .from("user_nfts" as const)
         .select("*")
         .eq("owner_address", ownerAddress);
 
       if (error) throw error;
-      return (data || []).map((nft: any) => {
+      return (data || []).map((nft: unknown) => {
+        if (!nft || typeof nft !== "object") {
+          return {
+            id: "",
+            token_id: 0,
+            owner_address: "",
+            metadata_uri: "",
+            rarity: "common",
+            is_couple: false,
+            created_at: new Date().toISOString(),
+          };
+        }
+        const nftObj = nft as Record<string, unknown>;
         const base: NFTInfo = {
-          id: String(nft.id || ""),
-          token_id: typeof nft.token_id === "number" ? nft.token_id : 0,
+          id: String(nftObj.id || ""),
+          token_id: typeof nftObj.token_id === "number" ? nftObj.token_id : 0,
           owner_address:
-            typeof nft.contract_address === "string" ? nft.contract_address : "",
-          metadata_uri: typeof nft.metadata_uri === "string" ? nft.metadata_uri : "",
+            typeof nftObj.contract_address === "string" ? nftObj.contract_address : "",
+          metadata_uri: typeof nftObj.metadata_uri === "string" ? nftObj.metadata_uri : "",
           rarity: "common",
-          is_couple: Boolean(nft.is_couple),
+          is_couple: Boolean(nftObj.is_couple),
           created_at:
-            typeof nft.minted_at === "string" ? nft.minted_at : new Date().toISOString(),
+            typeof nftObj.minted_at === "string" ? nftObj.minted_at : new Date().toISOString(),
         };
 
-        if (typeof nft.name === "string" && nft.name) base.name = nft.name;
-        if (typeof nft.description === "string" && nft.description)
-          base.description = nft.description;
-        if (typeof nft.image_url === "string" && nft.image_url) base.image = nft.image_url;
+        if (typeof nftObj.name === "string" && nftObj.name) base.name = nftObj.name;
+        if (typeof nftObj.description === "string" && nftObj.description)
+          base.description = nftObj.description;
+        if (typeof nftObj.image_url === "string" && nftObj.image_url) base.image = nftObj.image_url;
 
         return base;
       });
@@ -312,13 +327,13 @@ export class NFTService {
   ): Promise<CoupleNFTRequest[]> {
     try {
       const { data, error } = await this.blockchainClient
-        .from("couple_nft_requests")
+        .from("couple_nft_requests" as const)
         .select("*")
         .or(`requester_id.eq.${userId},partner_id.eq.${userId}`)
         .eq("status", "pending");
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as CoupleNFTRequest[];
     } catch (error) {
       logger.error("Error fetching couple NFT requests", { error });
       return [];
@@ -370,7 +385,7 @@ export class NFTService {
   public async approveCoupleNFT(requestId: string): Promise<boolean> {
     try {
       const { error } = await this.blockchainClient
-        .from("couple_nft_requests")
+        .from("couple_nft_requests" as const)
         .update({ status: "approved", updated_at: new Date().toISOString() })
         .eq("id", requestId);
 
@@ -407,7 +422,7 @@ export class NFTService {
       };
 
       const { error } = await this.blockchainClient
-        .from("couple_nft_requests")
+        .from("couple_nft_requests" as const)
         .insert({
           requester_id: requesterId,
           partner_id: partnerId,

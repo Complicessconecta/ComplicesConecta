@@ -254,7 +254,7 @@ async function initializeApp() {
       </StrictMode>,
     );
 
-    logger.info("ComplicesConecta v3.6.3 initialized successfully");
+    logger.info("ComplicesConecta v4.0.0 initialized successfully");
   } catch (error) {
     logger.error("Failed to initialize app", { error });
 

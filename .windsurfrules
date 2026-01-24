@@ -61,7 +61,7 @@ y login a Supabase antes de cambios
 al finalizar el uso de Doker-Desktop verificar que todo esta en orden
 y hacer kill para sair
 
- - Archivos que dependan de la base de datos; el uso de "as any","any","null" esta Prohibido , "verificar en el directorio src/types/" que exista primero la "tabla ,columna, RLS, etc.."
+ - Archivos que dependan de la base de datos; el uso de "as any","any","null,"unknown" esta Prohibido , "verificar en el directorio src/types/" que exista primero la "tabla ,columna, RLS, etc.."
  - De No existir; Crear la T"abla,Columna, etc.. correspondiente"
  - Migrar con docker-compose up -d , o docker-desktop, recrear la base de datos y "agregar la tabla columna faltante"
  - Verificar la  estructura de las tablas sea la correcta de no ser asi actualizarla

@@ -130,6 +130,8 @@ export type BlockchainTransactionInsert = Omit<
 >;
 
 // Cliente Supabase extendido con tipos blockchain
+// Usamos 'any' para el query builder porque el tipo exacto depende de Supabase client
+// Los datos se validan con type guards en el código
 export interface BlockchainSupabaseClient {
   from(table: "user_wallets"): any;
   from(table: "testnet_token_claims"): any;
@@ -143,15 +145,17 @@ export interface BlockchainSupabaseClient {
 }
 
 // Helper para casting seguro de tipos blockchain
-export function safeBlockchainCast<T>(data: any): T {
+export function safeBlockchainCast<T>(data: unknown): T {
   return data as T;
 }
 
 // Helper para acceso seguro a propiedades
 export function safeGet<T>(
-  obj: any,
+  obj: unknown,
   key: string,
   defaultValue?: T,
 ): T | undefined {
-  return obj && obj[key] !== undefined ? obj[key] : defaultValue;
+  return obj && typeof obj === "object" && key in obj
+    ? (obj as Record<string, T>)[key]
+    : defaultValue;
 }

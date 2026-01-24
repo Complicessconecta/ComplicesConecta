@@ -35,7 +35,7 @@ export interface MessageDB {
   created_at: string;
   updated_at?: string;
   read_at?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface Database {

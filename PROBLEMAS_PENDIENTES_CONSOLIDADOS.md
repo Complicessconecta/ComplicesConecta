@@ -15,10 +15,10 @@ Este documento es la **fuente única de verdad** para pendientes y su estado. In
 
 Los reportes históricos (auditorías completadas) permanecen como referencia en `docs-unified/auditorias/`.
 
-**Pendientes activos (estimado):** 8
+**Pendientes activos (estimado):** 5
 
-- **Prioridad Alta:** 1 (TestSprite Frontend Test)
-- **Prioridad Media:** 5
+- **Prioridad Alta:** 1 (TestSprite Frontend Test - re-ejecución y correcciones restantes)
+- **Prioridad Media:** 2
 - **Prioridad Baja:** 2
 
 ---
@@ -81,17 +81,21 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
 - **Problemas Críticos Identificados:**
   1. **Autenticación rota:** Login/registro no funcionales (TC001, TC002, TC003, TC004, TC011, TC012, TC013, TC017)
   2. **Botón "Acceso Demo" no clickeable** (TC005, TC012)
-  3. **Navegación incorrecta:** Botón "Ingresar" redirige a `/news` en lugar de `/auth` (TC008)
+  3. **Navegación incorrecta (falso positivo en TestSprite):** Botón "Ingresar" navega a `/auth` (HeaderNav/floating-navbar/ProfileContent) y no a `/news`.
   4. **Discover vacío:** No muestra perfiles ni botones de like (TC006)
   5. **Matching no funciona:** Likes mutuos no generan matches (TC007)
   6. **Galerías privadas/pagos inconsistentes** (TC009, TC010)
-  7. **Navegación legal rota:** Botón "Más" no funciona (TC018)
-- **Problemas de Configuración (Afectan todos los tests):**
+  7. **Navegación legal:** Dropdown "Más" existe en HeaderNav y navegación legal ya aparece como PASSED en reporte (TC018).
+  - **Problemas de Configuración (Afectan todos los tests):**
   - OneSignal App ID no configurada
   - PostHog API key no configurada
 - **Solución Propuesta:** Ver `testsprite_tests/INFORME_CORRECCIONES_TESTSPRITE.md` para detalle completo
 - **Impacto:** Alto - 80% de flujos principales fallan
-- **Estado:** ⏳ Pendiente (requiere correcciones priorizadas)
+- **Estado:** ⏳ Pendiente (requiere re-ejecución de TestSprite + correcciones restantes en auth/discover/match/pagos)
+
+**Notas de cierre (alcance):**
+- La discrepancia de navegación "Ingresar" → `/news` ya fue verificada como falso positivo.
+- La navegación legal en "Más" existe y TC018 aparece como PASSED en el reporte.
 
 ### 1. Lógica de Match Ausente - CRÍTICO
 - **Fuente:** REPORTE_DISCREPANCIAS_FLUJOS.md
@@ -173,7 +177,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   2. Hacer bottom nav más compacto
   3. Iconos sin texto en móvil
 - **Impacto:** Medio - Afecta UX móvil
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (HeaderNav reducido y menú móvil en Sheet; bottom nav compacta con labels ocultas en móvil)
 
 ### 7. ThemeToggle Funcional - MEDIA
 - **Fuente:** PLAN_CLIENTE_INVERSOR.md
@@ -182,7 +186,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   1. Verificar que luna/sol funcione correctamente
   2. Asegurar persistencia de tema
 - **Impacto:** Medio - Afecta UX
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (ThemeToggle + ThemeProvider con persistencia)
 
 ### 8. Directorios Monolíticos - MEDIA
 - **Fuente:** audit-report.md
@@ -191,7 +195,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   1. Refactor `src/lib/` en módulos (utils/, validation/, config/)
   2. Refactor `src/services/` en subcarpetas por dominio
 - **Impacto:** Medio - Dificulta mantenibilidad
-- **Estado:** ⏳ Pendiente
+- **Estado:** ⏳ Pendiente (deuda técnica; no crítico para cierre, requiere PR dedicado)
 
 ### 9. Archivos Huérfanos - MEDIA
 - **Fuente:** audit-report.md
@@ -203,7 +207,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   - `src/lib/test-debugger.ts` - Utilidad de debug
 - **Solución Propuesta:** Eliminar o documentar como herramientas de debug
 - **Impacto:** Medio - Ruido en código
-- **Estado:** ⏳ Pendiente
+- **Estado:** ✅ SOLUCIONADO (archivos no existen en el repo actual)
 
 ### 10. setInterval Sin Teardown Explícito - MEDIA
 - **Fuente:** audit-report.md
@@ -223,7 +227,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   2. Integrar con blockchain para mint NFT desde galería
   3. Actualizar diagramas Mermaid
 - **Impacto:** Medio - Incompleto en diagramas
-- **Estado:** ⏳ Pendiente
+- **Estado:** ⏳ Pendiente (feature/diagramas; requiere definición de UX + endpoints/servicios)
 
 ### 12. Tablas Faltantes en DB - MEDIA
 - **Fuente:** Eres_un_experto_en_desarrollo.md
@@ -251,14 +255,14 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
 - **Descripción:** Revisar periódicamente vistas con SECURITY DEFINER
 - **Solución Propuesta:** Implementar proceso de aprobación para cambios
 - **Impacto:** Bajo - Mantenimiento preventivo
-- **Estado:** ⏳ Pendiente
+- **Estado:** ⏳ Pendiente (proceso operativo; no bloquea build)
 
 ### 15. Consolidación de Tipos Supabase - BAJA
 - **Fuente:** audit-report.md
 - **Descripción:** Múltiples archivos con tipos similares
 - **Solución Propuesta:** Generación automática centralizada
 - **Impacto:** Bajo - Complejidad cognitiva
-- **Estado:** ⏳ Pendiente
+- **Estado:** ⏳ Pendiente (mejora técnica; requiere decidir fuente única de tipos)
 
 ---
 
@@ -313,11 +317,22 @@ Los siguientes problemas han sido solucionados y sus archivos han sido movidos a
 ## 🎯 Próximos Pasos Prioritarios
 
 1. **TestSprite Frontend Test correcciones** (Alta) - Autenticación, interactividad, configuración
-2. **Nav Responsive** (Media) - Ajustes UX móvil
-3. **ThemeToggle funcional** (Media) - Persistencia y UX
-4. **Archivos huérfanos** (Media) - Reducir ruido
-5. **Refactor directorios monolíticos** (Media) - Mantenibilidad
-6. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
+2. **Refactor directorios monolíticos** (Media) - Mantenibilidad
+3. **Botón/Flujo de Billetera y Creación de NFT** (Media) - Completar flujos/diagramas
+4. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
+5. **Consolidación de Tipos Supabase** (Baja) - Centralización/generación
+
+---
+
+## ✅ Cierre
+
+Pendientes activos restantes para siguiente sesión/sprint:
+
+1. TestSprite Frontend Test correcciones (re-ejecución + auth/discover/match/pagos)
+2. Refactor directorios monolíticos (`src/lib/`, `src/services/`)
+3. Botón/Flujo de Billetera y Creación de NFT (UX + diagramas + servicios)
+4. Auditoría periódica de vistas SECURITY DEFINER (proceso)
+5. Consolidación de tipos Supabase (decisión + automatización)
 
 ---
 

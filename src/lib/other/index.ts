@@ -10,19 +10,19 @@ export * from '@/lib/data';
 export * from '@/lib/demo-uuid';
 export * from '@/lib/email-service';
 export * from '@/lib/features';
-// export * from '@/lib/imageService'; // Excluido: uploadImage y deleteImage conflictivos
 export * from '@/lib/images';
 export * from '@/lib/infoCards';
 export * from '@/lib/intelligentAutomation';
 export * from '@/lib/invitations';
 export * from '@/lib/lifestyle-interests';
 export * from '@/lib/matching';
-// export * from '@/lib/media'; // Excluido: LocationCoordinates conflictivo
 export * from '@/lib/notifications';
 export * from '@/lib/report-export';
 export * from '@/lib/requests';
 export * from '@/lib/roles';
 export * from '@/lib/supabase-logger';
-// export * from '@/lib/supabase'; // Movido a su propio directorio en Fase 3
 export * from '@/lib/tiktok-share';
 export * from '@/lib/tokenPremium';
+export * from '@/lib/multimediaSecurity';
+export * from '@/lib/sentry';
+export * from '@/lib/wallet-silencer';

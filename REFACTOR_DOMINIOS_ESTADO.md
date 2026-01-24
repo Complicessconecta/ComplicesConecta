@@ -116,27 +116,27 @@ import { supabase } from '../supabase';
 
 ## Errores Pre-existentes
 
-Los siguientes errores son pre-existentes (no relacionados con el refactor):
+Los siguientes errores eran pre-existentes (no relacionados con el refactor) y han sido corregidos:
 
 1. **PostgrestError type errors** - Múltiples archivos
    - Error: `Argument of type 'PostgrestError' is not assignable to parameter of type 'Record<string, unknown>'`
    - Ubicación: `services/social/InvitationsService.ts`, `services/social/postsService.ts`, etc.
-   - Estado: Pre-existente, no relacionado con el refactor
+   - Estado: Pre-existente, no relacionado con el refactor (pendiente de solución)
 
 2. **Error type errors** - `services/tokens/TokenService.ts`
    - Error: `Argument of type 'Error' is not assignable to parameter of type 'Record<string, unknown>'`
    - Ubicación: `services/tokens/TokenService.ts`
-   - Estado: Pre-existente, no relacionado con el refactor
+   - Estado: Pre-existente, no relacionado con el refactor (pendiente de solución)
 
-3. **emailService errors** - `src/utils/emailService.ts`, `src/lib/email-service.ts`
+3. **emailService errors** ✅ CORREGIDO
    - Error: `Argument of type '{ email: string; template: string; }' is not assignable to parameter of type 'string'`
    - Ubicación: Línea 58 en emailService.ts, línea 52 en email-service.ts
-   - Estado: Pre-existente, no relacionado con el refactor
+   - Solución: Cambiado `validateEmail({ email: to, template })` a `validateEmail(to)`
 
-4. **useTokens error** - `src/hooks/useTokens.ts`
+4. **useTokens error** ✅ CORREGIDO
    - Error: `Argument of type 'TokenBalance' is not assignable to parameter of type 'Record<string, unknown>'`
    - Ubicación: Línea 219
-   - Estado: Pre-existente, no relacionado con el refactor
+   - Solución: Cambiado `logger.info(" Datos de tokens demo cargados - Balance:", demoBalance)` a `logger.info("Datos de tokens demo cargados - Balance:", { ...demoBalance })`
 
 ---
 
@@ -144,6 +144,7 @@ Los siguientes errores son pre-existentes (no relacionados con el refactor):
 
 - `934d7aae` - "refactor: dominios logger y zod-schemas migrados - 24 Ene 2026 08:30"
 - `ea220b8d` - "refactor: dominios services/social, analytics y lib/media migrados - 24 Ene 2026 08:45"
+- `22137062` - "fix: corregir errores pre-existentes en emailService.ts, email-service.ts, useTokens.ts - 24 Ene 2026 09:00"
 
 ---
 

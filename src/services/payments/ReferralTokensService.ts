@@ -191,7 +191,7 @@ export class ReferralTokensService {
             .single();
 
           if (createError) {
-            logger.error("Error creating referral balance:", createError);
+            logger.error("Error checking referral balance:", { error: createError.message, details: createError.details });
             return null;
           }
 
@@ -211,7 +211,7 @@ export class ReferralTokensService {
 
           return balance;
         }
-        logger.error("Error getting referral balance:", error);
+        logger.error("Error getting referral balance:", { error: error.message, details: error.details });
         return null;
       }
 
@@ -288,7 +288,7 @@ export class ReferralTokensService {
         .single();
 
       if (error) {
-        logger.error("Error creating referral reward transaction:", error);
+        logger.error("Error creating referral reward transaction:", { error: error.message, details: error.details });
         return null;
       }
 
@@ -361,7 +361,7 @@ export class ReferralTokensService {
         .range(page * limit, (page + 1) * limit - 1);
 
       if (error) {
-        logger.error("Error getting referral transactions:", error);
+        logger.error("Error getting referral transactions:", { error: error.message, details: error.details });
         return [];
       }
 
@@ -430,7 +430,7 @@ export class ReferralTokensService {
         .single();
 
       if (error && error.code !== "PGRST116") {
-        logger.error("Error getting referral statistics:", error);
+        logger.error("Error getting referral stats:", { error: error.message, details: error.details });
         return null;
       }
 
@@ -452,7 +452,7 @@ export class ReferralTokensService {
           .single();
 
         if (createError) {
-          logger.error("Error creating referral statistics:", createError);
+          logger.error("Error updating referral status:", { error: createError.message, details: createError.details });
           // Si falla, seguimos con fallback determinista local
           statsRow = null;
         } else {
@@ -515,7 +515,7 @@ export class ReferralTokensService {
         .limit(limit);
 
       if (error) {
-        logger.error("Error getting referral leaderboard:", error);
+        logger.error("Error getting referral leaderboard:", { error: error.message, details: error.details });
         return [];
       }
 
@@ -625,7 +625,7 @@ export class ReferralTokensService {
         .eq("user_id", referrerBalance.user_id);
 
       if (updateError2) {
-        logger.error("Error updating referrer balance:", updateError2);
+        logger.error("Error updating referral balance:", { error: updateError2.message, details: updateError2.details });
         return false;
       }
 

@@ -74,7 +74,9 @@ class TokenService {
 
       return balance;
     } catch (error) {
-      logger.error('Error obteniendo balance de tokens:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error obteniendo balance de tokens:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -96,11 +98,11 @@ class TokenService {
       // Generar recomendación con IA
       const prompt = `
         Analiza el siguiente perfil de usuario y genera una recomendación de staking:
-        
+
         Balance actual: ${balance.cmpxBalance} CMPX, ${balance.gtkBalance} GTK
         Amount staked: ${balance.stakedAmount}
         Historial de uso: ${JSON.stringify(usageHistory.slice(-10))}
-        
+
         Recomienda:
         1. Cantidad óptima para staking
         2. APY predicho (basado en condiciones del mercado)
@@ -108,12 +110,12 @@ class TokenService {
         4. Timeframe recomendado
         5. Confianza en la recomendación (0-1)
         6. Razón detallada
-        
+
         Responde en formato JSON.
       `;
 
       const aiResponse = await aiIntegrationService.processQuestionAnswering(prompt, userId);
-      
+
       let recommendation: StakingRecommendation;
       try {
         const parsed = JSON.parse(aiResponse.answer);
@@ -145,7 +147,9 @@ class TokenService {
 
       return recommendation;
     } catch (error) {
-      logger.error('Error generando recomendación de staking:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error generando recomendación de staking:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -163,16 +167,16 @@ class TokenService {
     try {
       const prompt = `
         Explica esta transacción de blockchain en términos simples para un usuario de CómplicesConecta:
-        
+
         Tipo: ${transactionType}
         Cantidad: ${amount} ${tokenType}
         Hash: ${transactionHash}
-        
+
         Explica:
         1. Qué significa esta transacción
         2. Cómo afecta al usuario
         3. Cuáles son los próximos pasos si aplica
-        
+
         Sé claro, conciso y amigable. Máximo 100 palabras.
       `;
 
@@ -190,7 +194,9 @@ class TokenService {
 
       return explanation;
     } catch (error) {
-      logger.error('Error explicando transacción:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error explicando transacción:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -227,7 +233,9 @@ class TokenService {
 
       return tokenPrediction;
     } catch (error) {
-      logger.error('Error prediciendo uso de tokens:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error prediciendo uso de tokens:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -244,7 +252,7 @@ class TokenService {
   }> {
     try {
       const balance = await this.getTokenBalance(userId);
-      
+
       if (amount > balance.cmpxBalance) {
         throw new Error('Saldo insuficiente');
       }
@@ -275,7 +283,9 @@ class TokenService {
         estimatedAPY
       };
     } catch (error) {
-      logger.error('Error en stake simulado:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error en stake simulado:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -302,7 +312,7 @@ class TokenService {
    */
   private analyzeUsageFactors(usageHistory: any[]): string[] {
     const factors: string[] = [];
-    
+
     if (usageHistory.length === 0) {
       return ['Nuevo usuario', 'Sin historial'];
     }
@@ -310,7 +320,7 @@ class TokenService {
     // Analizar patrones
     const recentUsage = usageHistory.slice(0, 7);
     const avgDailyUsage = recentUsage.reduce((sum, tx) => sum + tx.amount, 0) / 7;
-    
+
     if (avgDailyUsage > 100) {
       factors.push('Alto uso diario');
     } else if (avgDailyUsage > 50) {
@@ -328,7 +338,7 @@ class TokenService {
     // Analizar tendencia
     const lastWeek = usageHistory.slice(0, 7).reduce((sum, tx) => sum + tx.amount, 0);
     const previousWeek = usageHistory.slice(7, 14).reduce((sum, tx) => sum + tx.amount, 0);
-    
+
     if (lastWeek > previousWeek * 1.2) {
       factors.push('Tendencia creciente');
     } else if (lastWeek < previousWeek * 0.8) {

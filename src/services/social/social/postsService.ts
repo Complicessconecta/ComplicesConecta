@@ -391,7 +391,7 @@ export class PostsService {
         .single();
 
       if (storyError) {
-        logger.error("Error creating post in Supabase", { error: storyError });
+        logger.error("Error creating post in Supabase", { error: storyError.message, details: storyError.details });
         throw storyError;
       }
 
@@ -485,7 +485,7 @@ export class PostsService {
 
       if (checkError && checkError.code !== "PGRST116") {
         // PGRST116 = no rows found
-        logger.error("Error checking existing like:", checkError);
+        logger.error("Error checking existing like:", { error: checkError.message, details: checkError.details });
         return false;
       }
 
@@ -498,7 +498,7 @@ export class PostsService {
           .eq("user_id", userId);
 
         if (deleteError) {
-          logger.error("Error removing like:", deleteError);
+          logger.error("Error removing like:", { error: deleteError.message, details: deleteError.details });
           return true; // Mantener estado como liked si falla
         }
 
@@ -514,7 +514,7 @@ export class PostsService {
           });
 
         if (insertError) {
-          logger.error("Error adding like:", insertError);
+          logger.error("Error adding like:", { error: insertError.message, details: insertError.details });
           return false; // Mantener estado como no liked si falla
         }
 
@@ -556,7 +556,7 @@ export class PostsService {
         .eq("user_id", userId);
 
       if (error) {
-        logger.error("Error removing like:", error);
+        logger.error("Error removing like:", { error: error.message, details: error.details });
         throw new Error(error.message);
       }
 
@@ -602,7 +602,7 @@ export class PostsService {
         .single();
 
       if (error) {
-        logger.error("❌ Error creating comment in Supabase:", error);
+        logger.error("❌ Error creating comment in Supabase:", { error: error.message, details: error.details });
         throw new Error(error.message);
       }
 
@@ -726,7 +726,7 @@ export class PostsService {
         .eq("user_id", userId); // Asegurar que solo el dueño puede borrar
 
       if (error) {
-        logger.error("Error deleting post:", error);
+        logger.error("Error deleting post:", { error: error.message, details: error.details });
         throw new Error(error.message);
       }
 

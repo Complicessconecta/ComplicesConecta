@@ -58,8 +58,10 @@ class RAGService {
       await this.generateEmbeddings();
       this.isInitialized = true;
       logger.info('✅ RAG Service inicializado correctamente');
-    } catch (error: any) {
-      logger.error('❌ Error inicializando RAG Service:', error as Error);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error inicializando RAG:', { error: errorMsg, stack: errorStack });
       this.isInitialized = false;
     }
   }
@@ -118,8 +120,10 @@ class RAGService {
         processingTime: endTime - startTime,
         chunksUsed: searchResults.length
       };
-    } catch (error: any) {
-      logger.error('Error procesando pregunta RAG:', error as Error);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error procesando pregunta RAG:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -226,7 +230,7 @@ class RAGService {
         metadata: doc.metadata,
         embedding: (doc as any).embedding || []
       };
-      
+
       return chunk as DocumentChunk;
     });
 
@@ -248,8 +252,10 @@ class RAGService {
         }
       }
       logger.info('Embeddings generados para todos los documentos');
-    } catch (error: any) {
-      logger.error('Error guardando embeddings:', error as Error);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error generando embedding:', { error: errorMsg, stack: errorStack });
     }
   }
 
@@ -259,7 +265,7 @@ class RAGService {
   private async generateEmbedding(_text: string): Promise<number[]> {
     // Simular embedding de 384 dimensiones (como sentence-transformers)
     const embedding = new Array(384).fill(0).map(() => Math.random() - 0.5);
-    
+
     // Normalizar el embedding
     const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     return embedding.map(val => val / norm);
@@ -346,19 +352,19 @@ class RAGService {
     try {
       const prompt = `
         Basado en el siguiente contexto de la documentación de CómplicesConecta, responde la pregunta del usuario.
-        
+
         CONTEXTO:
         ${context}
-        
+
         PREGUNTA: ${question}
-        
+
         Instrucciones:
         1. Responde basándote únicamente en el contexto proporcionado
         2. Sé claro, conciso y útil
         3. Si la información no está en el contexto, indícalo claramente
         4. Proporciona ejemplos cuando sea relevante
         5. Mantén un tono profesional pero amigable
-        
+
         Respuesta:
       `;
 
@@ -368,8 +374,10 @@ class RAGService {
         answer: aiResponse.answer,
         confidence: aiResponse.confidence
       };
-    } catch (error: any) {
-      logger.error('Error generando respuesta:', error as Error);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error generando respuesta:', { error: errorMsg, stack: errorStack });
       return {
         answer: 'No pude generar una respuesta basada en la documentación disponible.',
         confidence: 0.1
@@ -386,7 +394,7 @@ class RAGService {
   ): Promise<string[]> {
     // Extraer temas clave de los resultados
     const topics = searchResults.map(r => r.chunk.metadata.title);
-    
+
     // Generar preguntas relacionadías basadías en los temas
     const relatedQuestions = [
       `¿Cómo funciona ${topics[0]} en CómplicesConecta?`,
@@ -405,7 +413,7 @@ class RAGService {
    */
   async addDocument(document: Omit<DocumentChunk, 'embedding'>): Promise<void> {
     const embedding = await this.generateEmbedding(document.content);
-    
+
     const newDoc: DocumentChunk = {
       ...document,
       embedding

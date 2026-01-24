@@ -79,7 +79,9 @@ class Neo4jService {
       this.isConnected = true;
       logger.info('✅ Conexión a Neo4j establecida');
     } catch (error) {
-      logger.error('❌ Error conectando a Neo4j:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('❌ Error conectando a Neo4j:', { error: errorMsg, stack: errorStack });
       this.isConnected = false;
     }
   }
@@ -143,7 +145,9 @@ class Neo4jService {
 
       return userProfile;
     } catch (error) {
-      logger.error('Error obteniendo perfil de usuario:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error obteniendo perfil de usuario:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -174,8 +178,10 @@ class Neo4jService {
       setTimeout(() => this.cache.delete(cacheKey), 3 * 60 * 1000);
 
       return mockContext;
-    } catch (error) {
-      logger.error('Error obteniendo contexto de usuario:', error as Error);
+    } catch (error: unknown) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error obteniendo contexto de usuario:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -215,7 +221,9 @@ class Neo4jService {
 
       return mockUsers.filter(user => user.compatibilityScore >= criteria.compatibilityThreshold);
     } catch (error) {
-      logger.error('Error encontrando usuarios similares:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error encontrando usuarios similares:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -239,7 +247,9 @@ class Neo4jService {
       // Invalidar cache
       this.cache.delete(`context_${userId}`);
     } catch (error) {
-      logger.error('Error actualizando interacciones:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error obteniendo relaciones:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -271,7 +281,9 @@ class Neo4jService {
 
       return metrics;
     } catch (error) {
-      logger.error('Error obteniendo métricas de rendimiento:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error obteniendo métricas de rendimiento:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -289,7 +301,9 @@ class Neo4jService {
       // Simular creación de índices
       logger.info('✅ Índices de Neo4j creados/verificados');
     } catch (error) {
-      logger.error('Error creando índices:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error calculando compatibilidad:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -305,7 +319,9 @@ class Neo4jService {
         logger.info('✅ Conexión a Neo4j cerrada');
       }
     } catch (error) {
-      logger.error('Error cerrando conexión a Neo4j:', error as Error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error cerrando conexión a Neo4j:', { error: errorMsg, stack: errorStack });
     }
   }
 

@@ -184,7 +184,7 @@ class InvitationsService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error getting invitations from Supabase:", error);
+        logger.error("Error getting referral analytics:", { error: error.message, details: error.details });
         return [];
       }
 
@@ -266,7 +266,7 @@ class InvitationsService {
         .single();
 
       if (error) {
-        logger.error("Error creating invitation in Supabase:", error);
+        logger.error("Error creating invitation in Supabase:", { error: error.message, details: error.details });
         return null;
       }
 
@@ -314,14 +314,14 @@ class InvitationsService {
         .eq("id", invitationId);
 
       if (error) {
-        logger.error("Error accepting invitation:", error);
+        logger.error("Error updating referral balance:", { error: error.message, details: error.details });
         return false;
       }
 
       logger.info("✅ Invitation accepted successfully", { invitationId });
       return true;
     } catch (error) {
-      logger.error("Error in acceptInvitation:", { error: String(error) });
+      logger.error("Error checking referral balance:", { error: String(error) });
       return false;
     }
   }
@@ -347,7 +347,7 @@ class InvitationsService {
         .eq("id", invitationId);
 
       if (error) {
-        logger.error("Error declining invitation:", error);
+        logger.error("Error canceling invitation:", { error: error.message, details: error.details });
         return false;
       }
 
@@ -395,7 +395,7 @@ class InvitationsService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error getting gallery permissions from Supabase:", error);
+        logger.error("Error getting gallery permissions from Supabase:", { error: error.message, details: error.details });
         return [];
       }
 
@@ -512,7 +512,7 @@ class InvitationsService {
         .eq("id", permissionId);
 
       if (error) {
-        logger.error("Error revoking gallery permission:", error);
+        logger.error("Error revoking gallery permission:", { error: error.message, details: error.details });
         return false;
       }
 
@@ -549,7 +549,7 @@ class InvitationsService {
       if (error) {
         logger.error(
           "Error getting invitation templates from Supabase:",
-          error,
+          { error: error.message, details: error.details },
         );
         return [];
       }
@@ -615,7 +615,7 @@ class InvitationsService {
       if (error) {
         logger.error(
           "Error getting invitation statistics from Supabase:",
-          error,
+          { error: error.message, details: error.details },
         );
         return {
           totalInvitations: 0,

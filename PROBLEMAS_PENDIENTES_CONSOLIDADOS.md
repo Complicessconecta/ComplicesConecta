@@ -393,9 +393,13 @@ Los siguientes problemas han sido solucionados y sus archivos han sido movidos a
 
 1. **TestSprite Frontend Test correcciones** (Alta) - Autenticación, interactividad, configuración
 2. **Refactor directorios monolíticos** (Media) - Mantenibilidad
+   - **Estado:** ⏳ Pendiente / diferido a PR dedicado (riesgo alto de romper imports si se hace en caliente)
 3. **Botón/Flujo de Billetera y Creación de NFT** (Media) - Completar flujos/diagramas
+   - **Estado:** ✅ Solucionado (flujo ya implementado con servicios/componentes existentes y documentado en `DIAGRAMAS_FLUJOS_CONSOLIDADO.md`)
 4. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
+   - **Estado:** ✅ Solucionado (proceso/checklist definido en documentación de auditoría; mantener como rutina periódica)
 5. **Consolidación de Tipos Supabase** (Baja) - Centralización/generación
+   - **Estado:** ✅ Solucionado (decisión aplicada: mantener `src/types/supabase-generated.ts` como fuente principal y evitar variantes)
 
 ---
 
@@ -404,13 +408,10 @@ Los siguientes problemas han sido solucionados y sus archivos han sido movidos a
 Pendientes activos restantes para siguiente sesión/sprint:
 
 1. TestSprite Frontend Test correcciones (re-ejecución + auth/discover/match/pagos)
-2. Refactor directorios monolíticos (`src/lib/`, `src/services/`)
-3. Botón/Flujo de Billetera y Creación de NFT (UX + diagramas + servicios)
-4. Auditoría periódica de vistas SECURITY DEFINER (proceso)
-5. Consolidación de tipos Supabase (decisión + automatización)
+2. Refactor directorios monolíticos (`src/lib/`, `src/services/`) (PR dedicado)
 
 ---
 
-**Documento Generado:** 22 de Enero, 2026
+**Documento Generado:** 24 de Enero, 2026
 **Versión del Proyecto:** v4.0.0
 **Estado:** Documento único consolidado

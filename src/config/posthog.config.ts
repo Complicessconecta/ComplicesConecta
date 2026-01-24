@@ -11,12 +11,53 @@ import { supabase } from "@/integrations/supabase/client";
 
 let posthog: typeof window.posthog | null = null;
 
+async function hasPrivacyConsent(): Promise<boolean> {
+  try {
+    if (!supabase) return false;
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const { data, error } = await supabase
+      .from("user_consents")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("consent_type", "PRIVACY")
+      .eq("document_path", "docs/legal/PRIVACY_POLICY.md")
+      .eq("is_active", true)
+      .order("consented_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) return false;
+    return Boolean(data?.id);
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Inicializa PostHog
  */
 export async function initPostHog(): Promise<void> {
   try {
     if (typeof window === "undefined") {
+      return;
+    }
+
+    if (import.meta.env.PROD !== true) {
+      return;
+    }
+
+    if (import.meta.env.VITE_APP_MODE === "demo") {
+      return;
+    }
+
+    const allowed = await hasPrivacyConsent();
+    if (!allowed) {
+      logger.info("PostHog no inicializado (sin consentimiento PRIVACY)");
       return;
     }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
-import "./LoadingScreen.css";
+import "@/styles/LoadingScreen.css";
 
 export interface LoadingScreenProps {
   onComplete: () => void;

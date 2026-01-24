@@ -8,7 +8,7 @@ import { logger } from "@/lib/logger";
 // Tipos para configuración
 export interface DemoConfig {
   enabled: boolean;
-  profiles: any[];
+  profiles: unknown[];
   mockData: boolean;
   skipValidations: boolean;
 }

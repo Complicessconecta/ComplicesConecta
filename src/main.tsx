@@ -26,6 +26,30 @@ import { logger } from "@/lib/logger";
 // CRÍTICO: Iniciar la captura de errores de consola lo antes posible.
 startErrorCapture();
 
+// CRÍTICO: Validación temprana de variables de entorno (sin romper modo demo)
+(() => {
+  const appMode = import.meta.env.VITE_APP_MODE;
+  const isDemo = appMode === "demo";
+  const isProduction = import.meta.env.PROD === true;
+
+  if (isDemo) return;
+
+  const missing: string[] = [];
+  if (!import.meta.env.VITE_SUPABASE_URL) missing.push("VITE_SUPABASE_URL");
+  if (!import.meta.env.VITE_SUPABASE_ANON_KEY)
+    missing.push("VITE_SUPABASE_ANON_KEY");
+
+  if (missing.length === 0) return;
+
+  const message = `Missing required environment variables: ${missing.join(", ")}`;
+
+  if (isProduction) {
+    throw new Error(message);
+  }
+
+  console.warn(message);
+})();
+
 // CRÍTICO: Silenciar errores de wallet ANTES de cualquier otra cosa.
 suppressWalletErrors();
 

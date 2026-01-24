@@ -53,7 +53,7 @@ export const useTheme = () => {
 
       try {
         // Usar 'any' para evitar errores de tipos cuando la tabla no existe
-        const { data, error } = await (supabase as any)
+        const { data, error } = await supabase
           .from("user_themes")
           .select("*")
           .eq("user_id", user.id)
@@ -110,7 +110,13 @@ export const useTheme = () => {
     void fetchTheme();
 
     // Realtime subscription (solo si VIP y supabase disponible)
-    if ((user as any)?.is_premium && supabase) {
+    const isPremiumUser =
+      typeof user === "object" &&
+      user !== null &&
+      "is_premium" in user &&
+      (user as Record<string, unknown>).is_premium === true;
+
+    if (isPremiumUser && supabase) {
       const channel = supabase
         .channel("user_themes")
         .on(
@@ -121,8 +127,20 @@ export const useTheme = () => {
             table: "user_themes",
             filter: `user_id=eq.${user.id}`,
           },
-          (payload: any) => {
-            const theme = payload.new as {
+          (payload: unknown) => {
+            const theme = (payload as {
+              new: {
+                bg_url?: string;
+                particles_intensity?: number;
+                glow_level?: "low" | "medium" | "high";
+                enable_particles?: boolean;
+                enable_background_animations?: boolean;
+                animation_speed?: "slow" | "normal" | "fast";
+                enable_glass_ui?: boolean;
+              };
+            }).new;
+
+            const themeSafe = theme as {
               bg_url?: string;
               particles_intensity?: number;
               glow_level?: "low" | "medium" | "high";
@@ -132,20 +150,20 @@ export const useTheme = () => {
               enable_glass_ui?: boolean;
             };
             setPrefs({
-              background: theme.bg_url || defaultPrefs.background,
+              background: themeSafe.bg_url || defaultPrefs.background,
               particlesIntensity:
-                theme.particles_intensity ?? defaultPrefs.particlesIntensity,
-              glowLevel: theme.glow_level || defaultPrefs.glowLevel,
+                themeSafe.particles_intensity ?? defaultPrefs.particlesIntensity,
+              glowLevel: themeSafe.glow_level || defaultPrefs.glowLevel,
               isCustom: true,
               enableParticles:
-                theme.enable_particles ?? defaultPrefs.enableParticles,
+                themeSafe.enable_particles ?? defaultPrefs.enableParticles,
               enableBackgroundAnimations:
-                theme.enable_background_animations ??
+                themeSafe.enable_background_animations ??
                 defaultPrefs.enableBackgroundAnimations,
               animationSpeed:
-                theme.animation_speed || defaultPrefs.animationSpeed,
+                themeSafe.animation_speed || defaultPrefs.animationSpeed,
               enableGlassUI:
-                theme.enable_glass_ui ??
+                themeSafe.enable_glass_ui ??
                 prefs.enableGlassUI ??
                 defaultPrefs.enableGlassUI,
             });

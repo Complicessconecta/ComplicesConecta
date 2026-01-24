@@ -132,6 +132,7 @@ export class WalletService {
   }
   private provider: JsonRpcProvider | null = null;
   private encryptionKey: string;
+  private encryptionKeyConfigured: boolean;
 
   // Configuraciones de red
   private static readonly NETWORKS: Record<string, NetworkConfig> = {
@@ -180,9 +181,10 @@ export class WalletService {
 
   private constructor() {
     // Clave de encriptación desde variables de entorno
-    this.encryptionKey =
-      import.meta.env.VITE_WALLET_ENCRYPTION_KEY ||
-      "default-key-change-in-production";
+    const envKey = import.meta.env.VITE_WALLET_ENCRYPTION_KEY;
+    const canFallbackToDemoKey = WalletService.isDemoActionAllowed();
+    this.encryptionKeyConfigured = Boolean(envKey) || canFallbackToDemoKey;
+    this.encryptionKey = envKey || "demo-wallet-encryption-key";
 
     // Inicializar provider por defecto (Mumbai testnet)
     this.initializeProvider("mumbai");
@@ -491,14 +493,14 @@ export class WalletService {
       logger.info(`Transacción enviada: ${tx.hash}`);
 
       const receipt = await tx.wait();
-      
+
       if (!receipt) {
         throw new Error("La transacción no pudo ser minada.");
       }
 
       // Buscar evento CoupleRequestCreated para obtener el ID
       let tokenId = -1;
-      
+
       if (receipt.logs) {
         for (const log of receipt.logs) {
           try {
@@ -574,6 +576,11 @@ export class WalletService {
    */
   private encryptPrivateKey(privateKey: string): string {
     try {
+      if (!this.encryptionKeyConfigured) {
+        throw new Error(
+          "Wallet encryption no configurada (VITE_WALLET_ENCRYPTION_KEY). Operación bloqueada.",
+        );
+      }
       const encrypted = CryptoJS.AES.encrypt(
         privateKey,
         this.encryptionKey,
@@ -594,6 +601,11 @@ export class WalletService {
    */
   private decryptPrivateKey(encryptedPrivateKey: string): string {
     try {
+      if (!this.encryptionKeyConfigured) {
+        throw new Error(
+          "Wallet encryption no configurada (VITE_WALLET_ENCRYPTION_KEY). Operación bloqueada.",
+        );
+      }
       const decrypted = CryptoJS.AES.decrypt(
         encryptedPrivateKey,
         this.encryptionKey,

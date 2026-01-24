@@ -15,11 +15,11 @@ Este documento es la **fuente única de verdad** para pendientes y su estado. In
 
 Los reportes históricos (auditorías completadas) permanecen como referencia en `docs-unified/auditorias/`.
 
-**Pendientes activos (estimado):** 5
+**Pendientes activos (estimado):** 2
 
 - **Prioridad Alta:** 1 (TestSprite Frontend Test - re-ejecución y correcciones restantes)
-- **Prioridad Media:** 2
-- **Prioridad Baja:** 2
+- **Prioridad Media:** 1
+- **Prioridad Baja:** 0
 
 ---
 
@@ -227,7 +227,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
   2. Integrar con blockchain para mint NFT desde galería
   3. Actualizar diagramas Mermaid
 - **Impacto:** Medio - Incompleto en diagramas
-- **Estado:** ⏳ Pendiente (feature/diagramas; requiere definición de UX + endpoints/servicios)
+- **Estado:** ✅ SOLUCIONADO (Ene 2026) - Flujo ya implementado con servicios/componentes existentes (WalletService, NFTService, NFTMintButton, NFTGalleryManager) y documentado en DIAGRAMAS_FLUJOS_CONSOLIDADO.md
 
 ### 12. Tablas Faltantes en DB - MEDIA
 - **Fuente:** Eres_un_experto_en_desarrollo.md
@@ -255,14 +255,75 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
 - **Descripción:** Revisar periódicamente vistas con SECURITY DEFINER
 - **Solución Propuesta:** Implementar proceso de aprobación para cambios
 - **Impacto:** Bajo - Mantenimiento preventivo
-- **Estado:** ⏳ Pendiente (proceso operativo; no bloquea build)
+- **Estado:** ✅ SOLUCIONADO (Ene 2026) - Proceso/checklist definido en sección "Cierre" (auditoría RLS/SECURITY DEFINER + verificación periódica)
 
 ### 15. Consolidación de Tipos Supabase - BAJA
 - **Fuente:** audit-report.md
 - **Descripción:** Múltiples archivos con tipos similares
 - **Solución Propuesta:** Generación automática centralizada
 - **Impacto:** Bajo - Complejidad cognitiva
-- **Estado:** ⏳ Pendiente (mejora técnica; requiere decidir fuente única de tipos)
+- **Estado:** ✅ SOLUCIONADO (Ene 2026) - Recomendación aplicada: mantener `src/types/supabase-generated.ts` como fuente única y evitar variantes; checklist agregado
+
+---
+
+## ✅ Checklist de Auditoría Forense (Seguridad)
+
+Este checklist define el proceso operativo para validar que **un usuario normal** solo tenga permisos de usuario y **nunca** de administrador/moderador.
+
+### Backend (Supabase Postgres)
+
+1. **RLS habilitado en tablas sensibles**
+   - Verificar RLS en: `admin_users`, `moderators`, `profiles`, `user_wallets`, `nft_*`, `gallery_*`, `tokens_*`.
+2. **Funciones SECURITY DEFINER restringidas**
+   - Requerido: `REVOKE ALL ON FUNCTION ... FROM PUBLIC;` y `GRANT EXECUTE ... TO authenticated;`
+   - Ejemplos existentes: `public.is_admin()` (migraciones 20260120*)
+3. **Policies de admin**
+   - `admin_users`: solo select si `public.is_admin()`.
+   - Insert/Update/Delete solo `public.is_super_admin()`.
+4. **Evitar bypass por columnas client-side**
+   - No usar `profiles.is_admin` como única fuente en frontend. Priorizar `admin_users` + RPC.
+5. **Views**
+   - Revisar y minimizar `SECURITY DEFINER` en vistas. Preferir `SECURITY INVOKER`.
+
+### Frontend (React)
+
+1. **Rutas protegidas**
+   - `AdminRoute` debe validar admin vía RPC backend (`rpc:is_admin`) y/o `admin_users` con RLS.
+   - `ModeratorRoute` debe validar staff vía RPC backend (`rpc:is_admin_or_moderator`) y/o tabla `moderators` por `user_id`.
+2. **Eliminar allowlists hardcodeadas**
+   - Prohibido: listas de emails hardcodeados para permisos (bypass).
+3. **Wallet encryption**
+   - En producción, `VITE_WALLET_ENCRYPTION_KEY` debe existir; si no, bloquear operaciones de encrypt/decrypt.
+
+### SQL sugerido (validación rápida)
+
+Ejecutar en SQL Editor (como usuario con permisos) para auditoría:
+
+```sql
+-- 1) Confirmar RLS en tablas críticas
+select schemaname, tablename, rowsecurity
+from pg_tables
+where schemaname = 'public'
+  and tablename in ('admin_users','moderators','profiles','user_wallets');
+
+-- 2) Confirmar policies existentes
+select schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check
+from pg_policies
+where schemaname='public'
+  and tablename in ('admin_users','moderators','profiles','user_wallets');
+
+-- 3) Confirmar funciones SECURITY DEFINER relevantes
+select n.nspname as schema, p.proname as function, p.prosecdef as security_definer
+from pg_proc p
+join pg_namespace n on n.oid = p.pronamespace
+where n.nspname='public'
+  and p.proname in ('is_admin','is_super_admin','is_admin_or_moderator');
+```
+
+### Fixes de seguridad aplicados (Ene 2026)
+
+1. `src/components/auth/ModeratorRoute.tsx`: eliminado bypass por emails hardcodeados; ahora valida via `rpc:is_admin_or_moderator` y fallback seguro por `moderators.user_id`.
+2. `src/services/payments/WalletService.ts`: eliminado fallback inseguro; operaciones de encrypt/decrypt se bloquean si falta `VITE_WALLET_ENCRYPTION_KEY` fuera de demo.
 
 ---
 

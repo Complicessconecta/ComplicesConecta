@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface ModeratorRouteProps {
   children: React.ReactNode;
@@ -17,7 +18,7 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
   const checkModeratorAccess = async () => {
     try {
       if (!supabase) {
-        console.error("Supabase no está disponible");
+        logger.error("❌ Supabase no está disponible");
         setIsModerator(false);
         setLoading(false);
         return;
@@ -33,40 +34,43 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
         return;
       }
 
-      // Verificar si es admin (los admins tienen acceso completo)
-      const adminEmails = [
-        "admin@complicesconecta.com",
-        "moderador@complicesconecta.com",
-        "support@complicesconecta.com",
-      ];
-
-      if (adminEmails.includes(session.user.email || "")) {
-        setIsModerator(true);
-        setLoading(false);
-        return;
+      // Validación preferida: backend decide rol staff (admin/moderator) vía función
+      // NOTA: No depender de emails hardcodeados ni VITE_*.
+      try {
+        const { data, error } = await supabase.rpc("is_admin_or_moderator");
+        if (!error && data === true) {
+          setIsModerator(true);
+          return;
+        }
+      } catch (error: any) {
+        logger.error("⚠️ Error verificando staff via rpc:is_admin_or_moderator", {
+          error: error?.message,
+        });
       }
 
-      // Verificar si es moderador activo
-      if (!supabase) {
-        setIsModerator(false);
-        setLoading(false);
-        return;
-      }
-
-      const { data: moderator, error } = await (supabase as any)
+      // Fallback: Verificar si es moderador activo (RLS debe filtrar correctamente)
+      const { data: moderatorRow, error: moderatorError } = await supabase
         .from("moderators")
-        .select("*")
-        .eq("email", session.user.email)
-        .eq("status", "active")
-        .single();
+        .select("id, user_id, is_active, status")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
 
-      if (error || !moderator) {
+      if (moderatorError) {
+        logger.error("❌ Error consultando moderators", {
+          error: moderatorError.message,
+        });
         setIsModerator(false);
-      } else {
-        setIsModerator(true);
+        return;
       }
+
+      const isActive = Boolean(
+        moderatorRow?.is_active === true || moderatorRow?.status === "active",
+      );
+      setIsModerator(isActive);
     } catch (error) {
-      console.error("Error checking moderator access:", error);
+      logger.error("❌ Error checking moderator access", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       setIsModerator(false);
     } finally {
       setLoading(false);

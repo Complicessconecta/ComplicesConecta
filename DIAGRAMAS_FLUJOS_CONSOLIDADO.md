@@ -1,4 +1,4 @@
-# BEGIN FILE: DIAGRAMAS_FLUJOS_v3.0.md 
+# BEGIN FILE: DIAGRAMAS_FLUJOS_v3.0.md
 
 # 📊 DIAGRAMAS DE FLUJOS v3.9.2 - COMPLICESCONECTA v3.9.2
 
@@ -610,8 +610,8 @@ flowchart TD
 
 ---
 
-**Documento creado:** 06 Noviembre 2025  
-**Última actualización:** 15 Noviembre 2025  
+**Documento creado:** 06 Noviembre 2025
+**Última actualización:** 15 Noviembre 2025
 **Versión:** 1.4
 
 ### 🚀 Cambios v3.6.4 (15 Nov 2025)
@@ -942,7 +942,7 @@ El sistema de NFTs permite a los usuarios (singles y parejas) "mintear" (crear) 
 
 ## 2. Componente Principal
 
-`NFTMintButton` (`src/components/blockchain/NFTMintButton.tsx`)
+`NFTMintButton` (`src/components/ui/buttons/NFTMintButton.tsx`)
 
 ### Props
 
@@ -1133,31 +1133,31 @@ flowchart TD
     A[Usuario Click en Galería Privada] --> B{Control Parental Activo?}
     B -->|No| C[Mostrar Imágenes Directamente]
     B -->|Sí| D[Panel de Bloqueo]
-    
+
     D --> E{Usuario Click Desbloquear}
     E --> F[Input PIN de 4 dígitos]
     F --> G{PIN Correcto?}
-    
+
     G -->|Sí| H{Nivel de Restricción}
     H -->|Soft| I[Auto-bloqueo en 360s]
     H -->|Medium| J[Auto-bloqueo en 180s]
     H -->|Strict| K[Auto-bloqueo en 60s]
-    
+
     I --> L[Mostrar Imágenes]
     J --> L
     K --> L
-    
+
     L --> M[Temporizador Visible]
     M --> N{Tiempo Agotado?}
     N -->|Sí| D
     N -->|No| L
-    
+
     G -->|No| O{Intentos}
     O -->|< 3| F
     O -->|≥ 3| P[Bloqueo Temporal 30s]
     P --> Q[Esperar 30s]
     Q --> F
-    
+
     style D fill:#ef4444
     style P fill:#dc2626
     style I fill:#10b981
@@ -1193,66 +1193,66 @@ flowchart TD
     E --> F[Detalles del Club<br/>Descripción, Tipo, Horarios]
     F --> G[Documentos<br/>URL Google Drive/Dropbox]
     G --> H{Validación}
-    
+
     H -->|Datos Incompletos| B
     H -->|Datos Completos| I[Guardar en BD<br/>club_applications]
     I --> J[Enviar Email<br/>complicesconectasw@outlook.es]
     J --> K[Estado: Pending]
-    
+
     K --> L{Revisión Admin}
     L -->|Aprobar| M[Crear Perfil Demo<br/>/clubs/{slug}]
     L -->|Rechazar| N[Enviar Razón]
     L -->|Revisar| O[Solicitar Más Info]
-    
+
     M --> P[Perfil Demo Activo]
     P --> Q[Panel de Administración<br/>Solo Dueño]
-    
+
     Q --> R[Editar Perfil]
     Q --> S[Subir Contenido<br/>Fotos/Videos]
     Q --> T[Crear Eventos]
     Q --> U[Gestionar Promociones]
     Q --> V[Configurar Descuentos]
     Q --> W[Ver Analytics]
-    
+
     V --> X{Tipo de Descuento}
     X -->|CMPX| Y[10% Entrada<br/>20% Bebidas<br/>15% VIP]
     X -->|GTK Holders| Z[25% Entrada<br/>30% Bebidas<br/>50% VIP]
     X -->|Premium| AA[30% Entrada<br/>40% Bebidas<br/>60% VIP]
-    
+
     P --> AB[Usuario Visita Perfil]
     AB --> AC{Acción Usuario}
-    
+
     AC -->|Check-in| AD[Geolocalización 50m]
     AD --> AE{Dentro del Radio?}
     AE -->|Sí| AF[Check-in Exitoso]
     AE -->|No| AG[Check-in Rechazado]
-    
+
     AF --> AH{Puede Reseñar?}
     AH -->|24h después| AI[Crear Reseña]
     AH -->|No| AJ[Esperar 24h]
-    
+
     AC -->|Ver Galería| AK[Fotos/Videos]
     AC -->|Ver Eventos| AL[Calendario]
     AC -->|Usar Descuento| AM{Tokens Disponibles?}
-    
+
     AM -->|Sí| AN[Aplicar Descuento]
     AM -->|No| AO[Comprar Tokens]
-    
+
     AI --> AP[Rating Actualizado]
     AN --> AQ[Pago con Tokens]
     AQ --> AR[Transacción Blockchain]
-    
+
     P --> AS[NFTs del Club]
     AS --> AT[Crear NFT]
     AT --> AU[Mercado Secundario]
     AU --> AV[Staking de NFTs]
-    
+
     W --> AW[Analytics Dashboard]
     AW --> AX[Visitas por Día]
     AW --> AY[Check-ins por Semana]
     AW --> AZ[Engagement]
     AW --> BA[Demografía Visitantes]
-    
+
     style B fill:#8b5cf6
     style I fill:#10b981
     style K fill:#f59e0b
@@ -1307,30 +1307,30 @@ flowchart TD
     A[Usuario Solicita Disolución] --> B{Tipo de Disolución}
     B -->|Amistosa| C[Propuesta Mutua Acuerdo]
     B -->|Contenciosa| D[Disputa Formal]
-    
+
     C --> E[Crear couple_disputes<br/>status: pending]
     D --> E
-    
+
     E --> F{Propuesta de Resolución}
     F -->|Usuario A Propone| G[proposed_winner_id = A<br/>proposed_at = NOW]
     F -->|Usuario B Propone| H[proposed_winner_id = B<br/>proposed_at = NOW]
-    
+
     G --> I{Usuario B Acepta?}
     H --> J{Usuario A Acepta?}
-    
+
     I -->|Sí| K[winner_accepted_by = B<br/>accepted_at = NOW<br/>status: resolved]
     I -->|No| L[Rechazo<br/>Continuar disputa]
-    
+
     J -->|Sí| K
     J -->|No| L
-    
+
     K --> M[Congelar Activos<br/>frozen_assets_snapshot]
     K --> N[Dividir Tokens CMPX/GTK]
     K --> O[Finalizar Acuerdo]
-    
+
     L --> P{Nueva Propuesta}
     P --> F
-    
+
     style E fill:#f59e0b
     style K fill:#10b981
     style M fill:#ef4444

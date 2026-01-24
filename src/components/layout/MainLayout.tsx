@@ -44,6 +44,8 @@ export const MainLayout = () => {
     "/profile-couple",
     "/edit-profile-",
     "/profile/",
+    "/tokens",
+    "/tokens-",
   ];
 
   const shouldHideHeader =

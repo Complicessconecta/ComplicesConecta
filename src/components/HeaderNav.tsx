@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Heart, Search, User, MessageSquare, Calendar, Building2, Shield, HelpCircle, Info, DollarSign, Settings, Bell, Menu, ShoppingBag, FileText, Lock, Crown, ChevronDown, MoreHorizontal, Scale, Image, Home, BookOpen, Users } from "lucide-react";
+import { Heart, Search, User, MessageSquare, Calendar, Building2, Shield, HelpCircle, Info, DollarSign, Settings, Menu, ShoppingBag, FileText, Lock, Crown, ChevronDown, MoreHorizontal, Scale, Image, Home, BookOpen, Users, Sparkles } from "lucide-react";
 import { BetaBanner } from "@/components/BetaBanner";
 import { Button } from "@/components/ui/buttons/Button";
-import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/features/auth/useAuth";
@@ -171,7 +170,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         "heartBeat 2.5s ease-in-out infinite, heartGlow 2s ease-in-out infinite",
                     }}
                   />
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full animate-pulse shadow-lg shadow-purple-500/50"></div>
                   {/* Partículas flotantes - corazones rosas con animación más lenta */}
                   <div className="absolute inset-0 pointer-events-none">
                     <Heart className="absolute top-0 left-0 w-2 h-2 text-pink-300 animate-heart-particle-1" fill="currentColor" />
@@ -198,7 +196,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         : "text-white/90 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    <IconComponent className="h-5 w-5 shrink-0 text-white" />
+                    <IconComponent className="h-5 w-5 shrink-0 text-white block" />
                     <span className="whitespace-nowrap hidden xl:inline">
                       {item.name}
                     </span>
@@ -244,9 +242,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                               <DropdownMenuItem
                                 key={item.name}
                                 onClick={() => handleNavigation(item.path)}
-                                className="text-white hover:bg-purple-500/20 hover:text-white cursor-pointer px-2 py-2"
+                                className="text-white hover:bg-purple-500/20 hover:text-white cursor-pointer px-2 py-2 flex items-center gap-2"
                               >
-                                <IconComponent className="h-5 w-5 shrink-0 text-white" />
+                                <IconComponent className="h-5 w-5 shrink-0 text-white block" />
                                 <span className="truncate">{item.name}</span>
                               </DropdownMenuItem>
                             );
@@ -266,55 +264,23 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               <div className="hidden md:flex items-center space-x-1">
                 <button
                   onClick={() => {
-                    handleNavigation("/tokens");
-                    logger.info("Tokens icon clicked");
-                  }}
-                  className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
-                  title="Tokens"
-                >
-                  <DollarSign className="h-5 w-5 text-white hover:text-purple-400" />
-                </button>
-                <button
-                  onClick={() => {
                     handleNavigation("/faq");
                     logger.info("Help icon clicked");
                   }}
                   className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
                   title="Ayuda"
                 >
-                  <HelpCircle className="h-5 w-5 text-white hover:text-purple-400" />
+                  <HelpCircle className="h-5 w-5 text-white hover:text-purple-400 block" />
                 </button>
                 <button
                   onClick={() => {
-                    if (isAuthenticated()) {
-                      handleNavigation("/settings");
-                    } else {
-                      handleNavigation("/info");
-                    }
-                    logger.info("Settings icon clicked");
+                    handleNavigation("/ai-help");
+                    logger.info("AI help icon clicked");
                   }}
                   className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
-                  title="Configuración"
+                  title="Centro de Control IA"
                 >
-                  <Settings className="h-5 w-5 text-white hover:text-purple-400" />
-                </button>
-                <button
-                  onClick={() => {
-                    if (isAuthenticated()) {
-                      // TODO: Abrir NotificationCenter dropdown o navegar a página de notificaciones
-                      handleNavigation("/notifications");
-                    } else {
-                      handleNavigation("/auth");
-                    }
-                    logger.info("Notifications icon clicked");
-                  }}
-                  className="relative p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
-                  title="Notificaciones"
-                >
-                  <Bell className="h-5 w-5 text-white hover:text-purple-400" />
-                  <Badge className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 bg-purple-500 text-white text-xs flex items-center justify-center rounded-full shadow-lg border-2 border-purple-600 z-10">
-                    3
-                  </Badge>
+                  <Sparkles className="h-5 w-5 text-white hover:text-purple-400 block" />
                 </button>
               </div>
 
@@ -381,11 +347,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <button
-                    className="lg:hidden p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                    className="lg:hidden p-1.5 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
                     aria-label="Abrir menú"
                     title="Abrir menú"
                   >
-                    <Menu className="h-6 w-6 text-white" />
+                    <Menu className="h-5 w-5 text-white block" />
                   </button>
                 </SheetTrigger>
                 <SheetContent
@@ -428,6 +394,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
                     {/* Secondary Links Grouped by Category */}
                     {[
+                      "Tokens & Marketplace",
                       "Contenido & Empresa",
                       "Explorar",
                       "Ayuda",
@@ -468,13 +435,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
                     {/* Acciones Móviles */}
                     <div className="pt-4 border-t border-white/10 space-y-2">
-                      <button
-                        onClick={() => handleNavigation("/tokens")}
-                        className="w-full flex items-center space-x-3 px-4 py-3 text-white/80 hover:bg-white/5 rounded-lg transition-all"
-                      >
-                        <DollarSign className="h-5 w-5 text-white" />
-                        <span>Tokens</span>
-                      </button>
                       <button
                         onClick={() => {
                           if (isAuthenticated()) {

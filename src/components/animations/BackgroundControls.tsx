@@ -1,3 +1,10 @@
+
+/**
+ * BackgroundControls - Controles para partículas y backgrounds
+ * Se integra en la sección de "Configuración de Animaciones"
+ */
+
+
 import React, { useEffect, useState } from "react";
 import { Sparkles, Zap, RotateCcw, Layers } from "lucide-react";
 import { useBackgroundPreferences, type BackgroundMode } from "@/hooks/useBackgroundPreferences";
@@ -6,10 +13,6 @@ interface BackgroundControlsProps {
   onClose?: () => void;
 }
 
-/**
- * BackgroundControls - Controles para partículas y backgrounds
- * Se integra en la sección de "Configuración de Animaciones"
- */
 export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
   onClose: _onClose,
 }) => {
@@ -49,6 +52,15 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
     "#831843", // Pink 900
     "#000000", // Black
   ];
+
+  const solidColorClasses: Record<string, string> = {
+    "#0f172a": "bg-slate-900",
+    "#1e1b4b": "bg-indigo-950",
+    "#312e81": "bg-indigo-900",
+    "#4c1d95": "bg-violet-900",
+    "#831843": "bg-pink-900",
+    "#000000": "bg-black",
+  };
 
   const handleParticlesToggle = () => {
     const newState = !localPrefs.particlesEnabled;
@@ -205,11 +217,12 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
                   key={color}
                   onClick={() => handleSolidColorChange(color)}
                   className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${
+                    solidColorClasses[color] ?? "bg-black"
+                  } ${
                     localPrefs.solidColor === color
                       ? "border-white scale-110 shadow-lg shadow-white/20"
                       : "border-transparent"
                   }`}
-                  style={{ backgroundColor: color }}
                   aria-label={`Seleccionar color ${color}`}
                   title={color}
                 />

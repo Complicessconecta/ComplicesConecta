@@ -392,3 +392,8 @@ scripts/*auth*
 .windsurfrules
 .windsurf/
 
+# ============================================================================
+# AUDITORÍA INICIAL (temporal - borrar al completar análisis)
+# ============================================================================
+ComplicesConecta_Auditoria_Inicial (1)/
+

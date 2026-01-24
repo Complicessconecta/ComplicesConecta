@@ -15,6 +15,8 @@ import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { SingleRegistrationForm } from "@/components/profiles/single/SingleRegistrationForm";
 import { CoupleRegistrationForm } from "@/components/profiles/couple/CoupleRegistrationForm";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
+import { supabase } from "@/integrations/supabase/client";
+import { useTheme } from "@/components/ui/ThemeProvider";
 
 interface FormData {
   email: string;
@@ -81,10 +83,19 @@ const Auth = () => {
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
+  const [isAdminLoginMode, setIsAdminLoginMode] = useState(false);
   const [authFeedback, setAuthFeedback] = useState<{
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  let setTheme: (theme: "light" | "dark" | "system") => void = () => {};
+  try {
+    const themeContext = useTheme();
+    setTheme = themeContext.setTheme;
+  } catch {
+    setTheme = () => {};
+  }
 
   // Depurar cambio de activeTab
   useEffect(() => {
@@ -192,6 +203,11 @@ const Auth = () => {
           "single";
 
         setTimeout(() => {
+          if (isAdminLoginMode) {
+            navigate("/admin");
+            return;
+          }
+
           if (accountType === "couple") {
             navigate("/profile-couple");
           } else {
@@ -256,13 +272,35 @@ const Auth = () => {
       });
       return;
     }
-    // Aquí se implementaría la lógica de recuperación de contraseña
-    toast({
-      title: "Recuperación de contraseña",
-      description: "Se ha enviado un correo de recuperación a " + resetEmail,
-    });
-    setShowResetPassword(false);
-    setResetEmail("");
+
+    try {
+      const redirectTo = `${window.location.origin}/auth`;
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo,
+      });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        });
+        return;
+      }
+
+      toast({
+        title: "Recuperación de contraseña",
+        description: "Se ha enviado un correo de recuperación a " + resetEmail,
+      });
+      setShowResetPassword(false);
+      setResetEmail("");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo enviar el correo de recuperación",
+      });
+    }
   };
 
   // Handler para solicitar ubicación automática
@@ -339,52 +377,29 @@ const Auth = () => {
                 variant="ghost"
                 size="sm"
                 onClick={async () => {
-                  // Toggle entre modo normal y admin
-                  const isAdminMode = formData.email.includes(
-                    import.meta.env.VITE_ADMIN_EMAIL || "",
-                  );
+                  const nextMode = !isAdminLoginMode;
+                  setIsAdminLoginMode(nextMode);
 
-                  console.log("Botón Admin clickeado:", { isAdminMode, activeTab });
+                  setFormData((prev) => ({
+                    ...prev,
+                    email: "",
+                    password: "",
+                  }));
 
-                  // Siempre cambiar a pestaña de login cuando se activa modo Admin
-                  if (!isAdminMode) {
-                    // NO prellenar email - dejar que el usuario lo ingrese manualmente
-                    setFormData((prev) => ({
-                      ...prev,
-                      password: "",
-                    }));
+                  setActiveTab("signin");
 
-                    // Forzar cambio de pestaña de login
-                    setActiveTab("signin");
-                    console.log("setActiveTab('signin') llamado");
-
-                    // Forzar re-renderizado con un pequeño delay
-                    setTimeout(() => {
-                      setActiveTab("signin");
-                      console.log("setActiveTab('signin') llamado en timeout");
-                    }, 10);
-
-                    toast({
-                      title: "Modo Admin Activado",
-                      description: "Ingresa tu email de administrador para continuar",
-                    });
-                  } else {
-                    setFormData((prev) => ({
-                      ...prev,
-                      email: "",
-                      password: "",
-                    }));
-                    toast({
-                      title: "Modo Normal Activado",
-                      description: "Ingresa tus credenciales de usuario",
-                    });
-                  }
+                  toast({
+                    title: nextMode ? "Modo Admin Activado" : "Modo Usuario Activado",
+                    description: nextMode
+                      ? "Ingresa tu email de administrador para continuar"
+                      : "Ingresa tus credenciales de usuario",
+                  });
                 }}
                 className="bg-linear-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
                 data-testid="toggle-auth-mode"
               >
                 <Shield className="h-4 w-4 mr-2" />
-                Admin
+                {isAdminLoginMode ? "Usuario" : "Admin"}
               </Button>
               </div>
             </div>
@@ -412,11 +427,13 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             <Tabs
-              defaultValue="signin"
+              value={activeTab}
               onValueChange={(value) => setActiveTab(value as "signin" | "signup")}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg">
+              <TabsList
+                className={`grid w-full ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg`}
+              >
                 <TabsTrigger
                   value="signin"
                   data-testid="switch-to-login"
@@ -426,15 +443,17 @@ const Auth = () => {
                 >
                   Iniciar Sesión
                 </TabsTrigger>
-                <TabsTrigger
-                  value="signup"
-                  data-testid="switch-to-register"
-                  type="button"
-                  onClick={() => setActiveTab("signup")}
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
-                >
-                  Registrarse
-                </TabsTrigger>
+                {!isAdminLoginMode && (
+                  <TabsTrigger
+                    value="signup"
+                    data-testid="switch-to-register"
+                    type="button"
+                    onClick={() => setActiveTab("signup")}
+                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
+                  >
+                    Registrarse
+                  </TabsTrigger>
+                )}
               </TabsList>
 
               <TabsContent value="signin">
@@ -444,142 +463,90 @@ const Auth = () => {
                   className="space-y-4"
                   data-testid="login-form"
                 >
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white font-medium">
-                      Correo electrnico
-                    </Label>
+                  <div>
+                    <Label htmlFor="email" className="text-white">Correo electrónico</Label>
                     <Input
                       id="email"
-                      name="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) =>
-                        handleInputChange("email", e.target.value)
-                      }
-                      required
+                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       placeholder="tu@email.com"
-                      autoComplete="email"
-                      data-testid="email-input"
-                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
+                      className="bg-white/10 border-white/20 text-white placeholder-white/70"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="password"
-                      className="text-white font-medium"
-                    >
-                      Contrasea
-                    </Label>
+                  <div>
+                    <Label htmlFor="password" className="text-white">Contraseña</Label>
                     <Input
                       id="password"
-                      name="password"
                       type="password"
                       value={formData.password}
-                      onChange={(e) =>
-                        handleInputChange("password", e.target.value)
-                      }
-                      required
-                      minLength={6}
-                      placeholder="Tu contraseña"
-                      autoComplete="current-password"
-                      data-testid="password-input"
-                      className="bg-white/10 border-white/20 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50"
+                      onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
+                      placeholder="********"
+                      className="bg-white/10 border-white/20 text-white placeholder-white/70"
                     />
                   </div>
-                  <div className="flex justify-end">
-                    <button
+                  <div className="flex gap-3">
+                    <Button
                       type="button"
-                      onClick={() => setShowResetPassword(true)}
-                      className="text-sm text-purple-300 hover:text-purple-200 underline"
+                      onClick={() => {
+                        setShowResetPassword(true);
+                      }}
+                      variant="outline"
+                      className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
                     >
                       ¿Olvidaste tu contraseña?
-                    </button>
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white font-bold shadow-lg transition-all duration-300 hover:from-purple-700 hover:to-blue-700 hover:scale-105"
-                    data-testid="login-button"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
-                  >
-                    Iniciar Sesión
-                  </Button>
-
-                  {authFeedback && (
-                    <p
-                      data-testid="auth-feedback"
-                      role="status"
-                      className={
-                        authFeedback.type === "error"
-                          ? "text-sm text-red-300"
-                          : "text-sm text-green-300"
-                      }
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 text-white"
                     >
-                      {authFeedback.message}
-                    </p>
-                  )}
-
-                  {/* Demo Login Button con glassmorphism mejorado - Navega a selector */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full border-2 border-yellow-400/50 bg-linear-to-r from-yellow-500/20 via-amber-500/20 to-yellow-500/20 backdrop-blur-sm text-white font-semibold hover:from-yellow-500/40 hover:via-amber-500/40 hover:to-yellow-500/40 hover:border-yellow-400 hover:text-white hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 active:scale-95 relative overflow-hidden group"
-                    onClick={() => navigate("/demo")}
-                    data-testid="demo-login-button"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
-                  >
-                    <div className="absolute inset-0 bg-linear-to-r from-yellow-400/0 via-yellow-400/20 to-yellow-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out pointer-events-none"></div>
-                    <Sparkles className="w-4 h-4 mr-2 relative z-10 group-hover:animate-spin" />
-                    <span className="relative z-10">Acceso Demo</span>
-                  </Button>
-
-                  {/* Club Demo Button - Próximamente */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled
-                    className="w-full border-2 border-purple-400/50 bg-linear-to-r from-purple-500/20 via-fuchsia-500/20 to-purple-500/20 backdrop-blur-sm text-white/70 font-semibold cursor-not-allowed relative overflow-hidden"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
-                  >
-                    <Building className="w-4 h-4 mr-2" />
-                    <span>Club Demo - Próximamente</span>
-                  </Button>
+                      Iniciar Sesión
+                    </Button>
+                  </div>
                 </form>
               </TabsContent>
 
-              <TabsContent value="signup" data-testid="register-form">
-                <div className="space-y-4">
-                  <div className="flex gap-4 justify-center mb-4">
-                    <Button
-                      onClick={() => handleInputChange("accountType", "single")}
-                      className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 text-white"
-                    >
-                      Soltero/a
-                    </Button>
-                    <Button
-                      onClick={() => handleInputChange("accountType", "couple")}
-                      className="flex-1 bg-linear-to-r from-pink-600 to-purple-600 text-white"
-                    >
-                      Pareja
-                    </Button>
+              {!isAdminLoginMode && (
+                <TabsContent value="signup" data-testid="register-form">
+                  <div className="space-y-4">
+                    <div className="flex gap-4 justify-center mb-4">
+                      <Button
+                        type="button"
+                        onClick={() => handleInputChange("accountType", "single")}
+                        className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 text-white"
+                      >
+                        Soltero/a
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => handleInputChange("accountType", "couple")}
+                        className="flex-1 bg-linear-to-r from-pink-600 to-purple-600 text-white"
+                      >
+                        Pareja
+                      </Button>
+                    </div>
+
+                    {formData.accountType && (
+                      <Button
+                        type="button"
+                        onClick={handleAutoLocation}
+                        disabled={autoLocationRequested}
+                        className="w-full bg-linear-to-r from-green-600 to-emerald-600 text-white"
+                      >
+                        {autoLocationRequested
+                          ? "Ubicación obtenida"
+                          : "Obtener mi ubicación"}
+                      </Button>
+                    )}
+
+                    {formData.accountType === "single" ? (
+                      <SingleRegistrationForm onSuccess={() => navigate("/")} />
+                    ) : formData.accountType === "couple" ? (
+                      <CoupleRegistrationForm onSuccess={() => navigate("/")} />
+                    ) : null}
                   </div>
-
-                  {formData.accountType && (
-                    <Button
-                      onClick={handleAutoLocation}
-                      disabled={autoLocationRequested}
-                      className="w-full bg-linear-to-r from-green-600 to-emerald-600 text-white"
-                    >
-                      {autoLocationRequested ? "Ubicación obtenida" : "Obtener mi ubicación"}
-                    </Button>
-                  )}
-
-                  {formData.accountType === "single" ? (
-                    <SingleRegistrationForm onSuccess={() => navigate("/")} />
-                  ) : formData.accountType === "couple" ? (
-                    <CoupleRegistrationForm onSuccess={() => navigate("/")} />
-                  ) : null}
-                </div>
-              </TabsContent>
+                </TabsContent>
+              )}
             </Tabs>
           </CardContent>
         </Card>
@@ -633,7 +600,7 @@ const Auth = () => {
             <div className="space-y-4">
               <Button
                 onClick={() => {
-                  setFormData((prev) => ({ ...prev, preferredTheme: "dark" }));
+                  setTheme("dark");
                   setShowThemeModal(false);
                 }}
                 className="w-full bg-linear-to-r from-purple-600 to-blue-600 text-white"
@@ -642,7 +609,7 @@ const Auth = () => {
               </Button>
               <Button
                 onClick={() => {
-                  setFormData((prev) => ({ ...prev, preferredTheme: "light" }));
+                  setTheme("light");
                   setShowThemeModal(false);
                 }}
                 className="w-full bg-linear-to-r from-pink-600 to-purple-600 text-white"

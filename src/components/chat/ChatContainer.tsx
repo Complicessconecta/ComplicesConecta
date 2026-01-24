@@ -139,15 +139,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
 
       {/* Área de Mensajes */}
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-2"
+        className="flex-1 overflow-y-auto p-4 space-y-2 bg-[radial-gradient(circle_at_20%_80%,rgba(120,119,198,0.1)_0%,transparent_50%),radial-gradient(circle_at_80%_20%,rgba(255,119,198,0.1)_0%,transparent_50%),radial-gradient(circle_at_40%_40%,rgba(120,119,198,0.05)_0%,transparent_50%)]"
         onScroll={handleScroll}
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)
-          `,
-        }}
       >
         <AnimatePresence mode="popLayout">
           {messages.map((message, _index) => (

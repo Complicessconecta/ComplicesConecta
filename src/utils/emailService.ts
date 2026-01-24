@@ -40,7 +40,7 @@ export class EmailService {
       !import.meta.env.VITE_SUPABASE_URL ||
       !import.meta.env.VITE_SUPABASE_ANON_KEY
     ) {
-      throw new Error(
+      logger.warn(
         "Supabase URL or Anon Key is not defined in environment variables.",
       );
     }
@@ -57,6 +57,12 @@ export class EmailService {
       // Validar email con Zod
       validateEmail({ email: to, template });
       logger.info(`Enviando email con template: ${template}`, { to });
+
+      if (!this.baseUrl || !this.anonKey) {
+        throw new Error(
+          "Supabase URL or Anon Key is not defined in environment variables.",
+        );
+      }
 
       const response = await fetch(`${this.baseUrl}/functions/v1/send-email`, {
         method: "POST",

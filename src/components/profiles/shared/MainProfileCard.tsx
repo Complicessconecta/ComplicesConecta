@@ -7,7 +7,7 @@ import { logger } from "@/lib/logger";
 import { useProfileTheme, Gender, ProfileType, Theme } from "@/features/profile/useProfileTheme";
 import { inferProfileKind } from "@/lib/media";
 import { cn } from "@/shared/lib/cn";
-import { validateProfileCard } from "@/lib/zod-schemas";
+import { validateProfileCard } from "@/lib/validation/zod/zod-schemas";
 
 interface ProfileCardProps {
   profile: {

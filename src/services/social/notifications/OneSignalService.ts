@@ -35,9 +35,33 @@ class OneSignalService {
   private OneSignal: typeof window.OneSignal | null = null;
 
   private constructor() {
-    // Lazy load OneSignal SDK
-    if (typeof window !== "undefined") {
-      this.loadOneSignalSDK();
+    void 0;
+  }
+
+  private async hasPrivacyConsent(): Promise<boolean> {
+    try {
+      if (!supabase) return false;
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      const { data, error } = await supabase
+        .from("user_consents")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("consent_type", "PRIVACY")
+        .eq("document_path", "docs/legal/PRIVACY_POLICY.md")
+        .eq("is_active", true)
+        .order("consented_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) return false;
+      return Boolean(data?.id);
+    } catch {
+      return false;
     }
   }
 
@@ -53,6 +77,20 @@ class OneSignalService {
    */
   private async loadOneSignalSDK(): Promise<void> {
     if (this.isInitialized || typeof window === "undefined") {
+      return;
+    }
+
+    if (import.meta.env.PROD !== true) {
+      return;
+    }
+
+    if (import.meta.env.VITE_APP_MODE === "demo") {
+      return;
+    }
+
+    const allowed = await this.hasPrivacyConsent();
+    if (!allowed) {
+      logger.info("OneSignal no inicializado (sin consentimiento PRIVACY)");
       return;
     }
 

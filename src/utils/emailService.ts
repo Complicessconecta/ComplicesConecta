@@ -4,7 +4,7 @@
 // Logs informativos agregados para monitoreo en producción
 
 import { logger } from "@/lib/logger";
-import { validateEmail } from "@/lib/zod-schemas";
+import { validateEmail } from "@/lib/validation";
 
 
 export interface EmailData {
@@ -55,7 +55,7 @@ export class EmailService {
   ) {
     try {
       // Validar email con Zod
-      validateEmail({ email: to, template });
+      validateEmail(to);
       logger.info(`Enviando email con template: ${template}`, { to });
 
       if (!this.baseUrl || !this.anonKey) {

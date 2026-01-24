@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/features/auth/useAuth";
-import { validateStaking } from "@/lib/zod-schemas";
+import { validateStaking } from "@/lib/validation/zod/zod-schemas";
 import { shouldUseRealSupabase, getAppConfig } from "@/lib/app-config";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -216,7 +216,7 @@ export const useTokens = () => {
         ];
         setRewards(mockRewards);
 
-        logger.info(" Datos de tokens demo cargados - Balance:", demoBalance);
+        logger.info("Datos de tokens demo cargados - Balance:", { ...demoBalance });
       } else {
         // Cargar datos reales desde Supabase usando TokenService
         logger.info(

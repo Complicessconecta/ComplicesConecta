@@ -1,4 +1,4 @@
-# RELEASE NOTES v3.9.4
+# RELEASE NOTES v4.0.0
 
 ## 📅 Bitácora 22 Ene 2026
 

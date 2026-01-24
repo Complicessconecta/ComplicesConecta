@@ -10,7 +10,7 @@ import {
   EmailValidationSchema as EmailSchema,
   StakingSchema,
   TokenTransactionSchema,
-} from "@/lib/zod-schemas";
+} from "@/lib/validation/zod/zod-schemas";
 
 describe("Zod Schema Validation", () => {
   describe("ProfileCard Validation", () => {

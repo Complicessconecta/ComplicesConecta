@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ExclamationTriangleIcon, CheckCircleIcon, XCircleIcon, ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { reportService } from "@/services/social/ReportService";
+import { reportService } from "@/services";
 import { logger } from "@/lib/logger";
 
 interface LocalReport {

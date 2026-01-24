@@ -131,7 +131,9 @@ class AIIntegrationService {
 
       logger.info('✅ Modelos de IA inicializados correctamente');
     } catch (error) {
-      logger.error('❌ Error inicializando modelos de IA:', { error: error.message, stack: error.stack });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('❌ Error inicializando modelos de IA:', { error: errorMsg, stack: errorStack });
     }
   }
 
@@ -188,7 +190,9 @@ class AIIntegrationService {
         },
       };
     } catch (error) {
-      logger.error('Error procesando mensaje de chat:', { error: error.message, stack: error.stack });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('❌ Error procesando chat:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -202,7 +206,9 @@ class AIIntegrationService {
       const predictions = await this.toxicityModel.classify(message);
       return predictions.some((prediction: { results: Array<{ match: boolean }> }) => prediction.results[0]?.match ?? false);
     } catch (error) {
-      logger.error('Error verificando toxicidad:', { error: error.message, stack: error.stack });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('❌ Error clasificando toxicidad:', { error: errorMsg, stack: errorStack });
       return false; // Por seguridad, si falla el modelo, permitimos el mensaje
     }
   }
@@ -256,7 +262,9 @@ class AIIntegrationService {
 
       return recommendations.slice(0, 10); // Top 10 recomendaciones
     } catch (error) {
-      logger.error('Error generando recomendaciones AI:', { error: error.message, stack: error.stack });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('❌ Error generando embeddings:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -301,7 +309,9 @@ class AIIntegrationService {
         timeframe: predictionData.timeframe,
       };
     } catch (error) {
-      logger.error('Error prediciendo uso de tokens:', { error: error.message, stack: error.stack });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('❌ Error en recomendación de contenido:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }
@@ -355,7 +365,9 @@ class AIIntegrationService {
         relatedTopics: await this.extractRelatedTopics(question, finalAnswer),
       };
     } catch (error) {
-      logger.error('Error en Q&A:', { error: error.message, stack: error.stack });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('❌ Error en Q&A:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }

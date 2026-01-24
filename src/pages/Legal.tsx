@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
 import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info } from "lucide-react";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 const Legal: FC = () => {
   const navigate = useNavigate();
@@ -493,7 +494,7 @@ const Legal: FC = () => {
                 <div className="flex flex-wrap justify-center gap-4">
                   <Button
                     onClick={() =>
-                      window.open("mailto:legal@complicesconecta.com")
+                      safeOpenUrl("mailto:legal@complicesconecta.com")
                     }
                     className="bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
                   >

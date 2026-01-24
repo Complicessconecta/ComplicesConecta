@@ -19,6 +19,7 @@ import { cn } from "@/shared/lib/cn";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
+import type { Database } from "@/types/supabase-generated";
 import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
@@ -195,6 +196,8 @@ function ProfileCouple() {
   type CoupleRequest = Awaited<
     ReturnType<typeof nftService.getCoupleNFTRequests>
   >[number];
+  type CoupleAgreementRow = Database["public"]["Tables"]["couple_agreements"]["Row"];
+  type CoupleDisputeRow = Database["public"]["Tables"]["couple_disputes"]["Row"];
   type TestnetInfo = Awaited<
     ReturnType<typeof walletService.getTestnetTokensInfo>
   >;
@@ -262,8 +265,8 @@ function ProfileCouple() {
           return;
         }
 
-        const { data, error } = await (supabase as any)
-          .from("couple_agreements" as any)
+        const { data, error } = await supabase
+          .from("couple_agreements")
           .select(
             "id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip",
           )
@@ -281,28 +284,18 @@ function ProfileCouple() {
           return;
         }
 
-        // Interface for the agreement row to avoid 'any'
-        interface AgreementRow {
-          id: string;
-          agreement_hash: string;
-          status: string;
-          signed_at: string | null;
-          partner_1_id: string;
-          partner_2_id: string;
-          partner_1_ip?: string;
-          partner_2_ip?: string;
-        }
-
-        const row = data as unknown as AgreementRow;
+        const row = data as CoupleAgreementRow | null;
 
         if (row && row.status === "ACTIVE") {
           let signerIp: string | null = null;
           if (user?.id && row.partner_1_id === user.id) {
-            signerIp = row.partner_1_ip ?? null;
+            signerIp = typeof row.partner_1_ip === "string" ? row.partner_1_ip : null;
           } else if (user?.id && row.partner_2_id === user.id) {
-            signerIp = row.partner_2_ip ?? null;
+            signerIp = typeof row.partner_2_ip === "string" ? row.partner_2_ip : null;
           } else {
-            signerIp = row.partner_1_ip ?? row.partner_2_ip ?? null;
+            const ip1 = typeof row.partner_1_ip === "string" ? row.partner_1_ip : null;
+            const ip2 = typeof row.partner_2_ip === "string" ? row.partner_2_ip : null;
+            signerIp = ip1 ?? ip2 ?? null;
           }
 
           setHasActiveAgreement(true);
@@ -347,8 +340,8 @@ function ProfileCouple() {
       }
 
       try {
-        const { data, error } = await (supabase as any)
-          .from("couple_disputes" as any)
+        const { data, error } = await supabase
+          .from("couple_disputes")
           .select("resolved_at, resolution_type")
           .eq("couple_agreement_id", agreementMeta.id)
           .order("created_at", { ascending: false })
@@ -360,12 +353,7 @@ function ProfileCouple() {
           return;
         }
 
-        interface DisputeRow {
-          resolved_at?: string | null;
-          resolution_type?: string | null;
-        }
-
-        const dispute = data as unknown as DisputeRow | null;
+        const dispute = data as CoupleDisputeRow | null;
 
         if (!dispute) {
           setRelationshipStatus("ACTIVE");

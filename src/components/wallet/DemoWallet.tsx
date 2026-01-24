@@ -4,6 +4,7 @@
 // Descripción: Componente de wallet para perfiles demo
 
 import { useEffect, useMemo, useState } from "react";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
@@ -483,7 +484,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
                 </Button>
                 <Button
                   onClick={() => {
-                    window.open('https://polygonscan.com', '_blank');
+                    safeOpenUrl('https://polygonscan.com');
                     setShowPolygonModal(false);
                   }}
                   className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"

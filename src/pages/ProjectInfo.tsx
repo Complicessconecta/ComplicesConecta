@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
@@ -387,9 +388,8 @@ export default function ProjectInfo() {
                 </p>
                 <Button
                   onClick={() =>
-                    window.open(
-                      "https://github.com/complicesconecta/conecta-social-comunidad/releases",
-                      "_blank",
+                    safeOpenUrl(
+                      "https://github.com/complicesconecta/conecta-social-comunidad/releases"
                     )
                   }
                   className="bg-green-600 hover:bg-green-700"

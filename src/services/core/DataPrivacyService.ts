@@ -93,8 +93,8 @@ export class DataPrivacyService {
         // Perfil
         supabase.from("profiles").select("*").eq("user_id", userId).single(),
 
-        // Imágenes (tabla puede no existir en tipos generados)
-        (supabase as any).from("images").select("*").eq("profile_id", userId),
+        // Imágenes
+        supabase.from("images").select("*").eq("profile_id", userId),
 
         // Matches
         supabase

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Heart, Flame, CheckCircle, Crown, Star, MapPin, MessageCircle, User } from "lucide-react";
@@ -62,9 +63,9 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(
         : "single";
 
       if (profileType === "couple") {
-        window.open("/profile-couple", "_blank");
+        safeOpenUrl("/profile-couple");
       } else {
-        window.open("/profile-single", "_blank");
+        safeOpenUrl("/profile-single");
       }
     }, [profile.interested_in]);
 

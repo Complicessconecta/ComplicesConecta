@@ -182,9 +182,36 @@ const Auth = () => {
     let didSucceed = false;
 
     try {
+      // Determinar si el input es un ID de administrador o un correo
+      const input = formData.email.trim();
+      const isAdminId = input.startsWith('admin_') && input.includes('_');
+
+      let loginEmail = formData.email;
+
+      // Si es un ID de administrador, buscar el correo correspondiente
+      if (isAdminId) {
+        const { data: adminData, error: adminError } = await supabase
+          .from('admin_users')
+          .select('user_id')
+          .eq('id', input)
+          .single();
+
+        if (adminError || !adminData) {
+          throw new Error('ID de administrador no encontrado');
+        }
+
+        // Buscar el correo del usuario en auth.users
+        const { data: userData, error: userError } = await supabase.auth.admin.getUserById(adminData.user_id);
+        if (userError || !userData?.user?.email) {
+          throw new Error('No se pudo obtener el correo del administrador');
+        }
+
+        loginEmail = userData.user.email;
+      }
+
       // Usar el método signIn del hook useAuth que maneja correctamente demo y producción
       const result = await signIn(
-        formData.email,
+        loginEmail,
         formData.password,
         formData.accountType || "single",
       );

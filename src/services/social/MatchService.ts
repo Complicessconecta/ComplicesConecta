@@ -45,7 +45,7 @@ class MatchService {
 
     try {
       // 1. Insertar el nuevo 'like'
-      const { error: insertError } = await (supabase as any)
+      const { error: insertError } = await supabase
         .from("profile_likes")
         .insert({ liker_id: likerId, liked_id: likedId });
 
@@ -116,7 +116,7 @@ class MatchService {
         user2Id,
       );
 
-      const { error } = await (supabase as any).from("matches").insert({
+      const { error } = await supabase.from("matches").insert({
         profile_id_1: profileId1,
         profile_id_2: profileId2,
         // Importante: mantener compatibilidad con RLS antigua que valida auth.uid() = user1_id
@@ -213,7 +213,7 @@ class MatchService {
     }
 
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("matches")
         .select("profile_id_1, profile_id_2, user1_id, user2_id")
         .eq("status", "accepted")

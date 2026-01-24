@@ -1,8 +1,8 @@
-import React from "react";
-//import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, FileText, ExternalLink, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import { X, FileText, Shield, ExternalLink, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 interface TermsModalProps {
   isOpen: boolean;
@@ -50,7 +50,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       Términos y Condiciones
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
-                      Plataforma +18 - Contenido para adultos
+                      Plataforma +18 - Contenido para Adultos
                     </p>
                   </div>
                 </div>
@@ -97,7 +97,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">
-                          Edad Mínima
+                          Edad Mínima:
                         </h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
                           Debes ser mayor de 18 años para usar la plataforma
@@ -225,9 +225,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       <li>• Soy mayor de 18 años</li>
                       <li>• He leído y acepto los términos y condiciones</li>
                       <li>• Acepto las políticas de privacidad y cookies</li>
-                      <li>
-                        • Entiendo que esta es una plataforma para adultos
-                      </li>
+                      <li>• Entiendo que esta es una plataforma para adultos</li>
                     </ul>
                   </div>
                 </div>

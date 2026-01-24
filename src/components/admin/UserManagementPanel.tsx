@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -616,7 +617,7 @@ export function UserManagementPanel() {
                                 variant="outline"
                                 className="justify-start"
                                 onClick={() =>
-                                  window.open(`/profile/${user.id}`, "_blank")
+                                  safeOpenUrl(`/profile/${user.id}`)
                                 }
                               >
                                 <Eye className="w-4 h-4 mr-2" />

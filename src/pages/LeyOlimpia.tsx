@@ -3,6 +3,7 @@ import { Shield, AlertTriangle, Phone, Mail, ExternalLink, ArrowLeft } from "luc
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { useNavigate } from "react-router-dom";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 const LeyOlimpia: React.FC = () => {
   const navigate = useNavigate();
@@ -49,8 +50,8 @@ const LeyOlimpia: React.FC = () => {
                 <p>
                   Esta ley <strong>protege a las víctimas</strong> de la
                   difusión no autorizada de imágenes, videos o audios de
-                  contenido sexual o erótico, conocido como "revenge porn" o
-                  "porno venganza".
+                  contenido sexual o erótico, conocido como "Revenge Porn" o
+                  "Porno Venganza".
                 </p>
               </CardContent>
             </Card>
@@ -70,7 +71,7 @@ const LeyOlimpia: React.FC = () => {
                       ✅ Cumplimiento Total
                     </h4>
                     <p className="text-sm">
-                      Respetamos y aplicamos estrictamente todías las
+                      Respetamos y aplicamos estrictamente todas las
                       disposiciones de la Ley Olimpia.
                     </p>
                   </div>
@@ -110,7 +111,7 @@ const LeyOlimpia: React.FC = () => {
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Shield className="w-5 h-5 text-cyan-400 mr-2" />
-                  Medidías de Protección Implementadías
+                  Medidías de Protección Implementadas
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90">
@@ -118,7 +119,7 @@ const LeyOlimpia: React.FC = () => {
                   <li className="flex items-start">
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
-                      <strong>Marca de agua obligatoria:</strong> Todías las
+                      <strong>Marca de agua obligatoria:</strong> Todas las
                       imágenes privadías incluyen marca de agua "ComplicesConecta
                       © Privado"
                     </span>
@@ -127,21 +128,21 @@ const LeyOlimpia: React.FC = () => {
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
                       <strong>Protección anti-copia:</strong> Deshabilitación de
-                      clic derecho, arrastrar y guardar
+                      clic Derecho, Arrastrar, Guardar, Captura de Pantalla y Grabacion de Video.
                     </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
                       <strong>Control parental:</strong> Sistema de bloqueo para
-                      proteger menores
+                      proteger menores de Contenido Inapropiado
                     </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
                       <strong>Moderación 24/7:</strong> Equipo dedicado para
-                      revisar reportes
+                      revisar , y validar Reportes e Infracciones
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -174,10 +175,7 @@ const LeyOlimpia: React.FC = () => {
                   <Button
                     className="w-full bg-red-600 hover:bg-red-700 text-white"
                     onClick={() =>
-                      window.open(
-                        "mailto:reportes@complicesconecta.com?subject=Reporte Ley Olimpia",
-                        "_blank",
-                      )
+                      safeOpenUrl("mailto:reportes@complicesconecta.com?subject=Reporte Ley Olimpia")
                     }
                   >
                     <Mail className="w-4 h-4 mr-2" />
@@ -197,7 +195,7 @@ const LeyOlimpia: React.FC = () => {
                   </Button>
                 </div>
                 <p className="text-xs text-center text-white/70">
-                  Respuesta garantizada en menos de 2 horas
+                  Respuesta garantizada en menos de 24 horas
                 </p>
               </CardContent>
             </Card>
@@ -226,9 +224,7 @@ const LeyOlimpia: React.FC = () => {
                 <Button
                   variant="outline"
                   className="w-full text-white border-white/30 hover:bg-white/10"
-                  onClick={() =>
-                    window.open("https://www.gob.mx/conavim", "_blank")
-                  }
+                  onClick={() => safeOpenUrl("https://www.gob.mx/conavim")}
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   CONAVIM
@@ -236,7 +232,7 @@ const LeyOlimpia: React.FC = () => {
                 <Button
                   variant="outline"
                   className="w-full text-white border-white/30 hover:bg-white/10"
-                  onClick={() => window.open("tel:911")}
+                  onClick={() => safeOpenUrl("tel:911")}
                 >
                   <Phone className="w-4 h-4 mr-2" />
                   Emergencias 911
@@ -262,7 +258,7 @@ const LeyOlimpia: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-purple-400">
-                    &lt;2h
+                    &lt;24 hrs
                   </div>
                   <div className="text-sm">Tiempo de respuesta</div>
                 </div>

@@ -421,11 +421,11 @@ export class ConsentService {
   }> {
     try {
       const [consentsResult, couplesResult] = await Promise.all([
-        (supabase as any)
+        supabase
           .from("user_consents")
           .select("is_active, expires_at, revoked_at"),
 
-        (supabase as any).from("couple_agreements").select("id"),
+        supabase.from("couple_agreements").select("id"),
       ]);
 
       if (consentsResult.error || couplesResult.error) {

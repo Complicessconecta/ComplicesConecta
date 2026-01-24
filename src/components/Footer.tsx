@@ -1,13 +1,7 @@
-import {
-  Heart,
-  Facebook,
-  Instagram,
-  Twitter,
-  Mail,
-  MessageCircle,
-} from "lucide-react";
+import { Heart, Facebook, Instagram, Twitter, Mail, MessageCircle, } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { toast } from "@/hooks/useToast";
+import { safeOpenUrl } from "@/utils/safeOpenUrl";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -25,9 +19,9 @@ export const Footer = () => {
               </h3>
             </div>
             <p className="text-background/80 mb-4 leading-relaxed">
-              🇲🇽 <strong>Primera app lifestyle en México</strong> con
-              implementación completa de Ley Olimpia. Plataforma líder para
-              conexiones auténticas con máxima protección digital.
+              MX<strong>Primera app lifestyle en México</strong> con
+              implementación completa de Ley Olimpia. Plataforma Proximante líder para
+              conexiones auténticas con máxima Protección Digital.
             </p>
             <div className="flex space-x-3">
               <Button
@@ -35,7 +29,7 @@ export const Footer = () => {
                 size="icon"
                 className="text-background hover:text-primary"
                 onClick={() =>
-                  window.open("https://facebook.com/complicesconecta", "_blank")
+                  safeOpenUrl("https://facebook.com/complicesconecta")
                 }
               >
                 <Facebook className="h-5 w-5" />
@@ -45,10 +39,7 @@ export const Footer = () => {
                 size="icon"
                 className="text-background hover:text-primary"
                 onClick={() =>
-                  window.open(
-                    "https://instagram.com/complicesconecta",
-                    "_blank",
-                  )
+                  safeOpenUrl("https://instagram.com/complicesconecta")
                 }
               >
                 <Instagram className="h-5 w-5" />
@@ -58,7 +49,7 @@ export const Footer = () => {
                 size="icon"
                 className="text-background hover:text-primary"
                 onClick={() =>
-                  window.open("https://twitter.com/complicesconecta", "_blank")
+                  safeOpenUrl("https://twitter.com/complicesconecta")
                 }
               >
                 <Twitter className="h-5 w-5" />
@@ -75,7 +66,7 @@ export const Footer = () => {
                   to="/about"
                   className="text-background/80 hover:text-primary transition-colors"
                 >
-                  Quiénes Somos
+                  Quiénes Somos?
                 </Link>
               </li>
               <li>
@@ -83,7 +74,7 @@ export const Footer = () => {
                   to="/careers"
                   className="text-background/80 hover:text-primary transition-colors"
                 >
-                  Carreras
+                  Carrera
                 </Link>
               </li>
               <li>
@@ -195,12 +186,12 @@ export const Footer = () => {
                 <MessageCircle className="h-4 w-4 text-primary" />
                 <button
                   onClick={() =>
-                    window.open("https://wa.me/5617184109", "_blank")
+                    safeOpenUrl("https://wa.me/5617184109")
                   }
                   className="text-background/80 hover:text-primary transition-all duration-300 hover:scale-105 transform flex items-center space-x-2 group"
                 >
                   <span className="group-hover:animate-pulse">
-                    Soporte WhatsApp
+                    Proximamente: Soporte atravez de WhatsApp y Telegram
                   </span>
                 </button>
               </div>
@@ -250,7 +241,7 @@ export const Footer = () => {
         <div className="border-t border-background/20 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-background/60 text-sm">
-              2025 ComplicesConecta v3.4.0 - Sistema CMPX/GTK + World ID
+              2025 ComplicesConecta v4.0.0 - Sistema CMPX/GTK + World ID "Proximamente"
               Integration. Todos los derechos reservados.
             </div>
             <div className="flex space-x-6 text-sm">

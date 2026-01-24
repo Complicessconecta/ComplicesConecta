@@ -78,7 +78,8 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         <div className="progress-bar-container">
           <div
             className="progress-bar-fill"
-            style={{ width: `${progress}%` }}
+            data-progress={`${progress}%`}
+            style={{ '--progress': `${progress}%` } as React.CSSProperties}
           >
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
           </div>

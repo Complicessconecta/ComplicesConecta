@@ -246,15 +246,23 @@ scripts/*_admin*.sql
 scripts/step_by_step.sql
 scripts/simple_fix.sql
 scripts/create_admin_profile.sql
-scripts/fix_rls_profiles.sql
-scripts/create_missing_tables.sql
-regenerate-types.js
-apply-migrations.js
 
-# SQL temporales
-step*.sql
-*_policies*.sql
-*_insert_*.sql
+ # SQL temporales
+ step*.sql
+ *_policies*.sql
+ *_insert_*.sql
+ temp_dump*.sql
+ temp_trigger.sql
+
+ # Dumps/temporales locales (no versionar)
+ supabase-migration-list.json
+
+ # Respaldos/dumps SQL locales (no versionar)
+ supabase/respaldo_*.sql
+ temp_supabase_migrations_dump.sql
+
+ # EXCEPCIÓN: migraciones de Supabase SI deben versionarse (aunque tengan "policies" en el nombre)
+ !supabase/migrations/*_policies*.sql
 
 # ============================================================================
 # DOCUMENTACIÓN Y REPORTES (NO SUBIR A GIT)
@@ -356,6 +364,9 @@ dist/js/*.js
 # ============================================================================
 
 .vercel
+
+# New Relic (local infra agent config)
+newrelic-infra.yml
 
 # ============================================================================
 # REFERENCIA EXTERNA (plantillas/recursos - NO VERSIONAR)

@@ -216,7 +216,7 @@ export const useTokens = () => {
         ];
         setRewards(mockRewards);
 
-        logger.info(" Datos de tokens demo cargados - Balance:", demoBalance);
+        logger.info("Datos de tokens demo cargados - Balance:", { ...demoBalance });
       } else {
         // Cargar datos reales desde Supabase usando TokenService
         logger.info(

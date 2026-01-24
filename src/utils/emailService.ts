@@ -55,7 +55,7 @@ export class EmailService {
   ) {
     try {
       // Validar email con Zod
-      validateEmail({ email: to, template });
+      validateEmail(to);
       logger.info(`Enviando email con template: ${template}`, { to });
 
       if (!this.baseUrl || !this.anonKey) {

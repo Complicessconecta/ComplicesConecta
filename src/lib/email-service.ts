@@ -49,7 +49,7 @@ export class EmailService {
   ) {
     try {
       // Validar email con Zod
-      validateEmail({ email: to, template });
+      validateEmail(to);
       logger.info(`Enviando email con template: ${template}`, { to });
 
       const response = await fetch(`${this.baseUrl}/functions/v1/send-email`, {

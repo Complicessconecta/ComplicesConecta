@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Users, ArrowLeft, Sparkles, Building } from "lucide-react";
+import { Shield, Users, ArrowLeft, Sparkles } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
@@ -57,24 +57,10 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const {
-    getCurrentLocation: _getCurrentLocation,
-    location: _location,
-    isLoading: _locationLoading,
-    error: _locationError,
+    getCurrentLocation,
+    location,
   } = useGeolocation();
-  const {
-    user: _user,
-    session: _session,
-    profile: _profile,
-    loading: _loading,
-    signIn,
-    signOut: _signOut,
-    isAdmin: _isAdmin,
-    isDemo: _isDemo,
-    getProfileType: _getProfileType,
-    shouldUseProductionAdmin: _shouldUseProductionAdmin,
-    appMode: _appMode,
-  } = useAuth();
+  const { signIn } = useAuth();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
@@ -88,6 +74,29 @@ const Auth = () => {
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  const AuthFeedback = ({
+    feedback,
+  }: {
+    feedback: { type: "success" | "error"; message: string };
+  }) =>
+    feedback.type === "error" ? (
+      <div
+        className="rounded-lg border px-3 py-2 text-sm backdrop-blur-sm bg-red-500/10 border-red-500/30 text-red-200"
+        role="alert"
+        aria-live="assertive"
+      >
+        {feedback.message}
+      </div>
+    ) : (
+      <div
+        className="rounded-lg border px-3 py-2 text-sm backdrop-blur-sm bg-green-500/10 border-green-500/30 text-green-200"
+        role="status"
+        aria-live="polite"
+      >
+        {feedback.message}
+      </div>
+    );
 
   let setTheme: (theme: "light" | "dark" | "system") => void = () => {};
   try {
@@ -313,11 +322,11 @@ const Auth = () => {
       return;
     }
     try {
-      _getCurrentLocation();
-      if (_location && _location.latitude && _location.longitude) {
+      getCurrentLocation();
+      if (location && location.latitude && location.longitude) {
         setFormData((prev) => ({
           ...prev,
-          location: `${_location.latitude},${_location.longitude}`,
+          location: `${location.latitude},${location.longitude}`,
         }));
         setAutoLocationRequested(true);
         toast({
@@ -351,6 +360,11 @@ const Auth = () => {
       {/* Background completamente uniforme - sin bloques visibles */}
 
       <div className="relative z-10 w-full max-w-md">
+        {authFeedback && (
+          <div className="mb-3">
+            <AuthFeedback feedback={authFeedback} />
+          </div>
+        )}
         {/* Card con glassmorphism mejorado - más transparente para ver fondo */}
         <Card className="bg-white/5 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-visible">
           <CardHeader className="text-center">

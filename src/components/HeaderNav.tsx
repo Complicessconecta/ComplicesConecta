@@ -19,12 +19,29 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const getStringProp = (
+    obj: unknown,
+    key: string,
+  ): string | undefined => {
+    if (typeof obj !== "object" || obj === null) return undefined;
+    const value = (obj as Record<string, unknown>)[key];
+    return typeof value === "string" && value.trim().length > 0
+      ? value
+      : undefined;
+  };
+
+  const getUserMetadataNickname = (u: unknown): string | undefined => {
+    if (typeof u !== "object" || u === null) return undefined;
+    const meta = (u as Record<string, unknown>).user_metadata;
+    return getStringProp(meta, "nickname");
+  };
+
   const displayUserLabel =
-    (user as any)?.nickname ||
-    (user as any)?.user_metadata?.nickname ||
-    (profile as any)?.nickname ||
-    (profile as any)?.display_name ||
-    (profile as any)?.first_name ||
+    getStringProp(user, "nickname") ||
+    getUserMetadataNickname(user) ||
+    getStringProp(profile, "nickname") ||
+    getStringProp(profile, "display_name") ||
+    getStringProp(profile, "first_name") ||
     user?.email?.split("@")[0] ||
     "Perfil";
 

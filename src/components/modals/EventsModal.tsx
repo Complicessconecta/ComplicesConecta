@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +71,17 @@ const EventsModal: React.FC<EventsModalProps> = ({
       maxAttendees: 20,
     },
   ];
+
+  const progressRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  useEffect(() => {
+    upcomingEvents.forEach((event, index) => {
+      const el = progressRefs.current[index];
+      if (!el) return;
+      const pct = (event.attendees / event.maxAttendees) * 100;
+      el.style.setProperty("--progress-width", `${pct}%`);
+    });
+  }, [upcomingEvents]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -156,7 +167,9 @@ const EventsModal: React.FC<EventsModalProps> = ({
                     <div className="w-full bg-white/20 rounded-full h-1.5">
                       <div
                         className="h-1.5 rounded-full bg-linear-to-r from-purple-400 to-blue-400 attendee-progress"
-                        style={{ '--progress-width': `${(event.attendees / event.maxAttendees) * 100}%` } as React.CSSProperties}
+                        ref={(el) => {
+                          progressRefs.current[index] = el;
+                        }}
                       ></div>
                     </div>
                   </div>

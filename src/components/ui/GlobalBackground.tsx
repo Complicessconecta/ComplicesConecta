@@ -219,21 +219,20 @@ export const GlobalBackground: FC<{
       ? "/backgrounds/Animate-bg2.mp4"
       : "/backgrounds/animate-bg.mp4";
 
+  const solidColorClasses: Record<string, string> = {
+    "#0f172a": "bg-slate-900",
+    "#1e1b4b": "bg-indigo-950",
+    "#312e81": "bg-indigo-900",
+    "#4c1d95": "bg-violet-900",
+    "#831843": "bg-pink-900",
+    "#000000": "bg-black",
+  };
+
   return (
     <>
       {/* Contenedor de partículas FIJO con z-index negativo (NO bloquea contenido) */}
       {engineReady && showParticles && (
-        <div
-          className="pointer-events-none"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            zIndex: -50,
-          }}
-        >
+        <div className="pointer-events-none fixed inset-0 w-screen h-screen -z-50">
           <Particles
             id="tsparticles-global"
             options={{
@@ -251,31 +250,31 @@ export const GlobalBackground: FC<{
 
       {/* Contenedor principal del fondo - z-index negativo */}
       <div
-        className={cn("pointer-events-none", className)}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          zIndex: -100,
-          backgroundColor: "transparent",
-        }}
+        className={cn(
+          "pointer-events-none fixed inset-0 w-screen h-screen -z-100 bg-transparent",
+          className,
+        )}
       >
         {/* Imagen de Fondo (capa más baja) */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-linear-to-br from-purple-900 via-indigo-900 to-blue-900"
-          style={{
-            backgroundImage:
-              bgPrefs.backgroundMode === "solid"
-                ? "none"
-                : `url(${resolvedBackgroundImage})`,
-            backgroundColor:
-              bgPrefs.backgroundMode === "solid"
-                ? bgPrefs.solidColor
-                : undefined,
-          }}
-        />
+        <div className="absolute inset-0 bg-linear-to-br from-purple-900 via-indigo-900 to-blue-900">
+          {bgPrefs.backgroundMode !== "solid" && (
+            <img
+              src={resolvedBackgroundImage}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="eager"
+              draggable={false}
+            />
+          )}
+          {bgPrefs.backgroundMode === "solid" && (
+            <div
+              className={cn(
+                "absolute inset-0",
+                solidColorClasses[bgPrefs.solidColor] ?? "bg-black",
+              )}
+            />
+          )}
+        </div>
 
         {showVideo && (
           <video
@@ -294,10 +293,7 @@ export const GlobalBackground: FC<{
       </div>
 
       {/* Contenido scrollable - position relative, z-index positivo */}
-      <div
-        className="relative w-full h-full overflow-auto pointer-events-auto"
-        style={{ zIndex: 1 }}
-      >
+      <div className="relative w-full h-full overflow-auto pointer-events-auto z-10">
         {children}
       </div>
     </>

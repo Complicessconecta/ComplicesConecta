@@ -722,8 +722,7 @@ src/                          # Directorio raíz del frontend
 ├── demo/                     # Flujos y pantallas de demo
 ├── entities/                 # Entidades y tipos de dominio
 ├── examples/                 # Ejemplos aislados / sandboxes
-├── shared/                   # UI compartida (componentes, lib, hooks)
-│   └── ui/                  # Componentes UI compartidos
+├── shared/                   # Directorio compartido (lib, hooks, etc.)
 ├── security/                 # Seguridad y autenticación
 └── utils/                    # Utilidades genéricas (helpers, format, etc.)
     ├── webVitals.ts

@@ -1,14 +1,27 @@
+
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
+
 import { suppressWalletErrors } from "@/lib/wallet-silencer";
 import { startErrorCapture } from "@/utils/captureConsoleErrors";
 import { createRoot } from "react-dom/client";
 import * as React from "react";
 import type { WindowWithReact } from "@/types/react.types";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-
-// ------------------------------------------------------------------
-// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
-// Sistema operando bajo reglas de determinismo y robustez v4.0
-// ------------------------------------------------------------------
+import App from "@/App";
+import "./styles/index.css"; // Estilos con Tailwind CSS (consolidados en src/styles/)
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { BackgroundProvider } from "@/context/BackgroundContext";
+import { AppInitializer } from "@/components/AppInitializer"; // <-- IMPORTADO
+import { initSentry } from "@/config/sentry.config";
+import { initializeDatadogRUM } from "@/config/datadog-rum.config";
+import { initPostHog } from "@/config/posthog.config";
+import { oneSignalService } from "@/services/social/notifications/OneSignalService";
+import { DebugInfo } from "@/debug";
+import { logger } from "@/lib/logger";
 
 // CRÍTICO: Iniciar la captura de errores de consola lo antes posible.
 startErrorCapture();
@@ -143,19 +156,6 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Ahora sí, importar el resto de las dependencias
-import App from "@/App";
-import "./styles/index.css"; // Estilos con Tailwind CSS (consolidados en src/styles/)
-import ErrorBoundary from "@/components/ErrorBoundary";
-import { BackgroundProvider } from "@/context/BackgroundContext";
-import { AppInitializer } from "@/components/AppInitializer"; // <-- IMPORTADO
-import { initSentry } from "@/config/sentry.config";
-import { initializeDatadogRUM } from "@/config/datadog-rum.config";
-import { initPostHog } from "@/config/posthog.config";
-import { oneSignalService } from "@/services/social/notifications/OneSignalService";
-import { DebugInfo } from "@/debug";
-import { logger } from "@/lib/logger";
-
 // Debug info for development only
 if (import.meta.env.DEV) {
   logger.info("ComplicesConecta v3.6.3 starting...");
@@ -261,13 +261,26 @@ async function initializeApp() {
     // Mostrar error en el DOM si es posible
     const container = document.getElementById("root");
     if (container) {
-      container.innerHTML = `
-        <div style="padding: 20px; color: red; font-family: monospace;">
-          <h2>Error al inicializar la aplicación</h2>
-          <p>${error instanceof Error ? error.message : "Error desconocido"}</p>
-          <p>Por favor, recarga la página o contacta soporte.</p>
-        </div>
-      `;
+      container.replaceChildren();
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "20px";
+      wrapper.style.color = "red";
+      wrapper.style.fontFamily = "monospace";
+
+      const title = document.createElement("h2");
+      title.textContent = "Error al inicializar la aplicación";
+
+      const message = document.createElement("p");
+      message.textContent =
+        error instanceof Error ? error.message : "Error desconocido";
+
+      const help = document.createElement("p");
+      help.textContent = "Por favor, recarga la página o contacta soporte.";
+
+      wrapper.appendChild(title);
+      wrapper.appendChild(message);
+      wrapper.appendChild(help);
+      container.appendChild(wrapper);
     }
   }
 }

@@ -41,13 +41,11 @@
 
 .progress-bar-container {
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
   height: 0.75rem;
   margin-bottom: 1rem;
   overflow: hidden;
-  -webkit-backdrop-filter: blur(0.375rem);
-  backdrop-filter: blur(0.375rem);
 }
 
 .progress-bar-fill {
@@ -56,6 +54,10 @@
   border-radius: 9999px;
   transition: width 0.3s ease-out;
   position: relative;
+}
+
+.progress-bar-fill[data-progress] {
+  width: var(--progress);
 }
 
 .loading-dot-delay-1 {

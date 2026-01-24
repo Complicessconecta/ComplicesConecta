@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
+import "./LoadingScreen.css";
 
 export interface LoadingScreenProps {
   onComplete: () => void;
@@ -41,15 +42,12 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   }, [loadingTexts.length]);
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/assets/loading/load1.jpg')" }}
-    >
+    <div className="loading-screen-container">
       {/* Overlay oscuro para mejorar legibilidad */}
-      <div className="absolute inset-0 bg-black/40"></div>
+      <div className="loading-screen-overlay"></div>
 
       {/* Main Loading Content */}
-      <div className="relative z-10 text-center px-4 sm:px-8 max-w-xs sm:max-w-md mx-auto flex flex-col items-center justify-center flex-1">
+      <div className="loading-screen-content">
         {/* Logo Animation */}
         <div className="mb-8 relative">
           <div className="relative inline-block">
@@ -77,9 +75,9 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-white/20 rounded-full h-3 mb-4 overflow-hidden backdrop-blur-sm">
+        <div className="progress-bar-container">
           <div
-            className="h-full bg-linear-to-r from-white to-white/80 rounded-full transition-all duration-300 ease-out relative"
+            className="progress-bar-fill"
             style={{ width: `${progress}%` }}
           >
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
@@ -93,18 +91,16 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         <div className="flex justify-center mt-6 space-x-2">
           <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce"></div>
           <div
-            className="w-3 h-3 bg-white/60 rounded-full animate-bounce"
-            style={{ animationDelay: "0.1s" }}
+            className="w-3 h-3 bg-white/60 rounded-full animate-bounce loading-dot-delay-1"
           ></div>
           <div
-            className="w-3 h-3 bg-white/60 rounded-full animate-bounce"
-            style={{ animationDelay: "0.2s" }}
+            className="w-3 h-3 bg-white/60 rounded-full animate-bounce loading-dot-delay-2"
           ></div>
         </div>
       </div>
 
       {/* Texto animado 'Cargando...' centrado en la parte inferior */}
-      <div className="relative z-10 pb-8 sm:pb-12">
+      <div className="loading-screen-bottom">
         <p className="text-white/90 text-lg sm:text-xl font-medium animate-pulse">
           Cargando...
         </p>

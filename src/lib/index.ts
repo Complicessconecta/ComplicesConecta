@@ -8,6 +8,7 @@ export * from './validation';
 export * from './security';
 export * from './analytics';
 export * from './supabase'; // Fase 3: migración de supabase a su propio directorio
+export * from './media'; // Migrado a media/ subdirectorio
 
 // Utils (mantener exportaciones directas para evitar conflictos)
 export type { LocationCoordinates } from './distance-utils';

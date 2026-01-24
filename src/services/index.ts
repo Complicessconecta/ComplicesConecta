@@ -18,18 +18,21 @@ export * from "@/services/features/events/VirtualEventsService";
 export * from "@/services/features/BannerManagementService";
 export * from "@/services/features/GlobalSearchService";
 
-// Analytics
-export * from "@/services/analytics/AnalyticsService";
-export * from "@/services/analytics/TokenAnalyticsService";
-export * from "@/services/analytics/HistoricalMetricsService";
-export * from "@/services/analytics/ProfileStatsService";
+// Analytics (migrados a analytics/ subdirectorio)
+export * from "@/services/analytics/analytics/AnalyticsService";
+export * from "@/services/analytics/analytics/TokenAnalyticsService";
+export * from "@/services/analytics/analytics/HistoricalMetricsService";
+export * from "@/services/analytics/analytics/ProfileStatsService";
+export * from "@/services/analytics/analytics/AdvancedAnalyticsService";
+export * from "@/services/analytics/analytics/ModerationMetricsService";
+export * from "@/services/analytics/analytics/ai";
 
-// Auth & Security
-export * from "@/services/auth/SecurityService";
-export * from "@/services/auth/UserVerificationService";
+// Auth & Security (migrados a auth/ subdirectorio)
+export * from "@/services/auth/auth/SecurityService";
+export * from "@/services/auth/auth/UserVerificationService";
 export * from "@/services/auth/digitalFingerprint";
 export * from "@/services/auth/permanentBan";
-export * from "@/services/auth/SecurityAuditService";
+export * from "@/services/auth/auth/SecurityAuditService";
 
 // Payments & Tokens
 export * from "@/services/payments/TokenService";
@@ -37,12 +40,12 @@ export * from "@/services/payments/WalletService";
 export * from "@/services/payments/NFTService";
 export * from "@/services/payments/NFTGalleryService";
 
-// Social & Moderation
-export * from "@/services/social/ContentModerationService";
-export * from "@/services/social/SmartMatchingService";
+// Social & Moderation (migrados a social/ subdirectorio)
+export * from "@/services/social/social/ContentModerationService";
+export * from "@/services/social/social/SmartMatchingService";
 export {
   reportService,
   type ReportResponse as ProfileReportResponse,
-} from "@/services/social/ReportService";
-export * from "@/services/social/postsService";
+} from "@/services/social/social/ReportService";
+export * from "@/services/social/social/postsService";
 export * from "@/services/social/chat/ChatPrivacyService";

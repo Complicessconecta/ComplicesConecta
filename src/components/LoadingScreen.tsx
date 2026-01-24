@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Heart } from "lucide-react";
-import "./LoadingScreen.css";
+import "@/styles/LoadingScreen.css";
 
 export interface LoadingScreenProps {
   onComplete: () => void;
@@ -9,6 +9,7 @@ export interface LoadingScreenProps {
 export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
   const [currentText, setCurrentText] = useState(0);
+  const progressFillRef = useRef<HTMLDivElement>(null);
 
   const loadingTexts = [
     "Conectando corazones...",
@@ -40,6 +41,12 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
 
     return () => clearInterval(textInterval);
   }, [loadingTexts.length]);
+
+  useEffect(() => {
+    if (progressFillRef.current) {
+      progressFillRef.current.style.width = `${progress}%`;
+    }
+  }, [progress]);
 
   return (
     <div className="loading-screen-container">
@@ -77,9 +84,8 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         {/* Progress Bar */}
         <div className="progress-bar-container">
           <div
+            ref={progressFillRef}
             className="progress-bar-fill"
-            data-progress={`${progress}%`}
-            style={{ '--progress': `${progress}%` } as React.CSSProperties}
           >
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
           </div>

@@ -86,12 +86,13 @@ Todos los dominios de alto y medio impacto han sido migrados correctamente.
 
 ## Reglas de Rutas
 
-### Rutas Absolutas vs Relativas
+### Rutas Absolutas vs Relativas en Barrels y Dominios
 
 **Regla general:** Usar rutas absolutas (`@/`) para:
 - Imports entre dominios diferentes
 - Imports desde barrels
 - Imports en componentes/services
+- **Creación de barrels para nuevos dominios**
 
 **Usar rutas relativas (`../`) solo cuando:**
 - Imports dentro del mismo dominio (módulos internos)
@@ -104,13 +105,28 @@ import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 import { validateEmail } from '@/lib/validation';
 
-// ✅ Correcto - Rutas relativas en barrels del mismo dominio
+// ✅ Correcto - Rutas absolutas en barrels para nuevos dominios
+export * from '@/lib/ai/contentModeration';  // Ruta absoluta para consistencia
+export * from '@/lib/ai/graphMatchingModel';  // Ruta absoluta para consistencia
+
+// ✅ Correcto - Rutas relativas en barrels del mismo dominio (justificado por legibilidad)
 export * from './supabase';
 export * from './validation/zod/zod-schemas';
 
 // ❌ Incorrecto - Rutas relativas entre dominios
 import { supabase } from '../supabase';
 ```
+
+**Justificación para rutas absolutas en barrels:**
+- Consistencia con imports entre dominios
+- Evita ambigüedad cuando hay múltiples niveles de subdirectorios
+- Facilita refactor futuro (mover archivos no rompe imports)
+- Mejor legibilidad para desarrolladores nuevos
+
+**Justificación para rutas relativas en barrels:**
+- Solo cuando el barrel está en el mismo directorio que los módulos que exporta
+- Mejor legibilidad en barrels pequeños (menos de 5 exports)
+- Justificado en comentario del barrel
 
 ---
 

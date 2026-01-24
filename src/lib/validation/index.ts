@@ -3,6 +3,6 @@
  * Import paths estables para migración futura
  */
 
-export { validateEmail, validateAge, validateCoupleAge } from '@/lib/validation';
-export * from '@/lib/zod-schemas';
-export * from '@/lib/visual-validation';
+export { validateEmail, validateAge, validateCoupleAge } from '../validation';
+export * from '../validation/zod/zod-schemas';
+export * from '../visual-validation';

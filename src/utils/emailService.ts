@@ -4,7 +4,7 @@
 // Logs informativos agregados para monitoreo en producción
 
 import { logger } from "@/lib/logger";
-import { validateEmail } from "@/lib/zod-schemas";
+import { validateEmail } from "@/lib/validation";
 
 
 export interface EmailData {

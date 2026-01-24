@@ -2,6 +2,9 @@
 // Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
 // Descripción: Tipos TypeScript para las tablas blockchain
 
+ import type { SupabaseClient } from "@supabase/supabase-js";
+ import type { Database } from "@/types/supabase-generated";
+
 export interface UserWallet {
   id: string;
   user_id: string;
@@ -46,23 +49,19 @@ export interface UserNFT {
 
 export interface CoupleNFTRequest {
   id: string;
-  requester_user_id: string;
-  partner_user_id: string;
+  initiator_address: string;
   partner1_address: string;
-  partner2_address?: string;
-  name: string;
-  description?: string;
-  image_url?: string;
-  metadata_uri?: string;
-  status: string;
-  consent1_timestamp?: string;
-  consent2_timestamp?: string;
+  partner2_address: string;
+  metadata_uri: string;
+  token_id: number;
   expires_at: string;
-  token_id?: number;
-  contract_address?: string;
-  network: string;
-  created_at: string;
-  updated_at: string;
+  status: "pending" | "approved" | "minted" | "cancelled" | "expired" | (string & {});
+  blockchain_status?: string | null;
+  transaction_hash?: string | null;
+  metadata?: Record<string, unknown> | null;
+  consent1_timestamp?: string | null;
+  consent2_timestamp?: string | null;
+  created_at?: string | null;
 }
 
 export interface NFTStaking {
@@ -129,20 +128,8 @@ export type BlockchainTransactionInsert = Omit<
   "id" | "created_at"
 >;
 
-// Cliente Supabase extendido con tipos blockchain
-// Usamos 'any' para el query builder porque el tipo exacto depende de Supabase client
-// Los datos se validan con type guards en el código
-export interface BlockchainSupabaseClient {
-  from(table: "user_wallets"): any;
-  from(table: "testnet_token_claims"): any;
-  from(table: "daily_token_claims"): any;
-  from(table: "user_nfts"): any;
-  from(table: "couple_nft_requests"): any;
-  from(table: "nft_staking"): any;
-  from(table: "token_staking"): any;
-  from(table: "blockchain_transactions"): any;
-  from(table: string): any;
-}
+// Cliente Supabase tipado con schema generado
+export type BlockchainSupabaseClient = SupabaseClient<Database>;
 
 // Helper para casting seguro de tipos blockchain
 export function safeBlockchainCast<T>(data: unknown): T {

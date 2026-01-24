@@ -20,8 +20,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { safeGetItem } from "@/utils/safeLocalStorage";
 import { WalletService } from "@/services/payments/WalletService";
-import type {CoupleNFTRequest,BlockchainSupabaseClient} from "@/types/blockchain";
+import type { BlockchainSupabaseClient } from "@/types/blockchain";
 import { safeBlockchainCast } from "@/types/blockchain";
+import type { Database } from "@/types/supabase-generated";
+
+ type CoupleNFTRequestRow =
+   Database["public"]["Tables"]["couple_nft_requests"]["Row"];
 
 const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
 
@@ -162,7 +166,7 @@ export class NFTService {
    */
   public async uploadImageToIPFS(
     file: File,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): Promise<string> {
     try {
       logger.info("Subiendo imagen a IPFS...");
@@ -218,7 +222,7 @@ export class NFTService {
     name: string,
     description: string,
     imageHash: string,
-    attributes: Record<string, any>,
+    attributes: Record<string, unknown>,
   ): Promise<string> {
     try {
       const metadata: NFTMetadata = {
@@ -227,7 +231,10 @@ export class NFTService {
         image: `${NFTService.PINATA_GATEWAY}${imageHash}`,
         attributes: Object.entries(attributes).map(([key, value]) => ({
           trait_type: key,
-          value: value as string | number,
+          value:
+            typeof value === "string" || typeof value === "number"
+              ? value
+              : String(value),
         })),
       };
 
@@ -324,16 +331,25 @@ export class NFTService {
    */
   public async getCoupleNFTRequests(
     userId: string,
-  ): Promise<CoupleNFTRequest[]> {
+  ): Promise<CoupleNFTRequestRow[]> {
     try {
+      const wallet = await this.walletService
+        .getOrCreateWallet(userId)
+        .catch(() => null);
+      const ownerAddress =
+        wallet && typeof wallet === "object" && "address" in wallet && typeof wallet.address === "string"
+          ? wallet.address
+          : undefined;
+      if (!ownerAddress) return [];
+
       const { data, error } = await this.blockchainClient
         .from("couple_nft_requests" as const)
         .select("*")
-        .or(`requester_id.eq.${userId},partner_id.eq.${userId}`)
+        .or(`partner1_address.eq.${ownerAddress},partner2_address.eq.${ownerAddress}`)
         .eq("status", "pending");
 
       if (error) throw error;
-      return (data || []) as CoupleNFTRequest[];
+      return data || [];
     } catch (error) {
       logger.error("Error fetching couple NFT requests", { error });
       return [];
@@ -354,7 +370,10 @@ export class NFTService {
       const wallet = await this.walletService
         .getOrCreateWallet(userId)
         .catch(() => null);
-      const ownerAddress = (wallet as any)?.address || "";
+      const ownerAddress =
+        wallet && typeof wallet === "object" && "address" in wallet && typeof wallet.address === "string"
+          ? wallet.address
+          : "";
 
       const imageHash = await this.uploadImageToIPFS(imageFile);
       const rarity = this.pickRarity();
@@ -413,6 +432,26 @@ export class NFTService {
         partnerId,
       });
 
+      const requesterWallet = await this.walletService
+        .getOrCreateWallet(requesterId)
+        .catch(() => null);
+      const partnerWallet = await this.walletService
+        .getWalletByUserId(partnerId)
+        .catch(() => null);
+
+      const requesterAddress =
+        requesterWallet && typeof requesterWallet === "object" && "address" in requesterWallet && typeof requesterWallet.address === "string"
+          ? requesterWallet.address
+          : undefined;
+      const partnerAddress =
+        partnerWallet && typeof partnerWallet === "object" && "address" in partnerWallet && typeof partnerWallet.address === "string"
+          ? partnerWallet.address
+          : undefined;
+
+      if (!requesterAddress || !partnerAddress) {
+        return false;
+      }
+
       const imageHash = await this.uploadImageToIPFS(imageFile);
       const metadata = {
         name,
@@ -421,13 +460,20 @@ export class NFTService {
         created_at: new Date().toISOString(),
       };
 
+      const metadataUri = `ipfs://${imageHash}`;
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
       const { error } = await this.blockchainClient
         .from("couple_nft_requests" as const)
         .insert({
-          requester_id: requesterId,
-          partner_id: partnerId,
-          status: "pending",
+          expires_at: expiresAt,
+          initiator_address: requesterAddress,
           metadata: metadata,
+          metadata_uri: metadataUri,
+          partner1_address: requesterAddress,
+          partner2_address: partnerAddress,
+          status: "pending",
+          token_id: 0,
           created_at: new Date().toISOString(),
         });
 

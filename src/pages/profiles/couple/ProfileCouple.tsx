@@ -15,7 +15,6 @@ import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
 import { WalletService, walletService } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
-import type { CoupleNFTRequest } from "@/types/blockchain";
 import { cn } from "@/shared/lib/cn";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,11 +68,12 @@ function ProfileCouple() {
     number | null
   >(null);
 
+  const baseAssetUrl = import.meta.env.BASE_URL;
   const couplePrivateBaseImages = [
-    "/assets/people/couple/privado/privadocouple1.jpg",
-    "/assets/people/couple/privado/privadocouple2.jpg",
-    "/assets/people/couple/privado/privadocouple3.jpg",
-    "/assets/people/couple/privado/privadocouple4.jpg",
+    `${baseAssetUrl}assets/people/couple/privado/privadocouple1.jpg`,
+    `${baseAssetUrl}assets/people/couple/privado/privadocouple2.jpg`,
+    `${baseAssetUrl}assets/people/couple/privado/privadocouple3.jpg`,
+    `${baseAssetUrl}assets/people/couple/privado/privadocouple4.jpg`,
   ];
 
   // Función para filtrar imágenes que coincidan con avatar (blindaje biométrico)
@@ -192,6 +192,9 @@ function ProfileCouple() {
   // Types derived from services
   type WalletInfo = Awaited<ReturnType<typeof walletService.getOrCreateWallet>>;
   type UserNFT = Awaited<ReturnType<typeof nftService.getUserNFTs>>[number];
+  type CoupleRequest = Awaited<
+    ReturnType<typeof nftService.getCoupleNFTRequests>
+  >[number];
   type TestnetInfo = Awaited<
     ReturnType<typeof walletService.getTestnetTokensInfo>
   >;
@@ -205,7 +208,7 @@ function ProfileCouple() {
   });
   const [_testnetInfo, setTestnetInfo] = useState<TestnetInfo | null>(null);
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
-  const [coupleRequests, setCoupleRequests] = useState<CoupleNFTRequest[]>([]);
+  const [coupleRequests, setCoupleRequests] = useState<CoupleRequest[]>([]);
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
   const isDemoMode =
     WalletService.isDemoMode() ||
@@ -421,7 +424,7 @@ function ProfileCouple() {
 
         setWalletInfo(null);
         setTokenBalances({ cmpx: "500", gtk: "250", matic: "10" });
-        setCoupleNFTs(nfts.filter((nft: any) => Boolean(nft?.is_couple)));
+        setCoupleNFTs(nfts.filter((nft) => Boolean(nft?.is_couple)));
         setCoupleRequests([]);
         setTestnetInfo({
           remaining: 500,
@@ -448,7 +451,7 @@ function ProfileCouple() {
 
       setWalletInfo(wallet);
       setTokenBalances(tokens);
-      setCoupleNFTs(nfts.filter((nft: any) => Boolean(nft?.is_couple)));
+      setCoupleNFTs(nfts.filter((nft) => Boolean(nft?.is_couple)));
       setCoupleRequests(requests);
       setTestnetInfo(testnet);
     } catch (error) {
@@ -485,22 +488,21 @@ function ProfileCouple() {
 
         // Simular nueva solicitud
         const now = new Date().toISOString();
-        const newRequest: CoupleNFTRequest = {
+        const newRequest: CoupleRequest = {
           id: `demo-${Date.now()}`,
-          requester_user_id: user.id,
-          partner_user_id: "",
-          partner1_address: "",
-          partner2_address: "",
-          name: `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
-          description: "NFT de pareja con consentimiento doble",
-          image_url: "",
+          partner1_address: "DEMO",
+          partner2_address: "DEMO",
+          initiator_address: "DEMO",
           metadata_uri: "ipfs://pending",
           status: "pending",
           consent1_timestamp: now,
+          consent2_timestamp: null,
+          blockchain_status: null,
           expires_at: now,
-          network: "demo",
+          token_id: 0,
+          transaction_hash: null,
+          metadata: null,
           created_at: now,
-          updated_at: now,
         };
 
         setCoupleRequests((prev) => [newRequest, ...prev]);
@@ -1039,7 +1041,7 @@ function ProfileCouple() {
                         alt="Private content"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src =
-                            "/assets/people/couple/privado/privadocouple1.jpg";
+                            `${import.meta.env.BASE_URL}assets/people/couple/privado/privadocouple1.jpg`;
                         }}
                         className={cn(
                           "w-full h-full object-cover transition-[filter,transform] duration-500",

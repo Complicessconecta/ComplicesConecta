@@ -354,26 +354,24 @@ const ProfileSingle: FC = () => {
 
     // DEMO: Por seguridad, mostrar modal en lugar de descargar JSON plano
     const modalContent = `
-📥 FUNCIÓN DE DESCARGA
+       📥 FUNCIÓN DE DESCARGA
 
-En versión de producción:
- Datos encriptados
- Formato seguro (PDF/Encriptado)
- Autenticación requerida
- Watermark
+        En versión de producción:
+        Datos encriptados
+        Formato seguro (PDF/Encriptado)
+        Autenticación requerida Watermark
+        VERSIÓN DEMO:
+        Datos protegidos por seguridad.
 
-VERSIÓN DEMO:
-Datos protegidos por seguridad.
+        Información del perfil:
+         - Nombre: ${profile?.name || "Demo"}
+         - Verificado: No disponible
+         - Fecha: ${new Date().toLocaleDateString()} `;
 
-Información del perfil:
-- Nombre: ${profile?.name || "Demo"}
-- Verificado: No disponible
-- Fecha: ${new Date().toLocaleDateString()}
-    `;
+            setDownloadModalContent(modalContent);
+            setIsDownloadModalOpen(true);
 
-    setDownloadModalContent(modalContent);
-    setIsDownloadModalOpen(true);
-  };
+          };
 
   const handleViewApprovedPrivatePhotos = () => {
     if (!privateGalleryRef.current) {
@@ -620,7 +618,7 @@ Información del perfil:
     currentProfile.display_name ??
       asOptionalString(currentProfile["name"]) ??
       asOptionalString(currentProfile.first_name),
-    "Sofía López",
+       "Sofía López",
   );
 
 
@@ -794,7 +792,7 @@ Información del perfil:
                           <DropdownMenuItem
                             onClick={() => navigate("/profile")}
                           >
-                            Ver mi perfil
+                            Ver Mi Perfil
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={async () => {
@@ -822,9 +820,9 @@ Información del perfil:
                       >
                         <Lock className="w-4 h-4" />
                         <span className="hidden sm:inline">
-                          Ver Fotos Privadías
+                          Ver Fotos Privadas
                         </span>
-                        <span className="sm:hidden">Privadías</span>
+                        <span className="sm:hidden">Privadas</span>
                       </Button>
                     )}
 
@@ -849,8 +847,8 @@ Información del perfil:
                         className="bg-white/10 hover:bg-white/20 text-green-200 border border-green-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       >
                         <Images className="w-4 h-4" />
-                        <span className="hidden sm:inline">Fotos Privadías</span>
-                        <span className="sm:hidden">Privadías</span>
+                        <span className="hidden sm:inline">Fotos Privadas</span>
+                        <span className="sm:hidden">Privadas</span>
                       </Button>
                     )}
                   </div>
@@ -1434,7 +1432,7 @@ Información del perfil:
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Images className="w-5 h-5" />
-                Galera de Fotos
+                Galeria de Fotos
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 md:p-10">
@@ -1446,7 +1444,7 @@ Información del perfil:
                     Acceso Denegado
                   </h3>
                   <p className="text-white/70">
-                    Tu solicitud para ver las fotos privadías fue denegada.
+                    Tu solicitud para ver las fotos privadas fue denegada.
                   </p>
                 </div>
               )}
@@ -1481,7 +1479,7 @@ Información del perfil:
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <Lock className="w-4 h-4" />
-                    Fotos Privadías ({galleryImages.length})
+                    Fotos Privadas ({galleryImages.length})
                   </h4>
                   <Button
                     onClick={() => {
@@ -1588,7 +1586,7 @@ Información del perfil:
                                         ? "🔒 Bloqueado por Control Parental"
                                         : isOwnProfile
                                           ? "👆 Click para desbloquear (requiere PIN)"
-                                          : "🔒 Contenido privado"}
+                                          : "🔒 Contenido Privado"}
                                     </span>
                                   </div>
                                 )}
@@ -1613,10 +1611,10 @@ Información del perfil:
                 profileId={profile?.id || ""}
                 profileName={asString(profile?.["name"], displayName)}
                 onAccessGranted={(requesterId) => {
-                  logger.info("Acceso concedido a galería privada", { requesterId });
+                  logger.info("Acceso Concedido a Galería Privada", { requesterId });
                 }}
                 onAccessDenied={(requesterId) => {
-                  logger.info("Acceso denegado a galería privada", { requesterId });
+                  logger.info("Acceso Denegado a Galería Privada", { requesterId });
                 }}
               />
             </div>

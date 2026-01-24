@@ -4,6 +4,6 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from './ContractService';
-export * from './Web3Service';
-export * from './Web3WalletService';
+export * from '@/services/blockchain/ContractService';
+export * from '@/services/blockchain/Web3Service';
+export * from '@/services/blockchain/Web3WalletService';

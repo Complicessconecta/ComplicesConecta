@@ -4,6 +4,6 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from './FaceRecognitionService';
-export * from './OCRService';
-export * from './SMSService';
+export * from '@/services/verification/FaceRecognitionService';
+export * from '@/services/verification/OCRService';
+export * from '@/services/verification/SMSService';

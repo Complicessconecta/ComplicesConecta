@@ -4,7 +4,7 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from './contentModeration';
-export * from './graphMatchingModel';
-export * from './heartbeat';
-export * from './smartMatching';
+export * from '@/lib/ai/contentModeration';
+export * from '@/lib/ai/graphMatchingModel';
+export * from '@/lib/ai/heartbeat';
+export * from '@/lib/ai/smartMatching';

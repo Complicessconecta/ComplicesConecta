@@ -4,4 +4,4 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from './RAGService';
+export * from '@/services/rag/RAGService';

@@ -4,4 +4,4 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from './TokenService';
+export * from '@/services/tokens/TokenService';

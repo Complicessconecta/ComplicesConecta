@@ -4,5 +4,5 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from './AIIntegrationService';
-export * from './ConsentVerificationService';
+export * from '@/services/ai/AIIntegrationService';
+export * from '@/services/ai/ConsentVerificationService';

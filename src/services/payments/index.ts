@@ -4,10 +4,10 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from './TokenService';
-export * from './WalletService';
-export * from './WalletProtectionService';
-export * from './NFTService';
-export * from './NFTGalleryService';
-export * from './ReferralTokensService';
-export * from './galleryCommission';
+export * from '@/services/payments/TokenService';
+export * from '@/services/payments/WalletService';
+export * from '@/services/payments/WalletProtectionService';
+export * from '@/services/payments/NFTService';
+export * from '@/services/payments/NFTGalleryService';
+export * from '@/services/payments/ReferralTokensService';
+export * from '@/services/payments/galleryCommission';

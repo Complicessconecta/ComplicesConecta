@@ -23,6 +23,6 @@ export * from '@/lib/report-export';
 export * from '@/lib/requests';
 export * from '@/lib/roles';
 export * from '@/lib/supabase-logger';
-export * from '@/lib/supabase';
+// export * from '@/lib/supabase'; // Movido a su propio directorio en Fase 3
 export * from '@/lib/tiktok-share';
 export * from '@/lib/tokenPremium';

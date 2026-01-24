@@ -41,7 +41,7 @@ export * from './report-export';
 export * from './requests';
 export * from './roles';
 export * from './supabase-logger';
-export * from './supabase';
+// export * from './supabase'; // Movido a su propio directorio en Fase 3
 export * from './tiktok-share';
 export * from './tokenPremium';
 

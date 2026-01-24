@@ -2,7 +2,7 @@
 
 **Fecha:** 24 Enero 2026
 **Rama:** laboratorio-2026-01-24
-**Estado:** En progreso
+**Estado:** ✅ COMPLETADO
 
 ---
 
@@ -198,12 +198,16 @@ Los siguientes errores eran pre-existentes (no relacionados con el refactor) y h
 - `934d7aae` - "refactor: dominios logger y zod-schemas migrados - 24 Ene 2026 08:30"
 - `ea220b8d` - "refactor: dominios services/social, analytics y lib/media migrados - 24 Ene 2026 08:45"
 - `22137062` - "fix: corregir errores pre-existentes en emailService.ts, email-service.ts, useTokens.ts - 24 Ene 2026 09:00"
+- `e487b7db` - "fix: corregir barrel supabase/index.ts para exportar supabase explícitamente - 24 Ene 2026 11:15"
 
 ---
 
 ## Próximos Pasos
 
 - [x] Migrar todos los dominios de alto y medio impacto
+- [x] Crear barrels para subdirectorios restantes
+- [x] Actualizar barrels a rutas absolutas
+- [x] Corregir barrel supabase/index.ts
 - [ ] Solucionar errores pre-existentes (PostgrestError, Error types)
 - [ ] Validación manual en browser
 - [ ] Merge a master

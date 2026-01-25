@@ -1,0 +1,12 @@
+diff --git a/node_modules/@capacitor/cli/dist/util/template.js b/node_modules/@capacitor/cli/dist/util/template.js
+index 9d0bbf8..83a2313 100644
+--- a/node_modules/@capacitor/cli/dist/util/template.js
++++ b/node_modules/@capacitor/cli/dist/util/template.js
+@@ -6,6 +6,6 @@ const fs_extra_1 = require("fs-extra");
+ const tar_1 = tslib_1.__importDefault(require("tar"));
+ async function extractTemplate(src, dir) {
+     await (0, fs_extra_1.mkdirp)(dir);
+-    await tar_1.default.extract({ file: src, cwd: dir });
++    await tar_1.extract({ file: src, cwd: dir });
+ }
+ exports.extractTemplate = extractTemplate;

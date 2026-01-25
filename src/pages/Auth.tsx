@@ -395,7 +395,7 @@ const Auth = () => {
         {/* Card con glassmorphism mejorado - más transparente para ver fondo */}
         <Card className="bg-white/5 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-visible">
           <CardHeader className="text-center">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
               <Button
                 variant="ghost"
                 size="sm"
@@ -405,7 +405,7 @@ const Auth = () => {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver
               </Button>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap justify-end gap-2 max-w-full">
                 <Button
                   variant="ghost"
                   size="sm"

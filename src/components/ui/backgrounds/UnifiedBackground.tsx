@@ -68,7 +68,10 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
 
   const isSnowRoute = SNOW_ROUTES.has(location.pathname);
   const forceImageAndNeon =
-    location.pathname === "/" || location.pathname === "/demo";
+    location.pathname === "/" ||
+    location.pathname === "/demo" ||
+    location.pathname === "/auth" ||
+    location.pathname === "/clubs/demo";
   const isDemoRoute = location.pathname === "/demo";
   const userForcesSolid =
     !isDemoRoute &&
@@ -79,7 +82,11 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     reducedMotion || (isLowEnd && !allowParticles);
 
   // FORZAR: Siempre usar tsparticles en homepage y demo
-  const forceNeon = location.pathname === "/" || location.pathname === "/demo";
+  const forceNeon =
+    location.pathname === "/" ||
+    location.pathname === "/demo" ||
+    location.pathname === "/auth" ||
+    location.pathname === "/clubs/demo";
 
   let variant: "solid" | "css" | "tsparticles" = userForcesSolid
     ? "solid"
@@ -102,12 +109,14 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     "/chat",
     "/stories",
     "/settings",
+    "/ai-help",
     "/about",
     "/faq",
     "/info",
     "/support",
     "/premium",
     "/clubs",
+    "/clubs/demo",
     "/events",
     "/shop",
   ]);

@@ -76,6 +76,15 @@ export const Navigation = ({ className }: NavigationProps) => {
       return;
     }
 
+    if (path === "/tokens") {
+      navigate(
+        profileType === "couple"
+          ? "/profile-couple#wallet"
+          : "/profile-single#wallet",
+      );
+      return;
+    }
+
     navigate(path);
   };
 
@@ -132,10 +141,10 @@ export const Navigation = ({ className }: NavigationProps) => {
 
                 <Icon
                   className={cn(
-                    "w-5 h-5 sm:w-5 sm:h-5 mb-0 sm:mb-1 transition-all duration-300 relative z-10 shrink-0",
+                    "w-5 h-5 sm:w-5 sm:h-5 mb-0 sm:mb-1 transition-all duration-300 relative z-10 shrink-0 block opacity-100 text-white stroke-white",
                     isActive
-                      ? "scale-110 drop-shadow-lg text-white"
-                      : "group-hover:scale-110 group-hover:drop-shadow-md text-white/85",
+                      ? "scale-110 drop-shadow-lg"
+                      : "group-hover:scale-110 group-hover:drop-shadow-md",
                   )}
                 />
                 <span

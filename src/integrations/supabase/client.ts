@@ -60,6 +60,8 @@ safeLogger.info("🔗 Conectando a Supabase:", { url: supabaseUrl });
 // Variable global para almacenar la instancia única del cliente
 let supabaseInstance: SupabaseClient<Database> | null = null;
 
+let lastSupabaseCallLogAtMs = 0;
+
 declare global {
   var __cc_supabaseClient:
     | SupabaseClient<Database>
@@ -176,9 +178,14 @@ function getSupabaseClient(): SupabaseClient<Database> {
           }
 
           // Para usuarios de producción o admins demo, permitir Supabase
-          safeLogger.info("🔗 Permitiendo llamada a Supabase:", {
-            url: typeof url === "string" ? url.substring(0, 50) + "..." : url,
-          });
+          const nowMs = Date.now();
+          if (nowMs - lastSupabaseCallLogAtMs > 1000) {
+            lastSupabaseCallLogAtMs = nowMs;
+            safeLogger.info("🔗 Permitiendo llamada a Supabase:", {
+              url:
+                typeof url === "string" ? url.substring(0, 50) + "..." : url,
+            });
+          }
           return fetch(url, {
             ...options,
             headers: {

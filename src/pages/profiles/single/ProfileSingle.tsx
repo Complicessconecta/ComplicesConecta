@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,7 @@ import { DemoWallet } from "@/components/wallet/DemoWallet";
 
 const ProfileSingle: FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     user,
     profile,
@@ -125,6 +126,8 @@ const ProfileSingle: FC = () => {
     false,
   );
 
+  const [showParentalUnlock, setShowParentalUnlock] = useState(false);
+
   const [isPostCommentModalOpen, setIsPostCommentModalOpen] = useState(false);
   const [commentPostId, setCommentPostId] = useState<string | null>(null);
   const [commentDraft, setCommentDraft] = useState("");
@@ -149,6 +152,16 @@ const ProfileSingle: FC = () => {
     joinDate: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
     verificationLevel: 0,
   }));
+
+  useEffect(() => {
+    if (location.hash !== "#wallet") return;
+    const id = window.setTimeout(() => {
+      document
+        .getElementById("wallet")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+    return () => window.clearTimeout(id);
+  }, [location.hash]);
 
   // Estados para funcionalidades blockchain
   const [tokenBalances, setTokenBalances] = useState(() => ({
@@ -1265,7 +1278,10 @@ const ProfileSingle: FC = () => {
           )}
 
           {/* Resumen rápido de Wallet & NFTs */}
-          <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+          <Card
+            id="wallet"
+            className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl"
+          >
             <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-blue-500 flex items-center justify-center">
@@ -1285,7 +1301,14 @@ const ProfileSingle: FC = () => {
                 </div>
               </div>
               <Button
-                onClick={() => navigate("/tokens")}
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.location.hash = "wallet";
+                    document
+                      .getElementById("wallet")
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
                 className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
               >
                 <Wallet className="w-4 h-4" />
@@ -1486,11 +1509,13 @@ const ProfileSingle: FC = () => {
                       if (isGalleryUnlocked) {
                         // BLOQUEAR manual: quitar blur y candado
                         setIsParentalLocked(true);
+                        setShowParentalUnlock(false);
                         setDemoPrivateUnlocked(false);
                         setShowImageModal(false);
                       } else {
                         // DESBLOQUEAR: activar ParentalControl para ingresar PIN
                         setIsParentalLocked(true);
+                        setShowParentalUnlock(true);
                       }
                     }}
                     className={`text-xs px-3 py-1.5 flex items-center gap-1.5 transition-all ${
@@ -1641,21 +1666,38 @@ const ProfileSingle: FC = () => {
       {isOwnProfile && (
         <ParentalControl
           isLocked={isParentalLocked}
+          showLockScreen={showParentalUnlock}
           onToggle={(locked) => {
             setIsParentalLocked(locked);
             // Si se desbloquea, permitir acceso a imágenes privadías
             if (!locked) {
               setDemoPrivateUnlocked(true);
+              setShowParentalUnlock(false);
             } else {
               // Si se bloquea, ocultar imágenes privadías
               setDemoPrivateUnlocked(false);
+              setShowParentalUnlock(false);
             }
           }}
           onUnlock={() => {
             // Callback cuando se desbloquea exitosamente con PIN
             setDemoPrivateUnlocked(true);
+            setShowParentalUnlock(false);
           }}
         />
+      )}
+
+      {/* Botón discreto para abrir desbloqueo cuando está bloqueado */}
+      {isOwnProfile && isParentalLocked && !showParentalUnlock && (
+        <div className="fixed bottom-24 right-4 z-50">
+          <button
+            type="button"
+            onClick={() => setShowParentalUnlock(true)}
+            className="px-4 py-2 rounded-full text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 backdrop-blur-md text-white transition-all duration-300"
+          >
+            Desbloquear
+          </button>
+        </div>
       )}
 
       {/* Modal de carrusel de imágenes */}

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Images, Flag, Coins, Wallet, Users, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
 import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
 import { useAuth } from "@/features/auth/useAuth";
@@ -27,6 +27,7 @@ import { ProfileContent } from "@/components/profiles/ProfileContent";
 
 function ProfileCouple() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     isAuthenticated,
@@ -53,6 +54,8 @@ function ProfileCouple() {
     "parentalLock",
     false,
   );
+
+  const [showParentalUnlock, setShowParentalUnlock] = useState(false);
 
   // Estados para modal de imágenes
   const [showImageModal, _setShowImageModal] = useState(false);
@@ -238,6 +241,16 @@ function ProfileCouple() {
   const [relationshipStatus, setRelationshipStatus] = useState<
     "ACTIVE" | "FROZEN_DISPUTE" | "DISSOLVED"
   >("ACTIVE");
+
+  useEffect(() => {
+    if (location.hash !== "#wallet") return;
+    const id = window.setTimeout(() => {
+      document
+        .getElementById("wallet")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+    return () => window.clearTimeout(id);
+  }, [location.hash]);
   const [_showDisputeWarning, _setShowDisputeWarning] = useState(false);
 
   const {
@@ -981,6 +994,7 @@ function ProfileCouple() {
                     onClick={() => {
                       if (!isParentalLocked) {
                         _setIsParentalLocked(true);
+                        setShowParentalUnlock(false);
                         _setDemoPrivateUnlocked(false);
                         _setShowImageModal(false);
                       }
@@ -1058,7 +1072,10 @@ function ProfileCouple() {
             </Card>
 
             {/* Resumen rápido de Wallet & NFTs de Pareja */}
-            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl mt-4">
+            <Card
+              id="wallet"
+              className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl mt-4"
+            >
               <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-linear-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center">
@@ -1080,7 +1097,14 @@ function ProfileCouple() {
                   </div>
                 </div>
                 <Button
-                  onClick={() => navigate("/tokens")}
+                  onClick={() => {
+                    if (typeof window !== "undefined") {
+                      window.location.hash = "wallet";
+                      document
+                        .getElementById("wallet")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }}
                   className="bg-linear-to-r from-fuchsia-600 to-blue-600 hover:from-fuchsia-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-fuchsia-500/40 flex items-center gap-2"
                 >
                   <Wallet className="w-4 h-4" />
@@ -1187,19 +1211,34 @@ function ProfileCouple() {
 
       <ParentalControl
         isLocked={isParentalLocked}
+        showLockScreen={showParentalUnlock}
         onToggle={(locked) => {
           _setIsParentalLocked(locked);
           if (!locked) {
             _setDemoPrivateUnlocked(true);
+            setShowParentalUnlock(false);
           } else {
             _setDemoPrivateUnlocked(false);
-            _setShowImageModal(false);
+            setShowParentalUnlock(false);
           }
         }}
         onUnlock={() => {
           _setDemoPrivateUnlocked(true);
+          setShowParentalUnlock(false);
         }}
       />
+
+      {isParentalLocked && !showParentalUnlock && (
+        <div className="fixed bottom-24 right-4 z-50">
+          <button
+            type="button"
+            onClick={() => setShowParentalUnlock(true)}
+            className="px-4 py-2 rounded-full text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 backdrop-blur-md text-white transition-all duration-300"
+          >
+            Desbloquear
+          </button>
+        </div>
+      )}
 
       <ImageModal
         isOpen={showImageModal}

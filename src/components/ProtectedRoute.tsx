@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
@@ -14,28 +14,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAuth = true,
   redirectTo = "/auth",
 }) => {
-  const { loading, isAuthenticated, isDemo } = useAuth();
+  const { loading, isAuthenticated } = useAuth();
   const location = useLocation();
-  const [isReady, setIsReady] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
 
-  useEffect(() => {
-    // Esperar a que termine la carga inicial y verificar autenticación
-    if (!loading) {
-      const authResult = isAuthenticated();
-      setAuthenticated(authResult);
-      setIsReady(true);
-
-      logger.info("🔐 ProtectedRoute: Verificación de autenticación", {
-        isAuthenticated: authResult,
-        isDemo: isDemo(),
-        path: location.pathname,
-      });
-    }
-  }, [loading, isAuthenticated, isDemo, location.pathname]);
+  // Esperar a que termine la carga inicial y verificar autenticación
+  const authenticated = !loading && isAuthenticated();
 
   // Mostrar loading mientras se verifica la autenticación
-  if (!isReady || loading) {
+  if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-sm">
         <div className="text-center">

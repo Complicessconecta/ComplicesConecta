@@ -202,15 +202,19 @@ export class PerformanceMonitoringService {
     // Check thresholds
     this.checkThresholds(fullMetric);
 
-    // Persistir en base de datos (async sin await para no bloquear)
-    this.persistMetric(fullMetric).catch((err) =>
-      logger.debug("Failed to persist metric:", { error: String(err) }),
-    );
+    const shouldPersistToSupabase = import.meta.env.PROD;
 
-    // Registrar sesión de monitoreo (async, no bloquea)
-    this.logMonitoringSession(fullMetric).catch((err) =>
-      logger.debug("Failed to log monitoring session:", { error: String(err) }),
-    );
+    if (shouldPersistToSupabase) {
+      this.persistMetric(fullMetric).catch((err) =>
+        logger.debug("Failed to persist metric:", { error: String(err) }),
+      );
+
+      this.logMonitoringSession(fullMetric).catch((err) =>
+        logger.debug("Failed to log monitoring session:", {
+          error: String(err),
+        }),
+      );
+    }
 
     // 🆕 Enviar a New Relic si está disponible
     if (newrelic?.addPageAction) {

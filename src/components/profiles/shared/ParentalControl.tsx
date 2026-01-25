@@ -14,6 +14,7 @@ interface ParentalControlProps {
   isLocked: boolean;
   onToggle: (locked: boolean) => void;
   onUnlock?: () => void;
+  showLockScreen?: boolean;
 }
 
 type RestrictionLevel = "soft" | "medium" | "strict";
@@ -64,6 +65,7 @@ export const ParentalControl = ({
   isLocked,
   onToggle,
   onUnlock,
+  showLockScreen = true,
 }: ParentalControlProps) => {
   const [showPinInput, setShowPinInput] = useState(false);
   const [pin, setPin] = useState("");
@@ -175,7 +177,7 @@ export const ParentalControl = ({
     }
   };
 
-  if (isLocked) {
+  if (isLocked && showLockScreen) {
     return (
       <AnimatePresence>
         <motion.div
@@ -287,6 +289,10 @@ export const ParentalControl = ({
         </motion.div>
       </AnimatePresence>
     );
+  }
+
+  if (isLocked && !showLockScreen) {
+    return null;
   }
 
   // Panel de configuración cuando está desbloqueado

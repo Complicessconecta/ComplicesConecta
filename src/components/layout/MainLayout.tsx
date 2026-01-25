@@ -21,7 +21,7 @@ const PageLoader = () => (
 );
 
 export const MainLayout = () => {
-  const { profile: _profile, isAuthenticated, user } = useAuth();
+  const { profile: _profile, isAuthenticated, user, signOut } = useAuth();
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -46,6 +46,7 @@ export const MainLayout = () => {
     "/profile/",
     "/tokens",
     "/tokens-",
+    "/clubs/demo",
   ];
 
   const shouldHideHeader =
@@ -54,16 +55,20 @@ export const MainLayout = () => {
 
   const showHeaderNav = !hasSession && !shouldHideHeader;
 
+  const isClubDemoRoute = pathname === "/clubs/demo";
+
   const isHomeRoute = pathname === "/";
 
-  const headerOffsetClass = showHeaderNav
-    ? isHomeRoute
-      ? "pt-[calc(env(safe-area-inset-top)+6rem)]"
-      : "pt-[calc(env(safe-area-inset-top)+4rem)]"
-    : "pt-[env(safe-area-inset-top)]";
+  const headerOffsetClass = isClubDemoRoute
+    ? "pt-[calc(env(safe-area-inset-top)+4rem)]"
+    : showHeaderNav
+      ? isHomeRoute
+        ? "pt-[calc(env(safe-area-inset-top)+6rem)]"
+        : "pt-[calc(env(safe-area-inset-top)+4rem)]"
+      : "pt-[env(safe-area-inset-top)]";
 
   // Bottom Navigation solo para usuarios logueados
-  const showBottomNavigation = hasSession;
+  const showBottomNavigation = hasSession && !isClubDemoRoute;
 
   // Chat FAB no se muestra en rutas de perfil
   const isProfileRoute =
@@ -82,6 +87,46 @@ export const MainLayout = () => {
         <AnimationSettingsButton />
 
         {showHeaderNav && <HeaderNav />}
+
+        {isClubDemoRoute && (
+          <div className="header-nav-main fixed top-0 left-0 right-0 z-50 safe-area-pt">
+            <div className="bg-linear-to-b from-purple-900/90 via-purple-800/85 to-transparent backdrop-blur-md border-b border-purple-500/20">
+              <div className="w-full max-w-[1920px] mx-auto">
+                <div className="flex items-center justify-between h-16 px-4 lg:px-6 gap-3">
+                  <div className="min-w-0">
+                    <div className="text-white font-bold truncate">Club Demo</div>
+                    <div className="text-white/70 text-xs truncate">
+                      Perfil demo verificado
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.history.replaceState({}, "", "/clubs/demo");
+                      }}
+                      className="px-3 py-2 rounded-lg text-xs font-semibold bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-sm transition-all duration-300"
+                    >
+                      Club Demo
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await signOut();
+                        window.location.assign("/");
+                      }}
+                      className="px-3 py-2 rounded-lg text-xs font-semibold bg-red-500/15 hover:bg-red-500/25 border border-red-500/20 backdrop-blur-sm transition-all duration-300"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Chat FAB */}
         {showChatFab && <ChatFab onOpen={() => setIsChatOpen(true)} />}

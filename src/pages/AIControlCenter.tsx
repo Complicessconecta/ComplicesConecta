@@ -6,7 +6,7 @@ import { LegalChatBox } from "@/components/ai/LegalChatBox";
 
 const AIControlCenter: React.FC = () => {
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white">
+    <div className="min-h-screen text-white">
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-8 md:space-y-12">
         {/* Hero principal */}
         <header className="text-center space-y-4 md:space-y-6">

@@ -187,7 +187,10 @@ export function AnalyticsPanel() {
         .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error("❌ Error cargando analytics de usuarios:", error);
+        logger.error("❌ Error cargando analytics de usuarios:", {
+          error: error.message,
+          details: error.details,
+        });
         generateMockAnalytics();
         return;
       }

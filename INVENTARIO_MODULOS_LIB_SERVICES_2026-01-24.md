@@ -5,6 +5,14 @@
 
 ---
 
+## Actualización 25 Ene 2026
+
+- **Consistencia de rutas:** se estabilizaron imports hacia barrels de `@/services/social` y `@/services/analytics`.
+- **AI (analytics/ai):** el barrel `src/services/analytics/analytics/ai/index.ts` quedó consistente con exports internos relativos.
+- **El inventario permanece vigente** (no se crearon/eliminaron módulos en esta actualización).
+
+---
+
 ## src/lib/ (49 archivos)
 
 ### Configuración

@@ -13,11 +13,11 @@
  */
 
 import { neo4jService } from "@/services/core/graph/Neo4jService";
-import { emotionalAIService } from "@/services/analytics/ai/EmotionalAIService";
+import { emotionalAIService } from "@/services/analytics";
 import { graphMatchingModel as _graphMatchingModel } from "@/lib/ai/graphMatchingModel";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { smartMatchingService } from "@/services/social/SmartMatchingService";
+import { smartMatchingService } from "@/services/social";
 
 export interface PredictiveMatch {
   userId: string;

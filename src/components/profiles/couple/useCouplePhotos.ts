@@ -172,7 +172,9 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
           .remove([storagePath]);
 
         if (storageError) {
-          logger.warn("Error deleting from storage:", storageError);
+          logger.warn("Error deleting from storage:", {
+            error: storageError.message,
+          });
         }
       }
 

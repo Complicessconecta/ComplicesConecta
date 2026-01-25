@@ -131,7 +131,7 @@ export class ProfileReportService {
         if (warningError) {
           logger.warn(
             "No se pudo enviar advertencia al usuario reportado",
-            warningError,
+            { error: warningError.message, details: warningError.details },
           );
         }
       }
@@ -149,7 +149,10 @@ export class ProfileReportService {
         });
 
       if (notifError) {
-        logger.error("Error creando notificación de confirmación:", notifError);
+        logger.error("Error creando notificación de confirmación:", {
+          error: notifError.message,
+          details: notifError.details,
+        });
       }
 
       logger.info("Reporte de perfil creado exitosamente:", {

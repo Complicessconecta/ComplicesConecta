@@ -201,7 +201,10 @@ export const Clubs = () => {
           });
         },
         (error) => {
-          logger.warn("Geolocation error:", error);
+          logger.warn("Geolocation error:", {
+            error: error.message,
+            code: error.code,
+          });
         },
       );
     }

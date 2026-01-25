@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { AdvancedAnalyticsService, AdvancedAnalyticsConfig, AnalyticsDashboard, PredictiveInsights, AnalyticsAlert } from "@/services/analytics/AdvancedAnalyticsService";
+import { AdvancedAnalyticsService, type AdvancedAnalyticsConfig, type AnalyticsDashboard, type PredictiveInsights, type AnalyticsAlert } from "@/services/analytics";
 import { logger } from "@/lib/logger";
 
 // Instance
@@ -219,9 +219,9 @@ export function useAnalyticsMetrics() {
 
   const realTimeMetrics = dashboard?.realTimeMetrics || null;
   const userBehaviorMetrics = dashboard?.userBehaviorMetrics || [];
-  const predictiveInsights = dashboard?.predictiveInsights || [];
+  const predictiveInsights: PredictiveInsights[] = dashboard?.predictiveInsights ?? [];
   const performanceMetrics = dashboard?.performanceMetrics || null;
-  const alerts = dashboard?.alerts || [];
+  const alerts: AnalyticsAlert[] = dashboard?.alerts ?? [];
   const trends = dashboard?.trends || null;
 
   return {
@@ -241,19 +241,19 @@ export function usePredictiveInsights() {
   const { predictiveInsights, isLoading, error } = useAnalyticsMetrics();
 
   const retentionInsights = predictiveInsights.filter(
-    (insight) => insight.predictionType === "user_retention",
+    (insight: PredictiveInsights) => insight.predictionType === "user_retention",
   );
 
   const conversionInsights = predictiveInsights.filter(
-    (insight) => insight.predictionType === "conversion",
+    (insight: PredictiveInsights) => insight.predictionType === "conversion",
   );
 
   const churnInsights = predictiveInsights.filter(
-    (insight) => insight.predictionType === "churn",
+    (insight: PredictiveInsights) => insight.predictionType === "churn",
   );
 
   const engagementInsights = predictiveInsights.filter(
-    (insight) => insight.predictionType === "engagement",
+    (insight: PredictiveInsights) => insight.predictionType === "engagement",
   );
 
   return {
@@ -272,14 +272,14 @@ export function useAnalyticsAlerts() {
   const { alerts, isLoading, error } = useAnalyticsMetrics();
 
   const criticalAlerts = alerts.filter(
-    (alert) => alert.severity === "critical",
+    (alert: AnalyticsAlert) => alert.severity === "critical",
   );
-  const highAlerts = alerts.filter((alert) => alert.severity === "high");
-  const mediumAlerts = alerts.filter((alert) => alert.severity === "medium");
-  const lowAlerts = alerts.filter((alert) => alert.severity === "low");
+  const highAlerts = alerts.filter((alert: AnalyticsAlert) => alert.severity === "high");
+  const mediumAlerts = alerts.filter((alert: AnalyticsAlert) => alert.severity === "medium");
+  const lowAlerts = alerts.filter((alert: AnalyticsAlert) => alert.severity === "low");
 
-  const unresolvedAlerts = alerts.filter((alert) => !alert.resolved);
-  const resolvedAlerts = alerts.filter((alert) => alert.resolved);
+  const unresolvedAlerts = alerts.filter((alert: AnalyticsAlert) => !alert.resolved);
+  const resolvedAlerts = alerts.filter((alert: AnalyticsAlert) => alert.resolved);
 
   return {
     allAlerts: alerts,

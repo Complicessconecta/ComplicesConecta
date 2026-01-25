@@ -123,10 +123,10 @@ export class UserIdentificationService {
         .limit(1);
 
       if (error) {
-        logger.error(
-          "[UserIdentification] Error fetching max numeric_id:",
-          error,
-        );
+        logger.error("[UserIdentification] Error fetching max numeric_id:", {
+          error: error.message,
+          details: error.details,
+        });
         // Si hay error (ej: tabla vacía o no existe), intentamos fallback o empezamos en 1
         return 1;
       }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Shield, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
-import { galleryPrivacyService } from '@/services/social/GalleryPrivacyService';
+import { galleryPrivacyService } from '@/services/social';
 import { toast } from '@/hooks/useToast';
 
 interface GalleryItem {

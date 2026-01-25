@@ -70,7 +70,7 @@ export const usePushNotifications = ({
 
       try {
         const registration = await navigator.serviceWorker.register("/sw.js");
-        logger.info("✅ Service Worker registrado:", registration);
+        logger.info("✅ Service Worker registrado:", { registration });
         return registration;
       } catch (error) {
         logger.error("Error registering service worker:", {
@@ -147,7 +147,7 @@ export const usePushNotifications = ({
       // Save subscription to database
       await saveSubscriptionToDatabase(pushSubscription);
 
-      logger.info("✅ Suscripción push creada:", pushSubscription);
+      logger.info("✅ Suscripción push creada:", { pushSubscription });
       return pushSubscription;
     } catch (error) {
       logger.error("Error subscribing to push notifications:", {

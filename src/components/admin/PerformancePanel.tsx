@@ -101,7 +101,10 @@ export const PerformancePanel = () => {
         .limit(1000);
 
       if (error) {
-        logger.warn("Error loading metrics from DB, using fallback:", error);
+        logger.warn("Error loading metrics from DB, using fallback:", {
+          error: error.message,
+          details: error.details,
+        });
         generateMockMetrics();
         return;
       }
@@ -194,7 +197,7 @@ export const PerformancePanel = () => {
       if (error) {
         logger.warn(
           "Error loading recent metrics from DB, using fallback:",
-          error,
+          { error: error.message, details: error.details },
         );
         generateMockRecentMetrics();
         return;

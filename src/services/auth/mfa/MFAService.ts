@@ -311,7 +311,7 @@ export class MFAService {
    */
   updateConfig(config: Partial<MFAConfig>): void {
     this.config = { ...this.config, ...config };
-    logger.info("⚙️ MFA config updated", this.config);
+    logger.info("⚙️ MFA config updated", { config: this.config });
   }
 }
 

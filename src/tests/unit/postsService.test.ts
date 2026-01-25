@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { PostsService } from "@/services/social/postsService";
+import { PostsService } from "@/services/social";
 import { supabase } from "@/lib/supabase";
 
 // Mock Supabase

@@ -20,6 +20,24 @@ Pendientes que permanecen:
 
 ---
 
+## ✅ Actualización 25 Ene 2026 (TypeScript / Imports)
+
+- **AIIntegrationService:** corregidos logs para cumplir `LogContext` (evitar pasar `Error` directo a `logger.*`) y manejo seguro de `unknown`.
+- **Imports (fix aplicado):** normalización de imports hacia barrels estables:
+  - `@/services/social/*` -> `@/services/social`
+  - `@/services/analytics/*` -> `@/services/analytics`
+  - `services/analytics/analytics/ai/*`: imports internos y barrel corregidos para eliminar rutas inválidas `@/services/analytics/ai/*`.
+- **Pendiente inmediato:** correr `build:check` para confirmar 0 errores TypeScript restantes.
+
+## ✅ Actualización 25 Ene 2026 (Build/Lint Verificado)
+
+- **build:check:** ✅ `npm run build:check` (TypeScript app/node + Vite build) sin errores.
+- **lint:** ✅ `npm run lint` sin errores.
+- **tsc:** ✅ `npx tsc -p tsconfig.app.json --noEmit` y `npx tsc -p tsconfig.node.json --noEmit`.
+- **Vite warnings:** ✅ se ajustó `vite.config.ts` para remover warning de chunk circular y suprimir warning no accionable de dynamic import.
+
+---
+
 ## 🎯 Resumen Ejecutivo
 
 Este documento es la **fuente única de verdad** para pendientes y su estado. Integra y reemplaza el contenido operativo de:
@@ -391,14 +409,29 @@ Los siguientes problemas han sido solucionados y sus archivos han sido movidos a
 
 ## 🎯 Próximos Pasos Prioritarios
 
-1. **TestSprite Frontend Test correcciones** (Alta) - Autenticación, interactividad, configuración
-2. **Refactor directorios monolíticos** (Media) - Mantenibilidad
+1. **Validación TypeScript + Lint** (Alta) - Confirmar build limpio
+   - **Acción:** `npm run build:check` y `npm run lint`
+   - **Criterio de cierre:** 0 errores TS, 0 errores/warnings de lint
+
+2. **TestSprite Frontend Test correcciones** (Alta) - Autenticación, interactividad, configuración
+   - **Acción:** re-ejecutar TestSprite y aplicar fixes en flujos core (auth → discover → match → chat)
+   - **Criterio de cierre:** suite con mayoría de tests pasados y fallos restantes documentados en `testsprite_tests/INFORME_CORRECCIONES_TESTSPRITE.md`
+
+3. **npm audit (mitigación sin breaking changes)** (Alta/Media)
+   - **Acción:** ejecutar `npm audit` y mitigar 3 High (tar, @capacitor/cli, supabase) sin romper build
+   - **Criterio de cierre:** 0 High (o justificación documentada si no es mitigable sin breaking)
+
+4. **Refactor directorios monolíticos** (Media) - Mantenibilidad
    - **Estado:** ⏳ Pendiente / diferido a PR dedicado (riesgo alto de romper imports si se hace en caliente)
-3. **Botón/Flujo de Billetera y Creación de NFT** (Media) - Completar flujos/diagramas
+   - **Criterio de cierre:** PR dedicado con migración incremental + type-check por fase
+
+5. **Botón/Flujo de Billetera y Creación de NFT** (Media) - Completar flujos/diagramas
    - **Estado:** ✅ Solucionado (flujo ya implementado con servicios/componentes existentes y documentado en `DIAGRAMAS_FLUJOS_CONSOLIDADO.md`)
-4. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
+
+6. **Auditoría periódica de vistas SECURITY DEFINER** (Baja) - Mantenimiento preventivo
    - **Estado:** ✅ Solucionado (proceso/checklist definido en documentación de auditoría; mantener como rutina periódica)
-5. **Consolidación de Tipos Supabase** (Baja) - Centralización/generación
+
+7. **Consolidación de Tipos Supabase** (Baja) - Centralización/generación
    - **Estado:** ✅ Solucionado (decisión aplicada: mantener `src/types/supabase-generated.ts` como fuente principal y evitar variantes)
 
 ---
@@ -407,8 +440,10 @@ Los siguientes problemas han sido solucionados y sus archivos han sido movidos a
 
 Pendientes activos restantes para siguiente sesión/sprint:
 
-1. TestSprite Frontend Test correcciones (re-ejecución + auth/discover/match/pagos)
-2. Refactor directorios monolíticos (`src/lib/`, `src/services/`) (PR dedicado)
+1. Validación TypeScript + Lint (`npm run build:check`, `npm run lint`)
+2. TestSprite Frontend Test correcciones (re-ejecución + auth/discover/match/pagos)
+3. npm audit (mitigación 3 High)
+4. Refactor directorios monolíticos (`src/lib/`, `src/services/`) (PR dedicado)
 
 ---
 

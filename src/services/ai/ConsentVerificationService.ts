@@ -1,1 +1,1 @@
-export * from "@/services/analytics/ai/ConsentVerificationService";
+export * from "@/services/analytics/analytics/ai/ConsentVerificationService";

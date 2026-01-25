@@ -261,7 +261,10 @@ const Profiles: React.FC = () => {
         .not("first_name", "is", null);
 
       if (error) {
-        logger.error("❌ Error cargando perfiles reales:", error);
+        logger.error("❌ Error cargando perfiles reales:", {
+          error: error.message,
+          details: error.details,
+        });
         throw error;
       }
 

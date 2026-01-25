@@ -25,7 +25,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { motion } from "framer-motion";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { logger } from "@/lib/logger";
-import { matchService } from "@/services/social/MatchService";
+import { matchService } from "@/services/social";
 import type { Profile, Filters } from "@/types/discover.types";
 import { generalInterests } from "@/constants/discover/generalInterests";
 import { explicitInterests } from "@/constants/discover/explicitInterests";

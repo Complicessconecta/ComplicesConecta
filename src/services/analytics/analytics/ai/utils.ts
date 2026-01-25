@@ -8,7 +8,7 @@
  * @date 2025-11-20
  */
 
-import type { CompatibilityFeatures } from "@/services/analytics/ai/types";
+import type { CompatibilityFeatures } from "@/services/analytics/analytics/ai/types";
 import { logger } from "@/lib/logger";
 
 /**

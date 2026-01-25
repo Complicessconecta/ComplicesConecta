@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import "@/styles/TokensInfo.css";
 import { useAuth } from "@/features/auth/useAuth";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
+import { TokenAnalyticsService } from "@/services/analytics";
 import { TokensSubnav } from "@/components/TokensSubnav";
 // import { TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado - usar src/services/TokenService.ts
 // Mock TOKEN_CONFIG para compatibilidad

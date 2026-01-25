@@ -1161,7 +1161,7 @@ export class AdvancedFeaturesService {
       };
 
       // Store in database (simplified)
-      logger.info("Virtual date scheduled:", virtualDate);
+      logger.info("Virtual date scheduled:", { virtualDate });
 
       // Send notifications to participants
       for (const participantId of participants) {

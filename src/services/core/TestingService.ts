@@ -146,7 +146,7 @@ export class TestingService {
     const tests = [
       // Test 1: PostsService
       async () => {
-        const { postsService } = await import("@/services/social/postsService");
+        const { postsService } = await import("@/services/social");
         const mockPosts = postsService.generateMockPosts(5);
         if (mockPosts.length !== 5) {
           throw new Error("Mock posts generation failed");
@@ -156,18 +156,18 @@ export class TestingService {
       // Test 2: TokenAnalyticsService
       async () => {
         const { TokenAnalyticsService } =
-          await import("@/services/analytics/TokenAnalyticsService");
+          await import("@/services/analytics");
         const service = TokenAnalyticsService.getInstance();
         const metrics = await service.generateCurrentMetrics();
         if (!metrics.success) {
-          throw new Error("Metrics generation failed");
+          throw new Error("Token analytics generation failed");
         }
       },
 
       // Test 3: ContentModerationService
       async () => {
         const { contentModerationService } =
-          await import("@/services/social/ContentModerationService");
+          await import("@/services/social");
         const result =
           await contentModerationService.moderateText("Test content");
         if (!result.isAppropriate) {
@@ -212,7 +212,7 @@ export class TestingService {
     const tests = [
       // Test 1: Posts + Comments integration
       async () => {
-        const { postsService } = await import("@/services/social/postsService");
+        const { postsService } = await import("@/services/social");
         const posts = await postsService.getFeed(0, 5);
         if (!Array.isArray(posts)) {
           throw new Error("Posts feed integration failed");
@@ -240,7 +240,7 @@ export class TestingService {
       // Test 4: Security + Audit integration
       async () => {
         const { securityService } =
-          await import("@/services/auth/SecurityService");
+          await import("@/services/auth");
         const analysis = await securityService.analyzeUserActivity("test-user");
         if (analysis.riskScore < 0 || analysis.riskScore > 100) {
           throw new Error("Security analysis integration failed");
@@ -258,7 +258,7 @@ export class TestingService {
     const tests = [
       // Test 1: Complete user flow (simplified)
       async () => {
-        const { postsService } = await import("@/services/social/postsService");
+        const { postsService } = await import("@/services/social");
         const _posts = await postsService.getFeed(0, 5);
         if (!Array.isArray(_posts)) {
           throw new Error("E2E user flow failed");
@@ -268,7 +268,7 @@ export class TestingService {
       // Test 2: Content moderation flow
       async () => {
         const { contentModerationService } =
-          await import("@/services/social/ContentModerationService");
+          await import("@/services/social");
         const testContent = "This is a test post for moderation";
         const moderation =
           await contentModerationService.moderateText(testContent);
@@ -280,7 +280,7 @@ export class TestingService {
       // Test 3: Analytics and reporting flow
       async () => {
         const { TokenAnalyticsService } =
-          await import("@/services/analytics/TokenAnalyticsService");
+          await import("@/services/analytics");
         const { advancedCacheService } =
           await import("@/services/core/AdvancedCacheService");
 

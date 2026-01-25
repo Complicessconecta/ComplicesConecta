@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { contentModerationService, ModerationResult } from "@/services/social/ContentModerationService";
+import { contentModerationService, ModerationResult } from "@/services/social";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 

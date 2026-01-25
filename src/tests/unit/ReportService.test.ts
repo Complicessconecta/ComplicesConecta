@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { ReportService, CreateReportParams } from "@/services/social/ReportService";
+import { ReportService, CreateReportParams } from "@/services/social/social/ReportService";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 

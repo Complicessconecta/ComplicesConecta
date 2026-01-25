@@ -240,7 +240,7 @@ export class RateLimitService {
    */
   setRateLimitConfig(action: string, config: RateLimitConfig): void {
     this.configs.set(action, config);
-    logger.info(`Rate limit config updated for ${action}:`, config);
+    logger.info(`Rate limit config updated for ${action}:`, { config });
   }
 
   /**

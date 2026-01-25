@@ -12,8 +12,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { PyTorchScoringModel } from "@/services/analytics/ai/models/PyTorchScoringModel";
-import type { CompatibilityFeatures } from "@/services/analytics/ai/types";
+import { PyTorchScoringModel } from "@/services/analytics";
+import type { CompatibilityFeatures } from "@/services/analytics";
 import "@/tests/mocks/tensorflow";
 
 describe("PyTorchScoringModel", () => {
@@ -343,7 +343,7 @@ describe("PyTorchScoringModel", () => {
   describe("Singleton Behavior", () => {
     it("should use singleton instance", async () => {
       const { pytorchModel } =
-        await import("@/services/analytics/ai/models/PyTorchScoringModel");
+        await import("@/services/analytics/analytics/ai/models/PyTorchScoringModel");
 
       await pytorchModel.load();
       const isLoaded1 = pytorchModel.isLoaded();

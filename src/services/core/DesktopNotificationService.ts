@@ -10,7 +10,7 @@
 
 import { logger } from "@/lib/logger";
 import type { ErrorAlert } from "@/services/core/ErrorAlertService";
-import type { PerformanceMetric } from "@/services/core/PerformanceMonitoringService"; 
+import type { PerformanceMetric } from "@/services/core/PerformanceMonitoringService";
 
 // =====================================================
 // INTERFACES
@@ -135,7 +135,7 @@ export class DesktopNotificationService {
   updateConfig(config: Partial<NotificationConfig>): void {
     this.config = { ...this.config, ...config };
     this.saveConfig();
-    logger.info("Notification config updated:", this.config);
+    logger.info("Notification config updated:", { config: this.config });
   }
 
   /**

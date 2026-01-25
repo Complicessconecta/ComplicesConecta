@@ -13,7 +13,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { pytorchModel } from "@/services/analytics/ai/models/PyTorchScoringModel";
+import { pytorchModel } from "@/services/analytics";
 import { logger } from "@/lib/logger";
 
 export interface ModelLoaderState {

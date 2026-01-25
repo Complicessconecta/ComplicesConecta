@@ -257,7 +257,10 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         });
 
         if (profileError) {
-          logger.error("❌ Error creando perfil:", profileError);
+          logger.error("❌ Error creando perfil:", {
+            error: profileError.message,
+            details: profileError.details,
+          });
           throw new Error("Error al crear el perfil de usuario");
         }
 

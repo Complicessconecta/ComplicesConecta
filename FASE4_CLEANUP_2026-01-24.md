@@ -5,6 +5,13 @@
 
 ---
 
+## Addendum 25 Ene 2026
+
+- **Imports legacy corregidos:** se corrigieron imports que seguían apuntando a rutas previas a la migración en `services/social/*`, `services/analytics/*` y `services/analytics/analytics/ai/*`.
+- **Pendiente:** validación final con type-check.
+
+---
+
 ## Objetivo
 
 Eliminar exports obsoletos, verificar que no haya imports rotos y documentar imports estables.

@@ -23,8 +23,8 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import type { CompatibilityFeatures, AIConfig, AIScore } from "@/services/analytics/ai/types";
-import { calculateDistance } from "@/services/analytics/ai/utils";
+import type { CompatibilityFeatures, AIConfig, AIScore } from "@/services/analytics/analytics/ai/types";
+import { calculateDistance } from "@/services/analytics/analytics/ai/utils";
 
 /**
  * AILayerService - Servicio principal de capa AI
@@ -105,16 +105,16 @@ export class AILayerService {
       // Hybrid Scoring Logic (Phase 1.2 requirement)
       // Combinamos el score de AI con el legacy para una transición suave
       const legacyScore = await legacyScoreFn();
-      
+
       // Weighted average: 70% AI, 30% Legacy
       const hybridScoreValue = (aiScoreResult.score * 0.7) + (legacyScore * 0.3);
-      
+
       const result: AIScore = {
         score: hybridScoreValue,
         confidence: Math.max(aiScoreResult.confidence, 0.8),
         method: "hybrid",
         timestamp: new Date(),
-        features: features 
+        features: features
       };
 
       this.saveToCache(cacheKey, result);

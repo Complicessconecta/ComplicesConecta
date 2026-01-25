@@ -9,7 +9,7 @@ interface PushNotificationSettingsProps {
 }
 
 export const PushNotificationSettings: React.FC<
-  
+
 PushNotificationSettingsProps
 > = ({ className = "" }) => {
   const { user } = useAuth();
@@ -30,7 +30,7 @@ PushNotificationSettingsProps
   } = usePushNotifications({
     userId: user?.id || "",
     onNotificationReceived: (notification) => {
-      logger.info("📨 Notificación recibida:", notification);
+      logger.info("📨 Notificación recibida:", { notification });
     },
     onSubscriptionChange: (sub) => {
       logger.info("🔄 Suscripción cambió:", {

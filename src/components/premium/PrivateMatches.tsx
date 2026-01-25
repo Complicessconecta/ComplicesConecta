@@ -186,7 +186,10 @@ export const PrivateMatches: React.FC = () => {
         .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error("Error loading private matches:", error);
+        logger.error("Error loading private matches:", {
+          error: error.message,
+          details: error.details,
+        });
         toast({
           variant: "destructive",
           title: "Error",

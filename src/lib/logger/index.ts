@@ -3,4 +3,4 @@
  * Exporta logger simple para romper dependencia circular
  */
 
-export * from './logger';
+export * from "@/lib/logger/logger";

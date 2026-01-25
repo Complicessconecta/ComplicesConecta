@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/useToast";
-import { reportService } from "@/services/social/ReportService";
+import { reportService } from "@/services/social";
 
 interface ReportDialogProps {
   profileId: string;

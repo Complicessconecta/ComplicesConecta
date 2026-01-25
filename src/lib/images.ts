@@ -142,7 +142,8 @@ export async function uploadImage(
       .single();
 
     if (dbError) {
-      logDatabaseOperation("insert", "images", false, {
+      logDatabaseOperation("insert images", {
+        ok: false,
         error: dbError.message,
         fileName,
         profileId,
@@ -203,7 +204,8 @@ export async function getUserImages(
     const { data, error } = await query;
 
     if (error) {
-      logDatabaseOperation("select", "images", false, {
+      logDatabaseOperation("select images", {
+        ok: false,
         error: error.message,
         profileId,
         context: "fetch-user-images",
@@ -248,7 +250,8 @@ export async function deleteImage(
       .single();
 
     if (fetchError || !image) {
-      logDatabaseOperation("select", "images", false, {
+      logDatabaseOperation("select images", {
+        ok: false,
         error: fetchError?.message || "Image not found",
         imageId,
         profileId,
@@ -285,7 +288,8 @@ export async function deleteImage(
       .eq("profile_id", profileId);
 
     if (deleteError) {
-      logDatabaseOperation("delete", "images", false, {
+      logDatabaseOperation("delete images", {
+        ok: false,
         error: deleteError.message,
         imageId,
         profileId,
@@ -326,7 +330,8 @@ export async function getPublicImages(
       .limit(limit);
 
     if (error) {
-      logDatabaseOperation("select", "images", false, {
+      logDatabaseOperation("select images", {
+        ok: false,
         error: error.message,
         limit,
         context: "fetch-public-images",

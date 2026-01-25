@@ -33,7 +33,7 @@ import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { safeGetItem } from "@/lib/safe-storage";
 import { useRealtimeChat } from "@/features/chat/useRealtimeChat";
-import { matchService } from "@/services/social/MatchService";
+import { matchService } from "@/services/social";
 import { tokenService } from "@/services/payments/TokenService";
 import { recordGalleryCommission } from "@/services/payments/galleryCommission";
 import { supabase } from "@/integrations/supabase/client";

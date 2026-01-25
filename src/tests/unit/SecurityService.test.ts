@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { SecurityService } from "@/services/auth/SecurityService";
+import { SecurityService } from "@/services/auth";
 import { supabase } from "@/integrations/supabase/client";
 import * as speakeasy from "speakeasy";
 

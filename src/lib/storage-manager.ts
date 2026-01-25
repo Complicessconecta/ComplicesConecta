@@ -91,7 +91,7 @@ export class StorageManager {
     if (violations.length > 0) {
       logger.error(
         "❌ Datos sensibles detectados en localStorage:",
-        violations,
+        { violations },
       );
       return false;
     }

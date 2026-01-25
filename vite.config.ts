@@ -32,6 +32,17 @@ export default defineConfig(({ mode }) => {
           ) {
             return;
           }
+
+          // Suprimir warning no accionable: Rollup no moverá módulos de dynamic import a otro chunk
+          // (Sucede cuando manualChunks contiene módulos también referenciados por dynamic import)
+          if (
+            warning.message &&
+            warning.message.includes(
+              "dynamic import will not move module into another chunk",
+            )
+          ) {
+            return;
+          }
           warn(warning);
         },
         output: {
@@ -66,11 +77,6 @@ export default defineConfig(({ mode }) => {
             "pages-profiles": [
               "./src/pages/profiles/shared/Profiles",
               "./src/pages/profiles/shared/ProfileDetail",
-            ],
-            // Separar servicios complejos
-            "services-advanced": [
-              "./src/services/core/AdvancedCacheService",
-              "./src/services/social/ContentModerationService",
             ],
           },
         },

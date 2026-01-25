@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { useToast } from "@/hooks/useToast";
 import { Flag, AlertTriangle, CheckCircle, XCircle, Eye, Clock, User, MessageSquare, Image, BarChart3, Filter, RefreshCw } from "lucide-react";
-import {reportService, type Report, type ReportStats } from "@/services/social/ReportService";
+import { reportService } from "@/services/social";
+import type { Report, ReportStats } from "@/services/social/social/ReportService";
 import { logger } from "@/lib/logger";
 
 interface ReportWithDetails extends Report {

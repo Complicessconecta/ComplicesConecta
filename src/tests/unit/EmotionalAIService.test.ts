@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { EmotionalAIService } from "@/services/analytics/ai/EmotionalAIService";
+import { EmotionalAIService } from "@/services/analytics";
 import { supabase } from "@/integrations/supabase/client";
 
 // Mock OpenAI

@@ -728,7 +728,7 @@ export class IntelligentAutomationService {
     this.rules.push(newRule);
 
     // In a real implementation, this would be saved to the database
-    logger.info("New automation rule created:", newRule);
+    logger.info("New automation rule created:", { rule: newRule });
 
     return newRule;
   }
@@ -759,7 +759,7 @@ export class IntelligentAutomationService {
       updated_at: new Date().toISOString(),
     };
 
-    logger.info("Automation rule updated:", this.rules[ruleIndex]);
+    logger.info("Automation rule updated:", { rule: this.rules[ruleIndex] });
 
     return this.rules[ruleIndex];
   }

@@ -109,7 +109,9 @@ class AIIntegrationService {
       try {
         this.webLLM = await CreateMLCEngine(LOCAL_MODEL_NAME);
       } catch (webLLMError) {
-        logger.warn('WebLLM no disponible, usando fallback:', webLLMError as Error);
+        const errorMsg = webLLMError instanceof Error ? webLLMError.message : String(webLLMError);
+        const errorStack = webLLMError instanceof Error ? webLLMError.stack : undefined;
+        logger.warn('WebLLM no disponible, usando fallback:', { error: errorMsg, stack: errorStack });
         this.webLLM = null;
       }
 
@@ -117,7 +119,9 @@ class AIIntegrationService {
       try {
         this.hfPipeline = await pipeline('question-answering', 'distilbert-base-uncased-distilled-squad');
       } catch (hfError) {
-        logger.warn('HuggingFace pipeline no disponible, usando fallback:', hfError as Error);
+        const errorMsg = hfError instanceof Error ? hfError.message : String(hfError);
+        const errorStack = hfError instanceof Error ? hfError.stack : undefined;
+        logger.warn('HuggingFace pipeline no disponible, usando fallback:', { error: errorMsg, stack: errorStack });
         this.hfPipeline = null;
       }
 
@@ -125,7 +129,9 @@ class AIIntegrationService {
       try {
         this.toxicityModel = await toxicity.load(0.9, ['toxicity', 'severe_toxicity', 'identity_attack', 'insult', 'profanity', 'threat']);
       } catch (toxicityError) {
-        logger.warn('Modelo de toxicidad no disponible, usando fallback:', toxicityError as Error);
+        const errorMsg = toxicityError instanceof Error ? toxicityError.message : String(toxicityError);
+        const errorStack = toxicityError instanceof Error ? toxicityError.stack : undefined;
+        logger.warn('Modelo de toxicidad no disponible, usando fallback:', { error: errorMsg, stack: errorStack });
         this.toxicityModel = null;
       }
 
@@ -408,7 +414,9 @@ class AIIntegrationService {
         ),
       };
     } catch (error) {
-      logger.error('Error generando reporte de rendimiento:', { error: error.message, stack: error.stack });
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      logger.error('Error generando reporte de rendimiento:', { error: errorMsg, stack: errorStack });
       throw error;
     }
   }

@@ -5,6 +5,13 @@
 
 ---
 
+## Actualización 25 Ene 2026
+
+- **Import fixes (aplicados):** se corrigieron rutas antiguas hacia barrels estables para `@/services/social` y `@/services/analytics`, y se corrigió el barrel interno `src/services/analytics/analytics/ai/index.ts` a exports relativos.
+- **Pendiente inmediato:** ejecutar type-check (`build:check`) para confirmar 0 imports rotos.
+
+---
+
 ## Análisis de Imports
 
 ### Patrones de Import Más Comunes

@@ -5,6 +5,22 @@
 
 ---
 
+## Actualización 25 Ene 2026
+
+- **Fix aplicado:** `src/services/analytics/analytics/ai/index.ts` corregido a exports relativos (`./...`) para eliminar rutas inválidas `@/services/analytics/ai/*`.
+- **Fix aplicado:** consumidores que importaban rutas antiguas fueron movidos a barrels:
+  - `@/services/social/*` -> `@/services/social`
+  - `@/services/analytics/*` -> `@/services/analytics`
+- **Pendiente:** correr type-check/lint para confirmar build limpio.
+
+### Verificación Final
+
+- ✅ `npm run build:check` (TypeScript app/node + Vite build)
+- ✅ `npm run lint`
+- ✅ Warnings de chunks ajustados en `vite.config.ts` (sin romper build)
+
+---
+
 ## Dominios Completados ✅
 
 ### Alto Impacto (15+ archivos)

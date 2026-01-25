@@ -98,7 +98,10 @@ export const checkEmailUniqueness = async (email: string): Promise<boolean> => {
       .limit(1);
 
     if (profileError && profileError.code !== "PGRST116") {
-      logger.error("Error checking profiles:", profileError);
+      logger.error("Error checking profiles:", {
+        error: profileError.message,
+        details: profileError.details,
+      });
       // Don't throw, just return false for safety or handle gracefully
       return false;
     }

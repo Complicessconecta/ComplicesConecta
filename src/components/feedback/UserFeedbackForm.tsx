@@ -105,7 +105,7 @@ export const UserFeedbackForm = ({
 
       // TODO: Integrar con Supabase feedback table
       // Por ahora, solo loguear
-      logger.info("User feedback submitted:", feedbackData);
+      logger.info("User feedback submitted:", { feedbackData });
 
       // Simular envío a backend
       await new Promise((resolve) => setTimeout(resolve, 1000));

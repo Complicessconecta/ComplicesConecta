@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Heart, Sparkles, Users, UserCheck, Shield } from "lucide-react";
 import "@/styles/LoginLoadingScreen.css";
 
@@ -83,20 +83,20 @@ export const LoginLoadingScreen = ({
 
   const icons = [Shield, UserCheck, Users, Heart];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(onComplete, 500);
-          return 100;
-        }
-        return prev + 2;
-      });
-    }, 50);
-
-    return () => clearInterval(interval);
+  const handleProgress = useCallback(() => {
+    setProgress((prev) => {
+      if (prev >= 100) {
+        setTimeout(onComplete, 500);
+        return 100;
+      }
+      return prev + 2;
+    });
   }, [onComplete]);
+
+  useEffect(() => {
+    const interval = setInterval(handleProgress, 50);
+    return () => clearInterval(interval);
+  }, [handleProgress]);
 
   useEffect(() => {
     const textInterval = setInterval(() => {

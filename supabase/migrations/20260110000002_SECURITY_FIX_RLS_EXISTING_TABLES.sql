@@ -238,6 +238,7 @@ CREATE POLICY "Users can update own invitations" ON public.invitations
 
 ALTER TABLE public.blockchain_transactions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own blockchain transactions" ON public.blockchain_transactions;
 CREATE POLICY "Users can view own blockchain transactions" ON public.blockchain_transactions
     FOR SELECT
     USING (
@@ -248,6 +249,7 @@ CREATE POLICY "Users can view own blockchain transactions" ON public.blockchain_
         )
     );
 
+DROP POLICY IF EXISTS "System can insert blockchain transactions" ON public.blockchain_transactions;
 CREATE POLICY "System can insert blockchain transactions" ON public.blockchain_transactions
     FOR INSERT
     WITH CHECK (TRUE);

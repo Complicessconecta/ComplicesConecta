@@ -12,13 +12,13 @@ CREATE UNIQUE INDEX IF NOT EXISTS admin_users_user_id_unique_idx ON admin_users(
 CREATE INDEX IF NOT EXISTS admin_users_granted_by_idx ON admin_users(granted_by);
 
 -- Crear función para generar IDs únicos para administradores
+-- NOTA: admin_users.id es UUID en el esquema actual. Usar TEXT rompería inserts.
 CREATE OR REPLACE FUNCTION generate_admin_id()
-RETURNS TEXT
+RETURNS uuid
 LANGUAGE plpgsql
 AS $$
 BEGIN
-  -- Generar ID único basado en timestamp y random
-  RETURN 'admin_' || to_char(clock_timestamp(), 'YYYYMMDD_HH24MISS_MS') || '_' || substr(md5(random()::text), 1, 8);
+  RETURN gen_random_uuid();
 END;
 $$;
 

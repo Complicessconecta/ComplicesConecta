@@ -23,14 +23,17 @@ CREATE INDEX IF NOT EXISTS idx_wallet_balances_last_sync ON wallet_balances(last
 -- RLS: Solo el usuario puede ver su propio balance
 ALTER TABLE wallet_balances ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own wallet" ON wallet_balances;
 CREATE POLICY "Users can view own wallet"
   ON wallet_balances FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own wallet" ON wallet_balances;
 CREATE POLICY "Users can update own wallet"
   ON wallet_balances FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "System can update wallet" ON wallet_balances;
 CREATE POLICY "System can update wallet"
   ON wallet_balances FOR UPDATE
   TO authenticated
@@ -46,6 +49,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_wallet_balances_updated_at_trigger ON wallet_balances;
 CREATE TRIGGER update_wallet_balances_updated_at_trigger
   BEFORE UPDATE ON wallet_balances
   FOR EACH ROW

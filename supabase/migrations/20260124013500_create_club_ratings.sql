@@ -20,15 +20,18 @@ CREATE INDEX IF NOT EXISTS idx_club_ratings_created_at ON club_ratings(created_a
 -- RLS
 ALTER TABLE club_ratings ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view all ratings" ON club_ratings;
 CREATE POLICY "Users can view all ratings"
   ON club_ratings FOR SELECT
   USING (true);
 
+DROP POLICY IF EXISTS "Authenticated users can create ratings" ON club_ratings;
 CREATE POLICY "Authenticated users can create ratings"
   ON club_ratings FOR INSERT
   TO authenticated
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own ratings" ON club_ratings;
 CREATE POLICY "Users can update own ratings"
   ON club_ratings FOR UPDATE
   USING (auth.uid() = user_id);
@@ -72,6 +75,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_club_rating_stats_trigger ON club_ratings;
 CREATE TRIGGER update_club_rating_stats_trigger
   AFTER INSERT OR UPDATE OR DELETE ON club_ratings
   FOR EACH ROW

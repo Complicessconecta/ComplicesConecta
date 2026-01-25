@@ -106,47 +106,85 @@ CREATE TABLE IF NOT EXISTS stripe.invoices (
 -- Para datos semi-estáticos: products y prices
 
 -- Materialized View: Products
-CREATE MATERIALIZED VIEW stripe.mv_products AS
-SELECT 
-  id,
-  name,
-  description,
-  active,
-  metadata,
-  created,
-  updated
-FROM stripe.products
-WHERE active = true  -- Solo productos activos
-WITH DATA;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_matviews
+    WHERE schemaname = 'stripe'
+      AND matviewname = 'mv_products'
+  ) THEN
+    EXECUTE $sql$
+      CREATE MATERIALIZED VIEW stripe.mv_products AS
+      SELECT
+        id,
+        name,
+        description,
+        active,
+        metadata,
+        created,
+        updated
+      FROM stripe.products
+      WHERE active = true
+      WITH DATA
+    $sql$;
+  END IF;
+END $$;
 
 -- Materialized View: Prices
-CREATE MATERIALIZED VIEW stripe.mv_prices AS
-SELECT 
-  p.id,
-  p.product_id,
-  p.nickname,
-  p.currency,
-  p.unit_amount,
-  p.type,
-  p.recurring_interval,
-  p.recurring_interval_count,
-  p.metadata,
-  p.created,
-  p.updated
-FROM stripe.prices p
-JOIN stripe.mv_products pr ON p.product_id = pr.id
-WHERE p.active = true  -- Solo precios activos
-WITH DATA;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_matviews
+    WHERE schemaname = 'stripe'
+      AND matviewname = 'mv_prices'
+  ) THEN
+    EXECUTE $sql$
+      CREATE MATERIALIZED VIEW stripe.mv_prices AS
+      SELECT
+        p.id,
+        p.product_id,
+        p.nickname,
+        p.currency,
+        p.unit_amount,
+        p.type,
+        p.recurring_interval,
+        p.recurring_interval_count,
+        p.metadata,
+        p.created,
+        p.updated
+      FROM stripe.prices p
+      JOIN stripe.mv_products pr ON p.product_id = pr.id
+      WHERE p.active = true
+      WITH DATA
+    $sql$;
+  END IF;
+END $$;
 
 -- ============================================================================
 -- PASO 4: CREAR ÍNDICES EN MATERIALIZED VIEWS
 -- ============================================================================
 -- Mejora performance de queries
-CREATE UNIQUE INDEX idx_mv_products_id ON stripe.mv_products (id);
-CREATE INDEX idx_mv_products_active ON stripe.mv_products (active);
-CREATE UNIQUE INDEX idx_mv_prices_id ON stripe.mv_prices (id);
-CREATE INDEX idx_mv_prices_product_id ON stripe.mv_prices (product_id);
-CREATE INDEX idx_mv_prices_active ON stripe.mv_prices (active);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_products_id ON stripe.mv_products (id);
+CREATE INDEX IF NOT EXISTS idx_mv_products_active ON stripe.mv_products (active);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_prices_id ON stripe.mv_prices (id);
+CREATE INDEX IF NOT EXISTS idx_mv_prices_product_id ON stripe.mv_prices (product_id);
+
+-- En algunas variantes del wrapper, mv_prices no expone la columna active.
+-- Crear este índice solo si existe para evitar fallo de migración.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'stripe'
+      AND table_name = 'mv_prices'
+      AND column_name = 'active'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_mv_prices_active ON stripe.mv_prices (active)';
+  END IF;
+END $$;
 
 -- ============================================================================
 -- PASO 5: CREAR TABLA LOCAL PARA MAPPING USER → STRIPE_CUSTOMER
@@ -164,8 +202,8 @@ CREATE TABLE IF NOT EXISTS public.user_stripe_customers (
 );
 
 -- Índices para performance
-CREATE INDEX idx_user_stripe_customers_user_id ON public.user_stripe_customers (user_id);
-CREATE INDEX idx_user_stripe_customers_stripe_customer_id ON public.user_stripe_customers (stripe_customer_id);
+CREATE INDEX IF NOT EXISTS idx_user_stripe_customers_user_id ON public.user_stripe_customers (user_id);
+CREATE INDEX IF NOT EXISTS idx_user_stripe_customers_stripe_customer_id ON public.user_stripe_customers (stripe_customer_id);
 
 -- ============================================================================
 -- PASO 6: CREAR VIEWS EN 'public' CON RLS PARA EXPOSICIÓN SEGURA
@@ -284,18 +322,21 @@ COMMENT ON VIEW public.stripe_user_invoices IS 'View de facturas del usuario act
 ALTER TABLE public.user_stripe_customers ENABLE ROW LEVEL SECURITY;
 
 -- Política: Solo el usuario puede ver su propio mapping
+DROP POLICY IF EXISTS "Users can view their own stripe customer" ON public.user_stripe_customers;
 CREATE POLICY "Users can view their own stripe customer"
   ON public.user_stripe_customers
   FOR SELECT
   USING (user_id = auth.uid());
 
 -- Política: Solo el usuario puede insertar su propio mapping
+DROP POLICY IF EXISTS "Users can insert their own stripe customer" ON public.user_stripe_customers;
 CREATE POLICY "Users can insert their own stripe customer"
   ON public.user_stripe_customers
   FOR INSERT
   WITH CHECK (user_id = auth.uid());
 
 -- Política: Solo el usuario puede actualizar su propio mapping
+DROP POLICY IF EXISTS "Users can update their own stripe customer" ON public.user_stripe_customers;
 CREATE POLICY "Users can update their own stripe customer"
   ON public.user_stripe_customers
   FOR UPDATE
@@ -363,7 +404,7 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION public.create_stripe_customer_for_user() IS 'Crea un customer en Stripe y lo vincula al usuario actual (security definer)';
+COMMENT ON FUNCTION public.create_stripe_customer_for_user(TEXT, TEXT, JSONB) IS 'Crea un customer en Stripe y lo vincula al usuario actual (security definer)';
 
 -- ----------------------------------------------------------------------------
 -- FUNCTION: refresh_stripe_materialized_views
@@ -397,16 +438,75 @@ CREATE TABLE IF NOT EXISTS public.stripe_webhook_events (
   error_message TEXT
 );
 
+-- Tolerancia a drift: si la tabla ya existía con otro schema, asegurar columnas mínimas.
+ALTER TABLE public.stripe_webhook_events
+  ADD COLUMN IF NOT EXISTS stripe_event_id TEXT,
+  ADD COLUMN IF NOT EXISTS event_type TEXT,
+  ADD COLUMN IF NOT EXISTS event_data JSONB,
+  ADD COLUMN IF NOT EXISTS processed BOOLEAN DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS processed_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW(),
+  ADD COLUMN IF NOT EXISTS error_message TEXT;
+
+-- Asegurar constraint UNIQUE sobre stripe_event_id si no existe
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'stripe_webhook_events'
+      AND c.contype = 'u'
+      AND c.conname = 'stripe_webhook_events_stripe_event_id_key'
+  ) THEN
+    BEGIN
+      EXECUTE 'ALTER TABLE public.stripe_webhook_events ADD CONSTRAINT stripe_webhook_events_stripe_event_id_key UNIQUE (stripe_event_id)';
+    EXCEPTION WHEN others THEN
+      -- Si hay datos duplicados o el constraint ya existe con otro nombre, no bloquear la migración local
+      NULL;
+    END;
+  END IF;
+END $$;
+
 -- Índices para performance
-CREATE INDEX idx_stripe_webhook_events_stripe_event_id ON public.stripe_webhook_events (stripe_event_id);
-CREATE INDEX idx_stripe_webhook_events_event_type ON public.stripe_webhook_events (event_type);
-CREATE INDEX idx_stripe_webhook_events_processed ON public.stripe_webhook_events (processed);
-CREATE INDEX idx_stripe_webhook_events_created_at ON public.stripe_webhook_events (created_at DESC);
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='stripe_webhook_events' AND column_name='stripe_event_id'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_stripe_webhook_events_stripe_event_id ON public.stripe_webhook_events (stripe_event_id)';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='stripe_webhook_events' AND column_name='event_type'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_stripe_webhook_events_event_type ON public.stripe_webhook_events (event_type)';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='stripe_webhook_events' AND column_name='processed'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_stripe_webhook_events_processed ON public.stripe_webhook_events (processed)';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='stripe_webhook_events' AND column_name='created_at'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_stripe_webhook_events_created_at ON public.stripe_webhook_events (created_at DESC)';
+  END IF;
+END $$;
 
 -- RLS para webhook events
 ALTER TABLE public.stripe_webhook_events ENABLE ROW LEVEL SECURITY;
 
 -- Política: Solo Edge Functions (service role) pueden insertar
+DROP POLICY IF EXISTS "Service role can insert webhook events" ON public.stripe_webhook_events;
 CREATE POLICY "Service role can insert webhook events"
   ON public.stripe_webhook_events
   FOR INSERT
@@ -488,7 +588,7 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION public.process_stripe_webhook_event() IS 'Procesa eventos de webhook de Stripe (llamado desde Edge Functions)';
+COMMENT ON FUNCTION public.process_stripe_webhook_event(TEXT, TEXT, JSONB) IS 'Procesa eventos de webhook de Stripe (llamado desde Edge Functions)';
 
 -- ============================================================================
 -- PASO 11: GRANT PERMISOS
@@ -496,7 +596,6 @@ COMMENT ON FUNCTION public.process_stripe_webhook_event() IS 'Procesa eventos de
 -- Dar permisos a authenticated role
 GRANT USAGE ON SCHEMA stripe TO authenticated;
 GRANT SELECT ON ALL TABLES IN SCHEMA stripe TO authenticated;
-GRANT SELECT ON ALL MATERIALIZED VIEWS IN SCHEMA stripe TO authenticated;
 
 -- Dar permisos a views públicas
 GRANT SELECT ON public.stripe_products TO authenticated;
@@ -525,14 +624,39 @@ CREATE TABLE IF NOT EXISTS public.stripe_product_mapping (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Tolerancia a drift: si la tabla ya existía con otro schema, asegurar columnas mínimas.
+ALTER TABLE public.stripe_product_mapping
+  ADD COLUMN IF NOT EXISTS stripe_price_id TEXT,
+  ADD COLUMN IF NOT EXISTS cmpx_tokens_amount INTEGER,
+  ADD COLUMN IF NOT EXISTS bonus_tokens INTEGER DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS product_type TEXT,
+  ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE,
+  ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW(),
+  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
 -- Índices
-CREATE INDEX idx_stripe_product_mapping_stripe_price_id ON public.stripe_product_mapping (stripe_price_id);
-CREATE INDEX idx_stripe_product_mapping_active ON public.stripe_product_mapping (is_active);
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='stripe_product_mapping' AND column_name='stripe_price_id'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_stripe_product_mapping_stripe_price_id ON public.stripe_product_mapping (stripe_price_id)';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema='public' AND table_name='stripe_product_mapping' AND column_name='is_active'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_stripe_product_mapping_active ON public.stripe_product_mapping (is_active)';
+  END IF;
+END $$;
 
 -- RLS
 ALTER TABLE public.stripe_product_mapping ENABLE ROW LEVEL SECURITY;
 
 -- Política: Todos los usuarios pueden ver mapeos activos
+DROP POLICY IF EXISTS "Users can view active product mappings" ON public.stripe_product_mapping;
 CREATE POLICY "Users can view active product mappings"
   ON public.stripe_product_mapping
   FOR SELECT
@@ -560,18 +684,52 @@ INSERT INTO stripe.prices (id, product_id, nickname, currency, unit_amount, type
   ('price_premium_yearly', 'prod_premium_yearly', 'Premium Yearly', 'usd', 9999, 'recurring', 'year', true)
 ON CONFLICT (id) DO NOTHING;
 
--- Refrescar materialized views con datos mock
-REFRESH MATERIALIZED VIEW stripe.mv_products;
-REFRESH MATERIALIZED VIEW stripe.mv_prices;
+ -- Refrescar materialized views con datos mock
+ REFRESH MATERIALIZED VIEW stripe.mv_products;
+ REFRESH MATERIALIZED VIEW stripe.mv_prices;
+ 
+ -- Mapeos de productos mock
+ DO $$
+ DECLARE
+   requires_product_id boolean;
+ BEGIN
+   -- Si la tabla existente tiene un esquema distinto (ej. product_id NOT NULL),
+   -- no insertar mocks para evitar violaciones de constraints.
+   SELECT EXISTS (
+     SELECT 1
+     FROM information_schema.columns c
+     WHERE c.table_schema = 'public'
+       AND c.table_name = 'stripe_product_mapping'
+       AND c.column_name = 'product_id'
+       AND c.is_nullable = 'NO'
+       AND c.column_default IS NULL
+   ) INTO requires_product_id;
 
--- Mapeos de productos mock
-INSERT INTO public.stripe_product_mapping (stripe_price_id, cmpx_tokens_amount, bonus_tokens, product_type) VALUES
-  ('price_100', 100, 10, 'tokens'),
-  ('price_500', 500, 50, 'tokens'),
-  ('price_1000', 1000, 150, 'tokens'),
-  ('price_premium_monthly', 0, 0, 'subscription'),
-  ('price_premium_yearly', 0, 0, 'subscription')
-ON CONFLICT (stripe_price_id) DO NOTHING;
+   IF requires_product_id THEN
+     RETURN;
+   END IF;
+
+   IF EXISTS (
+     SELECT 1 FROM information_schema.columns
+     WHERE table_schema='public' AND table_name='stripe_product_mapping' AND column_name='stripe_price_id'
+   ) THEN
+     INSERT INTO public.stripe_product_mapping (stripe_price_id, cmpx_tokens_amount, bonus_tokens, product_type)
+     SELECT v.stripe_price_id, v.cmpx_tokens_amount, v.bonus_tokens, v.product_type
+     FROM (
+       VALUES
+         ('price_100', 100, 10, 'tokens'),
+         ('price_500', 500, 50, 'tokens'),
+         ('price_1000', 1000, 150, 'tokens'),
+         ('price_premium_monthly', 0, 0, 'subscription'),
+         ('price_premium_yearly', 0, 0, 'subscription')
+     ) AS v(stripe_price_id, cmpx_tokens_amount, bonus_tokens, product_type)
+     WHERE NOT EXISTS (
+       SELECT 1
+       FROM public.stripe_product_mapping m
+       WHERE m.stripe_price_id = v.stripe_price_id
+     );
+   END IF;
+ END $$;
 
 -- ============================================================================
 -- FIN DEL SCRIPT

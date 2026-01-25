@@ -20,19 +20,23 @@ CREATE INDEX IF NOT EXISTS idx_trust_contacts_priority ON trust_contacts(priorit
 -- RLS
 ALTER TABLE trust_contacts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own trust contacts" ON trust_contacts;
 CREATE POLICY "Users can view own trust contacts"
   ON trust_contacts FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own trust contacts" ON trust_contacts;
 CREATE POLICY "Users can insert own trust contacts"
   ON trust_contacts FOR INSERT
   TO authenticated
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own trust contacts" ON trust_contacts;
 CREATE POLICY "Users can update own trust contacts"
   ON trust_contacts FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own trust contacts" ON trust_contacts;
 CREATE POLICY "Users can delete own trust contacts"
   ON trust_contacts FOR DELETE
   USING (auth.uid() = user_id);
@@ -46,6 +50,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_trust_contacts_updated_at_trigger ON trust_contacts;
 CREATE TRIGGER update_trust_contacts_updated_at_trigger
   BEFORE UPDATE ON trust_contacts
   FOR EACH ROW

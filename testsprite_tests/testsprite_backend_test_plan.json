@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "verify_auth_ui_rendering",
+    "description": "Test the /auth endpoint to ensure the authentication UI renders correctly with support for login, registration, and optional MFA. Verify that the UI is responsive and provides clear error feedback."
+  },
+  {
+    "id": "TC002",
+    "title": "verify_discover_ui_rendering",
+    "description": "Test the /discover endpoint to confirm the discover screen loads properly, allowing users to view profiles and perform liking actions."
+  },
+  {
+    "id": "TC003",
+    "title": "verify_matches_ui_rendering",
+    "description": "Test the /matches endpoint to ensure the matches screen displays correctly, showing accurate matches based on user interactions."
+  },
+  {
+    "id": "TC004",
+    "title": "verify_chat_ui_rendering",
+    "description": "Test the /chat endpoint to verify the chat UI renders correctly for real-time messaging and that access is restricted when no valid session exists."
+  },
+  {
+    "id": "TC005",
+    "title": "verify_chat_ui_rendering_with_id",
+    "description": "Test the /chat/{id} endpoint to ensure the chat UI loads properly for a specific profile or chat ID, supporting real-time communication."
+  },
+  {
+    "id": "TC006",
+    "title": "verify_tokens_ui_rendering",
+    "description": "Test the /tokens endpoint to confirm the tokens dashboard and UI render correctly, displaying CMPX/GTK balances and supporting smooth navigation."
+  },
+  {
+    "id": "TC007",
+    "title": "verify_landing_page_ui_rendering",
+    "description": "Test the / endpoint to ensure the landing/home UI renders correctly with responsive navigation and UX across devices."
+  },
+  {
+    "id": "TC008",
+    "title": "verify_demo_ui_rendering",
+    "description": "Test the /demo endpoint to verify the demo mode UI renders correctly, allowing quick product tours without real credentials."
+  },
+  {
+    "id": "TC009",
+    "title": "verify_profiles_list_ui_rendering",
+    "description": "Test the /profiles endpoint to ensure the profiles list UI loads correctly, supporting single and couple profiles."
+  },
+  {
+    "id": "TC010",
+    "title": "verify_profile_detail_ui_rendering",
+    "description": "Test the /profile/{id} endpoint to confirm the profile detail UI renders properly for a given profile ID."
+  }
+]

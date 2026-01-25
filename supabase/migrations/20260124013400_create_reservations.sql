@@ -31,23 +31,38 @@ CREATE INDEX IF NOT EXISTS idx_reservations_expires_at ON reservations(expires_a
 -- RLS
 ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own reservations" ON reservations;
 CREATE POLICY "Users can view own reservations"
   ON reservations FOR SELECT
   USING (auth.uid() = user_id);
 
-CREATE POLICY "Clubs can view their reservations"
-  ON reservations FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM clubs WHERE id = club_id AND owner_id = auth.uid()
-    )
-  );
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'owner_id'
+  ) THEN
+    DROP POLICY IF EXISTS "Clubs can view their reservations" ON reservations;
+    CREATE POLICY "Clubs can view their reservations"
+      ON reservations FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1 FROM clubs WHERE id = club_id AND owner_id = auth.uid()
+        )
+      );
+  END IF;
+END $$;
 
+DROP POLICY IF EXISTS "System can insert reservations" ON reservations;
 CREATE POLICY "System can insert reservations"
   ON reservations FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
+DROP POLICY IF EXISTS "System can update reservations" ON reservations;
 CREATE POLICY "System can update reservations"
   ON reservations FOR UPDATE
   TO authenticated
@@ -62,6 +77,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_reservations_updated_at_trigger ON reservations;
 CREATE TRIGGER update_reservations_updated_at_trigger
   BEFORE UPDATE ON reservations
   FOR EACH ROW

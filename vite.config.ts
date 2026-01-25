@@ -1,13 +1,55 @@
 // vite.config.ts
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import fs from "node:fs";
 import path from "path";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  loadEnv(mode, process.cwd(), "");
+
+  const spaFallbackForTests = (): Plugin => {
+    return {
+      name: "spa-fallback-for-testsprite",
+      apply: "serve",
+      configureServer(server) {
+        server.middlewares.use(async (req, res, next) => {
+          try {
+            if (!req.url || req.method !== "GET") return next();
+
+            const url = req.url.split("?")[0];
+            if (
+              url.startsWith("/@") ||
+              url.startsWith("/src/") ||
+              url.startsWith("/assets/") ||
+              url.startsWith("/favicon") ||
+              url.startsWith("/robots") ||
+              url.startsWith("/manifest")
+            ) {
+              return next();
+            }
+            if (path.posix.extname(url)) return next();
+
+            const acceptHeader = String(req.headers?.accept ?? "");
+            const wantsHtml = acceptHeader.includes("text/html");
+            if (wantsHtml) return next();
+
+            const indexHtmlPath = path.resolve(server.config.root, "index.html");
+            const rawHtml = fs.readFileSync(indexHtmlPath, "utf-8");
+
+            const html = await server.transformIndexHtml(url, rawHtml);
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "text/html; charset=utf-8");
+            res.end(html);
+          } catch {
+            return next();
+          }
+        });
+      },
+    };
+  };
 
   return {
-    plugins: [react()],
+    plugins: [react(), spaFallbackForTests()],
     optimizeDeps: {
       entries: ["index.html"],
     },
@@ -15,6 +57,7 @@ export default defineConfig(({ mode }) => {
       port: 8080,
       host: true,
       strictPort: true,
+      allowedHosts: ["tun.testsprite.com", ".tun.testsprite.com"],
     },
     resolve: {
       alias: {

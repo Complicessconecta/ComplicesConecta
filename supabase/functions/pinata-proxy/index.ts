@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve as _serve } from "std/http/server.ts";
 
 const PINATA_JWT = Deno.env.get('PINATA_JWT') || '';
 const PINATA_API_URL = 'https://api.pinata.cloud';
@@ -33,8 +33,8 @@ Deno.serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json' },
       status: response.status,
     });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: unknown) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       headers: { 'Content-Type': 'application/json' },
       status: 500,
     });

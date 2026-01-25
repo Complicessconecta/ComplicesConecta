@@ -1,7 +1,5 @@
-// @ts-ignore
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-// @ts-ignore
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,9 +14,7 @@ serve(async (req: Request) => {
 
   try {
     const supabaseClient = createClient(
-      // @ts-ignore
       Deno.env.get("SUPABASE_URL") ?? "",
-      // @ts-ignore
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
@@ -35,8 +31,8 @@ serve(async (req: Request) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: unknown) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
     });

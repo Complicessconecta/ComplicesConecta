@@ -1,9 +1,6 @@
-// @ts-expect-error - Deno runtime imports from URLs
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-// @ts-expect-error - Deno runtime imports from URLs
-import Stripe from "https://esm.sh/stripe@14.21.0";
-// @ts-expect-error - Deno runtime imports from URLs
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { serve } from "std/http/server.ts";
+import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
 
 declare const Deno: {
   env: {
@@ -22,7 +19,7 @@ const logStep = (step: string, details?: unknown) => {
   console.log(`[CHECK-SUBSCRIPTION] ${step}${detailsStr}`);
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

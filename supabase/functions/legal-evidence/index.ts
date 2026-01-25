@@ -1,5 +1,5 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -67,7 +67,7 @@ serve(async (req: Request) => {
       .eq("id", requester.id)
       .maybeSingle();
 
-    const role = (profileData as any)?.role as string | undefined;
+    const role = (profileData as { role?: string | undefined })?.role;
     const isAllowedRole = role === "admin" || role === "moderator";
 
     if (!isAuditExempt && !isAllowedRole) {
@@ -128,8 +128,8 @@ serve(async (req: Request) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: error?.message || String(error) }), {
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

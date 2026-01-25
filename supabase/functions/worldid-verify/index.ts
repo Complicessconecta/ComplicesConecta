@@ -1,19 +1,17 @@
 // World ID Verification Edge Function
 // Integrates with existing CMPX token system
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 
-// Global Deno declaration for IDE compatibility
-
-declare const Deno: any;
-
+// Global CORS headers
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
 
+// Define World ID proof structure
 interface WorldIDProof {
   merkle_root: string;
   nullifier_hash: string;
@@ -23,12 +21,14 @@ interface WorldIDProof {
   signal: string;
 }
 
+// Define verification request structure
 interface VerificationRequest {
   proof: WorldIDProof;
   user_id: string;
   invited_by?: string;
 }
 
+// Define Worldcoin verification response structure
 interface WorldcoinVerifyResponse {
   success: boolean;
   action: string;
@@ -37,7 +37,8 @@ interface WorldcoinVerifyResponse {
   verification_level: string;
 }
 
-serve(async (req) => {
+// Serve HTTP requests
+serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -216,7 +217,7 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("World ID verification error:", error);
 
     return new Response(
@@ -224,7 +225,7 @@ serve(async (req) => {
         success: false,
         error: "INTERNAL_ERROR",
         message: "Internal server error during World ID verification",
-        details: error.message,
+        details: error instanceof Error ? error.message : String(error),
       }),
       {
         status: 500,

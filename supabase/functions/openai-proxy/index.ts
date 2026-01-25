@@ -1,11 +1,11 @@
 // supabase/functions/openai-proxy/index.ts
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { OpenAI } from "https://deno.land/x/openai/mod.ts";
+import { serve } from "std/http/server.ts";
+import { OpenAI } from "openai";
 
 // IMPORTANT: Set this in your Supabase project's environment variables
 // Command: supabase secrets set OPENAI_API_KEY <your-key>
-const openai = new OpenAI(Deno.env.get("OPENAI_API_KEY"));
+const openai = new OpenAI({ apiKey: Deno.env.get("OPENAI_API_KEY") || "" });
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*", // Adjust for production
@@ -13,7 +13,7 @@ const CORS_HEADERS = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -32,7 +32,7 @@ serve(async (req) => {
       );
     }
 
-    const chatCompletion = await openai.createChatCompletion({
+    const chatCompletion = await openai.chat.completions.create({
       model,
       messages,
     });
@@ -40,8 +40,8 @@ serve(async (req) => {
     return new Response(JSON.stringify(chatCompletion), {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: unknown) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       status: 500,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });

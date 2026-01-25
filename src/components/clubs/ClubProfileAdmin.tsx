@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Edit, Image as ImageIcon, Calendar, Tag, BarChart3, MessageSquare, Settings, Save, Users, TrendingUp, Eye } from "lucide-react";
+import { Edit, Image as ImageIcon, Calendar, Tag, BarChart3, MessageSquare, Settings, Save, Users, TrendingUp, Eye, Zap, Wallet, Flame, Lock } from "lucide-react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -108,6 +108,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <TabsTrigger value="analytics" className="data-[state=active]:bg-white/20">
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
+            </TabsTrigger>
+            <TabsTrigger value="pro" className="data-[state=active]:bg-white/20">
+              <Zap className="h-4 w-4 mr-2" />
+              Gestión Pro
             </TabsTrigger>
           </TabsList>
 
@@ -333,6 +337,162 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
               <div className="bg-white/5 rounded-xl p-4 border border-white/10">
                 <h4 className="text-lg font-semibold text-white mb-4">Visitas Mensuales</h4>
                 <p className="text-3xl font-bold text-purple-400">{analytics.monthlyVisits}</p>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Pro Management Tab */}
+          <TabsContent value="pro" className="mt-6">
+            <div className="space-y-6">
+              {/* Revenue Simulator */}
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Wallet className="h-5 w-5 text-purple-400" />
+                  Simulador de Ganancias
+                </h4>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="entryPrice" className="text-white">Precio de Entrada (USD)</Label>
+                    <Input
+                      id="entryPrice"
+                      type="number"
+                      defaultValue="100"
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-purple-900/30 rounded-lg border border-purple-500/30">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Zap className="h-4 w-4 text-purple-400" />
+                        <span className="text-purple-300 text-sm font-medium">Modo Free (20% Comisión)</span>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-white">
+                          <span>Precio:</span>
+                          <span className="font-bold">$100</span>
+                        </div>
+                        <div className="flex justify-between text-white">
+                          <span>Comisión App:</span>
+                          <span className="font-bold text-red-400">-$20</span>
+                        </div>
+                        <div className="flex justify-between text-white">
+                          <span>Ganancia Neta:</span>
+                          <span className="font-bold text-green-400">$80</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-blue-900/30 rounded-lg border border-blue-500/30">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Wallet className="h-4 w-4 text-blue-400" />
+                        <span className="text-blue-300 text-sm font-medium">Modo Premium (0% Comisión)</span>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-white">
+                          <span>Precio:</span>
+                          <span className="font-bold">$100</span>
+                        </div>
+                        <div className="flex justify-between text-white">
+                          <span>Comisión App:</span>
+                          <span className="font-bold text-green-400">$0</span>
+                        </div>
+                        <div className="flex justify-between text-white">
+                          <span>Ganancia Neta:</span>
+                          <span className="font-bold text-green-400">$100</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
+                    <p className="text-yellow-300 text-xs">
+                      💡 En modo Free, la plataforma retiene el 20% de cada venta. En modo Premium, recibes el 100%.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Vibe Status Selector */}
+              <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Flame className="h-5 w-5 text-orange-400" />
+                  Estado en Vivo
+                </h4>
+
+                <p className="text-white/60 text-sm mb-4">
+                  Actualiza el estado actual de tu club para que los usuarios sepan qué esperar.
+                </p>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <Button
+                    variant="outline"
+                    className="flex flex-col items-center gap-2 h-auto py-4 bg-white/10 border-white/20 hover:bg-white/20 text-white"
+                  >
+                    <span className="text-2xl">❓</span>
+                    <span className="text-xs">Desconocido</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="flex flex-col items-center gap-2 h-auto py-4 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-white"
+                  >
+                    <span className="text-2xl">🔥</span>
+                    <span className="text-xs">Pista Llena</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="flex flex-col items-center gap-2 h-auto py-4 bg-blue-600/20 border-blue-500/30 hover:bg-blue-600/30 text-white"
+                  >
+                    <span className="text-2xl">🍸</span>
+                    <span className="text-xs">Chill</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="flex flex-col items-center gap-2 h-auto py-4 bg-purple-600/20 border-purple-500/30 hover:bg-purple-600/30 text-white"
+                  >
+                    <span className="text-2xl">🎉</span>
+                    <span className="text-xs">Packed</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="flex flex-col items-center gap-2 h-auto py-4 bg-green-600/20 border-green-500/30 hover:bg-green-600/30 text-white"
+                  >
+                    <span className="text-2xl">🤫</span>
+                    <span className="text-xs">Tranquilo</span>
+                  </Button>
+                </div>
+
+                <div className="mt-4 p-4 bg-orange-500/20 rounded-lg border border-orange-500/30">
+                  <p className="text-orange-300 text-xs">
+                    🎨 El color del perfil cambiará según el estado seleccionado (Rojo para 🔥, Azul para 🍸, etc.)
+                  </p>
+                </div>
+              </div>
+
+              {/* Legal Disclaimer */}
+              <div className="bg-red-900/20 rounded-xl p-6 border border-red-500/30">
+                <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Lock className="h-5 w-5 text-red-400" />
+                  Deslinde Legal
+                </h4>
+
+                <div className="space-y-3">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" className="mt-1" defaultChecked />
+                    <span className="text-white/80 text-xs">
+                      <strong>Cláusula de Responsabilidad Limitada:</strong> CómplicesConecta actúa exclusivamente como Tercero Facilitador. NO es responsable de incidentes, quejas o demandas dentro de las instalaciones del club.
+                    </span>
+                  </label>
+
+                  <p className="text-red-400 text-xs">
+                    ⚠️ Al marcar esta casilla, el Club acepta que la App es solo un canal de gestión y marketing.
+                  </p>
+                </div>
               </div>
             </div>
           </TabsContent>

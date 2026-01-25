@@ -12,6 +12,22 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
                   📅  Febrero del 2026
 
+## 📅 Actualización 25 de Enero, 2026
+
+**Edge Functions Limpieza Completada:**
+- ✅ Todas las Edge Functions migradas a bare specifiers (`std/`, `@supabase/supabase-js`)
+- ✅ Eliminados imports remotos (`https://deno.land/std@0.168.0`, `https://esm.sh/`)
+- ✅ Tipado Request en todos los handlers
+- ✅ Removidos `any`, `unknown`, `null` (prohibidos por reglas del proyecto)
+- ✅ `deno.json` centralizado con import maps actualizado
+- ✅ Ejecutado `deno cache --reload` sin errores
+- 📊 Estado: 22/22 Edge Functions limpias (100%)
+
+**Reglas de Desarrollo Actualizadas:**
+- 🚫 Prohibido: `any`, `unknown`, `null` en Edge Functions
+- ✅ Obligatorio: bare specifiers + tipado Request + manejo seguro de errores
+- ✅ Obligatorio: `deno.json` centralizado, sin imports remotos inline
+
 ## 📅 Actualización 24 de Enero, 2026
 
 - ✅ `npm run build:check` (OK)

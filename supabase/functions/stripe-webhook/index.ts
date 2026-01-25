@@ -1,7 +1,7 @@
 // Supabase Edge Function for sending emails
-// @ts-expect-error: Deno is available in Supabase Edge Functions
-
-declare const Deno: any;
+declare const Deno: {
+  readTextFile(path: string): Promise<string>;
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -88,7 +88,7 @@ function getFallbackTemplate(template: string): string {
 
 async function generateEmailHTML(
   template: string,
-  data: any = {},
+  data: Record<string, unknown> = {},
   to: string,
 ): Promise<string> {
   try {

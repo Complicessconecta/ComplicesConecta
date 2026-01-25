@@ -1,9 +1,6 @@
-// @ts-expect-error - Deno runtime imports from URLs
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-// @ts-expect-error - Deno runtime imports from URLs
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-// @ts-expect-error - Deno runtime imports from URLs
-import Stripe from "https://esm.sh/stripe@14.21.0";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
+import Stripe from "stripe";
 
 declare const Deno: {
   env: {
@@ -17,7 +14,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -79,7 +76,7 @@ serve(async (req) => {
 
     // Crear checkout de Stripe
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" } as any);
+    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
     const customers = await stripe.customers.list({
       email: user.email,

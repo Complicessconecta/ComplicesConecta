@@ -1,7 +1,5 @@
-// @ts-expect-error - Deno runtime imports from URLs
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-// @ts-expect-error - Deno runtime imports from URLs
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 
 declare const Deno: {
   env: {
@@ -15,7 +13,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -60,13 +58,13 @@ serve(async (req) => {
 
     // Combinar moderadores y admins
     const allModerators = [
-      ...(moderators || []).map((m: any) => ({
+      ...(moderators || []).map((m: { user_id: string; level: string | null }) => ({
         user_id: m.user_id,
         level: m.level,
         is_admin: false,
       })),
 
-      ...(admins || []).map((a: any) => ({
+      ...(admins || []).map((a: { id: string }) => ({
         user_id: a.id,
         level: "superadmin",
         is_admin: true,
@@ -126,19 +124,19 @@ serve(async (req) => {
 
         const totalMinutes =
           sessions?.reduce(
-            (sum: number, s: any) => sum + (s.total_minutes || 0),
+            (sum: number, s: { total_minutes?: number }) => sum + (s.total_minutes || 0),
             0,
           ) || 0;
 
         const reportsReviewed =
           sessions?.reduce(
-            (sum: number, s: any) => sum + (s.reports_reviewed || 0),
+            (sum: number, s: { reports_reviewed?: number }) => sum + (s.reports_reviewed || 0),
             0,
           ) || 0;
 
         const actionsTaken =
           sessions?.reduce(
-            (sum: number, s: any) => sum + (s.actions_taken || 0),
+            (sum: number, s: { actions_taken?: number }) => sum + (s.actions_taken || 0),
             0,
           ) || 0;
 
@@ -157,7 +155,7 @@ serve(async (req) => {
 
         const totalRevenue =
           investments?.reduce(
-            (sum: number, inv: any) => sum + parseFloat(inv.amount_mxn || "0"),
+            (sum: number, inv: { amount_mxn?: string | number }) => sum + parseFloat(String(inv.amount_mxn || "0")),
             0,
           ) || 0;
 

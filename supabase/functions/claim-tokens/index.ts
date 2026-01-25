@@ -1,5 +1,6 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,10 +17,14 @@ interface ClaimRequest {
     | "profile_completion";
   referralCode?: string;
 
-  worldIdProof?: any;
+  worldIdProof?: JsonObject;
 
-  metadata?: Record<string, any>;
+  metadata?: JsonObject;
 }
+
+type JsonPrimitive = string | number | boolean;
+type Json = JsonPrimitive | JsonObject | Json[];
+type JsonObject = { [key: string]: Json };
 
 const REWARD_LIMITS = {
   world_id: { amount: 50, maxClaims: 1, cooldown: 0 },
@@ -75,7 +80,7 @@ function validateClaimRequest(request: ClaimRequest): {
 }
 
 async function checkClaimLimits(
-  supabaseClient: any,
+  supabaseClient: SupabaseClient,
   userId: string,
   rewardType: string,
 ): Promise<{ canClaim: boolean; error?: string }> {
@@ -124,13 +129,13 @@ async function checkClaimLimits(
 }
 
 async function checkMonthlyLimits(
-  supabaseClient: any,
+  supabaseClient: SupabaseClient,
   userId: string,
   amount: number,
-): Promise<{ canClaim: boolean; error?: string; userTokens?: any }> {
+): Promise<{ canClaim: boolean; error?: string; userTokens?: { cmpx_balance: number; gtk_balance: number; monthly_earned: number; monthly_limit: number } }> {
   const { data: userTokens } = await supabaseClient
     .from("user_token_balances")
-    .select("cmpx_balance, gtk_balance")
+    .select("cmpx_balance, gtk_balance, monthly_earned, monthly_limit")
     .eq("user_id", userId)
     .single();
 
@@ -151,7 +156,7 @@ async function checkMonthlyLimits(
   return { canClaim: true, userTokens };
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -228,7 +233,7 @@ serve(async (req) => {
     const rewardAmount =
       REWARD_LIMITS[rewardType as keyof typeof REWARD_LIMITS].amount;
 
-    let userTokens: any = null;
+    let userTokens: { cmpx_balance: number; gtk_balance: number; monthly_earned: number; monthly_limit: number } | null = null;
     if (!["referral", "world_id"].includes(rewardType)) {
       const monthlyCheck = await checkMonthlyLimits(
         supabaseClient,
@@ -247,10 +252,12 @@ serve(async (req) => {
           },
         );
       }
-      userTokens = monthlyCheck.userTokens;
+      if (monthlyCheck.userTokens) {
+        userTokens = monthlyCheck.userTokens;
+      }
     }
 
-    let result: any = {
+    let result: JsonObject = {
       success: false,
       message: "Tipo de recompensa no válido",
     };
@@ -578,13 +585,13 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: result.success ? 200 : 400,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Error en claim-tokens:", error);
     return new Response(
       JSON.stringify({
         success: false,
         message: "Error interno del servidor",
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -1,9 +1,6 @@
-// @ts-expect-error - Deno runtime imports from URLs
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-// @ts-expect-error - Deno runtime imports from URLs
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-// @ts-expect-error - Deno runtime imports from URLs
-import { HfInference } from "https://esm.sh/@huggingface/inference@2.6.4";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
+import { HfInference } from "@huggingface/inference";
 
 declare const Deno: {
   env: {
@@ -17,7 +14,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -47,16 +44,21 @@ serve(async (req) => {
     let facesDetected = 0;
     const tattoosDetected = 0;
 
+    // Descargar imagen
+    const imageResponse = await fetch(image_url);
+    const imageBlob = await imageResponse.blob();
+    const imageBuffer = await imageBlob.arrayBuffer();
+
     try {
       // Usar modelo de detección de objetos (personas/caras)
       const detectionResult = await hf.objectDetection({
         model: "facebook/detr-resnet-50",
-        inputs: image_url,
+        data: imageBlob,
       });
 
       if (Array.isArray(detectionResult)) {
         facesDetected = detectionResult.filter(
-          (d: any) =>
+          (d: { label?: string }) =>
             d.label?.toLowerCase().includes("person") ||
             d.label?.toLowerCase().includes("face"),
         ).length;
@@ -65,11 +67,6 @@ serve(async (req) => {
       console.error("Error en detección IA:", error);
       // Continuar con procesamiento básico
     }
-
-    // Descargar imagen
-    const imageResponse = await fetch(image_url);
-    const imageBlob = await imageResponse.blob();
-    const imageBuffer = await imageBlob.arrayBuffer();
 
     // Procesar imagen (watermark y blur)
     // Nota: Para blur real, necesitarías una librería de procesamiento de imágenes
@@ -134,11 +131,12 @@ serve(async (req) => {
         status: 200,
       },
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error procesando imagen:", error);
 
     // Marcar como fallido
-    if (req.body?.flyer_id) {
+    const body = await req.json().catch(() => ({}));
+    if (body.flyer_id) {
       const supabaseClient = createClient(
         Deno.env.get("SUPABASE_URL") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
@@ -148,12 +146,12 @@ serve(async (req) => {
       await supabaseClient
         .from("club_flyers")
         .update({ ai_processing_status: "failed" })
-        .eq("id", req.body.flyer_id);
+        .eq("id", body.flyer_id);
     }
 
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         success: false,
       }),
       {

@@ -4,7 +4,7 @@
   },
   "css.customData": [".vscode/css-custom-data.json"],
   "css.lint.unknownAtRules": "ignore",
-  "css.validate": true,
+  "css.validate": false,
   "deno.enablePaths": ["supabase/functions"],
   "deno.lint": true,
   "deno.unstable": [
@@ -28,13 +28,16 @@
   },
   "java.configuration.updateBuildConfiguration": "automatic",
   "files.watcherExclude": {
-    "**/_ARCHIVE_2025/**": true
+    "**/_ARCHIVE_2025/**": true,
+    "**/dist/**": true
   },
   "search.exclude": {
-    "**/_ARCHIVE_2025/**": true
+    "**/_ARCHIVE_2025/**": true,
+    "**/dist/**": true
   },
   "files.exclude": {
-    "**/_ARCHIVE_2025/**": true
+    "**/_ARCHIVE_2025/**": true,
+    "**/dist/**": true
   },
   "typescript.preferences.autoImportFileExcludePatterns": [
     "**/_ARCHIVE_2025/**"
@@ -298,5 +301,6 @@
     "Wallet",
     "Webhook",
     "With"
-  ]
+  ],
+  "deno.enable": true
 }

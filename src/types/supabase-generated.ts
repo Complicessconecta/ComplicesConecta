@@ -21,6 +21,7 @@ export type Database = {
           granted_by: string | null
           id: string
           is_active: boolean | null
+          is_unique: boolean | null
           notes: string | null
           role: string
           updated_at: string | null
@@ -32,6 +33,7 @@ export type Database = {
           granted_by?: string | null
           id?: string
           is_active?: boolean | null
+          is_unique?: boolean | null
           notes?: string | null
           role?: string
           updated_at?: string | null
@@ -43,6 +45,7 @@ export type Database = {
           granted_by?: string | null
           id?: string
           is_active?: boolean | null
+          is_unique?: boolean | null
           notes?: string | null
           role?: string
           updated_at?: string | null
@@ -1597,6 +1600,48 @@ export type Database = {
           },
         ]
       }
+      club_ratings: {
+        Row: {
+          club_id: string
+          comment: string | null
+          created_at: string | null
+          id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          club_id: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating: number
+          user_id: string
+        }
+        Update: {
+          club_id?: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_ratings_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_ratings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       club_reviews: {
         Row: {
           checkin_id: string | null
@@ -1734,6 +1779,7 @@ export type Database = {
         Row: {
           address: string
           average_rating: number | null
+          bayesian_score: number | null
           check_in_count: number | null
           check_in_radius_meters: number | null
           city: string
@@ -1749,6 +1795,7 @@ export type Database = {
           latitude: number
           logo_url: string | null
           longitude: number
+          membership_tier: string | null
           metadata: Json | null
           name: string
           phone: string | null
@@ -1757,15 +1804,21 @@ export type Database = {
           review_count: number | null
           slug: string
           state: string | null
+          stripe_account_id: string | null
+          total_revenue_cmpx: number | null
+          total_revenue_usd: number | null
           total_reviews: number | null
           updated_at: string
           verified_at: string | null
           verified_by: string | null
+          vibe_status: string | null
+          vibe_status_updated_at: string | null
           website: string | null
         }
         Insert: {
           address: string
           average_rating?: number | null
+          bayesian_score?: number | null
           check_in_count?: number | null
           check_in_radius_meters?: number | null
           city: string
@@ -1781,6 +1834,7 @@ export type Database = {
           latitude: number
           logo_url?: string | null
           longitude: number
+          membership_tier?: string | null
           metadata?: Json | null
           name: string
           phone?: string | null
@@ -1789,15 +1843,21 @@ export type Database = {
           review_count?: number | null
           slug: string
           state?: string | null
+          stripe_account_id?: string | null
+          total_revenue_cmpx?: number | null
+          total_revenue_usd?: number | null
           total_reviews?: number | null
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
+          vibe_status?: string | null
+          vibe_status_updated_at?: string | null
           website?: string | null
         }
         Update: {
           address?: string
           average_rating?: number | null
+          bayesian_score?: number | null
           check_in_count?: number | null
           check_in_radius_meters?: number | null
           city?: string
@@ -1813,6 +1873,7 @@ export type Database = {
           latitude?: number
           logo_url?: string | null
           longitude?: number
+          membership_tier?: string | null
           metadata?: Json | null
           name?: string
           phone?: string | null
@@ -1821,10 +1882,15 @@ export type Database = {
           review_count?: number | null
           slug?: string
           state?: string | null
+          stripe_account_id?: string | null
+          total_revenue_cmpx?: number | null
+          total_revenue_usd?: number | null
           total_reviews?: number | null
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
+          vibe_status?: string | null
+          vibe_status_updated_at?: string | null
           website?: string | null
         }
         Relationships: [
@@ -6355,6 +6421,7 @@ export type Database = {
           fingerprint_ids: string[] | null
           id: string
           is_active: boolean | null
+          lifted_at: string | null
           metadata: Json | null
           moderation_log_id: string | null
           notes: string | null
@@ -6379,6 +6446,7 @@ export type Database = {
           fingerprint_ids?: string[] | null
           id?: string
           is_active?: boolean | null
+          lifted_at?: string | null
           metadata?: Json | null
           moderation_log_id?: string | null
           notes?: string | null
@@ -6403,6 +6471,7 @@ export type Database = {
           fingerprint_ids?: string[] | null
           id?: string
           is_active?: boolean | null
+          lifted_at?: string | null
           metadata?: Json | null
           moderation_log_id?: string | null
           notes?: string | null
@@ -7703,6 +7772,78 @@ export type Database = {
           {
             foreignKeyName: "reports_reviewed_by_fkey"
             columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservations: {
+        Row: {
+          access_type: string | null
+          amount: number
+          check_in_at: string | null
+          club_id: string
+          commission_amount: number | null
+          commission_paid: boolean | null
+          created_at: string | null
+          currency: string | null
+          expires_at: string | null
+          id: string
+          payment_method: string | null
+          qr_hash: string
+          status: string | null
+          stripe_payment_intent_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_type?: string | null
+          amount: number
+          check_in_at?: string | null
+          club_id: string
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          created_at?: string | null
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          payment_method?: string | null
+          qr_hash: string
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_type?: string | null
+          amount?: number
+          check_in_at?: string | null
+          club_id?: string
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          created_at?: string | null
+          currency?: string | null
+          expires_at?: string | null
+          id?: string
+          payment_method?: string | null
+          qr_hash?: string
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservations_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
             referencedColumns: ["id"]
@@ -9312,6 +9453,50 @@ export type Database = {
           },
         ]
       }
+      trust_contacts: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string
+          priority: number | null
+          relationship: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone: string
+          priority?: number | null
+          relationship?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string
+          priority?: number | null
+          relationship?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trust_contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       two_factor_auth: {
         Row: {
           backup_codes: string[] | null
@@ -10524,6 +10709,50 @@ export type Database = {
           },
         ]
       }
+      wallet_balances: {
+        Row: {
+          cmpx_balance: number | null
+          cmpx_locked: number | null
+          created_at: string | null
+          gtk_balance: number | null
+          gtk_locked: number | null
+          id: string
+          last_sync: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cmpx_balance?: number | null
+          cmpx_locked?: number | null
+          created_at?: string | null
+          gtk_balance?: number | null
+          gtk_locked?: number | null
+          id?: string
+          last_sync?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cmpx_balance?: number | null
+          cmpx_locked?: number | null
+          created_at?: string | null
+          gtk_balance?: number | null
+          gtk_locked?: number | null
+          id?: string
+          last_sync?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_balances_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wallet_transactions: {
         Row: {
           amount: number | null
@@ -11260,6 +11489,7 @@ export type Database = {
       earth: { Args: never; Returns: number }
       escape_html: { Args: { text: string }; Returns: string }
       exec_sql: { Args: { sql_query: string }; Returns: undefined }
+      generate_admin_id: { Args: never; Returns: string }
       generate_couple_report: {
         Args: { couple_id_param: string }
         Returns: Json

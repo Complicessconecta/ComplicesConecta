@@ -1,7 +1,12 @@
 // Supabase Edge Function for sending emails
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std/http/server.ts";
 
-declare const Deno: any;
+declare const Deno: {
+  env: {
+    get(key: string): string | undefined;
+  };
+  readTextFile(path: string): Promise<string>;
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -89,7 +94,7 @@ function getFallbackTemplate(template: string): string {
 
 async function generateEmailHTML(
   template: string,
-  data: any = {},
+  data: Record<string, unknown> = {},
   to: string,
 ): Promise<string> {
   try {

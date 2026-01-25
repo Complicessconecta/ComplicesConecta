@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
+import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 
 // Interfaces actualizadías para coincidir con el schema de Supabase
 
@@ -50,11 +51,42 @@ export const useInterests = () => {
         .order("name", { ascending: true });
 
       if (error) throw error;
-      setInterests(data || []);
+
+      const rows = (data || []) as Interest[];
+      if (rows.length === 0) {
+        // Fallback: intereses seguros (registro inicial) para mantener coherencia con InterestsSelector
+        const fallback: Interest[] = SAFE_INTERESTS.map((name, idx) => ({
+          id: idx + 1,
+          name,
+          category: "safe",
+          description: null,
+          is_explicit: false,
+          is_active: true,
+          created_at: null,
+          updated_at: null,
+        }));
+        setInterests(fallback);
+      } else {
+        setInterests(rows);
+      }
     } catch (error) {
       logger.error("❌ Error loading interests:", {
         error: error instanceof Error ? error.message : String(error),
       });
+
+      // Fallback local si falla Supabase
+      const fallback: Interest[] = SAFE_INTERESTS.map((name, idx) => ({
+        id: idx + 1,
+        name,
+        category: "safe",
+        description: null,
+        is_explicit: false,
+        is_active: true,
+        created_at: null,
+        updated_at: null,
+      }));
+      setInterests(fallback);
+
       toast({
         title: "Error",
         description: "No se pudieron cargar los intereses",

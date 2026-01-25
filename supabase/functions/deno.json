@@ -1,6 +1,13 @@
 {
+  "imports": {
+    "std/": "https://deno.land/std@0.190.0/",
+    "stripe": "npm:stripe@14.21.0",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.45.0",
+    "@huggingface/inference": "npm:@huggingface/inference@2.6.4",
+    "openai": "npm:openai@4.69.0"
+  },
+  "nodeModulesDir": "none",
   "compilerOptions": {
-    "allowJs": true,
     "lib": ["deno.window"],
     "strict": true
   }

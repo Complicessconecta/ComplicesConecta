@@ -1,5 +1,5 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { serve } from "std/http/server.ts";
+import { createClient } from "@supabase/supabase-js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,10 +15,10 @@ interface SyncRequest {
   match_id?: string;
   like_id?: string;
 
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -61,7 +61,14 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    let result: any;
+    let result: {
+      success: boolean;
+      type: string;
+      synced: boolean;
+      user1_id?: string;
+      user2_id?: string;
+      user_id?: string;
+    };
 
     switch (type) {
       case "match": {

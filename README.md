@@ -23,6 +23,10 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - ✅ Ejecutado `deno cache --reload` sin errores
 - 📊 Estado: 22/22 Edge Functions limpias (100%)
 
+**Demo Clubs + Estabilidad:**
+- ✅ Demo clubs disponible en `/clubs/demo` (flujo determinista)
+- ✅ `tsc --noEmit`, `npm run test`, `npm run build:check`, `npm run lint` (OK)
+
 **Reglas de Desarrollo Actualizadas:**
 - 🚫 Prohibido: `any`, `unknown`, `null` en Edge Functions
 - ✅ Obligatorio: bare specifiers + tipado Request + manejo seguro de errores

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { ContentProtectionService } from "@/services/auth/ContentProtectionService";
+import { ContentProtectionService } from "@/services/auth/auth/ContentProtectionService";
 import { supabase } from "@/integrations/supabase/client";
 
 // Mock de Supabase

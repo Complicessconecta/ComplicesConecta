@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, act, render, fireEvent } from "@testing-library/react";
 import { useAuth } from "@/features/auth/useAuth";
 import { createTestQueryClient } from "@/tests/setup/test-utils";
 import { QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
+import { ProfileNavigation } from "@/components/profiles/shared/ProfileNavigation";
 
 // Mock Supabase
 vi.mock("@/integrations/supabase/client", () => ({
@@ -80,9 +81,12 @@ vi.mock("@/lib/app-config", () => ({
   shouldUseRealSupabase: vi.fn(() => true),
 }));
 
-// Mock react-router-dom
+const { navigateMock } = vi.hoisted(() => {
+  return { navigateMock: vi.fn() };
+});
+
 vi.mock("react-router-dom", () => ({
-  useNavigate: vi.fn(() => vi.fn()),
+  useNavigate: vi.fn(() => navigateMock),
 }));
 
 // Mock localStorage
@@ -225,6 +229,48 @@ describe("useAuth Hook", () => {
       });
 
       expect(typeof result.current.loadProfile).toBe("function");
+    });
+  });
+
+  describe("Demo Clubs Navigation", () => {
+    it("should navigate to /clubs/demo when demo_authenticated is true", () => {
+      localStorageMock.getItem.mockImplementation((key: string) => {
+        if (key === "demo_authenticated") return "true";
+        return null;
+      });
+
+      const { container } = render(
+        React.createElement(ProfileNavigation, {
+          profileType: "single",
+          profileName: "Demo",
+          isOwnProfile: true,
+        }),
+      );
+
+      const btn = container.querySelector('button[title="Clubs"]');
+      expect(btn).not.toBeNull();
+      fireEvent.click(btn as Element);
+      expect(navigateMock).toHaveBeenCalledWith("/clubs/demo");
+    });
+
+    it("should navigate to /clubs-coming-soon when demo_authenticated is false", () => {
+      localStorageMock.getItem.mockImplementation((key: string) => {
+        if (key === "demo_authenticated") return "false";
+        return null;
+      });
+
+      const { container } = render(
+        React.createElement(ProfileNavigation, {
+          profileType: "single",
+          profileName: "Normal",
+          isOwnProfile: true,
+        }),
+      );
+
+      const btn = container.querySelector('button[title="Clubs"]');
+      expect(btn).not.toBeNull();
+      fireEvent.click(btn as Element);
+      expect(navigateMock).toHaveBeenCalledWith("/clubs-coming-soon");
     });
   });
 });

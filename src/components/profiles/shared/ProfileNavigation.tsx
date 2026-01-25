@@ -1,25 +1,9 @@
 import React from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  ArrowLeft,
-  Share2,
-  Crown,
-  MoreVertical,
-  Edit,
-  Heart,
-  MessageCircle,
-  UserPlus,
-  Building,
-} from "lucide-react";
+import { ArrowLeft, Share2, Crown, MoreVertical, Edit, Heart, MessageCircle, UserPlus,Building } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/shared/lib/cn";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 type ProfileType = "single" | "couple";
 
@@ -153,7 +137,12 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate("/clubs-coming-soon")}
+                onClick={() => {
+                  const isDemo =
+                    typeof window !== "undefined" &&
+                    window.localStorage.getItem("demo_authenticated") === "true";
+                  navigate(isDemo ? "/clubs/demo" : "/clubs-coming-soon");
+                }}
                 className="bg-purple-500/20 hover:bg-purple-500/30 p-2 transition-all duration-300 hover:scale-105"
                 title="Clubs"
               >

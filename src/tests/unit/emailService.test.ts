@@ -10,12 +10,16 @@ vi.mock("import.meta.env", () => ({
   VITE_SUPABASE_ANON_KEY: "test-anon-key",
 }));
 
-// Mock supabase client
-const mockSupabaseClient = {
-  functions: {
-    invoke: vi.fn(),
-  },
-};
+// Mock supabase client (usar vi.hoisted porque vi.mock se hoistea)
+const { mockSupabaseClient } = vi.hoisted(() => {
+  return {
+    mockSupabaseClient: {
+      functions: {
+        invoke: vi.fn(),
+      },
+    },
+  };
+});
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: mockSupabaseClient,

@@ -1,9 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock services
-vi.mock("@/services/WalletService", () => ({
+vi.mock("@/services/payments/WalletService", () => ({
   walletService: {
     executeDemoAction: vi.fn().mockResolvedValue({ tokenId: 123 }),
   },
@@ -12,7 +11,7 @@ vi.mock("@/services/WalletService", () => ({
   },
 }));
 
-vi.mock("@/services/NFTService", () => ({
+vi.mock("@/services/payments/NFTService", () => ({
   nftService: {
     mintSingleNFT: vi.fn(),
     requestCoupleNFT: vi.fn(),
@@ -20,6 +19,14 @@ vi.mock("@/services/NFTService", () => ({
 }));
 
 describe("NFTMintButton", () => {
+  let NFTMintButton: typeof import("@/components/ui/buttons/NFTMintButton").NFTMintButton;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    const mod = await import("@/components/ui/buttons/NFTMintButton");
+    NFTMintButton = mod.NFTMintButton;
+  });
+
   const defaultProps = {
     userId: "user-123",
     type: "single" as const,

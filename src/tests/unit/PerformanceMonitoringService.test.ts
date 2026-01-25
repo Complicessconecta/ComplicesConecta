@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import performanceMonitoring from "@/services";
+import { performanceMonitoring } from "@/services";
 import "@/tests/mocks/performance";
 
 // Usar performanceMonitoring como performanceMonitor para compatibilidad

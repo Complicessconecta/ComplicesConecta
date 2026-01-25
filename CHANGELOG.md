@@ -121,3 +121,11 @@ Los siguientes archivos de auditoría han sido movidos a `docs-unified/auditoria
 | **Auth Tabs + E2E** | `src/pages/Auth.tsx`, `src/pages/Index.tsx` | TestSprite bloqueado por UI (tabs/feedback/modal) | Tabs ajustados + feedback visible + bypass WelcomeModal en webdriver | Mejorar automatización y UX sin afectar producción |
 | **Seguridad UI** | `src/hooks/useScreenshotProtection.ts`, `src/components/ui/charts/chart.tsx` | Riesgos XSS (`innerHTML` / `dangerouslySetInnerHTML`) | Reemplazado por render seguro (DOM/textContent + `<style>` seguro) | Reducir superficie de ataque |
 | **TestSprite tmp** | `.gitignore` | Artefactos temporales en `testsprite_tests/tmp` | Ignorado completo de `testsprite_tests/tmp/` | Evitar comitear config/resultados temporales |
+
+## Actualización 25 de Enero, 2026
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **Demo Clubs + Tipos** | `src/pages/Clubs.tsx` | Errores TS/JSX por `exactOptionalPropertyTypes` en datos demo | Ajuste de `DEMO_CLUB` y render para cumplir `ClubEntity` | Mantener demo determinista y type-safe |
+| **Navegación Demo Clubs** | `src/pages/admin/AdminSelectDashboard.tsx`, `src/components/profiles/shared/ProfileNavigation.tsx` | Flujo demo no dirigía al club demo | Navegación a `/clubs/demo` condicionada por `demo_authenticated` | Preservar flujo demo sin depender de Supabase |
+| **Estabilidad Tests/E2E** | `playwright.config.ts`, `src/tests/*` | Fallas por configuración baseURL/servidor y mocks | Ajustes de config y mocks para corridas deterministas | Asegurar CI estable |

@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   historicalMetricsService,
   HistoricalMetricsService,
-} from "@/services/analytics/HistoricalMetricsService";
+} from "@/services/analytics/analytics/HistoricalMetricsService";
 
 // Mock de Supabase
 const {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { userVerificationService } from "@/services/auth/UserVerificationService";
+import { userVerificationService } from "@/services/auth/auth/UserVerificationService";
 import { supabase } from "@/integrations/supabase/client";
 
 const mocks = vi.hoisted(() => {

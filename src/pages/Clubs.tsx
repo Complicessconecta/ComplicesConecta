@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import type { Database } from "@/types/supabase-generated";
+import type { Club as ClubEntity } from "@/entities/club";
+import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
 
 type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
 
@@ -48,10 +50,84 @@ interface Club extends Omit<
   check_in_radius_meters: number | null;
 }
 
+const toClubEntity = (club: Club): ClubEntity => {
+  return {
+    id: club.id,
+    name: club.name,
+    slug: club.slug,
+    description: club.description ?? "",
+    address: club.address ?? "",
+    city: club.city ?? "",
+    state: club.state ?? "",
+    latitude: club.latitude ?? 0,
+    longitude: club.longitude ?? 0,
+    logo_url: club.logo_url ?? "",
+    cover_image_url: club.cover_image_url ?? "",
+    is_featured: club.is_featured ?? false,
+    is_active: club.is_active ?? true,
+    rating_average: club.rating_average ?? 0,
+    rating_count: club.rating_count ?? 0,
+    check_in_count: club.check_in_count ?? 0,
+    check_in_radius_meters: club.check_in_radius_meters ?? 0,
+    verified_at: club.verified_at ?? "",
+    created_at: club.created_at ?? "",
+    updated_at: club.updated_at ?? "",
+  };
+};
+
+const DEMO_CLUB: ClubEntity = {
+  id: "demo",
+  name: "Club Demo CómplicesConecta",
+  slug: "demo",
+  description: "Demo de perfil de club verificado.",
+  address: "Av. Insurgentes Sur 123",
+  city: "CDMX",
+  state: "CDMX",
+  latitude: 19.4326,
+  longitude: -99.1332,
+  logo_url: "",
+  cover_image_url: "",
+  is_featured: true,
+  is_active: true,
+  rating_average: 4.8,
+  rating_count: 128,
+  check_in_count: 420,
+  check_in_radius_meters: 50,
+  verified_at: new Date().toISOString(),
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
+const DEMO_GALLERY = [
+  { id: "demo-1", url: "/assets/nfts/imagen1.jpg", caption: "Entrada principal", isPrivate: false, uploadedAt: new Date().toISOString() },
+  { id: "demo-2", url: "/assets/nfts/imagen2.jpg", caption: "Zona VIP", isPrivate: false, uploadedAt: new Date().toISOString() },
+  { id: "demo-3", url: "/assets/nfts/imagen3.jpg", caption: "Pista", isPrivate: true, uploadedAt: new Date().toISOString() },
+];
+
+const DEMO_EVENTS = [
+  { id: "evt-1", title: "Noche Demo", description: "Evento demo", date: new Date().toISOString(), startTime: "22:00", endTime: "03:00", location: "CDMX", capacity: 300, registeredCount: 120, isVip: true, price: 500, currency: "$" },
+];
+
+const DEMO_REVIEWS = [
+  { id: "rev-1", userId: "u1", userName: "Usuario Demo", rating: 5, comment: "Excelente ambiente y seguridad.", checkInDate: new Date().toISOString(), helpfulCount: 12, isVerified: true, createdAt: new Date().toISOString() },
+];
+
+const DEMO_ANALYTICS = {
+  totalVisits: 12450,
+  totalCheckIns: 420,
+  averageRating: 4.8,
+  totalReviews: 128,
+  weeklyVisits: 980,
+  monthlyVisits: 4020,
+  topEvents: [{ name: "Noche Demo", attendees: 120 }],
+  demographics: [{ age: "25-34", percentage: 44 }],
+};
+
 export const Clubs = () => {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { slug } = useParams<{ slug?: string }>();
 
   const [clubs, setClubs] = useState<Club[]>([]);
   const [filteredClubs, setFilteredClubs] = useState<Club[]>([]);
@@ -65,6 +141,7 @@ export const Clubs = () => {
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedClub, setSelectedClub] = useState<ClubEntity | null>(null);
 
   // Formulario de registro de club
   const [clubForm, setClubForm] = useState({
@@ -159,6 +236,56 @@ export const Clubs = () => {
   }, []);
 
   useEffect(() => {
+    if (!slug) {
+      setSelectedClub(null);
+      return;
+    }
+
+    if (slug === "demo") {
+      setSelectedClub(DEMO_CLUB);
+      return;
+    }
+
+    const found = clubs.find((club) => club.id === slug || club.slug === slug);
+    if (found) {
+      setSelectedClub(toClubEntity(found));
+      return;
+    }
+
+    const fetchSingle = async () => {
+      try {
+        if (!supabase) return;
+        const { data: byId, error: byIdError } = await supabase
+          .from("clubs")
+          .select("*")
+          .eq("id", slug)
+          .single();
+
+        if (!byIdError && byId) {
+          setSelectedClub(toClubEntity(byId as Club));
+          return;
+        }
+
+        const { data: bySlug, error: bySlugError } = await supabase
+          .from("clubs")
+          .select("*")
+          .eq("slug", slug)
+          .single();
+
+        if (!bySlugError && bySlug) {
+          setSelectedClub(toClubEntity(bySlug as Club));
+        }
+      } catch (error) {
+        logger.error("Error loading club profile:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    };
+
+    void fetchSingle();
+  }, [slug, clubs]);
+
+  useEffect(() => {
     filterClubs();
   }, [clubs, searchQuery, selectedCity]);
 
@@ -231,7 +358,7 @@ export const Clubs = () => {
   };
 
   const handleCheckIn = async (clubId: string) => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated()) {
       toast({
         title: "Autenticación requerida",
         description: "Debes iniciar sesión para hacer check-in",
@@ -423,7 +550,32 @@ export const Clubs = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {selectedClub ? (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/clubs")}
+                className="border-white/30 text-white hover:bg-white/10"
+              >
+                Volver
+              </Button>
+            </div>
+
+            <ClubProfileHeader club={selectedClub} />
+            <ClubProfileGallery images={DEMO_GALLERY} />
+            <ClubProfileEvents events={DEMO_EVENTS} />
+            <ClubProfileReviews
+              reviews={DEMO_REVIEWS}
+              averageRating={selectedClub.rating_average}
+              totalReviews={selectedClub.rating_count}
+            />
+            {selectedClub.id === "demo" && (
+              <ClubProfileAdmin analytics={DEMO_ANALYTICS} />
+            )}
+          </div>
+        ) : (
+          <>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1331,6 +1483,8 @@ export const Clubs = () => {
             </div>
           </form>
         </Modal>
+          </>
+        )}
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export const AdminSelectDashboard = () => {
 
   const handleClubsDemo = () => {
     logger.info("Admin seleccionó demo de clubs");
-    navigate("/clubs");
+    navigate("/clubs/demo");
   };
 
   const handleLogout = async () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { userIdentificationService } from "@/services/auth/UserIdentificationService";
+import { userIdentificationService } from "@/services/auth/auth/UserIdentificationService";
 import { supabase } from "@/integrations/supabase/client";
 
 // Mock Supabase

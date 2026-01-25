@@ -1,5 +1,11 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 25 Ene 2026
+
+- **🏢 Demo Clubs:** ruta `/clubs/demo` con club demo determinista.
+- **🧩 TypeScript/TSX:** ajustes en `Clubs.tsx` para compatibilidad con tipado estricto.
+- **✅ Calidad:** `tsc --noEmit`, `npm run test`, `npm run build:check` y `npm run lint` pasan.
+
 ## 📅 Bitácora 22 Ene 2026
 
 - **✅ build:check:** `npm run build:check` pasa sin warnings (incluye eliminación de warning por `speakeasy`).

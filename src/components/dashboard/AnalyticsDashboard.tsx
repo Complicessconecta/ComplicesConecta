@@ -199,7 +199,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
               initial={{ height: 0 }}
               animate={{ height: `${(item.value / maxValue) * 100}%` }}
               transition={{ delay: index * 0.1 }}
-              className="w-full bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg min-h-[20px]"
+              className="w-full bg-linear-to-t from-purple-500 to-pink-500 rounded-t-lg min-h-[20px]"
             />
             <span className="text-xs text-gray-500 dark:text-gray-400 rotate-45 origin-left">
               {item.label.split(" ")[0]}

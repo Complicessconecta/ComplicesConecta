@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Users, ArrowLeft, Sparkles } from "lucide-react";
+import { Shield, Users, ArrowLeft, Sparkles, Building } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
@@ -413,6 +413,26 @@ const Auth = () => {
                   className="bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
                 >
                   Tema
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/demo")}
+                  className="bg-linear-to-r from-pink-600/20 to-fuchsia-600/20 hover:from-pink-600/40 hover:to-fuchsia-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-fuchsia-500/30 transition-all duration-300 hover:scale-105"
+                  data-testid="demo-mode-button"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Demo
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate("/clubs/demo")}
+                  className="bg-linear-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
+                  data-testid="clubs-demo-button"
+                >
+                  <Building className="h-4 w-4 mr-2" />
+                  Club Demo
                 </Button>
                 <Button
                 variant="ghost"

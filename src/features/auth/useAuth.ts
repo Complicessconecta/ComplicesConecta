@@ -50,10 +50,12 @@ export const useAuth = () => {
 
     // CRÍTICO: Verificar modo demo PRIMERO antes de cargar perfil
     const sessionFlags = StorageManager.getSessionFlags();
-    if (sessionFlags.demo_authenticated && demoUser) {
+    const currentDemoUser = demoUser; // Capturar valor actual en lugar de depender de él
+
+    if (sessionFlags.demo_authenticated && currentDemoUser) {
       try {
         const parsedDemoUser =
-          typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
+          typeof currentDemoUser === "string" ? JSON.parse(currentDemoUser) : currentDemoUser;
         const demoProfile = {
           id: parsedDemoUser.id || "demo-user-1",
           first_name: parsedDemoUser.first_name || "Demo User",
@@ -200,7 +202,7 @@ export const useAuth = () => {
       });
       setProfile(null);
     }
-  }, [demoUser?.id, demoUser]);
+  }, []); // Eliminar dependencias de demoUser para evitar loop infinito
 
   // Función auxiliar para determinar si usar Supabase real
   const shouldUseRealSupabase = () => {

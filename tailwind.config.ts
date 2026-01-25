@@ -41,61 +41,10 @@ export default {
       "android-lg": "480px",
     },
     extend: {
-      // Tipografía profesional para apps de citas
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Poppins", "Inter", "system-ui", "sans-serif"],
-        heading: ["Montserrat", "Inter", "system-ui", "sans-serif"],
+      // Habilitar prefijos automáticos para propiedades modernas
+      backdropBlur: {
+        xs: '2px',
       },
-      fontSize: {
-        xs: ["0.75rem", { lineHeight: "1rem" }],
-        sm: ["0.875rem", { lineHeight: "1.25rem" }],
-        base: ["1rem", { lineHeight: "1.5rem" }],
-        lg: ["1.125rem", { lineHeight: "1.75rem" }],
-        xl: ["1.25rem", { lineHeight: "1.75rem" }],
-        "2xl": ["1.5rem", { lineHeight: "2rem" }],
-        "3xl": ["1.875rem", { lineHeight: "2.25rem" }],
-        "4xl": ["2.25rem", { lineHeight: "2.5rem" }],
-        "5xl": ["3rem", { lineHeight: "1" }],
-        "6xl": ["3.75rem", { lineHeight: "1" }],
-        "7xl": ["4.5rem", { lineHeight: "1" }],
-        "8xl": ["6rem", { lineHeight: "1" }],
-        "9xl": ["8rem", { lineHeight: "1" }],
-        // Tamaños específicos para la app
-        hero: ["3.5rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
-        display: ["2.5rem", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
-        heading: ["1.5rem", { lineHeight: "1.3" }],
-        body: ["1rem", { lineHeight: "1.6" }],
-        caption: ["0.875rem", { lineHeight: "1.4" }],
-      },
-      fontWeight: {
-        thin: "100",
-        extralight: "200",
-        light: "300",
-        normal: "400",
-        medium: "500",
-        semibold: "600",
-        bold: "700",
-        extrabold: "800",
-        black: "900",
-      },
-      letterSpacing: {
-        tighter: "-0.05em",
-        tight: "-0.025em",
-        normal: "0em",
-        wide: "0.025em",
-        wider: "0.05em",
-        widest: "0.1em",
-      },
-      lineHeight: {
-        none: "1",
-        tight: "1.25",
-        snug: "1.375",
-        normal: "1.5",
-        relaxed: "1.625",
-        loose: "2",
-      },
-      // Espaciado optimizado para apps de citas
       spacing: {
         "18": "4.5rem",
         "88": "22rem",

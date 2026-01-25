@@ -92,6 +92,9 @@ export default defineConfig(({ mode }) => {
           drop_debugger: true,
         },
       },
+      // Configurar PostCSS para mejor compatibilidad CSS
+      cssTarget: "chrome61",
+      cssMinify: true,
     },
     base: "/",
   };

@@ -220,6 +220,14 @@ body {
   overflow-x: hidden;
 }
 
+svg.lucide {
+  display: block;
+  width: 1em;
+  height: 1em;
+  stroke: currentColor;
+  fill: none;
+}
+
 html,
 body {
   height: 100%;

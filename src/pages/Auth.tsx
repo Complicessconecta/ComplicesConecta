@@ -60,7 +60,7 @@ const Auth = () => {
     getCurrentLocation,
     location,
   } = useGeolocation();
-  const { signIn } = useAuth();
+  const { signIn, signOut, isDemoMode } = useAuth();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
@@ -417,12 +417,20 @@ const Auth = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate("/demo")}
+                  onClick={async () => {
+                    if (typeof isDemoMode === "function" && isDemoMode()) {
+                      await signOut();
+                      return;
+                    }
+                    navigate("/demo");
+                  }}
                   className="bg-linear-to-r from-pink-600/20 to-fuchsia-600/20 hover:from-pink-600/40 hover:to-fuchsia-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-fuchsia-500/30 transition-all duration-300 hover:scale-105"
                   data-testid="demo-mode-button"
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
-                  Demo
+                  {typeof isDemoMode === "function" && isDemoMode()
+                    ? "Cerrar sesión"
+                    : "Demo"}
                 </Button>
                 <Button
                   variant="ghost"

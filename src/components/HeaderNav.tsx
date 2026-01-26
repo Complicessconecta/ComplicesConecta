@@ -66,6 +66,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
   const isTokensRoute = location.pathname === "/tokens" || location.pathname.startsWith("/tokens-");
 
+  const isProfileRoute =
+    location.pathname === "/profile" ||
+    location.pathname === "/profile-single" ||
+    location.pathname === "/profile-couple" ||
+    location.pathname.startsWith("/profile-");
+
   // C) Menú principal REDUCIDO a 5 items para evitar overflow
   const mainNavItems = [
     { name: "Inicio", path: "/", icon: Home },
@@ -155,6 +161,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
   // Evitar doble header en páginas de Tokens públicas
   if (isTokensRoute) {
+    return null;
+  }
+
+  // Evitar HeaderNav en rutas de perfil (incluye perfiles demo)
+  if (isProfileRoute) {
     return null;
   }
 

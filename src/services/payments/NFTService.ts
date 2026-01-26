@@ -265,7 +265,12 @@ export class NFTService {
         isDemoEnv &&
         typeof window !== "undefined" &&
         safeGetItem("demo_authenticated") === "true";
-      if (WalletService.isDemoMode() || isDemoAuthActive) {
+
+      const hasDemoNftsForUser =
+        typeof window !== "undefined" &&
+        window.localStorage.getItem(getDemoNFTStorageKey(userId)) !== null;
+
+      if (WalletService.isDemoMode() || isDemoAuthActive || hasDemoNftsForUser) {
         return readDemoNFTs(userId);
       }
 

@@ -146,6 +146,8 @@ export class PostsService {
       const postType = postTypes[Math.floor(Math.random() * postTypes.length)]!;
       const content = contents[Math.floor(Math.random() * contents.length)];
 
+      const photoUrl = `https://picsum.photos/seed/cc-post-${i + 1}/900/700`;
+
       // Avatares reales usando pravatar.cc y UI Avatars
       const avatarUrls = [
         "https://i.pravatar.cc/150?img=1",
@@ -166,6 +168,7 @@ export class PostsService {
         ),
         content: content ?? "",
         post_type: postType,
+        ...(postType === "photo" ? { image_url: photoUrl } : {}),
         likes_count: Math.floor(Math.random() * 50) + 1,
         comments_count: Math.floor(Math.random() * 20) + 1,
         shares_count: Math.floor(Math.random() * 10) + 1,
@@ -228,7 +231,7 @@ export class PostsService {
         ).toISOString(),
         user_liked: Math.random() > 0.5,
         profile_name: `Usuario ${i + 1}`,
-        profile_avatar: `/mock-avatars/user-${i + 1}.jpg`,
+        profile_avatar: `https://i.pravatar.cc/150?img=${(i % 70) + 1}`,
       });
     }
 
@@ -312,30 +315,51 @@ export class PostsService {
       }
 
       // Mapear datos de stories a formato Post
-      const posts: Post[] = storiesData.map((story: any) => ({
-        id: story.id,
-        user_id: story.user_id,
-        profile_id: story.user_id,
-        content: story.content || story.description || story.caption || "",
-        post_type: story.content_type || story.media_type || "photo",
-        media_urls: Array.isArray(story.media_urls)
-          ? story.media_urls
-          : story.media_url
+      const posts: Post[] = storiesData.map((story: any) => {
+        const postType = (story.content_type || story.media_type || "photo") as
+          | "text"
+          | "photo"
+          | "video";
+
+        const mediaUrls: string[] = Array.isArray(story.media_urls)
+          ? story.media_urls.filter((u: unknown): u is string => typeof u === "string" && u.length > 0)
+          : typeof story.media_url === "string" && story.media_url.length > 0
             ? [story.media_url]
-            : [],
-        location: story.location || null,
-        views_count: story.views_count || 0,
-        likes_count:
-          (Array.isArray(story.story_likes) && story.story_likes[0]?.count) || 0,
-        comments_count:
-          (Array.isArray(story.story_comments) &&
-            story.story_comments[0]?.count) ||
-          0,
-        shares_count:
-          (Array.isArray(story.story_shares) && story.story_shares[0]?.count) || 0,
-        created_at: story.created_at,
-        updated_at: story.updated_at || story.created_at,
-      }));
+            : [];
+
+        const firstMediaUrl = mediaUrls[0];
+
+        const basePost: Post = {
+          id: story.id,
+          user_id: story.user_id,
+          profile_id: story.user_id,
+          content: story.content || story.description || story.caption || "",
+          post_type: postType,
+          location: story.location || null,
+          likes_count:
+            (Array.isArray(story.story_likes) && story.story_likes[0]?.count) || 0,
+          comments_count:
+            (Array.isArray(story.story_comments) &&
+              story.story_comments[0]?.count) ||
+            0,
+          shares_count:
+            (Array.isArray(story.story_shares) && story.story_shares[0]?.count) || 0,
+          created_at: story.created_at,
+          updated_at: story.updated_at || story.created_at,
+        };
+
+        const withMedia: Post = {
+          ...basePost,
+          ...(postType === "photo" && typeof firstMediaUrl === "string"
+            ? { image_url: firstMediaUrl }
+            : {}),
+          ...(postType === "video" && typeof firstMediaUrl === "string"
+            ? { video_url: firstMediaUrl }
+            : {}),
+        };
+
+        return withMedia;
+      });
 
       // Guardar en cache y retornar datos reales
       this.feedCache.set(cacheKey, {

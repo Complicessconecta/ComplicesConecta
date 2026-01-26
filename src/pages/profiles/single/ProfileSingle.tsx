@@ -409,7 +409,12 @@ const ProfileSingle: FC = () => {
 
   // Funciones para blockchain
   const loadBlockchainData = useCallback(async (forcedUserId?: string) => {
-    const targetUserId = forcedUserId || user?.id || null;
+    const targetUserId =
+      forcedUserId ||
+      user?.id ||
+      asOptionalString(currentProfile["user_id"]) ||
+      currentProfile.id ||
+      null;
 
     try {
       const isDemoAuthActive =
@@ -1302,6 +1307,11 @@ const ProfileSingle: FC = () => {
               </div>
               <Button
                 onClick={() => {
+                  if (isOwnProfile || isDemoProfile) {
+                    navigate("/tokens");
+                    return;
+                  }
+
                   if (typeof window !== "undefined") {
                     window.location.hash = "wallet";
                     document

@@ -93,6 +93,11 @@ export const Navigation = ({ className }: NavigationProps) => {
     return null;
   }
 
+  // Evitar doble navegación en páginas de Tokens (ya existe TokensSubnav)
+  if (location.pathname === "/tokens" || location.pathname.startsWith("/tokens")) {
+    return null;
+  }
+
   return (
     <>
       {/* Botón flotante de cambio de tema */}

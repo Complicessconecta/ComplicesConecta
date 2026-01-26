@@ -17,7 +17,7 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
+      <DialogContent className="sm:max-w-md bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-100">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
             <Flame className="h-6 w-6 text-orange-500" />

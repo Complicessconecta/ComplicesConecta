@@ -129,3 +129,12 @@ Los siguientes archivos de auditoría han sido movidos a `docs-unified/auditoria
 | **Demo Clubs + Tipos** | `src/pages/Clubs.tsx` | Errores TS/JSX por `exactOptionalPropertyTypes` en datos demo | Ajuste de `DEMO_CLUB` y render para cumplir `ClubEntity` | Mantener demo determinista y type-safe |
 | **Navegación Demo Clubs** | `src/pages/admin/AdminSelectDashboard.tsx`, `src/components/profiles/shared/ProfileNavigation.tsx` | Flujo demo no dirigía al club demo | Navegación a `/clubs/demo` condicionada por `demo_authenticated` | Preservar flujo demo sin depender de Supabase |
 | **Estabilidad Tests/E2E** | `playwright.config.ts`, `src/tests/*` | Fallas por configuración baseURL/servidor y mocks | Ajustes de config y mocks para corridas deterministas | Asegurar CI estable |
+
+## Actualización 26 de Enero, 2026
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **Realtime Clubs (Visitor View)** | `src/pages/Clubs.tsx` | Cambios en `live_status`/`membership_tier` no se reflejaban en la vista pública | Suscripción Supabase Realtime para mantener `selectedClub` sincronizado | UX en tiempo real / consistencia de datos |
+| **Admin Persist Guardrails** | `src/components/clubs/ClubProfileAdmin.tsx` | Cambios de Vibe/Tier no persistían inmediatamente o podían spamear DB | Persistencia con debounce (450ms) + optimistic UI + revert on error + toast; solo con `clubId` real | Profesionalismo + seguridad + estabilidad |
+| **Vibe Badge Popover** | `src/components/clubs/ClubProfileHeader.tsx` | Badge “Vibe” no era interactivo | Popover informativo al hacer click (Radix Popover) | Mejorar conversión y claridad |
+| **Docs: árbol src** | `Project-Structure-Tree-files.md` | Estructura del proyecto desactualizada | Actualización con `tree /F /A src` dentro de bloque ``` | Documentación y auditoría consistente |

@@ -1,3 +1,12 @@
+
+// FIX: Estructura de DOM ideal para modales modernos:
+// 1. Modal renderizado fuera del layout principal usando createPortal
+// 2. Overlay fijo que cubre toda la pantalla (inset-0)
+// 3. z-index muy alto (9999) para estar por encima de navbar (z-50)
+// 4. Bloqueo de scroll del body mientras el modal está abierto
+// 5. Manejo de tecla ESC y click en overlay para cerrar
+// 6. Animaciones suaves de entrada/salida (fade + scale)
+
 import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Card, CardContent } from "@/components/ui/cards/Card";
@@ -11,13 +20,6 @@ interface WelcomeModalProps {
   onClose: () => void;
 }
 
-// FIX: Estructura de DOM ideal para modales modernos:
-// 1. Modal renderizado fuera del layout principal usando createPortal
-// 2. Overlay fijo que cubre toda la pantalla (inset-0)
-// 3. z-index muy alto (9999) para estar por encima de navbar (z-50)
-// 4. Bloqueo de scroll del body mientras el modal está abierto
-// 5. Manejo de tecla ESC y click en overlay para cerrar
-// 6. Animaciones suaves de entrada/salida (fade + scale)
 
 export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -188,7 +190,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   // Esto evita que el modal se corte por overflow-hidden de padres
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 md:p-8"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 md:p-8"
       onClick={handleOverlayClick}
       role="dialog"
       aria-modal="true"

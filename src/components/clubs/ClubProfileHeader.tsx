@@ -1,6 +1,7 @@
 import { Building, MapPin, Phone, Globe, Clock, Star, CheckCircle, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/cards/Card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover/popover";
 import type { Club } from "@/entities/club";
 
 interface ClubProfileHeaderProps {
@@ -99,15 +100,24 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <h1 className="text-3xl font-bold text-white">{club.name}</h1>
               {typeof club.live_status === "string" && club.live_status.trim().length > 0 && (
-                <Badge
-                  className={
-                    club.live_status.includes("🔥")
-                      ? "bg-red-500/20 text-red-200 border border-red-400/40 animate-pulse"
-                      : "bg-white/10 text-white/90 border border-white/20"
-                  }
-                >
-                  Vibe: {club.live_status}
-                </Badge>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button type="button">
+                      <Badge
+                        className={
+                          club.live_status.includes("🔥")
+                            ? "bg-red-500/20 text-red-200 border border-red-400/40 animate-pulse"
+                            : "bg-white/10 text-white/90 border border-white/20"
+                        }
+                      >
+                        Vibe: {club.live_status}
+                      </Badge>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="bg-black/80 border border-white/10 text-white">
+                    Este club está reportando gran actividad ahora mismo. ¡Reserva tu lugar!
+                  </PopoverContent>
+                </Popover>
               )}
             </div>
             

@@ -82,7 +82,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm sm:max-w-md lg:max-w-2xl bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-sm border border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-[100]">
+      <DialogContent className="max-w-sm sm:max-w-md lg:max-w-2xl bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-sm border border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-100">
         <DialogHeader>
           <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-4">
             <div className="bg-purple-600/30 p-3 sm:p-4 rounded-full shadow-lg shadow-purple-500/50">

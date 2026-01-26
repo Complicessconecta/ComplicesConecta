@@ -43,14 +43,14 @@ Al finalizar sesión o avance significativo: actualizar memorias y documentos cl
 1.3 Documentación OBLIGATORIA
 Verificar y actualizar al inicio/final de sesión:
 
-RELEASE_NOTES_v3.x.x.md
+RELEASE_NOTES_v4.0.0.md
 README.md
-README_IA.md
-README_DEVOPS.md
 project-structure-tree.md
-DIAGRAMAS_FLUJOS_CONSOLIDADOmd
+DIAGRAMAS_FLUJOS_CONSOLIDADO.md
 COMPLICESCONECTA_PRESENTACION_PUBLICA.md
 CHANGELOG.md
+CONTRIBUTING.md
+Project-Structure-Tree-files.md
 
 1.4 Supabase, Docker y Base de Datos
 
@@ -107,7 +107,7 @@ Al finalizar cualquier sesión de desarrollo que involucre cambios en la estruct
 5. `COMPLICESCONECTA_PRESENTACION_PUBLICA.md` si la estructura afecta la presentación pública
 6. `CHANGELOG.md` si la estructura afecta los cambios
 7. `CONTRIBUTING.md` si la estructura afecta la contribución
-8.  `RELEASE_NOTES_v3.8.0.md` si la estructura afecta las notas de lanzamiento
+8.  `RELEASE_NOTES_v4.0.0.md` si la estructura afecta las notas de lanzamiento
 
 **Verificación:**
 

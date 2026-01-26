@@ -12,7 +12,7 @@ export const ActionButtonsModal = ({
 }: ActionButtonsModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white border-purple-500/30 max-w-sm sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto z-[100]">
+      <DialogContent className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 text-white border-purple-500/30 max-w-sm sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto z-100">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl font-bold text-white drop-shadow-lg">
             ¿Qué Hacen los Botones?

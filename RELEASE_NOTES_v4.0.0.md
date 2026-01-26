@@ -1,5 +1,13 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 26 Ene 2026
+
+- **🟢 Realtime Clubs:** suscripción a Supabase Realtime para actualizar `selectedClub` cuando cambie `clubs.live_status` / `clubs.membership_tier`.
+- **⚡ Admin Guardrails:** persistencia inmediata con debounce + optimistic UI + rollback + toast (solo con `clubId` real).
+- **🏷️ Vibe Popover:** badge “Vibe” clickable con Popover informativo.
+- **🧹 Tailwind:** correcciones de warnings `z-[...]` → `z-...` en modales.
+- **🗂️ Docs:** `Project-Structure-Tree-files.md` actualizado con `tree /F /A src`.
+
 ## 📅 Bitácora 25 Ene 2026
 
 - **🏢 Demo Clubs:** ruta `/clubs/demo` con club demo determinista.

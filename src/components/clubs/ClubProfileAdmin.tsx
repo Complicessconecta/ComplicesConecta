@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Edit, Image as ImageIcon, Calendar, Tag, BarChart3, MessageSquare, Settings, Save, Users, TrendingUp, Eye, Zap, Wallet, Flame, Lock, QrCode } from "lucide-react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
 import { AdminTabsContent } from "@/components/clubs/AdminTabsContent";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/useToast";
 
 interface ClubAnalytics {
   totalVisits: number;
@@ -27,14 +29,23 @@ interface ClubAnalytics {
 interface ClubProfileAdminProps {
   analytics: ClubAnalytics;
   onSave?: (data: any) => void;
+  clubId?: string;
 }
 
 export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
   analytics,
   onSave,
+  clubId,
 }) => {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('edit');
   const [saving, setSaving] = useState(false);
+
+  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastPersistedRef = useRef<{
+    membership_tier: "free" | "premium";
+    live_status: string;
+  } | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -51,11 +62,95 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
     cmpx_balance: String(analytics.cmpx_balance ?? 0),
   });
 
+  const canPersist = Boolean(clubId && clubId !== "demo");
+
+  const persistClubPartial = async (partial: {
+    membership_tier?: "free" | "premium";
+    live_status?: string;
+  }) => {
+    if (!canPersist || !clubId) return;
+
+    const payload: Record<string, unknown> = {};
+    if (typeof partial.membership_tier !== "undefined") {
+      payload.membership_tier = partial.membership_tier;
+    }
+    if (typeof partial.live_status !== "undefined") {
+      payload.live_status = partial.live_status;
+    }
+    if (Object.keys(payload).length === 0) return;
+
+    const previous = {
+      membership_tier: formData.membership_tier,
+      live_status: formData.live_status,
+    };
+
+    try {
+      const { error } = await supabase
+        .from("clubs")
+        .update(payload)
+        .eq("id", clubId);
+
+      if (error) {
+        throw error;
+      }
+
+      lastPersistedRef.current = {
+        membership_tier:
+          typeof partial.membership_tier !== "undefined"
+            ? partial.membership_tier
+            : previous.membership_tier,
+        live_status:
+          typeof partial.live_status !== "undefined"
+            ? partial.live_status
+            : previous.live_status,
+      };
+    } catch (error) {
+      setFormData((prev) => ({
+        ...prev,
+        membership_tier: previous.membership_tier,
+        live_status: previous.live_status,
+      }));
+
+      toast({
+        title: "No se pudo guardar",
+        description:
+          error instanceof Error ? error.message : "Error al actualizar el club",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const schedulePersist = (partial: {
+    membership_tier?: "free" | "premium";
+    live_status?: string;
+  }) => {
+    if (!canPersist) return;
+    if (persistTimerRef.current) {
+      clearTimeout(persistTimerRef.current);
+    }
+    persistTimerRef.current = setTimeout(() => {
+      void persistClubPartial(partial);
+    }, 450);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
+
+    if (name === "live_status") {
+      schedulePersist({ live_status: value });
+    }
   };
 
   const handleSave = async () => {
@@ -70,6 +165,23 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
     } finally {
       setSaving(false);
     }
+  };
+
+  const setFormDataWithPersist: React.Dispatch<React.SetStateAction<typeof formData>> = (
+    next,
+  ) => {
+    setFormData((prev) => {
+      const resolved = typeof next === "function" ? (next as any)(prev) : next;
+
+      if (resolved.membership_tier !== prev.membership_tier) {
+        schedulePersist({ membership_tier: resolved.membership_tier });
+      }
+      if (resolved.live_status !== prev.live_status) {
+        schedulePersist({ live_status: resolved.live_status });
+      }
+
+      return resolved;
+    });
   };
 
   return (
@@ -268,7 +380,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <AdminTabsContent
               tab="economy"
               clubData={formData}
-              setClubData={setFormData}
+              setClubData={setFormDataWithPersist}
             />
           </TabsContent>
 
@@ -276,12 +388,12 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <AdminTabsContent
               tab="access_qr"
               clubData={formData}
-              setClubData={setFormData}
+              setClubData={setFormDataWithPersist}
             />
           </TabsContent>
 
           <TabsContent value="demo" className="mt-6">
-            <AdminTabsContent tab="demo" clubData={formData} setClubData={setFormData} />
+            <AdminTabsContent tab="demo" clubData={formData} setClubData={setFormDataWithPersist} />
           </TabsContent>
 
           {/* Images Tab */}
@@ -398,7 +510,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                       type="button"
                       variant="outline"
                       onClick={() =>
-                        setFormData((prev) => ({ ...prev, membership_tier: "free" }))
+                        setFormData((prev) => {
+                          schedulePersist({ membership_tier: "free" });
+                          return { ...prev, membership_tier: "free" };
+                        })
                       }
                       className={
                         formData.membership_tier === "free"
@@ -412,7 +527,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                       type="button"
                       variant="outline"
                       onClick={() =>
-                        setFormData((prev) => ({ ...prev, membership_tier: "premium" }))
+                        setFormData((prev) => {
+                          schedulePersist({ membership_tier: "premium" });
+                          return { ...prev, membership_tier: "premium" };
+                        })
                       }
                       className={
                         formData.membership_tier === "premium"

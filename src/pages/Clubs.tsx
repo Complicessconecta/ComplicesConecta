@@ -134,10 +134,12 @@ const DEMO_ANALYTICS = {
 };
 
 export const Clubs = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isAdmin } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { slug } = useParams<{ slug?: string }>();
+
+  const isAdminUser = isAuthenticated() && isAdmin();
 
   const [clubs, setClubs] = useState<Club[]>([]);
   const [filteredClubs, setFilteredClubs] = useState<Club[]>([]);
@@ -625,7 +627,26 @@ export const Clubs = () => {
               totalReviews={selectedClub.rating_count}
             />
             {selectedClub.id === "demo" && (
-              <ClubProfileAdmin analytics={DEMO_ANALYTICS} />
+              <ClubProfileAdmin analytics={DEMO_ANALYTICS} clubId={selectedClub.id} />
+            )}
+
+            {selectedClub.id !== "demo" && isAdminUser && (
+              <ClubProfileAdmin
+                analytics={{
+                  totalVisits: 0,
+                  totalCheckIns: selectedClub.check_in_count,
+                  averageRating: selectedClub.rating_average,
+                  totalReviews: selectedClub.rating_count,
+                  weeklyVisits: 0,
+                  monthlyVisits: 0,
+                  topEvents: [],
+                  demographics: [],
+                  cmpx_balance: selectedClub.cmpx_balance ?? 0,
+                  membership_tier: selectedClub.membership_tier ?? "free",
+                  live_status: selectedClub.live_status ?? "❓ Desconocido",
+                }}
+                clubId={selectedClub.id}
+              />
             )}
           </div>
         ) : (

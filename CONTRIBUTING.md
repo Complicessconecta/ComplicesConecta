@@ -170,7 +170,7 @@ supabase gen types typescript --local > src/types/supabase.ts
 - Documentación técnica
 - Comentarios en código
 - Ejemplos y tutoriales
-- Mantener sincronizados los documentos raíz (`CHANGES.md`, `RELEASE_NOTES_v3.8.0.md`, `README.md`, `COMPLICESCONECTA_PRESENTACION_PUBLICA.md`, `project-structure-tree.md`) cuando se apliquen cambios en UI global (fondos, navegación, SideMenu, rutas públicas como `/tokens` y `/nfts`).
+- Mantener sincronizados los documentos raíz (`CHANGELOG.md`, `RELEASE_NOTES_v4.0.0.md`, `README.md`, `COMPLICESCONECTA_PRESENTACION_PUBLICA.md`, `Project-Structure-Tree-files.md`) cuando se apliquen cambios en UI global (fondos, navegación, SideMenu, rutas públicas como `/tokens` y `/nfts`).
 - Para cambios en la **IA Local y sistema legal** (Libro Maestro `app-master-context.md`, `src/ai/AIWorker.ts`, `src/ai/useLocalAI.ts`, `src/components/ai/LegalChatBox.tsx`, `src/pages/AIControlCenter.tsx`, `src/pages/TokensLegal.tsx`), actualizar siempre la documentación asociada y las notas de versión.
 
 ### **🧪 Testing**

@@ -33,7 +33,7 @@ const Matches = () => {
       name: "Anabella & Julio",
       age: 32,
       image:
-        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=600&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=600&fit=crop",
       compatibility: 98,
       mutualInterests: ["Fiestas Privadías", "Intercambio", "Eventos VIP"],
       distance: 1.2,
@@ -166,7 +166,7 @@ const Matches = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-linear-to-b from-gray-900 via-purple-900 to-gray-900 p-4 sm:p-6">
       <main className="max-w-6xl mx-auto mt-6 space-y-8">
         {/* Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -349,6 +349,12 @@ const MatchCard = ({
           src={match.image}
           alt={match.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            const fallback =
+              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
+            if (target.src !== fallback) target.src = fallback;
+          }}
         />
 
         {/* Badge de estado */}
@@ -360,7 +366,7 @@ const MatchCard = ({
         )}
 
         {/* Overlay de información */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 flex flex-col justify-end">
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent p-4 flex flex-col justify-end">
           <div className="flex justify-between items-end">
             <div>
               <h3 className="text-xl font-bold text-white">{match.name}</h3>

@@ -33,6 +33,18 @@ export const MainLayout = () => {
       : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
 
+  const hasDemoSession = (() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return (
+        window.localStorage.getItem("demo_authenticated") === "true" ||
+        window.localStorage.getItem("demo_user") !== null
+      );
+    } catch {
+      return false;
+    }
+  })();
+
   const pathname = location.pathname;
 
   // Lista explícita de rutas donde NO debe aparecer HeaderNav
@@ -68,7 +80,7 @@ export const MainLayout = () => {
       : "pt-[env(safe-area-inset-top)]";
 
   // Bottom Navigation solo para usuarios logueados
-  const showBottomNavigation = hasSession && !isClubDemoRoute;
+  const showBottomNavigation = (hasSession || hasDemoSession) && !isClubDemoRoute;
 
   // Chat FAB no se muestra en rutas de perfil
   const isProfileRoute =

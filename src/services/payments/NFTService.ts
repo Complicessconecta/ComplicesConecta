@@ -29,6 +29,16 @@ import type { Database } from "@/types/supabase-generated";
 
 const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
 
+const getDemoNftImageForIndex = (index: number): string => {
+  const images = [
+    "/assets/nfts/imagen1.jpg",
+    "/assets/nfts/imagen2.jpg",
+    "/assets/nfts/imagen3.jpg",
+    "/assets/nfts/imagen4.gif",
+  ];
+  return images[index % images.length] || images[0] || "";
+};
+
 const readDemoNFTs = (uid: string): NFTInfo[] => {
   if (typeof window === "undefined") return [];
   const raw = window.localStorage.getItem(getDemoNFTStorageKey(uid));
@@ -371,6 +381,60 @@ export class NFTService {
     imageFile: File,
   ): Promise<boolean> {
     try {
+      const isDemoEnv =
+        import.meta.env.VITE_APP_MODE === "demo" ||
+        import.meta.env.MODE === "development";
+      const isDemoAuthActive =
+        isDemoEnv &&
+        typeof window !== "undefined" &&
+        safeGetItem("demo_authenticated") === "true";
+
+      const isDemoUserActive =
+        typeof window !== "undefined" &&
+        (() => {
+          try {
+            return window.localStorage.getItem("demo_user") !== null;
+          } catch {
+            return false;
+          }
+        })();
+
+      if (WalletService.isDemoMode() || isDemoAuthActive || isDemoUserActive) {
+        const existing = readDemoNFTs(userId);
+        if (existing.length >= 4) return false;
+
+        const now = new Date().toISOString();
+        const nextIndex = existing.length;
+        const created: NFTInfo = {
+          id: `demo-nft-${userId}-${nextIndex}-${Date.now()}`,
+          token_id: nextIndex + 1,
+          owner_address: "DEMO",
+          metadata_uri: "ipfs://demo-metadata-hash",
+          rarity: "common",
+          is_couple: false,
+          created_at: now,
+          name,
+          description,
+          image: getDemoNftImageForIndex(nextIndex),
+        };
+
+        const stored = [...existing, created].slice(0, 4);
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(
+            getDemoNFTStorageKey(userId),
+            JSON.stringify(stored),
+          );
+        }
+
+        logger.info("Mint demo single NFT", {
+          userId,
+          count: stored.length,
+          fileType: imageFile.type,
+        });
+
+        return true;
+      }
+
       // Asegurar wallet del usuario
       const wallet = await this.walletService
         .getOrCreateWallet(userId)

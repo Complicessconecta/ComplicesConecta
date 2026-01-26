@@ -58,6 +58,12 @@ export const MatchCard: FC<MatchCardProps> = ({
   const [showLikeModal, setShowLikeModal] = useState(false);
   const [showSuperLikeModal, setShowSuperLikeModal] = useState(false);
 
+  const defaultImageSingle =
+    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
+  const defaultImageCouple =
+    "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=600&fit=crop";
+  const defaultImage = accountType === "couple" ? defaultImageCouple : defaultImageSingle;
+
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.8, rotateY: -30 },
     visible: {
@@ -101,27 +107,21 @@ export const MatchCard: FC<MatchCardProps> = ({
       >
         <UnifiedCard glass hover className="overflow-hidden">
           <div className="relative">
-            <div className="aspect-[3/4] relative">
+            <div className="aspect-3/4 relative">
               <img
                 src={
                   avatar ||
                   images[0] ||
-                  "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
+                  defaultImage
                 }
                 alt={name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  if (
-                    target.src !==
-                    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
-                  ) {
-                    target.src =
-                      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
-                  }
+                  if (target.src !== defaultImage) target.src = defaultImage;
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
 
               {/* Badges */}
               <div className="absolute top-3 left-3 flex flex-col gap-2">
@@ -269,27 +269,21 @@ export const MatchCard: FC<MatchCardProps> = ({
         className="overflow-hidden cursor-grab active:cursor-grabbing"
       >
         <div className="relative">
-          <div className="aspect-[3/4] relative">
+          <div className="aspect-3/4 relative">
             <img
               src={
                 avatar ||
                 images[0] ||
-                "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
+                defaultImage
               }
               alt={name}
               className="w-full h-full object-cover"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                if (
-                  target.src !==
-                  "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
-                ) {
-                  target.src =
-                    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
-                }
+                if (target.src !== defaultImage) target.src = defaultImage;
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
 
             {/* Swipe indicators */}
             <motion.div
@@ -433,7 +427,7 @@ export const MatchCard: FC<MatchCardProps> = ({
 
       {/* Modal de Me Gusta */}
       <Dialog open={showLikeModal} onOpenChange={setShowLikeModal}>
-        <DialogContent className="bg-linear-to-br from-purple-900 via-purple-800 to-purple-900 text-white border-purple-500/30 z-[100]">
+        <DialogContent className="bg-linear-to-br from-purple-900 via-purple-800 to-purple-900 text-white border-purple-500/30 z-100">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
               <Heart className="h-6 w-6 text-purple-400" fill="currentColor" />
@@ -466,7 +460,7 @@ export const MatchCard: FC<MatchCardProps> = ({
 
       {/* Modal de Super Like */}
       <Dialog open={showSuperLikeModal} onOpenChange={setShowSuperLikeModal}>
-        <DialogContent className="bg-linear-to-br from-blue-900 via-purple-900 to-blue-900 text-white border-blue-500/30 z-[100]">
+        <DialogContent className="bg-linear-to-br from-blue-900 via-purple-900 to-blue-900 text-white border-blue-500/30 z-100">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
               <Sparkles className="h-6 w-6 text-blue-400" />

@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Unlock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Unlock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -67,31 +67,34 @@ const ProfileSingle: FC = () => {
   };
 
   const requireSecureAccess = async (): Promise<boolean> => {
-    const username = user?.id || "anonymous";
+    try {
+      const username = user?.id || "anonymous";
 
-    if (isBiometricEnabled && isBiometricAvailable) {
-      const result = await authenticate(username);
-      if (result.success) {
-        return true;
-      }
-      if (result.method === "pin" && hasPin) {
+      if (isBiometricEnabled && isBiometricAvailable) {
+        const result = await authenticate(username);
+        if (result.success) {
+          return true;
+        }
+        if (result.method === "pin" && hasPin) {
+          const pin = window.prompt(
+            "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
+          );
+          if (!pin) return false;
+          return await verifyPin(pin);
+        }
+      } else if (hasPin) {
         const pin = window.prompt(
           "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
         );
         if (!pin) return false;
         return await verifyPin(pin);
       }
-    } else if (hasPin) {
-      const pin = window.prompt(
-        "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
-      );
-      if (!pin) return false;
-      return await verifyPin(pin);
-    }
 
-    // Sin biometría ni PIN configurados, permitir acceso pero en producción
-    // se debería guiar al usuario a configurar un método seguro.
-    return true;
+      return true;
+    } catch (error) {
+      logger.error("Secure access failed", { error: String(error) });
+      return false;
+    }
   };
 
   interface ProfileStats {
@@ -109,12 +112,93 @@ const ProfileSingle: FC = () => {
     "none" | "pending" | "approved" | "denied"
   >("private_image_access", "none");
 
+  const [showPrivateDecisionModal, setShowPrivateDecisionModal] = useState(false);
+  const [privateDecisionRequesterName, setPrivateDecisionRequesterName] =
+    useState<string>("");
+
+  const [showPrivatePolicyModal, setShowPrivatePolicyModal] = useState(false);
+  const [showPrivateDeniedModal, setShowPrivateDeniedModal] = useState(false);
+  const [temporaryPrivateAccess, setTemporaryPrivateAccess] = useState(false);
+  const [showPrivateBlockedModal, setShowPrivateBlockedModal] = useState(false);
+  const [blockedDurationMs, setBlockedDurationMs] = useState(0);
+
+  const getPrivateGalleryBlockKey = () =>
+    `private_gallery_block:${profile?.id || "unknown"}`;
+  const getPrivateGalleryAttemptKey = () =>
+    `private_gallery_attempts:${profile?.id || "unknown"}`;
+  const getPrivateGalleryBlockDurationKey = () =>
+    `private_gallery_block_duration:${profile?.id || "unknown"}`;
+
+  const getBlockedUntil = () => {
+    if (typeof window === "undefined") return 0;
+    try {
+      const raw = window.localStorage.getItem(getPrivateGalleryBlockKey());
+      return raw ? Number(raw) : 0;
+    } catch {
+      return 0;
+    }
+  };
+
+  const isPrivateRequestBlocked = () => {
+    const until = getBlockedUntil();
+    return typeof until === "number" && until > Date.now();
+  };
+
+  const registerPrivateRequestSent = () => {
+    if (typeof window === "undefined") return { blocked: false, durationMs: 0 };
+    try {
+      const currentAttempts = Number(
+        window.localStorage.getItem(getPrivateGalleryAttemptKey()) || "0",
+      );
+      const nextAttempts = currentAttempts + 1;
+      window.localStorage.setItem(getPrivateGalleryAttemptKey(), String(nextAttempts));
+
+      if (nextAttempts < 3) {
+        return { blocked: false, durationMs: 0 };
+      }
+
+      const prevDuration = Number(
+        window.localStorage.getItem(getPrivateGalleryBlockDurationKey()) || "0",
+      );
+      const base = 2 * 60 * 60 * 1000;
+      const nextDuration = Math.min(prevDuration > 0 ? prevDuration * 2 : base, 24 * 60 * 60 * 1000);
+      const blockedUntil = Date.now() + nextDuration;
+
+      window.localStorage.setItem(getPrivateGalleryBlockDurationKey(), String(nextDuration));
+      window.localStorage.setItem(getPrivateGalleryBlockKey(), String(blockedUntil));
+      window.localStorage.setItem(getPrivateGalleryAttemptKey(), "0");
+
+      return { blocked: true, durationMs: nextDuration };
+    } catch {
+      return { blocked: false, durationMs: 0 };
+    }
+  };
+
+  const clearPrivateRequestAttempts = () => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(getPrivateGalleryAttemptKey(), "0");
+    } catch {
+      // no-op
+    }
+  };
+
+  const resetPrivateBlock = () => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.removeItem(getPrivateGalleryBlockKey());
+      window.localStorage.removeItem(getPrivateGalleryAttemptKey());
+      window.localStorage.removeItem(getPrivateGalleryBlockDurationKey());
+    } catch {
+      // no-op
+    }
+  };
+
   // Demo: controlar desbloqueo visual de fotos privadías en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
-  const [downloadModalContent, setDownloadModalContent] = useState<string>("");
+  
   const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
 
@@ -135,6 +219,13 @@ const ProfileSingle: FC = () => {
   // Estados para modal de carrusel avanzado
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [modalImages, setModalImages] = useState<string[]>([]);
+
+  const openImageModal = (images: string[], index: number) => {
+    setModalImages(images);
+    setSelectedImageIndex(index);
+    setShowImageModal(true);
+  };
   const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>(() => ({
     "1": 12,
     "2": 8,
@@ -357,34 +448,23 @@ const ProfileSingle: FC = () => {
   };
 
   const handleViewPrivatePhotos = async () => {
-     if (await requireSecureAccess()) {
-       setShowPrivateImageRequest(true);
-     }
+    try {
+      if (isPrivateRequestBlocked()) {
+        toast({
+          title: "Acceso temporalmente bloqueado",
+          description: "Has excedido los intentos. Intenta más tarde.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (await requireSecureAccess()) {
+        setShowPrivatePolicyModal(true);
+      }
+    } catch (error) {
+      logger.error("Error handling private photo request", { error: String(error) });
+    }
   };
-
-  const handleDownloadProfile = () => {
-    logger.info("Descargar perfil solicitado");
-
-    // DEMO: Por seguridad, mostrar modal en lugar de descargar JSON plano
-    const modalContent = `
-       📥 FUNCIÓN DE DESCARGA
-
-        En versión de producción:
-        Datos encriptados
-        Formato seguro (PDF/Encriptado)
-        Autenticación requerida Watermark
-        VERSIÓN DEMO:
-        Datos protegidos por seguridad.
-
-        Información del perfil:
-         - Nombre: ${profile?.name || "Demo"}
-         - Verificado: No disponible
-         - Fecha: ${new Date().toLocaleDateString()} `;
-
-            setDownloadModalContent(modalContent);
-            setIsDownloadModalOpen(true);
-
-          };
 
   const handleViewApprovedPrivatePhotos = () => {
     if (!privateGalleryRef.current) {
@@ -700,6 +780,9 @@ const ProfileSingle: FC = () => {
                   >
                     {displayName}
                   </h2>
+                  <div className="text-xs text-white/60 mb-2">
+                    ID: {String(currentProfile.id).slice(0, 8)}
+                  </div>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
                     <Badge className="profile-badge badge-age">
                       🎂 {displayAge} años
@@ -775,14 +858,6 @@ const ProfileSingle: FC = () => {
                       size="default"
                     />
 
-                    <Button
-                      onClick={handleDownloadProfile}
-                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
-                    >
-                      <Download className="w-4 h-4" />
-                      <span className="hidden sm:inline">Descargar</span>
-                      <span className="sm:hidden">Download</span>
-                    </Button>
 
                     <Button
                       onClick={() => setShowReportDialog(true)}
@@ -834,6 +909,7 @@ const ProfileSingle: FC = () => {
                     {privateImageAccess === "none" && (
                       <Button
                         onClick={handleViewPrivatePhotos}
+                        disabled={isPrivateRequestBlocked()}
                         className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full shadow-lg"
                       >
                         <Lock className="w-4 h-4" />
@@ -1121,6 +1197,38 @@ const ProfileSingle: FC = () => {
                       </ModalFooter>
                     </ModalBody>
                   </Modal>
+
+      <Modal
+        isOpen={showPrivateBlockedModal}
+        onClose={() => setShowPrivateBlockedModal(false)}
+      >
+        <ModalBody>
+          <ModalContent>
+            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+              Acceso bloqueado por intentos
+            </h4>
+            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200 space-y-2">
+              <p className="text-sm">
+                Detectamos múltiples solicitudes consecutivas. Para prevenir hostigamiento,
+                se bloqueó temporalmente el envío de solicitudes.
+              </p>
+              <p className="text-xs opacity-70">
+                Bloqueo actual: {Math.round(blockedDurationMs / (60 * 60 * 1000))}h.
+                Reincidencia duplica hasta 24h (suspensión preventiva).
+              </p>
+            </div>
+          </ModalContent>
+          <ModalFooter className="gap-4">
+            <button
+              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+              onClick={() => setShowPrivateBlockedModal(false)}
+              type="button"
+            >
+              Entendido
+            </button>
+          </ModalFooter>
+        </ModalBody>
+      </Modal>
 
                   <button
                     className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border rounded-md"
@@ -1485,25 +1593,70 @@ const ProfileSingle: FC = () => {
               {/* Galera pblica siempre visible */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 mb-6">
                 <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <SafeImage
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
-                    alt="Foto pública 1"
+                  <button
+                    type="button"
                     className="w-full h-full"
-                  />
+                    onClick={() =>
+                      openImageModal(
+                        [
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=900&fit=crop&crop=face",
+                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+                        ],
+                        0,
+                      )
+                    }
+                  >
+                    <SafeImage
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
+                      alt="Foto pública 1"
+                      className="w-full h-full"
+                    />
+                  </button>
                 </div>
                 <div className="aspect-square bg-linear-to-br from-pink-400 to-red-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <SafeImage
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
-                    alt="Foto pública 2"
+                  <button
+                    type="button"
                     className="w-full h-full"
-                  />
+                    onClick={() =>
+                      openImageModal(
+                        [
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=900&fit=crop&crop=face",
+                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+                        ],
+                        1,
+                      )
+                    }
+                  >
+                    <SafeImage
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
+                      alt="Foto pública 2"
+                      className="w-full h-full"
+                    />
+                  </button>
                 </div>
                 <div className="aspect-square bg-linear-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <SafeImage
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face"
-                    alt="Foto pública 3"
+                  <button
+                    type="button"
                     className="w-full h-full"
-                  />
+                    onClick={() =>
+                      openImageModal(
+                        [
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=900&fit=crop&crop=face",
+                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+                        ],
+                        2,
+                      )
+                    }
+                  >
+                    <SafeImage
+                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face"
+                      alt="Foto pública 3"
+                      className="w-full h-full"
+                    />
+                  </button>
                 </div>
               </div>
 
@@ -1579,8 +1732,12 @@ const ProfileSingle: FC = () => {
 
                                   // Si ya está desbloqueado, abrir carrusel
                                   if (isGalleryUnlocked) {
-                                    setSelectedImageIndex(idx);
-                                    setShowImageModal(true);
+                                    const resolved = galleryImages
+                                      .map((g) =>
+                                        typeof g === "string" ? g : (g.url ?? g.src ?? ""),
+                                      )
+                                      .filter((u): u is string => typeof u === "string" && u.length > 0);
+                                    openImageModal(resolved, idx);
                                     return;
                                   }
 
@@ -1666,8 +1823,18 @@ const ProfileSingle: FC = () => {
           profileName={asString(profile?.["name"], displayName)}
           profileType="single"
           onRequestSent={() => {
-            setPrivateImageAccess("pending");
+            const guard = registerPrivateRequestSent();
             setShowPrivateImageRequest(false);
+
+            if (guard.blocked) {
+              setBlockedDurationMs(guard.durationMs);
+              setShowPrivateBlockedModal(true);
+              return;
+            }
+
+            setPrivateImageAccess("pending");
+            setPrivateDecisionRequesterName("Solicitante");
+            setShowPrivateDecisionModal(true);
           }}
         />
       )}
@@ -1713,8 +1880,14 @@ const ProfileSingle: FC = () => {
       {/* Modal de carrusel de imágenes */}
       <ImageModal
         isOpen={showImageModal}
-        onClose={() => setShowImageModal(false)}
-        images={galleryImages.map((img) =>
+        onClose={() => {
+          setShowImageModal(false);
+          if (!isOwnProfile && temporaryPrivateAccess) {
+            setTemporaryPrivateAccess(false);
+            setPrivateImageAccess("none");
+          }
+        }}
+        images={modalImages.length > 0 ? modalImages : galleryImages.map((img) =>
           typeof img === "string" ? img : (img.url ?? img.src ?? ""),
         )}
         currentIndex={selectedImageIndex}
@@ -1724,26 +1897,127 @@ const ProfileSingle: FC = () => {
       />
 
       <Modal
-        isOpen={isDownloadModalOpen}
-        onClose={() => setIsDownloadModalOpen(false)}
+        isOpen={showPrivateDecisionModal}
+        onClose={() => setShowPrivateDecisionModal(false)}
       >
         <ModalBody>
           <ModalContent>
             <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
-              Descarga de perfil (DEMO)
+              Solicitud de acceso a galería privada
             </h4>
-            <div className="py-2 max-w-2xl mx-auto">
-              <pre className="whitespace-pre-wrap wrap-break-word text-sm text-neutral-600 dark:text-neutral-200 bg-black/30 border border-white/10 rounded-lg p-4">
-                {downloadModalContent}
-              </pre>
+            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200">
+              <p className="text-sm">
+                {privateDecisionRequesterName} solicita acceso a tu galería.
+              </p>
+              <p className="text-xs opacity-70 mt-2">
+                En demo este flujo se simula para validar UX.
+              </p>
             </div>
           </ModalContent>
           <ModalFooter className="gap-4">
             <button
               className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-              onClick={() => setIsDownloadModalOpen(false)}
+              onClick={() => {
+                setPrivateImageAccess("denied");
+                setShowPrivateDecisionModal(false);
+                setShowPrivateDeniedModal(true);
+              }}
+              type="button"
             >
-              Cerrar
+              Denegar
+            </button>
+            <button
+              className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
+              onClick={() => {
+                clearPrivateRequestAttempts();
+                resetPrivateBlock();
+                setPrivateImageAccess("approved");
+                setTemporaryPrivateAccess(true);
+                setShowPrivateDecisionModal(false);
+                setTimeout(() => {
+                  const resolved = galleryImages
+                    .map((g) => (typeof g === "string" ? g : (g.url ?? g.src ?? "")))
+                    .filter((u): u is string => typeof u === "string" && u.length > 0);
+                  openImageModal(resolved, 0);
+                }, 50);
+              }}
+              type="button"
+            >
+              Confirmar
+            </button>
+          </ModalFooter>
+        </ModalBody>
+      </Modal>
+
+      <Modal
+        isOpen={showPrivatePolicyModal}
+        onClose={() => setShowPrivatePolicyModal(false)}
+      >
+        <ModalBody>
+          <ModalContent>
+            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+              Solicitud de galería privada
+            </h4>
+            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200 space-y-2">
+              <p className="text-sm">
+                Para acceder a contenido privado debes enviar una solicitud.
+              </p>
+              <p className="text-xs opacity-70">
+                Si envías 3+ solicitudes seguidas, el botón se bloqueará 2 horas.
+                Si reincides, el bloqueo se duplica hasta 24 horas.
+              </p>
+              <p className="text-xs opacity-70">
+                Al aprobarse, el acceso es temporal: al cerrar la galería deberás solicitar de nuevo.
+              </p>
+            </div>
+          </ModalContent>
+          <ModalFooter className="gap-4">
+            <button
+              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+              onClick={() => setShowPrivatePolicyModal(false)}
+              type="button"
+            >
+              Cancelar
+            </button>
+            <button
+              className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
+              onClick={() => {
+                setShowPrivatePolicyModal(false);
+                setShowPrivateImageRequest(true);
+              }}
+              type="button"
+            >
+              Continuar
+            </button>
+          </ModalFooter>
+        </ModalBody>
+      </Modal>
+
+      <Modal
+        isOpen={showPrivateDeniedModal}
+        onClose={() => setShowPrivateDeniedModal(false)}
+      >
+        <ModalBody>
+          <ModalContent>
+            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+              Solicitud denegada
+            </h4>
+            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200 space-y-2">
+              <p className="text-sm">
+                El dueño del perfil denegó tu solicitud. No se mostrará la galería privada.
+              </p>
+              <p className="text-xs opacity-70">
+                Respeta la decisión. Solicitudes insistentes pueden bloquear tu acceso temporalmente.
+              </p>
+            </div>
+          </ModalContent>
+          <ModalFooter className="gap-4">
+            <button
+              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+              onClick={() => setShowPrivateDeniedModal(false)}
+              type="button"
+            >
+              Entendido
             </button>
           </ModalFooter>
         </ModalBody>

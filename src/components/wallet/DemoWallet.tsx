@@ -49,6 +49,20 @@ export function DemoWallet({ userId }: DemoWalletProps) {
 
   const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
 
+  const getImageForRarity = (rarity: DemoNFT["rarity"]): string => {
+    switch (rarity) {
+      case "legendary":
+        return "/assets/nfts/imagen4.gif";
+      case "epic":
+        return "/assets/nfts/imagen3.jpg";
+      case "rare":
+        return "/assets/nfts/imagen1.jpg";
+      case "common":
+      default:
+        return "/assets/nfts/imagen2.jpg";
+    }
+  };
+
   const defaultDemoNFTs: DemoNFT[] = useMemo(
     () => [
       {
@@ -120,7 +134,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
             image:
               typeof item.image === "string" && item.image
                 ? item.image
-                : "/assets/nfts/imagen2.jpg",
+                : getImageForRarity(rarity),
             value: typeof item.value === "number" ? item.value : 100,
             isCouple: Boolean(item.is_couple ?? item.isCouple),
           };
@@ -152,12 +166,6 @@ export function DemoWallet({ userId }: DemoWalletProps) {
 
   const handleMintDemoNft = () => {
     if (!userId) return;
-    const images = [
-      "/assets/nfts/imagen1.jpg",
-      "/assets/nfts/imagen2.jpg",
-      "/assets/nfts/imagen3.jpg",
-      "/assets/nfts/imagen4.gif",
-    ];
     const rarityRoll = Math.random();
     let rarity: DemoNFT["rarity"] = "common";
     let value = 100;
@@ -177,7 +185,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
         id: `demo-nft-${Date.now()}`,
         name: "NFT Demo Minteado",
         rarity,
-        image: images[Math.floor(Math.random() * images.length)] || "/assets/nfts/imagen2.jpg",
+        image: getImageForRarity(rarity),
         value,
         isCouple: false,
       },

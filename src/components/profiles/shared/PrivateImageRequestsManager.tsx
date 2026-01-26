@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X, Eye, Shield, Clock } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface AccessRequest {
   id: string;
@@ -189,10 +190,19 @@ export const PrivateImageRequestsManager: React.FC<
                 className="bg-white/5 rounded-xl p-4 border border-white/10"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
-                    <span className="text-white font-semibold text-sm">
-                      {request.requesterName.charAt(0)}
-                    </span>
+                  <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-pink-500 flex items-center justify-center shrink-0 overflow-hidden">
+                    {request.requesterAvatar ? (
+                      <SafeImage
+                        src={request.requesterAvatar}
+                        alt={request.requesterName}
+                        fallbackType="avatar"
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <span className="text-white font-semibold text-sm">
+                        {request.requesterName.charAt(0)}
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">

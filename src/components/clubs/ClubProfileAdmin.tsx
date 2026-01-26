@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Edit, Image as ImageIcon, Calendar, Tag, BarChart3, MessageSquare, Settings, Save, Users, TrendingUp, Eye, Zap, Wallet, Flame, Lock } from "lucide-react";
+import { Edit, Image as ImageIcon, Calendar, Tag, BarChart3, MessageSquare, Settings, Save, Users, TrendingUp, Eye, Zap, Wallet, Flame, Lock, QrCode } from "lucide-react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
+import { AdminTabsContent } from "@/components/clubs/AdminTabsContent";
 
 interface ClubAnalytics {
   totalVisits: number;
@@ -18,6 +19,9 @@ interface ClubAnalytics {
   monthlyVisits: number;
   topEvents: { name: string; attendees: number }[];
   demographics: { age: string; percentage: number }[];
+  cmpx_balance?: number;
+  membership_tier?: "free" | "premium";
+  live_status?: string;
 }
 
 interface ClubProfileAdminProps {
@@ -42,6 +46,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
     email: '',
     website: '',
     hours: '',
+    membership_tier: (analytics.membership_tier ?? "free") as "free" | "premium",
+    live_status: analytics.live_status ?? "❓ Desconocido",
+    cmpx_balance: String(analytics.cmpx_balance ?? 0),
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -55,7 +62,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
     setSaving(true);
     try {
       if (onSave) {
-        await onSave(formData);
+        await onSave({
+          ...formData,
+          cmpx_balance: Number(formData.cmpx_balance),
+        });
       }
     } finally {
       setSaving(false);
@@ -108,6 +118,18 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <TabsTrigger value="analytics" className="data-[state=active]:bg-white/20">
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
+            </TabsTrigger>
+            <TabsTrigger value="economy" className="data-[state=active]:bg-white/20">
+              <Wallet className="h-4 w-4 mr-2" />
+              Economía
+            </TabsTrigger>
+            <TabsTrigger value="access_qr" className="data-[state=active]:bg-white/20">
+              <QrCode className="h-4 w-4 mr-2" />
+              Acceso QR
+            </TabsTrigger>
+            <TabsTrigger value="demo" className="data-[state=active]:bg-white/20">
+              <Zap className="h-4 w-4 mr-2" />
+              Simulador Demo
             </TabsTrigger>
             <TabsTrigger value="pro" className="data-[state=active]:bg-white/20">
               <Zap className="h-4 w-4 mr-2" />
@@ -242,6 +264,26 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             </div>
           </TabsContent>
 
+          <TabsContent value="economy" className="mt-6">
+            <AdminTabsContent
+              tab="economy"
+              clubData={formData}
+              setClubData={setFormData}
+            />
+          </TabsContent>
+
+          <TabsContent value="access_qr" className="mt-6">
+            <AdminTabsContent
+              tab="access_qr"
+              clubData={formData}
+              setClubData={setFormData}
+            />
+          </TabsContent>
+
+          <TabsContent value="demo" className="mt-6">
+            <AdminTabsContent tab="demo" clubData={formData} setClubData={setFormData} />
+          </TabsContent>
+
           {/* Images Tab */}
           <TabsContent value="images" className="mt-6">
             <div className="text-center py-12">
@@ -344,72 +386,53 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
           {/* Pro Management Tab */}
           <TabsContent value="pro" className="mt-6">
             <div className="space-y-6">
-              {/* Revenue Simulator */}
               <div className="bg-white/5 rounded-xl p-6 border border-white/10">
                 <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <Wallet className="h-5 w-5 text-purple-400" />
-                  Simulador de Ganancias
+                  Configuración Técnica
                 </h4>
 
                 <div className="space-y-4">
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, membership_tier: "free" }))
+                      }
+                      className={
+                        formData.membership_tier === "free"
+                          ? "bg-purple-600/30 border-purple-500/40 text-white"
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      }
+                    >
+                      Tier: Free
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, membership_tier: "premium" }))
+                      }
+                      className={
+                        formData.membership_tier === "premium"
+                          ? "bg-yellow-500/20 border-yellow-500/40 text-white"
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      }
+                    >
+                      Tier: Premium
+                    </Button>
+                  </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="entryPrice" className="text-white">Precio de Entrada (USD)</Label>
+                    <Label htmlFor="live_status_pro" className="text-white">Visibilidad (Vibe)</Label>
                     <Input
-                      id="entryPrice"
-                      type="number"
-                      defaultValue="100"
+                      id="live_status_pro"
+                      name="live_status"
+                      value={formData.live_status}
+                      onChange={handleChange}
                       className="bg-white/10 border-white/20 text-white"
                     />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 bg-purple-900/30 rounded-lg border border-purple-500/30">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Zap className="h-4 w-4 text-purple-400" />
-                        <span className="text-purple-300 text-sm font-medium">Modo Free (20% Comisión)</span>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between text-white">
-                          <span>Precio:</span>
-                          <span className="font-bold">$100</span>
-                        </div>
-                        <div className="flex justify-between text-white">
-                          <span>Comisión App:</span>
-                          <span className="font-bold text-red-400">-$20</span>
-                        </div>
-                        <div className="flex justify-between text-white">
-                          <span>Ganancia Neta:</span>
-                          <span className="font-bold text-green-400">$80</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="p-4 bg-blue-900/30 rounded-lg border border-blue-500/30">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Wallet className="h-4 w-4 text-blue-400" />
-                        <span className="text-blue-300 text-sm font-medium">Modo Premium (0% Comisión)</span>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between text-white">
-                          <span>Precio:</span>
-                          <span className="font-bold">$100</span>
-                        </div>
-                        <div className="flex justify-between text-white">
-                          <span>Comisión App:</span>
-                          <span className="font-bold text-green-400">$0</span>
-                        </div>
-                        <div className="flex justify-between text-white">
-                          <span>Ganancia Neta:</span>
-                          <span className="font-bold text-green-400">$100</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
-                    <p className="text-yellow-300 text-xs">
-                      💡 En modo Free, la plataforma retiene el 20% de cada venta. En modo Premium, recibes el 100%.
-                    </p>
                   </div>
                 </div>
               </div>
@@ -428,6 +451,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <Button
                     variant="outline"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, live_status: "❓ Desconocido" }))
+                    }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-white/10 border-white/20 hover:bg-white/20 text-white"
                   >
                     <span className="text-2xl">❓</span>
@@ -436,6 +462,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
 
                   <Button
                     variant="outline"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, live_status: "🔥 On Fire" }))
+                    }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-white"
                   >
                     <span className="text-2xl">🔥</span>
@@ -444,6 +473,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
 
                   <Button
                     variant="outline"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, live_status: "🍸 Chill" }))
+                    }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-blue-600/20 border-blue-500/30 hover:bg-blue-600/30 text-white"
                   >
                     <span className="text-2xl">🍸</span>
@@ -452,6 +484,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
 
                   <Button
                     variant="outline"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, live_status: "🎉 Packed" }))
+                    }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-purple-600/20 border-purple-500/30 hover:bg-purple-600/30 text-white"
                   >
                     <span className="text-2xl">🎉</span>
@@ -460,6 +495,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
 
                   <Button
                     variant="outline"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, live_status: "🤫 Tranquilo" }))
+                    }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-green-600/20 border-green-500/30 hover:bg-green-600/30 text-white"
                   >
                     <span className="text-2xl">🤫</span>
@@ -471,6 +509,13 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <p className="text-orange-300 text-xs">
                     🎨 El color del perfil cambiará según el estado seleccionado (Rojo para 🔥, Azul para 🍸, etc.)
                   </p>
+                </div>
+
+                <div className="mt-3 flex items-center gap-2">
+                  <Badge className="bg-white/10 border-white/20 text-white/80">
+                    live_status
+                  </Badge>
+                  <span className="text-white/80 text-sm">{formData.live_status}</span>
                 </div>
               </div>
 

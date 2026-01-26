@@ -21,7 +21,7 @@ export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-[100]">
+      <DialogContent className="sm:max-w-md bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white z-100">
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
             <div className="relative">

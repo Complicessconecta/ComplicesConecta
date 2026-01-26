@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Unlock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Unlock, Users, MessageCircle, Calendar, CheckCircle, Sparkles, Camera, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -202,6 +202,9 @@ const ProfileSingle: FC = () => {
   const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
 
+  const [accountChipHovered, setAccountChipHovered] = useState(false);
+  const [accountChipShowAccount, setAccountChipShowAccount] = useState(false);
+
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
   // Estado para control parental: no auto-bloquear al cargar el perfil
@@ -253,6 +256,27 @@ const ProfileSingle: FC = () => {
     }, 50);
     return () => window.clearTimeout(id);
   }, [location.hash]);
+
+  useEffect(() => {
+    if (accountChipHovered) return;
+    const schedule = () => {
+      const delay = 4000 + Math.floor(Math.random() * 2001);
+      return window.setTimeout(() => {
+        setAccountChipShowAccount((prev) => !prev);
+      }, delay);
+    };
+
+    let timeoutId = schedule();
+    const intervalId = window.setInterval(() => {
+      window.clearTimeout(timeoutId);
+      timeoutId = schedule();
+    }, 6500);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.clearInterval(intervalId);
+    };
+  }, [accountChipHovered]);
 
   // Estados para funcionalidades blockchain
   const [tokenBalances, setTokenBalances] = useState(() => ({
@@ -780,8 +804,18 @@ const ProfileSingle: FC = () => {
                   >
                     {displayName}
                   </h2>
-                  <div className="text-xs text-white/60 mb-2">
-                    ID: {String(currentProfile.id).slice(0, 8)}
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
+                    {isDemoProfile && (
+                      <Badge className="rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-yellow-500/20 backdrop-blur-md">
+                        DEMO
+                      </Badge>
+                    )}
+                    <Badge className="rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md">
+                      <span className="font-semibold">ID:</span>
+                      <span className="ml-1 font-mono">
+                        {String(currentProfile.id).slice(0, 8)}
+                      </span>
+                    </Badge>
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
                     <Badge className="profile-badge badge-age">
@@ -868,27 +902,41 @@ const ProfileSingle: FC = () => {
                       <span className="sm:hidden">Report</span>
                     </Button>
 
-                    {/* Botón de usuario/sesión con Logout real */}
+                    {/* Botón único (Demo/Nombre ↔ Cuenta) con menú */}
                     {isOwnProfile && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full">
-                            <UserIcon className="w-4 h-4" />
-                            <span className="hidden sm:inline">Cuenta</span>
+                          <Button
+                            onMouseEnter={() => setAccountChipHovered(true)}
+                            onMouseLeave={() => setAccountChipHovered(false)}
+                            className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
+                          >
+                            <span className="flex items-center gap-2">
+                              {accountChipHovered || accountChipShowAccount
+                                ? "Cuenta"
+                                : isDemoProfile
+                                  ? "DEMO"
+                                  : displayName}
+                            </span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="min-w-[180px]"
-                        >
-                          <DropdownMenuLabel>Sesión Activa</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            onClick={() => navigate("/profile")}
-                          >
+                        <DropdownMenuContent align="end" className="min-w-[180px]">
+                          <DropdownMenuLabel>
+                            {isDemoProfile ? "DEMO" : "Sesión Activa"}
+                          </DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => navigate("/profile")}>
                             Ver Mi Perfil
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={async () => {
+                              if (isDemoProfile) {
+                                toast({
+                                  title: "DEMO",
+                                  description:
+                                    "Cerrar sesión está deshabilitado en demo (solo visual).",
+                                });
+                                return;
+                              }
                               if (window.confirm("¿Cerrar sesión?")) {
                                 try {
                                   await signOut();

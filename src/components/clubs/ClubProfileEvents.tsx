@@ -34,6 +34,8 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
 }) => {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('all');
 
+  const CMPX_PER_USD = 10;
+
   const now = new Date();
   const upcomingEvents = events.filter(e => new Date(e.date) >= now);
   const pastEvents = events.filter(e => new Date(e.date) < now);
@@ -202,6 +204,10 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
                       <div className="mt-3">
                         <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                           {event.currency || '$'}{event.price.toFixed(2)}
+                        </Badge>
+
+                        <Badge className="ml-2 bg-purple-500/20 text-purple-200 border-purple-500/30">
+                          ≈ {(event.price * CMPX_PER_USD).toFixed(0)} CMPX
                         </Badge>
                       </div>
                     )}

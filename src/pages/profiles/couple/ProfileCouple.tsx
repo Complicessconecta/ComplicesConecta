@@ -24,6 +24,7 @@ import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 function ProfileCouple() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ function ProfileCouple() {
     user,
     profile: authProfile,
     loading: authLoading,
+    signOut,
   } = useAuth();
 
   const { toast: shadcnToast } = useToast();
@@ -56,6 +58,9 @@ function ProfileCouple() {
   );
 
   const [showParentalUnlock, setShowParentalUnlock] = useState(false);
+
+  const [accountChipHovered, setAccountChipHovered] = useState(false);
+  const [accountChipShowAccount, setAccountChipShowAccount] = useState(false);
 
   // Estados para modal de imágenes
   const [showImageModal, _setShowImageModal] = useState(false);
@@ -221,6 +226,9 @@ function ProfileCouple() {
     (typeof window !== "undefined" &&
       window.localStorage.getItem("demo_authenticated") === "true");
 
+  const displayAccountLabel =
+    profile?.username || profile?.couple_name || "Cuenta";
+
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = coupleNFTs.length > 0;
 
@@ -251,6 +259,27 @@ function ProfileCouple() {
     }, 50);
     return () => window.clearTimeout(id);
   }, [location.hash]);
+
+  useEffect(() => {
+    if (accountChipHovered) return;
+    const schedule = () => {
+      const delay = 4000 + Math.floor(Math.random() * 2001);
+      return window.setTimeout(() => {
+        setAccountChipShowAccount((prev) => !prev);
+      }, delay);
+    };
+
+    let timeoutId = schedule();
+    const intervalId = window.setInterval(() => {
+      window.clearTimeout(timeoutId);
+      timeoutId = schedule();
+    }, 6500);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.clearInterval(intervalId);
+    };
+  }, [accountChipHovered]);
   const [_showDisputeWarning, _setShowDisputeWarning] = useState(false);
 
   const {
@@ -908,6 +937,56 @@ function ProfileCouple() {
 
                     {/* Botones de acción */}
                     <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
+                      {isOwnProfile && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              onMouseEnter={() => setAccountChipHovered(true)}
+                              onMouseLeave={() => setAccountChipHovered(false)}
+                              className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
+                            >
+                              <span className="flex items-center gap-2">
+                                {accountChipHovered || accountChipShowAccount
+                                  ? "Cuenta"
+                                  : isDemoMode
+                                    ? "DEMO"
+                                    : displayAccountLabel}
+                              </span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="min-w-[180px]">
+                            <DropdownMenuLabel>
+                              {isDemoMode ? "DEMO" : "Sesión Activa"}
+                            </DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => navigate("/profile")}>
+                              Ver Mi Perfil
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={async () => {
+                                if (isDemoMode) {
+                                  shadcnToast({
+                                    title: "DEMO",
+                                    description:
+                                      "Cerrar sesión está deshabilitado en demo (solo visual).",
+                                  });
+                                  return;
+                                }
+                                if (window.confirm("¿Cerrar sesión?")) {
+                                  try {
+                                    await signOut();
+                                  } catch (error) {
+                                    logger.error("Error during sign out:", { error });
+                                  }
+                                  navigate("/");
+                                }
+                              }}
+                            >
+                              Cerrar Sesión
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+
                       {isOwnProfile && (
                         <Button
                           onClick={(e) => {

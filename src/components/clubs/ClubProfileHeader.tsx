@@ -14,8 +14,16 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
   isOwner = false,
   onEdit,
 }) => {
+  const isPremium = club.membership_tier === "premium";
+
   return (
-    <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden">
+    <Card
+      className={
+        isPremium
+          ? "bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-yellow-400/40 shadow-2xl shadow-yellow-500/20 overflow-hidden"
+          : "bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden"
+      }
+    >
       {/* Cover Image */}
       <div className="relative h-64 bg-linear-to-br from-purple-600 to-fuchsia-600">
         {club.cover_image_url ? (
@@ -32,6 +40,11 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
 
         {/* Badges */}
         <div className="absolute top-4 left-4 flex gap-2">
+          {isPremium && (
+            <Badge className="bg-linear-to-r from-yellow-400 to-amber-500 text-black border border-yellow-300/60">
+              ✅ Premium
+            </Badge>
+          )}
           {club.is_active && (
             <Badge className="bg-green-500/90 text-white">
               <CheckCircle className="h-3 w-3 mr-1" />
@@ -83,7 +96,20 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
 
           {/* Details */}
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-white mb-2">{club.name}</h1>
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <h1 className="text-3xl font-bold text-white">{club.name}</h1>
+              {typeof club.live_status === "string" && club.live_status.trim().length > 0 && (
+                <Badge
+                  className={
+                    club.live_status.includes("🔥")
+                      ? "bg-red-500/20 text-red-200 border border-red-400/40 animate-pulse"
+                      : "bg-white/10 text-white/90 border border-white/20"
+                  }
+                >
+                  Vibe: {club.live_status}
+                </Badge>
+              )}
+            </div>
             
             {/* Rating */}
             <div className="flex items-center gap-2 mb-4">

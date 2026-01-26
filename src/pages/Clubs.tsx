@@ -69,6 +69,13 @@ const toClubEntity = (club: Club): ClubEntity => {
     rating_count: club.rating_count ?? 0,
     check_in_count: club.check_in_count ?? 0,
     check_in_radius_meters: club.check_in_radius_meters ?? 0,
+    membership_tier:
+      (club as any).membership_tier === "free" || (club as any).membership_tier === "premium"
+        ? (club as any).membership_tier
+        : undefined,
+    live_status: (club as any).live_status ?? undefined,
+    cmpx_balance:
+      typeof (club as any).cmpx_balance === "number" ? (club as any).cmpx_balance : undefined,
     verified_at: club.verified_at ?? "",
     created_at: club.created_at ?? "",
     updated_at: club.updated_at ?? "",
@@ -121,6 +128,9 @@ const DEMO_ANALYTICS = {
   monthlyVisits: 4020,
   topEvents: [{ name: "Noche Demo", attendees: 120 }],
   demographics: [{ age: "25-34", percentage: 44 }],
+  cmpx_balance: 25000,
+  membership_tier: "free" as const,
+  live_status: "🔥 On Fire",
 };
 
 export const Clubs = () => {
@@ -284,6 +294,50 @@ export const Clubs = () => {
 
     void fetchSingle();
   }, [slug, clubs]);
+
+  useEffect(() => {
+    if (!selectedClub) return;
+    if (selectedClub.id === "demo") return;
+    if (!supabase) return;
+
+    const clubId = selectedClub.id;
+
+    const channel = supabase
+      .channel(`clubs:${clubId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "clubs",
+          filter: `id=eq.${clubId}`,
+        },
+        (payload) => {
+          const next = payload.new as any;
+          setSelectedClub((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              membership_tier:
+                next.membership_tier === "free" || next.membership_tier === "premium"
+                  ? next.membership_tier
+                  : prev.membership_tier,
+              live_status: next.live_status ?? prev.live_status,
+              cmpx_balance:
+                typeof next.cmpx_balance === "number"
+                  ? next.cmpx_balance
+                  : prev.cmpx_balance,
+              updated_at: next.updated_at ?? prev.updated_at,
+            };
+          });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [selectedClub]);
 
   useEffect(() => {
     filterClubs();

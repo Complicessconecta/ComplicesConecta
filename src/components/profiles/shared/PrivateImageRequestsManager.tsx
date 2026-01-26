@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X, Eye, Shield, Clock } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
-import { SafeImage } from "@/components/ui/SafeImage";
 
 interface AccessRequest {
   id: string;
@@ -30,6 +29,7 @@ export const PrivateImageRequestsManager: React.FC<
 > = ({ profileId, onAccessGranted, onAccessDenied, className = "" }) => {
   const [requests, setRequests] = useState<AccessRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [avatarErrors, setAvatarErrors] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
   // Simular carga de solicitudes (en producción sería una llamada a la API)
@@ -191,12 +191,15 @@ export const PrivateImageRequestsManager: React.FC<
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-pink-500 flex items-center justify-center shrink-0 overflow-hidden">
-                    {request.requesterAvatar ? (
-                      <SafeImage
+                    {request.requesterAvatar && !avatarErrors[request.id] ? (
+                      <img
                         src={request.requesterAvatar}
                         alt={request.requesterName}
-                        fallbackType="avatar"
-                        className="w-full h-full"
+                        className="w-full h-full object-cover"
+                        onError={() =>
+                          setAvatarErrors((prev) => ({ ...prev, [request.id]: true }))
+                        }
+                        draggable={false}
                       />
                     ) : (
                       <span className="text-white font-semibold text-sm">

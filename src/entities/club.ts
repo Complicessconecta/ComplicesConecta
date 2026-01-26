@@ -13,6 +13,9 @@ export interface Club {
   cover_image_url?: string;
   is_featured: boolean;
   is_active: boolean;
+  membership_tier?: "free" | "premium";
+  live_status?: string;
+  cmpx_balance?: number;
   rating_average: number;
   rating_count: number;
   check_in_count: number;

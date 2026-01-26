@@ -308,7 +308,7 @@ export const ParentalControl = ({
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">Control Parental</h3>
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-zinc-200">
               Gestiona la seguridad y visibilidad
             </p>
           </div>
@@ -443,7 +443,7 @@ export const ParentalControl = ({
             {savedPin}
           </span>
           <br />
-          <span className="text-zinc-500 text-[11px]">
+          <span className="text-zinc-200 text-[11px]">
             Click en "Cambiar PIN" para modificar
           </span>
         </p>

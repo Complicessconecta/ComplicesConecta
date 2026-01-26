@@ -85,7 +85,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-[100]">
+      <DialogContent className="sm:max-w-2xl bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 backdrop-blur-md border-purple-500/30 text-white max-h-[90vh] overflow-y-auto z-100">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
             <Calendar className="h-6 w-6 text-purple-400" />

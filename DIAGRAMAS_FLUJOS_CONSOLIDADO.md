@@ -65,6 +65,98 @@ Este documento es la fuente única de verdad para todos los flujos del proyecto 
 
 ---
 
+## 🧩 PLANTILLA UI (REUTILIZABLE) — Botón Demo/Nombre ↔ Cuenta (Perfiles)
+
+### Objetivo
+
+Unificar el acceso a acciones de cuenta dentro de un solo control visual **sin duplicar botones**, evitando superposición y manteniendo consistencia entre:
+
+- `ProfileSingle`
+- `ProfileCouple`
+- Cualquier vista futura de perfil
+
+### Comportamiento funcional (Contrato de UI)
+
+1. **Texto rotativo (idle)**
+   - Alterna el texto visible entre:
+     - **Nombre / DEMO** (según contexto)
+     - **Cuenta**
+   - La alternancia ocurre cada **4–6 segundos** (aleatorio), mientras el usuario NO esté interactuando.
+
+2. **Hover / Focus (bloqueo visual)**
+   - Al colocar el cursor (o focus) sobre el botón:
+     - El texto se fija en **“Cuenta”**.
+     - Se pausa la alternancia.
+   - Al salir del hover:
+     - Se reanuda la alternancia.
+
+3. **Click (menú de cuenta)**
+   - Al hacer click, se abre un `DropdownMenu` con:
+     - **Ver mi perfil**
+     - **Cerrar sesión**
+
+4. **Regla DEMO (Ley Olimpia / Seguridad / UX)**
+   - En perfiles demo, la opción **“Cerrar sesión”** es **solo visual**:
+     - NO ejecuta `signOut()`.
+     - Muestra un mensaje (toast/modal) indicando que está deshabilitado en demo.
+   - En producción, “Cerrar sesión” sí ejecuta `signOut()` con confirmación.
+
+### Lógica interna (Estados mínimos)
+
+- `accountChipHovered: boolean`
+  - `true` mientras hay hover (fija label “Cuenta”).
+- `accountChipShowAccount: boolean`
+  - `true` => mostrar “Cuenta”
+  - `false` => mostrar “DEMO” o `displayName`
+
+### Scheduler (Timer 4–6s)
+
+- Usar `setTimeout` con delay aleatorio `4000..6000`.
+- Mientras no hay hover, alternar el estado `accountChipShowAccount`.
+- Al entrar en hover, cancelar timer.
+- Al salir, reiniciar timer.
+
+### Referencias de implementación (Código)
+
+- `src/pages/profiles/single/ProfileSingle.tsx`
+- `src/pages/profiles/couple/ProfileCouple.tsx`
+- `src/layouts/ProfileLayout.tsx` (chip demo global)
+
+---
+
+## 🎞️ ELEMENTOS DE ANIMACIÓN (REUTILIZABLES)
+
+### A) Chip / Botón — Latido de Corazón (Demo User)
+
+**Objetivo:** dar feedback visual orgánico (latido) al chip principal de demo sin interferir con UX (hover/click).
+
+**Contrato de animación (flujo):**
+
+- **2 latidos**
+- **Pausa**: 2 segundos sin animación
+- **4 latidos**
+- **Pausa**: 4 segundos sin animación
+- **6 latidos**
+- **Pausa**: 2 segundos sin animación
+- **6 latidos**
+
+**Duración determinista del ciclo:** 18.8s
+
+**Reglas de interacción:**
+
+- **Hover**: la animación se pausa por completo (solo se permite la transición de texto del botón según el flujo Demo/Nombre ↔ Cuenta).
+- **Click**: abre menú de cuenta; no debe disparar navegación directa.
+
+**Referencia técnica (CSS):**
+
+- Clase: `.demo-user-heartbeat`
+- Keyframes: `@keyframes demoUserHeartbeat`
+- Archivo: `src/styles/index.css`
+
+
+
+---
+
 ## �️ FLUJO DE SEGURIDAD
 
 ```mermaid
@@ -114,6 +206,139 @@ flowchart TD
     style T fill:#fee2e2
     style V fill:#fee2e2
 ```
+
+---
+
+## 📊 DIAGRAMA DE FLUJO: ECOSISTEMA DE CLUBES v3.6.6
+
+### 1) Flujo de Economía Dual (Stripe & Tokens)
+
+Este flujo describe cómo el sistema decide el cobro de comisiones según el plan del club.
+
+```mermaid
+graph TD
+    A[Usuario reserva servicio] --> B{¿Método de Pago?}
+    B -- Tarjeta (Stripe) --> C{¿Tier del Club?}
+    B -- Tokens (CMPX) --> D[Descontar Saldo Wallet]
+    
+    C -- Free --> E[Application Fee: 20%]
+    C -- Premium --> F[Application Fee: 0%]
+    
+    E --> G[Transferencia Directa a Cuenta Connect]
+    F --> G
+    
+    D --> H[Fee 20% a Tesorería App]
+    H --> I[Acreditar 80% a Wallet del Club]
+    
+    G --> J[Generar Registro: reservations]
+    I --> J
+```
+
+### 2) Lógica de Validación QR y Safe Arrival
+
+Este es el flujo de "confianza" que ocurre en la puerta del establecimiento.
+
+- El acceso se valida con `qr_hash` único.
+- Se registra entrada/salida y se dispara el flujo de "Safe Arrival".
+- Se actualiza `live_status` (On Fire / Chill) y métricas del club.
+
+```mermaid
+graph TD
+    A[Staff abre Pestaña Acceso] --> B[Cámara Activa / Input QR]
+    B --> C{Escaneo de Hash}
+    C --> D[Consulta Supabase: reservations]
+    D -- No existe/Error --> E[Mensaje: QR Inválido ❌]
+    D -- Existe --> F{¿Status == 'paid'?}
+    F -- NO --> G[Mensaje: Entrada ya usada ⚠️]
+    F -- SÍ --> H[Mensaje: Acceso Concedido ✅]
+    H --> I[Update status = 'used']
+    H --> J[Trigger: Safe Arrival Webhook]
+    H --> K[Actualizar Analytics: Check-in +1]
+```
+
+### 3) Algoritmo de Ranking y Visibilidad (Ranking Bayesiano)
+
+¿Cómo decide la app qué club va primero?
+
+```mermaid
+graph TD
+    A[Nueva Calificación 0-5★] --> B[Actualizar R = Promedio Club]
+    B --> C[Contar v = Número de Votos]
+    C --> D[C = Promedio de todos los Clubes]
+    D --> E[Aplicar Fórmula Bayesiana]
+    E --> F[Actualizar bayesian_score en DB]
+    F --> G{¿Es Premium?}
+    G -- SÍ --> H[Prioridad Top + Banner Ads]
+    G -- NO --> I[Posición según Score Real]
+```
+
+### Fragmento de código (Campos críticos)
+
+| Tabla | Campo | Tipo | Propósito |
+|------|-------|------|-----------|
+| `clubs` | `membership_tier` | `text` | `'free'` o `'premium'` para comisiones. |
+| `clubs` | `live_status` | `text` | `🔥 On Fire`, `🍸 Chill`, etc. |
+| `reservations` | `qr_hash` | `text (unique)` | Identificador seguro para el acceso. |
+| `user_wallets` | `cmpx_balance` | `decimal` | Saldo para micro-pagos off-chain. |
+| `club_analytics` | `total_revenue` | `decimal` | Tracking de ingresos para el Admin. |
+
+### Lógica de Negocio: Cálculo de Tokens y Comisiones
+
+| Acción | Lógica de Cálculo (Pseudocódigo) | Destino de Fondos |
+|------|-----------------------------------|-------------------|
+| Reserva (Club Free) | `total * 0.80` | 80% al Club / 20% App |
+| Reserva (Club Premium) | `total * 1.00` | 100% al Club |
+| Tip en CMPX | `tokens - (tokens * 0.20)` | Wallet Interna del Club |
+| Mint NFT VIP | `gas_fee + platform_fee` | Contrato Polygon (GTK) |
+
+---
+
+# 🔄 Flujo de Trabajo: Validación y Economía de Clubes
+
+## 1) Lógica de Validación de Acceso (QR)
+
+1. **Escaneo:** El Staff del club usa la pestaña **"Acceso QR"** en su dashboard.
+2. **Validación:** Se dispara una consulta a la tabla `reservations` filtrando por `qr_hash`.
+3. **Seguridad (Safe Arrival):**
+   - Si `status === 'paid'` -> Cambiar a `used`.
+   - Disparar webhook a `api/notify-contacts` con el `user_id`.
+   - El sistema busca en `user_profiles` los `trust_contacts` y envía notificación.
+4. **Feedback:** El staff recibe visualmente la ficha del cliente (Foto, Nivel Gold/Silver).
+
+## 2) Lógica Económica (Split de Pagos)
+
+| Entidad | Plan Free (20%) | Plan Premium (0%) |
+| :--- | :--- | :--- |
+| **Ingreso Bruto** | $100.00 | $100.00 |
+| **Fee Plataforma** | -$20.00 (Stripe Application Fee) | $0.00 |
+| **Neto Club** | $80.00 | $100.00 |
+| **Bonus CMPX** | +5 CMPX (Cashback usuario) | +10 CMPX (Cashback usuario) |
+
+## 3) Desglose del Proceso (Bajo el capó)
+
+- **Validación (QR):** el staff valida el `qr_hash` contra `reservations` y solo concede acceso si `status === 'paid'`.
+- **Safe Arrival:** tras conceder acceso, se marca `status = 'used'` y el sistema queda preparado para disparar `api/notify-contacts` con `user_id` (notifica a `trust_contacts`).
+- **Economía:** la ganancia del club se calcula con multiplicador dinámico:
+  - `free` => `0.8` (fee plataforma 20%)
+  - `premium` => `1.0` (fee 0%)
+
+## 🟢 Lógica de Sincronización: Admin -> Visitor View
+
+### 1. El "Vibe Check" (Live Status)
+
+- **Acción:** El dueño cambia el status a "🍸 Cocktail Hour".
+- **Backend:** Update `clubs.live_status` en Supabase.
+- **Frontend (Visitor):** `ClubProfileHeader` detecta el cambio vía Supabase Realtime y actualiza el Badge automáticamente.
+- **Impacto:** Mejora la conversión de reservas al mostrar que el club está "activo" en ese momento.
+
+### 2. Estructura de Pestañas Admin (Final)
+
+| Pestaña | Propósito | Funciones Clave |
+| :--- | :--- | :--- |
+| **Editar** | Perfil Básico | Nombre, Fotos, Dirección. |
+| **Gestión Pro** | Configuración | Tier de suscripción, Visibilidad en mapa. |
+| **Economía** | Financiero | Simulador de Stripe, Saldo CMPX, Retiros. |
+| **Acceso** | Operativo | Escáner QR, Validación Safe Arrival. |
 
 ### Capas de Seguridad Implementadas
 
@@ -929,9 +1154,14 @@ participant Logic as Permisos
     end
 
 - ## Todos los flujos descritos se renderizan ahora bajo un **MainLayout** unificado que controla:
+  
   - ## El sistema de fondos (`UnifiedBackground` + partículas híbridas) con gradientes nocturnos tipo Plexus.
+  
   - ## La navegación global fija (`AppSidebar` + header) para evitar barras duplicadas por página.
+
 - ## Las páginas de **Tokens**, **NFTs**, **Perfil Single** y **Settings** adoptan glassmorphism consistente para las cards principales, mientras que las sub-cards (proyecciones, ventajas, condiciones) usan un patrón glass ligero para marcar jerarquías visuales.
+
+
 - ## Se añade un **Centro de Control IA** (`/ai-help`) como vista dedicada donde se explica al usuario qué es CómplicesConecta, cómo funciona la IA Local sobre WebLLM (modelo Phi‑3‑mini ejecutado en el navegador) y cómo se aplican las reglas legales del Libro Maestro (`app-master-context.md`). Desde esta página, el usuario puede interactuar con el Asistente IA Legal antes de firmar contratos o realizar operaciones con tokens/NFTs.
 
 # Flujo de Funcionalidad NFT - CómplicesConecta

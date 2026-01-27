@@ -52,8 +52,11 @@ export const AdminSelectDashboard = () => {
               {user?.email || "Admin"}
             </span>
           </h1>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-white/80 max-w-3xl mx-auto mb-2">
             Selecciona el panel al que deseas acceder para gestionar la plataforma
+          </p>
+          <p className="text-sm text-white/70 max-w-3xl mx-auto">
+            Acceso administrativo con datos reales (producción)
           </p>
         </motion.div>
 
@@ -105,49 +108,49 @@ export const AdminSelectDashboard = () => {
           </motion.div>
 
           {/* Clubs Demo */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Card className="bg-linear-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-fuchsia-400/50 transition-all duration-300 cursor-pointer h-full group"
-                  onClick={handleClubsDemo}>
-              <CardHeader>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                    <Building className="h-8 w-8 text-white" />
+          {!import.meta.env.PROD && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card
+                className="bg-linear-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-fuchsia-400/50 transition-all duration-300 cursor-pointer h-full group"
+                onClick={handleClubsDemo}
+              >
+                <CardHeader>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                      <Building className="h-8 w-8 text-white" />
+                    </div>
+                    <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                   </div>
-                  <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
-                </div>
-                <CardTitle className="text-2xl font-bold text-white">
-                  Demo de Clubs
-                </CardTitle>
-                <CardDescription className="text-white/70 text-base">
-                  Visualiza y prueba el sistema de clubs verificados antes del lanzamiento oficial
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-white/80">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full" />
-                    <span className="text-sm">Ver lista de clubs</span>
+                  <CardTitle className="text-2xl font-bold text-white">
+                    Clubs Demo
+                  </CardTitle>
+                  <CardDescription className="text-white/70 text-base">
+                    Visualiza la experiencia de clubs en entorno demo
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-white/80">
+                      <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
+                      <span className="text-sm">Vista previa de clubs</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/80">
+                      <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
+                      <span className="text-sm">Catálogo y filtros</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/80">
+                      <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
+                      <span className="text-sm">Panel demo para clubes</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-white/80">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full" />
-                    <span className="text-sm">Probar formulario de registro</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-white/80">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full" />
-                    <span className="text-sm">Verificar credenciales temporales</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-white/80">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full" />
-                    <span className="text-sm">Test de email automático</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
         </div>
 
         {/* Logout Button */}

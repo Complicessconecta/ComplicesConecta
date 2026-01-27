@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
+import ClubAdminPanel from "@/components/admin/panels/ClubAdminPanel";
 import type { Club as ClubEntity } from "@/entities/club";
 
 const DEMO_CLUB: ClubEntity = {
@@ -113,8 +114,46 @@ const safeShare = async (title: string) => {
 
 export const ClubsDemo = () => {
   const navigate = useNavigate();
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   const club = useMemo(() => DEMO_CLUB, []);
+
+  if (showAdminPanel) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
+        <div className="max-w-7xl mx-auto">
+          <Card className="bg-black/70 backdrop-blur-xl border-white/15 mb-6">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowAdminPanel(false)}
+                    className="border-white/30 text-white hover:bg-white/10"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Volver al Club Demo
+                  </Button>
+                  <div className="min-w-0">
+                    <div className="text-white font-bold truncate">Panel Administración</div>
+                    <div className="text-white/70 text-xs truncate">
+                      Gestión de clubs - Modo Demo
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
+                    Admin
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <ClubAdminPanel />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">

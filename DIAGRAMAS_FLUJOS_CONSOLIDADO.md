@@ -880,17 +880,172 @@ flowchart TD
 
 - ✅ Flujo de deployment Vercel actualizado con verificación de `vercel.json`
 - ✅ Detección de conflictos `routes` vs `rewrites`/`headers`
-- ✅ Validación de patrones regex en headers
-- ✅ Carga automática de variables desde `.env`/`.env.local`
-- ✅ Funciones globales `showEnvInfo()` y `showErrorReport()` disponibles en producción
-- ✅ CircleCI configurado con Node.js 20.19+ (requerido por Vite 7.2.2)
 
---- END FILE: DIAGRAMAS_FLUJOS_v3.0.md ---
+### 📊 Flujo de Validación de Nombres Únicos
 
---- BEGIN FILE: DIAGRAMAS_FLUJOS_v3.5.0.md ---
+```mermaid
+flowchart TD
+    A[Usuario Ingresa Nombre] --> B[Validación Cliente]
+    B --> C{Formato Válido?}
+    C -->|No| D[Mostrar Error]
+    C -->|Sí| E[Verificar Disponibilidad]
+    
+    E --> F[Consulta a Base de Datos]
+    F --> G{Nombre Existe?}
+    G -->|Sí| H[Generar Sugerencias]
+    G -->|No| I[Nombre Disponible]
+    
+    H --> J[Mostrar Alternativas]
+    J --> K[Usuario Selecciona]
+    K --> E
+    
+    I --> L[Permitir Registro]
+    D --> M[Usuario Corrige]
+    M --> B
+    
+    style C fill:#f59e0b
+    style G fill:#ef4444
+    style I fill:#10b981
+    style L fill:#10b981
+```
 
-# 📊 DIAGRAMAS DE FLUJOS v3.8.0 - COMPLICESCONECTA v3.8.0
+### ⚖️ Flujo de Consentimientos Legales
 
+```mermaid
+flowchart TD
+    A[Creación de Club] --> B[Mostrar Términos Legales]
+    B --> C[Usuario Lee Documentos]
+    C --> D[Términos Aceptados?]
+    
+    D -->|No| E[Mostrar Alerta]
+    D -->|Sí| F[Registrar Consentimiento]
+    
+    F --> G[Guardar en Base de Datos]
+    G --> H[Generar Registro Legal]
+    H --> I[Club Creado Exitosamente]
+    
+    E --> J[Usuario Debe Aceptar]
+    J --> C
+    
+    I --> K[Panel de Administración]
+    K --> L[Gestión de Consentimientos]
+    L --> M[Historial Legal]
+    
+    style D fill:#f59e0b
+    style F fill:#10b981
+    style I fill:#10b981
+```
+
+### 🗄️ Tablas de Base de Datos para Administración
+
+#### Tabla: admin_clubs
+- **id** (uuid, primary key)
+- **club_id** (uuid, NOT NULL, foreign key → clubs)
+- **admin_id** (uuid, NOT NULL, foreign key → profiles)
+- **role** (text, NOT NULL) - 'owner', 'admin', 'moderator'
+- **permissions** (jsonb) - Array de permisos específicos
+- **created_at** (timestamp, NOT NULL, DEFAULT NOW())
+- **updated_at** (timestamp, NOT NULL, DEFAULT NOW())
+
+#### Tabla: club_name_validations
+- **id** (uuid, primary key)
+- **name** (text, NOT NULL, UNIQUE)
+- **slug** (text, NOT NULL, UNIQUE)
+- **status** (text, NOT NULL) - 'available', 'taken', 'reserved'
+- **reserved_by** (uuid, foreign key → profiles)
+- **reserved_until** (timestamp)
+- **created_at** (timestamp, NOT NULL, DEFAULT NOW())
+
+#### Tabla: club_legal_consents
+- **id** (uuid, primary key)
+- **club_id** (uuid, NOT NULL, foreign key → clubs)
+- **user_id** (uuid, NOT NULL, foreign key → profiles)
+- **consent_type** (text, NOT NULL) - 'terms', 'privacy', 'disclaimer'
+- **consent_version** (text, NOT NULL)
+- **accepted_at** (timestamp, NOT NULL, DEFAULT NOW())
+- **ip_address** (inet)
+- **user_agent** (text)
+
+#### Tabla: club_audit_logs
+- **id** (uuid, primary key)
+- **club_id** (uuid, NOT NULL, foreign key → clubs)
+- **admin_id** (uuid, NOT NULL, foreign key → profiles)
+- **action** (text, NOT NULL) - 'create', 'update', 'delete', 'suspend', 'activate'
+- **old_values** (jsonb)
+- **new_values** (jsonb)
+- **reason** (text)
+- **created_at** (timestamp, NOT NULL, DEFAULT NOW())
+
+### 🔄 Componentes Principales del Panel
+
+**Panel de Administración:**
+- `/src/components/admin/panels/ClubAdminPanelSimple.tsx` - Panel principal
+- `/src/pages/ClubsDemo.tsx` - Integración con demo existente
+
+**Validación y Legal:**
+- `/src/components/admin/panels/ClubNameValidator.tsx` - Validador de nombres únicos
+- `/src/components/legal/ClubConsentManager.tsx` - Gestor de consentimientos
+
+**Servicios Backend:**
+- `/src/services/admin/ClubAdminService.ts` - Lógica de administración
+- `/src/services/admin/ClubValidationService.ts` - Validaciones
+- `/src/services/legal/ConsentService.ts` - Gestión legal
+
+### 📋 Endpoints de API
+
+#### Gestión de Clubs
+- `GET /api/admin/clubs` - Listar todos los clubs
+- `POST /api/admin/clubs` - Crear nuevo club
+- `GET /api/admin/clubs/:id` - Obtener detalles
+- `PUT /api/admin/clubs/:id` - Actualizar club
+- `DELETE /api/admin/clubs/:id` - Eliminar club
+- `POST /api/admin/clubs/:id/suspend` - Suspender club
+- `POST /api/admin/clubs/:id/activate` - Activar club
+
+#### Validación
+- `GET /api/admin/clubs/validate-name/:name` - Validar nombre
+- `GET /api/admin/clubs/suggestions/:name` - Obtener sugerencias
+
+#### Legal
+- `POST /api/admin/clubs/:id/consent` - Registrar consentimiento
+- `GET /api/admin/clubs/:id/consents` - Historial de consentimientos
+
+### 🎯 Métricas y KPIs del Panel
+
+**Métricas de Operación:**
+- Total de clubs creados/mes
+- Tiempo promedio de aprobación
+- Tasa de suspensión
+- Actividad de administradores
+
+**Métricas de Calidad:**
+- Precisión de validación de nombres
+- Tasa de aceptación de términos
+- Reportes de problemas
+- Satisfacción de usuarios
+
+**Alertas y Monitoreo:**
+- Clubs sin actividad > 30 días
+- Nombres duplicados intentados
+- Cambios masivos no autorizados
+- Problemas de consentimiento
+
+### � Roadmap de Implementación
+
+**Fase 1 (Semana 1):** 
+- ✅ Panel básico funcional
+- ✅ Integración con demo existente
+- ⏳ Corrección inconsistencia admin_users
+
+**Fase 2 (Semana 2):**
+- ⏳ Conexión a datos reales de Supabase
+- ⏳ Validación de nombres únicos
+- ⏳ Sistema de consentimientos legales
+
+**Fase 3 (Semana 3):**
+- ⏳ Testing completo del panel
+- ⏳ Documentación de API
+- ⏳ Deploy a producción
 **Fecha:** 26 Diciembre 2025
 **Versión:** 3.8.0
 **Estado:** ✅ PRIVACY ENHANCED - UI POLISHED - CODE STANDARDIZED

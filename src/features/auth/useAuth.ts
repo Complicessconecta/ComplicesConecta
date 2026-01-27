@@ -9,8 +9,9 @@ import { getAppConfig, DEMO_CREDENTIALS, getDemoPassword, handleDemoAuth, clearD
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
-import { setDatadogUser, clearDatadogUser } from "@/config/datadog-rum.config";
+import { setDatadogUser } from "@/config/datadog-rum.config";
 import { Profile } from "@/types/supabase-custom";
+import type { DatadogRUM } from "@/types/datadog";
 
 
 
@@ -290,7 +291,7 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
-      logger.info("🚪 Iniciando cierre de sesión");
+      logger.info("🚪 Iniciando cierre de sesión seguro");
 
       // Verificar si es sesión demo
       const sessionFlags = StorageManager.getSessionFlags();
@@ -299,9 +300,6 @@ export const useAuth = () => {
         // Cerrar sesión demo
         clearDemoAuth();
         logger.info("✅ Sesión demo cerrada");
-        // Redirigir al index después de cerrar sesión demo
-        window.location.href = "/";
-        return;
       } else {
         // Cerrar sesión real de Supabase
         logger.info("🔗 Cerrando sesión real de Supabase...");
@@ -314,8 +312,6 @@ export const useAuth = () => {
           logger.error("❌ Error during sign out:", { error: error.message });
         } else {
           logger.info("✅ Sesión real cerrada");
-          // Redirigir al index después de cerrar sesión real
-          window.location.href = "/";
         }
       }
 
@@ -324,16 +320,35 @@ export const useAuth = () => {
       setSession(null);
       setProfile(null);
 
-      // Limpiar usuario en Datadog RUM
+      // Limpieza de seguridad completa
       try {
-        clearDatadogUser();
+        const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
+        SecurityHelpers.clearAllSecureData();
+        logger.info("🧹 Limpieza de seguridad completada");
       } catch (error) {
-        logger.error("❌ Error limpiando usuario en Datadog RUM:", {
-          error,
+        logger.error("❌ Error en limpieza de seguridad:", {
+          error: error instanceof Error ? error.message : String(error),
         });
       }
+
+      // Limpiar usuario en Datadog RUM
+      try {
+        const ddRum = window.DD_RUM as DatadogRUM | undefined;
+        if (typeof window !== 'undefined' && ddRum) {
+          ddRum.clearUser();
+        }
+      } catch (error) {
+        logger.error("❌ Error limpiando usuario en Datadog RUM:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+
+      // Redirigir a index
+      window.location.href = "/";
     } catch (error) {
-      logger.error("❌ Error en signOut", { error });
+      logger.error("❌ Error en signOut", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   };
 

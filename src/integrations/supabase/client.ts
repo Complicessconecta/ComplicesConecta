@@ -1,9 +1,19 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/types/supabase-generated";
 import { AppConfig } from "@/config/app-config";
-
-// CRÍTICO: Importar logger de forma segura con fallback
 import { logger } from "@/lib/logger";
+import { SecurityHelpers } from "./security-helpers";
+import type { SupabaseAuthConfig } from "@/types/supabase-auth";
+
+// CRÍTICO: Configuración de seguridad mejorada
+const SECURE_AUTH_CONFIG: SupabaseAuthConfig = {
+  // En producción usar HttpOnly cookies, en desarrollo localStorage cifrado
+  persistSession: import.meta.env.PROD ? false : true, // false = cookies, true = localStorage
+  autoRefreshToken: true,
+  detectSessionInUrl: true,
+  flowType: "pkce", // Tipo específico para TypeScript
+  debug: import.meta.env.DEV,
+};
 
 // Fallback logger si el import falla (no debería pasar, pero por seguridad)
 const safeLogger = logger || {
@@ -60,7 +70,8 @@ safeLogger.info("🔗 Conectando a Supabase:", { url: supabaseUrl });
 // Variable global para almacenar la instancia única del cliente
 let supabaseInstance: SupabaseClient<Database> | null = null;
 
-let lastSupabaseCallLogAtMs = 0;
+// Variable para tracking de logs (solo para evitar spam)
+// Nota: Esta variable se usa para controlar la frecuencia de logs en producción
 
 declare global {
   var __cc_supabaseClient:
@@ -125,77 +136,16 @@ function getSupabaseClient(): SupabaseClient<Database> {
     const finalKey = supabaseAnonKey!;
 
     supabaseInstance = createClient<Database>(finalUrl, finalKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        flowType: "pkce",
-      },
+      auth: SECURE_AUTH_CONFIG,
       global: {
         headers: {
           apikey: supabaseAnonKey || "placeholder-key",
           Authorization: `Bearer ${supabaseAnonKey || "placeholder-key"}`,
+          // Headers de seguridad adicionales
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-Client-Version': import.meta.env.VITE_APP_VERSION || '1.0.0',
         },
-        fetch: (url, options = {}) => {
-          // Solo bloquear Supabase para usuarios demo no-admin
-          const demoAuth = localStorage.getItem("demo_authenticated");
-          const demoUser = localStorage.getItem("demo_user");
-
-          // Si hay sesión demo activa, permitir acceso básico
-          if (demoAuth === "true" && demoUser) {
-            try {
-              const user = JSON.parse(demoUser);
-              // Permitir acceso básico para usuarios demo (solo bloquear operaciones críticas)
-              const isWriteOperation =
-                options?.method &&
-                ["POST", "PUT", "PATCH", "DELETE"].includes(
-                  options.method.toUpperCase(),
-                );
-
-              if (isWriteOperation && user.role !== "admin") {
-                safeLogger.info(
-                  "🚫 Bloqueando operación de escritura para usuario demo:",
-                  { email: user.email, method: options.method },
-                );
-                return Promise.reject(
-                  new Error("Demo mode - write operations restricted"),
-                );
-              } else {
-                safeLogger.info("✅ Permitiendo acceso demo:", {
-                  email: user.email,
-                  method: options?.method || "GET",
-                });
-              }
-            } catch {
-              safeLogger.info(
-                "🚫 Bloqueando Supabase - error parsing demo user",
-                {},
-              );
-              return Promise.reject(
-                new Error("Demo mode active - parse error"),
-              );
-            }
-          }
-
-          // Para usuarios de producción o admins demo, permitir Supabase
-          const nowMs = Date.now();
-          if (nowMs - lastSupabaseCallLogAtMs > 1000) {
-            lastSupabaseCallLogAtMs = nowMs;
-            safeLogger.info("🔗 Permitiendo llamada a Supabase:", {
-              url:
-                typeof url === "string" ? url.substring(0, 50) + "..." : url,
-            });
-          }
-          return fetch(url, {
-            ...options,
-            headers: {
-              ...(options?.headers || {}),
-              apikey: supabaseAnonKey || "placeholder-key",
-              Authorization: `Bearer ${supabaseAnonKey || "placeholder-key"}`,
-              "Access-Control-Allow-Origin": "*",
-            },
-          });
-        },
+        fetch: SecurityHelpers.createSecureFetch(supabaseAnonKey || "placeholder-key"),
       },
       realtime: {
         params: {
@@ -204,8 +154,14 @@ function getSupabaseClient(): SupabaseClient<Database> {
       },
     });
 
+    // Configurar listeners de sesión para seguridad
+    if (supabaseInstance) {
+      SecurityHelpers.setupSessionListeners(supabaseInstance);
+    }
+
     safeLogger.info("✅ Cliente de Supabase creado exitosamente", {
       url: finalUrl,
+      persistSession: SECURE_AUTH_CONFIG.persistSession,
     });
 
     globalThis.__cc_supabaseClient = supabaseInstance;

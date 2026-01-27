@@ -85,8 +85,8 @@ export const MainLayout = () => {
         : "pt-[calc(env(safe-area-inset-top)+4rem)]"
       : "pt-[env(safe-area-inset-top)]";
 
-  // Bottom Navigation solo para usuarios logueados
-  const showBottomNavigation = (hasSession || hasDemoSession) && !isClubDemoRoute;
+  // Bottom Navigation solo para usuarios logueados (incluye sesiones demo)
+  const showBottomNavigation = hasSession || hasDemoSession;
 
   // Chat FAB no se muestra en rutas de perfil
   const isProfileRoute =

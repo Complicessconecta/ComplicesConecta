@@ -34,23 +34,30 @@ const DEMO_CLUB: ClubEntity = {
 const DEMO_GALLERY = [
   {
     id: "demo-1",
-    url: "/assets/nfts/imagen1.jpg",
+    url: "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
     caption: "Entrada principal",
     isPrivate: false,
     uploadedAt: new Date().toISOString(),
   },
   {
     id: "demo-2",
-    url: "/assets/nfts/imagen2.jpg",
+    url: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200",
     caption: "Zona VIP",
     isPrivate: false,
     uploadedAt: new Date().toISOString(),
   },
   {
     id: "demo-3",
-    url: "/assets/nfts/imagen3.jpg",
-    caption: "Pista",
+    url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200",
+    caption: "Pista principal",
     isPrivate: true,
+    uploadedAt: new Date().toISOString(),
+  },
+  {
+    id: "demo-4",
+    url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200",
+    caption: "Lounge sensorial",
+    isPrivate: false,
     uploadedAt: new Date().toISOString(),
   },
 ];
@@ -70,6 +77,34 @@ const DEMO_EVENTS = [
     price: 500,
     currency: "$",
   },
+  {
+    id: "evt-2",
+    title: "Velvet Social",
+    description: "DJ invitado + dress code noir",
+    date: new Date(Date.now() + 86400000 * 4).toISOString(),
+    startTime: "21:30",
+    endTime: "02:30",
+    location: "CDMX",
+    capacity: 180,
+    registeredCount: 96,
+    isVip: false,
+    price: 350,
+    currency: "$",
+  },
+  {
+    id: "evt-3",
+    title: "Ritual de Luna",
+    description: "Experiencia sensorial + mixología",
+    date: new Date(Date.now() + 86400000 * 10).toISOString(),
+    startTime: "23:00",
+    endTime: "04:00",
+    location: "CDMX",
+    capacity: 240,
+    registeredCount: 144,
+    isVip: true,
+    price: 650,
+    currency: "$",
+  },
 ];
 
 const DEMO_REVIEWS = [
@@ -81,6 +116,28 @@ const DEMO_REVIEWS = [
     comment: "Excelente ambiente y seguridad.",
     checkInDate: new Date().toISOString(),
     helpfulCount: 12,
+    isVerified: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "rev-2",
+    userId: "u2",
+    userName: "Luna & Max",
+    rating: 4,
+    comment: "Gran vibra, el staff nos atendió perfecto.",
+    checkInDate: new Date(Date.now() - 86400000 * 2).toISOString(),
+    helpfulCount: 8,
+    isVerified: true,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "rev-3",
+    userId: "u3",
+    userName: "Neón Lovers",
+    rating: 5,
+    comment: "Eventos top y música impecable.",
+    checkInDate: new Date(Date.now() - 86400000 * 5).toISOString(),
+    helpfulCount: 18,
     isVerified: true,
     createdAt: new Date().toISOString(),
   },
@@ -132,12 +189,14 @@ const safeShare = async (title: string) => {
 export const ClubsDemo = () => {
   const navigate = useNavigate();
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [interestLevel, setInterestLevel] = useState<"neutral" | "tour" | "vip">("neutral");
 
   const club = useMemo(() => DEMO_CLUB, []);
 
   if (showAdminPanel) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
+      <div className="min-h-screen bg-transparent p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           <Card className="bg-black/70 backdrop-blur-xl border-white/15 mb-6">
             <CardContent className="p-4">
@@ -184,7 +243,7 @@ export const ClubsDemo = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-transparent p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <Card className="bg-black/70 backdrop-blur-xl border-white/15">
           <CardContent className="p-4">
@@ -192,7 +251,7 @@ export const ClubsDemo = () => {
               <div className="flex items-center gap-2 min-w-0">
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/clubs")}
+                  onClick={() => navigate("/clubs-public")}
                   className="border-white/30 text-white hover:bg-white/10"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
@@ -246,20 +305,63 @@ export const ClubsDemo = () => {
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/clubs")}
+                  onClick={() => navigate("/clubs-public")}
                   className="border-white/30 text-white hover:bg-white/10"
                 >
                   <Building className="h-4 w-4 mr-2" />
                   Ver listado
                 </Button>
                 <Button
-                  onClick={() => navigate("/clubs")}
+                  onClick={() => navigate("/clubs-public/demo")}
                   className="bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                 >
                   <Star className="h-4 w-4 mr-2" />
-                  Explorar clubs
+                  Ver perfil público
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsFollowing((prev) => !prev)}
+                  className="border-white/30 text-white hover:bg-white/10"
+                >
+                  {isFollowing ? "Siguiendo" : "Seguir"}
                 </Button>
               </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant={interestLevel === "tour" ? "default" : "outline"}
+                onClick={() => setInterestLevel("tour")}
+                className={
+                  interestLevel === "tour"
+                    ? "bg-linear-to-r from-blue-600 to-cyan-600 text-white"
+                    : "border-white/30 text-white hover:bg-white/10"
+                }
+              >
+                Quiero tour
+              </Button>
+              <Button
+                type="button"
+                variant={interestLevel === "vip" ? "default" : "outline"}
+                onClick={() => setInterestLevel("vip")}
+                className={
+                  interestLevel === "vip"
+                    ? "bg-linear-to-r from-fuchsia-600 to-purple-600 text-white"
+                    : "border-white/30 text-white hover:bg-white/10"
+                }
+              >
+                Interés VIP
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setInterestLevel("neutral")}
+                className="border-white/30 text-white hover:bg-white/10"
+              >
+                Reiniciar
+              </Button>
             </div>
           </CardContent>
         </Card>

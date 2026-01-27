@@ -874,6 +874,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   ChatAuthenticated.tsx
 |   |   ChatInfo.tsx
 |   |   Clubs.tsx
+|   |   ClubsPublic.tsx
 |   |   ClubsComingSoon.tsx
 |   |   ClubsDemo.tsx
 |   |   Construction.tsx

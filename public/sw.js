@@ -1,8 +1,8 @@
 // Service Worker Avanzado - ComplicesConecta v3.0.0
 // CRÍTICO: Actualizar versión para forzar limpieza de caches antiguos
-const STATIC_CACHE = "static-v3.0.0";
-const DYNAMIC_CACHE = "dynamic-v3.0.0";
-const IMAGE_CACHE = "images-v3.0.0";
+const STATIC_CACHE = "static-v3.0.1";
+const DYNAMIC_CACHE = "dynamic-v3.0.1";
+const IMAGE_CACHE = "images-v3.0.1";
 
 // Recursos estáticos críticos
 const STATIC_ASSETS = [
@@ -263,6 +263,15 @@ self.addEventListener("fetch", (event) => {
   if (!event.request.url.startsWith(self.location.origin)) return;
 
   const url = new URL(event.request.url);
+
+  // CRÍTICO: No cachear navegación SPA (HTML). En Vercel, /demo y otras rutas sirven index.html.
+  // Si se cachea, el cliente puede quedarse con una versión vieja (especialmente en Android WebView).
+  const acceptHeader = event.request.headers.get("accept") || "";
+  const isHtmlNavigation =
+    event.request.mode === "navigate" || acceptHeader.includes("text/html");
+  if (isHtmlNavigation) {
+    return; // Dejar que el navegador resuelva y obtenga siempre la versión más reciente.
+  }
 
   // CRÍTICO: No interceptar chunks de Vite - deben cargarse siempre desde red
   // Los chunks de Vite tienen formato: /assets/[name]-[hash].js

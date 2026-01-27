@@ -287,6 +287,17 @@ const Auth = () => {
           try {
             const { data: isAdminRpc, error: rpcError } = await supabase.rpc("is_admin");
             if (rpcError) {
+              logger.error("❌ Admin verification failed", {
+                error: rpcError.message,
+              });
+              if (isAdminUser) {
+                toast({
+                  title: "Verificando permisos",
+                  description: "Validando acceso administrador...",
+                });
+                navigate("/admin/dashboard");
+                return;
+              }
               throw rpcError;
             }
             if (isAdminRpc === true) {
@@ -590,14 +601,14 @@ const Auth = () => {
               className="w-full"
             >
               <TabsList
-                className={`grid w-full max-w-md mx-auto ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg items-center justify-center`}
+                className={`grid w-full max-w-md mx-auto ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} gap-1 rounded-xl p-1 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg items-center justify-center`}
               >
                 <TabsTrigger
                   value="signin"
                   data-testid="switch-to-login"
                   type="button"
                   onClick={() => setActiveTab("signin")}
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
                 >
                   Iniciar Sesión
                 </TabsTrigger>
@@ -607,7 +618,7 @@ const Auth = () => {
                     data-testid="switch-to-register"
                     type="button"
                     onClick={() => setActiveTab("signup")}
-                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
+                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
                   >
                     Registrarse
                   </TabsTrigger>

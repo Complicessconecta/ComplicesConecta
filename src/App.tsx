@@ -104,6 +104,7 @@ const AdminPartners = lazyWithDefault(
 const Clubs = lazyWithDefault(() => import("@/pages/Clubs"));
 const ClubsComingSoon = lazyWithDefault(() => import("@/pages/ClubsComingSoon"));
 const ClubsDemo = lazyWithDefault(() => import("@/pages/ClubsDemo"));
+const ClubsPublic = lazyWithDefault(() => import("@/pages/ClubsPublic"));
 
 // Shop CMPX tokens
 const Shop = lazyWithDefault(() => import("@/pages/Shop"));
@@ -203,9 +204,7 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
-                            {!import.meta.env.PROD && (
-                              <Route path="/demo" element={<Demo />} />
-                            )}
+                            <Route path="/demo" element={<Demo />} />
                             <Route path="/faq" element={<FAQ />} />
                             <Route path="/feed" element={<Feed />} />
                             <Route path="/profiles" element={<Profiles />} />
@@ -418,6 +417,8 @@ const App = () => {
                             <Route path="/clubs/demo" element={<ClubsDemo />} />
                             <Route path="/clubs" element={<Clubs />} />
                             <Route path="/clubs/:slug" element={<Clubs />} />
+                            <Route path="/clubs-public" element={<ClubsPublic />} />
+                            <Route path="/clubs-public/:slug" element={<ClubsPublic />} />
                             <Route path="/clubs-coming-soon" element={<ClubsComingSoon />} />
                             <Route
                               path="/moderators/dashboard"

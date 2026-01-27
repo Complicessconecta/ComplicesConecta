@@ -604,7 +604,7 @@ export const Clubs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-transparent p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {selectedClub ? (
           <div className="space-y-6">
@@ -1112,7 +1112,7 @@ export const Clubs = () => {
 
                         <div className="flex gap-2">
                           <Button
-                            onClick={() => navigate(`/clubs/${DEMO_CLUB.slug}`)}
+                            onClick={() => navigate(`/clubs-public/${DEMO_CLUB.slug}`)}
                             className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />
@@ -1220,7 +1220,7 @@ export const Clubs = () => {
                         {/* Acciones */}
                         <div className="flex gap-2">
                           <Button
-                            onClick={() => navigate(`/clubs/${club.id}`)}
+                            onClick={() => navigate(`/clubs-public/${club.slug || club.id}`)}
                             className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />

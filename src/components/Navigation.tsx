@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles } from "lucide-react";
+import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles, Building2 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useFeatures } from "@/hooks/useFeatures";
 import { cn } from "@/shared/lib/cn";
@@ -13,9 +13,11 @@ export const Navigation = ({ className }: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { features } = useFeatures();
-  const { signOut, getProfileType } = useAuth();
+  const { signOut, getProfileType, isDemoMode } = useAuth();
 
   const profileType = getProfileType();
+
+  const demoActive = typeof isDemoMode === "function" ? isDemoMode() : false;
 
   const getSettingsPath = () => {
     return profileType === "couple"
@@ -27,6 +29,9 @@ export const Navigation = ({ className }: NavigationProps) => {
     ? [
         { id: "feed", icon: Home, label: "Inicio", path: "/feed" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
+        ...(demoActive
+          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         {
           id: "requests",
@@ -48,6 +53,9 @@ export const Navigation = ({ className }: NavigationProps) => {
     : [
         { id: "feed", icon: Home, label: "Inicio", path: "/feed" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
+        ...(demoActive
+          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         { id: "matches", icon: Heart, label: "Matches", path: "/matches" },
         { id: "tokens", icon: Coins, label: "Tokens", path: "/tokens" },

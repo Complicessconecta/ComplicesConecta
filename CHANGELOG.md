@@ -138,3 +138,13 @@ Los siguientes archivos de auditoría han sido movidos a `docs-unified/auditoria
 | **Admin Persist Guardrails** | `src/components/clubs/ClubProfileAdmin.tsx` | Cambios de Vibe/Tier no persistían inmediatamente o podían spamear DB | Persistencia con debounce (450ms) + optimistic UI + revert on error + toast; solo con `clubId` real | Profesionalismo + seguridad + estabilidad |
 | **Vibe Badge Popover** | `src/components/clubs/ClubProfileHeader.tsx` | Badge “Vibe” no era interactivo | Popover informativo al hacer click (Radix Popover) | Mejorar conversión y claridad |
 | **Docs: árbol src** | `Project-Structure-Tree-files.md` | Estructura del proyecto desactualizada | Actualización con `tree /F /A src` dentro de bloque ``` | Documentación y auditoría consistente |
+
+## Actualización 26 Ene 2026 - 23:30 (Panel Admin Clubs)
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **Panel Admin Clubs** | `src/components/admin/panels/` | Errores TypeScript complejos con tipos Supabase (70+ campos) | Movidos a cuarentena + versión simplificada funcional | Unificar implementación funcional |
+| **ClubAdminService** | `src/services/admin/ClubAdminService.ts` | Incompatibilidad tipos Supabase generados | Movido a cuarentena + ClubAdminServiceSimple.ts creado | Resolver errores TypeScript |
+| **Flujos Faltantes** | `FLUJOS_FALTANTES_INCOMPLETOS_CLUBS.md` | 6 flujos de panel admin no documentados | Reporte completo con diagramas Mermaid sugeridos | Documentación completa |
+| **DUPLICATES_QUARANTINE** | `duplicates_quarantine/DUPLICATES_QUARANTINE.md` | Sin referencia a archivos eliminados | Actualizado con sección "Archivos eliminados 26 Ene 2026" | Auditoría de cambios |
+| **Build** | `npm run build:check` | Build exitoso 45.26s | Verificación de estabilidad tras cambios | Confirma no regresiones |

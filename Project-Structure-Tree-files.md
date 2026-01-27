@@ -1,8 +1,5 @@
-## Barrido completo del directorio `src`
-
-```
 Listado de rutas de carpetas para el volumen WACKO
-El nUmero de serie del volumen es D8CF-CDDu
+El n�mero de serie del volumen es D8CF-CDD4
 C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   App.tsx
 |   debug.tsx
@@ -116,6 +113,8 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       SystemHealthWidget.tsx
 |   |   |       
 |   |   \---panels
+|   |           ClubAdminPanel.tsx
+|   |           ClubNameValidator.tsx
 |   |           index.ts
 |   |           ReportsPanel.tsx
 |   |           
@@ -259,6 +258,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       
 |   +---lazy
 |   |       index.ts
+|   |       
+|   +---legal
+|   |       ClubConsentManager.tsx
 |   |       
 |   +---matches
 |   |       index.ts
@@ -954,6 +956,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   index.ts
 |   |   moderatorTimer.ts
 |   |   
+|   +---admin
 |   +---ai
 |   |       AIIntegrationService.ts
 |   |       ConsentVerificationService.ts
@@ -966,6 +969,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       |   AdvancedAnalyticsService.ts
 |   |       |   AnalyticsService.ts
 |   |       |   HistoricalMetricsService.ts
+|   |       |   index.ts
 |   |       |   ModerationMetricsService.ts
 |   |       |   ProfileStatsService.ts
 |   |       |   TokenAnalyticsService.ts
@@ -1340,18 +1344,4 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
     |   
     \---discover
             generateRandomProfiles.ts
-```
-
-## Estadísticas del directorio `src`
-- **Total de archivos**: 500+ archivos
-- **Total de directorios**: 31 directorios principales
-- **Subdirectorios de components**: 61
-- **Páginas**: 56
-- **Servicios**: 20
-- **Hooks**: 30
-- **Estilos CSS**: 18
-- **Tipos TypeScript**: 26
-- **Utilidades**: 21
-
-## Nota
-Este archivo contiene un barrido completo del directorio `src` del proyecto CómplicesConecta. La estructura está organizada por funcionalidad y tipo de archivo, siguiendo las mejores prácticas de organización de proyectos React + TypeScript.
+            

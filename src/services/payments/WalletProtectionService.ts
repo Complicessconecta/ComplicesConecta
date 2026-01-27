@@ -98,15 +98,7 @@ export class WalletProtectionService {
       const win = window as WindowWithWallets;
       if (win.ethereum) {
         const descriptor = Object.getOwnPropertyDescriptor(window, "ethereum");
-
-        // Solo redefinir si la propiedad es configurable; de lo contrario, respetar la definición de la extensión
-        if (!descriptor || descriptor.configurable !== false) {
-          Object.defineProperty(window, "ethereum", {
-            value: win.ethereum,
-            writable: false,
-            configurable: true,
-          });
-        } else {
+        if (descriptor && descriptor.configurable === false) {
           logger.debug(
             "ethereum ya definido por extensión como no configurable. No se redefine.",
           );
@@ -124,13 +116,7 @@ export class WalletProtectionService {
       if (win.solana) {
         const descriptor = Object.getOwnPropertyDescriptor(window, "solana");
 
-        if (!descriptor || descriptor.configurable !== false) {
-          Object.defineProperty(window, "solana", {
-            value: win.solana,
-            writable: false,
-            configurable: true,
-          });
-        } else {
+        if (descriptor && descriptor.configurable === false) {
           logger.debug(
             "solana ya definido por extensión como no configurable. No se redefine.",
           );
@@ -148,13 +134,7 @@ export class WalletProtectionService {
       if (win.tronWeb) {
         const descriptor = Object.getOwnPropertyDescriptor(window, "tronWeb");
 
-        if (!descriptor || descriptor.configurable !== false) {
-          Object.defineProperty(window, "tronWeb", {
-            value: win.tronWeb,
-            writable: false,
-            configurable: true,
-          });
-        } else {
+        if (descriptor && descriptor.configurable === false) {
           logger.debug(
             "tronWeb ya definido por extensión como no configurable. No se redefine.",
           );
@@ -172,13 +152,7 @@ export class WalletProtectionService {
       if (win.bybit) {
         const descriptor = Object.getOwnPropertyDescriptor(window, "bybit");
 
-        if (!descriptor || descriptor.configurable !== false) {
-          Object.defineProperty(window, "bybit", {
-            value: win.bybit,
-            writable: false,
-            configurable: true,
-          });
-        } else {
+        if (descriptor && descriptor.configurable === false) {
           logger.debug(
             "bybit ya definido por extensión como no configurable. No se redefine.",
           );
@@ -214,7 +188,3 @@ export class WalletProtectionService {
   }
 }
 
-// Inicializar protección automáticamente
-if (typeof window !== "undefined") {
-  WalletProtectionService.getInstance();
-}

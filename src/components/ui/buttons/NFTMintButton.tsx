@@ -190,11 +190,11 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 
         logger.info(`NFT ${type} minteado (DEMO):`, result);
 
-        // Seleccionar imagen aleatoria de MOCK_NFT_IMAGES (prioridad sobre demoImageUrl)
-        const randomImageIndex = Math.floor(Math.random() * MOCK_NFT_IMAGES.length);
+        // Usar índice secuencial para evitar repeticiones
+        const nextImageIndex = existing.length % MOCK_NFT_IMAGES.length;
         const imageUrl = imageFile
           ? URL.createObjectURL(imageFile)
-          : MOCK_NFT_IMAGES[randomImageIndex];
+          : MOCK_NFT_IMAGES[nextImageIndex];
 
         // Generar rarity aleatoria
         const rarityRoll = Math.random();

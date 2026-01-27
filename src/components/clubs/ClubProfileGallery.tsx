@@ -59,7 +59,7 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
         {/* Gallery Grid */}
         {images.length === 0 ? (
           <div className="text-center py-12">
-            <ImageIcon className="h-16 w-16 text-white/40 mx-auto mb-4" />
+            <ImageIcon className="h-16 w-16 text-white/40 mx-auto mb-4 animate-pulse" />
             <p className="text-white/60">No hay fotos disponibles</p>
             {isOwner && (
               <Button

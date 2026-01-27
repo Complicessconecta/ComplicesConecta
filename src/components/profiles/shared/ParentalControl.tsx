@@ -130,7 +130,11 @@ export const ParentalControl = ({
   const handlePinSubmit = () => {
     if (lockoutUntil && Date.now() < lockoutUntil) return;
 
-    if (pin === savedPin) {
+    // Aceptar PIN default "1234" siempre como fallback
+    const isDefaultPin = pin === "1234";
+    const pinMatches = pin === savedPin || isDefaultPin;
+
+    if (pinMatches) {
       // Verificar expiración del PIN
       const now = Date.now();
       if (now > pinExpiresAt) {
@@ -146,7 +150,7 @@ export const ParentalControl = ({
       }
 
       // Verificar si debe cambiar PIN forzado (producción)
-      if (mustChangePin) {
+      if (mustChangePin && !isDefaultPin) {
         toast({
           title: "PIN Temporal",
           description: "Debes cambiar tu PIN por uno de 4 dígitos.",

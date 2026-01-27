@@ -27,7 +27,7 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
       }
     >
       {/* Cover Image */}
-      <div className="relative h-64 bg-linear-to-br from-purple-600 to-fuchsia-600">
+      <div className="relative h-64 bg-linear-to-br from-purple-600 to-fuchsia-600 overflow-hidden">
         {club.cover_image_url ? (
           <img
             src={club.cover_image_url}
@@ -35,9 +35,18 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Building className="h-24 w-24 text-white/40" />
-          </div>
+          <>
+            {/* Imagen de banner animada */}
+            <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
+              backgroundImage: 'url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200&q=80)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }} />
+            <div className="absolute inset-0 bg-linear-to-b from-transparent to-purple-900/60" />
+            <div className="w-full h-full flex items-center justify-center relative z-10">
+              <Building className="h-24 w-24 text-white/40 animate-bounce" />
+            </div>
+          </>
         )}
 
         {/* Badges */}

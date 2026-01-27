@@ -231,15 +231,21 @@ class ConsoleErrorCapture {
     (window as any).__originalFetch = originalFetch;
     window.fetch = async (...args) => {
       try {
+        const url = (() => {
+          const input = args[0];
+          if (typeof input === "string") return input;
+          if (input instanceof URL) return input.toString();
+          if (input instanceof Request) return input.url;
+          return "";
+        })();
+
+        // Filtrar URLs data: para evitar errores CSP - NO interceptar
+        if (url.startsWith("data:")) {
+          return await originalFetch(...args);
+        }
+
         const response = await originalFetch(...args);
         if (!response.ok && args[0]) {
-          const url = (() => {
-            const input = args[0];
-            if (typeof input === "string") return input;
-            if (input instanceof URL) return input.toString();
-            if (input instanceof Request) return input.url;
-            return "";
-          })();
           let resourceType: ResourceError["type"] = "other";
 
           if (url.includes("chunk") || url.includes("assets/js")) {
@@ -265,6 +271,12 @@ class ConsoleErrorCapture {
           if (input instanceof Request) return input.url;
           return "";
         })();
+
+        // Filtrar URLs data: para evitar errores CSP - NO interceptar
+        if (url.startsWith("data:")) {
+          throw error;
+        }
+
         this.resourceErrors.push({
           url,
           type: "other",

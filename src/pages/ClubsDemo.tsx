@@ -243,8 +243,17 @@ export const ClubsDemo = () => {
   }
 
   return (
-    <div className="min-h-screen bg-transparent p-4 sm:p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-transparent p-4 sm:p-6 relative overflow-hidden">
+      {/* Fondo animado */}
+      <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
+        backgroundImage: 'url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1920&q=80)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      }} />
+      <div className="absolute inset-0 bg-linear-to-b from-purple-900/80 to-blue-900/80" />
+
+      <div className="relative z-10 max-w-7xl mx-auto space-y-6">
         <Card className="bg-black/70 backdrop-blur-xl border-white/15">
           <CardContent className="p-4">
             <div className="flex items-center justify-between gap-3">

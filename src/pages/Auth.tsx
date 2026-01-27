@@ -18,6 +18,8 @@ import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { logger } from "@/lib/logger";
+import { isProductionAdmin } from "@/lib/app-config";
+import { StorageManager } from "@/lib/storage-manager";
 
 interface FormData {
   email: string;
@@ -61,7 +63,7 @@ const Auth = () => {
     getCurrentLocation,
     location,
   } = useGeolocation();
-  const { signIn, signOut, isDemoMode, isAdmin } = useAuth();
+  const { signIn, signOut, isDemoMode, isAdmin, user: authUser } = useAuth();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
@@ -290,6 +292,7 @@ const Auth = () => {
               logger.error("❌ Admin verification failed", {
                 error: rpcError.message,
               });
+              // Permitir acceso por email de env o modo demo sin hacer signOut
               if (isAdminUser) {
                 toast({
                   title: "Verificando permisos",
@@ -308,6 +311,22 @@ const Auth = () => {
             logger.error("❌ Admin verification failed", {
               error: error instanceof Error ? error.message : String(error),
             });
+          }
+
+          // NO hacer signOut() si es admin por email de env o modo demo
+          // Permitir acceso basado en email de env o demo mode
+          const userEmail = authUser?.email?.toLowerCase();
+          const isProductionAdminCheck = userEmail && isProductionAdmin(userEmail);
+          const sessionFlags = StorageManager.getSessionFlags();
+          const isDemoAdminCheck = sessionFlags.demo_authenticated;
+
+          if (isProductionAdminCheck || isDemoAdminCheck) {
+            toast({
+              title: "Acceso Administrador",
+              description: "Bienvenido al panel de administración",
+            });
+            navigate("/admin/dashboard");
+            return;
           }
 
           await signOut();
@@ -601,14 +620,14 @@ const Auth = () => {
               className="w-full"
             >
               <TabsList
-                className={`grid w-full max-w-md mx-auto ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} gap-1 rounded-xl p-1 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg items-center justify-center`}
+                className={`grid w-full max-w-md mx-auto ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} gap-1 rounded-xl p-1 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg h-11 items-stretch`}
               >
                 <TabsTrigger
                   value="signin"
                   data-testid="switch-to-login"
                   type="button"
                   onClick={() => setActiveTab("signin")}
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-full flex items-center justify-center rounded-lg"
                 >
                   Iniciar Sesión
                 </TabsTrigger>
@@ -618,7 +637,7 @@ const Auth = () => {
                     data-testid="switch-to-register"
                     type="button"
                     onClick={() => setActiveTab("signup")}
-                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
+                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-full flex items-center justify-center rounded-lg"
                   >
                     Registrarse
                   </TabsTrigger>

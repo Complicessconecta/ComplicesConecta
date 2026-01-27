@@ -369,15 +369,21 @@ export const useAuth = () => {
       setLoading(true);
       logger.info("🔐 Intentando iniciar sesión", { email, mode: config.mode });
 
-      // Verificar si es una credencial demo (antes de intentar Supabase)
-      if (DEMO_CREDENTIALS.includes(email)) {
-        logger.info("🎭 Credencial demo detectada");
-        const demoPassword = getDemoPassword(email);
+      // EN MODO DEMO: Permitir cualquier correo como demo
+      if (config.mode === "demo") {
+        logger.info("🎭 Modo demo detectado - permitiendo cualquier correo");
 
-        if (password !== demoPassword) {
-          // SECURITY FIX: No cargar perfil demo si contraseña es incorrecta
-          logger.error("🚫 Contraseña incorrecta para usuario demo - acceso denegado");
-          throw new Error("Contraseña incorrecta para usuario demo");
+        // Verificar si es una credencial demo específica (para contraseña correcta)
+        if (DEMO_CREDENTIALS.includes(email)) {
+          const demoPassword = getDemoPassword(email);
+
+          if (password !== demoPassword) {
+            logger.error("🚫 Contraseña incorrecta para usuario demo - acceso denegado");
+            throw new Error("Contraseña incorrecta para usuario demo");
+          }
+        } else {
+          // Para cualquier otro correo en modo demo, aceptar cualquier contraseña
+          logger.info("🎭 Correo genérico en modo demo - aceptando cualquier contraseña");
         }
 
         // Manejar autenticación demo

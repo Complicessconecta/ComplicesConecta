@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { ArrowLeft, Share2, Crown, MoreVertical, Edit, Heart, MessageCircle, UserPlus,Building } from "lucide-react";
+import { ArrowLeft, Share2, Crown, MoreVertical, Edit, Heart, MessageCircle, UserPlus, Building, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/shared/lib/cn";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -148,6 +148,19 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
               >
                 <Building className="h-4 w-4 text-purple-400" />
               </Button>
+
+              {typeof window !== "undefined" &&
+                window.localStorage.getItem("demo_authenticated") === "true" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate("/clubs/demo")}
+                    className="bg-fuchsia-500/20 hover:bg-fuchsia-500/30 p-2 transition-all duration-300 hover:scale-105"
+                    title="Demo Club"
+                  >
+                    <Sparkles className="h-4 w-4 text-fuchsia-300" />
+                  </Button>
+                )}
             </>
           ) : (
             // Other Profile Actions

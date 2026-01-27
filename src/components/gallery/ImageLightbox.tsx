@@ -216,10 +216,10 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] bg-black/95 flex flex-col"
+        className="fixed inset-0 z-9999 bg-black/95 flex flex-col"
       >
         {/* Header */}
-        <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/50 to-transparent">
+        <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-linear-to-b from-black/50 to-transparent">
           <div className="flex items-center justify-between">
             <div className="text-white">
               <p className="text-sm opacity-75">
@@ -346,7 +346,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
 
         {/* Thumbnails */}
         {showThumbnails && images.length > 1 && (
-          <div className="absolute bottom-0 left-0 right-0 z-10 p-4 bg-gradient-to-t from-black/50 to-transparent">
+          <div className="absolute bottom-0 left-0 right-0 z-10 p-4 bg-linear-to-t from-black/50 to-transparent">
             <div className="flex gap-2 justify-center overflow-x-auto pb-2">
               {images.map((img, index) => (
                 <button

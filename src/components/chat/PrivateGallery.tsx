@@ -115,7 +115,7 @@ export function PrivateGallery({
               )}
 
               {item.caption && isUnlocked && (
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-2 bg-linear-to-t from-black/80 to-transparent">
                   <p className="text-white text-sm">{item.caption}</p>
                 </div>
               )}

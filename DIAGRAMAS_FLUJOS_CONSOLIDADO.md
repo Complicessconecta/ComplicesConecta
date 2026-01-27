@@ -2,6 +2,13 @@
 
 # 📊 DIAGRAMAS DE FLUJOS v3.9.2 - COMPLICESCONECTA v3.9.2
 
+#> Actualización 26 Ene 2026 20:05
+#> - **Acción**: Agrega
+#> - **Nombre del flujo**: Demo Club (vista completa + acceso desde perfiles demo)
+#> - **Ruta(s) afectada(s)**: `src/pages/ClubsDemo.tsx`, `src/App.tsx`, `src/components/profiles/shared/ProfileNavigation.tsx`
+#> - **Resumen breve**: Se agregó una vista demo completa de Clubs en `/clubs/demo` usando datos mock de `demo club` y un icono dedicado en navegación de perfiles demo para acceder rápidamente.
+#> - **Justificación**: Proveer un demo funcional y verificable para usuarios (sin romper producción) y estandarizar el acceso al demo de Clubs desde perfiles demo.
+
 #> Actualización 17 Ene 2026 04:40
 #> - Creada tabla cache_statistics en Supabase para registrar estadísticas del cache
 #> - Descomentado código en AdvancedCacheService.ts para registrar estadísticas del cache en Supabase
@@ -65,7 +72,23 @@ Este documento es la fuente única de verdad para todos los flujos del proyecto 
 
 ---
 
-## 🧩 PLANTILLA UI (REUTILIZABLE) — Botón Demo/Nombre ↔ Cuenta (Perfiles)
+## � Registro obligatorio de cambios de flujos (Plantilla)
+
+Cada vez que se **agrega**, **edita** o **elimina** un flujo, se debe registrar aquí usando esta plantilla.
+
+### Entrada de cambio (obligatoria)
+
+- **Acción**: Agrega | Edita | Elimina
+- **Nombre del flujo**: (nombre único y claro)
+- **Ruta(s) afectada(s)**: (rutas exactas, ej. `src/pages/Clubs.tsx`)
+- **Resumen breve**: (qué hace el flujo / qué cambió)
+- **Justificación**: (por qué se agregó/editó/eliminó)
+
+> Nota: Si se elimina un flujo, incluir la razón y el impacto esperado.
+
+---
+
+## �� PLANTILLA UI (REUTILIZABLE) — Botón Demo/Nombre ↔ Cuenta (Perfiles)
 
 ### Objetivo
 

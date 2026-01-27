@@ -62,7 +62,7 @@ export const EnvChecker = () => {
   }
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-red-950 border-2 border-red-500 rounded-lg p-8 max-w-md w-full shadow-2xl">
         <div className="flex items-center gap-3 mb-4">
           <AlertCircle className="w-8 h-8 text-red-400 shrink-0" />

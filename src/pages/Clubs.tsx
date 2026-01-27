@@ -1023,6 +1023,107 @@ export const Clubs = () => {
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {!slug && (
+                <motion.div
+                  key="demo"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0 }}
+                >
+                  <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
+                    <CardContent className="p-0">
+                      <div className="relative h-48 bg-linear-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
+                        {DEMO_CLUB.cover_image_url ? (
+                          <img
+                            src={DEMO_CLUB.cover_image_url}
+                            alt={DEMO_CLUB.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Building className="h-16 w-16 text-white/60" />
+                          </div>
+                        )}
+
+                        <div className="absolute top-3 left-3 flex gap-2">
+                          <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
+                            Admin
+                          </Badge>
+                          <Badge className="bg-green-500/90 text-white">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Verificado
+                          </Badge>
+                          <Badge className="bg-yellow-500/90 text-black">
+                            <Star className="h-3 w-3 mr-1" />
+                            Destacado
+                          </Badge>
+                        </div>
+
+                        <div className="absolute top-3 right-3">
+                          <div className="bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+                            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                            <span className="text-white font-semibold">
+                              {DEMO_CLUB.rating_average.toFixed(1)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-6">
+                        <h3 className="text-xl font-bold text-white mb-2">
+                          {DEMO_CLUB.name}
+                        </h3>
+
+                        <div className="flex items-center gap-2 text-white/70 mb-3">
+                          <MapPin className="h-4 w-4" />
+                          <span>
+                            {DEMO_CLUB.address}
+                          </span>
+                        </div>
+
+                        {DEMO_CLUB.description && (
+                          <p className="text-white/80 text-sm mb-4 line-clamp-2">
+                            {DEMO_CLUB.description}
+                          </p>
+                        )}
+
+                        <div className="grid grid-cols-3 gap-4 mb-4 text-center">
+                          <div>
+                            <div className="text-white font-semibold">
+                              {DEMO_CLUB.check_in_count}
+                            </div>
+                            <div className="text-white/60 text-xs">
+                              Check-ins
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-white font-semibold">
+                              {DEMO_CLUB.rating_count}
+                            </div>
+                            <div className="text-white/60 text-xs">Reseñas</div>
+                          </div>
+                          <div>
+                            <div className="text-white font-semibold">
+                              {DEMO_CLUB.rating_count}
+                            </div>
+                            <div className="text-white/60 text-xs">Ratings</div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => navigate(`/clubs/${DEMO_CLUB.slug}`)}
+                            className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            Ver Club
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
               {filteredClubs.map((club, index) => (
                 <motion.div
                   key={club.id}

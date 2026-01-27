@@ -293,7 +293,7 @@ function ImageCard({
           src={image.url}
           alt={image.title || "Imagen"}
           className={`w-full h-full object-cover transition-all duration-300 ${
-            isLocked ? "blur-xl filter blur-[20px] scale-110" : ""
+            isLocked ? "blur-[20px] filter scale-110" : ""
           }`}
         />
 

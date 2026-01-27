@@ -1,5 +1,3 @@
-
-
 // ============================================================================
 // ESTRATEGIA DE CARGA DE PÁGINAS
 // ============================================================================
@@ -105,6 +103,7 @@ const AdminPartners = lazyWithDefault(
 // Clubs system
 const Clubs = lazyWithDefault(() => import("@/pages/Clubs"));
 const ClubsComingSoon = lazyWithDefault(() => import("@/pages/ClubsComingSoon"));
+const ClubsDemo = lazyWithDefault(() => import("@/pages/ClubsDemo"));
 
 // Shop CMPX tokens
 const Shop = lazyWithDefault(() => import("@/pages/Shop"));
@@ -410,6 +409,7 @@ const App = () => {
                                 </AdminRoute>
                               }
                             />
+                            <Route path="/clubs/demo" element={<ClubsDemo />} />
                             <Route path="/clubs" element={<Clubs />} />
                             <Route path="/clubs/:slug" element={<Clubs />} />
                             <Route path="/clubs-coming-soon" element={<ClubsComingSoon />} />

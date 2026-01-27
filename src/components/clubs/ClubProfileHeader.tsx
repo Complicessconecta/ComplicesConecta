@@ -16,6 +16,7 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
   onEdit,
 }) => {
   const isPremium = club.membership_tier === "premium";
+  const isDemoClub = club.id === "demo";
 
   return (
     <Card
@@ -41,6 +42,11 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
 
         {/* Badges */}
         <div className="absolute top-4 left-4 flex gap-2">
+          {isDemoClub && (
+            <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
+              Admin
+            </Badge>
+          )}
           {isPremium && (
             <Badge className="bg-linear-to-r from-yellow-400 to-amber-500 text-black border border-yellow-300/60">
               ✅ Premium

@@ -113,6 +113,19 @@ Al finalizar cualquier sesión de desarrollo que involucre cambios en la estruct
 
 Antes de crear un commit, verificar que `Project-Structure-Tree-files.md` esté actualizado con la estructura actual del directorio `src/`.
 
+**Regla adicional (navegación de rutas en el IDE):**
+
+- Para ubicar rutas/archivos dentro de `src/`, usar como referencia primaria `Project-Structure-Tree-files.md`.
+- Evitar “mapear”/escanear todo `src/` para descubrir rutas, salvo que:
+  - el archivo no exista en `Project-Structure-Tree-files.md`, o
+  - se esté actualizando dicho archivo por cambios recientes.
+- Si se crea/elimina/mueve/renombra cualquier archivo o carpeta dentro de `src/`, es obligatorio actualizar `Project-Structure-Tree-files.md` en el mismo PR.
+
+**Regla adicional (cambios de flujos):**
+
+- Cualquier alta/edición/eliminación de flujos del sistema debe registrarse en `DIAGRAMAS_FLUJOS_CONSOLIDADO.md`.
+- El registro debe incluir: nombre del flujo, ruta(s) afectada(s), resumen breve y justificación.
+
 
 1.7 Política de NO borrado (Cuarentena de archivos)
 

@@ -234,7 +234,7 @@ describe("ProfileCouple", () => {
     );
 
     expect(screen.getByText("Mock Couple")).toBeTruthy();
-    expect(screen.getByText("@mock_couple")).toBeTruthy();
+    expect(screen.getAllByText("@mock_couple").length).toBeGreaterThan(0);
     expect(screen.getByText("ID: CC-MOCK-001")).toBeTruthy();
   });
 

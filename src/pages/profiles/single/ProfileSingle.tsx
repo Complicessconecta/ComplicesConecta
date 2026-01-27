@@ -930,12 +930,8 @@ const ProfileSingle: FC = () => {
                           <DropdownMenuItem
                             onClick={async () => {
                               if (isDemoProfile) {
-                                toast({
-                                  title: "DEMO",
-                                  description:
-                                    "Cerrar sesión está deshabilitado en demo (solo visual).",
-                                });
-                                return;
+                                // Habilitar logout incluso en demo
+                                await signOut();
                               }
                               if (window.confirm("¿Cerrar sesión?")) {
                                 try {

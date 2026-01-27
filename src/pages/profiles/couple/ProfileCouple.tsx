@@ -964,12 +964,8 @@ function ProfileCouple() {
                             <DropdownMenuItem
                               onClick={async () => {
                                 if (isDemoMode) {
-                                  shadcnToast({
-                                    title: "DEMO",
-                                    description:
-                                      "Cerrar sesión está deshabilitado en demo (solo visual).",
-                                  });
-                                  return;
+                                  // Habilitar logout incluso en demo
+                                  await signOut();
                                 }
                                 if (window.confirm("¿Cerrar sesión?")) {
                                   try {

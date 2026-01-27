@@ -7,6 +7,7 @@ import { PageTransitionWrapper } from "@/components/animations/PageTransitions";
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Navigation } from "@/components/Navigation";
+import { BottomNavigation } from "@/components/layout/BottomNavigation";
 import { Toaster } from "@/components/ui/toaster";
 const ChatLazy = lazy(() => import("@/pages/Chat"));
 
@@ -66,6 +67,11 @@ export const MainLayout = () => {
     HIDE_HEADER_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
   const showHeaderNav = !hasSession && !shouldHideHeader;
+
+  // Corregir scroll al inicio al cargar página
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   const isClubDemoRoute = pathname === "/clubs/demo";
 
@@ -163,6 +169,9 @@ export const MainLayout = () => {
 
         {/* Bottom Navigation (perfil/app) */}
         {showBottomNavigation && <Navigation />}
+        
+        {/* Bottom Navigation for Demo Profiles */}
+        <BottomNavigation />
 
         <Toaster />
       </div>

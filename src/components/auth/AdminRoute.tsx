@@ -51,18 +51,18 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
       try {
         const { data, error } = await supabase.rpc("is_admin");
         if (error) {
+          logger.error("❌ Error en rpc:is_admin:", { error: error.message });
           throw error;
         }
 
         if (data === true) {
           logger.info("✅ Acceso de admin verificado (rpc:is_admin)");
           setIsAdmin(true);
+          setLoading(false);
           return;
         }
 
         logger.info("🚫 Usuario no es admin (rpc:is_admin)");
-        setIsAdmin(false);
-        return;
       } catch (error: any) {
         logger.error("⚠️ Error verificando admin via rpc:is_admin, usando fallback", {
           error: error?.message,

@@ -290,15 +290,18 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
-      logger.info("🚪 Cerrando sesión...");
+      logger.info("🚪 Iniciando cierre de sesión");
 
-      // Verificar si es sesión demo usando StorageManager
+      // Verificar si es sesión demo
       const sessionFlags = StorageManager.getSessionFlags();
 
       if (sessionFlags.demo_authenticated) {
-        // Limpiar sesión demo
+        // Cerrar sesión demo
         clearDemoAuth();
         logger.info("✅ Sesión demo cerrada");
+        // Redirigir al index después de cerrar sesión demo
+        window.location.href = "/";
+        return;
       } else {
         // Cerrar sesión real de Supabase
         logger.info("🔗 Cerrando sesión real de Supabase...");
@@ -311,6 +314,8 @@ export const useAuth = () => {
           logger.error("❌ Error during sign out:", { error: error.message });
         } else {
           logger.info("✅ Sesión real cerrada");
+          // Redirigir al index después de cerrar sesión real
+          window.location.href = "/";
         }
       }
 

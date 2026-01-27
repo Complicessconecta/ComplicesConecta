@@ -4,13 +4,11 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/features/auth/useAuth";
-import { useToast } from "@/hooks/useToast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export const ProfileLayout: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, signOut, isDemoMode } = useAuth();
-  const { toast } = useToast();
 
   return (
     <>
@@ -19,7 +17,7 @@ export const ProfileLayout: React.FC = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              className="demo-user-heartbeat bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-2xl shadow-2xl shadow-purple-500/30 border border-white/20 backdrop-blur-md hover:[animation-play-state:paused]"
+              className="demo-user-heartbeat bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-2xl shadow-2xl shadow-purple-500/30 border border-white/20 backdrop-blur-md hover:[animation-play-state:paused] w-full max-w-xs"
             >
               <span className="flex flex-col items-center leading-tight">
                 <span className="text-sm font-bold">Demo User</span>
@@ -51,11 +49,8 @@ export const ProfileLayout: React.FC = () => {
             <DropdownMenuItem
               onClick={async () => {
                 if (isDemoMode()) {
-                  toast({
-                    title: "DEMO",
-                    description:
-                      "Cerrar sesión está deshabilitado en demo (solo visual).",
-                  });
+                  // Habilitar logout incluso en demo
+                  await signOut();
                   return;
                 }
                 if (!isAuthenticated()) {

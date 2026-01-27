@@ -30,7 +30,8 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
     try {
       setIsLoading(true);
       await signOut();
-      // La redirección y limpieza de estado debe ser manejada por el AuthProvider/useAuth
+      // Redirigir al index después de cerrar sesión
+      window.location.href = "/";
     } catch (error) {
       logger.error("Error inesperado al cerrar sesión:", { error });
     } finally {

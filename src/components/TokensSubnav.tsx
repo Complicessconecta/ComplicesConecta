@@ -15,6 +15,9 @@ export const TokensSubnav = () => {
       ? isAuthenticated()
       : Boolean(isAuthenticated);
 
+  // No renderizar si no hay sesión (evitar doble header en páginas públicas)
+  if (!hasSession) return null;
+
   const tabs = [
     ...(hasSession ? [{ name: "Dashboard", path: "/tokens", icon: LayoutDashboard }] : []),
     { name: "Info", path: "/tokens-info", icon: FileText },

@@ -1,8 +1,8 @@
 // Service Worker Avanzado - ComplicesConecta v3.0.0
 // CRÍTICO: Actualizar versión para forzar limpieza de caches antiguos
-const STATIC_CACHE = "static-v3.0.1";
-const DYNAMIC_CACHE = "dynamic-v3.0.1";
-const IMAGE_CACHE = "images-v3.0.1";
+const STATIC_CACHE = "static-v3.0.2";
+const DYNAMIC_CACHE = "dynamic-v3.0.2";
+const IMAGE_CACHE = "images-v3.0.2";
 
 // Recursos estáticos críticos
 const STATIC_ASSETS = [

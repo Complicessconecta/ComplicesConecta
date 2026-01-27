@@ -233,8 +233,13 @@ class ConsoleErrorCapture {
       try {
         const response = await originalFetch(...args);
         if (!response.ok && args[0]) {
-          const url =
-            typeof args[0] === "string" ? args[0] : (args[0] as Request).url;
+          const url = (() => {
+            const input = args[0];
+            if (typeof input === "string") return input;
+            if (input instanceof URL) return input.toString();
+            if (input instanceof Request) return input.url;
+            return "";
+          })();
           let resourceType: ResourceError["type"] = "other";
 
           if (url.includes("chunk") || url.includes("assets/js")) {
@@ -253,8 +258,13 @@ class ConsoleErrorCapture {
         }
         return response;
       } catch (error) {
-        const url =
-          typeof args[0] === "string" ? args[0] : (args[0] as Request).url;
+        const url = (() => {
+          const input = args[0];
+          if (typeof input === "string") return input;
+          if (input instanceof URL) return input.toString();
+          if (input instanceof Request) return input.url;
+          return "";
+        })();
         this.resourceErrors.push({
           url,
           type: "other",
@@ -262,6 +272,21 @@ class ConsoleErrorCapture {
           statusText: error instanceof Error ? error.message : "Network error",
           timestamp: new Date().toISOString(),
         });
+
+        const isInternalIntegrationRequest = (() => {
+          if (!url) return false;
+          return (
+            url.includes("cascade-browser-integration") ||
+            url.includes("windsurf") ||
+            url.includes("127.0.0.1") ||
+            url.includes("localhost")
+          );
+        })();
+
+        if (isInternalIntegrationRequest) {
+          return new Response(null, { status: 204, statusText: "No Content" });
+        }
+
         throw error;
       }
     };

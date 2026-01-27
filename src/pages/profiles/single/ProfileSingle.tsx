@@ -1812,6 +1812,19 @@ const ProfileSingle: FC = () => {
                                   )}
                                 />
 
+                                {isGalleryUnlocked && (
+                                  <div className="absolute inset-0 pointer-events-none select-none">
+                                    <div className="absolute bottom-2 right-2 rounded-md bg-black/50 px-2 py-1 text-[10px] font-semibold text-white border border-white/20">
+                                      ComplicesConecta
+                                    </div>
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-15">
+                                      <div className="text-white text-3xl font-bold -rotate-45">
+                                        CÓMPLICES
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+
                                 {!isGalleryUnlocked && (
                                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
                                     <div className="bg-white/20 p-4 rounded-2xl border-2 border-white/30 shadow-2xl backdrop-blur-md">
@@ -1938,6 +1951,8 @@ const ProfileSingle: FC = () => {
         onNavigate={navigateCarousel}
         onLike={handleImageLike}
         onComment={handleAddComment}
+        isPrivate
+        isBlurred={!isGalleryUnlocked}
       />
 
       <Modal

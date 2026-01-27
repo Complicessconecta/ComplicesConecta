@@ -109,9 +109,7 @@ describe("PostsService", () => {
 
   describe("createPost", () => {
     it("should create a post successfully", async () => {
-      // Mock localStorage for user id
-      const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
-      getItemSpy.mockReturnValue(JSON.stringify({ id: "user-123" }));
+      localStorage.setItem("demo_user", JSON.stringify({ id: "user-123" }));
 
       const result = await service.createPost({
         content: "Test post",

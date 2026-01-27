@@ -252,7 +252,7 @@ export const ImageModal = ({
                 {/* Marca de agua grande en el centro */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
                   <div className="text-white text-6xl font-bold transform -rotate-45 select-none">
-                    CÓMPICES
+                    CÓMPLICES
                   </div>
                 </div>
               </>

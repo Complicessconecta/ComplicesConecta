@@ -33,7 +33,6 @@ vite.config.*.timestamp-*
 # Android Build
 android/app/build/
 android/app/release/
-android/gradle/
 android/.gradle/
 android/.fastRequest/
 android/local.properties
@@ -408,11 +407,4 @@ scripts/*auth*
 # ============================================================================
 ComplicesConecta_Auditoria_Inicial (1)/
 
-  
-# ============================================================================  
-# DEVELOPMENT TOOLS (scripts privados)  
-# ============================================================================  
-tools/*.ps1  
-tools/DEV_*.ps1  
-tools/MOVE_*.ps1  
-tools/RESET_*.ps1 
+ 

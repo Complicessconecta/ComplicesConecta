@@ -352,6 +352,8 @@ export const useAuth = () => {
         const demoPassword = getDemoPassword(email);
 
         if (password !== demoPassword) {
+          // SECURITY FIX: No cargar perfil demo si contraseña es incorrecta
+          logger.error("🚫 Contraseña incorrecta para usuario demo - acceso denegado");
           throw new Error("Contraseña incorrecta para usuario demo");
         }
 

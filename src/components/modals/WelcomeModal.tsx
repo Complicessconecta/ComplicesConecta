@@ -396,7 +396,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                 {currentStep === welcomeSteps.length - 1 ? (
                   <>
                     <Heart
-                      className="w-4 h-4 mr-2 group-hover:animate-pulse"
+                      className="w-4 h-4 mr-2 group-hover:animate-pulse text-pink-500 group-hover:scale-110 transition-all duration-300"
                       fill="currentColor"
                     />
                     ¡Comenzar!

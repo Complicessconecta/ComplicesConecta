@@ -11,18 +11,18 @@ export const HeroSection = () => {
             <div className="flex items-center space-x-6 group">
               <div className="relative">
                 <Heart
-                  className="text-pink-500 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-pulse group-hover:text-pink-400 drop-shadow-[0_0_30px_rgba(236,72,153,0.8)]"
+                  className="text-red-500 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-pulse group-hover:text-red-400 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
                   fill="currentColor"
                   stroke="white"
                   strokeWidth="2"
                   style={{
                     animationDuration: "2s",
-                    filter: "drop-shadow(0 0 30px rgba(236,72,153,0.8))",
+                    filter: "drop-shadow(0 0 30px rgba(239,68,68,0.8))",
                   }}
                 />
                 <div className="absolute inset-0 animate-float">
                   <Heart
-                    className="text-pink-400 opacity-80 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-ping drop-shadow-lg"
+                    className="text-red-400 opacity-80 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-ping drop-shadow-lg"
                     fill="currentColor"
                     stroke="white"
                     strokeWidth="1"
@@ -30,7 +30,7 @@ export const HeroSection = () => {
                 </div>
                 <div className="absolute inset-0 animate-pulse">
                   <Heart
-                    className="text-pink-300 opacity-50 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 drop-shadow-md"
+                    className="text-red-300 opacity-50 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 drop-shadow-md"
                     fill="currentColor"
                     stroke="white"
                     strokeWidth="1"

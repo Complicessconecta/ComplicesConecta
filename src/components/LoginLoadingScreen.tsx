@@ -4,7 +4,7 @@ import "@/styles/LoginLoadingScreen.css";
 
 export interface LoginLoadingScreenProps {
   onComplete: () => void;
-  userType: "single" | "couple";
+  userType: "single" | "couple" | "admin";
   userName?: string;
   userProfile?: {
     firstName?: string;
@@ -79,7 +79,14 @@ export const LoginLoadingScreen = ({
     `¡Bienvenidos ${personalizedName}!`,
   ];
 
-  const loadingTexts = userType === "couple" ? coupleTexts : singleTexts;
+  const adminTexts = [
+    "Verificando credenciales de administrador...",
+    "Accediendo al panel de control...",
+    "Cargando herramientas de administración...",
+    `¡Bienvenido Administrador ${personalizedName}!`,
+  ];
+
+  const loadingTexts = userType === "admin" ? adminTexts : userType === "couple" ? coupleTexts : singleTexts;
 
   const icons = [Shield, UserCheck, Users, Heart];
 

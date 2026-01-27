@@ -60,7 +60,7 @@ const Auth = () => {
     getCurrentLocation,
     location,
   } = useGeolocation();
-  const { signIn, signOut, isDemoMode } = useAuth();
+  const { signIn, signOut, isDemoMode, isAdmin } = useAuth();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
@@ -229,7 +229,7 @@ const Auth = () => {
           message: "Inicio de sesión exitoso",
         });
 
-        // Redirigir segn el tipo de cuenta
+        // Redirigir según el tipo de cuenta y modo admin
         const userWithMetadata = result.user as any;
         const accountType =
           userWithMetadata?.user_metadata?.account_type ||
@@ -238,8 +238,26 @@ const Auth = () => {
           formData.accountType ||
           "single";
 
+        // Verificar si es admin y redirigir al panel correspondiente
+        const isAdminUser = isAdmin();
+        
+        // Personalizar mensaje de bienvenida según rol
+        const welcomeMessage = isAdminUser 
+          ? "Bienvenido Administrador" 
+          : `Bienvenido de vuelta ${userWithMetadata?.user_metadata?.nickname || userWithMetadata?.user_metadata?.first_name || ""}`;
+        
+        toast({
+          title: "Inicio de sesión exitoso",
+          description: welcomeMessage,
+        });
+
+        setAuthFeedback({
+          type: "success",
+          message: isAdminUser ? "Acceso administrador verificado" : "Inicio de sesión exitoso",
+        });
+        
         setTimeout(() => {
-          if (isAdminLoginMode) {
+          if (isAdminLoginMode || isAdminUser) {
             navigate("/admin");
             return;
           }
@@ -374,7 +392,12 @@ const Auth = () => {
     return (
       <LoginLoadingScreen
         onComplete={() => setShowLoginLoading(false)}
-        userType="single"
+        userType={isAdminLoginMode ? "admin" : "single"}
+        userName={formData.email}
+        userProfile={{
+          nickname: formData.email?.split("@")[0],
+          firstName: formData.email?.split("@")[0],
+        }}
       />
     );
   }
@@ -508,7 +531,7 @@ const Auth = () => {
                   data-testid="switch-to-login"
                   type="button"
                   onClick={() => setActiveTab("signin")}
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
                 >
                   Iniciar Sesión
                 </TabsTrigger>
@@ -518,7 +541,7 @@ const Auth = () => {
                     data-testid="switch-to-register"
                     type="button"
                     onClick={() => setActiveTab("signup")}
-                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
+                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-10 flex items-center justify-center"
                   >
                     Registrarse
                   </TabsTrigger>

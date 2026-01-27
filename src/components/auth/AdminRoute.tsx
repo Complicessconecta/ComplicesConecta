@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { isProductionAdmin } from "@/lib/app-config";
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -35,6 +36,42 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
   const checkAdminAccess = async (attempt: number) => {
     try {
+      // Demo mode: permitir acceso admin sin sesión Supabase
+      try {
+        if (typeof window !== "undefined") {
+          const demoAuth = window.localStorage.getItem("demo_authenticated");
+          const demoUserRaw = window.localStorage.getItem("demo_user");
+          if (demoAuth === "true" && demoUserRaw) {
+            let parsedDemoUser: { accountType?: string; role?: string } | null = null;
+            try {
+              parsedDemoUser = JSON.parse(demoUserRaw) as {
+                accountType?: string;
+                role?: string;
+              };
+            } catch {
+              parsedDemoUser = null;
+            }
+
+            const isDemoAdmin =
+              parsedDemoUser?.accountType === "admin" || parsedDemoUser?.role === "admin";
+
+            if (isDemoAdmin) {
+              logger.info("✅ AdminRoute: acceso demo admin autorizado");
+              setIsAdmin(true);
+              setLoading(false);
+              return;
+            }
+
+            logger.info("🚫 AdminRoute: usuario demo sin permisos admin");
+            setIsAdmin(false);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // no-op: seguir validación normal
+      }
+
       if (!supabase) {
         logger.error("❌ Supabase no está disponible");
         setIsAdmin(false);
@@ -68,6 +105,18 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
         logger.info("🚫 No hay sesión activa - acceso denegado");
         setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      // Fallback por email (admins definidos por ENV/whitelist). Esto evita bloqueos
+      // cuando rpc:is_admin o admin_users no están disponibles/configurados.
+      const sessionEmail = session.user.email?.toLowerCase();
+      if (sessionEmail && isProductionAdmin(sessionEmail)) {
+        logger.info("✅ AdminRoute: acceso admin por email autorizado", {
+          email: sessionEmail,
+        });
+        setIsAdmin(true);
         setLoading(false);
         return;
       }

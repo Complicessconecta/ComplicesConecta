@@ -37,10 +37,7 @@ export const MainLayout = () => {
   const hasDemoSession = (() => {
     if (typeof window === "undefined") return false;
     try {
-      return (
-        window.localStorage.getItem("demo_authenticated") === "true" ||
-        window.localStorage.getItem("demo_user") !== null
-      );
+      return window.localStorage.getItem("demo_authenticated") === "true";
     } catch {
       return false;
     }

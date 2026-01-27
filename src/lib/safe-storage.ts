@@ -58,13 +58,22 @@ export function safeGetItem<T = unknown>(
       return (options.defaultValue as T) ?? null;
     }
 
-    // Intentar parsear JSON
-    let parsedValue: unknown;
-    try {
-      parsedValue = JSON.parse(rawValue);
-    } catch {
-      // Si no es JSON válido, usar el valor raw
-      parsedValue = rawValue;
+    // Intentar parsear JSON SOLO cuando el valor parece JSON.
+    // Esto evita que strings simples como "true"/"false" se conviertan a boolean
+    // y fallen la validación zod (demo_authenticated espera "true" | "false").
+    const trimmed = rawValue.trim();
+    const looksLikeJson =
+      trimmed.startsWith("{") ||
+      trimmed.startsWith("[") ||
+      (trimmed.startsWith('"') && trimmed.endsWith('"'));
+
+    let parsedValue: unknown = rawValue;
+    if (looksLikeJson) {
+      try {
+        parsedValue = JSON.parse(rawValue);
+      } catch {
+        parsedValue = rawValue;
+      }
     }
 
     // Validar con esquema si se proporciona

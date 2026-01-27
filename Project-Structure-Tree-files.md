@@ -1,5 +1,5 @@
 Listado de rutas de carpetas para el volumen WACKO
-El número de serie del volumen es D8CF-CDD4
+El nï¿½mero de serie del volumen es D8CF-CDD4
 C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   App.tsx
 |   debug.tsx
@@ -925,7 +925,6 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       Admin.tsx
 |   |       AdminAnalytics.tsx
 |   |       AdminCareerApplications.tsx
-|   |       AdminDashboard.tsx
 |   |       AdminModerators.tsx
 |   |       AdminPartners.tsx
 |   |       AdminProduction.tsx
@@ -1345,3 +1344,4 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
     \---discover
             generateRandomProfiles.ts
             
+

@@ -47,13 +47,15 @@ export class SecureStorage {
   /**
    * Guarda datos cifrados en localStorage
    */
-  public setItem(key: string, value: any): void {
+  public setItem<T>(key: string, value: T): void {
     try {
       const serializedValue = JSON.stringify(value);
       const encryptedValue = this.encrypt(serializedValue);
       localStorage.setItem(key, encryptedValue);
     } catch (error) {
-      console.error(`Error setting secure item ${key}:`, error);
+      console.error(`Error setting secure item ${key}:`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw new Error(`Failed to securely store ${key}`);
     }
   }
@@ -61,18 +63,20 @@ export class SecureStorage {
   /**
    * Obtiene y descifra datos desde localStorage
    */
-  public getItem<T>(key: string): T | null {
+  public getItem<T>(key: string): T | undefined {
     try {
       const encryptedValue = localStorage.getItem(key);
-      if (!encryptedValue) return null;
+      if (!encryptedValue) return undefined;
 
       const decryptedValue = this.decrypt(encryptedValue);
       return JSON.parse(decryptedValue) as T;
     } catch (error) {
-      console.error(`Error getting secure item ${key}:`, error);
+      console.error(`Error getting secure item ${key}:`, {
+        error: error instanceof Error ? error.message : String(error),
+      });
       // Si hay error de desencriptación, eliminar el dato corrupto
       this.removeItem(key);
-      return null;
+      return undefined;
     }
   }
 

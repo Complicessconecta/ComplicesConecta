@@ -4,6 +4,7 @@ import { AppConfig } from "@/config/app-config";
 import { logger } from "@/lib/logger";
 import { secureStorage, SecureSessionData } from "@/lib/storage/secure-storage";
 import type { SupabaseAuthConfig } from "@/types/supabase-auth";
+import { CertificatePinning } from "@/security/certificate-pinning";
 
 // Configuración de seguridad para cookies HttpOnly
 const SECURE_AUTH_CONFIG: SupabaseAuthConfig = {
@@ -21,7 +22,7 @@ const SECURE_AUTH_CONFIG: SupabaseAuthConfig = {
  * Implementa HttpOnly cookies en producción y cifrado en desarrollo
  */
 export class SecureSupabaseClient {
-  private static instance: SupabaseClient<Database> | null = null;
+  private static instance: SupabaseClient<Database> | undefined;
   private static isInitialized = false;
 
   private constructor() {}
@@ -82,8 +83,15 @@ export class SecureSupabaseClient {
    * Crea un fetch interceptor con seguridad mejorada
    */
   static createSecureFetch() {
-    return (input: RequestInfo | URL, init?: RequestInit) => {
-      const url = typeof input === 'string' ? input : input.toString();
+    return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const url =
+        typeof input === "string"
+          ? input
+          : input instanceof Request
+            ? input.url
+            : input.toString();
+
+      await CertificatePinning.validateRequestUrl(url);
       
       // Agregar headers de seguridad
       const secureHeaders = {
@@ -109,7 +117,9 @@ export class SecureSupabaseClient {
           headers: secureHeaders,
         });
       } catch (error) {
-        logger.error("❌ Secure fetch error:", error);
+        logger.error("❌ Secure fetch error:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
         throw error;
       }
     };
@@ -192,7 +202,9 @@ export class SecureSupabaseClient {
 
       logger.info("🧹 Todos los datos sensibles limpiados");
     } catch (error) {
-      logger.error("❌ Error limpiando datos seguros:", error);
+      logger.error("❌ Error limpiando datos seguros:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
@@ -204,7 +216,9 @@ export class SecureSupabaseClient {
       const { data: { session }, error } = await this.getInstance().auth.getSession();
       
       if (error) {
-        logger.error("❌ Error validando sesión:", error);
+        logger.error("❌ Error validando sesión:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
         return false;
       }
 
@@ -216,7 +230,9 @@ export class SecureSupabaseClient {
 
       return isValid;
     } catch (error) {
-      logger.error("❌ Error en validación de sesión:", error);
+      logger.error("❌ Error en validación de sesión:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       this.clearSecureData();
       return false;
     }
@@ -225,7 +241,7 @@ export class SecureSupabaseClient {
   /**
    * Obtiene datos de sesión de forma segura
    */
-  public static getSecureSessionData(): SecureSessionData | null {
+  public static getSecureSessionData(): SecureSessionData | undefined {
     return secureStorage.getItem<SecureSessionData>('cc_secure_session');
   }
 
@@ -238,7 +254,9 @@ export class SecureSupabaseClient {
       this.clearSecureData();
       logger.info("✅ Cierre de sesión seguro completado");
     } catch (error) {
-      logger.error("❌ Error en cierre de sesión seguro:", error);
+      logger.error("❌ Error en cierre de sesión seguro:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       // Forzar limpieza incluso si hay error
       this.clearSecureData();
       throw error;

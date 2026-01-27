@@ -22,9 +22,19 @@ import { initPostHog } from "@/config/posthog.config";
 import { oneSignalService } from "@/services/social/notifications/OneSignalService";
 import { DebugInfo } from "@/debug";
 import { logger } from "@/lib/logger";
+import { injectCSP } from "@/security/csp-config";
 
 // CRÍTICO: Iniciar la captura de errores de consola lo antes posible.
 startErrorCapture();
+
+// CRÍTICO: Activar CSP runtime (meta tag). En DEV se usa policy permisiva para HMR.
+try {
+  injectCSP(import.meta.env.PROD);
+} catch (error) {
+  logger.error("CSP injection failed", {
+    error: error instanceof Error ? error.message : String(error),
+  });
+}
 
 // CRÍTICO: Validación temprana de variables de entorno (sin romper modo demo)
 (() => {

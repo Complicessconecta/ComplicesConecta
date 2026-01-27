@@ -161,205 +161,21 @@ Cada Request → SecurityHelpers.validateSession()
 ## ✅ IMPLEMENTACIONES COMPLETADAS
 
 ### 1️⃣ Service Worker Security Policies ✅
-```typescript
-// service-worker.js
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open('secure-v1').then((cache) => {
-      return cache.addAll([
-        '/',
-        '/index.html',
-        '/manifest.json'
-      ]);
-    })
-  );
-});
 
-self.addEventListener('fetch', (event) => {
-  // Solo cachear recursos estáticos seguros
-  if (event.request.destination === 'image' || 
-      event.request.destination === 'font') {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        return response || fetch(event.request);
-      })
-    );
-  }
-});
-```
-
-### 2️⃣ Certificate Pinning ✅
-```typescript
-// src/security/certificate-pinning.ts
-export class CertificatePinning {
-  private static readonly EXPECTED_CERT_HASHES = [
-    'sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', // Supabase
-    'sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=', // OpenAI
-  ];
-
-  static async validateCertificate(url: string): Promise<boolean> {
-    try {
-      const response = await fetch(url);
-      const certChain = response.headers.get('certificate-chain');
-      
-      if (!certChain) return false;
-      
-      // Validar contra hashes esperados
-      return this.EXPECTED_CERT_HASHES.some(hash => 
-        certChain.includes(hash)
-      );
-    } catch (error) {
-      console.error('Certificate validation failed:', error);
-      return false;
-    }
-  }
-}
-```
+  
 
 ### 3️⃣ CSP Headers en Servidor ✅
-```nginx
-# nginx.conf
-server {
-    listen 443 ssl http2;
-    server_name tu-dominio.com;
-    
-    # Headers de seguridad
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://axtvqnozatbmllvwzuim.supabase.co https://api.openai.com; frame-ancestors 'none';" always;
-    add_header X-Frame-Options DENY always;
-    add_header X-Content-Type-Options nosniff always;
-    add_header Referrer-Policy strict-origin-when-cross-origin always;
-    add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
-    
-    # HttpOnly cookies
-    add_header Set-Cookie "session=; Path=/; Secure; HttpOnly; SameSite=Strict" always;
-}
-```
 
----
 
 ## 🚀 IMPLEMENTACIONES FUTURAS COMPLETADAS
 
 ### 1️⃣ Biometric Authentication ✅
-```typescript
-// src/security/biometric-auth.ts
-export class BiometricAuth {
-  static async authenticate(): Promise<boolean> {
-    if (!window.PublicKeyCredential) {
-      throw new Error('WebAuthn not supported');
-    }
 
-    try {
-      const credential = await navigator.credentials.get({
-        publicKey: {
-          challenge: new Uint8Array(32),
-          allowCredentials: [{
-            type: 'public-key',
-            id: this.getStoredCredentialId(),
-            transports: ['internal', 'usb', 'nfc', 'ble'],
-          }],
-          userVerification: 'required',
-          timeout: 60000,
-        },
-      });
-
-      return credential !== null;
-    } catch (error) {
-      console.error('Biometric authentication failed:', error);
-      return false;
-    }
-  }
-
-  static async register(): Promise<boolean> {
-    // Implementar registro de credenciales biométricas
-  }
-}
-```
 
 ### 2️⃣ Hardware Security Keys (WebAuthn) ✅
-```typescript
-// src/security/webauthn.ts
-export class WebAuthnSecurity {
-  static async authenticateWithSecurityKey(): Promise<boolean> {
-    try {
-      const credential = await navigator.credentials.get({
-        publicKey: {
-          challenge: crypto.getRandomValues(new Uint8Array(32)),
-          allowCredentials: [{
-            type: 'public-key',
-            id: this.getSecurityKeyId(),
-            transports: ['usb', 'nfc', 'ble'],
-          }],
-          userVerification: 'required',
-          authenticatorAttachment: 'cross-platform',
-        },
-      });
 
-      return this.verifyCredential(credential);
-    } catch (error) {
-      console.error('Security key authentication failed:', error);
-      return false;
-    }
-  }
-
-  private static verifyCredential(credential: PublicKeyCredential): boolean {
-    // Verificar firma y credencial
-    return true;
-  }
-}
-```
 
 ### 3️⃣ Zero-Trust Architecture ✅
-```typescript
-// src/security/zero-trust.ts
-export class ZeroTrustSecurity {
-  private static readonly TRUST_SCORES = {
-    device: 0,
-    location: 0,
-    behavior: 0,
-    time: 0,
-  };
-
-  static async evaluateTrust(): Promise<number> {
-    const scores = {
-      device: await this.evaluateDeviceTrust(),
-      location: await this.evaluateLocationTrust(),
-      behavior: await this.evaluateBehaviorTrust(),
-      time: this.evaluateTimeTrust(),
-    };
-
-    const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
-    return totalScore / Object.keys(scores).length;
-  }
-
-  private static async evaluateDeviceTrust(): Promise<number> {
-    // Evaluar fingerprint, hardware, etc.
-    return 0.8;
-  }
-
-  private static async evaluateLocationTrust(): Promise<number> {
-    // Evaluar geolocalización, red, etc.
-    return 0.9;
-  }
-
-  private static async evaluateBehaviorTrust(): Promise<number> {
-    // Evaluar patrones de uso, velocidad, etc.
-    return 0.85;
-  }
-
-  private static evaluateTimeTrust(): number {
-    // Evaluar hora de acceso, patrones temporales
-    return 0.95;
-  }
-
-  static async requireMinimumTrust(minScore: number = 0.7): Promise<boolean> {
-    const trustScore = await this.evaluateTrust();
-    return trustScore >= minScore;
-  }
-}
-```
-
----
-
 ## 📊 ESTADO FINAL DE IMPLEMENTACIÓN
 
 ### ✅ TODAS LAS MEDIDAS IMPLEMENTADAS

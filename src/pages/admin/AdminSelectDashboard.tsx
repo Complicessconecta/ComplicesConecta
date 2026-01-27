@@ -13,7 +13,7 @@ export const AdminSelectDashboard = () => {
 
   const handleAdminPanel = () => {
     logger.info("Admin seleccionó panel de administración");
-    navigate("/admin");
+    navigate("/admin/dashboard");
   };
 
   const handleClubsDemo = () => {

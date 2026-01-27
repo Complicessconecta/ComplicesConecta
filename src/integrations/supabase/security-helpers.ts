@@ -1,5 +1,8 @@
 import { logger } from "@/lib/logger";
 import { secureStorage, SecureSessionData } from "@/lib/storage/secure-storage";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/supabase-generated";
+import { CertificatePinning } from "@/security/certificate-pinning";
 
 /**
  * Helpers de seguridad para Supabase
@@ -10,8 +13,15 @@ export class SecurityHelpers {
    * Crea un fetch interceptor con seguridad mejorada
    */
   static createSecureFetch(supabaseAnonKey: string) {
-    return (input: RequestInfo | URL, init?: RequestInit) => {
-      const url = typeof input === 'string' ? input : input.toString();
+    return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const url =
+        typeof input === "string"
+          ? input
+          : input instanceof Request
+            ? input.url
+            : input.toString();
+
+      await CertificatePinning.validateRequestUrl(url);
       
       // Agregar headers de seguridad
       const secureHeaders = {
@@ -39,7 +49,9 @@ export class SecurityHelpers {
           headers: secureHeaders,
         });
       } catch (error) {
-        logger.error("❌ Secure fetch error:", error);
+        logger.error("❌ Secure fetch error:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
         throw error;
       }
     };
@@ -48,7 +60,7 @@ export class SecurityHelpers {
   /**
    * Configura listeners de sesión para manejo seguro
    */
-  static setupSessionListeners(client: any) {
+  static setupSessionListeners(client: SupabaseClient<Database>) {
     client.auth.onAuthStateChange((event, session) => {
       logger.info("🔐 Auth state change:", { event, hasSession: !!session });
 
@@ -135,25 +147,29 @@ export class SecurityHelpers {
 
       // Limpiar variables globales
       if (typeof window !== 'undefined') {
-        delete (window as any).__supabaseUser;
-        delete (window as any).__supabaseSession;
+        delete window.__supabaseUser;
+        delete window.__supabaseSession;
       }
 
       logger.info("🧹 Todos los datos sensibles limpiados completamente");
     } catch (error) {
-      logger.error("❌ Error limpiando datos seguros:", error);
+      logger.error("❌ Error limpiando datos seguros:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
   /**
    * Verifica si hay una sesión activa y válida
    */
-  static async validateSession(client: any): Promise<boolean> {
+  static async validateSession(client: SupabaseClient<Database>): Promise<boolean> {
     try {
       const { data: { session }, error } = await client.auth.getSession();
       
       if (error) {
-        logger.error("❌ Error validando sesión:", error);
+        logger.error("❌ Error validando sesión:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
         return false;
       }
 
@@ -165,7 +181,9 @@ export class SecurityHelpers {
 
       return isValid;
     } catch (error) {
-      logger.error("❌ Error en validación de sesión:", error);
+      logger.error("❌ Error en validación de sesión:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       this.clearAllSecureData();
       return false;
     }
@@ -174,13 +192,15 @@ export class SecurityHelpers {
   /**
    * Cierra sesión de forma segura
    */
-  static async secureSignOut(client: any): Promise<void> {
+  static async secureSignOut(client: SupabaseClient<Database>): Promise<void> {
     try {
       await client.auth.signOut();
       this.clearAllSecureData();
       logger.info("✅ Cierre de sesión seguro completado");
     } catch (error) {
-      logger.error("❌ Error en cierre de sesión seguro:", error);
+      logger.error("❌ Error en cierre de sesión seguro:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       // Forzar limpieza incluso si hay error
       this.clearAllSecureData();
       throw error;
@@ -213,7 +233,9 @@ export class SecurityHelpers {
 
       return false;
     } catch (error) {
-      logger.error("❌ Error detectando secuestro de sesión:", error);
+      logger.error("❌ Error detectando secuestro de sesión:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return true; // Asumir riesgo si hay error
     }
   }
@@ -273,7 +295,9 @@ export class SecurityHelpers {
 
       return true;
     } catch (error) {
-      logger.error("❌ Error verificando entorno seguro:", error);
+      logger.error("❌ Error verificando entorno seguro:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }

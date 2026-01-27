@@ -32,33 +32,48 @@ const SENSITIVE_PATTERNS = [
   /refresh.*token/i,
 ];
 
+type ConsolePrimitive = string | number | boolean | bigint | symbol | undefined;
+
+type ConsoleLeaf = ConsolePrimitive | Error;
+
+type ConsoleArray = Array<ConsoleLeaf>;
+
+type ConsoleObject = Record<string, ConsoleLeaf | ConsoleArray>;
+
+type ConsoleValue = ConsoleLeaf | ConsoleArray | ConsoleObject;
+
+function isConsoleRecord(value: ConsoleValue): value is ConsoleObject {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value) && !(value instanceof Error);
+}
+
 /**
  * Verifica si un mensaje contiene información sensible
  */
-function containsSensitiveInfo(message: any): boolean {
-  const messageStr = String(message || '');
-  return SENSITIVE_PATTERNS.some(pattern => pattern.test(messageStr));
+function containsSensitiveInfo(message: ConsoleValue): boolean {
+  const messageStr = String(message ?? "");
+  return SENSITIVE_PATTERNS.some((pattern) => pattern.test(messageStr));
 }
 
 /**
  * Limpia información sensible de los logs
  */
-function sanitizeLogMessage(...args: any[]): any[] {
-  return args.map(arg => {
-    if (typeof arg === 'object' && arg !== null) {
-      // Para objetos, crear copia y limpiar propiedades sensibles
-      const sanitized = { ...arg };
-      Object.keys(sanitized).forEach(key => {
-        if (SENSITIVE_PATTERNS.some(pattern => pattern.test(key))) {
-          sanitized[key] = '[REDACTED]';
+function sanitizeLogMessage(...args: ConsoleValue[]): ConsoleValue[] {
+  return args.map((arg) => {
+    if (isConsoleRecord(arg)) {
+      const sanitized: ConsoleObject = { ...arg };
+      Object.keys(sanitized).forEach((key) => {
+        if (SENSITIVE_PATTERNS.some((pattern) => pattern.test(key))) {
+          sanitized[key] = "[REDACTED]";
         }
       });
       return sanitized;
-    } else if (typeof arg === 'string') {
+    }
+
+    if (typeof arg === "string") {
       // Para strings, reemplazar patrones sensibles
       let sanitized = arg;
-      SENSITIVE_PATTERNS.forEach(pattern => {
-        sanitized = sanitized.replace(pattern, '[REDACTED]');
+      SENSITIVE_PATTERNS.forEach((pattern) => {
+        sanitized = sanitized.replace(pattern, "[REDACTED]");
       });
       return sanitized;
     }
@@ -72,33 +87,33 @@ function sanitizeLogMessage(...args: any[]): any[] {
 export function setupConsoleCleanup(): void {
   if (!isProduction) {
     // En desarrollo, mantener console normal pero con sanitización
-    console.log = (...args: any[]) => {
-      if (containsSensitiveInfo(args)) {
-        originalConsole.warn('🚨 Sensitive data detected in console.log:', ...sanitizeLogMessage(...args));
+    console.log = (...args: ConsoleValue[]) => {
+      if (args.some(containsSensitiveInfo)) {
+        originalConsole.warn("🚨 Sensitive data detected in console.log:", ...sanitizeLogMessage(...args));
       } else {
         originalConsole.log(...args);
       }
     };
 
-    console.info = (...args: any[]) => {
-      if (containsSensitiveInfo(args)) {
-        originalConsole.warn('🚨 Sensitive data detected in console.info:', ...sanitizeLogMessage(...args));
+    console.info = (...args: ConsoleValue[]) => {
+      if (args.some(containsSensitiveInfo)) {
+        originalConsole.warn("🚨 Sensitive data detected in console.info:", ...sanitizeLogMessage(...args));
       } else {
         originalConsole.info(...args);
       }
     };
 
-    console.debug = (...args: any[]) => {
-      if (containsSensitiveInfo(args)) {
-        originalConsole.warn('🚨 Sensitive data detected in console.debug:', ...sanitizeLogMessage(...args));
+    console.debug = (...args: ConsoleValue[]) => {
+      if (args.some(containsSensitiveInfo)) {
+        originalConsole.warn("🚨 Sensitive data detected in console.debug:", ...sanitizeLogMessage(...args));
       } else {
         originalConsole.debug(...args);
       }
     };
 
-    console.trace = (...args: any[]) => {
-      if (containsSensitiveInfo(args)) {
-        originalConsole.warn('🚨 Sensitive data detected in console.trace:', ...sanitizeLogMessage(...args));
+    console.trace = (...args: ConsoleValue[]) => {
+      if (args.some(containsSensitiveInfo)) {
+        originalConsole.warn("🚨 Sensitive data detected in console.trace:", ...sanitizeLogMessage(...args));
       } else {
         originalConsole.trace(...args);
       }
@@ -116,16 +131,16 @@ export function setupConsoleCleanup(): void {
     console.trace = () => {};
 
     // Mantener warn y error para debugging crítico
-    console.warn = (...args: any[]) => {
-      if (containsSensitiveInfo(args)) {
+    console.warn = (...args: ConsoleValue[]) => {
+      if (args.some(containsSensitiveInfo)) {
         originalConsole.warn('🚨 Sensitive data detected:', ...sanitizeLogMessage(...args));
       } else {
         originalConsole.warn(...args);
       }
     };
 
-    console.error = (...args: any[]) => {
-      if (containsSensitiveInfo(args)) {
+    console.error = (...args: ConsoleValue[]) => {
+      if (args.some(containsSensitiveInfo)) {
         originalConsole.error('🚨 Sensitive data detected:', ...sanitizeLogMessage(...args));
       } else {
         originalConsole.error(...args);
@@ -140,9 +155,8 @@ export function setupConsoleCleanup(): void {
 export function setupDevToolsProtection(): void {
   if (!isProduction) return;
 
-  let devtools = {
+  const devtools: { open: boolean; orientation?: 'vertical' | 'horizontal' } = {
     open: false,
-    orientation: null
   };
 
   const threshold = 160;
@@ -169,32 +183,31 @@ export function setupDevToolsProtection(): void {
     // F12
     if (e.keyCode === 123) {
       e.preventDefault();
-      return false;
+      return;
     }
 
     // Ctrl+Shift+I
     if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
       e.preventDefault();
-      return false;
+      return;
     }
 
     // Ctrl+Shift+J
     if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
       e.preventDefault();
-      return false;
+      return;
     }
 
     // Ctrl+U (ver fuente)
     if (e.ctrlKey && e.keyCode === 85) {
       e.preventDefault();
-      return false;
+      return;
     }
   });
 
   // Prevenir clic derecho
   document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    return false;
   });
 }
 
@@ -218,7 +231,8 @@ export function setupTabCloseCleanup(): void {
 
       console.log('🧹 Tab cleanup completed');
     } catch (error) {
-      console.error('Error during tab cleanup:', error);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Error during tab cleanup:', message);
     }
   };
 

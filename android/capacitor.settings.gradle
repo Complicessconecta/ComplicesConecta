@@ -46,3 +46,6 @@ project(':capacitor-toast').projectDir = new File('../node_modules/@capacitor/to
 
 include ':capgo-capacitor-native-biometric'
 project(':capgo-capacitor-native-biometric').projectDir = new File('../node_modules/@capgo/capacitor-native-biometric/android')
+
+include ':capacitor-ssl-pinning'
+project(':capacitor-ssl-pinning').projectDir = new File('../node_modules/capacitor-ssl-pinning/android')

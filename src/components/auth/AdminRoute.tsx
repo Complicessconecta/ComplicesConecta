@@ -8,14 +8,32 @@ interface AdminRouteProps {
 }
 
 const AdminRoute = ({ children }: AdminRouteProps) => {
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkAdminAccess();
+    let isMounted = true;
+
+    const run = async () => {
+      await checkAdminAccess(0);
+    };
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      if (!isMounted) return;
+      void checkAdminAccess(0);
+    });
+
+    void run();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const checkAdminAccess = async () => {
+  const checkAdminAccess = async (attempt: number) => {
     try {
       if (!supabase) {
         logger.error("❌ Supabase no está disponible");
@@ -40,6 +58,14 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
       }
 
       if (!session?.user) {
+        // Race condition común: recién logueado pero auth aún no hidrata la sesión
+        if (attempt < 2) {
+          setTimeout(() => {
+            void checkAdminAccess(attempt + 1);
+          }, 350);
+          return;
+        }
+
         logger.info("🚫 No hay sesión activa - acceso denegado");
         setIsAdmin(false);
         setLoading(false);
@@ -63,9 +89,9 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
         }
 
         logger.info("🚫 Usuario no es admin (rpc:is_admin)");
-      } catch (error: any) {
+      } catch (error) {
         logger.error("⚠️ Error verificando admin via rpc:is_admin, usando fallback", {
-          error: error?.message,
+          error: error instanceof Error ? error.message : String(error),
         });
       }
 
@@ -94,9 +120,9 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
         logger.info("🚫 Usuario no es admin (admin_users)");
       }
       setIsAdmin(hasAdminAccess);
-    } catch (error: any) {
+    } catch (error) {
       logger.error("❌ Error inesperado al verificar admin:", {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
       setIsAdmin(false);
     } finally {

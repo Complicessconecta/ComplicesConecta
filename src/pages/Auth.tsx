@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
@@ -17,6 +17,7 @@ import { CoupleRegistrationForm } from "@/components/profiles/couple/CoupleRegis
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/components/ui/ThemeProvider";
+import { logger } from "@/lib/logger";
 
 interface FormData {
   email: string;
@@ -230,21 +231,62 @@ const Auth = () => {
         });
 
         // Redirigir según el tipo de cuenta y modo admin
-        const userWithMetadata = result.user as any;
+        const userWithMetadata = result.user;
+
+        const meta =
+          userWithMetadata &&
+          typeof userWithMetadata === "object" &&
+          "user_metadata" in userWithMetadata
+            ? userWithMetadata.user_metadata
+            : undefined;
+
+        const accountTypeFromMeta =
+          meta &&
+          typeof meta === "object" &&
+          "account_type" in meta &&
+          typeof meta.account_type === "string"
+            ? meta.account_type
+            : meta &&
+                typeof meta === "object" &&
+                "accountType" in meta &&
+                typeof meta.accountType === "string"
+              ? meta.accountType
+              : undefined;
+
+        const accountTypeFromUser =
+          userWithMetadata &&
+          typeof userWithMetadata === "object" &&
+          "accountType" in userWithMetadata &&
+          typeof userWithMetadata.accountType === "string"
+            ? userWithMetadata.accountType
+            : undefined;
+
         const accountType =
-          userWithMetadata?.user_metadata?.account_type ||
-          userWithMetadata?.user_metadata?.accountType ||
-          userWithMetadata?.accountType ||
-          formData.accountType ||
-          "single";
+          accountTypeFromMeta || accountTypeFromUser || formData.accountType || "single";
 
         // Verificar si es admin y redirigir al panel correspondiente
         const isAdminUser = isAdmin();
         
         // Personalizar mensaje de bienvenida según rol
-        const welcomeMessage = isAdminUser 
-          ? "Bienvenido Administrador" 
-          : `Bienvenido de vuelta ${userWithMetadata?.user_metadata?.nickname || userWithMetadata?.user_metadata?.first_name || ""}`;
+        const nickname =
+          meta &&
+          typeof meta === "object" &&
+          "nickname" in meta &&
+          typeof meta.nickname === "string"
+            ? meta.nickname
+            : "";
+
+        const firstName =
+          meta &&
+          typeof meta === "object" &&
+          "first_name" in meta &&
+          typeof meta.first_name === "string"
+            ? meta.first_name
+            : "";
+
+        const welcomeMessage = isAdminUser
+          ? "Bienvenido Administrador"
+          : `Bienvenido de vuelta ${nickname || firstName}`;
         
         toast({
           title: "Inicio de sesión exitoso",
@@ -256,12 +298,18 @@ const Auth = () => {
           message: isAdminUser ? "Acceso administrador verificado" : "Inicio de sesión exitoso",
         });
         
+        // Redirección inmediata para admin, sin timeout
+        if (isAdminLoginMode || isAdminUser) {
+          logger.info("🔄 Redirigiendo a panel de administrador", { 
+            isAdminLoginMode, 
+            isAdminUser, 
+            userId: result.user.id 
+          });
+          navigate("/admin");
+          return;
+        }
+        
         setTimeout(() => {
-          if (isAdminLoginMode || isAdminUser) {
-            navigate("/admin");
-            return;
-          }
-
           if (accountType === "couple") {
             navigate("/profile-couple");
           } else {
@@ -271,29 +319,30 @@ const Auth = () => {
       } else {
         throw new Error("No se recibieron datos de usuario");
       }
-    } catch (error: any) {
+    } catch (error) {
       // Mejorar mensajes de error
       let errorMessage = "Error al iniciar sesión";
 
-      if (error?.message) {
-        if (error.message.includes("Invalid API key")) {
+      const errorText = error instanceof Error ? error.message : String(error);
+      if (errorText) {
+        if (errorText.includes("Invalid API key")) {
           errorMessage =
             "Error de configuracin. Por favor, contacta al soporte.";
         } else if (
-          error.message.includes("Invalid login credentials") ||
-          error.message.includes("Invalid credentials") ||
-          error.message.includes("Invalid login") ||
-          error.message.includes("Invalid password") ||
-          error.message.includes("Authentication failed")
+          errorText.includes("Invalid login credentials") ||
+          errorText.includes("Invalid credentials") ||
+          errorText.includes("Invalid login") ||
+          errorText.includes("Invalid password") ||
+          errorText.includes("Authentication failed")
         ) {
           errorMessage = "Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e intenta nuevamente.";
-        } else if (error.message.includes("Email not confirmed")) {
+        } else if (errorText.includes("Email not confirmed")) {
           errorMessage =
             "Por favor, confirma tu correo electrnico antes de iniciar sesión";
-        } else if (error.message.includes("User not found")) {
+        } else if (errorText.includes("User not found")) {
           errorMessage = "Usuario no encontrado. Verifica tu correo electrnico";
         } else {
-          errorMessage = error.message;
+          errorMessage = errorText;
         }
       }
 
@@ -389,15 +438,17 @@ const Auth = () => {
   };
 
   if (showLoginLoading) {
+    const inferredName = formData.email?.split("@")[0];
+    const inferredProfile = inferredName
+      ? { nickname: inferredName, firstName: inferredName }
+      : {};
+
     return (
       <LoginLoadingScreen
         onComplete={() => setShowLoginLoading(false)}
         userType={isAdminLoginMode ? "admin" : "single"}
         userName={formData.email}
-        userProfile={{
-          nickname: formData.email?.split("@")[0],
-          firstName: formData.email?.split("@")[0],
-        }}
+        userProfile={inferredProfile}
       />
     );
   }
@@ -524,7 +575,7 @@ const Auth = () => {
               className="w-full"
             >
               <TabsList
-                className={`grid w-full ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg`}
+                className={`grid w-full ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg items-center justify-center`}
               >
                 <TabsTrigger
                   value="signin"

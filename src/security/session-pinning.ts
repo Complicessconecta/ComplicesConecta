@@ -9,7 +9,7 @@ export interface BrowserFingerprint {
   languages: string[];
   platform: string;
   cookieEnabled: boolean;
-  doNotTrack: string | null;
+  doNotTrack?: string;
   screen: {
     width: number;
     height: number;
@@ -61,7 +61,7 @@ export class BrowserFingerprintGenerator {
       languages: [...navigator.languages],
       platform: navigator.platform,
       cookieEnabled: navigator.cookieEnabled,
-      doNotTrack: navigator.doNotTrack,
+      ...(navigator.doNotTrack ? { doNotTrack: navigator.doNotTrack } : {}),
       screen: {
         width: screen.width,
         height: screen.height,
@@ -74,16 +74,16 @@ export class BrowserFingerprintGenerator {
       localStorage: this.checkLocalStorage(),
       indexedDb: this.checkIndexedDB(),
       openDatabase: this.checkOpenDatabase(),
-      cpuClass: (navigator as any).cpuClass || 'unknown',
+      cpuClass: navigator.cpuClass || 'unknown',
       hardwareConcurrency: navigator.hardwareConcurrency || 1,
-      deviceMemory: (navigator as any).deviceMemory || 0,
+      deviceMemory: navigator.deviceMemory || 0,
       canvas: await this.getCanvasFingerprint(),
       webgl: await this.getWebGLFingerprint(),
       fonts: await this.getFontFingerprint(),
       audio: await this.getAudioFingerprint(),
       plugins: this.getPluginFingerprint(),
       vendor: navigator.vendor,
-      javaEnabled: (navigator as any).javaEnabled() || false,
+      javaEnabled: navigator.javaEnabled ? navigator.javaEnabled() : false,
       touchSupport: this.checkTouchSupport(),
       adBlock: this.checkAdBlock(),
       hasLiedLanguages: this.hasLiedLanguages(),
@@ -222,7 +222,12 @@ export class BrowserFingerprintGenerator {
    */
   private static async getAudioFingerprint(): Promise<string> {
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextCtor) {
+        return 'no-audio';
+      }
+
+      const audioContext = new AudioContextCtor();
       const oscillator = audioContext.createOscillator();
       const analyser = audioContext.createAnalyser();
       const gainNode = audioContext.createGain();
@@ -238,10 +243,23 @@ export class BrowserFingerprintGenerator {
 
       return new Promise((resolve) => {
         scriptProcessor.onaudioprocess = (event) => {
-          const samples = event.inputBuffer.getChannelData(0);
+          const channel = event.inputBuffer.numberOfChannels > 0
+            ? event.inputBuffer.getChannelData(0)
+            : undefined;
+
+          if (!channel) {
+            resolve('no-audio');
+            audioContext.close();
+            return;
+          }
+
+          const samples = channel;
           let sum = 0;
           for (let i = 0; i < samples.length; i++) {
-            sum += Math.abs(samples[i]);
+            const sample = samples[i];
+            if (sample !== undefined) {
+              sum += Math.abs(sample);
+            }
           }
           resolve(sum.toString().slice(0, 16));
           audioContext.close();
@@ -259,7 +277,10 @@ export class BrowserFingerprintGenerator {
     try {
       const plugins = [];
       for (let i = 0; i < navigator.plugins.length; i++) {
-        plugins.push(navigator.plugins[i].name);
+        const plugin = navigator.plugins[i];
+        if (plugin) {
+          plugins.push(plugin.name);
+        }
       }
       return plugins;
     } catch (error) {
@@ -369,7 +390,7 @@ export class BrowserFingerprintGenerator {
       const userAgent = navigator.userAgent.toLowerCase();
       
       if (userAgent.includes('chrome') && !window.chrome) return true;
-      if (userAgent.includes('firefox') && typeof (window as any).InstallTrigger === 'undefined') return true;
+      if (userAgent.includes('firefox') && typeof window.InstallTrigger === 'undefined') return true;
       if (userAgent.includes('safari') && !window.safari) return true;
       
       return false;
@@ -421,12 +442,13 @@ export class SessionPinningManager {
   /**
    * Obtiene datos de pinning almacenados
    */
-  private static getStoredPinningData(): SessionPinningData | null {
+  private static getStoredPinningData(): SessionPinningData | undefined {
     try {
       const data = localStorage.getItem(this.STORAGE_KEY);
-      return data ? JSON.parse(data) : null;
+      if (!data) return undefined;
+      return JSON.parse(data) as SessionPinningData;
     } catch (error) {
-      return null;
+      return undefined;
     }
   }
 
@@ -443,7 +465,8 @@ export class SessionPinningManager {
       };
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      console.error('Error saving session pinning data:', error);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Error saving session pinning data:', message);
     }
   }
 
@@ -451,7 +474,7 @@ export class SessionPinningManager {
    * Genera ID de sesión único
    */
   private static generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**
@@ -466,7 +489,8 @@ export class SessionPinningManager {
         detail: { reason: 'fingerprint-mismatch' }
       }));
     } catch (error) {
-      console.error('Error invalidating session:', error);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Error invalidating session:', message);
     }
   }
 
@@ -492,7 +516,8 @@ export class SessionPinningManager {
 
       return true;
     } catch (error) {
-      console.error('Error validating session:', error);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Error validating session:', message);
       return false;
     }
   }
@@ -504,7 +529,8 @@ export class SessionPinningManager {
     try {
       localStorage.removeItem(this.STORAGE_KEY);
     } catch (error) {
-      console.error('Error clearing session pinning:', error);
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Error clearing session pinning:', message);
     }
   }
 }

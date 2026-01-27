@@ -58,5 +58,13 @@
 	{
 		"pkg": "@capgo/capacitor-native-biometric",
 		"classpath": "ee.forgr.biometric.NativeBiometric"
+	},
+	{
+		"pkg": "capacitor-ssl-pinning",
+		"classpath": "com.michaelgerullis.sslcertificatechecker.SSLCertificateChecker"
+	},
+	{
+		"pkg": "capacitor-ssl-pinning",
+		"classpath": "com.michaelgerullis.sslcertificatechecker.SSLCertificateCheckerPlugin"
 	}
 ]

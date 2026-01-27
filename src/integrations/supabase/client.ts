@@ -16,10 +16,11 @@ const SECURE_AUTH_CONFIG: SupabaseAuthConfig = {
 };
 
 // Fallback logger si el import falla (no debería pasar, pero por seguridad)
+type SafeLogArg = string | number | boolean | bigint | symbol | object | undefined;
 const safeLogger = logger || {
-  info: (...args: unknown[]) => console.log("[INFO]", ...args),
-  warn: (...args: unknown[]) => console.warn("[WARN]", ...args),
-  error: (...args: unknown[]) => console.error("[ERROR]", ...args),
+  info: (...args: SafeLogArg[]) => console.log("[INFO]", ...args),
+  warn: (...args: SafeLogArg[]) => console.warn("[WARN]", ...args),
+  error: (...args: SafeLogArg[]) => console.error("[ERROR]", ...args),
 };
 
 // Obtener las credenciales de Supabase desde variables de entorno con fallback a AppConfig
@@ -68,7 +69,7 @@ if (isPlaceholderUrl || isPlaceholderKey) {
 safeLogger.info("🔗 Conectando a Supabase:", { url: supabaseUrl });
 
 // Variable global para almacenar la instancia única del cliente
-let supabaseInstance: SupabaseClient<Database> | null = null;
+let supabaseInstance: SupabaseClient<Database> | undefined;
 
 // Variable para tracking de logs (solo para evitar spam)
 // Nota: Esta variable se usa para controlar la frecuencia de logs en producción
@@ -76,7 +77,6 @@ let supabaseInstance: SupabaseClient<Database> | null = null;
 declare global {
   var __cc_supabaseClient:
     | SupabaseClient<Database>
-    | null
     | undefined;
 }
 
@@ -218,11 +218,8 @@ function getSupabaseClient(): SupabaseClient<Database> {
   }
 }
 
-// Exportar la instancia única del cliente
-// CRÍTICO: Crear instancia de forma segura sin bloquear la carga
-const supabase: SupabaseClient<Database> = getSupabaseClient();
-
-export { supabase };
+// Exportar el cliente de Supabase
+export const supabase = getSupabaseClient();
 
 // Verificar conectividad inicial y activar modo demo si es necesario
 let isDemoMode = false;

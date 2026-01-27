@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Images, Flag, Coins, Wallet, Users, ShieldCheck } from "lucide-react";
+import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Unlock, Images, Flag, Coins, Wallet, Users, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
@@ -58,6 +58,8 @@ function ProfileCouple() {
   );
 
   const [showParentalUnlock, setShowParentalUnlock] = useState(false);
+
+  const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
 
   const [accountChipHovered, setAccountChipHovered] = useState(false);
   const [accountChipShowAccount, setAccountChipShowAccount] = useState(false);
@@ -144,24 +146,33 @@ function ProfileCouple() {
   const _requireSecureAccess = async (): Promise<boolean> => {
     const username = user?.id || "anonymous";
 
-    if (isBiometricEnabled && isBiometricAvailable) {
-      const result = await authenticate(username);
-      if (result.success) {
-        return true;
+    if (import.meta.env.PROD && isBiometricEnabled && isBiometricAvailable) {
+      setIsBiometricUnlocking(true);
+      try {
+        const first = await authenticate(username);
+        if (!first.success) {
+          setShowParentalUnlock(true);
+          _setIsParentalLocked(true);
+          return false;
+        }
+
+        const second = await authenticate(`${username}-partner`);
+        if (second.success) {
+          return true;
+        }
+
+        setShowParentalUnlock(true);
+        _setIsParentalLocked(true);
+        return false;
+      } finally {
+        setIsBiometricUnlocking(false);
       }
-      if (result.method === "pin" && hasPin) {
-        const pin = window.prompt(
-          "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
-        );
-        if (!pin) return false;
-        return await verifyPin(pin);
-      }
-    } else if (hasPin) {
-      const pin = window.prompt(
-        "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
-      );
-      if (!pin) return false;
-      return await verifyPin(pin);
+    }
+
+    if (hasPin) {
+      setShowParentalUnlock(true);
+      _setIsParentalLocked(true);
+      return false;
     }
 
     return true;
@@ -284,7 +295,6 @@ function ProfileCouple() {
 
   const {
     authenticate,
-    verifyPin,
     isBiometricAvailable,
     isBiometricEnabled,
     hasPin,
@@ -1060,32 +1070,44 @@ function ProfileCouple() {
 
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
               <CardContent className="p-6 md:p-10">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2">
                     <Lock className="w-4 h-4" />
-                    <span className="font-semibold">Fotos Privadías</span>
+                    <span className="font-semibold">Fotos Privadas</span>
                   </div>
-                  <Button
-                    onClick={() => {
-                      if (!isParentalLocked) {
-                        _setIsParentalLocked(true);
-                        setShowParentalUnlock(false);
-                        _setDemoPrivateUnlocked(false);
-                        _setShowImageModal(false);
-                      }
-                    }}
-                    disabled={isParentalLocked}
-                    className={cn(
-                      "text-xs px-3 py-1.5",
-                      isParentalLocked
-                        ? "bg-red-600/80 hover:bg-red-700/80 cursor-default"
-                        : "bg-orange-600/80 hover:bg-orange-700/80 hover:scale-105",
+                  <div className="flex items-center gap-2">
+                    {import.meta.env.PROD && isOwnProfile && !isGalleryUnlocked && (
+                      <Button
+                        onClick={handleViewPrivatePhotos}
+                        disabled={isBiometricUnlocking}
+                        className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[120px] justify-center"
+                      >
+                        <Unlock className="w-3 h-3" />
+                        {isBiometricUnlocking ? "Validando..." : "Biométrico"}
+                      </Button>
                     )}
-                  >
-                    {isParentalLocked
-                      ? "🔒 Bloqueado (PIN requerido)"
-                      : "Bloquear Ahora"}
-                  </Button>
+                    <Button
+                      onClick={() => {
+                        if (!isParentalLocked) {
+                          _setIsParentalLocked(true);
+                          setShowParentalUnlock(false);
+                          _setDemoPrivateUnlocked(false);
+                          _setShowImageModal(false);
+                        }
+                      }}
+                      disabled={isParentalLocked}
+                      className={cn(
+                        "h-8 px-3 text-xs rounded-full flex items-center gap-1.5 transition-all min-w-[120px] justify-center",
+                        isParentalLocked
+                          ? "bg-red-600/80 hover:bg-red-700/80 cursor-default text-white"
+                          : "bg-orange-600/80 hover:bg-orange-700/80 text-white",
+                      )}
+                    >
+                      {isParentalLocked
+                        ? "🔒 Bloqueado (PIN requerido)"
+                        : "Bloquear Ahora"}
+                    </Button>
+                  </div>
                 </div>
 
                 {privateImageAccess === "denied" && (

@@ -21,6 +21,12 @@ export const PinSettings: React.FC = () => {
   const isExpired = Date.now() > pinExpiresAt;
   const isDefaultPin = storedPin === "1234";
   const shouldForceChange = import.meta.env.PROD && (isExpired || isDefaultPin || mustChangePin);
+  const pinCreatedLabel = pinCreatedAt
+    ? new Date(pinCreatedAt).toLocaleDateString("es-MX")
+    : "—";
+  const pinExpiresLabel = pinExpiresAt
+    ? new Date(pinExpiresAt).toLocaleDateString("es-MX")
+    : "—";
 
   const handleSetPin = () => {
     if (newPin.length !== 4) {
@@ -255,6 +261,8 @@ export const PinSettings: React.FC = () => {
           <li>
             Úsalo para desbloquear contenido sensible y confirmar acciones.
           </li>
+          <li>Última actualización: {pinCreatedLabel}</li>
+          <li>Expira: {pinExpiresLabel}</li>
           <li>
             Si olvidías tu PIN, tendrás que restablecerlo autenticándote
             nuevamente.

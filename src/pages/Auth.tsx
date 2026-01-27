@@ -440,15 +440,29 @@ const Auth = () => {
   if (showLoginLoading) {
     const inferredName = formData.email?.split("@")[0];
     const inferredProfile = inferredName
-      ? { nickname: inferredName, firstName: inferredName }
-      : {};
+      ? formData.accountType === "couple"
+        ? {
+            nickname: formData.nickname || inferredName,
+            firstName: formData.firstName || inferredName,
+            coupleName: inferredName,
+          }
+        : {
+            nickname: formData.nickname || inferredName,
+            firstName: formData.firstName || inferredName,
+          }
+      : undefined;
+    const loadingUserType = isAdminLoginMode
+      ? "admin"
+      : formData.accountType === "couple"
+        ? "couple"
+        : "single";
 
     return (
       <LoginLoadingScreen
         onComplete={() => setShowLoginLoading(false)}
-        userType={isAdminLoginMode ? "admin" : "single"}
-        userName={formData.email}
-        userProfile={inferredProfile}
+        userType={loadingUserType}
+        userName={isAdminLoginMode ? "Administrador" : formData.email}
+        userProfile={inferredProfile ?? {}}
       />
     );
   }
@@ -484,7 +498,7 @@ const Auth = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowThemeModal(true)}
-                  className="bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
+                  className="h-9 px-4 bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
                 >
                   Tema
                 </Button>
@@ -498,7 +512,7 @@ const Auth = () => {
                     }
                     navigate("/demo");
                   }}
-                  className="bg-linear-to-r from-pink-600/20 to-fuchsia-600/20 hover:from-pink-600/40 hover:to-fuchsia-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-fuchsia-500/30 transition-all duration-300 hover:scale-105"
+                  className="h-9 px-4 bg-linear-to-r from-pink-600/20 to-fuchsia-600/20 hover:from-pink-600/40 hover:to-fuchsia-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-fuchsia-500/30 transition-all duration-300 hover:scale-105"
                   data-testid="demo-mode-button"
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
@@ -510,40 +524,41 @@ const Auth = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/clubs/demo")}
-                  className="bg-linear-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
+                  className="h-9 px-4 bg-linear-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
                   data-testid="clubs-demo-button"
                 >
                   <Building className="h-4 w-4 mr-2" />
                   Club Demo
                 </Button>
                 <Button
-                variant="ghost"
-                size="sm"
-                onClick={async () => {
-                  const nextMode = !isAdminLoginMode;
-                  setIsAdminLoginMode(nextMode);
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    const nextMode = !isAdminLoginMode;
+                    setIsAdminLoginMode(nextMode);
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: "",
+                      password: "",
+                    }));
 
-                  setFormData((prev) => ({
-                    ...prev,
-                    email: "",
-                    password: "",
-                  }));
+                    setActiveTab("signin");
 
-                  setActiveTab("signin");
-
-                  toast({
-                    title: nextMode ? "Modo Admin Activado" : "Modo Usuario Activado",
-                    description: nextMode
-                      ? "Ingresa tu email de administrador para continuar"
-                      : "Ingresa tus credenciales de usuario",
-                  });
-                }}
-                className="bg-linear-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
-                data-testid="toggle-auth-mode"
-              >
-                <Shield className="h-4 w-4 mr-2" />
-                {isAdminLoginMode ? "Usuario" : "Admin"}
-              </Button>
+                    toast({
+                      title: nextMode
+                        ? "Modo Admin Activado"
+                        : "Modo Usuario Activado",
+                      description: nextMode
+                        ? "Ingresa tu email de administrador para continuar"
+                        : "Ingresa tus credenciales de usuario",
+                    });
+                  }}
+                  className="h-9 px-4 bg-linear-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
+                  data-testid="toggle-auth-mode"
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  {isAdminLoginMode ? "Usuario" : "Admin"}
+                </Button>
               </div>
             </div>
             <CardTitle className="text-3xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
@@ -628,20 +643,20 @@ const Auth = () => {
                       className="bg-white/10 border-white/20 text-white placeholder-white/70"
                     />
                   </div>
-                  <div className="flex gap-3">
+                  <div className="grid grid-cols-2 gap-3 items-stretch">
                     <Button
                       type="button"
                       onClick={() => {
                         setShowResetPassword(true);
                       }}
                       variant="outline"
-                      className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      className="h-11 bg-white/10 border-white/20 text-white hover:bg-white/20"
                     >
                       ¿Olvidaste tu contraseña?
                     </Button>
                     <Button
                       type="submit"
-                      className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 text-white"
+                      className="h-11 bg-linear-to-r from-purple-600 to-blue-600 text-white"
                     >
                       Iniciar Sesión
                     </Button>

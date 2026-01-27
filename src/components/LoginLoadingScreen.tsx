@@ -38,6 +38,9 @@ export const LoginLoadingScreen = ({
 
   // Función para obtener el nombre personalizado
   const getPersonalizedName = () => {
+    if (userType === "admin") {
+      return userName || "Administrador";
+    }
     if (userType === "single") {
       if (userProfile?.nickname) {
         return userProfile.nickname;
@@ -138,7 +141,11 @@ export const LoginLoadingScreen = ({
         {/* Loading Text */}
         <div className="space-y-3 sm:space-y-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-white animate-fade-in">
-            {userType === "couple" ? "Acceso Pareja" : "Acceso Individual"}
+            {userType === "admin"
+              ? "Acceso Administrador"
+              : userType === "couple"
+                ? "Acceso Pareja"
+                : "Acceso Individual"}
           </h2>
           <p className="text-lg sm:text-xl text-white/90 animate-slide-up px-2">
             {loadingTexts[currentText]}

@@ -160,19 +160,41 @@ export const useAuth = () => {
           firstName: profileData?.first_name,
           email: profileData?.email,
         });
+        let resolvedRole = profileData?.role;
+        try {
+          const { data: isAdminRpc, error: adminError } = await supabase.rpc("is_admin");
+          if (adminError) {
+            logger.error("❌ Error verificando admin en loadProfile:", {
+              error: adminError.message,
+            });
+          } else if (isAdminRpc === true) {
+            resolvedRole = "admin";
+          }
+        } catch (error) {
+          logger.error("❌ Error inesperado al verificar admin:", {
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+
+        const resolvedProfile = {
+          ...profileData,
+          role: resolvedRole,
+        };
+
         logger.info("✅ Perfil real cargado", {
-          firstName: profileData?.first_name,
+          firstName: resolvedProfile?.first_name,
+          role: resolvedProfile?.role,
         });
         profileLoaded.current = true;
-        setProfile(profileData);
+        setProfile(resolvedProfile);
 
         // Actualizar usuario en Datadog RUM
         try {
           setDatadogUser(
-            profileData?.id || userId,
-            profileData?.email,
-            profileData?.display_name ||
-              profileData?.first_name,
+            resolvedProfile?.id || userId,
+            resolvedProfile?.email,
+            resolvedProfile?.display_name ||
+              resolvedProfile?.first_name,
           );
         } catch (error) {
           logger.error("❌ Error actualizando usuario en Datadog RUM:", {

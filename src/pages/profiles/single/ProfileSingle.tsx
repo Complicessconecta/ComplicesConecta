@@ -58,12 +58,50 @@ const ProfileSingle: FC = () => {
     isBiometricEnabled,
     hasPin,
   } = useBiometricAuth();
+  const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
 
   // Funcin helper para verificar autenticacin
   const checkAuth = () => {
     return typeof isAuthenticated === "function"
       ? isAuthenticated()
       : !!isAuthenticated;
+  };
+
+  const handleBiometricUnlock = async () => {
+    if (!isOwnProfile || isGalleryUnlocked) return;
+
+    if (!import.meta.env.PROD) {
+      setIsParentalLocked(true);
+      setShowParentalUnlock(true);
+      return;
+    }
+
+    if (!isBiometricEnabled || !isBiometricAvailable) {
+      setIsParentalLocked(true);
+      setShowParentalUnlock(true);
+      return;
+    }
+
+    setIsBiometricUnlocking(true);
+    try {
+      const username = user?.id || "anonymous";
+      const result = await authenticate(username);
+      if (result.success) {
+        setIsParentalLocked(false);
+        setShowParentalUnlock(false);
+        setDemoPrivateUnlocked(true);
+        return;
+      }
+
+      setIsParentalLocked(true);
+      setShowParentalUnlock(true);
+    } catch (error) {
+      logger.error("Biometric unlock failed", { error: String(error) });
+      setIsParentalLocked(true);
+      setShowParentalUnlock(true);
+    } finally {
+      setIsBiometricUnlocking(false);
+    }
   };
 
   const requireSecureAccess = async (): Promise<boolean> => {
@@ -1706,43 +1744,55 @@ const ProfileSingle: FC = () => {
 
               {/* Galería privada mejorada con carrusel */}
               <div className="mb-6" ref={privateGalleryRef} id="private-gallery">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <Lock className="w-4 h-4" />
                     Fotos Privadas ({galleryImages.length})
                   </h4>
-                  <Button
-                    onClick={() => {
-                      if (isGalleryUnlocked) {
-                        // BLOQUEAR manual: quitar blur y candado
-                        setIsParentalLocked(true);
-                        setShowParentalUnlock(false);
-                        setDemoPrivateUnlocked(false);
-                        setShowImageModal(false);
-                      } else {
-                        // DESBLOQUEAR: activar ParentalControl para ingresar PIN
-                        setIsParentalLocked(true);
-                        setShowParentalUnlock(true);
-                      }
-                    }}
-                    className={`text-xs px-3 py-1.5 flex items-center gap-1.5 transition-all ${
-                      isGalleryUnlocked
-                        ? "bg-red-600/80 hover:bg-red-700/80 text-white hover:scale-105"
-                        : "bg-purple-600/80 hover:bg-purple-700/80 text-white hover:scale-105"
-                    }`}
-                  >
-                    {isGalleryUnlocked ? (
-                      <>
-                        <Lock className="w-3 h-3" />
-                        Bloquear
-                      </>
-                    ) : (
-                      <>
+                  <div className="flex items-center gap-2">
+                    {import.meta.env.PROD && isOwnProfile && !isGalleryUnlocked && (
+                      <Button
+                        onClick={handleBiometricUnlock}
+                        disabled={isBiometricUnlocking}
+                        className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[110px] justify-center"
+                      >
                         <Unlock className="w-3 h-3" />
-                        Desbloquear
-                      </>
+                        {isBiometricUnlocking ? "Validando..." : "Biométrico"}
+                      </Button>
                     )}
-                  </Button>
+                    <Button
+                      onClick={() => {
+                        if (isGalleryUnlocked) {
+                          // BLOQUEAR manual: quitar blur y candado
+                          setIsParentalLocked(true);
+                          setShowParentalUnlock(false);
+                          setDemoPrivateUnlocked(false);
+                          setShowImageModal(false);
+                        } else {
+                          // DESBLOQUEAR: activar ParentalControl para ingresar PIN
+                          setIsParentalLocked(true);
+                          setShowParentalUnlock(true);
+                        }
+                      }}
+                      className={`h-8 px-3 text-xs rounded-full flex items-center gap-1.5 transition-all min-w-[110px] justify-center ${
+                        isGalleryUnlocked
+                          ? "bg-red-600/80 hover:bg-red-700/80 text-white"
+                          : "bg-purple-600/80 hover:bg-purple-700/80 text-white"
+                      }`}
+                    >
+                      {isGalleryUnlocked ? (
+                        <>
+                          <Lock className="w-3 h-3" />
+                          Bloquear
+                        </>
+                      ) : (
+                        <>
+                          <Unlock className="w-3 h-3" />
+                          Desbloquear
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </div>
 
                 {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}

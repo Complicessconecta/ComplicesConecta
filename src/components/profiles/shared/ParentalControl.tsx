@@ -106,6 +106,10 @@ export const ParentalControl = ({
     return Math.floor(LEVEL_DURATIONS[restrictionLevel] / 60);
   }, [restrictionLevel]);
 
+  const pinCreatedLabel = pinCreatedAt
+    ? new Date(pinCreatedAt).toLocaleDateString("es-MX")
+    : "—";
+
   useEffect(() => {
     if (lockoutUntil) {
       const remaining = lockoutUntil - Date.now();
@@ -250,6 +254,10 @@ export const ParentalControl = ({
                   <br />
                   <span className="text-white/70">
                     Solo adultos pueden acceder.
+                  </span>
+                  <br />
+                  <span className="text-white/60">
+                    PIN actualizado: {pinCreatedLabel}
                   </span>
                 </p>
               </div>

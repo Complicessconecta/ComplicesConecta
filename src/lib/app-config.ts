@@ -128,7 +128,7 @@ export const isProductionAdmin = (email: string): boolean => {
   return getProductionAdminEmails().includes(normalizedEmail);
 };
 
-// Función para verificar si es admin demo (admin Y djwacko28@gmail.com)
+// Función para verificar si es admin demo (admin Y admin2)
 export const isDemoAdmin = (email: string): boolean => {
   void email;
   return false;

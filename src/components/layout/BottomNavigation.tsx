@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Search, Heart, MessageCircle, User, Settings } from "lucide-react";
+import { Home, Search, Heart, MessageCircle, User } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { useAuth } from "@/features/auth/useAuth";
 

@@ -1,0 +1,90 @@
+-- Crear tabla admin_users para corregir inconsistencia
+-- Esta tabla es referenciada por políticas RLS pero no existe
+
+CREATE TABLE IF NOT EXISTS public.admin_users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    role TEXT NOT NULL CHECK (role IN ('admin', 'super_admin', 'moderator')),
+    permissions JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    is_active BOOLEAN DEFAULT true NOT NULL
+);
+
+-- Crear índices
+CREATE INDEX IF NOT EXISTS idx_admin_users_user_id ON public.admin_users(user_id);
+CREATE INDEX IF NOT EXISTS idx_admin_users_role ON public.admin_users(role);
+CREATE INDEX IF NOT EXISTS idx_admin_users_is_active ON public.admin_users(is_active);
+
+-- Trigger para updated_at
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER handle_admin_users_updated_at
+    BEFORE UPDATE ON public.admin_users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_updated_at();
+
+-- Políticas RLS
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+
+-- Política para que super admins puedan ver todos los admin users
+CREATE POLICY "Super admins can view all admin users" ON public.admin_users
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE id = auth.uid() 
+            AND (role = 'super_admin' OR role = 'admin')
+        )
+    );
+
+-- Política para que super admins puedan insertar admin users
+CREATE POLICY "Super admins can insert admin users" ON public.admin_users
+    FOR INSERT WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE id = auth.uid() 
+            AND role = 'super_admin'
+        )
+    );
+
+-- Política para que admins puedan actualizarse a sí mismos
+CREATE POLICY "Admins can update their own record" ON public.admin_users
+    FOR UPDATE USING (
+        user_id = auth.uid() OR
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE id = auth.uid() 
+            AND role = 'super_admin'
+        )
+    );
+
+-- Política para que super admins puedan eliminar admin users
+CREATE POLICY "Super admins can delete admin users" ON public.admin_users
+    FOR DELETE USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE id = auth.uid() 
+            AND role = 'super_admin'
+        )
+    );
+
+-- Insertar admin users iniciales si no existen (usando emails del .env.local)
+INSERT INTO public.admin_users (user_id, role, permissions)
+SELECT 
+    u.id,
+    'super_admin',
+    '["all"]'::jsonb
+FROM auth.users u
+WHERE u.email IN ('complicesconectasw@outlook.es', 'djwacko28@gmail.com')
+AND NOT EXISTS (
+    SELECT 1 FROM public.admin_users au 
+    WHERE au.user_id = u.id
+);
+
+COMMIT;

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
-import ClubAdminPanel from "@/components/admin/panels/ClubAdminPanel";
+import ClubAdminPanel from '@/components/admin/panels/ClubAdminPanel';
 import type { Club as ClubEntity } from "@/entities/club";
 
 const DEMO_CLUB: ClubEntity = {
@@ -86,6 +86,23 @@ const DEMO_REVIEWS = [
   },
 ];
 
+const DEMO_IMAGES = [
+  {
+    id: "img-1",
+    url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800",
+    alt: "Club interior",
+    caption: "Interior del club",
+    uploadedAt: new Date().toISOString(),
+  },
+  {
+    id: "img-2", 
+    url: "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=800",
+    alt: "Club bar",
+    caption: "Bar principal",
+    uploadedAt: new Date().toISOString(),
+  },
+];
+
 const DEMO_ANALYTICS = {
   totalVisits: 12450,
   totalCheckIns: 420,
@@ -149,7 +166,18 @@ export const ClubsDemo = () => {
               </div>
             </CardContent>
           </Card>
-          <ClubAdminPanel />
+          {showAdminPanel ? (
+            <ClubAdminPanel />
+          ) : (
+            <div className="space-y-6">
+              {/* Club Profile Content */}
+              <ClubProfileHeader club={DEMO_CLUB} />
+              <ClubProfileEvents events={DEMO_EVENTS} />
+              <ClubProfileReviews reviews={DEMO_REVIEWS} averageRating={DEMO_ANALYTICS.averageRating} totalReviews={DEMO_REVIEWS.length} />
+              <ClubProfileGallery images={DEMO_IMAGES} />
+              <ClubProfileAdmin analytics={DEMO_ANALYTICS} />
+            </div>
+          )}
         </div>
       </div>
     );

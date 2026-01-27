@@ -4,7 +4,7 @@ import { logger } from "@/lib/logger";
 // Solo mantiene flags de sesión en localStorage, datos en Supabase
 
 export interface SessionFlags {
-  demo_authenticated: boolean;
+  demo_authenticated: "true" | "false";
   userType: "single" | "couple" | null;
 }
 
@@ -34,7 +34,7 @@ export class StorageManager {
   // Obtener flags de sesión
   static getSessionFlags(): SessionFlags {
     return {
-      demo_authenticated: localStorage.getItem("demo_authenticated") === "true",
+      demo_authenticated: (localStorage.getItem("demo_authenticated") as "true" | "false" | null) || "false",
       userType: localStorage.getItem("userType") as "single" | "couple" | null,
     };
   }

@@ -12,66 +12,66 @@ export const ProfileLayout: React.FC = () => {
 
   return (
     <>
-      {/* Chip flotante Demo User (header oculto en rutas de perfil) */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-60">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              className="demo-user-heartbeat bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-2xl shadow-2xl shadow-purple-500/30 border border-white/20 backdrop-blur-md hover:[animation-play-state:paused] w-full max-w-xs"
-            >
-              <span className="flex flex-col items-center leading-tight">
-                <span className="text-sm font-bold">Demo User</span>
-                <span className="text-[10px] text-white/90">
-                  ID: demo-use • xxxx-xxx-xx
+      {isDemoMode() && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-60">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                className="demo-user-heartbeat bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-2xl shadow-2xl shadow-purple-500/30 border border-white/20 backdrop-blur-md hover:[animation-play-state:paused] w-full max-w-xs"
+              >
+                <span className="flex flex-col items-center leading-tight">
+                  <span className="text-sm font-bold">Demo User</span>
+                  <span className="text-[10px] text-white/90">
+                    ID: demo-use • xxxx-xxx-xx
+                  </span>
                 </span>
-              </span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[180px]">
-            <DropdownMenuLabel>
-              {isDemoMode() ? "DEMO" : isAuthenticated() ? "Sesión Activa" : "Cuenta"}
-            </DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                if (isDemoMode()) {
-                  navigate("/profile");
-                  return;
-                }
-                if (isAuthenticated()) {
-                  navigate("/profile");
-                  return;
-                }
-                navigate("/auth");
-              }}
-            >
-              Ver Mi Perfil
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={async () => {
-                if (isDemoMode()) {
-                  // Habilitar logout incluso en demo
-                  await signOut();
-                  return;
-                }
-                if (!isAuthenticated()) {
-                  navigate("/auth");
-                  return;
-                }
-                if (window.confirm("¿Cerrar sesión?")) {
-                  try {
-                    await signOut();
-                  } catch {
-                    // no-op
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[180px]">
+              <DropdownMenuLabel>
+                {isDemoMode() ? "DEMO" : isAuthenticated() ? "Sesión Activa" : "Cuenta"}
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (isDemoMode()) {
+                    navigate("/profile");
+                    return;
                   }
-                  navigate("/");
-                }
-              }}
-            >
-              Cerrar Sesión
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+                  if (isAuthenticated()) {
+                    navigate("/profile");
+                    return;
+                  }
+                  navigate("/auth");
+                }}
+              >
+                Ver Mi Perfil
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => {
+                  if (isDemoMode()) {
+                    await signOut();
+                    return;
+                  }
+                  if (!isAuthenticated()) {
+                    navigate("/auth");
+                    return;
+                  }
+                  if (window.confirm("¿Cerrar sesión?")) {
+                    try {
+                      await signOut();
+                    } catch {
+                      // no-op
+                    }
+                    navigate("/");
+                  }
+                }}
+              >
+                Cerrar Sesión
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
 
       {/* Contenido de perfil sin bloqueo por defecto */}
       <main className="relative z-10 min-h-dvh pb-20 lg:pb-0 safe-area-pt safe-area-inset">

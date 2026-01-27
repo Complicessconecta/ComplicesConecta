@@ -187,27 +187,11 @@ const Auth = () => {
       const input = formData.email.trim();
       const isAdminId = input.startsWith('admin_') && input.includes('_');
 
-      let loginEmail = formData.email;
+      const loginEmail = formData.email;
 
       // Si es un ID de administrador, buscar el correo correspondiente
       if (isAdminId) {
-        const { data: adminData, error: adminError } = await supabase
-          .from('admin_users')
-          .select('user_id')
-          .eq('id', input)
-          .single();
-
-        if (adminError || !adminData) {
-          throw new Error('ID de administrador no encontrado');
-        }
-
-        // Buscar el correo del usuario en auth.users
-        const { data: userData, error: userError } = await supabase.auth.admin.getUserById(adminData.user_id);
-        if (userError || !userData?.user?.email) {
-          throw new Error('No se pudo obtener el correo del administrador');
-        }
-
-        loginEmail = userData.user.email;
+        throw new Error("Login por ID de administrador no está disponible en cliente");
       }
 
       // Usar el método signIn del hook useAuth que maneja correctamente demo y producción
@@ -300,12 +284,28 @@ const Auth = () => {
         
         // Redirección inmediata para admin, sin timeout
         if (isAdminLoginMode || isAdminUser) {
-          logger.info("🔄 Redirigiendo a panel de administrador", { 
-            isAdminLoginMode, 
-            isAdminUser, 
-            userId: result.user.id 
+          try {
+            const { data: isAdminRpc, error: rpcError } = await supabase.rpc("is_admin");
+            if (rpcError) {
+              throw rpcError;
+            }
+            if (isAdminRpc === true) {
+              navigate("/admin/dashboard");
+              return;
+            }
+          } catch (error) {
+            logger.error("❌ Admin verification failed", {
+              error: error instanceof Error ? error.message : String(error),
+            });
+          }
+
+          await signOut();
+          toast({
+            variant: "destructive",
+            title: "Acceso Denegado",
+            description: "No tienes permisos de administrador",
           });
-          navigate("/admin");
+          navigate("/auth");
           return;
         }
         

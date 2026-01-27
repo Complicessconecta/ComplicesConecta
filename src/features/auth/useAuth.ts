@@ -134,23 +134,12 @@ export const useAuth = () => {
         .single();
 
       logger.info("🔍 Consulta ejecutada", { userId });
-      logger.info("🔍 Resultado data", { data });
+      logger.info("🔍 Resultado data", { count: Array.isArray(data) ? data.length : 1 });
 
       if (error) {
         logger.error("❌ Error fetching profile:", { error: error.message, details: error.details });
-        // Si no se encuentra el perfil, crear uno básico
         if (error.code === "PGRST116") {
-          logger.info("🆆 Perfil no encontrado - creando perfil básico");
-          const basicProfile = {
-            id: userId,
-            user_id: userId,
-            first_name: "Usuario",
-            role: "user",
-            is_demo: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          };
-          setProfile(basicProfile);
+          setProfile(null);
         }
         return;
       }
@@ -159,26 +148,23 @@ export const useAuth = () => {
         // Manejar tanto array como objeto único
         const profileData = Array.isArray(data) ? data[0] : data;
 
+        // Si el array está vacío o el objeto no tiene datos válidos, tratar como no encontrado
+        if (!profileData || (Array.isArray(data) && data.length === 0)) {
+          logger.info("🔍 Perfil no encontrado o vacío", { userId });
+          setProfile(null);
+          return;
+        }
+
         logger.info("📋 Contenido detallado del perfil", {
-          isArray: Array.isArray(data),
           id: profileData?.id,
           firstName: profileData?.first_name,
-          lastName: profileData?.last_name,
-          displayName: profileData?.display_name,
-          role: profileData?.role,
           email: profileData?.email,
-          fullData: JSON.stringify(data, null, 2),
         });
-
         logger.info("✅ Perfil real cargado", {
           firstName: profileData?.first_name,
         });
-        logger.info("📋 Datos completos del perfil", { profile: profileData });
         profileLoaded.current = true;
         setProfile(profileData);
-
-        // PERFIL CARGADO
-        logger.info("🔍 Perfil cargado", { id: profileData?.id });
 
         // Actualizar usuario en Datadog RUM
         try {

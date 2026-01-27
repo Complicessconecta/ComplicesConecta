@@ -12,7 +12,7 @@ const SECURE_AUTH_CONFIG: SupabaseAuthConfig = {
   autoRefreshToken: true,
   detectSessionInUrl: true,
   flowType: "pkce", // Tipo específico para TypeScript
-  debug: import.meta.env.DEV,
+  debug: false,
 };
 
 // Fallback logger si el import falla (no debería pasar, pero por seguridad)

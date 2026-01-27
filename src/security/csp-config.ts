@@ -49,6 +49,7 @@ export const CSP_CONFIG = {
     "style-src": [
       "'self'",
       "'unsafe-inline'", // Necesario para Tailwind CSS (considerar nonce)
+      "https://fonts.googleapis.com", // Google Fonts
     ],
     "img-src": [
       "'self'",
@@ -56,7 +57,7 @@ export const CSP_CONFIG = {
       "blob:",
       "https:",
     ],
-    "font-src": ["'self'", "data:"],
+    "font-src": ["'self'", "data:", "https://fonts.gstatic.com"], // Google Fonts
     "connect-src": [
       "'self'",
       "https://axtvqnozatbmllvwzuim.supabase.co", // Supabase

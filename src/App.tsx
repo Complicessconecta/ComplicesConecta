@@ -210,7 +210,13 @@ const App = () => {
                             <Route path="/feed" element={<Feed />} />
                             <Route path="/profiles" element={<Profiles />} />
 
-                            <Route element={<ProfileLayout />}>
+                            <Route
+                              element={
+                                <ProtectedRoute>
+                                  <ProfileLayout />
+                                </ProtectedRoute>
+                              }
+                            >
                               <Route
                                 path="/profile/:id"
                                 element={<ProfileDetail />}

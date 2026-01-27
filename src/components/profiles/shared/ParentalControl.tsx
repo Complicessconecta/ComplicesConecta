@@ -69,7 +69,10 @@ export const ParentalControl = ({
 }: ParentalControlProps) => {
   const [showPinInput, setShowPinInput] = useState(false);
   const [pin, setPin] = useState("");
-  const [savedPin] = usePersistedState("app_pin", "1234");
+  const [savedPin] = usePersistedState("app_pin", import.meta.env.PROD ? "1234" : "");
+  const [pinCreatedAt] = usePersistedState<number>("pin_created_at", Date.now());
+  const [pinExpiresAt] = usePersistedState<number>("pin_expires_at", Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
+  const [mustChangePin] = usePersistedState<boolean>("must_change_pin", import.meta.env.PROD);
   const [restrictionLevel, setRestrictionLevel] =
     usePersistedState<RestrictionLevel>("restrictionLevel", "strict");
   const [attempts, setAttempts] = useState(0);
@@ -124,6 +127,33 @@ export const ParentalControl = ({
     if (lockoutUntil && Date.now() < lockoutUntil) return;
 
     if (pin === savedPin) {
+      // Verificar expiración del PIN
+      const now = Date.now();
+      if (now > pinExpiresAt) {
+        toast({
+          title: "PIN Expirado",
+          description: "Tu PIN ha expirado. Por favor, establece uno nuevo.",
+          variant: "destructive",
+        });
+        setShowPinInput(false);
+        setPin("");
+        setAttempts(0);
+        return;
+      }
+
+      // Verificar si debe cambiar PIN forzado (producción)
+      if (mustChangePin) {
+        toast({
+          title: "PIN Temporal",
+          description: "Debes cambiar tu PIN por uno de 4 dígitos.",
+          variant: "destructive",
+        });
+        setShowPinInput(false);
+        setPin("");
+        setAttempts(0);
+        return;
+      }
+
       onToggle(false);
       start(LEVEL_DURATIONS[restrictionLevel]);
       setShowPinInput(false);

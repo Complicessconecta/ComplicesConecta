@@ -143,7 +143,7 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
   if (isAdmin === false) {
     logger.info("🔄 Redirigiendo a página principal - acceso denegado");
-    return <Navigate to="/" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   return <>{children}</>;

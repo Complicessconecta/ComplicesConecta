@@ -7,12 +7,20 @@ import { Button } from "@/components/ui/buttons/Button";
 export const PinSettings: React.FC = () => {
   const { toast } = useToast();
   const [storedPin, setStoredPin] = usePersistedState<string>("app_pin", "");
+  const [pinCreatedAt, setPinCreatedAt] = usePersistedState<number>("pin_created_at", Date.now());
+  const [pinExpiresAt, setPinExpiresAt] = usePersistedState<number>("pin_expires_at", Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
+  const [mustChangePin, setMustChangePin] = usePersistedState<boolean>("must_change_pin", import.meta.env.PROD);
   const [isSettingPin, setIsSettingPin] = useState(false);
   const [currentPin, setCurrentPin] = useState("");
   const [newPin, setNewPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
 
   const hasPin = !!storedPin;
+
+  // Validar expiración y forzar cambio en producción si es PIN default
+  const isExpired = Date.now() > pinExpiresAt;
+  const isDefaultPin = storedPin === "1234";
+  const shouldForceChange = import.meta.env.PROD && (isExpired || isDefaultPin || mustChangePin);
 
   const handleSetPin = () => {
     if (newPin.length !== 4) {
@@ -33,6 +41,9 @@ export const PinSettings: React.FC = () => {
     }
 
     setStoredPin(newPin);
+    setPinCreatedAt(Date.now());
+    setPinExpiresAt(Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
+    setMustChangePin(false);
     setIsSettingPin(false);
     setNewPin("");
     setConfirmPin("");
@@ -62,6 +73,9 @@ export const PinSettings: React.FC = () => {
       return;
     }
     setStoredPin("");
+    setPinCreatedAt(0);
+    setPinExpiresAt(0);
+    setMustChangePin(false);
     setIsSettingPin(false);
     setCurrentPin("");
     toast({ title: "Éxito", description: "PIN eliminado" });
@@ -86,30 +100,46 @@ export const PinSettings: React.FC = () => {
 
       <div
         className={`p-4 rounded-lg border ${
-          hasPin ? "bg-green-50 border-green-200" : "bg-gray-50 border-gray-200"
+          hasPin && !shouldForceChange
+            ? "bg-green-50 border-green-200"
+            : shouldForceChange
+              ? "bg-red-50 border-red-200"
+              : "bg-gray-50 border-gray-200"
         }`}
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            {hasPin ? (
+            {hasPin && !shouldForceChange ? (
               <CheckCircle className="h-5 w-5 text-green-600" />
+            ) : shouldForceChange ? (
+              <AlertCircle className="h-5 w-5 text-red-600" />
             ) : (
               <AlertCircle className="h-5 w-5 text-gray-400" />
             )}
             <span
-              className={`font-medium ${hasPin ? "text-green-800" : "text-gray-700"}`}
+              className={`font-medium ${
+                hasPin && !shouldForceChange
+                  ? "text-green-800"
+                  : shouldForceChange
+                    ? "text-red-800"
+                    : "text-gray-700"
+              }`}
             >
-              {hasPin ? "PIN Configurado" : "Sin PIN configurado"}
+              {hasPin && !shouldForceChange
+                ? "PIN Configurado"
+                : shouldForceChange
+                  ? "PIN Requerido (expirado/default)"
+                  : "Sin PIN configurado"}
             </span>
           </div>
 
-          {!isSettingPin && (
+          {(!isSettingPin || shouldForceChange) && (
             <Button
-              variant={hasPin ? "outline" : "default"}
+              variant={hasPin && !shouldForceChange ? "outline" : "default"}
               size="sm"
               onClick={() => setIsSettingPin(true)}
             >
-              {hasPin ? "Cambiar PIN" : "Configurar PIN"}
+              {hasPin && !shouldForceChange ? "Cambiar PIN" : "Configurar PIN"}
             </Button>
           )}
         </div>
@@ -165,6 +195,16 @@ export const PinSettings: React.FC = () => {
                 />
               </div>
             </div>
+
+            {shouldForceChange && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-800 font-medium">
+                  ⚠️ Debes establecer un PIN de 4 dígitos para continuar.
+                  {isExpired && " Tu PIN anterior ha expirado."}
+                  {isDefaultPin && " No puedes usar el PIN por defecto."}
+                </p>
+              </div>
+            )}
 
             <div className="flex gap-2 justify-end pt-2">
               <Button

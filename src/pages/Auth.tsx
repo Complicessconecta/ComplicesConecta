@@ -590,7 +590,7 @@ const Auth = () => {
               className="w-full"
             >
               <TabsList
-                className={`grid w-full ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg items-center justify-center`}
+                className={`grid w-full max-w-md mx-auto ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg items-center justify-center`}
               >
                 <TabsTrigger
                   value="signin"

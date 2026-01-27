@@ -12,11 +12,19 @@ export const CSP_CONFIG = {
       "'unsafe-inline'", // Solo para desarrollo con Vite HMR
       "'unsafe-eval'", // Solo para desarrollo
       "https://vercel.live", // Vite dev server
+      "https://va.vercel-scripts.com", // Vercel Speed Insights
       "ws:", // WebSockets para HMR
+    ],
+    "script-src-elem": [
+      "'self'",
+      "'unsafe-inline'",
+      "https://vercel.live",
+      "https://va.vercel-scripts.com",
     ],
     "style-src": [
       "'self'",
       "'unsafe-inline'", // Tailwind CSS necesita inline styles
+      "https://fonts.googleapis.com", // Google Fonts
     ],
     "img-src": [
       "'self'",
@@ -24,7 +32,7 @@ export const CSP_CONFIG = {
       "blob:",
       "https:",
     ],
-    "font-src": ["'self'", "data:"],
+    "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "connect-src": [
       "'self'",
       "https://axtvqnozatbmllvwzuim.supabase.co", // Supabase
@@ -45,6 +53,11 @@ export const CSP_CONFIG = {
     "script-src": [
       "'self'",
       // NO incluir 'unsafe-inline' o 'unsafe-eval' en producción
+      "https://va.vercel-scripts.com", // Vercel Speed Insights
+    ],
+    "script-src-elem": [
+      "'self'",
+      "https://va.vercel-scripts.com",
     ],
     "style-src": [
       "'self'",

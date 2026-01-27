@@ -1,11 +1,9 @@
+// Interfaces para los datos del dashboard
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/hooks/useToast";
 
-// NOTA: Este hook está acoplado a src/pages/admin/AdminDashboard.tsx.
-// Síntoma: el dashboard no está routeado/importado desde src/App.tsx actualmente, por lo que este hook puede parecer “sin uso”.
-// Además existe un hook similar en src/app/(admin)/hooks/useAdminDashboard.ts (posible duplicidad por estructura mixta).
 
 // Interfaces para los datos del dashboard
 export interface DashboardStats {

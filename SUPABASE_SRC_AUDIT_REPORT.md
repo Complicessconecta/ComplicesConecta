@@ -18,7 +18,7 @@ Para ubicar posibles síntomas de:
 
 - **Archivos escaneados (`.ts/.tsx`)**: 925
 - **Tablas referenciadas por `.from("...")`**: 100
-- **Tablas referenciadas que NO aparecen en `src/types/supabase-generated.ts`**: 36
+- **Tablas/views referenciadas que NO aparecen en `src/types/supabase-generated.ts` (revalidado)**: 8
 - **RPCs referenciadas**: 6
 - **Edge Functions invocadas**: 6
 - **Buckets de Storage referenciados**: 1
@@ -35,7 +35,7 @@ Esto normalmente indica:
 - La referencia apunta a **view** / **tabla en otro schema** / **tabla borrada**, o
 - Nombre diferente al real.
 
-### Lista de tablas/views faltantes en tipos + rutas donde se usan
+### Lista de tablas/views faltantes en tipos + rutas donde se usan (revalidado)
 
 #### `chat_permissions`
 - **Ruta**: `src/services/social/chat/ChatPrivacyService.ts`
@@ -69,149 +69,28 @@ Esto normalmente indica:
 - **Ruta**: `src/components/clubs/PartnerRequestModal.tsx`
 - **Síntoma**: Uso de `.from("partner_requests")` pero no existe en `Database.public.Tables`.
 
-#### `security_logs`
-- **Ruta**: `src/tests/security/media-access.test.ts`
-- **Síntoma**: Uso de `.from("security_logs")` pero no existe en `Database.public.Tables`.
+## Estado de corrección (SQL)
 
-#### `staking_records`
-- **Rutas**:
-  - `src/hooks/useTokens.ts`
-  - `src/services/analytics/analytics/TokenAnalyticsService.ts`
-  - `src/services/payments/nft/NFTVerificationService.ts`
-- **Síntoma**: Uso de `.from("staking_records")` pero no existe en `Database.public.Tables`.
+### Revalidación
 
-#### `stories`
-- **Rutas**:
-  - `src/services/core/DataPrivacyService.ts`
-  - `src/services/core/QueryOptimizationService.ts`
-  - `src/services/social/social/postsService.ts`
-- **Síntoma**: Uso de `.from("stories")` pero no existe en `Database.public.Tables`.
+La auditoría inicial reportó 36 faltantes por un parse parcial del archivo grande `src/types/supabase-generated.ts`. Se revalidó con parse completo del bloque `Database.public.Tables`.
 
-#### `story_comments`
-- **Ruta**: `src/services/social/social/postsService.ts`
-- **Síntoma**: Uso de `.from("story_comments")` pero no existe en `Database.public.Tables`.
+### Acciones tomadas
 
-#### `story_likes`
-- **Ruta**: `src/services/social/social/postsService.ts`
-- **Síntoma**: Uso de `.from("story_likes")` pero no existe en `Database.public.Tables`.
+- **Ya existía**:
+  - `partner_requests` ya existe (migración: `supabase/migrations/20260115030549_add_partner_comment_structures.sql`).
 
-#### `story_shares`
-- **Rutas**:
-  - `src/components/stories/StoryService.ts`
-  - `src/services/social/social/postsService.ts`
-- **Síntoma**: Uso de `.from("story_shares")` pero no existe en `Database.public.Tables`.
-
-#### `summary_feedback`
-- **Rutas**:
-  - `src/components/chat/SummaryModal.tsx`
-  - `src/components/modals/SummaryModal.tsx`
-  - `src/features/chat/ChatSummaryService.ts`
-- **Síntoma**: Uso de `.from("summary_feedback")` pero no existe en `Database.public.Tables`.
-
-#### `summary_requests`
-- **Ruta**: `src/features/chat/ChatSummaryService.ts`
-- **Síntoma**: Uso de `.from("summary_requests")` pero no existe en `Database.public.Tables`.
-
-#### `swinger_interests`
-- **Ruta**: `src/hooks/useInterests.ts`
-- **Síntoma**: Uso de `.from("swinger_interests")` pero no existe en `Database.public.Tables`.
-
-#### `testnet_token_claims`
-- **Ruta**: `src/services/payments/WalletService.ts`
-- **Síntoma**: Uso de `.from("testnet_token_claims")` pero no existe en `Database.public.Tables`.
-
-#### `token_analytics`
-- **Ruta**: `src/services/analytics/analytics/TokenAnalyticsService.ts`
-- **Síntoma**: Uso de `.from("token_analytics")` pero no existe en `Database.public.Tables`.
-
-#### `token_transactions`
-- **Rutas**:
-  - `src/services/analytics/analytics/TokenAnalyticsService.ts`
-  - `src/services/core/DataPrivacyService.ts`
-  - `src/services/payments/TokenService.ts`
-- **Síntoma**: Uso de `.from("token_transactions")` pero no existe en `Database.public.Tables`.
-
-#### `two_factor_auth`
-- **Ruta**: `src/services/auth/auth/SecurityService.ts`
-- **Síntoma**: Uso de `.from("two_factor_auth")` pero no existe en `Database.public.Tables`.
-
-#### `user_consents`
-- **Rutas**:
-  - `src/components/ui/ConsentGuard.tsx`
-  - `src/config/posthog.config.ts`
-  - `src/services/core/legal/ConsentService.ts`
-  - `src/services/social/notifications/OneSignalService.ts`
-- **Síntoma**: Uso de `.from("user_consents")` pero no existe en `Database.public.Tables`.
-
-#### `user_device_tokens`
-- **Ruta**: `src/services/social/notifications/OneSignalService.ts`
-- **Síntoma**: Uso de `.from("user_device_tokens")` pero no existe en `Database.public.Tables`.
-
-#### `user_identifiers`
-- **Ruta**: `src/services/auth/auth/UserIdentificationService.ts`
-- **Síntoma**: Uso de `.from("user_identifiers")` pero no existe en `Database.public.Tables`.
-
-#### `user_interests`
-- **Rutas**:
-  - `src/hooks/useInterests.ts`
-  - `src/services/social/social/PredictiveMatchingService.ts`
-- **Síntoma**: Uso de `.from("user_interests")` pero no existe en `Database.public.Tables`.
-
-#### `user_nfts`
-- **Ruta**: `src/services/payments/NFTService.ts`
-- **Síntoma**: Uso de `.from("user_nfts")` pero no existe en `Database.public.Tables`.
-
-#### `user_referral_balances`
-- **Ruta**: `src/services/payments/ReferralTokensService.ts`
-- **Síntoma**: Uso de `.from("user_referral_balances")` pero no existe en `Database.public.Tables`.
-
-#### `user_roles`
-- **Ruta**: `src/pages/admin/useAdminDashboard.ts`
-- **Síntoma**: Uso de `.from("user_roles")` pero no existe en `Database.public.Tables`.
-
-#### `user_suspensions`
-- **Rutas**:
-  - `src/pages/ModeratorDashboard.tsx`
-  - `src/pages/moderators/ModeratorDashboard.tsx`
-- **Síntoma**: Uso de `.from("user_suspensions")` pero no existe en `Database.public.Tables`.
-
-#### `user_themes`
-- **Rutas**:
-  - `src/hooks/useTheme.ts`
-  - `src/themes/useTheme.ts`
-- **Síntoma**: Uso de `.from("user_themes")` pero no existe en `Database.public.Tables`.
-
-#### `user_token_balances`
-- **Rutas**:
-  - `src/pages/admin/AdminProduction.tsx`
-  - `src/services/analytics/analytics/TokenAnalyticsService.ts`
-  - `src/services/payments/TokenService.ts`
-- **Síntoma**: Uso de `.from("user_token_balances")` pero no existe en `Database.public.Tables`.
-
-#### `user_wallets`
-- **Ruta**: `src/services/payments/WalletService.ts`
-- **Síntoma**: Uso de `.from("user_wallets")` pero no existe en `Database.public.Tables`.
-
-#### `web_vitals_history`
-- **Rutas**:
-  - `src/services/analytics/analytics/HistoricalMetricsService.ts`
-  - `src/services/core/PerformanceMonitoringService.ts`
-- **Síntoma**: Uso de `.from("web_vitals_history")` pero no existe en `Database.public.Tables`.
-
-#### `worldid_rewards`
-- **Ruta**: `src/hooks/useWorldID.ts`
-- **Síntoma**: Uso de `.from("worldid_rewards")` pero no existe en `Database.public.Tables`.
-
-#### `worldid_statistics`
-- **Ruta**: `src/hooks/useWorldID.ts`
-- **Síntoma**: Uso de `.from("worldid_statistics")` pero no existe en `Database.public.Tables`.
-
-#### `worldid_verifications`
-- **Rutas**:
-  - `src/hooks/useWorldID.ts`
-  - `src/pages/ModeratorDashboard.tsx`
-  - `src/pages/moderators/ModeratorDashboard.tsx`
-- **Síntoma**: Uso de `.from("worldid_verifications")` pero no existe en `Database.public.Tables`.
+- **Creado/actualizado en migración nueva**:
+  - `supabase/migrations/20260126203000_create_missing_tables_views_src_audit.sql`
+  - Crea (idempotente, con RLS/policies mínimas):
+    - `chat_requests`
+    - `chat_permissions`
+    - `gallery_access`
+    - `club_applications`
+    - `content_permissions`
+    - `content_violations`
+  - Crea/actualiza view:
+    - `couple_profiles_with_partners`
 
 ## Inventario de RPCs (uso en código)
 

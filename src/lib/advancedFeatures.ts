@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { NotificationService } from "@/lib/notifications";
-import type { Database } from "@/types/supabase-updated";
+import type { Database } from "@/types/supabase-generated";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -190,9 +190,9 @@ export class AdvancedFeaturesService {
     // Gender compatibility - interested_in existe en la tabla
     const genderScore = this.calculateGenderCompatibility(
       user1.gender,
-      user1.interested_in,
+      (Array.isArray(user1.interested_in) && user1.interested_in[0]) || 'men',
       user2.gender,
-      user2.interested_in,
+      (Array.isArray(user2.interested_in) && user2.interested_in[0]) || 'women',
     );
     scores.gender = genderScore;
     if (genderScore > 0.8) {
@@ -201,10 +201,10 @@ export class AdvancedFeaturesService {
 
     // Account type compatibility - account_type e interested_in existen en la tabla
     const accountTypeScore = this.calculateAccountTypeCompatibility(
-      user1.account_type || "single",
-      user1.interested_in,
-      user2.account_type || "single",
-      user2.interested_in,
+      user1.account_type || 'single',
+      (Array.isArray(user1.interested_in) && user1.interested_in[0]) || 'men',
+      user2.account_type || 'single',
+      (Array.isArray(user2.interested_in) && user2.interested_in[0]) || 'women',
     );
     scores.accountType = accountTypeScore;
     if (accountTypeScore > 0.8) {
@@ -345,20 +345,20 @@ export class AdvancedFeaturesService {
    * Calculate account type compatibility
    */
   private static calculateAccountTypeCompatibility(
-    accountType1: string | null,
-    lookingFor1: string | null,
-    accountType2: string | null,
-    lookingFor2: string | null,
+    user1AccountType: string | null,
+    user1InterestedIn: string | null,
+    user2AccountType: string | null,
+    user2InterestedIn: string | null,
   ): number {
-    if (!accountType1 || !accountType2) return 0.5;
+    if (!user1AccountType || !user2AccountType) return 0.5;
 
     // Simple compatibility based on what each user is looking for
     const type1Match =
-      !lookingFor1 ||
-      lookingFor1.toLowerCase().includes(accountType2.toLowerCase());
+      !user1InterestedIn ||
+      user1InterestedIn.toLowerCase().includes(user2AccountType.toLowerCase());
     const type2Match =
-      !lookingFor2 ||
-      lookingFor2.toLowerCase().includes(accountType1.toLowerCase());
+      !user2InterestedIn ||
+      user2InterestedIn.toLowerCase().includes(user1AccountType.toLowerCase());
 
     if (type1Match && type2Match) return 1.0;
     if (type1Match || type2Match) return 0.7;
@@ -375,7 +375,7 @@ export class AdvancedFeaturesService {
     // Enhanced personality compatibility based on bio and interests
     const bio1 = user1.bio || "";
     const bio2 = user2.bio || "";
-    const interests1 = user1.interests || [];
+    const interests1 = Array.isArray(user1.interests) ? user1.interests.join(',') : null;
     const interests2 = user2.interests || [];
 
     let compatibility = 0.5; // Base compatibility
@@ -418,9 +418,9 @@ export class AdvancedFeaturesService {
       const user1HasTrait = keywords.some(
         (keyword) =>
           bio1.toLowerCase().includes(keyword) ||
-          interests1.some((interest: string) =>
+          (interests1 && interests1.split(',').some((interest: string) =>
             interest.toLowerCase().includes(keyword),
-          ),
+          )),
       );
       const user2HasTrait = keywords.some(
         (keyword) =>
@@ -445,7 +445,7 @@ export class AdvancedFeaturesService {
     user1: ProfileRow,
     user2: ProfileRow,
   ): number {
-    const interests1 = user1.interests || [];
+    const interests1 = Array.isArray(user1.interests) ? user1.interests.join(',') : null;
     const interests2 = user2.interests || [];
     const bio1 = (user1.bio || "").toLowerCase();
     const bio2 = (user2.bio || "").toLowerCase();
@@ -465,9 +465,9 @@ export class AdvancedFeaturesService {
       const user1InCategory = keywords.some(
         (keyword) =>
           bio1.includes(keyword) ||
-          interests1.some((interest: string) =>
+          (interests1 && interests1.split(',').some((interest: string) =>
             interest.toLowerCase().includes(keyword),
-          ),
+          )),
       );
       const user2InCategory = keywords.some(
         (keyword) =>
@@ -833,6 +833,8 @@ export class AdvancedFeaturesService {
     // Check interests for keywords
     for (const interest of interests) {
       const interestLower = interest.toLowerCase();
+      const interestWords1 = interestLower.split(',');
+      const interestWords2 = interestLower.split(',');
       for (const keyword of keywords) {
         if (interestLower.includes(keyword)) {
           score += 15; // 15 points per keyword match in interests

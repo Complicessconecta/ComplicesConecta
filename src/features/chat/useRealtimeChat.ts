@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { RealtimeChannel, SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/types/supabase-custom";
+import { Database } from "@/types/supabase-generated";
 import { logger } from "@/lib/logger";
 
 export interface RealtimeMessage {

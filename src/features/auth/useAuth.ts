@@ -10,7 +10,7 @@ import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { setDatadogUser } from "@/config/datadog-rum.config";
-import { Profile } from "@/types/supabase-custom";
+import { Profile } from "@/types";
 import type { DatadogRUM } from "@/types/datadog";
 
 

@@ -833,8 +833,6 @@ export class AdvancedFeaturesService {
     // Check interests for keywords
     for (const interest of interests) {
       const interestLower = interest.toLowerCase();
-      const interestWords1 = interestLower.split(',');
-      const interestWords2 = interestLower.split(',');
       for (const keyword of keywords) {
         if (interestLower.includes(keyword)) {
           score += 15; // 15 points per keyword match in interests

@@ -190,9 +190,9 @@ export class AdvancedFeaturesService {
     // Gender compatibility - interested_in existe en la tabla
     const genderScore = this.calculateGenderCompatibility(
       user1.gender,
-      (Array.isArray(user1.interested_in) && user1.interested_in[0]) || 'men',
+      (Array.isArray(user1.interested_in) ? user1.interested_in[0] : null) ?? 'men',
       user2.gender,
-      (Array.isArray(user2.interested_in) && user2.interested_in[0]) || 'women',
+      (Array.isArray(user2.interested_in) ? user2.interested_in[0] : null) ?? 'women',
     );
     scores.gender = genderScore;
     if (genderScore > 0.8) {
@@ -202,9 +202,9 @@ export class AdvancedFeaturesService {
     // Account type compatibility - account_type e interested_in existen en la tabla
     const accountTypeScore = this.calculateAccountTypeCompatibility(
       user1.account_type || 'single',
-      (Array.isArray(user1.interested_in) && user1.interested_in[0]) || 'men',
+      (Array.isArray(user1.interested_in) ? user1.interested_in[0] : null) ?? 'men',
       user2.account_type || 'single',
-      (Array.isArray(user2.interested_in) && user2.interested_in[0]) || 'women',
+      (Array.isArray(user2.interested_in) ? user2.interested_in[0] : null) ?? 'women',
     );
     scores.accountType = accountTypeScore;
     if (accountTypeScore > 0.8) {

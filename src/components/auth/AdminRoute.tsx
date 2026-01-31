@@ -62,10 +62,9 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
               return;
             }
 
-            logger.info("🚫 AdminRoute: usuario demo sin permisos admin");
-            setIsAdmin(false);
-            setLoading(false);
-            return;
+            // Si hay residuos de demo pero NO es demo admin, no bloquear aquí.
+            // Continuar a la validación real (sesión Supabase / email whitelist / rpc / admin_users).
+            logger.info("ℹ️ AdminRoute: demo activo sin permisos admin, validando sesión real");
           }
         }
       } catch {

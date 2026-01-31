@@ -1718,6 +1718,7 @@ export type Database = {
           display_name: string | null
           id: string
           is_demo: boolean
+          role: 'admin' | 'user' | 'demo'
           updated_at: string | null
           user_id: string
         }
@@ -1726,6 +1727,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           is_demo?: boolean
+          role: 'admin' | 'user' | 'demo'
           updated_at?: string | null
           user_id: string
         }
@@ -1734,6 +1736,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           is_demo?: boolean
+          role?: 'admin' | 'user' | 'demo'
           updated_at?: string | null
           user_id?: string
         }

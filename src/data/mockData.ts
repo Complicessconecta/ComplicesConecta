@@ -3,7 +3,10 @@ import { getAssetUrl } from "@/utils/assetLoader";
 
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
-export interface MockProfile extends ProfileRow {
+export interface MockProfile extends Omit<ProfileRow, 'last_seen' | 'two_factor_enabled' | 'is_demo'> {
+  last_seen: string | null;
+  two_factor_enabled: boolean | null;
+  is_demo: boolean;
   stats: {
     totalViews: number;
     totalLikes: number;
@@ -46,6 +49,8 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
   is_premium: true,
   is_verified: true,
   is_blocked: false,
+  last_seen: null,
+  two_factor_enabled: null,
   is_demo: true,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
@@ -135,10 +140,12 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
     "Conexión Emocional",
     "Diversión Segura",
   ],
+  last_seen: null,
+  two_factor_enabled: null,
+  is_demo: true,
   is_premium: true,
   is_verified: true,
   is_blocked: false,
-  is_demo: true,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   latitude: null,

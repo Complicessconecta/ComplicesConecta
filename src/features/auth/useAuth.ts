@@ -35,6 +35,30 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const demoProfile: Profile = {
+          id: demoUser?.id ?? '',
+          first_name: demoUser?.first_name ?? '',
+          last_name: demoUser?.last_name ?? '',
+          age: demoUser?.age ?? 0,
+          bio: demoUser?.bio ?? '',
+          gender: demoUser?.gender ?? 'female',
+          interested_in: demoUser?.interested_in ?? 'men',
+          is_premium: demoUser?.is_premium ?? false,
+          is_verified: demoUser?.is_verified ?? false,
+          relationship_type: demoUser?.relationship_type ?? 'single',
+          created_at: demoUser?.created_at ?? '',
+          updated_at: demoUser?.updated_at ?? '',
+          user_id: demoUser?.user_id ?? '',
+          latitude: demoUser?.latitude ?? null,
+          longitude: demoUser?.longitude ?? null,
+          share_location: demoUser?.share_location ?? false,
+          display_name: demoUser?.display_name ?? null,
+          avatar_url: demoUser?.avatar_url ?? null,
+          email: demoUser?.email ?? null,
+          role: demoUser?.role ?? 'user',
+          is_demo: demoUser?.is_demo ?? false,
+          profile_type: demoUser?.profile_type ?? 'single',
+        };
   const config = getAppConfig();
   const initialized = useRef(false);
   const profileLoaded = useRef(false);
@@ -57,29 +81,38 @@ export const useAuth = () => {
       try {
         const parsedDemoUser =
           typeof currentDemoUser === "string" ? JSON.parse(currentDemoUser) : currentDemoUser;
-        const demoProfile = {
-          id: parsedDemoUser.id || "demo-user-1",
-          first_name: parsedDemoUser.first_name || "Demo User",
-          last_name: "",
-          display_name:
-            parsedDemoUser.displayName ||
-            parsedDemoUser.first_name ||
-            "Demo User",
-          email: parsedDemoUser.email,
-          role: parsedDemoUser.role || "user",
-          profile_type: parsedDemoUser.accountType || "single",
-          is_demo: true,
-          is_verified: true,
+        const demoProfileData = {
+          id: parsedDemoUser.id,
+          first_name: parsedDemoUser.firstName,
+          last_name: parsedDemoUser.lastName,
+          age: parsedDemoUser.age,
+          bio: parsedDemoUser.bio,
+          gender: parsedDemoUser.gender,
+          interested_in: parsedDemoUser.interestedIn,
           is_premium: false,
+          is_verified: true,
+          relationship_type: parsedDemoUser.accountType || "single",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          user_id: parsedDemoUser.id,
+          latitude: null,
+          longitude: null,
+          share_location: false,
+          display_name: parsedDemoUser.displayName,
+          avatar_url: parsedDemoUser.avatarUrl,
+          email: parsedDemoUser.email,
+          role: parsedDemoUser.role || 'user',
+          profile_type: parsedDemoUser.accountType || 'single',
+          is_demo: true,
         };
 
         logger.info("🎭 Perfil demo cargado en useAuth:", {
-          displayName: demoProfile.display_name,
-          email: demoProfile.email,
+          displayName: demoProfileData.display_name,
+          email: demoProfileData.email,
           role: demoProfile.role,
           accountType: demoProfile.profile_type,
         });
-        setProfile(demoProfile);
+        setProfile(demoProfileData);
         profileLoaded.current = true;
         return;
       } catch (error) {

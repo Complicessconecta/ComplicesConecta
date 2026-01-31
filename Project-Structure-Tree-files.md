@@ -1,5 +1,5 @@
 Listado de rutas de carpetas para el volumen WACKO
-El nï¿½mero de serie del volumen es D8CF-CDD4
+El número de serie del volumen es D8CF-CDD4
 C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   App.tsx
 |   debug.tsx
@@ -253,6 +253,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       InvitationDialog.tsx
 |   |       
 |   +---layout
+|   |       BottomNavigation.tsx
 |   |       index.ts
 |   |       MainLayout.tsx
 |   |       
@@ -285,6 +286,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       ImageModal.tsx
 |   |       index.ts
 |   |       InstallAppModal.tsx
+|   |       LogoutModal.tsx
 |   |       PremiumModal.tsx
 |   |       SharedTermsModal.tsx
 |   |       SmartMatchingModal.tsx
@@ -735,6 +737,8 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 +---integrations
 |   +---supabase
 |   |       client.ts
+|   |       secure-client.ts
+|   |       security-helpers.ts
 |   |       types.ts
 |   |       
 |   \---wallet
@@ -843,6 +847,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |           
 |   +---storage
 |   |       index.ts
+|   |       secure-storage.ts
 |   |       
 |   +---supabase
 |   |       index.ts
@@ -874,9 +879,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   ChatAuthenticated.tsx
 |   |   ChatInfo.tsx
 |   |   Clubs.tsx
-|   |   ClubsPublic.tsx
 |   |   ClubsComingSoon.tsx
 |   |   ClubsDemo.tsx
+|   |   ClubsPublic.tsx
 |   |   Construction.tsx
 |   |   Dashboard.tsx
 |   |   Demo.tsx
@@ -950,7 +955,11 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |               ProfileSingle.tsx
 |               
 +---security
+|       certificate-pinning.ts
+|       console-cleanup.ts
+|       csp-config.ts
 |       owasp-checklist.ts
+|       session-pinning.ts
 |       
 +---services
 |   |   index.ts
@@ -1144,12 +1153,11 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |           WalletService.ts
 |           
 +---shared
-|   +---lib
-|   |       cn.ts
-|   |       format.ts
-|   |       validation.ts
-|   |       
-|   \---ui
+|   \---lib
+|           cn.ts
+|           format.ts
+|           validation.ts
+|           
 +---styles
 |       AccessibilityAudit.css
 |       AnalyticsDashboard.css
@@ -1296,6 +1304,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       chat-limits.ts
 |       chat-summary.types.ts
 |       content-moderation.types.ts
+|       datadog.d.ts
 |       discover.types.ts
 |       global.d.ts
 |       google.types.ts
@@ -1304,6 +1313,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       react.types.ts
 |       security.types.ts
 |       storybook.d.ts
+|       supabase-auth.d.ts
 |       supabase-custom.ts
 |       supabase-extended.ts
 |       supabase-extensions.ts
@@ -1345,4 +1355,3 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
     \---discover
             generateRandomProfiles.ts
             
-

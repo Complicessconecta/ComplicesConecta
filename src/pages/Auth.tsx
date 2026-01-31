@@ -370,7 +370,7 @@ const Auth = () => {
           errorMessage =
             "Por favor, confirma tu correo electrnico antes de iniciar sesión";
         } else if (errorText.includes("User not found")) {
-          errorMessage = "Usuario no encontrado. Verifica tu correo electrnico";
+          errorMessage = "Usuario no encontrado. Verifica tu correo electronico";
         } else {
           errorMessage = errorText;
         }
@@ -401,7 +401,7 @@ const Auth = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Por favor ingresa tu correo electrónico",
+        description: "Por Favor Ingresa tu Correo Electrónico",
       });
       return;
     }
@@ -423,7 +423,7 @@ const Auth = () => {
 
       toast({
         title: "Recuperación de contraseña",
-        description: "Se ha enviado un correo de recuperación a " + resetEmail,
+        description: "Se ha enviado un correo de Recuperación a " + resetEmail,
       });
       setShowResetPassword(false);
       setResetEmail("");
@@ -431,7 +431,7 @@ const Auth = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "No se pudo enviar el correo de recuperación",
+        description: "No se pudo enviar el correo de Recuperación",
       });
     }
   };
@@ -455,7 +455,7 @@ const Auth = () => {
         setAutoLocationRequested(true);
         toast({
           title: "Ubicación obtenida",
-          description: "Tu ubicación ha sido obtenida exitosamente",
+          description: "Tu ubicación ha sido obtenida Exitosamente",
         });
       }
     } catch (error) {

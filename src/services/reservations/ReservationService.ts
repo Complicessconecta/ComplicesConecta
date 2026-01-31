@@ -71,20 +71,7 @@ export class ReservationService {
     return ReservationService.instance;
   }
 
-  /**
-   * Generar hash único para QR
-   */
-  private generateQRHash(): string {
-    return `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  /**
-   * Calcular comisión según tier del club
-   */
-  private calculateCommission(amount: number, tier: 'free' | 'premium'): number {
-    return tier === 'free' ? amount * 0.20 : 0;
-  }
-
+  
   /**
    * Crear una reserva nueva (usando Edge Function segura)
    */

@@ -1,3 +1,13 @@
+/**
+ * PageWrapper - Componente envolvente para todías las páginas públicas
+ * Proporciona:
+ * - HeaderNav automático
+ * - Backgrounds adaptativos según dispositivo
+ * - Transparencias dinámicas en contenedores
+ * - Partículas y efectos visuales
+ * - Estilos profesionales consistentes
+ */
+
 import React, { useMemo } from "react";
 import { cn } from "@/shared/lib/cn";
 import { HeaderNav } from "@/components/HeaderNav";
@@ -14,15 +24,6 @@ interface PageWrapperProps {
   containerClassName?: string;
 }
 
-/**
- * PageWrapper - Componente envolvente para todías las páginas públicas
- * Proporciona:
- * - HeaderNav automático
- * - Backgrounds adaptativos según dispositivo
- * - Transparencias dinámicas en contenedores
- * - Partículas y efectos visuales
- * - Estilos profesionales consistentes
- */
 export const PageWrapper: React.FC<PageWrapperProps> = ({
   children,
   className,

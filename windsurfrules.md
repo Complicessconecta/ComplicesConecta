@@ -10,24 +10,20 @@ Arquitectura: Monorepo modular (src/profiles/, src/features/, src/shared/, src/e
 Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compliant, Production Ready
 
 
-
 1. REGLAS INQUEBRANTABLES DEL PROYECTO
-
 1.1 Lógica de Negocio y Flujos Críticos
-1.2 Ignora el Historial Irrelevante: No analices logs de errores pasados que ya fueron superados o conversaciones de "relleno".
-1.3 Foco en el Estado Actual: Solo usa como referencia el código actual del archivo y el error específico que te estoy pegando.
-1.4 Modo Cirujano: Si te pido un cambio, no me des el archivo entero. Dame solo el bloque de código modificado.
-1.5 Cero Explicaciones de Estatus: No resumas lo que ya hiciste. Si funcionó, pasa al siguiente pendiente. Si falló, corrige sin pedir disculpas ni explicar por qué falló (ya lo veo en la consola).
-1.6 Leer y analizar los comentarios dentro de los archivos para toma de deciciones correctas
-1.7 NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, moderación con IA)
-1.8 NO romper flujos principales: registro → discover → match → chat → check-in
-1.9 NO crear ni eliminar archivos sin verificar existencia previa
-1.10 NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
-1.11 NO romper la logica de los perfiles "demo"
-1.12 No romper el flujo ni logica de los perfiles de produccion
-1.13 No crear ni eliminar archivos sin verificar existencia previa
-1.14 No eliminr variables , implementar variables que no estan declaradas
-1.15 No eliminar variables que no estan declaradas, agregar el compomnete o funcion de la variable no declarada justificando el cambio realizado
+
+
+- Leer y analizar los comentarios dentro de los archivos para toma de deciciones correctas
+- NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, moderación con IA)
+- NO romper flujos principales: registro → discover → match → chat → check-in
+- NO crear ni eliminar archivos sin verificar existencia previa
+- NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
+- NO romper la logica de los perfiles "demo"
+- No romper el flujo ni logica de los perfiles de produccion
+- No crear ni eliminar archivos sin verificar existencia previa
+- No eliminr variables , implementar variables que no estan declaradas
+- No eliminar variables que no estan declaradas, agregar el compomnete o funcion de la variable no declarada justificando el cambio realizado
 
 **Marca de progreso:**
 * **[Completo/Verificado✅]**

@@ -4,13 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import {
-  ProfileCardSchema,
-  ThemeSelectorSchema,
-  EmailValidationSchema as EmailSchema,
-  StakingSchema,
-  TokenTransactionSchema,
-} from "@/lib/validation/zod/zod-schemas";
+import { ProfileCardSchema, ThemeSelectorSchema, EmailValidationSchema as EmailSchema, StakingSchema, TokenTransactionSchema } from "@/lib/validation/zod/zod-schemas";
 
 describe("Zod Schema Validation", () => {
   describe("ProfileCard Validation", () => {

@@ -176,7 +176,7 @@ const Gallery = ({
             disabled={!isOwner && !hasGalleryAccess}
           >
             <Lock className="h-4 w-4" />
-            Privadías ({isOwner || hasGalleryAccess ? privateImages.length : "?"}
+            Privadas ({isOwner || hasGalleryAccess ? privateImages.length : "?"}
             )
           </TabsTrigger>
         </TabsList>
@@ -263,7 +263,7 @@ const Gallery = ({
                 Contenido Privado
               </h3>
               <p className="text-white/70 mb-4">
-                Necesitas una invitación aceptada para ver las fotos privadías de
+                Necesitas una invitación aceptada para ver las fotos privadas de
                 este usuario.
               </p>
               <InvitationDialog
@@ -280,7 +280,7 @@ const Gallery = ({
             <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
               <Lock className="h-16 w-16 mx-auto mb-4 text-white/50" />
               <h3 className="text-xl font-semibold text-white mb-2">
-                No hay fotos privadías
+                No hay fotos privadas
               </h3>
               <p className="text-white/70">
                 {isOwner

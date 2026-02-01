@@ -9,7 +9,18 @@ ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS is_unique BOOLEAN DEFAULT false
 CREATE UNIQUE INDEX IF NOT EXISTS admin_users_user_id_unique_idx ON admin_users(user_id) WHERE user_id IS NOT NULL;
 
 -- Crear índice único en granted_by para evitar duplicados en asignaciones
-CREATE INDEX IF NOT EXISTS admin_users_granted_by_idx ON admin_users(granted_by);
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'admin_users'
+      AND column_name = 'granted_by'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS admin_users_granted_by_idx ON admin_users(granted_by)';
+  END IF;
+END $$;
 
 -- Crear función para generar IDs únicos para administradores
 -- NOTA: admin_users.id es UUID en el esquema actual. Usar TEXT rompería inserts.

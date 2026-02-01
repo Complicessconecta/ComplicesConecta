@@ -231,69 +231,83 @@ const checkDemoMode = () => {
 };
 
 const initializeSupabase = async () => {
-  // No bloquear el renderizado - ejecutar de forma asíncrona sin await
-  setTimeout(async () => {
-    if (!checkDemoMode()) {
-      try {
-        // Timeout de 5 segundos para evitar que se quede colgado
-        const timeoutPromise: Promise<Error> = new Promise((resolve) => {
-          setTimeout(() => resolve(new Error("Timeout")), 5000);
-        });
-
-        const sessionPromise = supabase.auth.getSession();
-
-        const raceResult = await Promise.race([sessionPromise, timeoutPromise]);
-        if (raceResult instanceof Error) {
-          safeLogger.warn("⚠️ Problema de conectividad con Supabase:", {
-            error: raceResult.message,
+  // CORRECCIÓN: Manejar Promise correctamente
+  try {
+    // No bloquear el renderizado - ejecutar de forma asíncrona sin await
+    setTimeout(async () => {
+      if (!checkDemoMode()) {
+        try {
+          // CORRECCIÓN: Timeout configurable (10s dev, 5s prod)
+          const timeoutMs = import.meta.env.DEV ? 10000 : 5000;
+          const timeoutPromise: Promise<Error> = new Promise((resolve) => {
+            setTimeout(() => resolve(new Error("Timeout")), timeoutMs);
           });
-          if (
-            raceResult.message.includes("Failed to fetch") ||
-            raceResult.message.includes("CONNECTION_REFUSED") ||
-            raceResult.message.includes("Invalid Refresh Token") ||
-            raceResult.message.includes("Timeout")
-          ) {
-            isDemoMode = true;
-            safeLogger.info("🔄 Activando modo demo offline", {});
-          } else {
-            safeLogger.info("✅ Conectado exitosamente a Supabase", {});
-          }
-          return;
-        }
 
-        if ("error" in raceResult && raceResult.error) {
-          const _error = raceResult.error;
-          safeLogger.warn("⚠️ Problema de conectividad con Supabase:", {
-            error: _error.message,
-          });
-          if (
-            _error.message.includes("Failed to fetch") ||
-            _error.message.includes("CONNECTION_REFUSED") ||
-            _error.message.includes("Invalid Refresh Token") ||
-            _error.message.includes("Timeout")
-          ) {
-            isDemoMode = true;
-            safeLogger.info("🔄 Activando modo demo offline", {});
-          } else {
-            safeLogger.info("✅ Conectado exitosamente a Supabase", {});
+          const sessionPromise = supabase.auth.getSession();
+
+          const raceResult = await Promise.race([sessionPromise, timeoutPromise]);
+          if (raceResult instanceof Error) {
+            safeLogger.warn("⚠️ Problema de conectividad con Supabase:", {
+              error: raceResult.message,
+            });
+            if (
+              raceResult.message.includes("Failed to fetch") ||
+              raceResult.message.includes("CONNECTION_REFUSED") ||
+              raceResult.message.includes("Invalid Refresh Token") ||
+              raceResult.message.includes("Timeout")
+            ) {
+              isDemoMode = true;
+              safeLogger.info("🔄 Activando modo demo offline", {});
+            } else {
+              safeLogger.info("✅ Conectado exitosamente a Supabase", {});
+            }
+            return;
           }
+
+          if ("error" in raceResult && raceResult.error) {
+            const _error = raceResult.error;
+            safeLogger.warn("⚠️ Problema de conectividad con Supabase:", {
+              error: _error.message,
+            });
+            if (
+              _error.message.includes("Failed to fetch") ||
+              _error.message.includes("CONNECTION_REFUSED") ||
+              _error.message.includes("Invalid Refresh Token") ||
+              _error.message.includes("Timeout")
+            ) {
+              isDemoMode = true;
+              safeLogger.info("🔄 Activando modo demo offline", {});
+            } else {
+              safeLogger.info("✅ Conectado exitosamente a Supabase", {});
+            }
+          }
+        } catch (err) {
+          safeLogger.warn("⚠️ No se pudo verificar la sesión de Supabase:", {
+            error: err instanceof Error ? err.message : String(err),
+          });
+          isDemoMode = true;
+          safeLogger.info("🔄 Activando modo demo offline", {});
         }
-      } catch (err) {
-        safeLogger.warn("⚠️ No se pudo verificar la sesión de Supabase:", {
-          error: err instanceof Error ? err.message : String(err),
-        });
+      } else {
         isDemoMode = true;
-        safeLogger.info("🔄 Activando modo demo offline", {});
+        safeLogger.info("🔄 Modo demo activo - evitando conexión a Supabase", {});
       }
-    } else {
-      isDemoMode = true;
-      safeLogger.info("🔄 Modo demo activo - evitando conexión a Supabase", {});
-    }
-  }, 100); // Ejecutar después de 100ms para no bloquear el renderizado inicial
+    }, 100); // Ejecutar después de 100ms para no bloquear el renderizado inicial
+  } catch (error) {
+    safeLogger.error("❌ Error crítico en initializeSupabase:", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    isDemoMode = true;
+  }
 };
 
-// Initialize on module load (no bloquea)
-initializeSupabase();
+// CORRECCIÓN: Manejar Promise no manejada
+initializeSupabase().catch((error) => {
+  safeLogger.error("❌ Error no manejado en initializeSupabase:", {
+    error: error instanceof Error ? error.message : String(error),
+  });
+  isDemoMode = true;
+});
 
 export { isDemoMode };
 

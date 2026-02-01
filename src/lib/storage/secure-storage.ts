@@ -68,8 +68,25 @@ export class SecureStorage {
       const encryptedValue = localStorage.getItem(key);
       if (!encryptedValue) return undefined;
 
+      // CORRECCIÓN: Validar formato antes de desencriptar
+      if (typeof encryptedValue !== 'string' || encryptedValue.length === 0) {
+        console.warn(`⚠️ Datos inválidos en ${key}, eliminando`);
+        this.removeItem(key);
+        return undefined;
+      }
+
       const decryptedValue = this.decrypt(encryptedValue);
-      return JSON.parse(decryptedValue) as T;
+      
+      // CORRECCIÓN: Validar que sea JSON válido
+      try {
+        return JSON.parse(decryptedValue) as T;
+      } catch (parseError) {
+        console.error(`❌ Error parseando JSON de ${key}:`, {
+          error: parseError instanceof Error ? parseError.message : String(parseError)
+        });
+        this.removeItem(key);
+        return undefined;
+      }
     } catch (error) {
       console.error(`Error getting secure item ${key}:`, {
         error: error instanceof Error ? error.message : String(error),

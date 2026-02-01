@@ -113,9 +113,20 @@
   - `supabase db diff` (si aplica)
   - Consultas a `information_schema.tables/columns` y `pg_policies`.
 
+**Resultado (LOCAL):**
+- **Tablas existentes (ejemplos):** `admin_users`, `clubs`, `club_applications`, `club_events`, `reports`.
+- **RLS habilitado (confirmado):** `admin_users`, `clubs`, `club_applications`, `club_events`, `reports`.
+- **Tablas NO existentes (confirmado):** `likes`, `matches`, `profile_likes`, `user_tokens`, `transactions`, `invitations`, `chat_messages`, `club_profiles`.
+
 ### Remoto (Supabase project)
 - **Objetivo:** confirmar que remoto no tiene drift vs local.
 - **Checkpoints:**
   - `supabase link --project-ref <ref>`
   - `supabase db dump -s public` (comparar objetos)
   - Consultas SQL a `pg_policies`/`pg_tables`.
+
+**Resultado (REMOTO):**
+- Se generó dump de schema remoto: `docs-unified/auditorias/REMOTE_SCHEMA_public.sql`.
+- Búsqueda en el dump (CREATE TABLE / ENABLE RLS / CREATE POLICY) para:
+  - `likes`, `matches`, `profile_likes`, `user_tokens`, `transactions`, `invitations`, `chat_messages`, `club_profiles`
+  - **Resultado:** no aparecen en el schema remoto actual.

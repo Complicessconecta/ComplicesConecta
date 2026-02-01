@@ -1,3 +1,78 @@
+# Reporte de Cambios - CómplicesConecta v3.9.4
+
+**Fecha:** 1 de Febrero, 2026
+**Versión:** v3.9.4 (Refactor de useAuth - Estabilidad y Type Safety)
+**Responsable:** Senior Engineer - Refactor de Autenticación
+
+## Resumen Ejecutivo
+
+Se completó el refactor de `useAuth.ts` para mejorar estabilidad, type safety y mantenibilidad en producción móvil con Capacitor y TypeScript. Se eliminaron race conditions, parseo inseguro, promesas no manejadas y dependencias circulares. Todas las correcciones pasaron build:check, lint y sync Android exitosamente.
+
+## Registro de Cambios Detallados
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | Race conditions en inicialización | **Corregido**. IIFEs en useEffect, await loadProfile completo | Evitar user: false |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | Parseo inseguro de demoUser | **Corregido**. safeParseDemoUser() con validación | Type safety |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | Cast inseguro en signIn | **Corregido**. Objeto Profile completo sin as unknown | Sin any |
+| **mockData.ts** | `src/data/mockData.ts` | Propiedades duplicadas is_demo | **Corregido**. Eliminar duplicados en MOCK_PROFILE_SINGLE/COUPLE | Lint errors |
+| **client.ts** | `src/integrations/supabase/client.ts` | Promise no manejada | **Corregido**. try-catch + .catch() en initializeSupabase | Manejo de errores |
+| **client.ts** | `src/integrations/supabase/client.ts` | Timeout arbitrario 5s | **Corregido**. Timeout configurable (10s dev, 5s prod) | Ambiente correcto |
+| **secure-storage.ts** | `src/lib/storage/secure-storage.ts` | Validación insegura de datos | **Corregido**. Validar formato y JSON antes de desencriptar | Prevenir crashes |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | Dependencias circulares en loadProfile | **Corregido**. [demoUser, supabase] en dependencias | Evitar loops |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | Race condition en signOut | **Corregido**. Promise.all() antes de redirigir | Limpieza completa |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | Validación incompleta de Supabase | **Corregido**. Validar campos requeridos (id, first_name, email) | Data integrity |
+
+## Cambios por Fase
+
+### Fase 1: Race Conditions y Parseo Inseguro
+- ✅ Función `safeParseDemoUser()` con validación de estructura mínima
+- ✅ Race conditions eliminadas en useEffect inicial
+- ✅ Parseo inseguro corregido en 7 ocurrencias
+- ✅ Cast inseguro eliminado en signIn
+- ✅ Propiedades duplicadas corregidas en mockData.ts
+
+### Fase 2: Promise No Manejada y Validación en Storage
+- ✅ Promise no manejada corregida en client.ts
+- ✅ Timeout configurable (10s dev, 5s prod)
+- ✅ Validación de datos en secure-storage.ts
+
+### Fase 3: Dependencias Circulares y Race Conditions en signOut
+- ✅ Dependencias circulares corregidas en loadProfile
+- ✅ Race condition en signOut corregido con Promise.all()
+
+### Fase 4: Validación de Datos y Manejo de Errores
+- ✅ Validación de campos requeridos en Supabase queries
+- ✅ Manejo de errores mejorado en signOut
+
+### Fase 5: Verificación Final
+- ✅ npm run build:check (OK)
+- ✅ npm run lint (OK)
+- ✅ npx cap sync android (OK)
+
+## Commits Realizados
+
+| Hash | Fecha | Descripción |
+| :--- | :--- | :--- |
+| e3aa390b | 1 Feb 2026 | Fase 1 - Corrige race conditions y parseo inseguro en useAuth |
+| c293cfd6 | 1 Feb 2026 | Fase 2 - Corrige Promise no manejada y validación en storage |
+| 078bacfa | 1 Feb 2026 | Fase 3 - Corrige dependencias circulares y race conditions en signOut |
+| 130a1ab8 | 1 Feb 2026 | Fase 4 - Corrige validación de datos y manejo de errores |
+| f6459c9a | 1 Feb 2026 | Fase 5 - Verificación final y sync Android completados |
+
+## Documentación Creada
+
+- ✅ RIESGOS_ANALISIS_SOLUTIONS.md - Análisis de riesgos y fases de implementación
+
+## Impacto
+
+- **Estabilidad:** Eliminadas race conditions y promesas no manejadas que causaban crashes silenciosos en producción móvil
+- **Type Safety:** 100% TypeScript estricto sin `any` ni casts inseguros
+- **Seguridad:** Validación de datos en fronteras API y plugins Capacitor
+- **Mantenibilidad:** Código más limpio con mejor manejo de errores y logs descriptivos
+
+---
+
 # Reporte de Cambios - CómplicesConecta v3.9.3
 
 **Fecha:** 27 de Enero, 2026

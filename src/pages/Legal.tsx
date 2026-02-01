@@ -22,9 +22,9 @@ const Legal: FC = () => {
       category: "Protección Legal",
       priority: true,
       details: [
-        "Artículo 259 Ter: Difusión de contenido íntimo sin consentimiento (3-6 años prisión)",
-        "Artículo 259 Quáter: Acoso digital (1-3 años prisión)",
-        "Artículo 259 Quinquies: Violación a la intimidad sexual (3-6 años prisión)",
+        "Artículo 259 Tercero: Difusión de contenido íntimo sin consentimiento (3-6 años prisión)",
+        "Artículo 259 Quárto: Acoso digital (1-3 años prisión)",
+        "Artículo 259 Quinto: Violación a la intimidad sexual (3-6 años prisión)",
         "Verificador IA de Consentimiento integrado en ComplicesConecta",
         "Canal de denuncias 24/7 disponible",
       ],
@@ -39,8 +39,8 @@ const Legal: FC = () => {
       category: "Cumplimiento",
       details: [
         "Ley Federal de Protección de Datos Personales",
-        "Normativas de contenido adulto",
-        "Regulaciones de privacidad mexicanas",
+        "Normativas de contenido Adulto",
+        "Regulaciones de Privacidad Mexicanas",
         "Protocolos de verificación de edad",
         "Cumplimiento con autoridades locales",
       ],
@@ -64,7 +64,7 @@ const Legal: FC = () => {
     {
       title: "Política de Privacidad",
       description:
-        "Cómo protegemos, recopilamos y manejamos tu información personal. Cumplimiento con GDPR y normativas mexicanas.",
+        "Cómo protegemos, Recopilamos y Manejamos tu información personal. Cumplimiento con GDPR y Normativas Mexicanas.",
       icon: <Lock className="h-6 w-6" />,
       file: "PRIVACY_POLICY.md",
       lastUpdated: "2025-11-08",
@@ -74,7 +74,7 @@ const Legal: FC = () => {
         "Derechos de los usuarios sobre sus datos",
         "Medidías de seguridad implementadías",
         "Compartición de datos con terceros",
-        "Cumplimiento GDPR y normativas mexicanas",
+        "Cumplimiento GDPR y Normativas Mexicanas",
       ],
     },
     {
@@ -164,18 +164,18 @@ const Legal: FC = () => {
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
               ComplicesConecta opera bajo estricto cumplimiento del marco legal
-              mexicano e internacional, con especial énfasis en la Ley Olimpia y
+              Mexicano e internacional, con especial énfasis en la Ley Olimpia y
               protección contra violencia digital.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
               <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <Shield className="h-4 w-4 mr-2" />
-                Ley Olimpia Compliant
+                Ley Olimpia ComplicesConecta
               </Badge>
               <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Lock className="h-4 w-4 mr-2" />
-                GDPR Compliant
+                GDPR ComplicesConecta
               </Badge>
               <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Gavel className="h-4 w-4 mr-2" />
@@ -226,7 +226,7 @@ const Legal: FC = () => {
                   </h4>
                   <p className="text-white/90 mb-4 leading-relaxed">
                     La <strong>Ley Olimpia</strong> es una reforma legislativa
-                    mexicana vigente desde el 9 de noviembre de 2020 que
+                    mexicana vigente desde el 9 de Noviembre de 2020 que
                     tipifica como delito la violencia digital, específicamente
                     la difusión de contenido íntimo sin consentimiento. Es una
                     ley federal que protege contra el acoso, la difusión no
@@ -239,7 +239,7 @@ const Legal: FC = () => {
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <Gavel className="h-4 w-4 text-red-400" />
-                      Artículo 259 Ter
+                      Artículo 259 Tercero
                     </h5>
                     <p className="text-white/80 text-sm mb-2">
                       Difusión de contenido íntimo sin consentimiento
@@ -251,7 +251,7 @@ const Legal: FC = () => {
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-red-400" />
-                      Artículo 259 Quáter
+                      Artículo 259 Quárto
                     </h5>
                     <p className="text-white/80 text-sm mb-2">
                       Acoso digital y hostigamiento
@@ -263,7 +263,7 @@ const Legal: FC = () => {
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <Eye className="h-4 w-4 text-red-400" />
-                      Artículo 259 Quinquies
+                      Artículo 259 Quinto
                     </h5>
                     <p className="text-white/80 text-sm mb-2">
                       Violación a la intimidad sexual
@@ -292,7 +292,7 @@ const Legal: FC = () => {
                       <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Canal de denuncias 24/7:</strong> Reportes
-                        inmediatos y respuesta en menos de 2 horas
+                        inmediatos y respuesta en menos de 24 horas
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
@@ -327,7 +327,7 @@ const Legal: FC = () => {
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
               Accede a toda nuestra documentación legal, términos y políticas
-              actualizadías
+              actualizadas
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -486,7 +486,7 @@ const Legal: FC = () => {
                   Información Importante
                 </h2>
                 <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed">
-                  Esta documentación legal es de carácter informativo y no
+                  Esta documentación legal es de carácter informativo y No
                   constituye asesoría legal. Para asuntos legales específicos,
                   consulta con un abogado calificado.
                 </p>

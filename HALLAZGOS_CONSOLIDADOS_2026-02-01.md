@@ -6,7 +6,7 @@
 
 ---
 
-## 1) Seguridad (src/) – Auditoría estática
+## 1. Seguridad (src/) – Auditoría estática
 
 ### H001 – Uso de `innerHTML` (XSS potencial)
 - **Ruta(s):**
@@ -43,7 +43,7 @@
 
 ---
 
-## 2) Type-Safety / Eliminación de `as any` (progreso)
+## 2. Type-Safety / Eliminación de `as any` (progreso)
 
 ### TS001 – Uso de `(supabase as any)` en servicios/páginas
 - **Ruta(s) (pendientes según barrido):**
@@ -62,7 +62,7 @@
 
 ---
 
-## 3) Estructura / Duplicados / Barrels
+## 3. Estructura / Duplicados / Barrels
 
 ### ST001 – Duplicado AppLayout
 - **Ruta(s):**
@@ -85,7 +85,7 @@
 
 ---
 
-## 4) Planificación DB (ANTES de migrar: verificar local/remoto)
+## 4. Planificación DB (ANTES de migrar: verificar local/remoto)
 
 ### DB001 – Tablas sugeridas por planificación (Match)
 - **Tablas:** `likes`, `matches`
@@ -103,7 +103,7 @@
 
 ---
 
-## 5) Verificación obligatoria (local y remoto)
+## 5. Verificación obligatoria (local y remoto)
 
 ### Local (Docker Desktop / Supabase local)
 - **Requisito:** Docker Desktop activo.

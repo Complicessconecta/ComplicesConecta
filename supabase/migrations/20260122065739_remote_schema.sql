@@ -990,7 +990,7 @@ alter table "public"."club_checkins" enable row level security;
 alter table "public"."club_flyers" enable row level security;
 
 
-  create table "public"."club_reviews" (
+  create table if not exists "public"."club_reviews" (
     "id" uuid not null default gen_random_uuid(),
     "club_id" uuid not null,
     "user_id" uuid not null,
@@ -2169,7 +2169,7 @@ alter table "public"."chat_summaries" alter column "summary" set not null;
 
 alter table "public"."chat_summaries" enable row level security;
 
-alter table "public"."clubs" add column "average_rating" numeric(3,2) default 0.0;
+alter table "public"."clubs" add column if not exists "average_rating" numeric(3,2) default 0.0;
 
 alter table "public"."clubs" alter column "city" set data type character varying(100) using "city"::character varying(100);
 
@@ -2189,7 +2189,18 @@ alter table "public"."clubs" alter column "name" set data type character varying
 
 alter table "public"."clubs" alter column "phone" set data type character varying(20) using "phone"::character varying(20);
 
-alter table "public"."clubs" alter column "rating_average" set default 0;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'rating_average'
+  ) THEN
+    EXECUTE 'ALTER TABLE "public"."clubs" ALTER COLUMN "rating_average" SET DEFAULT 0';
+  END IF;
+END $$;
 
 alter table "public"."clubs" alter column "state" set data type character varying(100) using "state"::character varying(100);
 
@@ -2969,51 +2980,51 @@ alter table "public"."posts" alter column "post_type" set data type character va
 
 alter table "public"."posts" alter column "shares_count" set not null;
 
-alter table "public"."profiles" add column "age_range_max" integer default 65;
+alter table "public"."profiles" add column if not exists "age_range_max" integer default 65;
 
-alter table "public"."profiles" add column "age_range_min" integer default 18;
+alter table "public"."profiles" add column if not exists "age_range_min" integer default 18;
 
-alter table "public"."profiles" add column "city" text;
+alter table "public"."profiles" add column if not exists "city" text;
 
-alter table "public"."profiles" add column "id_verified" boolean default false;
+alter table "public"."profiles" add column if not exists "id_verified" boolean default false;
 
-alter table "public"."profiles" add column "id_verified_at" timestamp with time zone;
+alter table "public"."profiles" add column if not exists "id_verified_at" timestamp with time zone;
 
-alter table "public"."profiles" add column "interested_in" text[];
+alter table "public"."profiles" add column if not exists "interested_in" text[];
 
-alter table "public"."profiles" add column "is_active" boolean default true;
+alter table "public"."profiles" add column if not exists "is_active" boolean default true;
 
-alter table "public"."profiles" add column "is_admin" boolean default false;
+alter table "public"."profiles" add column if not exists "is_admin" boolean default false;
 
-alter table "public"."profiles" add column "last_active" timestamp with time zone default now();
+alter table "public"."profiles" add column if not exists "last_active" timestamp with time zone default now();
 
-alter table "public"."profiles" add column "lifestyle_preferences" jsonb default '{}'::jsonb;
+alter table "public"."profiles" add column if not exists "lifestyle_preferences" jsonb default '{}'::jsonb;
 
-alter table "public"."profiles" add column "location_preferences" jsonb default '{}'::jsonb;
+alter table "public"."profiles" add column if not exists "location_preferences" jsonb default '{}'::jsonb;
 
-alter table "public"."profiles" add column "looking_for" text;
+alter table "public"."profiles" add column if not exists "looking_for" text;
 
-alter table "public"."profiles" add column "max_distance" integer default 50;
+alter table "public"."profiles" add column if not exists "max_distance" integer default 50;
 
-alter table "public"."profiles" add column "personality_traits" jsonb default '{}'::jsonb;
+alter table "public"."profiles" add column if not exists "personality_traits" jsonb default '{}'::jsonb;
 
-alter table "public"."profiles" add column "photo_verified" boolean default false;
+alter table "public"."profiles" add column if not exists "photo_verified" boolean default false;
 
-alter table "public"."profiles" add column "photo_verified_at" timestamp with time zone;
+alter table "public"."profiles" add column if not exists "photo_verified_at" timestamp with time zone;
 
-alter table "public"."profiles" add column "pin_hash" text;
+alter table "public"."profiles" add column if not exists "pin_hash" text;
 
-alter table "public"."profiles" add column "suspension_end_date" timestamp with time zone;
+alter table "public"."profiles" add column if not exists "suspension_end_date" timestamp with time zone;
 
-alter table "public"."profiles" add column "swinger_experience" text;
+alter table "public"."profiles" add column if not exists "swinger_experience" text;
 
-alter table "public"."profiles" add column "verification_level" text default 'none'::text;
+alter table "public"."profiles" add column if not exists "verification_level" text default 'none'::text;
 
-alter table "public"."profiles" add column "warnings_count" integer default 0;
+alter table "public"."profiles" add column if not exists "warnings_count" integer default 0;
 
-alter table "public"."profiles" add column "world_id_nullifier_hash" text;
+alter table "public"."profiles" add column if not exists "world_id_nullifier_hash" text;
 
-alter table "public"."profiles" add column "world_id_verified_at" timestamp with time zone;
+alter table "public"."profiles" add column if not exists "world_id_verified_at" timestamp with time zone;
 
 alter table "public"."profiles" alter column "account_type" set default 'single'::text;
 
@@ -3186,31 +3197,88 @@ alter table "public"."security" alter column "ip_address" drop default;
 
 alter table "public"."security" alter column "ip_address" set data type inet using "ip_address"::inet;
 
-alter table "public"."security" alter column "risk_level" set default 'low'::text;
-
-alter table "public"."security" alter column "risk_level" set not null;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'security'
+      AND column_name = 'risk_level'
+  ) THEN
+    EXECUTE 'ALTER TABLE "public"."security" ALTER COLUMN "risk_level" SET DEFAULT ''low''::text';
+    EXECUTE 'ALTER TABLE "public"."security" ALTER COLUMN "risk_level" SET NOT NULL';
+  END IF;
+END $$;
 
 alter table "public"."security" alter column "user_id" drop not null;
 
-alter table "public"."security_audit_logs" drop column "description";
+alter table "public"."security_audit_logs" drop column if exists "description";
 
-alter table "public"."security_audit_logs" drop column "event_type";
+alter table "public"."security_audit_logs" drop column if exists "event_type";
 
-alter table "public"."security_audit_logs" drop column "metadata";
+alter table "public"."security_audit_logs" drop column if exists "metadata";
 
-alter table "public"."security_audit_logs" drop column "resolved";
+alter table "public"."security_audit_logs" drop column if exists "resolved";
 
-alter table "public"."security_audit_logs" drop column "severity";
+alter table "public"."security_audit_logs" drop column if exists "severity";
 
-alter table "public"."security_audit_logs" add column "action" character varying(100) not null;
+alter table "public"."security_audit_logs" add column if not exists "action" character varying(100);
 
-alter table "public"."security_audit_logs" add column "details" jsonb default '{}'::jsonb;
+alter table "public"."security_audit_logs" add column if not exists "details" jsonb;
 
-alter table "public"."security_audit_logs" add column "resource" character varying(100) not null;
+alter table "public"."security_audit_logs" add column if not exists "resource" character varying(100);
 
-alter table "public"."security_audit_logs" add column "risk_score" integer default 0;
+alter table "public"."security_audit_logs" add column if not exists "risk_score" integer;
 
-alter table "public"."security_audit_logs" add column "session_id" character varying(255);
+alter table "public"."security_audit_logs" add column if not exists "session_id" character varying(255);
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'security_audit_logs'
+      AND column_name = 'action'
+  ) THEN
+    EXECUTE 'UPDATE "public"."security_audit_logs" SET "action" = ''unknown'' WHERE "action" IS NULL';
+    EXECUTE 'ALTER TABLE "public"."security_audit_logs" ALTER COLUMN "action" SET DEFAULT ''unknown''';
+    EXECUTE 'ALTER TABLE "public"."security_audit_logs" ALTER COLUMN "action" SET NOT NULL';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'security_audit_logs'
+      AND column_name = 'resource'
+  ) THEN
+    EXECUTE 'UPDATE "public"."security_audit_logs" SET "resource" = ''unknown'' WHERE "resource" IS NULL';
+    EXECUTE 'ALTER TABLE "public"."security_audit_logs" ALTER COLUMN "resource" SET DEFAULT ''unknown''';
+    EXECUTE 'ALTER TABLE "public"."security_audit_logs" ALTER COLUMN "resource" SET NOT NULL';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'security_audit_logs'
+      AND column_name = 'details'
+  ) THEN
+    EXECUTE 'ALTER TABLE "public"."security_audit_logs" ALTER COLUMN "details" SET DEFAULT ''{}''::jsonb';
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'security_audit_logs'
+      AND column_name = 'risk_score'
+  ) THEN
+    EXECUTE 'ALTER TABLE "public"."security_audit_logs" ALTER COLUMN "risk_score" SET DEFAULT 0';
+  END IF;
+END $$;
 
 alter table "public"."security_audit_logs" alter column "id" set default extensions.uuid_generate_v4();
 
@@ -3454,6 +3522,14 @@ alter table "public"."user_nfts" alter column "network" set default 'mumbai'::ch
 
 alter table "public"."user_nfts" alter column "network" set data type character varying(20) using "network"::character varying(20);
 
+drop policy if exists "Users can view own NFTs" on "public"."user_nfts";
+drop policy if exists "Users can insert own NFTs" on "public"."user_nfts";
+drop policy if exists "Users can update own NFTs" on "public"."user_nfts";
+drop policy if exists "Users can insert NFTs for their wallets" on "public"."user_nfts";
+drop policy if exists "Users can view NFTs by wallet address" on "public"."user_nfts";
+drop policy if exists "Users can view their NFTs" on "public"."user_nfts";
+drop policy if exists "own_user_nfts" on "public"."user_nfts";
+
 alter table "public"."user_nfts" alter column "owner_address" set data type character varying(42) using "owner_address"::character varying(42);
 
 alter table "public"."user_nfts" alter column "partner_address" set data type character varying(42) using "partner_address"::character varying(42);
@@ -3670,7 +3746,7 @@ CREATE UNIQUE INDEX club_flyers_pkey ON public.club_flyers USING btree (id);
 
 CREATE UNIQUE INDEX club_reviews_club_id_user_id_key ON public.club_reviews USING btree (club_id, user_id);
 
-CREATE UNIQUE INDEX club_reviews_pkey ON public.club_reviews USING btree (id);
+CREATE UNIQUE INDEX IF NOT EXISTS club_reviews_pkey ON public.club_reviews USING btree (id);
 
 CREATE UNIQUE INDEX club_verifications_pkey ON public.club_verifications USING btree (id);
 
@@ -3844,17 +3920,17 @@ CREATE INDEX idx_club_flyers_event_date ON public.club_flyers USING btree (event
 
 CREATE INDEX idx_club_flyers_featured ON public.club_flyers USING btree (is_featured) WHERE (is_featured = true);
 
-CREATE INDEX idx_club_reviews_club_id ON public.club_reviews USING btree (club_id);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_club_id ON public.club_reviews USING btree (club_id);
 
-CREATE INDEX idx_club_reviews_created_at ON public.club_reviews USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_created_at ON public.club_reviews USING btree (created_at DESC);
 
-CREATE INDEX idx_club_reviews_featured ON public.club_reviews USING btree (is_featured) WHERE (is_featured = true);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_featured ON public.club_reviews USING btree (is_featured) WHERE (is_featured = true);
 
-CREATE INDEX idx_club_reviews_rating ON public.club_reviews USING btree (rating);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_rating ON public.club_reviews USING btree (rating);
 
-CREATE INDEX idx_club_reviews_user_id ON public.club_reviews USING btree (user_id);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_user_id ON public.club_reviews USING btree (user_id);
 
-CREATE INDEX idx_club_reviews_verified ON public.club_reviews USING btree (is_verified) WHERE (is_verified = true);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_verified ON public.club_reviews USING btree (is_verified) WHERE (is_verified = true);
 
 CREATE INDEX idx_club_verifications_club_id ON public.club_verifications USING btree (club_id);
 
@@ -3864,7 +3940,18 @@ CREATE INDEX idx_club_verifications_verified_by ON public.club_verifications USI
 
 CREATE INDEX idx_clubs_active ON public.clubs USING btree (is_active) WHERE (is_active = true);
 
-CREATE INDEX idx_clubs_featured ON public.clubs USING btree (is_featured) WHERE (is_featured = true);
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'is_featured'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_clubs_featured ON public.clubs USING btree (is_featured) WHERE (is_featured = true)';
+  END IF;
+END $$;
 
 CREATE INDEX idx_clubs_verified ON public.clubs USING btree (verified_at) WHERE (verified_at IS NOT NULL);
 
@@ -4294,7 +4381,7 @@ CREATE INDEX idx_profiles_filters_composite ON public.profiles USING btree (is_v
 
 CREATE INDEX idx_profiles_gender ON public.profiles USING btree (gender) WHERE (gender IS NOT NULL);
 
-CREATE INDEX idx_profiles_id_verified ON public.profiles USING btree (id_verified);
+CREATE INDEX IF NOT EXISTS idx_profiles_id_verified ON public.profiles USING btree (id_verified);
 
 CREATE INDEX idx_profiles_interests_gin ON public.profiles USING gin (interests) WHERE ((interests IS NOT NULL) AND (array_length(interests, 1) > 0));
 
@@ -4314,11 +4401,11 @@ CREATE INDEX idx_profiles_location_preferences ON public.profiles USING gin (loc
 
 CREATE INDEX idx_profiles_personality_traits ON public.profiles USING gin (personality_traits);
 
-CREATE INDEX idx_profiles_photo_verified ON public.profiles USING btree (photo_verified);
+CREATE INDEX IF NOT EXISTS idx_profiles_photo_verified ON public.profiles USING btree (photo_verified);
 
 CREATE INDEX idx_profiles_suspension_end_date ON public.profiles USING btree (suspension_end_date);
 
-CREATE INDEX idx_profiles_verification_level ON public.profiles USING btree (verification_level);
+CREATE INDEX IF NOT EXISTS idx_profiles_verification_level ON public.profiles USING btree (verification_level);
 
 CREATE INDEX idx_referral_rewards_claimed ON public.referral_rewards USING btree (claimed);
 
@@ -4392,11 +4479,11 @@ CREATE INDEX idx_security_alerts_severity ON public.security_alerts USING btree 
 
 CREATE INDEX idx_security_alerts_status ON public.security_alerts USING btree (status);
 
-CREATE INDEX idx_security_audit_logs_action ON public.security_audit_logs USING btree (action);
+CREATE INDEX IF NOT EXISTS idx_security_audit_logs_action ON public.security_audit_logs USING btree (action);
 
-CREATE INDEX idx_security_audit_logs_ip_address ON public.security_audit_logs USING btree (ip_address);
+CREATE INDEX IF NOT EXISTS idx_security_audit_logs_ip_address ON public.security_audit_logs USING btree (ip_address);
 
-CREATE INDEX idx_security_audit_logs_risk_score ON public.security_audit_logs USING btree (risk_score);
+CREATE INDEX IF NOT EXISTS idx_security_audit_logs_risk_score ON public.security_audit_logs USING btree (risk_score);
 
 CREATE INDEX idx_security_events_created_at ON public.security_events USING btree (created_at DESC);
 
@@ -4418,7 +4505,18 @@ CREATE INDEX idx_security_flags_severity ON public.security_flags USING btree (s
 
 CREATE INDEX idx_security_flags_user_id ON public.security_flags USING btree (user_id);
 
-CREATE INDEX idx_security_risk_level ON public.security USING btree (risk_level);
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'security'
+      AND column_name = 'risk_level'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_security_risk_level ON public.security USING btree (risk_level)';
+  END IF;
+END $$;
 
 CREATE INDEX idx_sessions_expires ON public.sessions USING btree (expires_at);
 
@@ -4893,7 +4991,20 @@ alter table "public"."club_checkins" add constraint "club_checkins_pkey" PRIMARY
 
 alter table "public"."club_flyers" add constraint "club_flyers_pkey" PRIMARY KEY using index "club_flyers_pkey";
 
-alter table "public"."club_reviews" add constraint "club_reviews_pkey" PRIMARY KEY using index "club_reviews_pkey";
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'club_reviews'
+      AND c.conname = 'club_reviews_pkey'
+  ) THEN
+    EXECUTE 'alter table "public"."club_reviews" add constraint "club_reviews_pkey" PRIMARY KEY using index "club_reviews_pkey"';
+  END IF;
+END $$;
 
 alter table "public"."club_verifications" add constraint "club_verifications_pkey" PRIMARY KEY using index "club_verifications_pkey";
 
@@ -5209,27 +5320,105 @@ alter table "public"."club_flyers" add constraint "club_flyers_created_by_fkey" 
 
 alter table "public"."club_flyers" validate constraint "club_flyers_created_by_fkey";
 
-alter table "public"."club_reviews" add constraint "club_reviews_checkin_id_fkey" FOREIGN KEY (checkin_id) REFERENCES public.club_checkins(id) not valid;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'club_reviews'
+      AND column_name = 'checkin_id'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'club_reviews'
+      AND c.conname = 'club_reviews_checkin_id_fkey'
+  ) THEN
+    EXECUTE 'alter table "public"."club_reviews" add constraint "club_reviews_checkin_id_fkey" FOREIGN KEY (checkin_id) REFERENCES public.club_checkins(id) not valid';
+    EXECUTE 'alter table "public"."club_reviews" validate constraint "club_reviews_checkin_id_fkey"';
+  END IF;
+END $$;
 
-alter table "public"."club_reviews" validate constraint "club_reviews_checkin_id_fkey";
-
-alter table "public"."club_reviews" add constraint "club_reviews_club_id_fkey" FOREIGN KEY (club_id) REFERENCES public.clubs(id) ON DELETE CASCADE not valid;
-
-alter table "public"."club_reviews" validate constraint "club_reviews_club_id_fkey";
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'club_reviews'
+      AND column_name = 'club_id'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'club_reviews'
+      AND c.conname = 'club_reviews_club_id_fkey'
+  ) THEN
+    EXECUTE 'alter table "public"."club_reviews" add constraint "club_reviews_club_id_fkey" FOREIGN KEY (club_id) REFERENCES public.clubs(id) ON DELETE CASCADE not valid';
+    EXECUTE 'alter table "public"."club_reviews" validate constraint "club_reviews_club_id_fkey"';
+  END IF;
+END $$;
 
 alter table "public"."club_reviews" add constraint "club_reviews_club_id_user_id_key" UNIQUE using index "club_reviews_club_id_user_id_key";
 
-alter table "public"."club_reviews" add constraint "club_reviews_helpful_count_check" CHECK ((helpful_count >= 0)) not valid;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'club_reviews'
+      AND c.conname = 'club_reviews_helpful_count_check'
+  ) THEN
+    EXECUTE 'alter table "public"."club_reviews" add constraint "club_reviews_helpful_count_check" CHECK ((helpful_count >= 0)) not valid';
+    EXECUTE 'alter table "public"."club_reviews" validate constraint "club_reviews_helpful_count_check"';
+  END IF;
+END $$;
 
-alter table "public"."club_reviews" validate constraint "club_reviews_helpful_count_check";
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'club_reviews'
+      AND c.conname = 'club_reviews_rating_check'
+  ) THEN
+    EXECUTE 'alter table "public"."club_reviews" add constraint "club_reviews_rating_check" CHECK (((rating >= 1) AND (rating <= 5))) not valid';
+    EXECUTE 'alter table "public"."club_reviews" validate constraint "club_reviews_rating_check"';
+  END IF;
+END $$;
 
-alter table "public"."club_reviews" add constraint "club_reviews_rating_check" CHECK (((rating >= 1) AND (rating <= 5))) not valid;
-
-alter table "public"."club_reviews" validate constraint "club_reviews_rating_check";
-
-alter table "public"."club_reviews" add constraint "club_reviews_user_id_fkey" FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE not valid;
-
-alter table "public"."club_reviews" validate constraint "club_reviews_user_id_fkey";
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'club_reviews'
+      AND column_name = 'user_id'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'club_reviews'
+      AND c.conname = 'club_reviews_user_id_fkey'
+  ) THEN
+    EXECUTE 'alter table "public"."club_reviews" add constraint "club_reviews_user_id_fkey" FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE not valid';
+    EXECUTE 'alter table "public"."club_reviews" validate constraint "club_reviews_user_id_fkey"';
+  END IF;
+END $$;
 
 alter table "public"."club_verifications" add constraint "club_verifications_club_id_fkey" FOREIGN KEY (club_id) REFERENCES public.clubs(id) ON DELETE CASCADE not valid;
 
@@ -5255,17 +5444,71 @@ alter table "public"."clubs" add constraint "clubs_check_in_radius_meters_check"
 
 alter table "public"."clubs" validate constraint "clubs_check_in_radius_meters_check";
 
-alter table "public"."clubs" add constraint "clubs_rating_average_check" CHECK (((rating_average >= (0)::numeric) AND (rating_average <= (5)::numeric))) not valid;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'rating_average'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'clubs'
+      AND c.conname = 'clubs_rating_average_check'
+  ) THEN
+    EXECUTE 'alter table "public"."clubs" add constraint "clubs_rating_average_check" CHECK (((rating_average >= (0)::numeric) AND (rating_average <= (5)::numeric))) not valid';
+    EXECUTE 'alter table "public"."clubs" validate constraint "clubs_rating_average_check"';
+  END IF;
+END $$;
 
-alter table "public"."clubs" validate constraint "clubs_rating_average_check";
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'rating_count'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'clubs'
+      AND c.conname = 'clubs_rating_count_check'
+  ) THEN
+    EXECUTE 'alter table "public"."clubs" add constraint "clubs_rating_count_check" CHECK ((rating_count >= 0)) not valid';
+    EXECUTE 'alter table "public"."clubs" validate constraint "clubs_rating_count_check"';
+  END IF;
+END $$;
 
-alter table "public"."clubs" add constraint "clubs_rating_count_check" CHECK ((rating_count >= 0)) not valid;
-
-alter table "public"."clubs" validate constraint "clubs_rating_count_check";
-
-alter table "public"."clubs" add constraint "clubs_review_count_check" CHECK ((review_count >= 0)) not valid;
-
-alter table "public"."clubs" validate constraint "clubs_review_count_check";
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'review_count'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'clubs'
+      AND c.conname = 'clubs_review_count_check'
+  ) THEN
+    EXECUTE 'alter table "public"."clubs" add constraint "clubs_review_count_check" CHECK ((review_count >= 0)) not valid';
+    EXECUTE 'alter table "public"."clubs" validate constraint "clubs_review_count_check"';
+  END IF;
+END $$;
 
 alter table "public"."cmpx_purchases" add constraint "cmpx_purchases_bonus_cmpx_check" CHECK ((bonus_cmpx >= 0)) not valid;
 
@@ -6539,13 +6782,49 @@ alter table "public"."chat_rooms" add constraint "chat_rooms_created_by_fkey" FO
 
 alter table "public"."chat_rooms" validate constraint "chat_rooms_created_by_fkey";
 
-alter table "public"."clubs" add constraint "clubs_created_by_fkey" FOREIGN KEY (created_by) REFERENCES auth.users(id) not valid;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'created_by'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'clubs'
+      AND c.conname = 'clubs_created_by_fkey'
+  ) THEN
+    EXECUTE 'alter table "public"."clubs" add constraint "clubs_created_by_fkey" FOREIGN KEY (created_by) REFERENCES auth.users(id) not valid';
+    EXECUTE 'alter table "public"."clubs" validate constraint "clubs_created_by_fkey"';
+  END IF;
+END $$;
 
-alter table "public"."clubs" validate constraint "clubs_created_by_fkey";
-
-alter table "public"."clubs" add constraint "clubs_verified_by_fkey" FOREIGN KEY (verified_by) REFERENCES auth.users(id) not valid;
-
-alter table "public"."clubs" validate constraint "clubs_verified_by_fkey";
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'verified_by'
+  ) AND NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint c
+    JOIN pg_class t ON t.oid = c.conrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    WHERE n.nspname = 'public'
+      AND t.relname = 'clubs'
+      AND c.conname = 'clubs_verified_by_fkey'
+  ) THEN
+    EXECUTE 'alter table "public"."clubs" add constraint "clubs_verified_by_fkey" FOREIGN KEY (verified_by) REFERENCES auth.users(id) not valid';
+    EXECUTE 'alter table "public"."clubs" validate constraint "clubs_verified_by_fkey"';
+  END IF;
+END $$;
 
 alter table "public"."cmpx_purchases" add constraint "cmpx_purchases_package_id_fkey" FOREIGN KEY (package_id) REFERENCES public.cmpx_shop_packages(id) not valid;
 
@@ -13358,23 +13637,33 @@ using ((auth.uid() = user_id));
 
 
 
-  create policy "System can insert blockchain transactions"
-  on "public"."blockchain_transactions"
-  as permissive
-  for insert
-  to public
-with check (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'blockchain_transactions'
+      AND policyname = 'System can insert blockchain transactions'
+  ) THEN
+    EXECUTE 'create policy "System can insert blockchain transactions"\n  on "public"."blockchain_transactions"\n  as permissive\n  for insert\n  to public\nwith check (true);';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can view own blockchain transactions"
-  on "public"."blockchain_transactions"
-  as permissive
-  for select
-  to public
-using (((user_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'blockchain_transactions'
+      AND policyname = 'Users can view own blockchain transactions'
+  ) THEN
+    EXECUTE 'create policy "Users can view own blockchain transactions"\n  on "public"."blockchain_transactions"\n  as permissive\n  for select\n  to public\nusing (((user_id = auth.uid()) OR (EXISTS ( SELECT 1\n   FROM public.admin_users\n  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
 
 
@@ -13532,39 +13821,63 @@ using ((is_active = true));
 
 
 
-  create policy "Anyone can view verified reviews"
-  on "public"."club_reviews"
-  as permissive
-  for select
-  to public
-using ((is_verified = true));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'club_reviews'
+      AND policyname = 'Anyone can view verified reviews'
+  ) THEN
+    EXECUTE 'create policy "Anyone can view verified reviews"\n  on "public"."club_reviews"\n  as permissive\n  for select\n  to public\nusing ((is_verified = true));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can create own reviews"
-  on "public"."club_reviews"
-  as permissive
-  for insert
-  to public
-with check ((user_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'club_reviews'
+      AND policyname = 'Users can create own reviews'
+  ) THEN
+    EXECUTE 'create policy "Users can create own reviews"\n  on "public"."club_reviews"\n  as permissive\n  for insert\n  to public\nwith check ((user_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can update own reviews"
-  on "public"."club_reviews"
-  as permissive
-  for update
-  to public
-using ((user_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'club_reviews'
+      AND policyname = 'Users can update own reviews'
+  ) THEN
+    EXECUTE 'create policy "Users can update own reviews"\n  on "public"."club_reviews"\n  as permissive\n  for update\n  to public\nusing ((user_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can view own reviews"
-  on "public"."club_reviews"
-  as permissive
-  for select
-  to public
-using ((user_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'club_reviews'
+      AND policyname = 'Users can view own reviews'
+  ) THEN
+    EXECUTE 'create policy "Users can view own reviews"\n  on "public"."club_reviews"\n  as permissive\n  for select\n  to public\nusing ((user_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
@@ -13590,12 +13903,18 @@ using ((EXISTS ( SELECT 1
 
 
 
-  create policy "Anyone can view active clubs"
-  on "public"."clubs"
-  as permissive
-  for select
-  to public
-using ((is_active = true));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'clubs'
+      AND policyname = 'Anyone can view active clubs'
+  ) THEN
+    EXECUTE 'create policy "Anyone can view active clubs"\n  on "public"."clubs"\n  as permissive\n  for select\n  to public\nusing ((is_active = true));';
+  END IF;
+END $$;
 
 
 
@@ -14076,159 +14395,213 @@ using (true);
 
 
 
-  create policy "Aislamiento Demo vs Producción"
-  on "public"."couple_profiles"
-  as permissive
-  for select
-  to public
-using (((NOT (( SELECT profiles.is_demo
-   FROM public.profiles
-  WHERE (profiles.user_id = auth.uid())) IS DISTINCT FROM ( SELECT profiles.is_demo
-   FROM public.profiles
-  WHERE (profiles.user_id = couple_profiles.user_id)))) OR (( SELECT profiles.is_admin
-   FROM public.profiles
-  WHERE (profiles.user_id = auth.uid())) = true)));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Aislamiento Demo vs Producción'
+  ) THEN
+    EXECUTE 'create policy "Aislamiento Demo vs Producción" on "public"."couple_profiles" as permissive for select to public using ((NOT (( SELECT profiles.is_demo FROM public.profiles WHERE (profiles.user_id = auth.uid())) IS DISTINCT FROM ( SELECT profiles.is_demo FROM public.profiles WHERE (profiles.user_id = couple_profiles.user_id)))) OR (( SELECT profiles.is_admin FROM public.profiles WHERE (profiles.user_id = auth.uid())) = true));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Users can insert own couple profile'
+  ) THEN
+    EXECUTE 'create policy "Users can insert own couple profile" on "public"."couple_profiles" as permissive for insert to public with check (((user_id = auth.uid()) OR (partner_1_id = auth.uid()) OR (partner_2_id = auth.uid())));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Users can update own couple profile'
+  ) THEN
+    EXECUTE 'create policy "Users can update own couple profile" on "public"."couple_profiles" as permissive for update to public using (((user_id = auth.uid()) OR (partner_1_id = auth.uid()) OR (partner_2_id = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
-  create policy "Users can insert own couple profile"
-  on "public"."couple_profiles"
-  as permissive
-  for insert
-  to public
-with check (((user_id = auth.uid()) OR (partner_1_id = auth.uid()) OR (partner_2_id = auth.uid())));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Users can view accessible couple profiles'
+  ) THEN
+    EXECUTE 'create policy "Users can view accessible couple profiles" on "public"."couple_profiles" as permissive for select to public using (((user_id = auth.uid()) OR (partner_1_id = auth.uid()) OR (partner_2_id = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Usuarios pueden borrar su perfil de pareja'
+  ) THEN
+    EXECUTE 'create policy "Usuarios pueden borrar su perfil de pareja" on "public"."couple_profiles" as permissive for delete to public using ((auth.uid() = user_id));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Usuarios pueden crear su perfil de pareja'
+  ) THEN
+    EXECUTE 'create policy "Usuarios pueden crear su perfil de pareja" on "public"."couple_profiles" as permissive for insert to public with check ((auth.uid() = user_id));';
+  END IF;
+END $$;
 
-  create policy "Users can update own couple profile"
-  on "public"."couple_profiles"
-  as permissive
-  for update
-  to public
-using (((user_id = auth.uid()) OR (partner_1_id = auth.uid()) OR (partner_2_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Usuarios pueden editar su perfil de pareja'
+  ) THEN
+    EXECUTE 'create policy "Usuarios pueden editar su perfil de pareja" on "public"."couple_profiles" as permissive for update to public using ((auth.uid() = user_id));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'Visitantes solo ven Demos'
+  ) THEN
+    EXECUTE 'create policy "Visitantes solo ven Demos" on "public"."couple_profiles" as permissive for select to public using (((auth.role() = ''anon''::text) AND (( SELECT profiles.is_demo FROM public.profiles WHERE (profiles.user_id = couple_profiles.user_id)) = true)));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'couple_profiles_insert'
+  ) THEN
+    EXECUTE 'create policy "couple_profiles_insert" on "public"."couple_profiles" as permissive for insert to public with check ((auth.uid() = user_id));';
+  END IF;
+END $$;
 
-  create policy "Users can view accessible couple profiles"
-  on "public"."couple_profiles"
-  as permissive
-  for select
-  to public
-using (((user_id = auth.uid()) OR (partner_1_id = auth.uid()) OR (partner_2_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'couple_profiles_public_read'
+  ) THEN
+    EXECUTE 'create policy "couple_profiles_public_read" on "public"."couple_profiles" as permissive for select to public using (true);';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'couple_profiles_staff'
+  ) THEN
+    EXECUTE 'create policy "couple_profiles_staff" on "public"."couple_profiles" as permissive for all to public using (public.is_admin_or_moderator());';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'couple_profiles_update'
+  ) THEN
+    EXECUTE 'create policy "couple_profiles_update" on "public"."couple_profiles" as permissive for update to public using (((auth.uid() = user_id) OR (auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));';
+  END IF;
+END $$;
 
-  create policy "Usuarios pueden borrar su perfil de pareja"
-  on "public"."couple_profiles"
-  as permissive
-  for delete
-  to public
-using ((auth.uid() = user_id));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'couple_profiles_view_own'
+  ) THEN
+    EXECUTE 'create policy "couple_profiles_view_own" on "public"."couple_profiles" as permissive for select to public using (((auth.uid() = user_id) OR (auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'own_couple_profiles'
+  ) THEN
+    EXECUTE 'create policy "own_couple_profiles" on "public"."couple_profiles" as permissive for select to public using (((auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));';
+  END IF;
+END $$;
 
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'own_couple_profiles_insert'
+  ) THEN
+    EXECUTE 'create policy "own_couple_profiles_insert" on "public"."couple_profiles" as permissive for insert to public with check (((auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));';
+  END IF;
+END $$;
 
-  create policy "Usuarios pueden crear su perfil de pareja"
-  on "public"."couple_profiles"
-  as permissive
-  for insert
-  to public
-with check ((auth.uid() = user_id));
-
-
-
-  create policy "Usuarios pueden editar su perfil de pareja"
-  on "public"."couple_profiles"
-  as permissive
-  for update
-  to public
-using ((auth.uid() = user_id));
-
-
-
-  create policy "Visitantes solo ven Demos"
-  on "public"."couple_profiles"
-  as permissive
-  for select
-  to public
-using (((auth.role() = 'anon'::text) AND (( SELECT profiles.is_demo
-   FROM public.profiles
-  WHERE (profiles.user_id = couple_profiles.user_id)) = true)));
-
-
-
-  create policy "couple_profiles_insert"
-  on "public"."couple_profiles"
-  as permissive
-  for insert
-  to public
-with check ((auth.uid() = user_id));
-
-
-
-  create policy "couple_profiles_public_read"
-  on "public"."couple_profiles"
-  as permissive
-  for select
-  to public
-using (true);
-
-
-
-  create policy "couple_profiles_staff"
-  on "public"."couple_profiles"
-  as permissive
-  for all
-  to public
-using (public.is_admin_or_moderator());
-
-
-
-  create policy "couple_profiles_update"
-  on "public"."couple_profiles"
-  as permissive
-  for update
-  to public
-using (((auth.uid() = user_id) OR (auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));
-
-
-
-  create policy "couple_profiles_view_own"
-  on "public"."couple_profiles"
-  as permissive
-  for select
-  to public
-using (((auth.uid() = user_id) OR (auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));
-
-
-
-  create policy "own_couple_profiles"
-  on "public"."couple_profiles"
-  as permissive
-  for select
-  to public
-using (((auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));
-
-
-
-  create policy "own_couple_profiles_insert"
-  on "public"."couple_profiles"
-  as permissive
-  for insert
-  to public
-with check (((auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));
-
-
-
-  create policy "own_couple_profiles_update"
-  on "public"."couple_profiles"
-  as permissive
-  for update
-  to public
-using (((auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'couple_profiles'
+      AND policyname = 'own_couple_profiles_update'
+  ) THEN
+    EXECUTE 'create policy "own_couple_profiles_update" on "public"."couple_profiles" as permissive for update to public using (((auth.uid() = partner_1_id) OR (auth.uid() = partner_2_id)));';
+  END IF;
+END $$;
 
 
 
@@ -14445,56 +14818,78 @@ with check (((auth.uid())::text = (creator_id)::text));
 
 
 
-  create policy "Owners can update gallery permissions"
-  on "public"."gallery_permissions"
-  as permissive
-  for update
-  to public
-using (((gallery_owner_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'gallery_permissions'
+      AND policyname = 'Owners can update gallery permissions'
+  ) THEN
+    EXECUTE 'create policy "Owners can update gallery permissions" on "public"."gallery_permissions" as permissive for update to public using (((gallery_owner_id = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can insert gallery permissions"
-  on "public"."gallery_permissions"
-  as permissive
-  for insert
-  to public
-with check ((gallery_owner_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'gallery_permissions'
+      AND policyname = 'Users can insert gallery permissions'
+  ) THEN
+    EXECUTE 'create policy "Users can insert gallery permissions" on "public"."gallery_permissions" as permissive for insert to public with check ((gallery_owner_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can view own gallery permissions"
-  on "public"."gallery_permissions"
-  as permissive
-  for select
-  to public
-using (((gallery_owner_id = auth.uid()) OR (profile_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'gallery_permissions'
+      AND policyname = 'Users can view own gallery permissions'
+  ) THEN
+    EXECUTE 'create policy "Users can view own gallery permissions" on "public"."gallery_permissions" as permissive for select to public using (((gallery_owner_id = auth.uid()) OR (profile_id = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can view own permissions"
-  on "public"."gallery_permissions"
-  as permissive
-  for select
-  to public
-using (((granted_by = auth.uid()) OR (granted_to = auth.uid())));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'gallery_permissions'
+      AND policyname = 'Users can view own permissions'
+  ) THEN
+    EXECUTE 'create policy "Users can view own permissions" on "public"."gallery_permissions" as permissive for select to public using (((granted_by = auth.uid()) OR (granted_to = auth.uid())));';
+  END IF;
+END $$;
 
 
 
-  create policy "gallery_permissions_own_data"
-  on "public"."gallery_permissions"
-  as permissive
-  for all
-  to public
-using (((granted_by IN ( SELECT profiles.user_id
-   FROM public.profiles
-  WHERE (profiles.user_id = auth.uid()))) OR (granted_to IN ( SELECT profiles.user_id
-   FROM public.profiles
-  WHERE (profiles.user_id = auth.uid())))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'gallery_permissions'
+      AND policyname = 'gallery_permissions_own_data'
+  ) THEN
+    EXECUTE 'create policy "gallery_permissions_own_data" on "public"."gallery_permissions" as permissive for all to public using (((granted_by IN ( SELECT profiles.user_id FROM public.profiles WHERE (profiles.user_id = auth.uid()))) OR (granted_to IN ( SELECT profiles.user_id FROM public.profiles WHERE (profiles.user_id = auth.uid())))));';
+  END IF;
+END $$;
 
 
 

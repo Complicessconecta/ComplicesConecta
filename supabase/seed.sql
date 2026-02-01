@@ -23,7 +23,8 @@ INSERT INTO auth.users (
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
     'authenticated',
     'authenticated',
-    'admin@conecta-social.com',
+    'complicesconectasw@outlook.es', 
+    'djwacko28@gmail.com',
     '$2a$10$abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef', -- Dummy hash
     now(),
     NULL,
@@ -97,7 +98,6 @@ INSERT INTO public.profiles (
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
     'Administrador del Sistema',
     'Administrador del Sistema',
-    'admin@conecta-social.com',
     'admin',
     true,
     true,

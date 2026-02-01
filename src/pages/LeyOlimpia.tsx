@@ -120,8 +120,7 @@ const LeyOlimpia: React.FC = () => {
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
                       <strong>Marca de agua obligatoria:</strong> Todas las
-                      imágenes privadías incluyen marca de agua "ComplicesConecta
-                      © Privado"
+                      imágenes privadas incluyen marca de agua "ComplicesConecta© Privado"
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -142,7 +141,7 @@ const LeyOlimpia: React.FC = () => {
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
                       <strong>Moderación 24/7:</strong> Equipo dedicado para
-                      revisar , y validar Reportes e Infracciones
+                      revisar, y validar Reportes e Infracciones
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -190,7 +189,7 @@ const LeyOlimpia: React.FC = () => {
                     }
                   >
                     <Phone className="w-4 h-4 mr-2" />
-                    WhatsApp Urgente
+                    WhatsApp Urgente "PROXIMANENTE Q2O26"
                   </Button>
                 </div>
                 <p className="text-xs text-center text-white/70">
@@ -266,10 +265,10 @@ const LeyOlimpia: React.FC = () => {
         {/* Footer de la página */}
         <div className="mt-12 text-center">
           <p className="text-white/60 text-sm">
-            ComplicesConecta se compromete a crear un espacio digital seguro y
-            respetuoso para todos nuestros usuarios.
+            ComplicesConecta se Compromete a crear un espacio Digital Seguro y
+            respetuoso para Todos Nuestros usuarios.
             <br />
-            La violencia digital no tiene lugar en nuestra plataforma.
+            La VIOLENCIA digital no tiene lugar en nuestra Plataforma.
           </p>
         </div>
       </div>

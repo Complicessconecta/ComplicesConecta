@@ -309,7 +309,7 @@ ALTER TABLE clubs ENABLE ROW LEVEL SECURITY;
 -- ============================================================================
 -- PASO D: CREAR POLÍTICAS RLS BÁSICAS
 -- ============================================================================
--- Nota: políticas completas y robustas.
+-- Nota: políticas completas y robustas. en paso E
 
 -- investment_tiers: lectura pública de tiers activos; escritura solo admin
 DROP POLICY IF EXISTS investment_tiers_select ON public.investment_tiers;

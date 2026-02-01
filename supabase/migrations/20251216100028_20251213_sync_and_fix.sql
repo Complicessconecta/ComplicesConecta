@@ -278,7 +278,18 @@ CREATE TABLE IF NOT EXISTS clubs (
 CREATE INDEX IF NOT EXISTS idx_clubs_slug ON clubs(slug);
 CREATE INDEX IF NOT EXISTS idx_clubs_city ON clubs(city);
 CREATE INDEX IF NOT EXISTS idx_clubs_is_active ON clubs(is_active);
-CREATE INDEX IF NOT EXISTS idx_clubs_is_featured ON clubs(is_featured);
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'is_featured'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_clubs_is_featured ON clubs(is_featured)';
+  END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS idx_clubs_created_at ON clubs(created_at DESC);
 -- ============================================================================
 -- PASO C: HABILITAR RLS EN TODAS LAS TABLAS

@@ -128,11 +128,28 @@ END $$;
 -- COMENTARIOS DE DOCUMENTACIÓN
 -- ============================================================================
 
-COMMENT ON TABLE public.fingerprint_bans IS 'Tabla de huellas digitales baneadas - RLS habilitado v3.9.2';
-COMMENT ON TABLE public.blocked_fingerprints IS 'Tabla de huellas digitales bloqueadas - RLS habilitado v3.9.2';
-COMMENT ON TABLE public.smart_matches IS 'Tabla de matches inteligentes - RLS habilitado v3.9.2';
-COMMENT ON TABLE public.predictive_matching IS 'Tabla de matching predictivo - RLS habilitado v3.9.2';
-COMMENT ON TABLE public.sustainable_events IS 'Tabla de eventos sostenibles - RLS habilitado v3.9.2';
+DO $$
+BEGIN
+  IF to_regclass('public.fingerprint_bans') IS NOT NULL THEN
+    EXECUTE 'COMMENT ON TABLE public.fingerprint_bans IS ' || quote_literal('Tabla de huellas digitales baneadas - RLS habilitado v3.9.2');
+  END IF;
+
+  IF to_regclass('public.blocked_fingerprints') IS NOT NULL THEN
+    EXECUTE 'COMMENT ON TABLE public.blocked_fingerprints IS ' || quote_literal('Tabla de huellas digitales bloqueadas - RLS habilitado v3.9.2');
+  END IF;
+
+  IF to_regclass('public.smart_matches') IS NOT NULL THEN
+    EXECUTE 'COMMENT ON TABLE public.smart_matches IS ' || quote_literal('Tabla de matches inteligentes - RLS habilitado v3.9.2');
+  END IF;
+
+  IF to_regclass('public.predictive_matching') IS NOT NULL THEN
+    EXECUTE 'COMMENT ON TABLE public.predictive_matching IS ' || quote_literal('Tabla de matching predictivo - RLS habilitado v3.9.2');
+  END IF;
+
+  IF to_regclass('public.sustainable_events') IS NOT NULL THEN
+    EXECUTE 'COMMENT ON TABLE public.sustainable_events IS ' || quote_literal('Tabla de eventos sostenibles - RLS habilitado v3.9.2');
+  END IF;
+END $$;
 
 -- ============================================================================
 -- Add lifted_at column to permanent_bans

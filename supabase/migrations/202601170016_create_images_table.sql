@@ -22,18 +22,22 @@ CREATE INDEX IF NOT EXISTS idx_images_is_public ON public.images(is_public);
 ALTER TABLE public.images ENABLE ROW LEVEL SECURITY;
 
 -- Crear políticas RLS
+DROP POLICY IF EXISTS users_can_view_own_images ON public.images;
 CREATE POLICY users_can_view_own_images ON public.images
 FOR SELECT
 USING (auth.uid() = profile_id);
 
+DROP POLICY IF EXISTS users_can_insert_own_images ON public.images;
 CREATE POLICY users_can_insert_own_images ON public.images
 FOR INSERT
 WITH CHECK (auth.uid() = profile_id);
 
+DROP POLICY IF EXISTS users_can_update_own_images ON public.images;
 CREATE POLICY users_can_update_own_images ON public.images
 FOR UPDATE
 USING (auth.uid() = profile_id);
 
+DROP POLICY IF EXISTS users_can_delete_own_images ON public.images;
 CREATE POLICY users_can_delete_own_images ON public.images
 FOR DELETE
 USING (auth.uid() = profile_id);
@@ -47,10 +51,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_update_images_updated_at
-BEFORE UPDATE ON public.images
-FOR EACH ROW
-EXECUTE FUNCTION public.update_images_updated_at();
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_trigger
+    WHERE tgname = 'trigger_update_images_updated_at'
+  ) THEN
+    CREATE TRIGGER trigger_update_images_updated_at
+    BEFORE UPDATE ON public.images
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_images_updated_at();
+  END IF;
+END $$;
 
 -- Comentarios
 COMMENT ON TABLE public.images IS 'Imágenes de perfil y galería de usuarios';

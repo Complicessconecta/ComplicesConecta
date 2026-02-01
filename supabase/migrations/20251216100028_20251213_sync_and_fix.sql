@@ -309,87 +309,217 @@ ALTER TABLE clubs ENABLE ROW LEVEL SECURITY;
 -- ============================================================================
 -- PASO D: CREAR POLÍTICAS RLS BÁSICAS
 -- ============================================================================
+-- Nota: políticas completas y robustas.
 
--- investment_tiers: Pública lectura, Admin escritura
-DROP POLICY IF EXISTS investment_tiers_read ON investment_tiers;
-CREATE POLICY investment_tiers_read ON investment_tiers FOR SELECT
-    USING (is_active = TRUE OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS investment_tiers_write ON investment_tiers;
-CREATE POLICY investment_tiers_write ON investment_tiers FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- investments: Usuario ve sus inversiones, Admin ve todas
-DROP POLICY IF EXISTS investments_read ON investments;
-CREATE POLICY investments_read ON investments FOR SELECT
-    USING (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS investments_insert ON investments;
-CREATE POLICY investments_insert ON investments FOR INSERT
-    WITH CHECK (user_id = auth.uid());
--- cmpx_shop_packages: Pública lectura, Admin escritura
-DROP POLICY IF EXISTS cmpx_shop_packages_read ON cmpx_shop_packages;
-CREATE POLICY cmpx_shop_packages_read ON cmpx_shop_packages FOR SELECT
-    USING (is_active = TRUE OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS cmpx_shop_packages_write ON cmpx_shop_packages;
-CREATE POLICY cmpx_shop_packages_write ON cmpx_shop_packages FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- cmpx_purchases: Usuario ve sus compras, Admin ve todas
-DROP POLICY IF EXISTS cmpx_purchases_read ON cmpx_purchases;
-CREATE POLICY cmpx_purchases_read ON cmpx_purchases FOR SELECT
-    USING (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS cmpx_purchases_insert ON cmpx_purchases;
-CREATE POLICY cmpx_purchases_insert ON cmpx_purchases FOR INSERT
-    WITH CHECK (user_id = auth.uid());
--- token_analytics: Pública lectura, Admin escritura
-DROP POLICY IF EXISTS token_analytics_read ON token_analytics;
-CREATE POLICY token_analytics_read ON token_analytics FOR SELECT
-    USING (TRUE);
-DROP POLICY IF EXISTS token_analytics_insert ON token_analytics;
-CREATE POLICY token_analytics_insert ON token_analytics FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- moderators: Moderador ve su perfil, Admin ve todos
-DROP POLICY IF EXISTS moderators_read ON moderators;
-CREATE POLICY moderators_read ON moderators FOR SELECT
-    USING (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS moderators_insert ON moderators;
-CREATE POLICY moderators_insert ON moderators FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- moderator_payments: Moderador ve sus pagos, Admin ve todos
-DROP POLICY IF EXISTS moderator_payments_read ON moderator_payments;
-CREATE POLICY moderator_payments_read ON moderator_payments FOR SELECT
-    USING (moderator_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- security_audit_logs: Usuario ve sus logs, Admin ve todos
-DROP POLICY IF EXISTS security_audit_logs_read ON security_audit_logs;
-CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
-    USING (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS security_audit_logs_insert ON security_audit_logs;
-CREATE POLICY security_audit_logs_insert ON security_audit_logs FOR INSERT
-    WITH CHECK (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- posts: Usuario ve posts públicos y suyos, Admin ve todos
-DROP POLICY IF EXISTS posts_read ON posts;
-CREATE POLICY posts_read ON posts FOR SELECT
-    USING (is_public = TRUE OR user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS posts_insert ON posts;
-CREATE POLICY posts_insert ON posts FOR INSERT
-    WITH CHECK (user_id = auth.uid());
-DROP POLICY IF EXISTS posts_update ON posts;
-CREATE POLICY posts_update ON posts FOR UPDATE
-    USING (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- virtual_events: Pública lectura, Admin escritura
-DROP POLICY IF EXISTS virtual_events_read ON virtual_events;
-CREATE POLICY virtual_events_read ON virtual_events FOR SELECT
-    USING (TRUE);
-DROP POLICY IF EXISTS virtual_events_insert ON virtual_events;
-CREATE POLICY virtual_events_insert ON virtual_events FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
--- clubs: Pública lectura, Admin escritura
-DROP POLICY IF EXISTS clubs_read ON clubs;
-CREATE POLICY clubs_read ON clubs FOR SELECT
-    USING (is_active = TRUE OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS clubs_insert ON clubs;
-CREATE POLICY clubs_insert ON clubs FOR INSERT
-    WITH CHECK (auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
-DROP POLICY IF EXISTS clubs_update ON clubs;
-CREATE POLICY clubs_update ON clubs FOR UPDATE
-    USING (auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
+-- investment_tiers: lectura pública de tiers activos; escritura solo admin
+DROP POLICY IF EXISTS investment_tiers_select ON public.investment_tiers;
+DROP POLICY IF EXISTS investment_tiers_admin_insert ON public.investment_tiers;
+DROP POLICY IF EXISTS investment_tiers_admin_update ON public.investment_tiers;
+DROP POLICY IF EXISTS investment_tiers_admin_delete ON public.investment_tiers;
+CREATE POLICY investment_tiers_select ON public.investment_tiers
+  FOR SELECT
+  USING (is_active = TRUE OR public.is_admin());
+CREATE POLICY investment_tiers_admin_insert ON public.investment_tiers
+  FOR INSERT
+  WITH CHECK (public.is_admin());
+CREATE POLICY investment_tiers_admin_update ON public.investment_tiers
+  FOR UPDATE
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+CREATE POLICY investment_tiers_admin_delete ON public.investment_tiers
+  FOR DELETE
+  USING (public.is_admin());
+
+-- investments: owner CRUD, admin full
+DROP POLICY IF EXISTS investments_select ON public.investments;
+DROP POLICY IF EXISTS investments_insert ON public.investments;
+DROP POLICY IF EXISTS investments_update ON public.investments;
+DROP POLICY IF EXISTS investments_delete ON public.investments;
+CREATE POLICY investments_select ON public.investments
+  FOR SELECT
+  USING (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY investments_insert ON public.investments
+  FOR INSERT
+  WITH CHECK (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY investments_update ON public.investments
+  FOR UPDATE
+  USING (user_id = auth.uid() OR public.is_admin())
+  WITH CHECK (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY investments_delete ON public.investments
+  FOR DELETE
+  USING (user_id = auth.uid() OR public.is_admin());
+
+-- cmpx_shop_packages: lectura pública de paquetes activos; escritura solo admin
+DROP POLICY IF EXISTS cmpx_shop_packages_select ON public.cmpx_shop_packages;
+DROP POLICY IF EXISTS cmpx_shop_packages_admin_insert ON public.cmpx_shop_packages;
+DROP POLICY IF EXISTS cmpx_shop_packages_admin_update ON public.cmpx_shop_packages;
+DROP POLICY IF EXISTS cmpx_shop_packages_admin_delete ON public.cmpx_shop_packages;
+CREATE POLICY cmpx_shop_packages_select ON public.cmpx_shop_packages
+  FOR SELECT
+  USING (is_active = TRUE OR public.is_admin());
+CREATE POLICY cmpx_shop_packages_admin_insert ON public.cmpx_shop_packages
+  FOR INSERT
+  WITH CHECK (public.is_admin());
+CREATE POLICY cmpx_shop_packages_admin_update ON public.cmpx_shop_packages
+  FOR UPDATE
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+CREATE POLICY cmpx_shop_packages_admin_delete ON public.cmpx_shop_packages
+  FOR DELETE
+  USING (public.is_admin());
+
+-- cmpx_purchases: owner CRUD, admin full
+DROP POLICY IF EXISTS cmpx_purchases_select ON public.cmpx_purchases;
+DROP POLICY IF EXISTS cmpx_purchases_insert ON public.cmpx_purchases;
+DROP POLICY IF EXISTS cmpx_purchases_update ON public.cmpx_purchases;
+DROP POLICY IF EXISTS cmpx_purchases_delete ON public.cmpx_purchases;
+CREATE POLICY cmpx_purchases_select ON public.cmpx_purchases
+  FOR SELECT
+  USING (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY cmpx_purchases_insert ON public.cmpx_purchases
+  FOR INSERT
+  WITH CHECK (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY cmpx_purchases_update ON public.cmpx_purchases
+  FOR UPDATE
+  USING (user_id = auth.uid() OR public.is_admin())
+  WITH CHECK (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY cmpx_purchases_delete ON public.cmpx_purchases
+  FOR DELETE
+  USING (user_id = auth.uid() OR public.is_admin());
+
+-- token_analytics: lectura para authenticated; escritura solo admin
+DROP POLICY IF EXISTS token_analytics_select ON public.token_analytics;
+DROP POLICY IF EXISTS token_analytics_admin_insert ON public.token_analytics;
+DROP POLICY IF EXISTS token_analytics_admin_update ON public.token_analytics;
+DROP POLICY IF EXISTS token_analytics_admin_delete ON public.token_analytics;
+CREATE POLICY token_analytics_select ON public.token_analytics
+  FOR SELECT
+  USING (auth.role() = 'authenticated' OR public.is_admin());
+CREATE POLICY token_analytics_admin_insert ON public.token_analytics
+  FOR INSERT
+  WITH CHECK (public.is_admin());
+CREATE POLICY token_analytics_admin_update ON public.token_analytics
+  FOR UPDATE
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+CREATE POLICY token_analytics_admin_delete ON public.token_analytics
+  FOR DELETE
+  USING (public.is_admin());
+
+-- moderators: el moderador ve su fila; admin ve todo; escritura admin
+DROP POLICY IF EXISTS moderators_select ON public.moderators;
+DROP POLICY IF EXISTS moderators_admin_insert ON public.moderators;
+DROP POLICY IF EXISTS moderators_admin_update ON public.moderators;
+DROP POLICY IF EXISTS moderators_admin_delete ON public.moderators;
+CREATE POLICY moderators_select ON public.moderators
+  FOR SELECT
+  USING (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY moderators_admin_insert ON public.moderators
+  FOR INSERT
+  WITH CHECK (public.is_admin());
+CREATE POLICY moderators_admin_update ON public.moderators
+  FOR UPDATE
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+CREATE POLICY moderators_admin_delete ON public.moderators
+  FOR DELETE
+  USING (public.is_admin());
+
+-- moderator_payments: moderador ve los suyos; escritura admin
+DROP POLICY IF EXISTS moderator_payments_select ON public.moderator_payments;
+DROP POLICY IF EXISTS moderator_payments_admin_insert ON public.moderator_payments;
+DROP POLICY IF EXISTS moderator_payments_admin_update ON public.moderator_payments;
+DROP POLICY IF EXISTS moderator_payments_admin_delete ON public.moderator_payments;
+CREATE POLICY moderator_payments_select ON public.moderator_payments
+  FOR SELECT
+  USING (moderator_id = auth.uid() OR public.is_admin());
+CREATE POLICY moderator_payments_admin_insert ON public.moderator_payments
+  FOR INSERT
+  WITH CHECK (public.is_admin());
+CREATE POLICY moderator_payments_admin_update ON public.moderator_payments
+  FOR UPDATE
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+CREATE POLICY moderator_payments_admin_delete ON public.moderator_payments
+  FOR DELETE
+  USING (public.is_admin());
+
+-- security_audit_logs: usuario ve los suyos; insert propio; update/delete solo admin
+DROP POLICY IF EXISTS security_audit_logs_select ON public.security_audit_logs;
+DROP POLICY IF EXISTS security_audit_logs_insert ON public.security_audit_logs;
+DROP POLICY IF EXISTS security_audit_logs_admin_update ON public.security_audit_logs;
+DROP POLICY IF EXISTS security_audit_logs_admin_delete ON public.security_audit_logs;
+CREATE POLICY security_audit_logs_select ON public.security_audit_logs
+  FOR SELECT
+  USING (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY security_audit_logs_insert ON public.security_audit_logs
+  FOR INSERT
+  WITH CHECK (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY security_audit_logs_admin_update ON public.security_audit_logs
+  FOR UPDATE
+  USING (public.is_admin())
+  WITH CHECK (public.is_admin());
+CREATE POLICY security_audit_logs_admin_delete ON public.security_audit_logs
+  FOR DELETE
+  USING (public.is_admin());
+
+-- posts: lectura pública cuando is_public; owner CRUD; admin full
+DROP POLICY IF EXISTS posts_select ON public.posts;
+DROP POLICY IF EXISTS posts_insert ON public.posts;
+DROP POLICY IF EXISTS posts_update ON public.posts;
+DROP POLICY IF EXISTS posts_delete ON public.posts;
+CREATE POLICY posts_select ON public.posts
+  FOR SELECT
+  USING (is_public = TRUE OR user_id = auth.uid() OR public.is_admin());
+CREATE POLICY posts_insert ON public.posts
+  FOR INSERT
+  WITH CHECK (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY posts_update ON public.posts
+  FOR UPDATE
+  USING (user_id = auth.uid() OR public.is_admin())
+  WITH CHECK (user_id = auth.uid() OR public.is_admin());
+CREATE POLICY posts_delete ON public.posts
+  FOR DELETE
+  USING (user_id = auth.uid() OR public.is_admin());
+
+-- virtual_events: lectura para authenticated; creador o admin puede gestionar
+DROP POLICY IF EXISTS virtual_events_select ON public.virtual_events;
+DROP POLICY IF EXISTS virtual_events_insert ON public.virtual_events;
+DROP POLICY IF EXISTS virtual_events_update ON public.virtual_events;
+DROP POLICY IF EXISTS virtual_events_delete ON public.virtual_events;
+CREATE POLICY virtual_events_select ON public.virtual_events
+  FOR SELECT
+  USING (auth.role() = 'authenticated' OR public.is_admin());
+CREATE POLICY virtual_events_insert ON public.virtual_events
+  FOR INSERT
+  WITH CHECK (created_by = auth.uid() OR public.is_admin());
+CREATE POLICY virtual_events_update ON public.virtual_events
+  FOR UPDATE
+  USING (created_by = auth.uid() OR public.is_admin())
+  WITH CHECK (created_by = auth.uid() OR public.is_admin());
+CREATE POLICY virtual_events_delete ON public.virtual_events
+  FOR DELETE
+  USING (created_by = auth.uid() OR public.is_admin());
+
+-- clubs: lectura pública de clubs activos; owner/admin CRUD
+DROP POLICY IF EXISTS clubs_select ON public.clubs;
+DROP POLICY IF EXISTS clubs_insert ON public.clubs;
+DROP POLICY IF EXISTS clubs_update ON public.clubs;
+DROP POLICY IF EXISTS clubs_delete ON public.clubs;
+CREATE POLICY clubs_select ON public.clubs
+  FOR SELECT
+  USING (is_active = TRUE OR owner_id = auth.uid() OR public.is_admin());
+CREATE POLICY clubs_insert ON public.clubs
+  FOR INSERT
+  WITH CHECK (owner_id = auth.uid() OR public.is_admin());
+CREATE POLICY clubs_update ON public.clubs
+  FOR UPDATE
+  USING (owner_id = auth.uid() OR public.is_admin())
+  WITH CHECK (owner_id = auth.uid() OR public.is_admin());
+CREATE POLICY clubs_delete ON public.clubs
+  FOR DELETE
+  USING (owner_id = auth.uid() OR public.is_admin());
+
 -- ============================================================================
 -- FIN DE MIGRACIÓN DE REPARACIÓN
 -- ============================================================================
@@ -397,6 +527,7 @@ CREATE POLICY clubs_update ON clubs FOR UPDATE
 -- Paso A: Fix Reports (agregar reporter_id)
 -- Paso B: Crear 11 tablas faltantes
 -- Paso C: Habilitar RLS en todas
--- Paso D: Crear políticas RLS básicas
+-- Paso D: Crear políticas RLS básicas 
+-- Paso E: Crear políticas RLS COMPLETAS NO MINIMAS NI BASICAS 
 -- Status: 100% Idempotente - Seguro ejecutar múltiples veces
 -- ============================================================================;

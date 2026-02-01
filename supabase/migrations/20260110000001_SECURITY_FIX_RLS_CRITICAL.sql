@@ -392,21 +392,29 @@ END $$;
 -- ============================================================================
 
 -- Insertar administradores existentes basados en emails conocidos
-INSERT INTO public.admin_users (user_id, role, granted_by, notes)
-SELECT
-    id,
-    CASE
-        WHEN email = 'complicesconectasw@outlook.es' THEN 'super_admin'
-        WHEN email = 'djwacko28@gmail.com' THEN 'admin'
-        ELSE 'admin'
-    END,
-    id,
-    'Migrado desde raw_user_meta_data'
-FROM auth.users
-WHERE
-    email IN ('complicesconectasw@outlook.es', 'djwacko28@gmail.com') OR
-    (raw_user_meta_data->>'role')::text IN ('admin', 'super_admin')
-ON CONFLICT (user_id) DO NOTHING;
+DO $$
+BEGIN
+  INSERT INTO public.admin_users (user_id, role, permissions, is_active)
+  SELECT
+      u.id,
+      CASE
+          WHEN u.email = 'complicesconectasw@outlook.es' THEN 'super_admin'
+          WHEN u.email = 'djwacko28@gmail.com' THEN 'admin'
+          ELSE 'admin'
+      END,
+      '{}'::jsonb,
+      TRUE
+  FROM auth.users u
+  WHERE (
+      u.email IN ('complicesconectasw@outlook.es', 'djwacko28@gmail.com') OR
+      (u.raw_user_meta_data->>'role')::text IN ('admin', 'super_admin')
+  )
+  AND NOT EXISTS (
+    SELECT 1
+    FROM public.admin_users au
+    WHERE au.user_id = u.id
+  );
+END $$;
 
 -- ============================================================================
 -- PASO 7: CREAR FUNCIÓN HELPER PARA VERIFICAR ADMIN

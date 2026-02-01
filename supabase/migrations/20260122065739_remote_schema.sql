@@ -230,13 +230,13 @@ drop policy "users_can_insert_own_themes" on "public"."user_themes";
 
 drop policy "users_can_update_own_themes" on "public"."user_themes";
 
-drop policy "users_can_view_own_themes" on "public"."user_themes";
+drop policy if exists "users_can_view_own_themes" on "public"."user_themes";
 
-drop policy "Users can manage their own wallets" on "public"."user_wallets";
+drop policy if exists "Users can manage their own wallets" on "public"."user_wallets";
 
-drop policy "Users can update own wallet" on "public"."user_wallets";
+drop policy if exists "Users can update own wallet" on "public"."user_wallets";
 
-drop policy "Users can view own wallet" on "public"."user_wallets";
+drop policy if exists "Users can view own wallet" on "public"."user_wallets";
 
 drop policy "Admins can manage banners" on "public"."banner_config";
 
@@ -284,11 +284,11 @@ drop policy "Users can view their NFTs" on "public"."user_nfts";
 
 drop policy "own_user_nfts" on "public"."user_nfts";
 
-drop policy "Users can insert their own wallets" on "public"."user_wallets";
+drop policy if exists "Users can insert their own wallets" on "public"."user_wallets";
 
-drop policy "Users can update their own wallets" on "public"."user_wallets";
+drop policy if exists "Users can update their own wallets" on "public"."user_wallets";
 
-drop policy "Users can view their own wallets" on "public"."user_wallets";
+drop policy if exists "Users can view their own wallets" on "public"."user_wallets";
 
 revoke delete on table "public"."permissions" from "anon";
 
@@ -464,9 +464,9 @@ alter table "public"."role_permissions" drop constraint "role_permissions_role_i
 
 alter table "public"."role_permissions" drop constraint "role_permissions_role_id_permission_id_key";
 
-alter table "public"."security_audit_logs" drop constraint "security_audit_logs_event_type_check";
+alter table "public"."security_audit_logs" drop constraint if exists "security_audit_logs_event_type_check";
 
-alter table "public"."security_audit_logs" drop constraint "security_audit_logs_severity_check";
+alter table "public"."security_audit_logs" drop constraint if exists "security_audit_logs_severity_check";
 
 alter table "public"."user_roles" drop constraint "user_roles_assigned_by_fkey";
 
@@ -480,9 +480,9 @@ alter table "public"."career_applications" drop constraint "career_applications_
 
 alter table "public"."chat_rooms" drop constraint "chat_rooms_created_by_fkey";
 
-alter table "public"."clubs" drop constraint "clubs_created_by_fkey";
+alter table "public"."clubs" drop constraint if exists "clubs_created_by_fkey";
 
-alter table "public"."clubs" drop constraint "clubs_verified_by_fkey";
+alter table "public"."clubs" drop constraint if exists "clubs_verified_by_fkey";
 
 alter table "public"."cmpx_purchases" drop constraint "cmpx_purchases_package_id_fkey";
 
@@ -512,7 +512,7 @@ alter table "public"."reports" drop constraint "reports_reporter_user_id_fkey";
 
 alter table "public"."reports" drop constraint "reports_status_check";
 
-alter table "public"."security" drop constraint "security_user_id_fkey";
+alter table "public"."security" drop constraint if exists "security_user_id_fkey";
 
 alter table "public"."stories" drop constraint "stories_user_id_fkey";
 

@@ -28,9 +28,49 @@ CREATE TABLE IF NOT EXISTS public.clubs (
 
 -- Crear índices
 CREATE INDEX IF NOT EXISTS idx_clubs_is_active ON public.clubs(is_active);
-CREATE INDEX IF NOT EXISTS idx_clubs_is_featured ON public.clubs(is_featured);
-CREATE INDEX IF NOT EXISTS idx_clubs_rating_average ON public.clubs(rating_average);
-CREATE INDEX IF NOT EXISTS idx_clubs_location ON public.clubs(latitude, longitude);
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'is_featured'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_clubs_is_featured ON public.clubs(is_featured)';
+  END IF;
+END $$;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'rating_average'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_clubs_rating_average ON public.clubs(rating_average)';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'latitude'
+  ) AND EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'clubs'
+      AND column_name = 'longitude'
+  ) THEN
+    EXECUTE 'CREATE INDEX IF NOT EXISTS idx_clubs_location ON public.clubs(latitude, longitude)';
+  END IF;
+END $$;
 
 -- Habilitar RLS
 ALTER TABLE public.clubs ENABLE ROW LEVEL SECURITY;

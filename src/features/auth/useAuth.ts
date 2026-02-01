@@ -235,7 +235,7 @@ export const useAuth = () => {
       });
       setProfile(null);
     }
-  }, []); // Eliminar dependencias de demoUser para evitar loop infinito
+  }, [demoUser, supabase]); // Agregar dependencias correctas
 
   // Función auxiliar para determinar si usar Supabase real
   const shouldUseRealSupabase = () => {
@@ -367,31 +367,63 @@ export const useAuth = () => {
       setSession(null);
       setProfile(null);
 
-      // Limpieza de seguridad completa
+      // CORRECCIÓN: Esperar limpieza completa antes de redirigir
       try {
-        const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
-        SecurityHelpers.clearAllSecureData();
-        logger.info("🧹 Limpieza de seguridad completada");
+        // Limpieza de seguridad completa
+        const cleanupPromises = [];
+
+        // Limpiar datos seguros
+        cleanupPromises.push(
+          (async () => {
+            try {
+              const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
+              SecurityHelpers.clearAllSecureData();
+              logger.info("🧹 Limpieza de seguridad completada");
+            } catch (error) {
+              logger.error("❌ Error en limpieza de seguridad:", {
+                error: error instanceof Error ? error.message : String(error),
+              });
+            }
+          })()
+        );
+
+        // Limpiar usuario en Datadog RUM
+        cleanupPromises.push(
+          (async () => {
+            try {
+              const ddRum = window.DD_RUM as DatadogRUM | undefined;
+              if (typeof window !== 'undefined' && ddRum) {
+                ddRum.clearUser();
+              }
+            } catch (error) {
+              logger.error("❌ Error limpiando usuario en Datadog RUM:", {
+                error: error instanceof Error ? error.message : String(error),
+              });
+            }
+          })()
+        );
+
+        // Esperar todas las promesas de limpieza
+        await Promise.all(cleanupPromises);
+
+        // Redirigir solo después de limpieza completa
+        window.location.href = "/";
       } catch (error) {
-        logger.error("❌ Error en limpieza de seguridad:", {
+        logger.error("❌ Error en signOut", {
           error: error instanceof Error ? error.message : String(error),
         });
-      }
-
-      // Limpiar usuario en Datadog RUM
-      try {
-        const ddRum = window.DD_RUM as DatadogRUM | undefined;
-        if (typeof window !== 'undefined' && ddRum) {
-          ddRum.clearUser();
+        // CORRECCIÓN: Forzar limpieza incluso con error
+        try {
+          const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
+          SecurityHelpers.clearAllSecureData();
+        } catch (cleanupError) {
+          logger.error("❌ Error en limpieza forzada:", {
+            error: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
+          });
         }
-      } catch (error) {
-        logger.error("❌ Error limpiando usuario en Datadog RUM:", {
-          error: error instanceof Error ? error.message : String(error),
-        });
+        // Redirigir incluso si hay error
+        window.location.href = "/";
       }
-
-      // Redirigir a index
-      window.location.href = "/";
     } catch (error) {
       logger.error("❌ Error en signOut", {
         error: error instanceof Error ? error.message : String(error),

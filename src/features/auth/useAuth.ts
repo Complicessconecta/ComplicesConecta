@@ -172,11 +172,21 @@ export const useAuth = () => {
         // Manejar tanto array como objeto único
         const profileData = Array.isArray(data) ? data[0] : data;
 
-        // Si el array está vacío o el objeto no tiene datos válidos, tratar como no encontrado
+        // CORRECCIÓN: Validar campos requeridos
         if (!profileData || (Array.isArray(data) && data.length === 0)) {
           logger.info("🔍 Perfil no encontrado o vacío", { userId });
           setProfile(null);
           return;
+        }
+
+        // Validar campos requeridos
+        const requiredFields = ['id', 'first_name', 'email'];
+        for (const field of requiredFields) {
+          if (!(field in profileData)) {
+            logger.error(`❌ Campo requerido faltante: ${field}`, { profileData });
+            setProfile(null);
+            return;
+          }
         }
 
         logger.info("📋 Contenido detallado del perfil", {
@@ -428,6 +438,17 @@ export const useAuth = () => {
       logger.error("❌ Error en signOut", {
         error: error instanceof Error ? error.message : String(error),
       });
+      // CORRECCIÓN: Forzar limpieza incluso con error
+      try {
+        const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
+        SecurityHelpers.clearAllSecureData();
+      } catch (cleanupError) {
+        logger.error("❌ Error en limpieza forzada:", {
+          error: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
+        });
+      }
+      // Redirigir incluso si hay error
+      window.location.href = "/";
     }
   };
 

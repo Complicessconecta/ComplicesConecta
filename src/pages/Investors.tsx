@@ -51,11 +51,11 @@ const Investors: FC = () => {
               </Badge>
               <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Brain className="h-4 w-4 mr-2" />
-                AI-Native
+                AI-Native "Beta"
               </Badge>
               <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Coins className="h-4 w-4 mr-2" />
-                Economía Tokenizada
+                Economía Tokenizada "Proximamete"
               </Badge>
               <Badge className="bg-linear-to-r from-orange-500/20 to-red-500/20 text-orange-300 border-orange-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
@@ -110,7 +110,7 @@ const Investors: FC = () => {
                 años que buscan conectar con personas afines de manera segura,
                 discreta y verificada. Somos la{" "}
                 <strong className="text-purple-300">
-                  primera plataforma en México
+                  Primera plataforma en México
                 </strong>
                 que combina tecnología de inteligencia artificial nativa con un
                 sistema robusto de privacidad y seguridad.
@@ -130,7 +130,7 @@ const Investors: FC = () => {
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                   <Brain className="h-8 w-8 text-purple-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">
-                    IA Nativa + Neo4j
+                    IA Nativa + Neo4j "Beta"
                   </h4>
                   <p className="text-white/70 text-sm">
                     Algoritmos ML para matching inteligente. Neo4j Graph
@@ -394,7 +394,7 @@ const Investors: FC = () => {
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
                       <span>
-                        <strong>122 políticas RLS</strong> de seguridad
+                        <strong>+122 políticas RLS</strong> de seguridad
                         multicapa
                       </span>
                     </li>
@@ -425,7 +425,7 @@ const Investors: FC = () => {
                 <div className="space-y-4">
                   <h4 className="text-xl font-semibold text-white flex items-center gap-2">
                     <Brain className="h-5 w-5 text-purple-400" />
-                    Inteligencia Artificial Integrada
+                    Inteligencia Artificial Integrada "Beta"
                   </h4>
                   <ul className="space-y-2 text-white/80">
                     <li className="flex items-start gap-2">
@@ -458,7 +458,7 @@ const Investors: FC = () => {
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-blue-400 shrink-0 mt-0.5" />
                       <span>
-                        <strong>Verificador IA de Consentimiento</strong> -
+                        <strong>Verificador IA de Consentimiento "Beta"</strong> -
                         Detección proactiva en chats (Ley Olimpia)
                       </span>
                     </li>
@@ -678,7 +678,7 @@ const Investors: FC = () => {
                     items: [
                       "Red Social Expandida",
                       "Eventos en Vivo con Streaming",
-                      "Contenido Original educativo",
+                      "Contenido y Asosiacion con Terceros",
                       "Ecosistema Completo integrado",
                     ],
                     color: "from-green-500/20 to-emerald-500/20",

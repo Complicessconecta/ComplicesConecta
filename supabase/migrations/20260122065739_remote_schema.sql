@@ -15150,41 +15150,63 @@ using ((is_active = true));
 
 
 
-  create policy "Users can create invitations"
-  on "public"."invitations"
-  as permissive
-  for insert
-  to public
-with check ((from_profile = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'invitations'
+      AND policyname = 'Users can create invitations'
+  ) THEN
+    EXECUTE 'create policy "Users can create invitations" on "public"."invitations" as permissive for insert to public with check ((from_profile = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can insert invitations"
-  on "public"."invitations"
-  as permissive
-  for insert
-  to public
-with check ((from_profile = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'invitations'
+      AND policyname = 'Users can insert invitations'
+  ) THEN
+    EXECUTE 'create policy "Users can insert invitations" on "public"."invitations" as permissive for insert to public with check ((from_profile = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can update own invitations"
-  on "public"."invitations"
-  as permissive
-  for update
-  to public
-using ((from_profile = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'invitations'
+      AND policyname = 'Users can update own invitations'
+  ) THEN
+    EXECUTE 'create policy "Users can update own invitations" on "public"."invitations" as permissive for update to public using ((from_profile = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can view own invitations"
-  on "public"."invitations"
-  as permissive
-  for select
-  to public
-using (((from_profile = auth.uid()) OR (to_profile = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'invitations'
+      AND policyname = 'Users can view own invitations'
+  ) THEN
+    EXECUTE 'create policy "Users can view own invitations" on "public"."invitations" as permissive for select to public using (((from_profile = auth.uid()) OR (to_profile = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
 
 
@@ -15753,21 +15775,33 @@ using ((user_id = auth.uid()));
 
 
 
-  create policy "System can insert notifications"
-  on "public"."notifications"
-  as permissive
-  for insert
-  to public
-with check (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'notifications'
+      AND policyname = 'System can insert notifications'
+  ) THEN
+    EXECUTE 'create policy "System can insert notifications" on "public"."notifications" as permissive for insert to public with check (true);';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can see their own notifications"
-  on "public"."notifications"
-  as permissive
-  for all
-  to public
-using ((auth.uid() = user_id));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'notifications'
+      AND policyname = 'Users can see their own notifications'
+  ) THEN
+    EXECUTE 'create policy "Users can see their own notifications" on "public"."notifications" as permissive for all to public using ((auth.uid() = user_id));';
+  END IF;
+END $$;
 
 
 
@@ -16071,22 +16105,33 @@ using ((((COALESCE((((auth.jwt() -> 'user_metadata'::text) ->> 'is_demo'::text))
 
 
 
-  create policy "Users can insert own profile"
-  on "public"."profiles"
-  as permissive
-  for insert
-  to public
-with check ((user_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'profiles'
+      AND policyname = 'Users can insert own profile'
+  ) THEN
+    EXECUTE 'create policy "Users can insert own profile" on "public"."profiles" as permissive for insert to public with check ((user_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can update own profile"
-  on "public"."profiles"
-  as permissive
-  for update
-  to public
-using ((user_id = auth.uid()))
-with check ((user_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'profiles'
+      AND policyname = 'Users can update own profile'
+  ) THEN
+    EXECUTE 'create policy "Users can update own profile" on "public"."profiles" as permissive for update to public using ((user_id = auth.uid())) with check ((user_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
@@ -16100,14 +16145,18 @@ with check ((auth.uid() = id));
 
 
 
-  create policy "Users can view public and own profiles"
-  on "public"."profiles"
-  as permissive
-  for select
-  to public
-using (((id = auth.uid()) OR (user_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'profiles'
+      AND policyname = 'Users can view public and own profiles'
+  ) THEN
+    EXECUTE 'create policy "Users can view public and own profiles" on "public"."profiles" as permissive for select to public using (((id = auth.uid()) OR (user_id = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
 
 
@@ -16306,70 +16355,108 @@ using (public.is_admin_or_moderator());
 
 
 
-  create policy "Admins can update reports"
-  on "public"."reports"
-  as permissive
-  for update
-  to public
-using ((EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true)))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'reports'
+      AND policyname = 'Admins can update reports'
+  ) THEN
+    EXECUTE 'create policy "Admins can update reports" on "public"."reports" as permissive for update to public using ((EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true)))));';
+  END IF;
+END $$;
 
 
 
-  create policy "Authenticated users can update reports"
-  on "public"."reports"
-  as permissive
-  for update
-  to public
-using ((auth.uid() IS NOT NULL));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'reports'
+      AND policyname = 'Authenticated users can update reports'
+  ) THEN
+    EXECUTE 'create policy "Authenticated users can update reports" on "public"."reports" as permissive for update to public using ((auth.uid() IS NOT NULL));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can insert reports"
-  on "public"."reports"
-  as permissive
-  for insert
-  to public
-with check ((reporter_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'reports'
+      AND policyname = 'Users can insert reports'
+  ) THEN
+    EXECUTE 'create policy "Users can insert reports" on "public"."reports" as permissive for insert to public with check ((reporter_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can view own reports"
-  on "public"."reports"
-  as permissive
-  for select
-  to public
-using (((reporter_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'reports'
+      AND policyname = 'Users can view own reports'
+  ) THEN
+    EXECUTE 'create policy "Users can view own reports" on "public"."reports" as permissive for select to public using (((reporter_id = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
 
 
-  create policy "insert_reports"
-  on "public"."reports"
-  as permissive
-  for insert
-  to public
-with check ((auth.uid() = reporter_user_id));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'reports'
+      AND policyname = 'insert_reports'
+  ) THEN
+    EXECUTE 'create policy "insert_reports" on "public"."reports" as permissive for insert to public with check ((auth.uid() = reporter_user_id));';
+  END IF;
+END $$;
 
 
 
-  create policy "own_reports"
-  on "public"."reports"
-  as permissive
-  for select
-  to public
-using ((auth.uid() = reporter_user_id));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'reports'
+      AND policyname = 'own_reports'
+  ) THEN
+    EXECUTE 'create policy "own_reports" on "public"."reports" as permissive for select to public using ((auth.uid() = reporter_user_id));';
+  END IF;
+END $$;
 
 
 
-  create policy "staff_reports"
-  on "public"."reports"
-  as permissive
-  for all
-  to public
-using (public.is_admin_or_moderator());
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'reports'
+      AND policyname = 'staff_reports'
+  ) THEN
+    EXECUTE 'create policy "staff_reports" on "public"."reports" as permissive for all to public using (public.is_admin_or_moderator());';
+  END IF;
+END $$;
 
 
 
@@ -16997,41 +17084,63 @@ using ((auth.uid() = user_id));
 
 
 
-  create policy "Users can insert own consents"
-  on "public"."user_consents"
-  as permissive
-  for insert
-  to public
-with check ((user_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'user_consents'
+      AND policyname = 'Users can insert own consents'
+  ) THEN
+    EXECUTE 'create policy "Users can insert own consents" on "public"."user_consents" as permissive for insert to public with check ((user_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can update own consents"
-  on "public"."user_consents"
-  as permissive
-  for update
-  to public
-using ((user_id = auth.uid()));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'user_consents'
+      AND policyname = 'Users can update own consents'
+  ) THEN
+    EXECUTE 'create policy "Users can update own consents" on "public"."user_consents" as permissive for update to public using ((user_id = auth.uid()));';
+  END IF;
+END $$;
 
 
 
-  create policy "Users can view own consents"
-  on "public"."user_consents"
-  as permissive
-  for select
-  to public
-using (((user_id = auth.uid()) OR (EXISTS ( SELECT 1
-   FROM public.admin_users
-  WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'user_consents'
+      AND policyname = 'Users can view own consents'
+  ) THEN
+    EXECUTE 'create policy "Users can view own consents" on "public"."user_consents" as permissive for select to public using (((user_id = auth.uid()) OR (EXISTS ( SELECT 1 FROM public.admin_users WHERE ((admin_users.user_id = auth.uid()) AND (admin_users.is_active = true))))));';
+  END IF;
+END $$;
 
 
 
-  create policy "insert_user_consents"
-  on "public"."user_consents"
-  as permissive
-  for insert
-  to public
-with check ((auth.uid() = user_id));
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_policies
+    WHERE schemaname = 'public'
+      AND tablename = 'user_consents'
+      AND policyname = 'insert_user_consents'
+  ) THEN
+    EXECUTE 'create policy "insert_user_consents" on "public"."user_consents" as permissive for insert to public with check ((auth.uid() = user_id));';
+  END IF;
+END $$;
 
 
 

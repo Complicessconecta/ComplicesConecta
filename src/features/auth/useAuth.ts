@@ -20,6 +20,30 @@ interface WindowWithDemoFlags extends Window {
   __demoLoggedOnce?: boolean;
 }
 
+// Función segura para parsear demoUser con validación
+function safeParseDemoUser<T>(data: T): Profile | null {
+  if (!data) return null;
+  
+  try {
+    const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+    
+    // Validar estructura mínima
+    if (!parsed || typeof parsed !== 'object') return null;
+    
+    const required = ['id', 'email'];
+    for (const field of required) {
+      if (!(field in parsed)) return null;
+    }
+    
+    return parsed as Profile;
+  } catch (error) {
+    logger.error("❌ Error parseando demoUser:", { 
+      error: error instanceof Error ? error.message : String(error) 
+    });
+    return null;
+  }
+}
+
 export const useAuth = () => {
   // Migración a usePersistedState para tokens y sesión
   const [_authTokens, _setAuthTokens] = usePersistedState<{
@@ -54,20 +78,25 @@ export const useAuth = () => {
     const currentDemoUser = demoUser; // Capturar valor actual en lugar de depender de él
 
     if (sessionFlags.demo_authenticated && currentDemoUser) {
-      try {
-        const parsedDemoUser =
-          typeof currentDemoUser === "string" ? JSON.parse(currentDemoUser) : currentDemoUser;
-        const demoProfile = {
+      const parsedDemoUser = safeParseDemoUser(currentDemoUser); // VALIDADO
+      
+      if (!parsedDemoUser) {
+        logger.error("❌ demoUser corrupto o inválido");
+        setProfile(null);
+        return;
+      }
+      
+      const demoProfile = {
           id: parsedDemoUser.id || "demo-user-1",
           first_name: parsedDemoUser.first_name || "Demo User",
           last_name: "",
           display_name:
-            parsedDemoUser.displayName ||
+            (parsedDemoUser.displayName ||
             parsedDemoUser.first_name ||
-            "Demo User",
-          email: parsedDemoUser.email,
+            "Demo User") as string,
+          email: (parsedDemoUser.email || "") as string | null,
           role: parsedDemoUser.role || "user",
-          profile_type: parsedDemoUser.accountType || "single",
+          profile_type: (parsedDemoUser.accountType || "single") as string,
           is_demo: true,
           is_verified: true,
           is_premium: false,
@@ -82,11 +111,6 @@ export const useAuth = () => {
         setProfile(demoProfile);
         profileLoaded.current = true;
         return;
-      } catch (error) {
-        logger.error("❌ Error parseando usuario demo en loadProfile:", {
-          error,
-        });
-      }
     }
 
     // Cache deshabilitado - cargar siempre desde Supabase
@@ -234,30 +258,36 @@ export const useAuth = () => {
       profileLoaded.current = false;
 
       // CARGAR PERFIL DEMO INMEDIATAMENTE para evitar user: false
-      try {
-        const parsedDemoUser =
-          typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
-        const mockUser: User = {
-          id: parsedDemoUser.id || "demo-user-1",
-          email: parsedDemoUser.email,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          app_metadata: { provider: 'email', providers: ['email'] },
-          user_metadata: {},
-          aud: 'authenticated',
-        };
+      (async () => {
+        try {
+          const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
+          
+          if (!parsedDemoUser) {
+            logger.error("❌ demoUser corrupto o inválido en init");
+            setLoading(false);
+            return;
+          }
+          
+          const mockUser: User = {
+            id: parsedDemoUser.id || "demo-user-1",
+            email: parsedDemoUser.email || "",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            app_metadata: { provider: 'email', providers: ['email'] },
+            user_metadata: {},
+            aud: 'authenticated',
+          };
 
-        setUser(mockUser);
-        setLoading(false);
+          setUser(mockUser);
+          await loadProfile(mockUser.id); // Esperar carga completa
+          setLoading(false); // Solo después de que profile esté cargado
 
-        // Cargar perfil demo
-        loadProfile(mockUser.id);
-
-        logger.info("✅ Usuario demo inicializado:", { email: mockUser.email });
-      } catch (error) {
-        logger.error("❌ Error inicializando usuario demo:", { error });
-        setLoading(false);
-      }
+          logger.info("✅ Usuario demo inicializado:", { email: mockUser.email });
+        } catch (error) {
+          logger.error("❌ Error inicializando usuario demo:", { error });
+          setLoading(false);
+        }
+      })();
       return () => {};
     }
 
@@ -272,14 +302,23 @@ export const useAuth = () => {
       }
 
       // Obtener sesión actual de Supabase
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          loadProfile(session.user.id);
+      // CORRECCIÓN: Esperar carga completa de sesión y perfil
+      (async () => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            await loadProfile(session.user.id); // Esperar carga completa
+          }
+          
+          setLoading(false); // Solo después de que profile esté cargado
+        } catch (error) {
+          logger.error("❌ Error cargando sesión:", { error });
+          setLoading(false);
         }
-        setLoading(false);
-      });
+      })();
 
       // DESHABILITAR onAuthStateChange para prevenir logout automático
       logger.info(
@@ -405,7 +444,35 @@ export const useAuth = () => {
             refresh_token: 'demo-refresh-token',
           } as Session;
 
-          _setDemoUser(mockUser as unknown as Profile);
+          const demoProfileData: Profile = {
+            id: demoAuth.user.id,
+            first_name: demoAuth.user.first_name || "Demo",
+            last_name: "",
+            name: demoAuth.user.first_name || "Demo",
+            age: 25,
+            bio: null,
+            gender: "female",
+            interested_in: "men",
+            is_premium: false,
+            is_verified: true,
+            relationship_type: demoAuth.user.accountType || "single",
+            profile_type: demoAuth.user.accountType || "single",
+            role: demoAuth.user.role || "user",
+            display_name: demoAuth.user.first_name || "Demo User",
+            avatar_url: null,
+            email: demoAuth.user.email || "",
+            location: null,
+            is_online: false,
+            privateImages: [],
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            user_id: demoAuth.user.id,
+            latitude: null,
+            longitude: null,
+            share_location: false,
+          };
+
+          _setDemoUser(demoProfileData); // Sin cast inseguro
           setUser(mockUser);
           setSession(mockSession);
           await loadProfile(demoAuth.user.id);
@@ -501,14 +568,18 @@ export const useAuth = () => {
     }
 
     if (sessionFlags.demo_authenticated && demoUser) {
-      const parsedDemoUser =
-        typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
+      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
+      
+      if (!parsedDemoUser) {
+        return false;
+      }
+      
       logger.info("🎭 Demo authenticated check:", {
-        email: parsedDemoUser?.email,
-        accountType: parsedDemoUser?.accountType,
-        role: parsedDemoUser?.role,
-        isAdmin: parsedDemoUser?.accountType === "admin" ||
-                parsedDemoUser?.role === "admin",
+        email: parsedDemoUser.email,
+        accountType: parsedDemoUser.accountType,
+        role: parsedDemoUser.role,
+        isAdmin: parsedDemoUser.accountType === "admin" ||
+                parsedDemoUser.role === "admin",
       });
       return true;
     }
@@ -519,8 +590,7 @@ export const useAuth = () => {
 
   const getProfileType = () => {
     if (demoUser) {
-      const parsedDemoUser =
-        typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
+      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
       return parsedDemoUser?.accountType || "single";
     }
     return profile?.profile_type || "single";
@@ -532,8 +602,12 @@ export const useAuth = () => {
     const sessionFlags = StorageManager.getSessionFlags();
 
     if (sessionFlags.demo_authenticated && demoUser) {
-      const parsedDemoUser =
-        typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
+      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
+      
+      if (!parsedDemoUser) {
+        return false;
+      }
+      
       const isDemoAdmin =
         parsedDemoUser.accountType === "admin" ||
         parsedDemoUser.role === "admin";
@@ -580,11 +654,15 @@ export const useAuth = () => {
 
     // Solo log una vez por sesión para evitar spam
     if (isDemoActive && !(window as WindowWithDemoFlags).__demoLoggedOnce) {
-      const parsedDemoUser =
-        typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
+      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
+      
+      if (!parsedDemoUser) {
+        return isDemoActive;
+      }
+      
       logger.info("🎭 Demo mode active", {
-        email: parsedDemoUser?.email,
-        role: parsedDemoUser?.role,
+        email: parsedDemoUser.email,
+        role: parsedDemoUser.role,
       });
       (window as WindowWithDemoFlags).__demoLoggedOnce = true;
     }
@@ -596,8 +674,12 @@ export const useAuth = () => {
 
     // Si es demo admin, usar panel de producción
     if (sessionFlags.demo_authenticated && demoUser) {
-      const parsedDemoUser =
-        typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
+      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
+      
+      if (!parsedDemoUser) {
+        return false;
+      }
+      
       return (
         parsedDemoUser.accountType === "admin" ||
         parsedDemoUser.role === "admin"

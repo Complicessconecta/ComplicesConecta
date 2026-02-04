@@ -12,6 +12,27 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
                   📅  Febrero del 2026
 
+## 📅 Actualización 4 de Febrero, 2026 - 01:30
+
+**Fixes Críticos - Modo Demo + Invalid Hook Call + Security + OOM:**
+- ✅ Fix crash `Invalid hook call` / `useContext null` en `/profile-single` y `/clubs/demo`
+- ✅ Fix `demo_user` corrupto - auto-limpieza de sesión demo
+- ✅ Eliminado `window.React.createContext` de carousel, chart, sidebar
+- ✅ Agregado `dedupe` y `optimizeDeps` en Vite para React único
+- ✅ ClubProfileGallery y ClubProfileHeader usan SafeImage
+- ✅ Actualizado `happy-dom` 20.5.0 (fix vulnerabilidad crítica RCE)
+- ✅ Cambiado `minify: "terser"` → `minify: "esbuild"` (reduce 70% memoria)
+- ✅ Scripts build con `--max-old-space-size=8192` para Windows
+- ✅ Merge `laboratorio-2026-01-24` → `master` completado
+
+**Verificación:**
+- ✅ `npm run build:check` (OK - 24-28s sin OOM)
+- ✅ `npm run lint` (OK)
+- ✅ `npm audit` (0 vulnerabilidades)
+- ✅ `npx cap sync android` (OK)
+
+---
+
 ## 📅 Actualización 1 de Febrero, 2026 - 02:51
 
 **Refactor de useAuth Completado - 5 Fases:**

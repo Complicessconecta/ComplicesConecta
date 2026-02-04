@@ -1,3 +1,39 @@
+# Reporte de Cambios - CómplicesConecta v3.9.6
+
+**Fecha:** 4 de Febrero, 2026
+**Versión:** v3.9.6 (Fix Demos + Invalid Hook Call + Security + OOM)
+**Responsable:** Lead Architect & Tech Lead
+
+## Resumen Ejecutivo
+
+Correcciones críticas para estabilizar el modo demo en Web/Desktop y Android. Se resolvió el crash "Invalid hook call" / "useContext null" al acceder a `/profile-single` y `/clubs/demo`. Se eliminó la vulnerabilidad crítica RCE en happy-dom. Se resolvió el OOM (Out of Memory) en builds de Windows.
+
+## Registro de Cambios Detallados
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **DemoSelector.tsx** | `src/components/auth/DemoSelector.tsx` | Sobreescribía demo_user con objeto inválido | **Corregido**. Ya no persiste demo_user, solo flags | Evitar "demoUser corrupto" |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | demo_user corrupto no se limpiaba | **Corregido**. Auto-limpieza con clearDemoAuth() | Recuperación automática |
+| **carousel.tsx** | `src/components/ui/carousel/carousel.tsx` | Creaba Context con window.React | **Corregido**. Usar React.createContext local | Evitar duplicados React |
+| **chart.tsx** | `src/components/ui/charts/chart.tsx` | Creaba Context con window.React | **Corregido**. Usar React.createContext local | Evitar duplicados React |
+| **sidebar.tsx** | `src/components/ui/sidebar.tsx` | Creaba Context con window.React | **Corregido**. Usar React.createContext local | Evitar duplicados React |
+| **vite.config.ts** | `vite.config.ts` | Sin dedupe de react | **Agregado**. dedupe + optimizeDeps.include | Forzar una copia de React |
+| **package.json** | `package.json` | Scripts sin heap aumentado | **Agregado**. --max-old-space-size=8192 | Evitar OOM en Windows |
+| **vite.config.ts** | `vite.config.ts` | minify: terser usa mucha memoria | **Cambiado**. minify: esbuild | Reducir memoria build |
+| **ClubProfileGallery.tsx** | `src/components/clubs/ClubProfileGallery.tsx` | Imágenes rotas sin fallback | **Agregado**. SafeImage con placeholders | UX mejorada |
+| **ClubProfileHeader.tsx** | `src/components/clubs/ClubProfileHeader.tsx` | Imágenes rotas sin fallback | **Agregado**. SafeImage con placeholders | UX mejorada |
+| **happy-dom** | `package.json` | Vulnerabilidad RCE crítica (CVE) | **Actualizado**. 20.5.0 | Seguridad |
+
+## Verificaciones Post-Fix
+
+- ✅ `npm run build:check` (OK - 24-28s sin OOM)
+- ✅ `npm run lint` (OK)
+- ✅ `npm audit` (0 vulnerabilidades)
+- ✅ `npx cap sync android` (OK)
+- ✅ Merge laboratorio-2026-01-24 → master (OK)
+
+---
+
 # Reporte de Cambios - CómplicesConecta v3.9.5
 
 **Fecha:** 3 de Febrero, 2026

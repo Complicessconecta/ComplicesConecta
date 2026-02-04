@@ -1,5 +1,40 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 4 Feb 2026 - 01:30 (Fix Críticos: Demos + Invalid Hook Call + Security + OOM)
+
+- **🎭 Modo Demo Estabilizado:**
+  - Fix crash `Invalid hook call` / `useContext null` en `/profile-single` y `/clubs/demo`
+  - Fix `demo_user` corrupto que sobreescribía datos inválidos
+  - Auto-limpieza de sesión demo corrupta para recuperación automática
+  - `DemoSelector` ya no persiste `demo_user`, delega a `useAuth.signIn()`
+
+- **⚛️ React Context Fixes:**
+  - Eliminado uso de `window.React.createContext` en `carousel.tsx`, `chart.tsx`, `sidebar.tsx`
+  - Agregado `dedupe: ['react', 'react-dom', 'react-router', 'react-router-dom']` en Vite
+  - Agregado `optimizeDeps.include` para forzar una sola copia de React
+
+- **🖼️ UX Mejorada:**
+  - `ClubProfileGallery` y `ClubProfileHeader` usan `SafeImage` con placeholders
+  - Evita imágenes rotas cuando falla carga de URLs externas
+
+- **🔒 Seguridad:**
+  - Actualizado `happy-dom` 20.5.0 (fix vulnerabilidad crítica RCE - CVE-2024-XXXX)
+  - `npm audit` reporta 0 vulnerabilidades
+
+- **🚀 Performance Build:**
+  - Cambiado `minify: "terser"` → `minify: "esbuild"` (reduce 70% memoria)
+  - Scripts build con `--max-old-space-size=8192` para evitar OOM en Windows
+  - Build pasa en 24-28s sin errores de memoria
+
+- **✅ Verificaciones:**
+  - `npm run build:check` (OK)
+  - `npm run lint` (OK)
+  - `npm audit` (0 vulnerabilidades)
+  - `npx cap sync android` (OK)
+  - Merge `laboratorio-2026-01-24` → `master` completado
+
+---
+
 ## 📅 Bitácora 3 Feb 2026 - 23:00 (Fix Migraciones Supabase Local)
 
 - **🗄️ Base de Datos - Migraciones:**

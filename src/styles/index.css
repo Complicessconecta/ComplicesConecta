@@ -200,10 +200,7 @@ body {
 
 svg.lucide {
   display: block;
-  width: 1em;
-  height: 1em;
   stroke: currentColor;
-  fill: none;
 }
 
 html,

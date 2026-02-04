@@ -127,6 +127,26 @@ class ErrorBoundary extends React.Component<
                 </p>
               </div>
 
+              {!import.meta.env.PROD && (this.state.error?.stack || this.state.errorInfo?.componentStack) && (
+                <details className="bg-black/30 border border-white/10 rounded-lg p-3">
+                  <summary className="text-white/80 text-xs cursor-pointer select-none">
+                    Detalles técnicos
+                  </summary>
+                  <div className="mt-3 space-y-3">
+                    {this.state.error?.stack && (
+                      <pre className="whitespace-pre-wrap wrap-break-word text-[10px] leading-relaxed text-white/80 font-mono">
+                        {this.state.error.stack}
+                      </pre>
+                    )}
+                    {this.state.errorInfo?.componentStack && (
+                      <pre className="whitespace-pre-wrap wrap-break-word text-[10px] leading-relaxed text-white/70 font-mono">
+                        {this.state.errorInfo.componentStack}
+                      </pre>
+                    )}
+                  </div>
+                </details>
+              )}
+
               <div className="text-white/60 text-xs space-y-1">
                 <p>
                   💡 <strong>Posibles soluciones:</strong>

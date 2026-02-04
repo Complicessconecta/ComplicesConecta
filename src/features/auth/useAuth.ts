@@ -469,7 +469,7 @@ export const useAuth = () => {
         if (DEMO_CREDENTIALS.includes(email)) {
           const demoPassword = getDemoPassword(email);
 
-          if (password !== demoPassword) {
+          if (demoPassword && password !== demoPassword) {
             logger.error("🚫 Contraseña incorrecta para usuario demo - acceso denegado");
             throw new Error("Contraseña incorrecta para usuario demo");
           }

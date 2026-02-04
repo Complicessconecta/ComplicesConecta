@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface ClubImage {
   id: string;
@@ -82,10 +83,11 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
                 className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
                 onClick={() => setSelectedImage(image)}
               >
-                <img
+                <SafeImage
                   src={image.url}
                   alt={image.caption || `Foto ${index + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  fallbackType={image.isPrivate ? "private" : "default"}
+                  className="w-full h-full transition-transform duration-300 group-hover:scale-110"
                 />
 
                 {/* Privacy Badge */}
@@ -125,9 +127,10 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
               className="relative max-w-4xl max-h-[90vh]"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
+              <SafeImage
                 src={selectedImage.url}
-                alt={selectedImage.caption || 'Foto'}
+                alt={selectedImage.caption || "Foto"}
+                fallbackType={selectedImage.isPrivate ? "private" : "default"}
                 className="max-w-full max-h-[80vh] object-contain rounded-lg"
               />
 

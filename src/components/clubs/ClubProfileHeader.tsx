@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/cards/Card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover/popover";
 import type { Club } from "@/entities/club";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 interface ClubProfileHeaderProps {
   club: Club;
@@ -29,10 +30,11 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
       {/* Cover Image */}
       <div className="relative h-64 bg-linear-to-br from-purple-600 to-fuchsia-600 overflow-hidden">
         {club.cover_image_url ? (
-          <img
+          <SafeImage
             src={club.cover_image_url}
             alt={club.name}
-            className="w-full h-full object-cover"
+            fallbackType="cover"
+            className="w-full h-full"
           />
         ) : (
           <>
@@ -99,10 +101,11 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
           <div className="shrink-0">
             <div className="w-32 h-32 rounded-xl bg-linear-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center overflow-hidden border-4 border-white/20 shadow-xl">
               {club.logo_url ? (
-                <img
+                <SafeImage
                   src={club.logo_url}
                   alt={club.name}
-                  className="w-full h-full object-cover"
+                  fallbackType="default"
+                  className="w-full h-full"
                 />
               ) : (
                 <Building className="h-16 w-16 text-white/60" />

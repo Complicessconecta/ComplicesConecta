@@ -32,7 +32,6 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
   );
 
   // Estado persistente para demo
-  const [, setDemoUser] = usePersistedState<any>("demo_user", null);
   const [, setDemoAuthenticated] = usePersistedState<boolean>(
     "demo_authenticated",
     false,
@@ -56,30 +55,15 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
 
       const resolvedDemoPassword = demoPassword || "demo";
 
-      // Configurar credenciales demo según el tipo
-      const demoCredentials = {
-        email: demoEmail,
-        password: resolvedDemoPassword,
-        accountType: type,
-        displayName: type === "single" ? "Demo User" : "Demo Pareja",
-        first_name: type === "single" ? "Demo" : "Demo Pareja",
-        role: "user",
-      };
-
       // Usar el método signIn del hook useAuth
       await signIn(demoEmail, resolvedDemoPassword, type);
 
       // Establecer estado demo SOLO si signIn fue exitoso
       setDemoAuthenticated(true);
-      setDemoUser(demoCredentials);
       setUserType(type);
 
       // Persistir flags demo
       safeSetItem("demo_authenticated", "true", { validate: true });
-      safeSetItem("demo_user", demoCredentials, {
-        validate: false,
-        sanitize: true,
-      });
       safeSetItem("userType", type, { validate: false });
 
       toast({
@@ -102,7 +86,6 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
 
       // Rollback: evitar sesión demo a medias
       setDemoAuthenticated(false);
-      setDemoUser(null);
       setUserType("");
       safeRemoveItem("demo_authenticated");
       safeRemoveItem("demo_user");

@@ -16,44 +16,10 @@ type CarouselProps = {
   setApi?: (api: CarouselApi) => void;
 };
 
-interface WindowWithDebug extends Window {
-  __LOADING_DEBUG__?: {
-    log: (event: string, data?: unknown) => void;
-  };
-  React?: typeof React;
-}
-
 // CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(
   defaultValue: T | null,
 ): React.Context<T | null> => {
-  const debugLog = (event: string, data?: unknown) => {
-    const win =
-      typeof window !== "undefined"
-        ? (window as unknown as WindowWithDebug)
-        : undefined;
-    if (win?.__LOADING_DEBUG__) {
-      win.__LOADING_DEBUG__.log(event, data);
-    }
-  };
-
-  const win =
-    typeof window !== "undefined"
-      ? (window as unknown as WindowWithDebug)
-      : undefined;
-  if (win?.React?.createContext) {
-    debugLog("SAFE_CREATE_CONTEXT_GLOBAL", {
-      provider: "Carousel",
-      hasGlobal: true,
-    });
-    return win.React.createContext(defaultValue);
-  }
-
-  debugLog("SAFE_CREATE_CONTEXT_FALLBACK", {
-    provider: "Carousel",
-    hasGlobal: false,
-    hasLocal: !!React.createContext,
-  });
   return React.createContext<T | null>(defaultValue);
 };
 

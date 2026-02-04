@@ -52,6 +52,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), spaFallbackForTests()],
     optimizeDeps: {
       entries: ["index.html"],
+      include: ["react", "react-dom", "react-router", "react-router-dom"],
     },
     server: {
       port: 8080,
@@ -63,6 +64,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         "@": path.resolve(__dirname, "./src"),
       },
+      dedupe: ["react", "react-dom", "react-router", "react-router-dom"],
     },
     build: {
       rollupOptions: {
@@ -128,12 +130,9 @@ export default defineConfig(({ mode }) => {
       // Aumentar límite tras aplicar manualChunks para evitar warnings no accionables en producción
       chunkSizeWarningLimit: 6000,
       target: "esnext",
-      minify: "terser",
-      terserOptions: {
-        compress: {
-          drop_console: mode === "production", // Remover console.log en producción
-          drop_debugger: true,
-        },
+      minify: "esbuild",
+      esbuild: {
+        drop: mode === "production" ? ["console", "debugger"] : [],
       },
       // Configurar PostCSS para mejor compatibilidad CSS
       cssTarget: "chrome61",

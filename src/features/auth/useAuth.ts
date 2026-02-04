@@ -82,7 +82,13 @@ export const useAuth = () => {
       
       if (!parsedDemoUser) {
         logger.error("❌ demoUser corrupto o inválido");
+        // Recuperación automática: limpiar sesión demo corrupta
+        clearDemoAuth();
+        _setDemoUser(null);
+        setUser(null);
+        setSession(null);
         setProfile(null);
+        profileLoaded.current = false;
         return;
       }
       
@@ -274,6 +280,13 @@ export const useAuth = () => {
           
           if (!parsedDemoUser) {
             logger.error("❌ demoUser corrupto o inválido en init");
+            // Recuperación automática: limpiar sesión demo corrupta
+            clearDemoAuth();
+            _setDemoUser(null);
+            setUser(null);
+            setSession(null);
+            setProfile(null);
+            profileLoaded.current = false;
             setLoading(false);
             return;
           }

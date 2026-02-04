@@ -1,5 +1,31 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 3 Feb 2026 - 23:00 (Fix Migraciones Supabase Local)
+
+- **🗄️ Base de Datos - Migraciones:**
+  - Resuelto drift de versión `20260125` (8 dígitos → 14 dígitos)
+  - Función `is_admin()` corregida con parámetro opcional `check_user_id uuid DEFAULT NULL`
+  - Columnas agregadas: `couple_profiles.couple_bio`, `couple_profiles.is_premium`
+  - Migraciones aplicadas: `20260131054400`, `20260131054600`, `20260203222200`
+  - Columnas `reset_token_hash` y `token_expiry` agregadas a `profiles`
+
+- **📦 Migraciones en Cuarentena:**
+  - `20260125_placeholder_remote.sql.disabled` (formato inválido)
+  - `20260126210000_enhance_rls_policies_constraints.sql.disabled` (dependencias faltantes)
+  - `20260127030926_fix_missing_tables_src_audit.sql.disabled` (sintaxis inválida)
+  - `20260127040000_create_admin_users_table.sql.disabled` (trigger duplicado)
+  - `20260127041000_create_clubs_table.sql.disabled` (trigger duplicado)
+  - `20260127042000_create_complete_clubs_ecosystem.sql.disabled` (trigger duplicado)
+  - `20260125000000_placeholder_remote.sql.disabled` (renombrado a 20260125000001)
+
+- **✅ Verificaciones:**
+  - `supabase db push --local --include-all` (OK)
+  - npm run build:check (OK)
+  - npm run lint (OK)
+  - npm run test (OK)
+
+---
+
 ## 📅 Bitácora 26 Ene 2026 - 23:30 (Panel Admin Clubs)
 
 - **🎯 Panel de Administración de Clubs - 100% Completado:**

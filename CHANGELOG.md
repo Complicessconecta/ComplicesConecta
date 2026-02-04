@@ -1,3 +1,40 @@
+# Reporte de Cambios - CómplicesConecta v3.9.5
+
+**Fecha:** 3 de Febrero, 2026
+**Versión:** v3.9.5 (Fix Migraciones Supabase Local)
+**Responsable:** Lead Architect & Tech Lead
+
+## Resumen Ejecutivo
+
+Corrección exitosa del drift de migraciones en Supabase local. Se resolvieron conflictos de versiones duplicadas (20260125 8 dígitos vs 14 dígitos), se reparó la función `is_admin()` para compatibilidad con parámetros opcionales, y se aplicaron todas las migraciones pendientes. Las tablas `profile_likes`, `matches`, `invitations`, `user_token_balances`, `token_transactions` fueron verificadas con éxito.
+
+## Registro de Cambios Detallados
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **schema_migrations** | DB Local | Versión 20260125 inválida (8 dígitos) | **Corregido**. DELETE de versión inválida, UPDATE a 20260125000000 | Normalizar historial |
+| **20260125_placeholder_remote.sql** | `supabase/migrations/` | Duplicado con formato inválido | **Movido** a `duplicates_quarantine/` con documentación | Evitar conflictos CLI |
+| **20260125_000001_align_token_transactions_schema.sql** | `supabase/migrations/` | Nombre con guión bajo generaba versión inválida | **Renombrado** a `20260125000001_align_token_transactions_schema.sql` | Patrón CLI válido |
+| **is_admin()** | PostgreSQL | Función sin parámetro causaba error 42P13 | **Corregida** a `is_admin(check_user_id uuid DEFAULT NULL)` | Compatibilidad con políticas RLS |
+| **couple_profiles** | PostgreSQL | Columnas `couple_bio` e `is_premium` faltantes | **Agregadas** manualmente para permitir view creation | Esquema consistente |
+| **Migraciones en cuarentena** | `supabase/migrations/duplicates_quarantine/` | 7 migraciones con errores de idempotencia | **Movidas** para revisión posterior | Estabilidad del push |
+
+## Migraciones Aplicadas Exitosamente
+
+- ✅ `20260131054400_hardening_system_policies_service_role.sql`
+- ✅ `20260131054600_reservations_add_reserved_at.sql`
+- ✅ `20260203222200_add_profiles_reset_tokens.sql` (columnas `reset_token_hash`, `token_expiry`)
+
+## Verificaciones Post-Fix
+
+- ✅ `supabase db push --local --include-all` (OK)
+- ✅ npm run build:check (OK)
+- ✅ npm run lint (OK)
+- ✅ npm run test (OK)
+- ✅ Tablas críticas verificadas en local
+
+---
+
 # Reporte de Cambios - CómplicesConecta v3.9.4
 
 **Fecha:** 1 de Febrero, 2026

@@ -1718,6 +1718,8 @@ export type Database = {
           display_name: string | null
           id: string
           is_demo: boolean
+          reset_token_hash: string | null
+          token_expiry: string | null
           updated_at: string | null
           user_id: string
         }
@@ -1726,6 +1728,8 @@ export type Database = {
           display_name?: string | null
           id?: string
           is_demo?: boolean
+          reset_token_hash?: string | null
+          token_expiry?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -1734,6 +1738,8 @@ export type Database = {
           display_name?: string | null
           id?: string
           is_demo?: boolean
+          reset_token_hash?: string | null
+          token_expiry?: string | null
           updated_at?: string | null
           user_id?: string
         }

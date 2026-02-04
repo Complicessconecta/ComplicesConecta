@@ -5,6 +5,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { rateLimiter } from "@/lib/security/rateLimiter";
 import * as QRCode from "qrcode";
 import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails, MappedAuditLog } from "@/types/security.types";
 import type { Json } from "@/types/supabase-generated";
@@ -81,6 +82,44 @@ interface DatabaseAuditLog {
 
  const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer => {
    return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+ };
+
+ const toHex = (bytes: Uint8Array): string => {
+   return Array.from(bytes)
+     .map((value) => value.toString(16).padStart(2, "0"))
+     .join("");
+ };
+
+ const constantTimeEqual = (a: string, b: string): boolean => {
+   const maxLength = Math.max(a.length, b.length);
+   let result = 0;
+
+   for (let i = 0; i < maxLength; i++) {
+     const aCode = a.charCodeAt(i) || 0;
+     const bCode = b.charCodeAt(i) || 0;
+     result |= aCode ^ bCode;
+   }
+
+   return result === 0 && a.length === b.length;
+ };
+
+ const compareDigest = (a: string, b: string): boolean => {
+  return constantTimeEqual(a, b);
+ };
+
+ const digestToken = async (token: string): Promise<string> => {
+   const encoder = new TextEncoder();
+   const data = encoder.encode(token);
+   const hash = await globalThis.crypto.subtle.digest("SHA-256", data);
+   return toHex(new Uint8Array(hash));
+ };
+
+ const waitUntil = async (startTime: number, durationMs: number): Promise<void> => {
+   const elapsed = Date.now() - startTime;
+   const remaining = Math.max(0, durationMs - elapsed);
+   if (remaining > 0) {
+     await new Promise((resolve) => setTimeout(resolve, remaining));
+   }
  };
 
  const totpToken = async (secretBase32: string, timeStep: number, digits: number = 6): Promise<string> => {
@@ -464,6 +503,43 @@ export class SecurityService {
         error: error instanceof Error ? error.message : "Error desconocido",
       };
     }
+  }
+
+  /**
+   * Valida token de recuperación con comparación constante y rate limiting estricto.
+   */
+  async validatePasswordResetToken(params: {
+    identifier: string;
+    token: string;
+    storedTokenHash: string | null;
+    tokenExpiry: string | null;
+    minDurationMs?: number;
+  }): Promise<{ isValid: boolean; isExpired: boolean; isRateLimited: boolean; retryAfter?: number }> {
+    const startTime = Date.now();
+    const minDurationMs = params.minDurationMs ?? 350;
+
+    const rateLimit = rateLimiter.checkLimit("/auth/reset-password", params.identifier, false);
+
+    const tokenDigest = await digestToken(params.token);
+    const fallbackDigest = await digestToken("invalid");
+    const storedHash = params.storedTokenHash ?? fallbackDigest;
+    const isMatch = compareDigest(tokenDigest, storedHash);
+
+    const expiryMs = params.tokenExpiry ? new Date(params.tokenExpiry).getTime() : 0;
+    const isExpired = !expiryMs || expiryMs <= Date.now();
+
+    const isValid = rateLimit.allowed && isMatch && !isExpired;
+
+    await waitUntil(startTime, minDurationMs);
+
+    const retryAfter = rateLimit.retryAfter;
+
+    return {
+      isValid,
+      isExpired,
+      isRateLimited: !rateLimit.allowed,
+      ...(retryAfter !== undefined ? { retryAfter } : {}),
+    };
   }
 
   /**

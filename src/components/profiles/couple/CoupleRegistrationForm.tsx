@@ -167,6 +167,17 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     return /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(name) && name.trim().length >= 2;
   };
 
+  const validateEmailUnique = async (email: string): Promise<{ isValid: boolean; message?: string }> => {
+    // Validación básica de formato
+    if (!validateEmail(email)) {
+      return { isValid: false, message: "Formato de email inválido" };
+    }
+
+    // Nota: La unicidad real se verifica durante el registro con Supabase Auth
+    // Si el email ya existe, Supabase devolverá un error durante signUp
+    return { isValid: true };
+  };
+
   const canProceedToStep2 = () => {
     return (
       validateName(formData.hisFirstName) &&

@@ -339,10 +339,30 @@ const Auth = () => {
           return;
         }
         
-        setTimeout(() => {
-          if (accountType === "couple") {
-            navigate("/profile-couple");
-          } else {
+        // Determinar navegación basada en DB, no metadata
+        setTimeout(async () => {
+          try {
+            // Consultar account_type real desde DB usando vista unificada
+            const { data: profileData, error } = await (supabase.rpc as any)('get_profile_by_user_id', {
+              p_user_id: result.user.id
+            });
+
+            if (error) {
+              logger.error("Error obteniendo account_type de DB:", { error: error.message });
+              // Fallback a navegación por defecto
+              navigate("/profile-single");
+              return;
+            }
+
+            // Navegar según account_type real de DB
+            if (profileData && profileData.account_type === 'couple') {
+              navigate("/profile-couple");
+            } else {
+              navigate("/profile-single");
+            }
+          } catch (navError) {
+            logger.error("Error en navegación post-login:", { error: String(navError) });
+            // Fallback seguro
             navigate("/profile-single");
           }
         }, 3000);

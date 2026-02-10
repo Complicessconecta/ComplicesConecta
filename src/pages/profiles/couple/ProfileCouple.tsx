@@ -620,7 +620,7 @@ function ProfileCouple() {
             couple_bio: "Perfil de demostración. Regístrate para crear tu perfil real.",
             is_verified: false,
             is_premium: false,
-            relationship_type: "Otro",
+            relationship_type: "Otro" as any,
             couple_images: [],
             partner1_id: "demo-partner-1",
             partner1_first_name: "Demo",

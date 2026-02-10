@@ -493,7 +493,7 @@ const ProfileSingle: FC = () => {
         verificationLevel: 0,
       });
     }
-  }, [currentProfile.id, currentProfile.created_at, currentProfile.is_verified]);
+  }, [profile?.id, profile?.created_at, profile?.is_verified]);
 
   const handleShareProfile = async () => {
     try {
@@ -738,7 +738,7 @@ const ProfileSingle: FC = () => {
     }
   };
 
-  // Migracin localStorage ? usePersistedState
+  // Migración localStorage → usePersistedState
   useEffect(() => {
     if (profile?.id) {
       loadProfileStats();
@@ -748,7 +748,7 @@ const ProfileSingle: FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-800">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-800">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500 mx-auto"></div>
           <p className="mt-4 text-white font-medium">Cargando perfil...</p>
@@ -760,7 +760,7 @@ const ProfileSingle: FC = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-800 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-800 flex items-center justify-center">
         <Card className="w-full max-w-md mx-4">
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-semibold mb-2 text-white">Perfil no encontrado</h2>

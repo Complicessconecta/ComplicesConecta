@@ -620,7 +620,7 @@ function ProfileCouple() {
             couple_bio: "Perfil de demostración. Regístrate para crear tu perfil real.",
             is_verified: false,
             is_premium: false,
-            relationship_type: "demo",
+            relationship_type: "Otro",
             couple_images: [],
             partner1_id: "demo-partner-1",
             partner1_first_name: "Demo",
@@ -650,7 +650,7 @@ function ProfileCouple() {
 
           try {
             // Usar RPC para obtener datos reales de la vista unificada
-            const { data: profileData, error } = await supabase.rpc('get_profile_by_user_id', {
+            const { data: profileData, error } = await (supabase.rpc as any)('get_profile_by_user_id', {
               p_user_id: user.id
             });
 

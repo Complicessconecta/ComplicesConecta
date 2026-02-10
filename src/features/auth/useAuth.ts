@@ -158,32 +158,22 @@ export const useAuth = () => {
       }
 
       // Usar raw SQL para consultar la vista unificada (vw_profiles_unified no está en tipos generados)
-      const { data, error } = await supabase.rpc('get_profile_by_user_id', {
-        p_user_id: userId
-      });
+      let result: { data: any; error: any } = { data: null, error: null };
 
-      // Fallback: si no existe la función RPC, usar consulta directa
-      if (error && error.message?.includes('function get_profile_by_user_id')) {
-        logger.warn("RPC get_profile_by_user_id no existe, usando consulta directa a profiles");
-        const { data: fallbackData, error: fallbackError } = await supabase
+      try {
+        result = await (supabase.rpc as any)('get_profile_by_user_id', {
+          p_user_id: userId
+        });
+      } catch (rpcError) {
+        logger.warn("RPC get_profile_by_user_id falló, usando consulta directa a profiles");
+        result = await supabase
           .from("profiles")
           .select("*")
           .eq("id", userId)
           .single();
-
-        if (fallbackError) {
-          logger.error("❌ Error en fallback query:", { error: fallbackError.message });
-          setProfile(null);
-          return;
-        }
-
-        data = fallbackData;
-        error = fallbackError;
-      } else if (error) {
-        logger.error("❌ Error en RPC get_profile_by_user_id:", { error: error.message });
-        setProfile(null);
-        return;
       }
+
+      const { data, error } = result;
 
       logger.info("🔍 Consulta ejecutada", { userId });
       logger.info("🔍 Resultado data", { count: Array.isArray(data) ? data.length : 1 });

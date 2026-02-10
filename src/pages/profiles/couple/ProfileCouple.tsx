@@ -665,12 +665,12 @@ function ProfileCouple() {
                 id: profileData.couple_id || profileData.profile_id,
                 profile_id: profileData.profile_id,
                 couple_name: profileData.name,
-                username: profileData.nickname ? `@${profileData.nickname}` : undefined,
+                username: profileData.nickname ? `@${profileData.nickname}` : `@${profileData.name?.toLowerCase().replace(/\s+/g, '_') || 'pareja'}`,
                 location: profileData.location || "Ubicación no especificada",
                 couple_bio: profileData.bio || "Información no disponible",
                 is_verified: profileData.is_verified || false,
                 is_premium: false, // TODO: Implementar lógica de premium
-                relationship_type: profileData.relationship_type || "Relación",
+                relationship_type: (profileData.relationship_type || "Otro") as any,
                 couple_images: [], // TODO: Implementar carga de imágenes
                 partner1_id: profileData.user_id,
                 partner1_first_name: profileData.his_name?.split(' ')[0] || "Miembro 1",

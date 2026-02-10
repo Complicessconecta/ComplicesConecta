@@ -13,6 +13,7 @@ import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { Users } from "lucide-react";
 import { toast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR

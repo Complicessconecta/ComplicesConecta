@@ -126,6 +126,10 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     message?: string;
   }>({ isValidating: false, isValid: false });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+
   // Función para validar email con unicidad
   const validateEmailWithUniqueness = async (email: string) => {
     setEmailValidation({ isValidating: true, isValid: false });
@@ -135,8 +139,8 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       setEmailValidation({
         isValidating: false,
         isValid: result.isValid,
-        message: result.message,
-      });
+        ...(result.message && { message: result.message }),
+      } as const);
     } catch (error) {
       setEmailValidation({
         isValidating: false,

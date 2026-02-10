@@ -157,11 +157,33 @@ export const useAuth = () => {
         return;
       }
 
-      const { data, error } = await supabase
-        .from("vw_profiles_unified")
-        .select("*")
-        .eq("user_id", userId)
-        .single();
+      // Usar raw SQL para consultar la vista unificada (vw_profiles_unified no está en tipos generados)
+      const { data, error } = await supabase.rpc('get_profile_by_user_id', {
+        p_user_id: userId
+      });
+
+      // Fallback: si no existe la función RPC, usar consulta directa
+      if (error && error.message?.includes('function get_profile_by_user_id')) {
+        logger.warn("RPC get_profile_by_user_id no existe, usando consulta directa a profiles");
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
+
+        if (fallbackError) {
+          logger.error("❌ Error en fallback query:", { error: fallbackError.message });
+          setProfile(null);
+          return;
+        }
+
+        data = fallbackData;
+        error = fallbackError;
+      } else if (error) {
+        logger.error("❌ Error en RPC get_profile_by_user_id:", { error: error.message });
+        setProfile(null);
+        return;
+      }
 
       logger.info("🔍 Consulta ejecutada", { userId });
       logger.info("🔍 Resultado data", { count: Array.isArray(data) ? data.length : 1 });

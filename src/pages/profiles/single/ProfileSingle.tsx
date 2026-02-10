@@ -465,21 +465,35 @@ const ProfileSingle: FC = () => {
   // Funciones para cargar datos adicionales
   const loadProfileStats = useCallback(async () => {
     try {
-      // Estadísticas fijas DEMO
-      const mockStats = {
-        totalViews: 456,
-        totalLikes: 123,
-        totalMatches: 78,
-        profileCompleteness: 85,
-        lastActive: new Date(Date.now() - 3 * 60 * 60 * 1000),
-        joinDate: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
-        verificationLevel: 2,
+      // Intentar cargar estadísticas reales, no mock
+      // TODO: Implementar carga real de estadísticas desde API
+      logger.info("Cargando estadísticas reales del perfil", { userId: currentProfile.id });
+
+      // Por ahora, usar valores por defecto hasta implementar API real
+      const defaultStats = {
+        totalViews: 0,
+        totalLikes: 0,
+        totalMatches: 0,
+        profileCompleteness: 0,
+        lastActive: new Date(currentProfile.created_at || new Date()),
+        joinDate: new Date(currentProfile.created_at || new Date()),
+        verificationLevel: currentProfile.is_verified ? 1 : 0,
       };
-      setProfileStats(mockStats);
+      setProfileStats(defaultStats);
     } catch (error) {
       logger.error("Error loading profile stats:", { error: String(error) });
+      // En error, usar valores por defecto
+      setProfileStats({
+        totalViews: 0,
+        totalLikes: 0,
+        totalMatches: 0,
+        profileCompleteness: 0,
+        lastActive: new Date(),
+        joinDate: new Date(),
+        verificationLevel: 0,
+      });
     }
-  }, []);
+  }, [currentProfile.id, currentProfile.created_at, currentProfile.is_verified]);
 
   const handleShareProfile = async () => {
     try {
@@ -734,10 +748,11 @@ const ProfileSingle: FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-800">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500 mx-auto"></div>
           <p className="mt-4 text-white font-medium">Cargando perfil...</p>
+          <p className="mt-2 text-white/70 text-sm">Obteniendo datos reales del perfil</p>
         </div>
       </div>
     );
@@ -745,12 +760,12 @@ const ProfileSingle: FC = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-800 flex items-center justify-center">
         <Card className="w-full max-w-md mx-4">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold mb-2">Perfil no encontrado</h2>
+            <h2 className="text-xl font-semibold mb-2 text-white">Perfil no encontrado</h2>
             <p className="text-white/80 mb-4">
-              No se pudo cargar la informacin del perfil.
+              No se pudo cargar la información del perfil. Los datos pueden no existir o estar inaccesibles.
             </p>
             <Button
               onClick={() => navigate("/discover")}
@@ -778,23 +793,23 @@ const ProfileSingle: FC = () => {
     currentProfile.display_name ??
       asOptionalString(currentProfile["name"]) ??
       asOptionalString(currentProfile.first_name),
-       "Sofía López",
+    "Usuario" // Fallback genérico, no nombre específico
   );
 
 
   const avatarUrl = asString(
     currentProfile.avatar_url,
-    "/assets/people/single/f3.jpg",
+    "/assets/avatar-placeholder.png", // Placeholder genérico, no imagen específica
   );
 
-  const displayAge = currentProfile.age || 25;
+  const displayAge = currentProfile.age || 18; // Edad mínima legal, no valor específico
 
   const displayGenderLabel = (() => {
     const g = currentProfile.gender?.toLowerCase();
     if (g === 'male') return 'Hombre';
     if (g === 'female') return 'Mujer';
     if (g === 'couple') return 'Pareja';
-    return g || 'Usuario';
+    return g || 'No especificado'; // Fallback genérico
   })();
 
   const displayOrientationLabel = (() => {
@@ -803,7 +818,7 @@ const ProfileSingle: FC = () => {
     if (i === 'female') return 'Mujeres';
     if (i === 'couple') return 'Parejas';
     if (i === 'all' || i === 'everyone') return 'Todos';
-    return i || 'Todo';
+    return i || 'No especificado'; // Fallback genérico
   })();
 
   const canShowBlockchainSection = isOwnProfile || isDemoProfile;

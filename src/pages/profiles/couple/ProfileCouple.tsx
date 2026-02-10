@@ -610,31 +610,31 @@ function ProfileCouple() {
         // Verificar si hay sesión demo activa PRIMERO
         if (demoAuth === "true" && demoUser) {
           logger.info("🎬 Cargando perfil demo pareja...");
+          // Usar datos demo existentes pero marcados como demo
           const demoCoupleProfile: CoupleProfileWithPartners = {
             id: "demo-couple-456",
             profile_id: "CC-DEMO-001",
-            couple_name: "Sofía & Carlos",
-            username: "@pareja_love",
-            location: "CDMX, México",
-            couple_bio:
-              "Pareja abierta y respetuosa en busca de experiencias auténticas en CDMX.",
-            is_verified: true,
+            couple_name: "Pareja Demo",
+            username: "@pareja_demo",
+            location: "Ciudad Demo",
+            couple_bio: "Perfil de demostración. Regístrate para crear tu perfil real.",
+            is_verified: false,
             is_premium: false,
-            relationship_type: "man-woman",
+            relationship_type: "demo",
             couple_images: [],
             partner1_id: "demo-partner-1",
-            partner1_first_name: "Sofía",
-            partner1_last_name: "López",
-            partner1_age: 28,
+            partner1_first_name: "Demo",
+            partner1_last_name: "Uno",
+            partner1_age: 25,
             partner1_gender: "female" as const,
-            partner1_bio: "Amo el arte y los atardeceres.",
+            partner1_bio: "Usuario de demostración.",
             partner2_id: "demo-partner-2",
-            partner2_first_name: "Carlos",
-            partner2_last_name: "Ramírez",
-            partner2_age: 32,
+            partner2_first_name: "Demo",
+            partner2_last_name: "Dos",
+            partner2_age: 28,
             partner2_gender: "male",
             partner2_interested_in: "female",
-            partner2_bio: "Fan de la tecnología y el buen café.",
+            partner2_bio: "Usuario de demostración.",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
@@ -644,21 +644,76 @@ function ProfileCouple() {
           return;
         }
 
-        // Verificar autenticación usando useAuth
-        if (!isAuthenticated()) {
-          logger.info("🔒 No autenticado, redirigiendo a auth");
-          navigate("/auth", { replace: true });
-          return;
+        // Cargar perfil real de la DB usando la vista unificada
+        if (user?.id) {
+          logger.info("🔍 Cargando perfil real de pareja desde DB...");
+
+          try {
+            // Usar RPC para obtener datos reales de la vista unificada
+            const { data: profileData, error } = await supabase.rpc('get_profile_by_user_id', {
+              p_user_id: user.id
+            });
+
+            if (error) {
+              logger.error("❌ Error cargando perfil de pareja:", { error: error.message });
+              throw error;
+            }
+
+            if (profileData && profileData.account_type === 'couple') {
+              // Convertir datos de la vista unificada al formato CoupleProfileWithPartners
+              const realCoupleProfile: CoupleProfileWithPartners = {
+                id: profileData.couple_id || profileData.profile_id,
+                profile_id: profileData.profile_id,
+                couple_name: profileData.name,
+                username: profileData.nickname ? `@${profileData.nickname}` : undefined,
+                location: profileData.location || "Ubicación no especificada",
+                couple_bio: profileData.bio || "Información no disponible",
+                is_verified: profileData.is_verified || false,
+                is_premium: false, // TODO: Implementar lógica de premium
+                relationship_type: profileData.relationship_type || "Relación",
+                couple_images: [], // TODO: Implementar carga de imágenes
+                partner1_id: profileData.user_id,
+                partner1_first_name: profileData.his_name?.split(' ')[0] || "Miembro 1",
+                partner1_last_name: profileData.his_name?.split(' ').slice(1).join(' ') || "",
+                partner1_age: profileData.his_age || 18,
+                partner1_gender: profileData.his_gender || "not_specified",
+                partner1_bio: profileData.bio || "Información personal",
+                partner2_id: `${profileData.user_id}-partner2`,
+                partner2_first_name: profileData.her_name?.split(' ')[0] || "Miembro 2",
+                partner2_last_name: profileData.her_name?.split(' ').slice(1).join(' ') || "",
+                partner2_age: profileData.her_age || 18,
+                partner2_gender: profileData.her_gender || "not_specified",
+                partner2_interested_in: profileData.interested_in?.[0] || "all",
+                partner2_bio: profileData.bio || "Información personal",
+                created_at: profileData.created_at,
+                updated_at: profileData.updated_at,
+              };
+
+              setProfile(realCoupleProfile);
+              setLoading(false);
+              loadCoupleBlockchainData();
+              return;
+            } else {
+              logger.warn("⚠️ Usuario no tiene perfil de pareja, redirigiendo...");
+              navigate("/profile-single");
+              return;
+            }
+          } catch (dbError) {
+            logger.error("❌ Error de base de datos:", { error: String(dbError) });
+            // En error de DB, mostrar mensaje pero no fallback a mock
+            shadcnToast({
+              title: "Error al cargar perfil",
+              description: "No se pudieron cargar los datos del perfil. Intente nuevamente.",
+              variant: "destructive",
+            });
+            setLoading(false);
+            return;
+          }
         }
 
-        // Simular carga de perfil de pareja real
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        const mockCoupleProfiles = generateMockCoupleProfiles();
-        setProfile(mockCoupleProfiles[0] ?? null);
-        setLoading(false);
-        // Cargar datos blockchain
-        loadCoupleBlockchainData();
+        // Si no hay usuario autenticado, redirigir
+        logger.info("🔒 No autenticado, redirigiendo a auth");
+        navigate("/auth", { replace: true });
       } catch (error) {
         logger.error("Error loading profile:", { error: String(error) });
         // Fallback a perfil mock

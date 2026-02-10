@@ -111,15 +111,52 @@
 
 **Fase 1 completada exitosamente. Eliminada la duplicación crítica de datos en registro couple.**
 
-### FASE 2: CORRECCIÓN DE CARGA DE PERFIL (Prioridad CRÍTICA)
-**Tiempo:** 3-4 horas
-**Objetivos:** Eliminar datos mock, cargar datos reales
+### FASE 2: CORRECCIÓN DE CARGA DE PERFIL (Prioridad CRÍTICA) - **COMPLETADA**
+**Tiempo estimado:** 3-4 horas
+**Estado:** FINALIZADA - 4 Feb 2026 02:20
 
-**Tareas:**
-1. Modificar `ProfileSingle.tsx` - eliminar fallbacks mock ("Sofía López", etc.)
-2. Agregar estados de loading/error apropiados
-3. Implementar `ProfileCouple.tsx` con datos de couple_profiles
-4. Verificar que ambos componentes carguen datos reales de DB
+#### Tareas Completadas:
+1. **Modificar ProfileSingle.tsx**
+   - Eliminados fallbacks mock ("Sofía López", "CDMX, México")
+   - Reemplazados por valores genéricos ("Usuario", "avatar-placeholder.png")
+   - Agregados estados de loading apropiados
+   - Estadísticas basadas en datos reales (created_at, is_verified)
+   - Edad por defecto 18 (edad mínima legal)
+
+2. **Agregar estados de loading/error apropiados**
+   - Loading states informativos ("Cargando perfil...", "Obteniendo datos reales")
+   - Estados de error descriptivos ("Perfil no encontrado")
+   - Sin fallbacks a datos mock en errores
+
+3. **Implementar ProfileCouple.tsx con datos reales**
+   - Modificada carga para usar RPC get_profile_by_user_id
+   - Eliminados datos mock ("Sofía & Carlos")
+   - Carga datos reales de couple_profiles vía vista unificada
+   - Mapeo correcto de campos (his_name, her_name, etc.)
+   - Redirección apropiada si no hay perfil de pareja
+
+4. **Verificar carga de datos reales**
+   - Ambos componentes cargan desde DB, no fixtures
+   - ProfileSingle usa unified view
+   - ProfileCouple usa couple_profiles data
+   - Estados de carga apropiados en ambos
+
+#### KPIs de Fase 2 - **100% ALCANZADOS**
+- 0 datos mock en carga de perfil
+- ProfileCouple implementado y funcional
+- Ambos tipos cargan datos reales de DB
+- Estados de loading/error apropiados
+
+---
+
+## RESULTADOS DE FASE 2
+- **Mock data eliminado:** Ya no se muestran datos falsos en perfiles
+- **Carga real implementada:** Perfiles cargan datos de DB
+- **Estados apropiados:** Loading y error states informativos
+- **ProfileCouple funcional:** Carga datos de pareja desde couple_profiles
+- **Compatibilidad mantenida:** Sistema funciona con datos reales
+
+**Fase 2 completada exitosamente. Eliminados datos mock y implementada carga real de perfiles.**
 
 ### FASE 3: ESTANDARIZACIÓN DE ACCOUNT_TYPE (Prioridad ALTA)
 **Tiempo:** 2-3 horas

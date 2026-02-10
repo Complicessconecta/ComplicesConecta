@@ -120,9 +120,31 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     email: false,
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [showTermsModal, setShowTermsModal] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [emailValidation, setEmailValidation] = useState<{
+    isValidating: boolean;
+    isValid: boolean;
+    message?: string;
+  }>({ isValidating: false, isValid: false });
+
+  // Función para validar email con unicidad
+  const validateEmailWithUniqueness = async (email: string) => {
+    setEmailValidation({ isValidating: true, isValid: false });
+
+    try {
+      const result = await validateEmailUnique(email);
+      setEmailValidation({
+        isValidating: false,
+        isValid: result.isValid,
+        message: result.message,
+      });
+    } catch (error) {
+      setEmailValidation({
+        isValidating: false,
+        isValid: false,
+        message: "Error al validar email",
+      });
+    }
+  };
 
   const handleInputChange = <K extends keyof CoupleRegistrationData>(
     field: K,
@@ -302,6 +324,12 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             "Por favor verifica tu email para activar la cuenta de pareja",
         });
 
+        logger.info("✅ Registro de pareja exitoso", {
+          userId: authData.user.id,
+          coupleName: formData.coupleNickname,
+          email: formData.email,
+        });
+
         onSuccess({
           user: authData.user,
           profile: {
@@ -313,6 +341,16 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Error desconocido";
+
+      logger.error("❌ Error en registro de pareja", {
+        error: message,
+        formData: {
+          coupleName: formData.coupleNickname,
+          email: formData.email,
+          relationshipType: formData.relationshipType,
+        },
+      });
+
       toast({
         variant: "destructive",
         title: "Error al registrarse",
@@ -552,10 +590,21 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         <Input
           type="email"
           value={formData.email}
-          onChange={(e) => handleInputChange("email", e.target.value)}
+          onChange={(e) => {
+            const newEmail = e.target.value;
+            handleInputChange("email", newEmail);
+            // Validar unicidad cuando el email tenga formato válido
+            if (validateEmail(newEmail)) {
+              validateEmailWithUniqueness(newEmail);
+            } else {
+              setEmailValidation({ isValidating: false, isValid: false });
+            }
+          }}
           className={`bg-white/10 text-white placeholder:text-white/80 ${
             formData.email && !validateEmail(formData.email)
               ? "border-red-400"
+              : formData.email && !emailValidation.isValid && !emailValidation.isValidating
+              ? "border-yellow-400"
               : "border-white/20"
           }`}
           placeholder="pareja@email.com"
@@ -563,6 +612,15 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         />
         {formData.email && !validateEmail(formData.email) && (
           <p className="text-red-400 text-sm mt-1">Email inválido</p>
+        )}
+        {formData.email && validateEmail(formData.email) && emailValidation.isValidating && (
+          <p className="text-yellow-400 text-sm mt-1">Validando email...</p>
+        )}
+        {formData.email && validateEmail(formData.email) && !emailValidation.isValidating && !emailValidation.isValid && emailValidation.message && (
+          <p className="text-yellow-400 text-sm mt-1">{emailValidation.message}</p>
+        )}
+        {formData.email && validateEmail(formData.email) && emailValidation.isValid && (
+          <p className="text-green-400 text-sm mt-1">✓ Email válido</p>
         )}
       </div>
 

@@ -258,6 +258,8 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           });
 
         // También crear un perfil básico en la tabla profiles para compatibilidad
+        // NOTA: Eliminado para evitar duplicación - ahora se usa vista unificada vw_profiles_unified
+        /*
         const { error: profileError } = await supabase.from("profiles").insert({
           user_id: authData.user.id,
           name: formData.coupleNickname,
@@ -272,11 +274,12 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           role: "user",
           is_verified: false,
         });
+        */
 
-        if (coupleProfileError || profileError) {
-          console.error("Error creating profiles:", {
+        // Verificar solo error de couple_profiles
+        if (coupleProfileError) {
+          console.error("❌ Error creando perfil de pareja:", {
             coupleProfileError,
-            profileError,
           });
           throw new Error("Error al crear el perfil de pareja");
         }

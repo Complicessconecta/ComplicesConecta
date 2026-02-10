@@ -158,9 +158,9 @@ export const useAuth = () => {
       }
 
       const { data, error } = await supabase
-        .from("profiles")
+        .from("vw_profiles_unified")
         .select("*")
-        .eq("id", userId)
+        .eq("user_id", userId)
         .single();
 
       logger.info("🔍 Consulta ejecutada", { userId });

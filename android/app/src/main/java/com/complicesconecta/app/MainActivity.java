@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.WindowManager;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,9 +16,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.BridgeWebViewClient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends BridgeActivity {
 
@@ -27,30 +32,41 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Registrar plugin de protección de contenido
         registerPlugin(ContentProtectionPlugin.class);
 
-        // Habilitar FLAG_SECURE automáticamente (Ley Olimpia)
         getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         );
 
         if (checkAndRequestPermissions()) {
-            // Permissions are already granted, proceed with app initialization
             initApp();
         }
-        // else: wait for onRequestPermissionsResult
     }
 
     private void initApp() {
-        // Initialize multi-touch gesture detector
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+
+        // Custom WebViewClient to add CSP headers
+        bridge.getWebView().setWebViewClient(new BridgeWebViewClient(bridge) {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(android.webkit.WebView view, WebResourceRequest request) {
+                if (request.getUrl().toString().contains("https://localhost")) {
+                    WebResourceResponse response = super.shouldInterceptRequest(view, request);
+                    if (response != null && response.getMimeType().equals("text/html")) {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("Content-Security-Policy", "connect-src 'self' https://axtvqnozatbmllvwzuim.supabase.co https://api.openai.com wss://axtvqnozatbmllvwzuim.supabase.co https://browser-intake-us5-datadoghq.com");
+                        response.setResponseHeaders(headers);
+                    }
+                    return response;
+                }
+                return super.shouldInterceptRequest(view, request);
+            }
+        });
     }
 
     private boolean checkAndRequestPermissions() {
         List<String> listPermissionsNeeded = new ArrayList<>();
-
         String[] commonPermissions = {
                 Manifest.permission.CAMERA,
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -91,7 +107,6 @@ public class MainActivity extends BridgeActivity {
         return true;
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -104,16 +119,15 @@ public class MainActivity extends BridgeActivity {
                         break;
                     }
                 }
-            } else { // No permissions were requested, or the dialog was dismissed.
+            } else {
                 allPermissionsGranted = false;
             }
-
 
             if (allPermissionsGranted) {
                 initApp();
             } else {
                 Toast.makeText(this, "Todos los permisos son requeridos para usar la aplicación.", Toast.LENGTH_LONG).show();
-                finish(); // Close the app if permissions are not granted
+                finish();
             }
         }
     }
@@ -129,8 +143,6 @@ public class MainActivity extends BridgeActivity {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            // Handle scale gesture here
-            // For example, you could pass the scale factor to your web view
             return true;
         }
     }

@@ -276,7 +276,7 @@ BEGIN
         FOR SELECT USING (
             EXISTS (
                 SELECT 1 FROM public.couple_agreements ca
-                WHERE ca.id = couple_disputes.agreement_id
+                WHERE ca.id = couple_disputes.couple_agreement_id
                 AND (ca.partner_1_id = auth.uid() OR ca.partner_2_id = auth.uid())
             )
         );

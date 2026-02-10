@@ -1,3 +1,0 @@
--- Placeholder migration.
--- Esta migración existe para alinear el historial con el proyecto remoto.
--- Estado esperado en history: reverted.

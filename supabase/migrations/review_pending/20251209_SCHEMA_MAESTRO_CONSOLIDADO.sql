@@ -1,11 +1,11 @@
 -- ============================================================================
 -- SCHEMA MAESTRO CONSOLIDADO COMPLETO - ComplicesConecta v3.8.6
 -- ============================================================================
--- Fecha de consolidación: 14/2/2026, 5:50:10 a.m.
--- Total de archivos consolidados: 364
+-- Fecha de consolidación: 14/2/2026, 6:01:32 a.m.
+-- Total de archivos consolidados: 0
 -- Descripción: Consolidación completa de TODAS las migraciones SQL
 -- Objetivo: Archivo maestro único con todas las migraciones separadas por comentarios
--- Idempotencia: 100% (IF NOT EXISTS, DO $$)
+-- Idempotencia: 100% (IF NOT EXISTS, DO $)
 -- ============================================================================
 
 
@@ -62746,12 +62746,136 @@ AND table_name LIKE 'stripe%';
 
 
 
+
+
 -- ============================================================================
 -- RESUMEN DE CONSOLIDACIÓN
 -- ============================================================================
--- Total archivos encontrados: 364
--- Archivos procesados (sin duplicados): 271
+-- Total archivos encontrados: 0
+-- Archivos procesados (sin duplicados): 5
 -- Duplicados encontrados: 92
--- Fecha de consolidación: 14/2/2026, 5:50:11 a.m.
+-- Fecha de consolidación: 14/2/2026, 6:01:32 a.m.
 -- Directorio de backup: C:\Users\conej\Documents\conecta-social-comunidad-main\supabase\migrations\backup_completo_2026-02-14T11-50-09
+
+-- ============================================================================
+-- INICIO DE ARCHIVO: cheksdesinglepareja.sql
+-- ============================================================================
+-- Ruta relativa: cheksdesinglepareja.sql
+-- Tamaño: 1090 bytes
+-- Fecha modificación: 21/1/2026, 9:50:17 p.m.
+-- ============================================================================
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_schema = 'public'
+      AND table_name = 'couple_profiles'
+  ) THEN
+    ALTER TABLE public.couple_profiles
+      ADD COLUMN IF NOT EXISTS looking_for VARCHAR(50) DEFAULT 'friendship'
+        CHECK (looking_for IN ('friendship','dating','casual','serious','swinger','threesome','group')),
+      ADD COLUMN IF NOT EXISTS experience_level VARCHAR(50) DEFAULT 'beginner'
+        CHECK (experience_level IN ('beginner','intermediate','advanced','expert')),
+      ADD COLUMN IF NOT EXISTS swinger_experience VARCHAR(50) DEFAULT 'beginner'
+        CHECK (swinger_experience IN ('beginner','intermediate','advanced','expert')),
+      ADD COLUMN IF NOT EXISTS interested_in VARCHAR(50) DEFAULT 'couples'
+        CHECK (interested_in IN ('singles','couples','both','groups')),
+      ADD COLUMN IF NOT EXISTS max_distance INTEGER DEFAULT 50,
+      ADD COLUMN IF NOT EXISTS age_range_min INTEGER DEFAULT 18,
+      ADD COLUMN IF NOT EXISTS age_range_max INTEGER DEFAULT 65;
+  END IF;
+END
+$$;
+
+-- ============================================================================
+-- FIN DE ARCHIVO: cheksdesinglepareja.sql
+-- ============================================================================
+
+
+-- ============================================================================
+-- INICIO DE ARCHIVO: create table premium_access .sql
+-- ============================================================================
+-- Ruta relativa: create table premium_access .sql
+-- Tamaño: 251 bytes
+-- Fecha modificación: 21/1/2026, 9:50:17 p.m.
+-- ============================================================================
+
+create table premium_access (
+  id uuid primary key default gen_random_uuid(),
+  user_id text not null,
+  feature_id text not null,
+  expires_at timestamptz not null,
+  purchased_at timestamptz not null default now(),
+  cost numeric not null
+);
+
+-- ============================================================================
+-- FIN DE ARCHIVO: create table premium_access .sql
+-- ============================================================================
+
+
+-- ============================================================================
+-- INICIO DE ARCHIVO: public.couple.sql
+-- ============================================================================
+-- Ruta relativa: public.couple.sql
+-- Tamaño: 361 bytes
+-- Fecha modificación: 21/1/2026, 9:50:17 p.m.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS public.couple_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES public.profiles (id),
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  -- campos mínimos base; el resto los agrega la migración extendida
+  name text,
+  bio text,
+  location text
+);
+
+-- ============================================================================
+-- FIN DE ARCHIVO: public.couple.sql
+-- ============================================================================
+
+
+-- ============================================================================
+-- INICIO DE ARCHIVO: public.security_logs.sql
+-- ============================================================================
+-- Ruta relativa: public.security_logs.sql
+-- Tamaño: 226 bytes
+-- Fecha modificación: 21/1/2026, 9:50:17 p.m.
+-- ============================================================================
+
+CREATE TABLE public.security_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at timestamptz NOT NULL DEFAULT now(),
+  event text NOT NULL,
+  data jsonb,
+  user_id uuid,
+  ip inet,
+  user_agent text
+);
+
+-- ============================================================================
+-- FIN DE ARCHIVO: public.security_logs.sql
+-- ============================================================================
+
+
+-- ============================================================================
+-- INICIO DE ARCHIVO: securytylogs.sql
+-- ============================================================================
+-- Ruta relativa: securytylogs.sql
+-- Tamaño: 155 bytes
+-- Fecha modificación: 21/1/2026, 9:50:17 p.m.
+-- ============================================================================
+
+CREATE INDEX security_logs_event_idx ON public.security_logs (event);
+CREATE INDEX security_logs_created_at_idx ON public.security_logs (created_at DESC);
+
+-- ============================================================================
+-- FIN DE ARCHIVO: securytylogs.sql
+-- ============================================================================
+
 -- ============================================================================

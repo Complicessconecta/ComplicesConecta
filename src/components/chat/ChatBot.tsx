@@ -67,7 +67,10 @@ export const ChatBot: React.FC<ChatBotProps> = ({
       setToxicityModel(model);
       logger.info('✅ Modelo de toxicidad inicializado');
     } catch (error: ErrorType) {
-      logger.error('❌ Error inicializando modelo de toxicidad:', error);
+      logger.error('❌ Error inicializando modelo de toxicidad:', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
       setIsModerationEnabled(false);
     }
   };
@@ -91,9 +94,15 @@ export const ChatBot: React.FC<ChatBotProps> = ({
 
     try {
       const predictions = await toxicityModel.classify(text);
-      return predictions.some((prediction: ToxicityPrediction) => prediction.results[0].match);
+      return predictions.some((prediction: ToxicityPrediction) =>
+        prediction.results?.[0]?.match === true
+      );
     } catch (error: ErrorType) {
-      logger.error('Error verificando toxicidad:', error);
+      logger.error('Error verificando toxicidad:', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        text: text.substring(0, 100) // Solo primeros 100 caracteres para log
+      });
       return false;
     }
   }, [isModerationEnabled, toxicityModel]);
@@ -153,7 +162,12 @@ export const ChatBot: React.FC<ChatBotProps> = ({
 
       logger.info(`Mensaje procesado para usuario ${userId}`);
     } catch (error: ErrorType) {
-      logger.error('Error procesando mensaje:', error);
+      logger.error('Error procesando mensaje:', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        userId,
+        messageLength: message.length
+      });
       setState(prev => ({
         ...prev,
         error: 'Error al procesar tu mensaje. Inténtalo de nuevo.',

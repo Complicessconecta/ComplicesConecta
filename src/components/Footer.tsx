@@ -25,7 +25,7 @@ export const Footer = () => {
             </p>
             <div className="flex space-x-3">
               <Button
-                {...({ variant: "ghost" } as any)}
+                variant="ghost"
                 size="icon"
                 className="text-background hover:text-primary"
                 onClick={() =>
@@ -35,7 +35,7 @@ export const Footer = () => {
                 <Facebook className="h-5 w-5" />
               </Button>
               <Button
-                {...({ variant: "ghost" } as any)}
+                variant="ghost"
                 size="icon"
                 className="text-background hover:text-primary"
                 onClick={() =>
@@ -45,7 +45,7 @@ export const Footer = () => {
                 <Instagram className="h-5 w-5" />
               </Button>
               <Button
-                {...({ variant: "ghost" } as any)}
+                variant="ghost"
                 size="icon"
                 className="text-background hover:text-primary"
                 onClick={() =>
@@ -207,7 +207,7 @@ export const Footer = () => {
                   className="flex-1 px-3 py-2 bg-background/10 border border-background/20 rounded-md text-background placeholder-background/60 focus:outline-none focus:border-primary"
                 />
                 <Button
-                  {...({ variant: "love" } as any)}
+                  variant="default"
                   size="sm"
                   onClick={() => {
                     const email = (

@@ -26,7 +26,15 @@ interface SearchFilters {
   isOnline: boolean;
 }
 
-type ProfileWithDistance = Database["public"]["Tables"]["profiles"]["Row"] & {
+// Definir tipos específicos para evitar 'any'
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+
+type ProfileWithLocation = ProfileRow & {
+  latitude: number | null;
+  longitude: number | null;
+};
+
+type ProfileWithDistance = ProfileWithLocation & {
   distance: number | null;
   compatibilityScore: number;
 };
@@ -114,7 +122,8 @@ export const PreferenceSearch = ({
 
       const supabaseClient = supabase;
 
-      let query: any = supabaseClient
+      // Usar tipo específico para la query
+      let query = supabaseClient
         .from("profiles")
         .select("*")
         .neq("id", currentUserId)
@@ -133,23 +142,23 @@ export const PreferenceSearch = ({
         query = query.eq("is_online", true);
       }
 
-      const { data: profiles, error } = await query as any;
+      // Ejecutar query con tipo específico
+      const { data: profiles, error } = await query;
 
       if (error) throw error;
 
-      let filteredResults = profiles || [];
+      let filteredResults: ProfileWithLocation[] = (profiles as ProfileWithLocation[]) || [];
 
       // Filter by distance if location is available
       if (filters.location.latitude && filters.location.longitude) {
-        filteredResults = filteredResults.filter((profile: any) => {
-          if (!(profile as any).latitude || !(profile as any).longitude)
-            return false;
+        filteredResults = filteredResults.filter((profile: ProfileWithLocation) => {
+          if (!profile.latitude || !profile.longitude) return false;
 
           const distance = calculateDistance(
             filters.location.latitude!,
             filters.location.longitude!,
-            (profile as any).latitude,
-            (profile as any).longitude,
+            profile.latitude,
+            profile.longitude,
           );
 
           return distance <= filters.maxDistance;
@@ -158,7 +167,7 @@ export const PreferenceSearch = ({
 
       // Filter by interests
       if (filters.interests.length > 0) {
-        filteredResults = filteredResults.filter((_profile: any) => {
+        filteredResults = filteredResults.filter((_profile: ProfileWithLocation) => {
           // Mock preferences since user_preferences doesn't exist in current schema
           const mockPreferences = {
             interests: [
@@ -187,19 +196,19 @@ export const PreferenceSearch = ({
       }
 
       // Add distance and compatibility score
-      const enrichedResults = filteredResults.map((profile: any) => {
+      const enrichedResults: ProfileWithDistance[] = filteredResults.map((profile: ProfileWithLocation) => {
         let distance = null;
         if (
           filters.location.latitude &&
           filters.location.longitude &&
-          (profile as any).latitude &&
-          (profile as any).longitude
+          profile.latitude &&
+          profile.longitude
         ) {
           distance = calculateDistance(
             filters.location.latitude,
             filters.location.longitude,
-            (profile as any).latitude,
-            (profile as any).longitude,
+            profile.latitude,
+            profile.longitude,
           );
         }
 

@@ -10,18 +10,33 @@ import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 const safeCreateContext = <T,>(
   defaultValue: T | undefined,
 ): React.Context<T | undefined> => {
-  const debugLog = (event: string, data?: any) => {
-    if (typeof window !== "undefined" && (window as any).__LOADING_DEBUG__) {
-      (window as any).__LOADING_DEBUG__.log(event, data);
+  // Definir tipos específicos para window global
+  interface WindowWithDebug extends Window {
+    __LOADING_DEBUG__?: {
+      log: (event: string, data?: unknown) => void;
+    };
+  }
+
+  interface WindowWithReact extends Window {
+    React?: {
+      createContext: typeof React.createContext;
+    };
+  }
+
+  const debugLog = (event: string, data?: unknown) => {
+    const win = window as WindowWithDebug;
+    if (typeof window !== "undefined" && win.__LOADING_DEBUG__) {
+      win.__LOADING_DEBUG__.log(event, data);
     }
   };
 
-  if (typeof window !== "undefined" && (window as any).React?.createContext) {
+  const winWithReact = window as WindowWithReact;
+  if (typeof window !== "undefined" && winWithReact.React?.createContext) {
     debugLog("SAFE_CREATE_CONTEXT_GLOBAL", {
       provider: "AccessibilityProvider",
       hasGlobal: true,
     });
-    return (window as any).React.createContext(defaultValue);
+    return winWithReact.React.createContext(defaultValue);
   }
 
   debugLog("SAFE_CREATE_CONTEXT_FALLBACK", {

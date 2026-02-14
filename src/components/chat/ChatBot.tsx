@@ -9,6 +9,21 @@ import { aiIntegrationService, type ChatMessage } from '@/services/ai/AIIntegrat
 import { logger } from '@/lib/logger';
 import * as toxicity from '@tensorflow-models/toxicity';
 
+// Definir tipos específicos para evitar 'any'
+interface ToxicityPrediction {
+  label: string;
+  results: Array<{
+    probabilities: Float32Array;
+    match: boolean | null;
+  }>;
+}
+
+interface ToxicityModel {
+  classify: (text: string) => Promise<ToxicityPrediction[]>;
+}
+
+type ErrorType = Error | unknown;
+
 interface ChatBotProps {
   userId: string;
   className?: string;
@@ -39,7 +54,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
   });
 
   const [inputValue, setInputValue] = useState('');
-  const [toxicityModel, setToxicityModel] = useState<any>(null);
+  const [toxicityModel, setToxicityModel] = useState<ToxicityModel | null>(null);
   const [isModerationEnabled, setIsModerationEnabled] = useState(enableModeration);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -51,7 +66,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
       const model = await toxicity.load(0.9, ['toxicity', 'severe_toxicity', 'identity_attack', 'insult', 'profanity', 'threat']); // Corregir argumentos de toxicity
       setToxicityModel(model);
       logger.info('✅ Modelo de toxicidad inicializado');
-    } catch (error: any) { // Corregir tipo de error
+    } catch (error: ErrorType) {
       logger.error('❌ Error inicializando modelo de toxicidad:', error);
       setIsModerationEnabled(false);
     }
@@ -76,8 +91,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({
 
     try {
       const predictions = await toxicityModel.classify(text);
-      return predictions.some((prediction: any) => prediction.results[0].match);
-    } catch (error: any) { // Corregir tipo de error
+      return predictions.some((prediction: ToxicityPrediction) => prediction.results[0].match);
+    } catch (error: ErrorType) {
       logger.error('Error verificando toxicidad:', error);
       return false;
     }
@@ -137,7 +152,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
       }));
 
       logger.info(`Mensaje procesado para usuario ${userId}`);
-    } catch (error: any) { // Corregir tipo de error
+    } catch (error: ErrorType) {
       logger.error('Error procesando mensaje:', error);
       setState(prev => ({
         ...prev,

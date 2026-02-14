@@ -148,10 +148,10 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
               key={message.id}
               id={message.id}
               message={message.content}
-              isOwn={message.sender_id === (message as any).currentUserId}
+              isOwn={message.is_own ?? false}
               timestamp={new Date(message.created_at).toLocaleTimeString()}
-              senderAvatar={(message as any).sender?.avatar_url}
-              senderName={(message as any).sender?.display_name}
+              senderAvatar={message.sender_avatar}
+              senderName={message.sender_name}
             />
           ))}
         </AnimatePresence>

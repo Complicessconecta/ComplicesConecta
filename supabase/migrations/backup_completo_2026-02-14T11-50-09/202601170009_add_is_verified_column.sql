@@ -1,0 +1,2 @@
+-- Agregar columna is_verified a profiles
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT false;

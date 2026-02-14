@@ -157,21 +157,12 @@ export const useAuth = () => {
         return;
       }
 
-      // Usar raw SQL para consultar la vista unificada (vw_profiles_unified no está en tipos generados)
-      let result: { data: any; error: any } = { data: null, error: null };
-
-      try {
-        result = await (supabase.rpc as any)('get_profile_by_user_id', {
-          p_user_id: userId
-        });
-      } catch (rpcError) {
-        logger.warn("RPC get_profile_by_user_id falló, usando consulta directa a profiles");
-        result = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", userId)
-          .single();
-      }
+      // Usar la vista unificada vw_profiles_unified para consultar ambas tablas según account_type
+      const result = await supabase
+        .from("vw_profiles_unified")
+        .select("*")
+        .eq("id", userId)
+        .single();
 
       const { data, error } = result;
 

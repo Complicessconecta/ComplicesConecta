@@ -25,6 +25,17 @@ import { motion } from "framer-motion";
 import { walletService } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
+
+// Tipo local para TestnetInfo
+interface TestnetInfo {
+  remaining: number;
+  dailyRemaining: number;
+  canClaim: boolean;
+  dailyLimit: number;
+  dailyClaimed: number;
+  claimed: number;
+  maxClaim: number;
+}
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { EventsCarousel } from "@/components/ui/carousel/events-carousel";

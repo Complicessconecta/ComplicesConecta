@@ -21,7 +21,7 @@ interface Message {
   location?: {
     latitude: number;
     longitude: number;
-    address?: string | null;
+    address: string | null;
   };
 }
 

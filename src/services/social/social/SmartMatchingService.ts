@@ -391,71 +391,71 @@ class SmartMatchingService {
 
       // Personalidad (valores por defecto si no existen)
       const personality = {
-        openness: (profile as any).openness || 50,
-        conscientiousness: (profile as any).conscientiousness || 50,
-        extraversion: (profile as any).extraversion || 50,
-        agreeableness: (profile as any).agreeableness || 50,
-        neuroticism: (profile as any).neuroticism || 50,
-        adventurousness: (profile as any).adventurousness || 50,
-        discretion: (profile as any).discretion || 50,
+        openness: ((profile as any).openness as number) || 50,
+        conscientiousness: ((profile as any).conscientiousness as number) || 50,
+        extraversion: ((profile as any).extraversion as number) || 50,
+        agreeableness: ((profile as any).agreeableness as number) || 50,
+        neuroticism: ((profile as any).neuroticism as number) || 50,
+        adventurousness: ((profile as any).adventurousness as number) || 50,
+        discretion: ((profile as any).discretion as number) || 50,
       };
 
       // Preferencias (valores por defecto)
       const preferences = {
         ageRange: {
-          min: (profile as any).preferred_age_min || 18,
-          max: (profile as any).preferred_age_max || 65,
+          min: ((profile as any).preferred_age_min as number) || 18,
+          max: ((profile as any).preferred_age_max as number) || 65,
         },
-        genderPreference: (profile as any).looking_for
+        genderPreference: ((profile as any).looking_for as string[] | string)
           ? Array.isArray((profile as any).looking_for)
             ? (profile as any).looking_for
             : [(profile as any).looking_for]
           : ["single", "pareja"],
-        maxDistance: (profile as any).max_distance || 50,
+        maxDistance: ((profile as any).max_distance as number) || 50,
         interests: interests,
-        dealBreakers: (profile as any).deal_breakers || [],
+        dealBreakers: ((profile as any).deal_breakers as string[] | undefined) || [],
         importance: {
-          personality: (profile as any).importance_personality || 20,
-          interests: (profile as any).importance_interests || 25,
-          location: (profile as any).importance_location || 25,
-          activity: (profile as any).importance_activity || 15,
-          verification: (profile as any).importance_verification || 15,
+          personality: ((profile as any).importance_personality as number) || 20,
+          interests: ((profile as any).importance_interests as number) || 25,
+          location: ((profile as any).importance_location as number) || 25,
+          activity: ((profile as any).importance_activity as number) || 15,
+          verification: ((profile as any).importance_verification as number) || 15,
         },
       };
 
       // Actividad (calcular desde datos disponibles)
       const activity = {
-        lastActive: (profile as any).updated_at
+        lastActive: ((profile as any).updated_at as string)
           ? new Date((profile as any).updated_at)
           : new Date(),
-        responseRate: (profile as any).response_rate || 50,
+        responseRate: ((profile as any).response_rate as number) || 50,
         profileCompleteness: this.calculateCompleteness(profile),
-        photosCount: (profile as any).photos_count || 0,
-        messagesExchanged: (profile as any).messages_count || 0,
-        meetingsArranged: (profile as any).meetings_count || 0,
+        photosCount: ((profile as any).photos_count as number) || 0,
+        messagesExchanged: ((profile as any).messages_count as number) || 0,
+        meetingsArranged: ((profile as any).meetings_count as number) || 0,
       };
 
       // Verificación
       const verification = {
-        isVerified: (profile as any).is_verified || false,
-        photoVerified: (profile as any).photo_verified || false,
-        phoneVerified: (profile as any).phone_verified || false,
-        idVerified: (profile as any).id_verified || false,
-        coupleVerified: (profile as any).couple_verified || false,
+        isVerified: ((profile as any).is_verified as boolean) || false,
+        photoVerified: ((profile as any).photo_verified as boolean) || false,
+        phoneVerified: ((profile as any).phone_verified as boolean) || false,
+        idVerified: ((profile as any).id_verified as boolean) || false,
+        coupleVerified: ((profile as any).couple_verified as boolean) || false,
       };
 
       return {
-        id: (profile as any).user_id || (profile as any).id,
-        name: (profile as any).first_name || (profile as any).name || "Usuario",
-        age: (profile as any).age || 25,
-        gender: (profile as any).profile_type === "couple" ? "pareja" : "single",
+        id: ((profile as any).user_id as string) || ((profile as any).id as string),
+        name: ((profile as any).first_name as string | null) || ((profile as any).name as string | null) || "Usuario",
+        age: ((profile as any).age as number) || 25,
+        gender: ((profile as any).profile_type as string) === "couple" ? "pareja" : "single",
         location: {
-          city: (profile as any).city || (profile as any).location || "Ciudad",
-          ...((profile as any).latitude && (profile as any).longitude
+          city: ((profile as any).city as string | null) || ((profile as any).location as string | null) || "Ciudad",
+          ...(((profile as any).latitude as number) && ((profile as any).longitude as number)
             ? {
                 coordinates: {
-                  lat: (profile as any).latitude,
-                  lng: (profile as any).longitude,
+                  lat: ((profile as any).latitude as number),
+                  lng: ((profile as any).longitude as number),
                 },
               }
             : {}),
@@ -782,12 +782,12 @@ class SmartMatchingService {
 
           friendsOfFriends.forEach((fof: {
             userId: string;
-            mutualFriendsCount: number;
+            mutualFriendsCount?: number;
           }) => {
             compatibleUserIds.push({
               userId: fof.userId,
               score: 0,
-              socialScore: fof.mutualFriendsCount * 5,
+              socialScore: (fof.mutualFriendsCount || 0) * 5,
             });
           });
 

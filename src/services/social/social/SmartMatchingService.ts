@@ -478,12 +478,12 @@ class SmartMatchingService {
    * Calcula completitud del perfil
    */
   private calculateCompleteness(profile: {
-    first_name?: string;
-    bio?: string;
-    age?: number;
-    location?: string;
-    interests?: string[];
-    avatar_url?: string;
+    first_name?: string | null;
+    bio?: string | null;
+    age?: number | null;
+    location?: string | null;
+    interests?: string[] | null;
+    avatar_url?: string | null;
     [key: string]: any;
   }): number {
     let completeness = 0;
@@ -830,7 +830,7 @@ class SmartMatchingService {
           .limit(options.limit || 10);
 
         if (error) throw error;
-        candidates = data || [];
+        candidates = (data || []) as typeof candidates;
       }
 
       // PASO 4: Fusión en memoria

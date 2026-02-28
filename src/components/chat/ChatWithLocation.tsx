@@ -61,7 +61,7 @@ export const ChatWithLocation = ({
       const { data, error } = await supabase
         .from("messages")
         .select("*, sender:profiles!sender_id(*)")
-        .eq("conversation_id", conversationId)
+        .eq("chat_room_id", conversationId)
         .order("created_at", { ascending: true });
 
       if (error) throw error;

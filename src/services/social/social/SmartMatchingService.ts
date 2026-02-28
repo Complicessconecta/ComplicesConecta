@@ -281,6 +281,10 @@ class SmartMatchingService {
           query = query.gte("age", ageRange.min).lte("age", ageRange.max);
         }
 
+        if (gender && gender.length > 0) {
+          query = query.in("gender", gender);
+        }
+
         if (verifiedOnly) {
           query = query.eq("is_verified", true);
         }

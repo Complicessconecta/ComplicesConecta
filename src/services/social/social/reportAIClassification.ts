@@ -172,6 +172,8 @@ export const classifyReportWithAI = async (
       suggested_priority: result.suggested_priority,
       suggested_action: result.suggested_action || "",
       ai_model_version: "v1.0",
+      category: result.category || "unknown",
+      confidence_score: result.confidence
     });
 
     // Actualizar reporte

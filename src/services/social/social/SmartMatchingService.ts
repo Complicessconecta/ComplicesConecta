@@ -484,6 +484,7 @@ class SmartMatchingService {
     location?: string;
     interests?: string[];
     avatar_url?: string;
+    [key: string]: any;
   }): number {
     let completeness = 0;
     const fields = [
@@ -805,18 +806,18 @@ class SmartMatchingService {
       // PASO 3: QUERY A SUPABASE - Obtener datos completos
       let candidates: {
         id: string;
-        display_name?: string;
-        first_name?: string;
-        last_name?: string;
-        age?: number;
-        location?: string;
-        bio?: string;
-        avatar_url?: string;
-        interests?: string[];
-        is_verified?: boolean;
-        gender?: string;
-        relationship_type?: string;
-        compatibility_score?: number;
+        display_name?: string | null;
+        first_name?: string | null;
+        last_name?: string | null;
+        age?: number | null;
+        location?: string | null;
+        bio?: string | null;
+        avatar_url?: string | null;
+        interests?: string[] | null;
+        is_verified?: boolean | null;
+        gender?: string | null;
+        relationship_type?: string | null;
+        compatibility_score?: number | null;
       }[] = [];
 
       if (compatibleUserIds.length > 0 && supabase) {
@@ -844,6 +845,10 @@ class SmartMatchingService {
           totalScore:
             (candidate.compatibility_score || 0) +
             (neo4jData?.socialScore || 0),
+          breakdown: [],
+          reasons: [],
+          redFlags: [],
+          confidence: 0.8,
         };
       });
 

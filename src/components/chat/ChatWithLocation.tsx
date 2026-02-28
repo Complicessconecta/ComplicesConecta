@@ -83,14 +83,15 @@ export const ChatWithLocation = ({
         content: msg.content,
         sender_id: msg.sender_id,
         sender_name:
-          `${msg.sender?.first_name || ""} ${msg.sender?.last_name || ""}`.trim() ||
-          "Usuario",
+          msg.sender
+            ? `${msg.sender.first_name || ""} ${msg.sender.last_name || ""}`.trim() ||
+            "Usuario",
         created_at: msg.created_at,
         ...(msg.location_latitude && msg.location_longitude ? {
           location: {
             latitude: msg.location_latitude,
             longitude: msg.location_longitude,
-            address: msg.location_address || undefined,
+            address: msg.location_address || null,
           }
         } : {}),
       }));
@@ -271,7 +272,7 @@ export const ChatWithLocation = ({
                   )}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {new Date(message.created_at).toLocaleTimeString()}
+                  {message.created_at ? new Date(message.created_at).toLocaleTimeString() : ""}
                 </div>
               </div>
             </div>

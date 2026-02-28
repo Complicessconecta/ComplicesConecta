@@ -507,7 +507,7 @@ const ModeratorApplicationModal = () => {
         variant: "destructive",
         title: "Error al enviar solicitud",
         description:
-          error.message || "Hubo un problema al procesar tu solicitud.",
+          error instanceof Error ? error.message : "Hubo un problema al procesar tu solicitud.",
       });
     } finally {
       setIsSubmitting(false);

@@ -15,13 +15,13 @@ import { logger } from "@/lib/logger";
 interface Message {
   id: string;
   content: string;
-  sender_id: string;
+  sender_id: string | null;
   sender_name: string;
-  created_at: string;
+  created_at: string | null;
   location?: {
     latitude: number;
     longitude: number;
-    address?: string;
+    address?: string | null;
   };
 }
 
@@ -73,7 +73,7 @@ export const ChatWithLocation = ({
         sender?: {
           first_name?: string | null;
           last_name?: string | null;
-        };
+        } | null;
         created_at: string | null;
         location_latitude?: number | null;
         location_longitude?: number | null;

@@ -24,7 +24,6 @@ import { useProfileScore } from "@/features/profile/useProfileScore";
 import { motion } from "framer-motion";
 import { walletService } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
-import type { TestnetInfo } from "@/services/payments/WalletService";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";

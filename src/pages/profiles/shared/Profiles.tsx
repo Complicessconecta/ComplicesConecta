@@ -500,7 +500,7 @@ const Profiles: React.FC = () => {
       });
 
       // Ordenar por score de IA (mayor a menor)
-      filtered.sort((a, b) => b.aiScore - a.aiScore);
+      filtered.sort((a, b) => (b.aiScore || 0) - (a.aiScore || 0));
 
       setFilteredProfiles(filtered);
       setAiSearchMode(true);

@@ -357,17 +357,17 @@ class SmartMatchingService {
   private mapToUserProfile(profile: {
     id?: string;
     user_id?: string;
-    display_name?: string;
-    first_name?: string;
-    last_name?: string;
-    age?: number;
-    location?: string;
-    bio?: string;
-    avatar_url?: string;
-    interests?: string[];
-    is_verified?: boolean;
-    gender?: string;
-    relationship_type?: string;
+    display_name?: string | null;
+    first_name?: string | null;
+    last_name?: string | null;
+    age?: number | null;
+    location?: string | null;
+    bio?: string | null;
+    avatar_url?: string | null;
+    interests?: string[] | null;
+    is_verified?: boolean | null;
+    gender?: string | null;
+    relationship_type?: string | null;
   }): UserProfile | null {
     try {
       // Parsear intereses (pueden estar en formato string JSON o array)

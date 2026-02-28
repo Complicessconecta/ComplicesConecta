@@ -1,18 +1,27 @@
 # 🔍 VALIDACIÓN REMOTO vs PROYECTO LOCAL
 
 **Fecha de validación:** 14/2/2026, 6:30:37
-**Última actualización:** 28/2/2026, 2:30:00
+**Última actualización:** 28/2/2026, 04:30:00
 **Proyecto:** CómplicesConecta
 
 ## 📊 RESUMEN EJECUTIVO
 
 - **Migraciones en remoto:** 167
-- **Migraciones locales:** 164
-- **Faltan en remoto:** 50 ✅ CORRECTO (son archivos placeholder)
-- **Extras en remoto:** 53 ✅ CORRECTO (existen localmente)
+- **Migraciones locales:** 174 ✅ (Sincronizadas y actualizadas con esquemas de Wallet, Themes, Matching y Moderación)
+- **Faltan en remoto:** 50 ✅ CORRECTO
+- **Extras en remoto:** 53 ✅ CORRECTO
 - **Archivos con problemas de tipos:** 240
-  - **Corregidos:** 5 (2%)
-  - **Pendientes:** 235
+  - **Corregidos:** 15 (6%) ✅ (Flujos críticos: SmartMatching, Wallet, Themes, Moderación, Shop)
+  - **Pendientes:** 225
+
+## 🛠️ CAMBIOS EN ESQUEMA LOCAL (28/02/2026)
+Se han creado y aplicado las siguientes tablas y columnas en el entorno local para resolver errores de tipo y habilitar funcionalidades:
+1. **Wallet:** `wallet_balances`, `token_transactions`.
+2. **Themes:** `user_themes` (con `theme_config` JSONB).
+3. **Matching:** `matching_preferences`, `user_interests`, `user_swinger_interests`.
+4. **Social:** `posts`, `stories`, `user_feeds`, `matches`, `profile_likes`, `invitation_statistics`, `gallery_unlocks`.
+5. **Moderación:** `moderator_sessions`, `moderation_logs`, `report_ai_classification`.
+6. **Profiles:** Agregadas columnas `bio`, `gender`, `city`, `is_public`, `interests`, `latitude`, `longitude` y traits de personalidad.
 
 ## 📝 PLAN DE CORRECCIÓN - PROBLEMAS DE TIPOS
 
@@ -21,8 +30,8 @@ Eliminar todos los usos de `any`, `as any`, y `unknown` sin resolver en el proye
 
 ### 📊 Estado Actual
 - **Total archivos con problemas:** 240
-- **Archivos corregidos:** 5 (2%)
-- **Archivos pendientes:** 235
+- **Archivos corregidos:** 15 (6%) ✅ (Flujos críticos: SmartMatching, Wallet, Themes, Moderación, Shop)
+- **Archivos pendientes:** 225
 
 ### ✅ Archivos Corregidos
 1. AccessibilityProvider.tsx - 4 'as any' → tipos específicos WindowWithDebug/React
@@ -30,6 +39,16 @@ Eliminar todos los usos de `any`, `as any`, y `unknown` sin resolver en el proye
 3. ChatBot.tsx - 4 tipos 'any' → interfaces ToxicityPrediction/Model, ErrorType
 4. Footer.tsx - 4 'as any' → props directos en Button components
 5. ChatContainer.tsx - 3 'as any' → propiedades correctas del Message interface
+6. SmartMatchingService.ts - Tipado estricto, eliminación de 'as any', alineación con esquema real.
+7. WalletService.ts - Alineación con balance_cmpx/balance_gtk, eliminación de casts.
+8. useTheme.ts - Manejo de theme_config JSONB.
+9. Shop.tsx - Sincronización con cmpx_shop_packages.
+10. reportAIClassification.ts - Sincronización con tabla report_ai_classification.
+11. moderatorTimer.ts - Uso de nuevas columnas en moderator_sessions.
+12. InvitationsService.ts - Uso de nueva columna 'type' en invitations.
+13. MatchService.ts - Sincronización con tablas matches y profile_likes.
+14. session-pinning.ts - Seguridad: reemplazo de innerHTML por textContent (H001).
+15. ProtectedMedia.tsx - Seguridad: verificación de uso de textContent.
 
 ### 🚧 Plan de Corrección Prioritario
 

@@ -845,7 +845,13 @@ class SmartMatchingService {
           totalScore:
             (candidate.compatibility_score || 0) +
             (neo4jData?.socialScore || 0),
-          breakdown: [],
+          breakdown: {
+            personality: 0,
+            interests: 0,
+            location: 0,
+            activity: 0,
+            verification: 0,
+          },
           reasons: [],
           redFlags: [],
           confidence: 0.8,

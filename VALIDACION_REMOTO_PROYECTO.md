@@ -7,21 +7,34 @@
 ## 📊 RESUMEN EJECUTIVO
 
 - **Migraciones en remoto:** 167
-- **Migraciones locales:** 174 ✅ (Sincronizadas y actualizadas con esquemas de Wallet, Themes, Matching y Moderación)
+- **Migraciones locales:** 174 ✅
 - **Faltan en remoto:** 50 ✅ CORRECTO
 - **Extras en remoto:** 53 ✅ CORRECTO
 - **Archivos con problemas de tipos:** 240
-  - **Corregidos:** 15 (6%) ✅ (Flujos críticos: SmartMatching, Wallet, Themes, Moderación, Shop)
+  - **Corregidos:** 15 (6%) ✅
   - **Pendientes:** 225
 
-## 🛠️ CAMBIOS EN ESQUEMA LOCAL (28/02/2026)
-Se han creado y aplicado las siguientes tablas y columnas en el entorno local para resolver errores de tipo y habilitar funcionalidades:
-1. **Wallet:** `wallet_balances`, `token_transactions`.
-2. **Themes:** `user_themes` (con `theme_config` JSONB).
-3. **Matching:** `matching_preferences`, `user_interests`, `user_swinger_interests`.
-4. **Social:** `posts`, `stories`, `user_feeds`, `matches`, `profile_likes`, `invitation_statistics`, `gallery_unlocks`.
-5. **Moderación:** `moderator_sessions`, `moderation_logs`, `report_ai_classification`.
-6. **Profiles:** Agregadas columnas `bio`, `gender`, `city`, `is_public`, `interests`, `latitude`, `longitude` y traits de personalidad.
+## 🗄️ BARRIDO DE ESQUEMA DB (28/02/2026)
+
+### Tablas Verificadas (Existentes ✅)
+- `profiles` (columnas core y nuevas: `bio`, `gender`, `interests`, `personality_traits`, etc.)
+- `user_roles` (admin, moderator, user)
+- `chat_rooms`, `messages`
+- `cmpx_shop_packages`, `cmpx_purchases`
+- `wallet_balances`, `token_transactions`
+- `user_themes`
+- `matching_preferences`, `user_interests`, `user_swinger_interests`
+- `posts`, `stories`, `user_feeds`
+- `matches`, `profile_likes`, `invitation_statistics`
+- `moderator_sessions`, `moderation_logs`, `report_ai_classification`
+- `gallery_unlocks`, `invitations`
+
+### RLS y Políticas (Verificadas ✅)
+- Políticas de acceso para Wallet, Themes, Matching y Moderación aplicadas correctamente.
+- Uso de `user_roles` para validación de staff en lugar de columnas en `profiles`.
+
+### Pendientes de Esquema (Faltantes ⚠️)
+*No se detectaron tablas críticas faltantes para los servicios core actuales.*
 
 ## 📝 PLAN DE CORRECCIÓN - PROBLEMAS DE TIPOS
 

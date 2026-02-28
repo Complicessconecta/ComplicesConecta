@@ -1,0 +1,736 @@
+        table_name        |        column_name        |        data_type         
+--------------------------+---------------------------+--------------------------
+ analytics_events         | id                        | uuid
+ analytics_events         | user_id                   | uuid
+ analytics_events         | event_name                | text
+ analytics_events         | event_type                | text
+ analytics_events         | properties                | jsonb
+ analytics_events         | session_id                | text
+ analytics_events         | timestamp                 | timestamp with time zone
+ analytics_events         | created_at                | timestamp with time zone
+ anti_cheat_log           | id                        | uuid
+ anti_cheat_log           | user_id                   | uuid
+ anti_cheat_log           | suspicious_patterns       | jsonb
+ anti_cheat_log           | risk_score                | integer
+ anti_cheat_log           | actions_taken             | jsonb
+ anti_cheat_log           | resolved                  | boolean
+ anti_cheat_log           | resolved_at               | timestamp with time zone
+ anti_cheat_log           | notes                     | text
+ anti_cheat_log           | created_at                | timestamp with time zone
+ app_config               | key                       | text
+ app_config               | value                     | text
+ app_config               | description               | text
+ app_config               | created_at                | timestamp with time zone
+ app_config               | updated_at                | timestamp with time zone
+ beta_rewards             | id                        | uuid
+ beta_rewards             | user_id                   | uuid
+ beta_rewards             | final_level               | character varying
+ beta_rewards             | final_points              | integer
+ beta_rewards             | cmpx_tokens               | integer
+ beta_rewards             | premium_months            | integer
+ beta_rewards             | vip_months                | integer
+ beta_rewards             | lifetime_discount         | numeric
+ beta_rewards             | badge                     | character varying
+ beta_rewards             | special_perks             | jsonb
+ beta_rewards             | rewards_claimed           | boolean
+ beta_rewards             | claimed_at                | timestamp with time zone
+ beta_rewards             | created_at                | timestamp with time zone
+ blockchain_transactions  | id                        | uuid
+ blockchain_transactions  | user_id                   | uuid
+ blockchain_transactions  | transaction_hash          | character varying
+ blockchain_transactions  | transaction_type          | text
+ blockchain_transactions  | from_address              | text
+ blockchain_transactions  | to_address                | text
+ blockchain_transactions  | amount                    | bigint
+ blockchain_transactions  | gas_used                  | bigint
+ blockchain_transactions  | gas_price                 | bigint
+ blockchain_transactions  | block_number              | bigint
+ blockchain_transactions  | status                    | text
+ blockchain_transactions  | network                   | text
+ blockchain_transactions  | metadata                  | jsonb
+ blockchain_transactions  | created_at                | timestamp with time zone
+ blockchain_transactions  | confirmed_at              | timestamp with time zone
+ career_applications      | id                        | uuid
+ career_applications      | user_id                   | uuid
+ career_applications      | full_name                 | text
+ career_applications      | email                     | text
+ career_applications      | phone                     | text
+ career_applications      | position                  | text
+ career_applications      | experience_years          | integer
+ career_applications      | skills                    | ARRAY
+ career_applications      | cover_letter              | text
+ career_applications      | resume_url                | text
+ career_applications      | linkedin_url              | text
+ career_applications      | status                    | text
+ career_applications      | created_at                | timestamp with time zone
+ career_applications      | updated_at                | timestamp with time zone
+ chat_rooms               | id                        | uuid
+ chat_rooms               | participants              | ARRAY
+ chat_rooms               | created_at                | timestamp with time zone
+ chat_rooms               | updated_at                | timestamp with time zone
+ chat_summaries           | id                        | uuid
+ chat_summaries           | chat_room_id              | uuid
+ chat_summaries           | summary_text              | text
+ chat_summaries           | key_points                | jsonb
+ chat_summaries           | sentiment                 | text
+ chat_summaries           | created_at                | timestamp with time zone
+ cmpx_purchases           | id                        | bigint
+ cmpx_purchases           | user_id                   | uuid
+ cmpx_purchases           | package_id                | bigint
+ cmpx_purchases           | package_name              | character varying
+ cmpx_purchases           | cmpx_amount               | integer
+ cmpx_purchases           | bonus_cmpx                | integer
+ cmpx_purchases           | price_usd                 | numeric
+ cmpx_purchases           | price_mxn                 | numeric
+ cmpx_purchases           | status                    | character varying
+ cmpx_purchases           | payment_method            | character varying
+ cmpx_purchases           | transaction_id            | character varying
+ cmpx_purchases           | created_at                | timestamp with time zone
+ cmpx_purchases           | updated_at                | timestamp with time zone
+ cmpx_shop_packages       | id                        | bigint
+ cmpx_shop_packages       | name                      | character varying
+ cmpx_shop_packages       | description               | text
+ cmpx_shop_packages       | cmpx_amount               | integer
+ cmpx_shop_packages       | bonus_cmpx                | integer
+ cmpx_shop_packages       | price_usd                 | numeric
+ cmpx_shop_packages       | price_mxn                 | numeric
+ cmpx_shop_packages       | display_order             | integer
+ cmpx_shop_packages       | is_active                 | boolean
+ cmpx_shop_packages       | is_popular                | boolean
+ cmpx_shop_packages       | created_at                | timestamp with time zone
+ cmpx_shop_packages       | updated_at                | timestamp with time zone
+ content_activities       | id                        | uuid
+ content_activities       | user_id                   | uuid
+ content_activities       | content_type              | character varying
+ content_activities       | content_id                | uuid
+ content_activities       | likes_count               | integer
+ content_activities       | comments_count            | integer
+ content_activities       | shares_count              | integer
+ content_activities       | base_points               | integer
+ content_activities       | viral_bonus               | integer
+ content_activities       | total_points              | integer
+ content_activities       | is_viral                  | boolean
+ content_activities       | created_at                | timestamp with time zone
+ content_activities       | updated_at                | timestamp with time zone
+ couple_agreements        | id                        | uuid
+ couple_agreements        | couple_id                 | uuid
+ couple_agreements        | partner_1_id              | uuid
+ couple_agreements        | partner_2_id              | uuid
+ couple_agreements        | partner_1_signature       | boolean
+ couple_agreements        | partner_2_signature       | boolean
+ couple_agreements        | status                    | text
+ couple_agreements        | agreement_hash            | text
+ couple_agreements        | signed_at                 | timestamp with time zone
+ couple_agreements        | dispute_deadline          | timestamp with time zone
+ couple_agreements        | created_at                | timestamp with time zone
+ couple_agreements        | updated_at                | timestamp with time zone
+ couple_disputes          | id                        | uuid
+ couple_disputes          | couple_agreement_id       | uuid
+ couple_disputes          | couple_id                 | uuid
+ couple_disputes          | initiated_by              | uuid
+ couple_disputes          | dispute_reason            | text
+ couple_disputes          | tokens_in_dispute         | jsonb
+ couple_disputes          | nfts_in_dispute           | jsonb
+ couple_disputes          | resolution_type           | text
+ couple_disputes          | deadline_at               | timestamp with time zone
+ couple_disputes          | status                    | text
+ couple_disputes          | created_at                | timestamp with time zone
+ couple_disputes          | updated_at                | timestamp with time zone
+ couple_disputes          | frozen_assets_snapshot    | jsonb
+ couple_disputes          | proposed_winner_id        | uuid
+ couple_disputes          | proposed_at               | timestamp with time zone
+ couple_disputes          | winner_accepted_by        | uuid
+ couple_disputes          | accepted_at               | timestamp with time zone
+ couple_nft_requests      | id                        | uuid
+ couple_nft_requests      | token_id                  | bigint
+ couple_nft_requests      | partner1_address          | text
+ couple_nft_requests      | partner2_address          | text
+ couple_nft_requests      | initiator_address         | text
+ couple_nft_requests      | metadata_uri              | text
+ couple_nft_requests      | metadata                  | jsonb
+ couple_nft_requests      | consent1_timestamp        | timestamp with time zone
+ couple_nft_requests      | consent2_timestamp        | timestamp with time zone
+ couple_nft_requests      | status                    | text
+ couple_nft_requests      | created_at                | timestamp with time zone
+ couple_nft_requests      | expires_at                | timestamp with time zone
+ couple_nft_requests      | blockchain_status         | text
+ couple_nft_requests      | updated_at                | timestamp with time zone
+ couple_profiles          | id                        | uuid
+ couple_profiles          | user_id                   | uuid
+ couple_profiles          | partner_1_id              | uuid
+ couple_profiles          | partner_2_id              | uuid
+ couple_profiles          | status                    | text
+ couple_profiles          | is_demo                   | boolean
+ couple_profiles          | created_at                | timestamp with time zone
+ couple_profiles          | updated_at                | timestamp with time zone
+ couple_profiles          | looking_for               | character varying
+ couple_profiles          | experience_level          | character varying
+ couple_profiles          | swinger_experience        | character varying
+ couple_profiles          | interested_in             | character varying
+ couple_profiles          | max_distance              | integer
+ couple_profiles          | age_range_min             | integer
+ couple_profiles          | age_range_max             | integer
+ couple_profiles          | latitude                  | numeric
+ couple_profiles          | longitude                 | numeric
+ couple_profiles          | city                      | character varying
+ couple_profiles          | state                     | character varying
+ couple_profiles          | country                   | character varying
+ couple_profiles          | location                  | character varying
+ couple_profiles          | display_name              | character varying
+ couple_profiles          | preferred_theme           | character varying
+ couple_profiles          | is_public                 | boolean
+ couple_profiles          | privacy_settings          | jsonb
+ couple_profiles          | verification_level        | integer
+ couple_profiles          | last_active               | timestamp with time zone
+ couple_profiles          | profile_completed_at      | timestamp with time zone
+ couple_profiles          | total_views               | integer
+ couple_profiles          | total_likes               | integer
+ couple_profiles          | total_matches             | integer
+ couple_profiles          | profile_completeness      | integer
+ couple_profiles          | couple_interests          | ARRAY
+ couple_profiles          | activities_interested     | ARRAY
+ couple_profiles          | event_types               | ARRAY
+ couple_profiles          | communication_preference  | character varying
+ couple_profiles          | couple_age_range          | character varying
+ couple_profiles          | couple_height_range       | character varying
+ couple_profiles          | couple_body_type          | character varying
+ couple_profiles          | couple_lifestyle          | character varying
+ couple_profiles          | couple_availability       | character varying
+ couple_profiles          | preferences               | jsonb
+ couple_profiles          | account_type              | text
+ couple_profiles          | role                      | text
+ couple_profiles          | is_verified               | boolean
+ couples                  | id                        | uuid
+ couples                  | user_id                   | uuid
+ couples                  | partner_id                | uuid
+ couples                  | status                    | text
+ couples                  | relationship_start_date   | date
+ couples                  | created_at                | timestamp with time zone
+ couples                  | updated_at                | timestamp with time zone
+ daily_activities         | id                        | uuid
+ daily_activities         | user_id                   | uuid
+ daily_activities         | activity_date             | date
+ daily_activities         | minutes_active            | integer
+ daily_activities         | login_count               | integer
+ daily_activities         | points_earned             | integer
+ daily_activities         | streak_bonus              | integer
+ daily_activities         | first_login_time          | timestamp with time zone
+ daily_activities         | last_activity_time        | timestamp with time zone
+ daily_activities         | created_at                | timestamp with time zone
+ daily_token_claims       | id                        | uuid
+ daily_token_claims       | user_id                   | uuid
+ daily_token_claims       | claim_date                | date
+ daily_token_claims       | amount_claimed            | bigint
+ daily_token_claims       | wallet_address            | text
+ daily_token_claims       | transaction_hash          | character varying
+ daily_token_claims       | updated_at                | timestamp with time zone
+ daily_token_claims       | token_type                | text
+ daily_token_claims       | network                   | text
+ engagement_activities    | id                        | uuid
+ engagement_activities    | user_id                   | uuid
+ engagement_activities    | activity_date             | date
+ engagement_activities    | likes_given               | integer
+ engagement_activities    | comments_made             | integer
+ engagement_activities    | shares_made               | integer
+ engagement_activities    | messages_sent             | integer
+ engagement_activities    | public_room_participation | boolean
+ engagement_activities    | points_earned             | integer
+ engagement_activities    | created_at                | timestamp with time zone
+ engagement_activities    | updated_at                | timestamp with time zone
+ frozen_assets            | id                        | uuid
+ frozen_assets            | dispute_id                | uuid
+ frozen_assets            | asset_type                | text
+ frozen_assets            | asset_id                  | text
+ frozen_assets            | amount                    | numeric
+ frozen_assets            | is_frozen                 | boolean
+ frozen_assets            | frozen_at                 | timestamp with time zone
+ frozen_assets            | unfrozen_at               | timestamp with time zone
+ frozen_assets            | original_owner_id         | uuid
+ frozen_assets            | created_at                | timestamp with time zone
+ gallery_permissions      | id                        | uuid
+ gallery_permissions      | profile_id                | uuid
+ gallery_permissions      | gallery_owner_id          | uuid
+ gallery_permissions      | status                    | text
+ gallery_permissions      | expires_at                | timestamp with time zone
+ gallery_permissions      | created_at                | timestamp with time zone
+ gallery_permissions      | updated_at                | timestamp with time zone
+ gallery_unlocks          | id                        | uuid
+ gallery_unlocks          | owner_id                  | uuid
+ gallery_unlocks          | visitor_id                | uuid
+ gallery_unlocks          | expires_at                | timestamp with time zone
+ gallery_unlocks          | created_at                | timestamp with time zone
+ geographic_hotspots      | s2_cell_id                | character varying
+ geographic_hotspots      | active_users              | bigint
+ geographic_hotspots      | s2_level                  | smallint
+ geographic_hotspots      | avg_age                   | numeric
+ geographic_hotspots      | last_activity             | timestamp with time zone
+ images                   | id                        | uuid
+ images                   | profile_id                | uuid
+ images                   | url                       | text
+ images                   | is_public                 | boolean
+ images                   | created_at                | timestamp with time zone
+ images                   | updated_at                | timestamp with time zone
+ invitation_statistics    | id                        | uuid
+ invitation_statistics    | user_id                   | uuid
+ invitation_statistics    | total_invitations         | integer
+ invitation_statistics    | accepted_invitations      | integer
+ invitation_statistics    | created_at                | timestamp with time zone
+ invitation_statistics    | updated_at                | timestamp with time zone
+ invitation_templates     | id                        | uuid
+ invitation_templates     | template_name             | text
+ invitation_templates     | template_content          | text
+ invitation_templates     | invitation_type           | text
+ invitation_templates     | name                      | text
+ invitation_templates     | content                   | text
+ invitation_templates     | type                      | text
+ invitation_templates     | created_at                | timestamp with time zone
+ invitations              | id                        | uuid
+ invitations              | from_profile              | uuid
+ invitations              | to_profile                | uuid
+ invitations              | created_at                | timestamp with time zone
+ invitations              | updated_at                | timestamp with time zone
+ invitations              | type                      | text
+ matches                  | id                        | uuid
+ matches                  | user1_id                  | uuid
+ matches                  | user2_id                  | uuid
+ matches                  | created_at                | timestamp with time zone
+ matches                  | profile_id_1              | uuid
+ matches                  | profile_id_2              | uuid
+ matching_preferences     | user_id                   | uuid
+ matching_preferences     | min_age                   | integer
+ matching_preferences     | max_age                   | integer
+ matching_preferences     | interested_in             | ARRAY
+ matching_preferences     | max_distance              | integer
+ matching_preferences     | importance_personality    | integer
+ matching_preferences     | importance_interests      | integer
+ matching_preferences     | importance_location       | integer
+ matching_preferences     | importance_activity       | integer
+ matching_preferences     | importance_verification   | integer
+ matching_preferences     | created_at                | timestamp with time zone
+ matching_preferences     | updated_at                | timestamp with time zone
+ messages                 | id                        | uuid
+ messages                 | chat_room_id              | uuid
+ messages                 | sender_id                 | uuid
+ messages                 | content                   | text
+ messages                 | message_type              | text
+ messages                 | media_url                 | text
+ messages                 | is_edited                 | boolean
+ messages                 | edited_at                 | timestamp with time zone
+ messages                 | created_at                | timestamp with time zone
+ messages                 | updated_at                | timestamp with time zone
+ messages                 | location_latitude         | double precision
+ messages                 | location_longitude        | double precision
+ messages                 | location_address          | text
+ missions                 | id                        | uuid
+ missions                 | mission_code              | character varying
+ missions                 | name                      | character varying
+ missions                 | description               | text
+ missions                 | mission_type              | character varying
+ missions                 | week_number               | integer
+ missions                 | requirements              | jsonb
+ missions                 | points_reward             | integer
+ missions                 | token_reward              | integer
+ missions                 | special_reward            | text
+ missions                 | start_date                | timestamp with time zone
+ missions                 | end_date                  | timestamp with time zone
+ missions                 | is_active                 | boolean
+ missions                 | created_at                | timestamp with time zone
+ moderation_logs          | id                        | uuid
+ moderation_logs          | moderator_id              | uuid
+ moderation_logs          | target_id                 | uuid
+ moderation_logs          | target_type               | text
+ moderation_logs          | action_type               | text
+ moderation_logs          | reason                    | text
+ moderation_logs          | metadata                  | jsonb
+ moderation_logs          | created_at                | timestamp with time zone
+ moderator_requests       | id                        | uuid
+ moderator_requests       | user_id                   | uuid
+ moderator_requests       | full_name                 | text
+ moderator_requests       | email                     | text
+ moderator_requests       | reason                    | text
+ moderator_requests       | experience                | text
+ moderator_requests       | availability              | text
+ moderator_requests       | status                    | text
+ moderator_requests       | reviewed_by               | uuid
+ moderator_requests       | reviewed_at               | timestamp with time zone
+ moderator_requests       | review_notes              | text
+ moderator_requests       | created_at                | timestamp with time zone
+ moderator_requests       | updated_at                | timestamp with time zone
+ moderator_sessions       | id                        | uuid
+ moderator_sessions       | moderator_id              | uuid
+ moderator_sessions       | session_start             | timestamp with time zone
+ moderator_sessions       | session_end               | timestamp with time zone
+ moderator_sessions       | status                    | text
+ moderator_sessions       | actions_count             | integer
+ moderator_sessions       | created_at                | timestamp with time zone
+ moderator_sessions       | total_minutes             | integer
+ moderator_sessions       | reports_reviewed          | integer
+ moderator_sessions       | actions_taken             | integer
+ moderator_sessions       | is_active                 | boolean
+ nft_staking              | id                        | uuid
+ nft_staking              | user_address              | text
+ nft_staking              | nft_token_id              | bigint
+ nft_staking              | staking_contract          | text
+ nft_staking              | staked_at                 | timestamp with time zone
+ nft_staking              | vesting_period_days       | integer
+ nft_staking              | rarity_multiplier         | integer
+ nft_staking              | last_claim_at             | timestamp with time zone
+ nft_staking              | total_rewards_claimed     | bigint
+ nft_staking              | is_active                 | boolean
+ nft_staking              | network                   | text
+ nft_staking              | is_staked                 | boolean
+ nft_verifications        | id                        | uuid
+ nft_verifications        | user_id                   | uuid
+ nft_verifications        | nft_contract_address      | text
+ nft_verifications        | nft_token_id              | text
+ nft_verifications        | network                   | text
+ nft_verifications        | minted_with_gtk           | integer
+ nft_verifications        | staking_record_id         | uuid
+ nft_verifications        | verified_at               | timestamp with time zone
+ nft_verifications        | is_active                 | boolean
+ nft_verifications        | created_at                | timestamp with time zone
+ nft_verifications        | updated_at                | timestamp with time zone
+ notifications            | id                        | uuid
+ notifications            | user_id                   | uuid
+ notifications            | type                      | text
+ notifications            | title                     | text
+ notifications            | message                   | text
+ notifications            | read                      | boolean
+ notifications            | data                      | jsonb
+ notifications            | created_at                | timestamp with time zone
+ permanent_bans           | id                        | uuid
+ permanent_bans           | combined_hash             | text
+ permanent_bans           | user_id                   | uuid
+ permanent_bans           | ban_reason                | text
+ permanent_bans           | banned_at                 | timestamp with time zone
+ permanent_bans           | banned_by                 | uuid
+ permanent_bans           | lifted_at                 | timestamp with time zone
+ permanent_bans           | lifted_by                 | uuid
+ permanent_bans           | lift_reason               | text
+ permanent_bans           | details                   | jsonb
+ permanent_bans           | created_at                | timestamp with time zone
+ permanent_bans           | updated_at                | timestamp with time zone
+ points_transactions      | id                        | uuid
+ points_transactions      | user_id                   | uuid
+ points_transactions      | transaction_type          | character varying
+ points_transactions      | points_change             | integer
+ points_transactions      | points_before             | integer
+ points_transactions      | points_after              | integer
+ points_transactions      | description               | text
+ points_transactions      | metadata                  | jsonb
+ points_transactions      | created_at                | timestamp with time zone
+ posts                    | id                        | uuid
+ posts                    | user_id                   | uuid
+ posts                    | content                   | text
+ posts                    | media_url                 | text
+ posts                    | media_type                | text
+ posts                    | likes_count               | integer
+ posts                    | comments_count            | integer
+ posts                    | is_public                 | boolean
+ posts                    | created_at                | timestamp with time zone
+ posts                    | updated_at                | timestamp with time zone
+ predictive_match_scores  | id                        | uuid
+ predictive_match_scores  | user_id                   | uuid
+ predictive_match_scores  | matched_user_id           | uuid
+ predictive_match_scores  | total_score               | numeric
+ predictive_match_scores  | compatibility_score       | numeric
+ predictive_match_scores  | emotional_score           | numeric
+ predictive_match_scores  | social_score              | numeric
+ predictive_match_scores  | graph_score               | numeric
+ predictive_match_scores  | confidence                | numeric
+ predictive_match_scores  | reasons                   | ARRAY
+ predictive_match_scores  | created_at                | timestamp with time zone
+ predictive_match_scores  | updated_at                | timestamp with time zone
+ profile_likes            | id                        | uuid
+ profile_likes            | liker_id                  | uuid
+ profile_likes            | liked_id                  | uuid
+ profile_likes            | created_at                | timestamp with time zone
+ profiles                 | id                        | uuid
+ profiles                 | user_id                   | uuid
+ profiles                 | display_name              | text
+ profiles                 | is_demo                   | boolean
+ profiles                 | created_at                | timestamp with time zone
+ profiles                 | updated_at                | timestamp with time zone
+ profiles                 | photo_verified            | boolean
+ profiles                 | id_verified               | boolean
+ profiles                 | photo_verified_at         | timestamp with time zone
+ profiles                 | id_verified_at            | timestamp with time zone
+ profiles                 | world_id_nullifier_hash   | text
+ profiles                 | world_id_verified_at      | timestamp with time zone
+ profiles                 | verification_level        | text
+ profiles                 | is_premium                | boolean
+ profiles                 | name                      | character varying
+ profiles                 | latitude                  | double precision
+ profiles                 | longitude                 | double precision
+ profiles                 | account_type              | text
+ profiles                 | age                       | integer
+ profiles                 | s2_cell_id                | character varying
+ profiles                 | s2_level                  | smallint
+ profiles                 | is_online                 | boolean
+ profiles                 | first_name                | character varying
+ profiles                 | last_name                 | character varying
+ profiles                 | full_name                 | text
+ profiles                 | role                      | text
+ profiles                 | bio                       | text
+ profiles                 | interests                 | ARRAY
+ profiles                 | avatar_url                | text
+ profiles                 | openness                  | integer
+ profiles                 | conscientiousness         | integer
+ profiles                 | extraversion              | integer
+ profiles                 | agreeableness             | integer
+ profiles                 | neuroticism               | integer
+ profiles                 | adventurousness           | integer
+ profiles                 | discretion                | integer
+ profiles                 | gender                    | text
+ profiles                 | location                  | text
+ profiles                 | city                      | text
+ profiles                 | is_public                 | boolean
+ referral_rewards         | id                        | uuid
+ referral_rewards         | profile_id                | uuid
+ referral_rewards         | created_at                | timestamp with time zone
+ referral_rewards         | verification_method       | text
+ referral_rewards         | worldid_proof             | jsonb
+ referrals                | id                        | uuid
+ referrals                | referrer_id               | uuid
+ referrals                | referred_id               | uuid
+ referrals                | status                    | character varying
+ referrals                | referral_code             | character varying
+ referrals                | points_earned             | integer
+ referrals                | created_at                | timestamp with time zone
+ referrals                | registered_at             | timestamp with time zone
+ referrals                | verified_at               | timestamp with time zone
+ referrals                | activated_at              | timestamp with time zone
+ report_ai_classification | id                        | uuid
+ report_ai_classification | report_id                 | uuid
+ report_ai_classification | is_automated              | boolean
+ report_ai_classification | ai_notes                  | text
+ report_ai_classification | metadata                  | jsonb
+ report_ai_classification | created_at                | timestamp with time zone
+ report_ai_classification | ai_confidence             | numeric
+ report_ai_classification | ai_severity               | text
+ report_ai_classification | ai_category               | text
+ report_ai_classification | ai_tags                   | ARRAY
+ report_ai_classification | ai_summary                | text
+ report_ai_classification | detected_toxicity         | integer
+ report_ai_classification | detected_spam             | integer
+ report_ai_classification | detected_explicit         | integer
+ report_ai_classification | detected_harassment       | integer
+ report_ai_classification | suggested_priority        | text
+ report_ai_classification | suggested_action          | text
+ report_ai_classification | ai_model_version          | text
+ report_ai_classification | category                  | text
+ report_ai_classification | confidence_score          | numeric
+ reports                  | id                        | uuid
+ reports                  | reporter_user_id          | uuid
+ reports                  | reported_user_id          | uuid
+ reports                  | content_type              | text
+ reports                  | report_type               | text
+ reports                  | reported_content_id       | uuid
+ reports                  | reason                    | text
+ reports                  | description               | text
+ reports                  | severity                  | text
+ reports                  | status                    | text
+ reports                  | resolution_notes          | text
+ reports                  | created_at                | timestamp with time zone
+ reports                  | updated_at                | timestamp with time zone
+ reports                  | resolved_at               | timestamp with time zone
+ reports                  | resolved_by               | uuid
+ security                 | id                        | uuid
+ security                 | user_id                   | uuid
+ security                 | ip_address                | text
+ security                 | event_type                | text
+ security                 | details                   | jsonb
+ security                 | created_at                | timestamp with time zone
+ security                 | updated_at                | timestamp with time zone
+ security_audit_logs      | id                        | uuid
+ security_audit_logs      | user_id                   | uuid
+ security_audit_logs      | action                    | text
+ security_audit_logs      | resource_type             | text
+ security_audit_logs      | resource_id               | text
+ security_audit_logs      | details                   | jsonb
+ security_audit_logs      | ip_address                | text
+ security_audit_logs      | user_agent                | text
+ security_audit_logs      | created_at                | timestamp with time zone
+ stories                  | id                        | uuid
+ stories                  | user_id                   | uuid
+ stories                  | media_url                 | text
+ stories                  | media_type                | text
+ stories                  | caption                   | text
+ stories                  | expires_at                | timestamp with time zone
+ stories                  | is_seen                   | boolean
+ stories                  | created_at                | timestamp with time zone
+ story_comments           | id                        | uuid
+ story_comments           | story_id                  | uuid
+ story_comments           | user_id                   | uuid
+ story_comments           | content                   | text
+ story_comments           | parent_comment_id         | uuid
+ story_comments           | created_at                | timestamp with time zone
+ story_comments           | updated_at                | timestamp with time zone
+ story_likes              | id                        | uuid
+ story_likes              | story_id                  | uuid
+ story_likes              | user_id                   | uuid
+ story_likes              | created_at                | timestamp with time zone
+ story_shares             | id                        | uuid
+ story_shares             | story_id                  | uuid
+ story_shares             | user_id                   | uuid
+ story_shares             | shared_to                 | text
+ story_shares             | created_at                | timestamp with time zone
+ stripe_product_mapping   | id                        | uuid
+ stripe_product_mapping   | product_id                | text
+ stripe_product_mapping   | stripe_product_id         | text
+ stripe_product_mapping   | price_id                  | text
+ stripe_product_mapping   | product_name              | text
+ stripe_product_mapping   | price_amount              | integer
+ stripe_product_mapping   | price_currency            | text
+ stripe_product_mapping   | cmpx_tokens               | integer
+ stripe_product_mapping   | is_active                 | boolean
+ stripe_product_mapping   | created_at                | timestamp with time zone
+ stripe_product_mapping   | updated_at                | timestamp with time zone
+ stripe_webhook_events    | id                        | uuid
+ stripe_webhook_events    | event_id                  | text
+ stripe_webhook_events    | event_type                | text
+ stripe_webhook_events    | event_data                | jsonb
+ stripe_webhook_events    | processed                 | boolean
+ stripe_webhook_events    | processed_at              | timestamp with time zone
+ stripe_webhook_events    | created_at                | timestamp with time zone
+ summary_requests         | id                        | uuid
+ summary_requests         | user_id                   | uuid
+ summary_requests         | chat_room_id              | uuid
+ summary_requests         | status                    | text
+ summary_requests         | error_message             | text
+ summary_requests         | created_at                | timestamp with time zone
+ summary_requests         | updated_at                | timestamp with time zone
+ testnet_token_claims     | id                        | uuid
+ testnet_token_claims     | user_id                   | uuid
+ testnet_token_claims     | amount_claimed            | bigint
+ testnet_token_claims     | claimed_at                | timestamp with time zone
+ testnet_token_claims     | transaction_hash          | character varying
+ testnet_token_claims     | wallet_address            | text
+ testnet_token_claims     | network                   | text
+ testnet_token_claims     | token_type                | text
+ token_staking            | id                        | uuid
+ token_staking            | user_address              | text
+ token_staking            | amount_staked             | bigint
+ token_staking            | staking_contract          | text
+ token_staking            | staked_at                 | timestamp with time zone
+ token_staking            | vesting_period_days       | integer
+ token_staking            | last_claim_at             | timestamp with time zone
+ token_staking            | total_rewards_claimed     | bigint
+ token_staking            | is_active                 | boolean
+ token_staking            | network                   | text
+ token_staking            | is_staked                 | boolean
+ token_transactions       | id                        | uuid
+ token_transactions       | user_id                   | uuid
+ token_transactions       | amount                    | numeric
+ token_transactions       | token_type                | text
+ token_transactions       | transaction_type          | text
+ token_transactions       | status                    | text
+ token_transactions       | metadata                  | jsonb
+ token_transactions       | created_at                | timestamp with time zone
+ user_consents            | id                        | uuid
+ user_consents            | user_id                   | uuid
+ user_consents            | document_path             | text
+ user_consents            | consent_type              | text
+ user_consents            | ip_address                | inet
+ user_consents            | user_agent                | text
+ user_consents            | consent_text_hash         | text
+ user_consents            | consented_at              | timestamp with time zone
+ user_consents            | expires_at                | timestamp with time zone
+ user_consents            | is_active                 | boolean
+ user_consents            | revoked_at                | timestamp with time zone
+ user_consents            | version                   | text
+ user_consents            | created_at                | timestamp with time zone
+ user_consents            | updated_at                | timestamp with time zone
+ user_feeds               | id                        | uuid
+ user_feeds               | user_id                   | uuid
+ user_feeds               | post_id                   | uuid
+ user_feeds               | story_id                  | uuid
+ user_feeds               | created_at                | timestamp with time zone
+ user_interests           | id                        | uuid
+ user_interests           | user_id                   | uuid
+ user_interests           | interest_id               | text
+ user_interests           | category                  | text
+ user_interests           | weight                    | integer
+ user_interests           | created_at                | timestamp with time zone
+ user_metadata            | user_id                   | uuid
+ user_metadata            | metadata                  | jsonb
+ user_metadata            | created_at                | timestamp with time zone
+ user_metadata            | updated_at                | timestamp with time zone
+ user_missions            | id                        | uuid
+ user_missions            | user_id                   | uuid
+ user_missions            | mission_id                | uuid
+ user_missions            | status                    | character varying
+ user_missions            | progress                  | jsonb
+ user_missions            | started_at                | timestamp with time zone
+ user_missions            | completed_at              | timestamp with time zone
+ user_missions            | claimed_at                | timestamp with time zone
+ user_missions            | points_received           | integer
+ user_missions            | tokens_received           | integer
+ user_nfts                | id                        | uuid
+ user_nfts                | token_id                  | bigint
+ user_nfts                | owner_address             | text
+ user_nfts                | metadata_uri              | text
+ user_nfts                | rarity                    | text
+ user_nfts                | is_couple                 | boolean
+ user_nfts                | partner_address           | text
+ user_nfts                | contract_address          | text
+ user_nfts                | network                   | text
+ user_nfts                | created_at                | timestamp with time zone
+ user_nfts                | updated_at                | timestamp with time zone
+ user_nfts                | is_staked                 | boolean
+ user_nfts                | staked_at                 | timestamp with time zone
+ user_nfts                | attributes                | jsonb
+ user_points              | id                        | uuid
+ user_points              | user_id                   | uuid
+ user_points              | daily_activity_points     | integer
+ user_points              | referral_points           | integer
+ user_points              | content_points            | integer
+ user_points              | engagement_points         | integer
+ user_points              | mission_points            | integer
+ user_points              | total_points              | integer
+ user_points              | level                     | character varying
+ user_points              | current_streak            | integer
+ user_points              | longest_streak            | integer
+ user_points              | last_active_date          | date
+ user_points              | created_at                | timestamp with time zone
+ user_points              | updated_at                | timestamp with time zone
+ user_roles               | id                        | uuid
+ user_roles               | user_id                   | uuid
+ user_roles               | role                      | text
+ user_roles               | assigned_by               | uuid
+ user_roles               | created_at                | timestamp with time zone
+ user_stripe_customers    | id                        | uuid
+ user_stripe_customers    | user_id                   | uuid
+ user_stripe_customers    | stripe_customer_id        | text
+ user_stripe_customers    | email                     | text
+ user_stripe_customers    | name                      | text
+ user_stripe_customers    | created_at                | timestamp with time zone
+ user_stripe_customers    | updated_at                | timestamp with time zone
+ user_swinger_interests   | id                        | uuid
+ user_swinger_interests   | user_id                   | uuid
+ user_swinger_interests   | interest_id               | text
+ user_swinger_interests   | category                  | text
+ user_swinger_interests   | weight                    | integer
+ user_swinger_interests   | created_at                | timestamp with time zone
+ user_themes              | user_id                   | uuid
+ user_themes              | theme_config              | jsonb
+ user_themes              | is_custom                 | boolean
+ user_themes              | created_at                | timestamp with time zone
+ user_themes              | updated_at                | timestamp with time zone
+ user_wallets             | id                        | uuid
+ user_wallets             | user_id                   | uuid
+ user_wallets             | address                   | character varying
+ user_wallets             | encrypted_private_key     | text
+ user_wallets             | network                   | character varying
+ user_wallets             | created_at                | timestamp with time zone
+ user_wallets             | updated_at                | timestamp with time zone
+ user_wallets             | is_frozen                 | boolean
+ wallet_balances          | id                        | uuid
+ wallet_balances          | user_id                   | uuid
+ wallet_balances          | balance_cmpx              | numeric
+ wallet_balances          | balance_gtk               | numeric
+ wallet_balances          | last_sync                 | timestamp with time zone
+ wallet_balances          | created_at                | timestamp with time zone
+ wallet_balances          | updated_at                | timestamp with time zone
+(732 rows)
+

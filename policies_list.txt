@@ -1,0 +1,171 @@
+        tablename        |                  policyname                   |  cmd   |                                                                                                                                                      qual                                                                                                                                                      
+-------------------------+-----------------------------------------------+--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ analytics_events        | Users can view own analytics events           | SELECT | (auth.uid() = user_id)
+ analytics_events        | System can insert analytics events            | INSERT | 
+ analytics_events        | Admins can view all analytics events          | SELECT | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'superadmin'::text])))))
+ analytics_events        | staff_full_analytics_events                   | ALL    | is_admin_or_moderator()
+ analytics_events        | own_analytics_events                          | ALL    | (auth.uid() = user_id)
+ beta_rewards            | Users can view own rewards                    | SELECT | (auth.uid() = user_id)
+ blockchain_transactions | staff_full_blockchain_transactions            | ALL    | is_admin_or_moderator()
+ blockchain_transactions | own_blockchain_transactions                   | ALL    | (auth.uid() = user_id)
+ career_applications     | Users can insert their own applications       | INSERT | 
+ career_applications     | Users can view their own applications         | SELECT | (auth.uid() = user_id)
+ career_applications     | Users can update their own applications       | UPDATE | (auth.uid() = user_id)
+ career_applications     | Admins can view all applications              | SELECT | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'moderator'::text])))))
+ career_applications     | Admins can update application status          | UPDATE | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'moderator'::text])))))
+ cmpx_purchases          | cmpx_purchases_select_admin                   | SELECT | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'superadmin'::text])))))
+ cmpx_purchases          | cmpx_purchases_admin_update                   | UPDATE | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'superadmin'::text])))))
+ cmpx_purchases          | cmpx_purchases_insert_own                     | INSERT | 
+ cmpx_purchases          | cmpx_purchases_select_own                     | SELECT | (auth.uid() = user_id)
+ cmpx_shop_packages      | cmpx_shop_packages_admin_insert               | INSERT | 
+ cmpx_shop_packages      | cmpx_shop_packages_admin_delete               | DELETE | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'superadmin'::text])))))
+ cmpx_shop_packages      | cmpx_shop_packages_select_authenticated       | SELECT | true
+ cmpx_shop_packages      | cmpx_shop_packages_admin_update               | UPDATE | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'superadmin'::text])))))
+ content_activities      | Users can view own content                    | SELECT | (auth.uid() = user_id)
+ couple_agreements       | Users can update their own agreements         | UPDATE | (auth.uid() IN ( SELECT couples.user_id                                                                                                                                                                                                                                                                       +
+                         |                                               |        |    FROM couples                                                                                                                                                                                                                                                                                               +
+                         |                                               |        |   WHERE (couples.id = couple_agreements.couple_id)))
+ couple_agreements       | Users can create agreements for their couples | INSERT | 
+ couple_agreements       | Users can view their own agreements           | SELECT | (auth.uid() IN ( SELECT couples.user_id                                                                                                                                                                                                                                                                       +
+                         |                                               |        |    FROM couples                                                                                                                                                                                                                                                                                               +
+                         |                                               |        |   WHERE (couples.id = couple_agreements.couple_id)))
+ couple_agreements       | staff_full_couple_agreements                  | ALL    | is_admin_or_moderator()
+ couple_agreements       | own_couple_agreements                         | ALL    | ((partner_1_id = auth.uid()) OR (partner_2_id = auth.uid()))
+ couple_disputes         | Partners can update own disputes              | UPDATE | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM couple_profiles cp                                                                                                                                                                                                                                                                                    +
+                         |                                               |        |   WHERE ((cp.id = couple_disputes.couple_id) AND ((cp.partner_1_id = auth.uid()) OR (cp.partner_2_id = auth.uid())))))
+ couple_disputes         | own_couple_disputes                           | ALL    | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM couple_agreements ca                                                                                                                                                                                                                                                                                  +
+                         |                                               |        |   WHERE ((ca.id = couple_disputes.couple_agreement_id) AND ((ca.partner_1_id = auth.uid()) OR (ca.partner_2_id = auth.uid())))))
+ couple_disputes         | Users can create disputes for their couples   | INSERT | 
+ couple_disputes         | Users can update their own disputes           | UPDATE | (auth.uid() IN ( SELECT couples.user_id                                                                                                                                                                                                                                                                       +
+                         |                                               |        |    FROM couples                                                                                                                                                                                                                                                                                               +
+                         |                                               |        |   WHERE (couples.id = couple_disputes.couple_id)))
+ couple_disputes         | Partners can view own disputes                | SELECT | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM couple_profiles cp                                                                                                                                                                                                                                                                                    +
+                         |                                               |        |   WHERE ((cp.id = couple_disputes.couple_id) AND ((cp.partner_1_id = auth.uid()) OR (cp.partner_2_id = auth.uid())))))
+ couple_disputes         | staff_full_couple_disputes                    | ALL    | is_admin_or_moderator()
+ couple_disputes         | staff_couple_disputes                         | ALL    | is_admin_or_moderator()
+ couple_disputes         | Users can view their own disputes             | SELECT | (auth.uid() IN ( SELECT couples.user_id                                                                                                                                                                                                                                                                       +
+                         |                                               |        |    FROM couples                                                                                                                                                                                                                                                                                               +
+                         |                                               |        |   WHERE (couples.id = couple_disputes.couple_id)))
+ couple_nft_requests     | own_couple_nft_requests                       | ALL    | ((initiator_address IN ( SELECT user_wallets.address                                                                                                                                                                                                                                                          +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE (user_wallets.user_id = auth.uid()))) OR (partner1_address IN ( SELECT user_wallets.address                                                                                                                                                                                                           +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE (user_wallets.user_id = auth.uid()))) OR (partner2_address IN ( SELECT user_wallets.address                                                                                                                                                                                                           +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE (user_wallets.user_id = auth.uid()))))
+ couple_nft_requests     | staff_full_couple_nft_requests                | ALL    | is_admin_or_moderator()
+ couple_nft_requests     | Users can create couple NFT requests          | INSERT | 
+ couple_nft_requests     | Users can view their couple NFT requests      | SELECT | ((auth.uid())::text IN ( SELECT (user_wallets.user_id)::text AS user_id                                                                                                                                                                                                                                       +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE ((user_wallets.address)::text = ANY ((ARRAY[(couple_nft_requests.partner1_address)::character varying, (couple_nft_requests.partner2_address)::character varying])::text[]))))
+ couples                 | Users can view their own couples              | SELECT | (auth.uid() = user_id)
+ couples                 | Users can create their own couples            | INSERT | 
+ couples                 | Users can update their own couples            | UPDATE | (auth.uid() = user_id)
+ daily_activities        | Service can insert activities                 | INSERT | 
+ daily_activities        | Users can view own activities                 | SELECT | (auth.uid() = user_id)
+ daily_token_claims      | own_daily_token_claims                        | ALL    | (auth.uid() = user_id)
+ daily_token_claims      | Users can create their daily claims           | INSERT | 
+ daily_token_claims      | Users can view their daily claims             | SELECT | (auth.uid() = user_id)
+ engagement_activities   | Users can view own engagement                 | SELECT | (auth.uid() = user_id)
+ frozen_assets           | staff_full_frozen_assets                      | ALL    | is_admin_or_moderator()
+ frozen_assets           | own_frozen_assets                             | ALL    | (original_owner_id = auth.uid())
+ frozen_assets           | staff_frozen_assets                           | ALL    | is_admin_or_moderator()
+ frozen_assets           | Owners can view own frozen assets             | SELECT | (original_owner_id = auth.uid())
+ gallery_permissions     | own_gallery_permissions                       | ALL    | (gallery_owner_id = auth.uid())
+ images                  | users_can_update_own_images                   | UPDATE | (auth.uid() = profile_id)
+ images                  | users_can_insert_own_images                   | INSERT | 
+ images                  | users_can_view_own_images                     | SELECT | (auth.uid() = profile_id)
+ images                  | users_can_delete_own_images                   | DELETE | (auth.uid() = profile_id)
+ images                  | users_can_view_public_images                  | SELECT | (is_public = true)
+ matches                 | Users can view their own matches              | SELECT | ((auth.uid() = user1_id) OR (auth.uid() = user2_id))
+ matches                 | Users can delete their own matches            | DELETE | ((auth.uid() = user1_id) OR (auth.uid() = user2_id))
+ matches                 | Users can update their own matches            | UPDATE | ((auth.uid() = user1_id) OR (auth.uid() = user2_id))
+ matches                 | Users can create matches                      | INSERT | 
+ moderator_requests      | Users can insert their own requests           | INSERT | 
+ moderator_requests      | Users can view their own requests             | SELECT | (auth.uid() = user_id)
+ moderator_requests      | Users can update their own requests           | UPDATE | (auth.uid() = user_id)
+ moderator_requests      | Admins can update request status              | UPDATE | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'moderator'::text])))))
+ moderator_requests      | Admins can view all requests                  | SELECT | (EXISTS ( SELECT 1                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |    FROM user_roles                                                                                                                                                                                                                                                                                            +
+                         |                                               |        |   WHERE ((user_roles.user_id = auth.uid()) AND (user_roles.role = ANY (ARRAY['admin'::text, 'moderator'::text])))))
+ nft_staking             | own_nft_staking                               | ALL    | (user_address IN ( SELECT user_wallets.address                                                                                                                                                                                                                                                                +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE (user_wallets.user_id = auth.uid())))
+ nft_verifications       | Users can view own NFT verifications          | SELECT | (auth.uid() = user_id)
+ nft_verifications       | Users can create own NFT verifications        | INSERT | 
+ notifications           | Users can update own notifications            | UPDATE | (auth.uid() = user_id)
+ notifications           | Users can view own notifications              | SELECT | (auth.uid() = user_id)
+ permanent_bans          | users_can_view_own_bans                       | SELECT | (auth.uid() = user_id)
+ points_transactions     | Users can view own transactions               | SELECT | (auth.uid() = user_id)
+ predictive_match_scores | Users can view own predictive match scores    | SELECT | (auth.uid() = user_id)
+ profiles                | Real users see real profiles only             | SELECT | (((COALESCE((((auth.jwt() -> 'user_metadata'::text) ->> 'is_demo'::text))::boolean, false) = false) AND (is_demo = false)) OR (user_id = auth.uid()))
+ profiles                | Users can update own profile                  | UPDATE | (user_id = auth.uid())
+ profiles                | Users can insert own profile                  | INSERT | 
+ profiles                | Real users access real profiles               | ALL    | ((user_id = auth.uid()) OR ((is_demo = false) AND (COALESCE((((auth.jwt() -> 'user_metadata'::text) ->> 'is_demo'::text))::boolean, false) = false)))
+ profiles                | Demo users see only demo profiles             | SELECT | (((COALESCE((((auth.jwt() -> 'user_metadata'::text) ->> 'is_demo'::text))::boolean, false) = true) AND ((is_demo = true) OR (user_id = auth.uid()))) OR ((COALESCE((((auth.jwt() -> 'user_metadata'::text) ->> 'is_demo'::text))::boolean, false) = false) AND ((is_demo = false) OR (user_id = auth.uid()))))
+ profiles                | Users can insert their own profile            | INSERT | 
+ profiles                | Users can update their own profile            | UPDATE | (auth.uid() = id)
+ profiles                | Demo users access demo profiles               | ALL    | ((user_id = auth.uid()) OR ((is_demo = true) AND (COALESCE((((auth.jwt() -> 'user_metadata'::text) ->> 'is_demo'::text))::boolean, false) = true)))
+ profiles                | Users can view all profiles                   | SELECT | true
+ referrals               | Users can view own referrals                  | SELECT | ((auth.uid() = referrer_id) OR (auth.uid() = referred_id))
+ reports                 | Users can create reports                      | INSERT | 
+ reports                 | Users can view their own reports              | SELECT | (auth.uid() = reporter_user_id)
+ security                | users_can_insert_own_security_events          | INSERT | 
+ security                | users_can_view_own_security_events            | SELECT | (auth.uid() = user_id)
+ security_audit_logs     | users_can_view_own_audit_logs                 | SELECT | (auth.uid() = user_id)
+ security_audit_logs     | system_can_insert_audit_logs                  | INSERT | 
+ story_comments          | Users can create own story comments           | INSERT | 
+ story_comments          | Users can view all story comments             | SELECT | true
+ story_comments          | Users can update own story comments           | UPDATE | (auth.uid() = user_id)
+ story_comments          | Users can delete own story comments           | DELETE | (auth.uid() = user_id)
+ story_comments          | story_comments_access                         | ALL    | true
+ story_likes             | Users can delete own story likes              | DELETE | (auth.uid() = user_id)
+ story_likes             | Users can view all story likes                | SELECT | true
+ story_likes             | Users can create own story likes              | INSERT | 
+ story_likes             | story_likes_access                            | ALL    | true
+ story_shares            | Users can create own story shares             | INSERT | 
+ story_shares            | Users can view all story shares               | SELECT | true
+ story_shares            | story_shares_access                           | ALL    | true
+ testnet_token_claims    | Users can view their testnet claims           | SELECT | (auth.uid() = user_id)
+ testnet_token_claims    | own_testnet_token_claims                      | ALL    | (auth.uid() = user_id)
+ token_staking           | own_token_staking                             | ALL    | (user_address IN ( SELECT user_wallets.address                                                                                                                                                                                                                                                                +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE (user_wallets.user_id = auth.uid())))
+ user_consents           | staff_full_user_consents                      | ALL    | is_admin_or_moderator()
+ user_consents           | own_user_consents                             | ALL    | (auth.uid() = user_id)
+ user_missions           | Users can view own missions                   | SELECT | (auth.uid() = user_id)
+ user_nfts               | Users can view their NFTs                     | SELECT | ((auth.uid())::text IN ( SELECT (user_wallets.user_id)::text AS user_id                                                                                                                                                                                                                                       +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE ((user_wallets.address)::text = ANY ((ARRAY[(user_nfts.owner_address)::character varying, (user_nfts.partner_address)::character varying])::text[]))))
+ user_nfts               | staff_full_user_nfts                          | ALL    | is_admin_or_moderator()
+ user_nfts               | own_user_nfts                                 | ALL    | (owner_address IN ( SELECT user_wallets.address                                                                                                                                                                                                                                                               +
+                         |                                               |        |    FROM user_wallets                                                                                                                                                                                                                                                                                          +
+                         |                                               |        |   WHERE (user_wallets.user_id = auth.uid())))
+ user_points             | Users can view own points                     | SELECT | (auth.uid() = user_id)
+ user_points             | Service can insert points                     | INSERT | 
+ user_stripe_customers   | Users can view their own stripe customer      | SELECT | (auth.uid() = user_id)
+ user_stripe_customers   | Users can insert their own stripe customer    | INSERT | 
+ user_wallets            | own_user_wallets                              | ALL    | (auth.uid() = user_id)
+ user_wallets            | Users can manage their own wallets            | ALL    | (auth.uid() = user_id)
+ user_wallets            | staff_full_user_wallets                       | ALL    | is_admin_or_moderator()
+(119 rows)
+

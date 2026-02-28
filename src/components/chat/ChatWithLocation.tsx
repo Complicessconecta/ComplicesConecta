@@ -69,15 +69,15 @@ export const ChatWithLocation = ({
       const formattedMessages = data.map((msg: {
         id: string;
         content: string;
-        sender_id: string;
+        sender_id: string | null;
         sender?: {
-          first_name?: string;
-          last_name?: string;
+          first_name?: string | null;
+          last_name?: string | null;
         };
-        created_at: string;
-        location_latitude?: number;
-        location_longitude?: number;
-        location_address?: string;
+        created_at: string | null;
+        location_latitude?: number | null;
+        location_longitude?: number | null;
+        location_address?: string | null;
       }) => ({
         id: msg.id,
         content: msg.content,
@@ -95,7 +95,8 @@ export const ChatWithLocation = ({
         } : {}),
       }));
 
-      setMessages(formattedMessages);
+      const messages: Message[] = formattedMessages;
+      setMessages(messages);
     } catch (error) {
       logger.error("Error fetching messages:", {
         error: error instanceof Error ? error.message : String(error),

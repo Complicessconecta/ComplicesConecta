@@ -97,9 +97,9 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
         });
         onVerificationComplete();
       }
-    } catch (error: Error) {
+    } catch (error: unknown) {
       logger.error("❌ Error en verificación de email:", {
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
       toast({
         title: "Error de verificación",
@@ -151,8 +151,10 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
       // Reiniciar timer
       setTimeLeft(300);
       setCanResend(false);
-    } catch (error: Error) {
-      logger.error("❌ Error al reenviar código:", { error: error.message });
+    } catch (error: unknown) {
+      logger.error("❌ Error al reenviar código:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         title: "Error de conexión",
         description:

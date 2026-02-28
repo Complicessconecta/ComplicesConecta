@@ -335,7 +335,9 @@ class SmartMatchingService {
       if (options.filters?.hasPhotos && data) {
         // Verificar que tenga avatar_url (por ahora, ya que tabla images puede no existir)
         return data.filter(
-          (profile: any) =>
+          (profile: {
+            avatar_url?: string | null;
+          }) =>
             profile.avatar_url && profile.avatar_url.trim() !== "",
         );
       }
@@ -352,7 +354,21 @@ class SmartMatchingService {
   /**
    * Mapea perfil de BD a UserProfile para el algoritmo
    */
-  private mapToUserProfile(profile: any): UserProfile | null {
+  private mapToUserProfile(profile: {
+    id?: string;
+    user_id?: string;
+    display_name?: string;
+    first_name?: string;
+    last_name?: string;
+    age?: number;
+    location?: string;
+    bio?: string;
+    avatar_url?: string;
+    interests?: string[];
+    is_verified?: boolean;
+    gender?: string;
+    relationship_type?: string;
+  }): UserProfile | null {
     try {
       // Parsear intereses (pueden estar en formato string JSON o array)
       let interests: string[] = [];
@@ -361,7 +377,7 @@ class SmartMatchingService {
           try {
             interests = JSON.parse(profile.interests);
           } catch {
-            interests = profile.interests
+            interests = (profile.interests as string)
               .split(",")
               .map((i: string) => i.trim());
           }
@@ -461,7 +477,14 @@ class SmartMatchingService {
   /**
    * Calcula completitud del perfil
    */
-  private calculateCompleteness(profile: any): number {
+  private calculateCompleteness(profile: {
+    first_name?: string;
+    bio?: string;
+    age?: number;
+    location?: string;
+    interests?: string[];
+    avatar_url?: string;
+  }): number {
     let completeness = 0;
     const fields = [
       "first_name",
@@ -757,7 +780,10 @@ class SmartMatchingService {
             true // excludeMatched
           );
 
-          friendsOfFriends.forEach((fof: any) => {
+          friendsOfFriends.forEach((fof: {
+            userId: string;
+            mutualFriendsCount: number;
+          }) => {
             compatibleUserIds.push({
               userId: fof.userId,
               score: 0,
@@ -777,7 +803,21 @@ class SmartMatchingService {
       }
 
       // PASO 3: QUERY A SUPABASE - Obtener datos completos
-      let candidates: any[] = [];
+      let candidates: {
+        id: string;
+        display_name?: string;
+        first_name?: string;
+        last_name?: string;
+        age?: number;
+        location?: string;
+        bio?: string;
+        avatar_url?: string;
+        interests?: string[];
+        is_verified?: boolean;
+        gender?: string;
+        relationship_type?: string;
+        compatibility_score?: number;
+      }[] = [];
 
       if (compatibleUserIds.length > 0 && supabase) {
         const userIds = compatibleUserIds.map((c) => c.userId);

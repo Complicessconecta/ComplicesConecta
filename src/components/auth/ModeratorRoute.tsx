@@ -42,9 +42,9 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
           setIsModerator(true);
           return;
         }
-      } catch (error: Error) {
+      } catch (error: unknown) {
         logger.error("⚠️ Error verificando staff via rpc:is_admin_or_moderator", {
-          error: error?.message,
+          error: error instanceof Error ? error.message : String(error),
         });
       }
 

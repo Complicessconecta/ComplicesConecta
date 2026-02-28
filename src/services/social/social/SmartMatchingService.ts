@@ -391,71 +391,71 @@ class SmartMatchingService {
 
       // Personalidad (valores por defecto si no existen)
       const personality = {
-        openness: profile.openness || 50,
-        conscientiousness: profile.conscientiousness || 50,
-        extraversion: profile.extraversion || 50,
-        agreeableness: profile.agreeableness || 50,
-        neuroticism: profile.neuroticism || 50,
-        adventurousness: profile.adventurousness || 50,
-        discretion: profile.discretion || 50,
+        openness: (profile as any).openness || 50,
+        conscientiousness: (profile as any).conscientiousness || 50,
+        extraversion: (profile as any).extraversion || 50,
+        agreeableness: (profile as any).agreeableness || 50,
+        neuroticism: (profile as any).neuroticism || 50,
+        adventurousness: (profile as any).adventurousness || 50,
+        discretion: (profile as any).discretion || 50,
       };
 
       // Preferencias (valores por defecto)
       const preferences = {
         ageRange: {
-          min: profile.preferred_age_min || 18,
-          max: profile.preferred_age_max || 65,
+          min: (profile as any).preferred_age_min || 18,
+          max: (profile as any).preferred_age_max || 65,
         },
-        genderPreference: profile.looking_for
-          ? Array.isArray(profile.looking_for)
-            ? profile.looking_for
-            : [profile.looking_for]
+        genderPreference: (profile as any).looking_for
+          ? Array.isArray((profile as any).looking_for)
+            ? (profile as any).looking_for
+            : [(profile as any).looking_for]
           : ["single", "pareja"],
-        maxDistance: profile.max_distance || 50,
+        maxDistance: (profile as any).max_distance || 50,
         interests: interests,
-        dealBreakers: profile.deal_breakers || [],
+        dealBreakers: (profile as any).deal_breakers || [],
         importance: {
-          personality: profile.importance_personality || 20,
-          interests: profile.importance_interests || 25,
-          location: profile.importance_location || 25,
-          activity: profile.importance_activity || 15,
-          verification: profile.importance_verification || 15,
+          personality: (profile as any).importance_personality || 20,
+          interests: (profile as any).importance_interests || 25,
+          location: (profile as any).importance_location || 25,
+          activity: (profile as any).importance_activity || 15,
+          verification: (profile as any).importance_verification || 15,
         },
       };
 
       // Actividad (calcular desde datos disponibles)
       const activity = {
-        lastActive: profile.updated_at
-          ? new Date(profile.updated_at)
+        lastActive: (profile as any).updated_at
+          ? new Date((profile as any).updated_at)
           : new Date(),
-        responseRate: profile.response_rate || 50,
+        responseRate: (profile as any).response_rate || 50,
         profileCompleteness: this.calculateCompleteness(profile),
-        photosCount: profile.photos_count || 0,
-        messagesExchanged: profile.messages_count || 0,
-        meetingsArranged: profile.meetings_count || 0,
+        photosCount: (profile as any).photos_count || 0,
+        messagesExchanged: (profile as any).messages_count || 0,
+        meetingsArranged: (profile as any).meetings_count || 0,
       };
 
       // Verificación
       const verification = {
-        isVerified: profile.is_verified || false,
-        photoVerified: profile.photo_verified || false,
-        phoneVerified: profile.phone_verified || false,
-        idVerified: profile.id_verified || false,
-        coupleVerified: profile.couple_verified || false,
+        isVerified: (profile as any).is_verified || false,
+        photoVerified: (profile as any).photo_verified || false,
+        phoneVerified: (profile as any).phone_verified || false,
+        idVerified: (profile as any).id_verified || false,
+        coupleVerified: (profile as any).couple_verified || false,
       };
 
       return {
-        id: profile.user_id || profile.id,
-        name: profile.first_name || profile.name || "Usuario",
-        age: profile.age || 25,
-        gender: profile.profile_type === "couple" ? "pareja" : "single",
+        id: (profile as any).user_id || (profile as any).id,
+        name: (profile as any).first_name || (profile as any).name || "Usuario",
+        age: (profile as any).age || 25,
+        gender: (profile as any).profile_type === "couple" ? "pareja" : "single",
         location: {
-          city: profile.city || profile.location || "Ciudad",
-          ...(profile.latitude && profile.longitude
+          city: (profile as any).city || (profile as any).location || "Ciudad",
+          ...((profile as any).latitude && (profile as any).longitude
             ? {
                 coordinates: {
-                  lat: profile.latitude,
-                  lng: profile.longitude,
+                  lat: (profile as any).latitude,
+                  lng: (profile as any).longitude,
                 },
               }
             : {}),

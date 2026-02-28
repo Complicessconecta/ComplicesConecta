@@ -328,12 +328,10 @@ class SmartMatchingService {
       // Filtrar por fotos si se requiere
       if (options.filters?.hasPhotos && data) {
         // Verificar que tenga avatar_url (por ahora, ya que tabla images puede no existir)
-        return data.filter(
-          (profile: {
-            avatar_url?: string | null;
-          }) =>
-            profile.avatar_url && profile.avatar_url.trim() !== "",
-        );
+        return data.filter((profile) => {
+          const avatarUrl = (profile as { avatar_url: string | null }).avatar_url;
+          return Boolean(avatarUrl && avatarUrl.trim() !== "");
+        });
       }
 
       return data || [];
@@ -355,12 +353,9 @@ class SmartMatchingService {
     first_name?: string | null;
     last_name?: string | null;
     age?: number | null;
-    location?: string | null;
-    bio?: string | null;
     avatar_url?: string | null;
-    interests?: string[] | null;
+    interests?: string[] | string | null;
     is_verified?: boolean | null;
-    gender?: string | null;
     relationship_type?: string | null;
   }): UserProfile | null {
     try {

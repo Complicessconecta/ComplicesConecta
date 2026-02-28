@@ -249,7 +249,6 @@ const Profiles: React.FC = () => {
           last_name,
           display_name,
           age,
-          bio,
           interests,
           avatar_url,
           is_verified,
@@ -276,7 +275,6 @@ const Profiles: React.FC = () => {
           first_name: string | null;
           last_name: string | null;
           age: number | null;
-          bio: string | null;
           avatar_url: string | null;
           interests: string[] | null;
           is_verified: boolean | null;
@@ -285,7 +283,7 @@ const Profiles: React.FC = () => {
           name: p.display_name || `${p.first_name} ${p.last_name}`,
           age: p.age || 25,
           location: "Ciudad de México",
-          bio: p.bio || "Perfil profesional en el ambiente swinger",
+          bio: "Perfil profesional en el ambiente swinger",
           images: p.avatar_url
             ? [p.avatar_url]
             : [

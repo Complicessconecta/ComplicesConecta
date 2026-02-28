@@ -86,8 +86,9 @@ const getPasswordFromEnv = (email: string): string | null => {
   // Buscar en variables de entorno primero
   const envPassword = import.meta.env[`VITE_DEMO_PASSWORD_${envKey}`];
 
-  // Si no existe en env, NO usar fallback por seguridad
-  return envPassword || null;
+  // Si no existe en env, usar fallback "demo" para Android y otros entornos
+  // Esto permite que las cuentas demo funcionen en Android donde las variables de entorno no están disponibles
+  return envPassword || "demo";
 };
 
 export const getProductionAdminEmails = (): string[] => {

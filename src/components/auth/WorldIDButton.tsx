@@ -136,7 +136,7 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
     error:
       | { code?: string; message?: string; detail?: string }
       | string
-      | unknown,
+      | Error,
   ) => {
     logger.error("World ID widget error:", {
       error: typeof error === "object" ? JSON.stringify(error) : String(error),

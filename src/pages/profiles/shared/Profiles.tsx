@@ -270,7 +270,18 @@ const Profiles: React.FC = () => {
 
       // Convertir perfiles de Supabase al formato de Profile
       const formattedProfiles: Profile[] =
-        profiles?.map((p: any) => ({
+        profiles?.map((p: {
+          id: string;
+          display_name?: string;
+          first_name?: string;
+          last_name?: string;
+          age?: number;
+          location?: string;
+          bio?: string;
+          avatar_url?: string;
+          interests?: string[];
+          is_verified?: boolean;
+        }) => ({
           id: p.id,
           name: p.display_name || `${p.first_name} ${p.last_name}`,
           age: p.age || 25,
@@ -488,7 +499,7 @@ const Profiles: React.FC = () => {
       });
 
       // Ordenar por score de IA (mayor a menor)
-      filtered.sort((a, b) => (b as any).aiScore - (a as any).aiScore);
+      filtered.sort((a, b) => b.aiScore - a.aiScore);
 
       setFilteredProfiles(filtered);
       setAiSearchMode(true);

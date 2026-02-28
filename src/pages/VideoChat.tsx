@@ -5,12 +5,21 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 
+interface Participant {
+  id: number;
+  name: string;
+  avatar: string;
+  isVideoOn: boolean;
+  isMicOn: boolean;
+  isHost: boolean;
+}
+
 const VideoChat = () => {
   const navigate = useNavigate();
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
-  const [participants, setParticipants] = useState([
+  const [participants, setParticipants] = useState<Participant[]>([
     {
       id: 1,
       name: "Mara Elena",
@@ -199,7 +208,7 @@ const VideoChat = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {participants.map((participant: any) => (
+                    {participants.map((participant: Participant) => (
                       <div
                         key={participant.id}
                         className="flex items-center space-x-4 p-3 bg-gray-800/50 rounded-lg"
@@ -252,7 +261,7 @@ const VideoChat = () => {
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    {participants.map((participant: any) => (
+                    {participants.map((participant: Participant) => (
                       <div
                         key={participant.id}
                         className="relative bg-gray-800 rounded-lg aspect-video"

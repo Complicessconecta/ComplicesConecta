@@ -316,7 +316,13 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
     }
 
     try {
-      const messageData: any = {
+      const messageData: {
+        sender_id: string;
+        content: string;
+        room_id: string | null;
+        location_latitude?: number;
+        location_longitude?: number;
+      } = {
         sender_id: user.id,
         content: newMessage.trim(),
         room_id: chatRoomId || null,

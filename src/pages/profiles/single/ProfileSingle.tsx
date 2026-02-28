@@ -618,7 +618,7 @@ const ProfileSingle: FC = () => {
           dailyClaimed: 0,
           claimed: 500,
           maxClaim: 1000,
-        } as any);
+        } as TestnetInfo);
       }
     } catch (error) {
       logger.error("Error cargando datos blockchain:", {
@@ -628,7 +628,7 @@ const ProfileSingle: FC = () => {
   }, []);
 
   const handleClaimTestnetTokens = async () => {
-    const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
+    const uid = user?.id || profile?.user_id || profile?.id;
     if (!uid || isClaimingTokens) return;
 
     setIsClaimingTokens(true);
@@ -643,7 +643,12 @@ const ProfileSingle: FC = () => {
         logger.info("Tokens de testnet reclamados (DEMO):", result);
 
         // Actualizar estado local para demo
-        setTestnetInfo((prev: any) => ({
+        setTestnetInfo((prev: {
+        claimed?: number;
+        remaining?: number;
+        dailyClaimed?: number;
+        dailyRemaining?: number;
+      } | null) => ({
           ...prev,
           claimed: (prev?.claimed || 0) + 1000,
           remaining: Math.max(0, (prev?.remaining || 1000) - 1000),
@@ -656,9 +661,9 @@ const ProfileSingle: FC = () => {
         // Recargar información
         await loadBlockchainData();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error("Error reclamando tokens de testnet:", {
-        error: String(error),
+        error: error instanceof Error ? error.message : String(error),
       });
     } finally {
       setIsClaimingTokens(false);
@@ -666,7 +671,7 @@ const ProfileSingle: FC = () => {
   };
 
   const handleClaimDailyTokens = async () => {
-    const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
+    const uid = user?.id || profile?.user_id || profile?.id;
     if (!uid || isClaimingTokens) return;
 
     setIsClaimingTokens(true);
@@ -676,7 +681,12 @@ const ProfileSingle: FC = () => {
         logger.info("Tokens diarios reclamados (DEMO mock)");
 
         // Actualizar estado local para demo con datos mock
-        setTestnetInfo((prev: any) => {
+        setTestnetInfo((prev: {
+        claimed?: number;
+        remaining?: number;
+        dailyClaimed?: number;
+        dailyRemaining?: number;
+      } | null) => {
           const newDailyClaimed = (prev?.dailyClaimed || 0) + 50000;
           const newDailyRemaining = Math.max(0, (prev?.dailyRemaining || 2500000) - 50000);
           const newClaimed = (prev?.claimed || 0) + 50000;
@@ -710,9 +720,9 @@ const ProfileSingle: FC = () => {
         // Recargar información
         await loadBlockchainData();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error("Error reclamando tokens diarios:", {
-        error: String(error),
+        error: error instanceof Error ? error.message : String(error),
       });
       toast({
         title: "Error",

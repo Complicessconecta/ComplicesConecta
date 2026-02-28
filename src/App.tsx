@@ -118,7 +118,7 @@ const Stories = lazyWithDefault(() => import("@/pages/Stories"));
 const ProfileCouple = lazy(
   () =>
     import("@/pages/profiles/couple/ProfileCouple") as Promise<{
-      default: any;
+      default: React.ComponentType;
     }>,
 );
 const EditProfileSingle = lazy(

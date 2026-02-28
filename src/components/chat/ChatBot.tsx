@@ -22,7 +22,7 @@ interface ToxicityModel {
   classify: (text: string) => Promise<ToxicityPrediction[]>;
 }
 
-type ErrorType = Error | unknown;
+type ErrorType = unknown;
 
 interface ChatBotProps {
   userId: string;

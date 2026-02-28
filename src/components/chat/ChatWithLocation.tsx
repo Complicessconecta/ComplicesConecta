@@ -66,7 +66,19 @@ export const ChatWithLocation = ({
 
       if (error) throw error;
 
-      const formattedMessages = data.map((msg: any) => ({
+      const formattedMessages = data.map((msg: {
+        id: string;
+        content: string;
+        sender_id: string;
+        sender?: {
+          first_name?: string;
+          last_name?: string;
+        };
+        created_at: string;
+        location_latitude?: number;
+        location_longitude?: number;
+        location_address?: string;
+      }) => ({
         id: msg.id,
         content: msg.content,
         sender_id: msg.sender_id,

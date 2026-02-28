@@ -498,7 +498,7 @@ const ModeratorApplicationModal = () => {
         disponibilidad: "",
         aceptaTerminos: false,
       });
-    } catch (error: any) {
+    } catch (error: Error) {
       logger.error("? Error al enviar solicitud de moderador:", {
         error: error.message,
       });

@@ -162,11 +162,11 @@ const Shop = () => {
       } else {
         throw new Error("No se recibió URL de checkout");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error("Error procesando compra:", error);
       toast({
         title: "Error",
-        description: error.message || "No se pudo procesar la compra",
+        description: error instanceof Error ? error.message : "No se pudo procesar la compra",
         variant: "destructive",
       });
     } finally {

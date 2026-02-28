@@ -60,32 +60,28 @@ export const ChatWithLocation = ({
 
       const { data, error } = await supabase
         .from("messages")
-        .select("*, sender:profiles!sender_id(*)")
+        .select("*, sender:profiles!messages_sender_id_fkey(first_name,last_name)")
         .eq("chat_room_id", conversationId)
         .order("created_at", { ascending: true });
 
       if (error) throw error;
 
-      const formattedMessages = data.map((msg: {
-        id: string;
-        content: string;
-        sender_id: string | null;
-        sender?: {
-          first_name?: string | null;
-          last_name?: string | null;
-        } | null;
-        created_at: string | null;
-        location_latitude?: number | null;
-        location_longitude?: number | null;
-        location_address?: string | null;
-      }) => ({
+      const formattedMessages = data.map((msg) => {
+        const sender = msg.sender;
+        const senderName =
+          sender &&
+          typeof sender === "object" &&
+          "first_name" in sender &&
+          "last_name" in sender
+            ? `${(sender.first_name as string | null) || ""} ${(sender.last_name as string | null) || ""}`.trim() ||
+              "Usuario"
+            : "Usuario";
+
+        return {
         id: msg.id,
         content: msg.content,
         sender_id: msg.sender_id,
-        sender_name:
-          msg.sender
-            ? `${msg.sender.first_name || ""} ${msg.sender.last_name || ""}`.trim() ||
-            "Usuario",
+        sender_name: senderName,
         created_at: msg.created_at,
         ...(msg.location_latitude && msg.location_longitude ? {
           location: {
@@ -94,7 +90,8 @@ export const ChatWithLocation = ({
             address: msg.location_address || null,
           }
         } : {}),
-      }));
+        };
+      });
 
       const messages: Message[] = formattedMessages;
       setMessages(messages);

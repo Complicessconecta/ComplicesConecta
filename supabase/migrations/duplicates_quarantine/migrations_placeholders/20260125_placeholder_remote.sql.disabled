@@ -1,0 +1,40 @@
+-- ============================================================================
+-- 🗂️ ARCHIVO EN CUARENTENA - NO EJECUTAR
+-- Motivo: Archivo duplicado/backup identificado en auditoría Supabase v3.9.6
+-- Fecha cuarentena: 4 Feb 2026
+-- Justificación: Mantener como referencia histórica pero no ejecutar para evitar
+--                conflictos con versiones activas ya aplicadas y false positives en build
+-- Estado: Inactivo - Solo backup histórico
+-- ============================================================================
+
+-- ============================================================================
+-- MIGRACION COMENTADA - MOVIDA A DUPLICATES_QUARANTINE
+-- ============================================================================
+--
+-- JUSTIFICACION:
+-- Esta migracion fue creada originalmente con timestamp invalido (8 digitos: 20260125)
+-- en lugar del formato requerido de 14 digitos (YYYYMMDDHHMMSS).
+--
+-- El archivo duplicado con formato correcto existe:
+--   20260125000000_placeholder_remote.sql (14 digitos, patron valido)
+--
+-- PROBLEMA QUE RESUELVE:
+-- El Supabase CLI requiere que los nombres de migracion sigan el patron:
+--   <YYYYMMDDHHMMSS>_nombre_descriptivo.sql
+--
+-- La version de 8 digitos (20260125) causaba conflictos con la tabla
+-- supabase_migrations.schema_migrations, generando errores de tipo:
+--   "duplicate key value violates unique constraint schema_migrations_pkey"
+--
+-- ACCION TOMADA:
+-- - Se comenta TODO el contenido de esta migracion invalida
+-- - Se mueve al directorio duplicates_quarantine para mantener historial
+-- - Se retiene la version valida: 20260125000000_placeholder_remote.sql
+--
+-- FECHA DE CUARENTENA: 3 Feb 2026
+-- RESPONSABLE: Sistema de migracion automatica
+-- ============================================================================
+
+-- -- Placeholder migration to align migration history with remote
+-- SELECT 1;
+

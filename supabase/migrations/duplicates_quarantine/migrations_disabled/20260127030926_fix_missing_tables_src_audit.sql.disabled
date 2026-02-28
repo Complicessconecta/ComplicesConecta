@@ -1,0 +1,292 @@
+-- ============================================================================
+-- 🗂️ ARCHIVO EN CUARENTENA - NO EJECUTAR
+-- Motivo: Archivo duplicado/backup identificado en auditoría Supabase v3.9.6
+-- Fecha cuarentena: 4 Feb 2026
+-- Justificación: Mantener como referencia histórica pero no ejecutar para evitar
+--                conflictos con versiones activas ya aplicadas y false positives en build
+-- Estado: Inactivo - Solo backup histórico
+-- ============================================================================
+
+-- migrate:up
+
+-- -----------------------------------------------------------------------------
+-- FIX RÁPIDO: Crear tablas faltantes de auditoría src/ con RLS básico
+-- 
+-- Esta migración crea las tablas esenciales detectadas en la auditoría
+-- con políticas RLS funcionales para desbloquear el desarrollo
+-- -----------------------------------------------------------------------------
+
+-- 1) chat_requests
+CREATE TABLE IF NOT EXISTS public.chat_requests (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  sender_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  receiver_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  other_user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  message text,
+  status text NOT NULL DEFAULT 'pending',
+  created_at timestamptz NOT NULL DEFAULT timezone('utc', now()),
+  updated_at timestamptz NOT NULL DEFAULT timezone('utc', now())
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_requests_sender_id ON public.chat_requests(sender_id);
+CREATE INDEX IF NOT EXISTS idx_chat_requests_receiver_id ON public.chat_requests(receiver_id);
+CREATE INDEX IF NOT EXISTS idx_chat_requests_other_user_id ON public.chat_requests(other_user_id);
+
+ALTER TABLE public.chat_requests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY IF NOT EXISTS chat_requests_select_policy ON public.chat_requests
+  FOR SELECT USING (auth.role() = 'service_role' OR auth.uid() = sender_id OR auth.uid() = receiver_id OR auth.uid() = other_user_id);
+
+CREATE POLICY IF NOT EXISTS chat_requests_insert_policy ON public.chat_requests
+  FOR INSERT WITH CHECK (auth.role() = 'service_role' OR auth.uid() = sender_id);
+
+CREATE POLICY IF NOT EXISTS chat_requests_update_policy ON public.chat_requests
+  FOR UPDATE USING (auth.role() = 'service_role' OR auth.uid() = sender_id OR auth.uid() = receiver_id);
+
+CREATE POLICY IF NOT EXISTS chat_requests_delete_policy ON public.chat_requests
+  FOR DELETE USING (auth.role() = 'service_role' OR auth.uid() = sender_id OR auth.uid() = receiver_id);
+
+-- 2) chat_permissions
+CREATE TABLE IF NOT EXISTS public.chat_permissions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  sender_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  receiver_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  other_user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  status text NOT NULL DEFAULT 'pending',
+  created_at timestamptz NOT NULL DEFAULT timezone('utc', now()),
+  updated_at timestamptz NOT NULL DEFAULT timezone('utc', now()),
+  
+  UNIQUE (sender_id, receiver_id, other_user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_permissions_sender_id ON public.chat_permissions(sender_id);
+CREATE INDEX IF NOT EXISTS idx_chat_permissions_receiver_id ON public.chat_permissions(receiver_id);
+
+ALTER TABLE public.chat_permissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY IF NOT EXISTS chat_permissions_select_policy ON public.chat_permissions
+  FOR SELECT USING (auth.role() = 'service_role' OR auth.uid() = sender_id OR auth.uid() = receiver_id OR auth.uid() = other_user_id);
+
+CREATE POLICY IF NOT EXISTS chat_permissions_insert_policy ON public.chat_permissions
+  FOR INSERT WITH CHECK (auth.role() = 'service_role' OR auth.uid() = sender_id);
+
+CREATE POLICY IF NOT EXISTS chat_permissions_update_policy ON public.chat_permissions
+  FOR UPDATE USING (auth.role() = 'service_role' OR auth.uid() = sender_id OR auth.uid() = receiver_id);
+
+CREATE POLICY IF NOT EXISTS chat_permissions_delete_policy ON public.chat_permissions
+  FOR DELETE USING (auth.role() = 'service_role' OR auth.uid() = sender_id OR auth.uid() = receiver_id);
+
+-- 3) gallery_access
+CREATE TABLE IF NOT EXISTS public.gallery_access (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  viewer_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  status text NOT NULL DEFAULT 'pending',
+  created_at timestamptz NOT NULL DEFAULT timezone('utc', now()),
+  updated_at timestamptz NOT NULL DEFAULT timezone('utc', now()),
+  
+  UNIQUE (owner_id, viewer_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_gallery_access_owner_id ON public.gallery_access(owner_id);
+CREATE INDEX IF NOT EXISTS idx_gallery_access_viewer_id ON public.gallery_access(viewer_id);
+
+ALTER TABLE public.gallery_access ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY IF NOT EXISTS gallery_access_select_policy ON public.gallery_access
+  FOR SELECT USING (auth.role() = 'service_role' OR auth.uid() = owner_id OR auth.uid() = viewer_id);
+
+CREATE POLICY IF NOT EXISTS gallery_access_insert_policy ON public.gallery_access
+  FOR INSERT WITH CHECK (auth.role() = 'service_role' OR auth.uid() = viewer_id);
+
+CREATE POLICY IF NOT EXISTS gallery_access_update_policy ON public.gallery_access
+  FOR UPDATE USING (auth.role() = 'service_role' OR auth.uid() = owner_id);
+
+CREATE POLICY IF NOT EXISTS gallery_access_delete_policy ON public.gallery_access
+  FOR DELETE USING (auth.role() = 'service_role' OR auth.uid() = owner_id);
+
+-- 4) club_applications
+CREATE TABLE IF NOT EXISTS public.club_applications (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  owner_name text NOT NULL,
+  owner_age integer,
+  owner_gender text,
+  owner_rfc text,
+  rep_name text,
+  rep_position text,
+  rep_phone text,
+  rep_email text,
+  club_name text NOT NULL,
+  address text,
+  location text,
+  state text,
+  zip_code text,
+  phone text,
+  whatsapp text,
+  website text,
+  use_app_as_website boolean NOT NULL DEFAULT false,
+  email text,
+  description text,
+  club_type text,
+  hours text,
+  capacity integer,
+  documents_url text,
+  company_rfc text,
+  license text,
+  status text NOT NULL DEFAULT 'pending',
+  created_at timestamptz NOT NULL DEFAULT timezone('utc', now()),
+  updated_at timestamptz NOT NULL DEFAULT timezone('utc', now'),
+  temp_password text,
+  temp_password_expires_at timestamptz,
+  temp_password_used boolean NOT NULL DEFAULT false,
+  
+  UNIQUE (club_name)
+);
+
+CREATE INDEX IF NOT EXISTS idx_club_applications_status ON public.club_applications(status);
+CREATE INDEX IF NOT EXISTS idx_club_applications_created_at ON public.club_applications(created_at DESC);
+
+ALTER TABLE public.club_applications ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY IF NOT EXISTS club_applications_select_policy ON public.club_applications
+  FOR SELECT USING (auth.role() = 'service_role' OR public.is_admin(auth.uid()));
+
+CREATE POLICY IF NOT EXISTS club_applications_insert_policy ON public.club_applications
+  FOR INSERT WITH CHECK (auth.role() = 'service_role' OR auth.role() = 'authenticated');
+
+CREATE POLICY IF NOT EXISTS club_applications_update_policy ON public.club_applications
+  FOR UPDATE USING (auth.role() = 'service_role' OR public.is_admin(auth.uid()));
+
+CREATE POLICY IF NOT EXISTS club_applications_delete_policy ON public.club_applications
+  FOR DELETE USING (auth.role() = 'service_role' OR public.is_admin(auth.uid()));
+
+-- 5) content_permissions
+CREATE TABLE IF NOT EXISTS public.content_permissions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  content_id text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT timezone('utc', now()),
+  
+  UNIQUE (user_id, content_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_content_permissions_user_id ON public.content_permissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_content_permissions_content_id ON public.content_permissions(content_id);
+
+ALTER TABLE public.content_permissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY IF NOT EXISTS content_permissions_select_policy ON public.content_permissions
+  FOR SELECT USING (auth.role() = 'service_role' OR auth.uid() = user_id);
+
+CREATE POLICY IF NOT EXISTS content_permissions_insert_policy ON public.content_permissions
+  FOR INSERT WITH CHECK (auth.role() = 'service_role' OR auth.uid() = user_id);
+
+CREATE POLICY IF NOT EXISTS content_permissions_delete_policy ON public.content_permissions
+  FOR DELETE USING (auth.role() = 'service_role' OR auth.uid() = user_id);
+
+-- 6) content_violations
+CREATE TABLE IF NOT EXISTS public.content_violations (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  reporter_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+  user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+  content_id text,
+  event_type text NOT NULL,
+  reason text,
+  details text,
+  metadata jsonb DEFAULT '{}'::jsonb,
+  created_at timestamptz NOT NULL DEFAULT timezone('utc', now())
+);
+
+CREATE INDEX IF NOT EXISTS idx_content_violations_reporter_id ON public.content_violations(reporter_id);
+CREATE INDEX IF NOT EXISTS idx_content_violations_user_id ON public.content_violations(user_id);
+CREATE INDEX IF NOT EXISTS idx_content_violations_event_type ON public.content_violations(event_type);
+CREATE INDEX IF NOT EXISTS idx_content_violations_created_at ON public.content_violations(created_at DESC);
+
+ALTER TABLE public.content_violations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY IF NOT EXISTS content_violations_select_policy ON public.content_violations
+  FOR SELECT USING (auth.role() = 'service_role' OR public.is_admin(auth.uid()) OR auth.uid() = reporter_id OR auth.uid() = user_id);
+
+CREATE POLICY IF NOT EXISTS content_violations_insert_policy ON public.content_violations
+  FOR INSERT WITH CHECK (auth.role() = 'service_role' OR auth.role() = 'authenticated');
+
+CREATE POLICY IF NOT EXISTS content_violations_update_policy ON public.content_violations
+  FOR UPDATE USING (auth.role() = 'service_role' OR public.is_admin(auth.uid()) OR auth.uid() = reporter_id);
+
+CREATE POLICY IF NOT EXISTS content_violations_delete_policy ON public.content_violations
+  FOR DELETE USING (auth.role() = 'service_role' OR public.is_admin(auth.uid()));
+
+-- 7) View: couple_profiles_with_partners
+CREATE OR REPLACE VIEW public.couple_profiles_with_partners
+AS
+SELECT
+  cp.id,
+  cp.user_id,
+  cp.partner_1_id AS partner1_id,
+  cp.partner_2_id AS partner2_id,
+  cp.couple_name,
+  cp.couple_bio,
+  cp.relationship_type,
+  cp.location,
+  cp.is_verified,
+  cp.is_premium,
+  cp.created_at,
+  cp.updated_at,
+  p1.first_name AS partner1_first_name,
+  p1.last_name AS partner1_last_name,
+  p1.age AS partner1_age,
+  p1.gender AS partner1_gender,
+  p1.bio AS partner1_bio,
+  p2.first_name AS partner2_first_name,
+  p2.last_name AS partner2_last_name,
+  p2.age AS partner2_age,
+  p2.gender AS partner2_gender,
+  p2.bio AS partner2_bio
+FROM public.couple_profiles cp
+LEFT JOIN public.profiles p1 ON p1.id = cp.partner_1_id
+LEFT JOIN public.profiles p2 ON p2.id = cp.partner_2_id;
+
+ALTER VIEW public.couple_profiles_with_partners SET (security_barrier = true);
+
+CREATE POLICY IF NOT EXISTS couple_profiles_with_partners_select_policy ON public.couple_profiles_with_partners
+  FOR SELECT USING (auth.role() = 'service_role' OR public.is_admin(auth.uid()) OR auth.uid() = user_id OR auth.uid() = partner1_id OR auth.uid() = partner2_id);
+
+-- migrate:down
+
+DROP POLICY IF EXISTS couple_profiles_with_partners_select_policy ON public.couple_profiles_with_partners;
+DROP VIEW IF EXISTS public.couple_profiles_with_partners;
+
+DROP POLICY IF EXISTS content_violations_delete_policy ON public.content_violations;
+DROP POLICY IF EXISTS content_violations_update_policy ON public.content_violations;
+DROP POLICY IF EXISTS content_violations_insert_policy ON public.content_violations;
+DROP POLICY IF EXISTS content_violations_select_policy ON public.content_violations;
+DROP TABLE IF EXISTS public.content_violations;
+
+DROP POLICY IF EXISTS content_permissions_delete_policy ON public.content_permissions;
+DROP POLICY IF EXISTS content_permissions_insert_policy ON public.content_permissions;
+DROP POLICY IF EXISTS content_permissions_select_policy ON public.content_permissions;
+DROP TABLE IF EXISTS public.content_permissions;
+
+DROP POLICY IF EXISTS club_applications_delete_policy ON public.club_applications;
+DROP POLICY IF EXISTS club_applications_update_policy ON public.club_applications;
+DROP POLICY IF EXISTS club_applications_insert_policy ON public.club_applications;
+DROP POLICY IF EXISTS club_applications_select_policy ON public.club_applications;
+DROP TABLE IF EXISTS public.club_applications;
+
+DROP POLICY IF EXISTS gallery_access_delete_policy ON public.gallery_access;
+DROP POLICY IF EXISTS gallery_access_update_policy ON public.gallery_access;
+DROP POLICY IF EXISTS gallery_access_insert_policy ON public.gallery_access;
+DROP POLICY IF EXISTS gallery_access_select_policy ON public.gallery_access;
+DROP TABLE IF EXISTS public.gallery_access;
+
+DROP POLICY IF EXISTS chat_permissions_delete_policy ON public.chat_permissions;
+DROP POLICY IF EXISTS chat_permissions_update_policy ON public.chat_permissions;
+DROP POLICY IF EXISTS chat_permissions_insert_policy ON public.chat_permissions;
+DROP POLICY IF EXISTS chat_permissions_select_policy ON public.chat_permissions;
+DROP TABLE IF EXISTS public.chat_permissions;
+
+DROP POLICY IF EXISTS chat_requests_delete_policy ON public.chat_requests;
+DROP POLICY IF EXISTS chat_requests_update_policy ON public.chat_requests;
+DROP POLICY IF EXISTS chat_requests_insert_policy ON public.chat_requests;
+DROP POLICY IF EXISTS chat_requests_select_policy ON public.chat_requests;
+DROP TABLE IF EXISTS public.chat_requests;

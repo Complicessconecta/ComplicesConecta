@@ -1,0 +1,695 @@
+-- ============================================================================
+-- 🗂️ ARCHIVO EN CUARENTENA - NO EJECUTAR
+-- Motivo: Archivo duplicado/backup identificado en auditoría Supabase v3.9.6
+-- Fecha cuarentena: 4 Feb 2026
+-- Justificación: Mantener como referencia histórica pero no ejecutar para evitar
+--                conflictos con versiones activas ya aplicadas y false positives en build
+-- Estado: Inactivo - Solo backup histórico
+-- ============================================================================
+
+-- ========================================
+-- ECOSISTEMA COMPLETO DE CLUBS
+-- ========================================
+
+-- 1. TABLA PRINCIPAL DE CLUBS
+CREATE TABLE IF NOT EXISTS public.clubs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL,
+    address TEXT NOT NULL,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    country TEXT,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    category TEXT NOT NULL DEFAULT 'standard' CHECK (category IN ('standard', 'premium', 'vip', 'exclusive', 'lounge', 'bar', 'restaurant')),
+    membership_tier TEXT NOT NULL DEFAULT 'free' CHECK (membership_tier IN ('free', 'premium', 'vip', 'exclusive')),
+    is_active BOOLEAN DEFAULT true NOT NULL,
+    is_verified BOOLEAN DEFAULT false NOT NULL,
+    average_rating DECIMAL(3, 2) DEFAULT 0.0 CHECK (average_rating >= 0 AND average_rating <= 5),
+    check_in_count INTEGER DEFAULT 0,
+    check_in_radius_meters INTEGER DEFAULT 100,
+    owner_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    member_count INTEGER DEFAULT 0,
+    website TEXT,
+    phone TEXT,
+    email TEXT,
+    logo_url TEXT,
+    cover_image_url TEXT,
+    instagram_url TEXT,
+    facebook_url TEXT,
+    twitter_url TEXT,
+    capacity INTEGER,
+    opening_hours JSONB DEFAULT '{}'::jsonb,
+    features JSONB DEFAULT '[]'::jsonb,
+    tags JSONB DEFAULT '[]'::jsonb,
+    pricing JSONB DEFAULT '{}'::jsonb,
+    dress_code TEXT,
+    age_restriction INTEGER DEFAULT 18,
+    music_genres JSONB DEFAULT '[]'::jsonb,
+    special_events BOOLEAN DEFAULT false,
+    reservations_required BOOLEAN DEFAULT false,
+    parking_available BOOLEAN DEFAULT false,
+    valet_parking BOOLEAN DEFAULT false,
+    outdoor_seating BOOLEAN DEFAULT false,
+    indoor_seating BOOLEAN DEFAULT false,
+    vip_areas BOOLEAN DEFAULT false,
+    bottle_service BOOLEAN DEFAULT false,
+    dance_floor BOOLEAN DEFAULT false,
+    live_music BOOLEAN DEFAULT false,
+    dj_booth BOOLEAN DEFAULT false,
+    hookah_available BOOLEAN DEFAULT false,
+    smoking_allowed BOOLEAN DEFAULT false,
+    accessibility_features JSONB DEFAULT '[]'::jsonb,
+    security_features JSONB DEFAULT '[]'::jsonb,
+    payment_methods JSONB DEFAULT '[]'::jsonb,
+    cancellation_policy TEXT,
+    refund_policy TEXT,
+    house_rules TEXT,
+    social_media JSONB DEFAULT '{}'::jsonb,
+    contact_info JSONB DEFAULT '{}'::jsonb,
+    operating_status TEXT DEFAULT 'open' CHECK (operating_status IN ('open', 'closed', 'temporary_closed', 'permanently_closed')),
+    suspension_reason TEXT,
+    suspended_at TIMESTAMPTZ,
+    verification_status TEXT DEFAULT 'pending' CHECK (verification_status IN ('pending', 'verified', 'rejected', 'suspended')),
+    verified_at TIMESTAMPTZ,
+    verified_by UUID REFERENCES auth.users(id),
+    rejection_reason TEXT,
+    business_license TEXT,
+    permit_number TEXT,
+    insurance_info JSONB DEFAULT '{}'::jsonb,
+    last_inspection_date DATE,
+    inspection_score DECIMAL(3, 2),
+    health_department_rating TEXT,
+    fire_safety_compliance BOOLEAN DEFAULT false,
+    noise_compliance BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 2. TABLA DE APLICACIONES DE CLUBS
+CREATE TABLE IF NOT EXISTS public.club_applications (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    application_type TEXT NOT NULL CHECK (application_type IN ('new', 'verification', 'renewal', 'appeal')),
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'under_review', 'approved', 'rejected', 'needs_more_info', 'withdrawn')),
+    priority TEXT DEFAULT 'normal' CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
+    submitted_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    reviewed_at TIMESTAMPTZ,
+    reviewed_by UUID REFERENCES auth.users(id),
+    review_notes TEXT,
+    rejection_reason TEXT,
+    approved_at TIMESTAMPTZ,
+    expires_at TIMESTAMPTZ,
+    documents JSONB DEFAULT '[]'::jsonb,
+    additional_info JSONB DEFAULT '{}'::jsonb,
+    communication_history JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 3. TABLA DE EVENTOS DE CLUBS
+CREATE TABLE IF NOT EXISTS public.club_events (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    description TEXT,
+    event_type TEXT NOT NULL CHECK (event_type IN ('party', 'concert', 'dj_set', 'theme_night', 'special_event', 'private_event', 'tournament', 'workshop')),
+    start_time TIMESTAMPTZ NOT NULL,
+    end_time TIMESTAMPTZ NOT NULL,
+    is_recurring BOOLEAN DEFAULT false,
+    recurrence_pattern JSONB,
+    max_capacity INTEGER,
+    current_attendees INTEGER DEFAULT 0,
+    ticket_price DECIMAL(10, 2),
+    ticket_url TEXT,
+    dress_code TEXT,
+    age_restriction INTEGER,
+    special_guests JSONB DEFAULT '[]'::jsonb,
+    performers JSONB DEFAULT '[]'::jsonb,
+    promotions JSONB DEFAULT '[]'::jsonb,
+    images JSONB DEFAULT '[]'::jsonb,
+    videos JSONB DEFAULT '[]'::jsonb,
+    social_media_tags JSONB DEFAULT '[]'::jsonb,
+    is_active BOOLEAN DEFAULT true,
+    is_cancelled BOOLEAN DEFAULT false,
+    cancellation_reason TEXT,
+    created_by UUID REFERENCES auth.users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 4. TABLA DE DESCUENTOS DE CLUBS
+CREATE TABLE IF NOT EXISTS public.club_discounts (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    description TEXT,
+    discount_type TEXT NOT NULL CHECK (discount_type IN ('percentage', 'fixed_amount', 'buy_one_get_one', 'happy_hour', 'ladies_night', 'special_event')),
+    discount_value DECIMAL(10, 2) NOT NULL,
+    min_amount DECIMAL(10, 2),
+    max_discount DECIMAL(10, 2),
+    applicable_items JSONB DEFAULT '[]'::jsonb,
+    exclusions JSONB DEFAULT '[]'::jsonb,
+    valid_from TIMESTAMPTZ NOT NULL,
+    valid_until TIMESTAMPTZ,
+    usage_limit INTEGER,
+    current_usage INTEGER DEFAULT 0,
+    user_limit INTEGER DEFAULT 1,
+    member_only BOOLEAN DEFAULT false,
+    verification_required BOOLEAN DEFAULT false,
+    promo_code TEXT UNIQUE,
+    is_active BOOLEAN DEFAULT true,
+    conditions TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 5. TABLA DE CHECK-INS DE CLUBS
+CREATE TABLE IF NOT EXISTS public.club_check_ins (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    check_in_time TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    check_out_time TIMESTAMPTZ,
+    duration_minutes INTEGER,
+    purpose TEXT CHECK (purpose IN ('social', 'dating', 'business', 'event', 'other')),
+    companions JSONB DEFAULT '[]'::jsonb,
+    table_number TEXT,
+    area TEXT,
+    spent_amount DECIMAL(10, 2),
+    payment_method TEXT,
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    review TEXT,
+    photos JSONB DEFAULT '[]'::jsonb,
+    tags JSONB DEFAULT '[]'::jsonb,
+    staff_interactions JSONB DEFAULT '[]'::jsonb,
+    issues_reported JSONB DEFAULT '[]'::jsonb,
+    is_verified BOOLEAN DEFAULT false,
+    verified_by UUID REFERENCES auth.users(id),
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 6. TABLA DE RESEÑAS DE CLUBS
+CREATE TABLE IF NOT EXISTS public.club_reviews (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    title TEXT,
+    review TEXT NOT NULL,
+    visit_date DATE,
+    check_in_id UUID REFERENCES public.club_check_ins(id),
+    service_rating INTEGER CHECK (service_rating >= 1 AND rating <= 5),
+    atmosphere_rating INTEGER CHECK (atmosphere_rating >= 1 AND rating <= 5),
+    value_rating INTEGER CHECK (value_rating >= 1 AND rating <= 5),
+    cleanliness_rating INTEGER CHECK (cleanliness_rating >= 1 AND rating <= 5),
+    staff_rating INTEGER CHECK (staff_rating >= 1 AND rating <= 5),
+    music_rating INTEGER CHECK (music_rating >= 1 AND rating <= 5),
+    crowd_rating INTEGER CHECK (crowd_rating >= 1 AND rating <= 5),
+    safety_rating INTEGER CHECK (safety_rating >= 1 AND rating <= 5),
+    would_recommend BOOLEAN,
+    return_probability INTEGER CHECK (return_probability >= 0 AND return_probability <= 100),
+    price_range TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$', '$$$$')),
+    visit_frequency TEXT CHECK (visit_frequency IN ('first_time', 'occasional', 'regular', 'frequent')),
+    group_type TEXT CHECK (group_type IN ('solo', 'couple', 'friends', 'group', 'family')),
+    occasion TEXT CHECK (occasion IN ('casual', 'date', 'celebration', 'business', 'special_event')),
+    photos JSONB DEFAULT '[]'::jsonb,
+    videos JSONB DEFAULT '[]'::jsonb,
+    helpful_count INTEGER DEFAULT 0,
+    response_from_club TEXT,
+    response_date TIMESTAMPTZ,
+    is_verified BOOLEAN DEFAULT false,
+    is_featured BOOLEAN DEFAULT false,
+    moderation_status TEXT DEFAULT 'pending' CHECK (moderation_status IN ('pending', 'approved', 'rejected', 'flagged')),
+    flags JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 7. TABLA DE NFTs DE CLUBS
+CREATE TABLE IF NOT EXISTS public.club_nfts (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE,
+    token_id TEXT NOT NULL,
+    token_standard TEXT NOT NULL CHECK (token_standard IN ('ERC721', 'ERC1155')),
+    contract_address TEXT NOT NULL,
+    blockchain TEXT NOT NULL DEFAULT 'polygon',
+    name TEXT NOT NULL,
+    description TEXT,
+    image_url TEXT,
+    animation_url TEXT,
+    external_url TEXT,
+    attributes JSONB DEFAULT '[]'::jsonb,
+    rarity TEXT CHECK (rarity IN ('common', 'uncommon', 'rare', 'epic', 'legendary')),
+    edition_number INTEGER,
+    total_editions INTEGER,
+    mint_date TIMESTAMPTZ,
+    mint_price DECIMAL(18, 8),
+    mint_currency TEXT DEFAULT 'matic',
+    current_owner UUID REFERENCES auth.users(id),
+    creator_royalty DECIMAL(5, 2) DEFAULT 0,
+    is_transferable BOOLEAN DEFAULT true,
+    transfer_count INTEGER DEFAULT 0,
+    last_transfer_date TIMESTAMPTZ,
+    is_burned BOOLEAN DEFAULT false,
+    burn_date TIMESTAMPTZ,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- 8. TABLA DE SEGUIDORES DE CLUBS
+CREATE TABLE IF NOT EXISTS public.club_followers (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    club_id UUID REFERENCES public.clubs(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    follow_type TEXT NOT NULL DEFAULT 'follow' CHECK (follow_type IN ('follow', 'favorite', 'member', 'vip')),
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended')),
+    followed_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    last_interaction TIMESTAMPTZ,
+    interaction_count INTEGER DEFAULT 0,
+    notification_preferences JSONB DEFAULT '{}'::jsonb,
+    benefits JSONB DEFAULT '[]'::jsonb,
+    membership_level TEXT CHECK (membership_level IN ('basic', 'premium', 'vip', 'exclusive')),
+    expires_at TIMESTAMPTZ,
+    auto_renew BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE(club_id, user_id, follow_type)
+);
+
+-- ========================================
+-- ÍNDICES PARA OPTIMIZACIÓN
+-- ========================================
+
+-- Índices para clubs
+CREATE INDEX IF NOT EXISTS idx_clubs_name ON public.clubs(name);
+CREATE INDEX IF NOT EXISTS idx_clubs_slug ON public.clubs(slug);
+CREATE INDEX IF NOT EXISTS idx_clubs_city ON public.clubs(city);
+CREATE INDEX IF NOT EXISTS idx_clubs_state ON public.clubs(state);
+CREATE INDEX IF NOT EXISTS idx_clubs_category ON public.clubs(category);
+CREATE INDEX IF NOT EXISTS idx_clubs_membership_tier ON public.clubs(membership_tier);
+CREATE INDEX IF NOT EXISTS idx_clubs_is_active ON public.clubs(is_active);
+CREATE INDEX IF NOT EXISTS idx_clubs_is_verified ON public.clubs(is_verified);
+CREATE INDEX IF NOT EXISTS idx_clubs_owner_id ON public.clubs(owner_id);
+CREATE INDEX IF NOT EXISTS idx_clubs_rating ON public.clubs(average_rating);
+CREATE INDEX IF NOT EXISTS idx_clubs_created_at ON public.clubs(created_at);
+CREATE INDEX IF NOT EXISTS idx_clubs_location ON public.clubs(latitude, longitude);
+
+-- Índices para club_applications
+CREATE INDEX IF NOT EXISTS idx_club_applications_club_id ON public.club_applications(club_id);
+CREATE INDEX IF NOT EXISTS idx_club_applications_user_id ON public.club_applications(user_id);
+CREATE INDEX IF NOT EXISTS idx_club_applications_status ON public.club_applications(status);
+CREATE INDEX IF NOT EXISTS idx_club_applications_type ON public.club_applications(application_type);
+CREATE INDEX IF NOT EXISTS idx_club_applications_priority ON public.club_applications(priority);
+CREATE INDEX IF NOT EXISTS idx_club_applications_submitted_at ON public.club_applications(submitted_at);
+
+-- Índices para club_events
+CREATE INDEX IF NOT EXISTS idx_club_events_club_id ON public.club_events(club_id);
+CREATE INDEX IF NOT EXISTS idx_club_events_start_time ON public.club_events(start_time);
+CREATE INDEX IF NOT EXISTS idx_club_events_end_time ON public.club_events(end_time);
+CREATE INDEX IF NOT EXISTS idx_club_events_type ON public.club_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_club_events_is_active ON public.club_events(is_active);
+
+-- Índices para club_discounts
+CREATE INDEX IF NOT EXISTS idx_club_discounts_club_id ON public.club_discounts(club_id);
+CREATE INDEX IF NOT EXISTS idx_club_discounts_promo_code ON public.club_discounts(promo_code);
+CREATE INDEX IF NOT EXISTS idx_club_discounts_valid_from ON public.club_discounts(valid_from);
+CREATE INDEX IF NOT EXISTS idx_club_discounts_valid_until ON public.club_discounts(valid_until);
+CREATE INDEX IF NOT EXISTS idx_club_discounts_is_active ON public.club_discounts(is_active);
+
+-- Índices para club_check_ins
+CREATE INDEX IF NOT EXISTS idx_club_check_ins_club_id ON public.club_check_ins(club_id);
+CREATE INDEX IF NOT EXISTS idx_club_check_ins_user_id ON public.club_check_ins(user_id);
+CREATE INDEX IF NOT EXISTS idx_club_check_ins_check_in_time ON public.club_check_ins(check_in_time);
+CREATE INDEX IF NOT EXISTS idx_club_check_ins_check_out_time ON public.club_check_ins(check_out_time);
+
+-- Índices para club_reviews
+CREATE INDEX IF NOT EXISTS idx_club_reviews_club_id ON public.club_reviews(club_id);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_user_id ON public.club_reviews(user_id);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_rating ON public.club_reviews(rating);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_visit_date ON public.club_reviews(visit_date);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_is_verified ON public.club_reviews(is_verified);
+CREATE INDEX IF NOT EXISTS idx_club_reviews_is_featured ON public.club_reviews(is_featured);
+
+-- Índices para club_nfts
+CREATE INDEX IF NOT EXISTS idx_club_nfts_club_id ON public.club_nfts(club_id);
+CREATE INDEX IF NOT EXISTS idx_club_nfts_token_id ON public.club_nfts(token_id);
+CREATE INDEX IF NOT EXISTS idx_club_nfts_current_owner ON public.club_nfts(current_owner);
+CREATE INDEX IF NOT EXISTS idx_club_nfts_rarity ON public.club_nfts(rarity);
+CREATE INDEX IF NOT EXISTS idx_club_nfts_mint_date ON public.club_nfts(mint_date);
+
+-- Índices para club_followers
+CREATE INDEX IF NOT EXISTS idx_club_followers_club_id ON public.club_followers(club_id);
+CREATE INDEX IF NOT EXISTS idx_club_followers_user_id ON public.club_followers(user_id);
+CREATE INDEX IF NOT EXISTS idx_club_followers_follow_type ON public.club_followers(follow_type);
+CREATE INDEX IF NOT EXISTS idx_club_followers_status ON public.club_followers(status);
+CREATE INDEX IF NOT EXISTS idx_club_followers_followed_at ON public.club_followers(followed_at);
+
+-- ========================================
+-- TRIGGERS AUTOMÁTICOS
+-- ========================================
+
+-- Trigger para updated_at en todas las tablas
+CREATE OR REPLACE FUNCTION public.handle_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Aplicar triggers a todas las tablas
+CREATE TRIGGER handle_clubs_updated_at BEFORE UPDATE ON public.clubs FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER handle_club_applications_updated_at BEFORE UPDATE ON public.club_applications FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER handle_club_events_updated_at BEFORE UPDATE ON public.club_events FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER handle_club_discounts_updated_at BEFORE UPDATE ON public.club_discounts FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER handle_club_check_ins_updated_at BEFORE UPDATE ON public.club_check_ins FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER handle_club_reviews_updated_at BEFORE UPDATE ON public.club_reviews FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER handle_club_nfts_updated_at BEFORE UPDATE ON public.club_nfts FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+CREATE TRIGGER handle_club_followers_updated_at BEFORE UPDATE ON public.club_followers FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+-- ========================================
+-- POLÍTICAS RLS (ROW LEVEL SECURITY)
+-- ========================================
+
+-- Habilitar RLS en todas las tablas
+ALTER TABLE public.clubs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_applications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_discounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_check_ins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_reviews ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_nfts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.club_followers ENABLE ROW LEVEL SECURITY;
+
+-- Políticas para clubs (público puede ver clubs activos)
+CREATE POLICY "Anyone can view active clubs" ON public.clubs FOR SELECT USING (is_active = true);
+CREATE POLICY "Admins can manage all clubs" ON public.clubs FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+
+-- Políticas para club_applications
+CREATE POLICY "Users can view own applications" ON public.club_applications FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "Admins can manage all applications" ON public.club_applications FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+
+-- Políticas para club_events
+CREATE POLICY "Anyone can view active events" ON public.club_events FOR SELECT USING (is_active = true AND NOT is_cancelled);
+CREATE POLICY "Club owners can manage events" ON public.club_events FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.clubs c 
+        WHERE c.id = club_events.club_id 
+        AND c.owner_id = auth.uid()
+    )
+);
+CREATE POLICY "Admins can manage all events" ON public.club_events FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+
+-- Políticas para club_discounts
+CREATE POLICY "Anyone can view active discounts" ON public.club_discounts FOR SELECT USING (is_active = true AND valid_until > NOW());
+CREATE POLICY "Club owners can manage discounts" ON public.club_discounts FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.clubs c 
+        WHERE c.id = club_discounts.club_id 
+        AND c.owner_id = auth.uid()
+    )
+);
+CREATE POLICY "Admins can manage all discounts" ON public.club_discounts FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+
+-- Políticas para club_check_ins
+CREATE POLICY "Users can view own check-ins" ON public.club_check_ins FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "Club owners can view club check-ins" ON public.club_check_ins FOR SELECT USING (
+    EXISTS (
+        SELECT 1 FROM public.clubs c 
+        WHERE c.id = club_check_ins.club_id 
+        AND c.owner_id = auth.uid()
+    )
+);
+CREATE POLICY "Admins can view all check-ins" ON public.club_check_ins FOR SELECT USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+CREATE POLICY "Users can create own check-ins" ON public.club_check_ins FOR INSERT WITH CHECK (user_id = auth.uid());
+CREATE POLICY "Users can update own check-ins" ON public.club_check_ins FOR UPDATE USING (user_id = auth.uid());
+
+-- Políticas para club_reviews
+CREATE POLICY "Anyone can view verified reviews" ON public.club_reviews FOR SELECT USING (is_verified = true);
+CREATE POLICY "Users can view own reviews" ON public.club_reviews FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "Users can create own reviews" ON public.club_reviews FOR INSERT WITH CHECK (user_id = auth.uid());
+CREATE POLICY "Users can update own reviews" ON public.club_reviews FOR UPDATE USING (user_id = auth.uid());
+CREATE POLICY "Admins can manage all reviews" ON public.club_reviews FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+
+-- Políticas para club_nfts
+CREATE POLICY "Anyone can view NFTs" ON public.club_nfts FOR SELECT USING (true);
+CREATE POLICY "NFT owners can manage their NFTs" ON public.club_nfts FOR ALL USING (current_owner = auth.uid());
+CREATE POLICY "Club owners can manage club NFTs" ON public.club_nfts FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.clubs c 
+        WHERE c.id = club_nfts.club_id 
+        AND c.owner_id = auth.uid()
+    )
+);
+CREATE POLICY "Admins can manage all NFTs" ON public.club_nfts FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+
+-- Políticas para club_followers
+CREATE POLICY "Users can manage own follows" ON public.club_followers FOR ALL USING (user_id = auth.uid());
+CREATE POLICY "Anyone can view follower counts" ON public.club_followers FOR SELECT USING (status = 'active');
+CREATE POLICY "Admins can view all follows" ON public.club_followers FOR SELECT USING (
+    EXISTS (
+        SELECT 1 FROM public.admin_users au 
+        WHERE au.user_id = auth.uid() 
+        AND au.is_active = true
+    )
+);
+
+-- ========================================
+-- DATOS DE DEMO
+-- ========================================
+
+-- Insertar clubs de demo con datos completos
+INSERT INTO public.clubs (
+    name, slug, description, address, city, state, country, latitude, longitude,
+    category, membership_tier, is_active, is_verified, average_rating, check_in_count,
+    member_count, website, phone, email, logo_url, cover_image_url, capacity,
+    opening_hours, features, tags, pricing, dress_code, age_restriction,
+    music_genre, special_events, reservations_required, parking_available,
+    valet_parking, outdoor_seating, indoor_seating, vip_areas, bottle_service,
+    dance_floor, live_music, dj_booth, hookah_available, smoking_allowed,
+    accessibility_features, security_features, payment_methods, operating_status,
+    verification_status, business_license, permit_number, insurance_info,
+    last_inspection_date, inspection_score, health_department_rating,
+    fire_safety_compliance, noise_compliance
+) VALUES
+(
+    'Club Demo CómplicesConecta',
+    'club-demo-complicesconecta',
+    'Club exclusivo para adultos con ambiente sofisticado y música electrónica. Perfecto para encuentros especiales y eventos privados.',
+    'Av. Insurgentes Sur 123',
+    'CDMX',
+    'Ciudad de México',
+    'México',
+    19.4326,
+    -99.1332,
+    'exclusive',
+    'premium',
+    true,
+    true,
+    4.8,
+    420,
+    150,
+    'https://clubdemo.complicesconecta.com',
+    '+52 55 1234 5678',
+    'info@clubdemo.complicesconecta.com',
+    'https://example.com/logo-demo.jpg',
+    'https://example.com/cover-demo.jpg',
+    300,
+    '{"monday": {"open": "21:00", "close": "05:00"}, "tuesday": {"open": "21:00", "close": "05:00"}, "wednesday": {"open": "21:00", "close": "05:00"}, "thursday": {"open": "21:00", "close": "05:00"}, "friday": {"open": "21:00", "close": "06:00"}, "saturday": {"open": "21:00", "close": "06:00"}, "sunday": {"open": "21:00", "close": "04:00"}}}',
+    '["vip_areas", "bottle_service", "dance_floor", "dj_booth", "outdoor_seating", "valet_parking"]',
+    '["exclusive", "adults_only", "electronic_music", "vip", "luxury"]',
+    '{"vip_table": {"min_spend": 5000, "includes": ["bottle_service", "dedicated_host"]}, "regular_entry": {"price": 500, "includes": ["access", "welcome_drink"]}, "bottle_service": {"packages": [{"name": "premium", "price": 12000, "includes": ["1l premium", "mixers", "setup"]}]}}',
+    'Elegant casual. No shorts, no flip-flops.',
+    18,
+    '["electronic", "house", "techno", "deep_house"]',
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    '["wheelchair_access", "accessible_restrooms", "elevator_access"]',
+    '["cctv_cameras", "security_guards", "metal_detectors", "id_check", "emergency_exits"]',
+    '["credit_card", "debit_card", "cash", "mobile_payment", "cryptocurrency"]',
+    'open',
+    'verified',
+    'CLUB-2024-001',
+    'PERMIT-CDMX-2024-001',
+    '{"provider": "Seguros XYZ", "policy_number": "POL-2024-001", "coverage": "general_liability", "expires": "2025-12-31"}',
+    '2024-12-01',
+    4.8,
+    'A',
+    true,
+    true
+),
+(
+    'Noche VIP Lounge',
+    'noche-vip-lounge',
+    'Lounge exclusivo con ambiente VIP y servicio de primera clase. Ideal para ejecutivos y celebraciones especiales.',
+    'Av. Presidente Masaryk 45',
+    'Guadalajara',
+    'Jalisco',
+    'México',
+    20.6736,
+    -103.3447,
+    'vip',
+    'premium',
+    true,
+    true,
+    4.5,
+    234,
+    89,
+    'https://nochevip.com',
+    '+52 33 9876 5432',
+    'reservations@nochevip.com',
+    'https://example.com/logo-noche.jpg',
+    'https://example.com/cover-noche.jpg',
+    150,
+    '{"monday": {"open": "20:00", "close": "03:00"}, "tuesday": {"open": "20:00", "close": "03:00"}, "wednesday": {"open": "20:00", "close": "03:00"}, "thursday": {"open": "20:00", "close": "04:00"}, "friday": {"open": "20:00", "close": "05:00"}, "saturday": {"open": "20:00", "close": "05:00"}, "sunday": {"open": "20:00", "close": "03:00"}}}',
+    '["vip_areas", "bottle_service", "premium_bar", "private_rooms", "concierge_service"]',
+    '["vip", "executive", "business", "luxury", "exclusive"]',
+    '{"vip_membership": {"monthly": 2500, "benefits": ["priority_access", "dedicated_host", "complimentary_drinks"]}, "day_pass": {"price": 200, "includes": ["access", "welcome_drink"]}}',
+    'Business formal. No sportswear, no casual footwear.',
+    21,
+    '["lounge", "jazz", "soul", "r&b", "pop"]',
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    '["wheelchair_access", "elevator_access", "accessible_restrooms"]',
+    '["cctv_cameras", "security_guards", "id_check", "emergency_exits"]',
+    '["credit_card", "debit_card", "cash", "mobile_payment"]',
+    'open',
+    'verified',
+    'CLUB-2024-002',
+    'PERMIT-GDL-2024-002',
+    '{"provider": "Seguros ABC", "policy_number": "POL-2024-002", "coverage": "general_liability", "expires": "2025-06-30"}',
+    '2024-11-15',
+    4.5,
+    'A+',
+    true,
+    true
+),
+(
+    'Mystic Garden',
+    'mystic-garden',
+    'Espacio místico y relajante con jardín temático. Ambiente bohemio para encuentros especiales y eventos temáticos.',
+    'Calle Luna 78',
+    'Monterrey',
+    'Nuevo León',
+    'México',
+    25.6866,
+    -100.3161,
+    'standard',
+    'free',
+    false,
+    false,
+    4.2,
+    145,
+    56,
+    'https://mysticgarden.com',
+    '+52 81 2345 6789',
+    'info@mysticgarden.com',
+    'https://example.com/logo-mystic.jpg',
+    'https://example.com/cover-mystic.jpg',
+    200,
+    '{"monday": {"open": "19:00", "close": "02:00"}, "tuesday": {"open": "19:00", "close": "02:00"}, "wednesday": {"open": "19:00", "close": "02:00"}, "thursday": {"open": "19:00", "close": "03:00"}, "friday": {"open": "19:00", "close": "04:00"}, "saturday": {"open": "19:00", "close": "04:00"}, "sunday": {"open": "19:00", "close": "01:00"}}}',
+    '["outdoor_seating", "garden_area", "theme_nights", "hookah_lounge", "photo_booth"]',
+    '["bohemian", "mystical", "garden", "themed", "relaxed"]',
+    '{"entry_fee": {"price": 100, "includes": ["access", "welcome_drink"]}, "hookah_package": {"price": 300, "includes": ["hookah", "charcoal", "drinks"]}}',
+    'Casual elegant. No beachwear, no athletic wear.',
+    18,
+    '["ambient", "chill", "downtempo", "lofi", "experimental"]',
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    '["wheelchair_access", "accessible_restrooms"]',
+    '["cctv_cameras", "security_guards", "id_check"]',
+    '["cash", "credit_card", "mobile_payment"]',
+    'closed',
+    'pending',
+    'CLUB-2024-003',
+    'PERMIT-MTY-2024-003',
+    '{"provider": "Seguros DEF", "policy_number": "POL-2024-003", "coverage": "general_liability", "expires": "2025-09-30"}',
+    '2024-10-20',
+    4.2,
+    'B',
+    false,
+    false
+);
+
+COMMIT;
+

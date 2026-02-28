@@ -1,0 +1,109 @@
+-- ============================================================================
+-- 🗂️ ARCHIVO EN CUARENTENA - NO EJECUTAR
+-- Motivo: Archivo duplicado/backup identificado en auditoría Supabase v3.9.6
+-- Fecha cuarentena: 4 Feb 2026
+-- Justificación: Mantener como referencia histórica pero no ejecutar para evitar
+--                conflictos con versiones activas ya aplicadas y false positives en build
+-- Estado: Inactivo - Solo backup histórico
+-- ============================================================================
+
+-- Crear tabla básica de clubs para el panel de administración
+CREATE TABLE IF NOT EXISTS public.clubs (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL UNIQUE,
+    description TEXT NOT NULL,
+    address TEXT NOT NULL,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    country TEXT,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    category TEXT NOT NULL DEFAULT 'standard',
+    membership_tier TEXT NOT NULL DEFAULT 'free' CHECK (membership_tier IN ('free', 'premium')),
+    is_active BOOLEAN DEFAULT true NOT NULL,
+    is_verified BOOLEAN DEFAULT false NOT NULL,
+    average_rating DECIMAL(3, 2) DEFAULT 0.0,
+    check_in_count INTEGER DEFAULT 0,
+    check_in_radius_meters INTEGER DEFAULT 100,
+    owner_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    member_count INTEGER DEFAULT 0,
+    website TEXT,
+    phone TEXT,
+    email TEXT,
+    suspension_reason TEXT,
+    suspended_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- Crear índices
+CREATE INDEX IF NOT EXISTS idx_clubs_name ON public.clubs(name);
+CREATE INDEX IF NOT EXISTS idx_clubs_slug ON public.clubs(slug);
+CREATE INDEX IF NOT EXISTS idx_clubs_city ON public.clubs(city);
+CREATE INDEX IF NOT EXISTS idx_clubs_category ON public.clubs(category);
+CREATE INDEX IF NOT EXISTS idx_clubs_is_active ON public.clubs(is_active);
+CREATE INDEX IF NOT EXISTS idx_clubs_is_verified ON public.clubs(is_verified);
+CREATE INDEX IF NOT EXISTS idx_clubs_owner_id ON public.clubs(owner_id);
+
+-- Trigger para updated_at
+CREATE TRIGGER handle_clubs_updated_at
+    BEFORE UPDATE ON public.clubs
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_updated_at();
+
+-- Políticas RLS
+ALTER TABLE public.clubs ENABLE ROW LEVEL SECURITY;
+
+-- Política para que todos puedan ver clubs activos
+CREATE POLICY "Anyone can view active clubs" ON public.clubs
+    FOR SELECT USING (is_active = true);
+
+-- Política para que admins puedan ver todos los clubs
+CREATE POLICY "Admins can view all clubs" ON public.clubs
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM public.admin_users au 
+            WHERE au.user_id = auth.uid() 
+            AND au.is_active = true
+        )
+    );
+
+-- Política para que admins puedan insertar clubs
+CREATE POLICY "Admins can insert clubs" ON public.clubs
+    FOR INSERT WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.admin_users au 
+            WHERE au.user_id = auth.uid() 
+            AND au.is_active = true
+        )
+    );
+
+-- Política para que admins puedan actualizar clubs
+CREATE POLICY "Admins can update clubs" ON public.clubs
+    FOR UPDATE USING (
+        EXISTS (
+            SELECT 1 FROM public.admin_users au 
+            WHERE au.user_id = auth.uid() 
+            AND au.is_active = true
+        )
+    );
+
+-- Política para que admins puedan eliminar clubs
+CREATE POLICY "Admins can delete clubs" ON public.clubs
+    FOR DELETE USING (
+        EXISTS (
+            SELECT 1 FROM public.admin_users au 
+            WHERE au.user_id = auth.uid() 
+            AND au.is_active = true
+        )
+    );
+
+-- Insertar datos de demo
+INSERT INTO public.clubs (name, slug, description, address, city, state, category, membership_tier, is_active, is_verified, average_rating, check_in_count, member_count) VALUES
+('Club Demo CómplicesConecta', 'club-demo-complicesconecta', 'Demo de perfil de club verificado para pruebas.', 'Av. Insurgentes Sur 123', 'CDMX', 'Ciudad de México', 'premium', 'premium', true, true, 4.8, 420, 150),
+('Noche VIP Lounge', 'noche-vip-lounge', 'Club exclusivo VIP con música y ambiente sofisticado.', 'Av. Presidente Masaryk 45', 'Guadalajara', 'Jalisco', 'standard', 'premium', true, true, 4.5, 234, 89),
+('Mystic Garden', 'mystic-garden', 'Espacio místico y relajante para encuentros especiales.', 'Calle Luna 78', 'Monterrey', 'Nuevo León', 'standard', 'free', false, false, 4.2, 145, 56);
+
+COMMIT;
+

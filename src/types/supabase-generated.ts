@@ -1131,6 +1131,7 @@ export type Database = {
           expires_at: string | null
           id: string
           owner_id: string
+          profile_id: string | null
           visitor_id: string
         }
         Insert: {
@@ -1138,6 +1139,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           owner_id: string
+          profile_id?: string | null
           visitor_id: string
         }
         Update: {
@@ -1145,6 +1147,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           owner_id?: string
+          profile_id?: string | null
           visitor_id?: string
         }
         Relationships: []
@@ -1241,6 +1244,7 @@ export type Database = {
           created_at: string | null
           from_profile: string | null
           id: string
+          status: string | null
           to_profile: string | null
           type: string | null
           updated_at: string | null
@@ -1249,6 +1253,7 @@ export type Database = {
           created_at?: string | null
           from_profile?: string | null
           id?: string
+          status?: string | null
           to_profile?: string | null
           type?: string | null
           updated_at?: string | null
@@ -1257,6 +1262,7 @@ export type Database = {
           created_at?: string | null
           from_profile?: string | null
           id?: string
+          status?: string | null
           to_profile?: string | null
           type?: string | null
           updated_at?: string | null
@@ -2193,6 +2199,33 @@ export type Database = {
         }
         Relationships: []
       }
+      reservations: {
+        Row: {
+          club_id: string | null
+          created_at: string | null
+          id: string
+          reserved_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          club_id?: string | null
+          created_at?: string | null
+          id?: string
+          reserved_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          club_id?: string | null
+          created_at?: string | null
+          id?: string
+          reserved_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       security: {
         Row: {
           created_at: string | null
@@ -2652,6 +2685,36 @@ export type Database = {
           },
         ]
       }
+      user_device_tokens: {
+        Row: {
+          created_at: string | null
+          device_token: string | null
+          device_type: string | null
+          id: string
+          last_active_at: string | null
+          onesignal_player_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          device_token?: string | null
+          device_type?: string | null
+          id?: string
+          last_active_at?: string | null
+          onesignal_player_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          device_token?: string | null
+          device_type?: string | null
+          id?: string
+          last_active_at?: string | null
+          onesignal_player_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_feeds: {
         Row: {
           created_at: string | null
@@ -2996,6 +3059,27 @@ export type Database = {
           created_at?: string | null
           is_custom?: boolean | null
           theme_config?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_token_balances: {
+        Row: {
+          cmpx_balance: number | null
+          gtk_balance: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cmpx_balance?: number | null
+          gtk_balance?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cmpx_balance?: number | null
+          gtk_balance?: number | null
           updated_at?: string | null
           user_id?: string
         }

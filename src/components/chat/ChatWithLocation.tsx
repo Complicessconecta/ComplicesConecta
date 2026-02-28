@@ -67,29 +67,49 @@ export const ChatWithLocation = ({
       if (error) throw error;
 
       const formattedMessages = data.map((msg) => {
-        const sender = msg.sender;
-        const senderName =
-          sender &&
-          typeof sender === "object" &&
-          "first_name" in sender &&
-          "last_name" in sender
-            ? `${(sender.first_name as string | null) || ""} ${(sender.last_name as string | null) || ""}`.trim() ||
-              "Usuario"
-            : "Usuario";
+        const msgRecord = msg as unknown as Record<string, unknown>;
+        const senderRaw = msgRecord["sender"];
+        const senderRecord =
+          senderRaw && typeof senderRaw === "object"
+            ? (senderRaw as Record<string, unknown>)
+            : null;
+
+        const firstName =
+          senderRecord && typeof senderRecord["first_name"] === "string"
+            ? senderRecord["first_name"]
+            : null;
+        const lastName =
+          senderRecord && typeof senderRecord["last_name"] === "string"
+            ? senderRecord["last_name"]
+            : null;
+        const senderName = `${firstName || ""} ${lastName || ""}`.trim() || "Usuario";
+
+        const locationLatitudeRaw = msgRecord["location_latitude"];
+        const locationLongitudeRaw = msgRecord["location_longitude"];
+        const locationAddressRaw = msgRecord["location_address"];
+
+        const locationLatitude =
+          typeof locationLatitudeRaw === "number" ? locationLatitudeRaw : null;
+        const locationLongitude =
+          typeof locationLongitudeRaw === "number" ? locationLongitudeRaw : null;
+        const locationAddress =
+          typeof locationAddressRaw === "string" ? locationAddressRaw : null;
 
         return {
-        id: msg.id,
-        content: msg.content,
-        sender_id: msg.sender_id,
-        sender_name: senderName,
-        created_at: msg.created_at,
-        ...(msg.location_latitude && msg.location_longitude ? {
-          location: {
-            latitude: msg.location_latitude,
-            longitude: msg.location_longitude,
-            address: msg.location_address || null,
-          }
-        } : {}),
+          id: msg.id,
+          content: msg.content,
+          sender_id: msg.sender_id,
+          sender_name: senderName,
+          created_at: msg.created_at,
+          ...(locationLatitude !== null && locationLongitude !== null
+            ? {
+                location: {
+                  latitude: locationLatitude,
+                  longitude: locationLongitude,
+                  address: locationAddress,
+                },
+              }
+            : {}),
         };
       });
 

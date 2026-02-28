@@ -67,6 +67,42 @@ export type Database = {
         }
         Relationships: []
       }
+      anti_cheat_log: {
+        Row: {
+          actions_taken: Json | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          resolved: boolean | null
+          resolved_at: string | null
+          risk_score: number
+          suspicious_patterns: Json
+          user_id: string
+        }
+        Insert: {
+          actions_taken?: Json | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          risk_score: number
+          suspicious_patterns: Json
+          user_id: string
+        }
+        Update: {
+          actions_taken?: Json | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          resolved?: boolean | null
+          resolved_at?: string | null
+          risk_score?: number
+          suspicious_patterns?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       app_config: {
         Row: {
           created_at: string
@@ -88,6 +124,54 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: string
+        }
+        Relationships: []
+      }
+      beta_rewards: {
+        Row: {
+          badge: string
+          claimed_at: string | null
+          cmpx_tokens: number
+          created_at: string | null
+          final_level: string
+          final_points: number
+          id: string
+          lifetime_discount: number | null
+          premium_months: number | null
+          rewards_claimed: boolean | null
+          special_perks: Json | null
+          user_id: string
+          vip_months: number | null
+        }
+        Insert: {
+          badge: string
+          claimed_at?: string | null
+          cmpx_tokens: number
+          created_at?: string | null
+          final_level: string
+          final_points: number
+          id?: string
+          lifetime_discount?: number | null
+          premium_months?: number | null
+          rewards_claimed?: boolean | null
+          special_perks?: Json | null
+          user_id: string
+          vip_months?: number | null
+        }
+        Update: {
+          badge?: string
+          claimed_at?: string | null
+          cmpx_tokens?: number
+          created_at?: string | null
+          final_level?: string
+          final_points?: number
+          id?: string
+          lifetime_discount?: number | null
+          premium_months?: number | null
+          rewards_claimed?: boolean | null
+          special_perks?: Json | null
+          user_id?: string
+          vip_months?: number | null
         }
         Relationships: []
       }
@@ -217,6 +301,41 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_summaries: {
+        Row: {
+          chat_room_id: string
+          created_at: string | null
+          id: string
+          key_points: Json | null
+          sentiment: string | null
+          summary_text: string
+        }
+        Insert: {
+          chat_room_id: string
+          created_at?: string | null
+          id?: string
+          key_points?: Json | null
+          sentiment?: string | null
+          summary_text: string
+        }
+        Update: {
+          chat_room_id?: string
+          created_at?: string | null
+          id?: string
+          key_points?: Json | null
+          sentiment?: string | null
+          summary_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_summaries_chat_room_id_fkey"
+            columns: ["chat_room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cmpx_purchases: {
         Row: {
           bonus_cmpx: number
@@ -315,6 +434,54 @@ export type Database = {
           price_mxn?: number
           price_usd?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      content_activities: {
+        Row: {
+          base_points: number | null
+          comments_count: number | null
+          content_id: string | null
+          content_type: string
+          created_at: string | null
+          id: string
+          is_viral: boolean | null
+          likes_count: number | null
+          shares_count: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+          viral_bonus: number | null
+        }
+        Insert: {
+          base_points?: number | null
+          comments_count?: number | null
+          content_id?: string | null
+          content_type: string
+          created_at?: string | null
+          id?: string
+          is_viral?: boolean | null
+          likes_count?: number | null
+          shares_count?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+          viral_bonus?: number | null
+        }
+        Update: {
+          base_points?: number | null
+          comments_count?: number | null
+          content_id?: string | null
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          is_viral?: boolean | null
+          likes_count?: number | null
+          shares_count?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+          viral_bonus?: number | null
         }
         Relationships: []
       }
@@ -757,6 +924,45 @@ export type Database = {
           },
         ]
       }
+      daily_activities: {
+        Row: {
+          activity_date: string
+          created_at: string | null
+          first_login_time: string | null
+          id: string
+          last_activity_time: string | null
+          login_count: number | null
+          minutes_active: number | null
+          points_earned: number | null
+          streak_bonus: number | null
+          user_id: string
+        }
+        Insert: {
+          activity_date?: string
+          created_at?: string | null
+          first_login_time?: string | null
+          id?: string
+          last_activity_time?: string | null
+          login_count?: number | null
+          minutes_active?: number | null
+          points_earned?: number | null
+          streak_bonus?: number | null
+          user_id: string
+        }
+        Update: {
+          activity_date?: string
+          created_at?: string | null
+          first_login_time?: string | null
+          id?: string
+          last_activity_time?: string | null
+          login_count?: number | null
+          minutes_active?: number | null
+          points_earned?: number | null
+          streak_bonus?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_token_claims: {
         Row: {
           amount_claimed: number
@@ -790,6 +996,48 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      engagement_activities: {
+        Row: {
+          activity_date: string
+          comments_made: number | null
+          created_at: string | null
+          id: string
+          likes_given: number | null
+          messages_sent: number | null
+          points_earned: number | null
+          public_room_participation: boolean | null
+          shares_made: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_date?: string
+          comments_made?: number | null
+          created_at?: string | null
+          id?: string
+          likes_given?: number | null
+          messages_sent?: number | null
+          points_earned?: number | null
+          public_room_participation?: boolean | null
+          shares_made?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_date?: string
+          comments_made?: number | null
+          created_at?: string | null
+          id?: string
+          likes_given?: number | null
+          messages_sent?: number | null
+          points_earned?: number | null
+          public_room_participation?: boolean | null
+          shares_made?: number | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -982,6 +1230,51 @@ export type Database = {
         }
         Relationships: []
       }
+      matching_preferences: {
+        Row: {
+          created_at: string | null
+          importance_activity: number | null
+          importance_interests: number | null
+          importance_location: number | null
+          importance_personality: number | null
+          importance_verification: number | null
+          interested_in: string[] | null
+          max_age: number | null
+          max_distance: number | null
+          min_age: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          importance_activity?: number | null
+          importance_interests?: number | null
+          importance_location?: number | null
+          importance_personality?: number | null
+          importance_verification?: number | null
+          interested_in?: string[] | null
+          max_age?: number | null
+          max_distance?: number | null
+          min_age?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          importance_activity?: number | null
+          importance_interests?: number | null
+          importance_location?: number | null
+          importance_personality?: number | null
+          importance_verification?: number | null
+          interested_in?: string[] | null
+          max_age?: number | null
+          max_distance?: number | null
+          min_age?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           chat_room_id: string
@@ -1044,6 +1337,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      missions: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string
+          id: string
+          is_active: boolean | null
+          mission_code: string
+          mission_type: string | null
+          name: string
+          points_reward: number
+          requirements: Json
+          special_reward: string | null
+          start_date: string
+          token_reward: number | null
+          week_number: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          mission_code: string
+          mission_type?: string | null
+          name: string
+          points_reward: number
+          requirements: Json
+          special_reward?: string | null
+          start_date: string
+          token_reward?: number | null
+          week_number?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          mission_code?: string
+          mission_type?: string | null
+          name?: string
+          points_reward?: number
+          requirements?: Json
+          special_reward?: string | null
+          start_date?: string
+          token_reward?: number | null
+          week_number?: number | null
+        }
+        Relationships: []
       }
       moderator_requests: {
         Row: {
@@ -1258,6 +1602,42 @@ export type Database = {
         }
         Relationships: []
       }
+      points_transactions: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          points_after: number
+          points_before: number
+          points_change: number
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          points_after: number
+          points_before: number
+          points_change: number
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          points_after?: number
+          points_before?: number
+          points_change?: number
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       predictive_match_scores: {
         Row: {
           compatibility_score: number
@@ -1306,23 +1686,38 @@ export type Database = {
       profiles: {
         Row: {
           account_type: string | null
+          adventurousness: number | null
           age: number | null
+          agreeableness: number | null
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          conscientiousness: number | null
           created_at: string | null
+          discretion: number | null
           display_name: string | null
+          extraversion: number | null
           first_name: string | null
           full_name: string | null
+          gender: string | null
           id: string
           id_verified: boolean | null
           id_verified_at: string | null
+          interests: string[] | null
           is_demo: boolean
           is_online: boolean | null
           is_premium: boolean | null
+          is_public: boolean | null
           last_name: string | null
           latitude: number | null
+          location: string | null
           longitude: number | null
           name: string | null
+          neuroticism: number | null
+          openness: number | null
           photo_verified: boolean | null
           photo_verified_at: string | null
+          role: string | null
           s2_cell_id: string | null
           s2_level: number | null
           updated_at: string | null
@@ -1333,23 +1728,38 @@ export type Database = {
         }
         Insert: {
           account_type?: string | null
+          adventurousness?: number | null
           age?: number | null
+          agreeableness?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          conscientiousness?: number | null
           created_at?: string | null
+          discretion?: number | null
           display_name?: string | null
+          extraversion?: number | null
           first_name?: string | null
           full_name?: string | null
+          gender?: string | null
           id?: string
           id_verified?: boolean | null
           id_verified_at?: string | null
+          interests?: string[] | null
           is_demo?: boolean
           is_online?: boolean | null
           is_premium?: boolean | null
+          is_public?: boolean | null
           last_name?: string | null
           latitude?: number | null
+          location?: string | null
           longitude?: number | null
           name?: string | null
+          neuroticism?: number | null
+          openness?: number | null
           photo_verified?: boolean | null
           photo_verified_at?: string | null
+          role?: string | null
           s2_cell_id?: string | null
           s2_level?: number | null
           updated_at?: string | null
@@ -1360,23 +1770,38 @@ export type Database = {
         }
         Update: {
           account_type?: string | null
+          adventurousness?: number | null
           age?: number | null
+          agreeableness?: number | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          conscientiousness?: number | null
           created_at?: string | null
+          discretion?: number | null
           display_name?: string | null
+          extraversion?: number | null
           first_name?: string | null
           full_name?: string | null
+          gender?: string | null
           id?: string
           id_verified?: boolean | null
           id_verified_at?: string | null
+          interests?: string[] | null
           is_demo?: boolean
           is_online?: boolean | null
           is_premium?: boolean | null
+          is_public?: boolean | null
           last_name?: string | null
           latitude?: number | null
+          location?: string | null
           longitude?: number | null
           name?: string | null
+          neuroticism?: number | null
+          openness?: number | null
           photo_verified?: boolean | null
           photo_verified_at?: string | null
+          role?: string | null
           s2_cell_id?: string | null
           s2_level?: number | null
           updated_at?: string | null
@@ -1408,6 +1833,45 @@ export type Database = {
           profile_id?: string | null
           verification_method?: string | null
           worldid_proof?: Json | null
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          activated_at: string | null
+          created_at: string | null
+          id: string
+          points_earned: number | null
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          registered_at: string | null
+          status: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          created_at?: string | null
+          id?: string
+          points_earned?: number | null
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          registered_at?: string | null
+          status?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          created_at?: string | null
+          id?: string
+          points_earned?: number | null
+          referral_code?: string
+          referred_id?: string
+          referrer_id?: string
+          registered_at?: string | null
+          status?: string | null
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -1686,6 +2150,44 @@ export type Database = {
         }
         Relationships: []
       }
+      summary_requests: {
+        Row: {
+          chat_room_id: string
+          created_at: string | null
+          error_message: string | null
+          id: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chat_room_id: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chat_room_id?: string
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "summary_requests_chat_room_id_fkey"
+            columns: ["chat_room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       testnet_token_claims: {
         Row: {
           amount_claimed: number
@@ -1758,6 +2260,39 @@ export type Database = {
           total_rewards_claimed?: number | null
           user_address?: string
           vesting_period_days?: number
+        }
+        Relationships: []
+      }
+      token_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          status: string
+          token_type: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          status?: string
+          token_type: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          status?: string
+          token_type?: string
+          transaction_type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1841,6 +2376,53 @@ export type Database = {
         }
         Relationships: []
       }
+      user_missions: {
+        Row: {
+          claimed_at: string | null
+          completed_at: string | null
+          id: string
+          mission_id: string
+          points_received: number | null
+          progress: Json | null
+          started_at: string | null
+          status: string | null
+          tokens_received: number | null
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          completed_at?: string | null
+          id?: string
+          mission_id: string
+          points_received?: number | null
+          progress?: Json | null
+          started_at?: string | null
+          status?: string | null
+          tokens_received?: number | null
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          completed_at?: string | null
+          id?: string
+          mission_id?: string
+          points_received?: number | null
+          progress?: Json | null
+          started_at?: string | null
+          status?: string | null
+          tokens_received?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_missions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_nfts: {
         Row: {
           attributes: Json | null
@@ -1889,6 +2471,57 @@ export type Database = {
           staked_at?: string | null
           token_id?: number
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_points: {
+        Row: {
+          content_points: number | null
+          created_at: string | null
+          current_streak: number | null
+          daily_activity_points: number | null
+          engagement_points: number | null
+          id: string
+          last_active_date: string | null
+          level: string | null
+          longest_streak: number | null
+          mission_points: number | null
+          referral_points: number | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content_points?: number | null
+          created_at?: string | null
+          current_streak?: number | null
+          daily_activity_points?: number | null
+          engagement_points?: number | null
+          id?: string
+          last_active_date?: string | null
+          level?: string | null
+          longest_streak?: number | null
+          mission_points?: number | null
+          referral_points?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content_points?: number | null
+          created_at?: string | null
+          current_streak?: number | null
+          daily_activity_points?: number | null
+          engagement_points?: number | null
+          id?: string
+          last_active_date?: string | null
+          level?: string | null
+          longest_streak?: number | null
+          mission_points?: number | null
+          referral_points?: number | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -1954,6 +2587,30 @@ export type Database = {
           },
         ]
       }
+      user_themes: {
+        Row: {
+          created_at: string | null
+          is_custom: boolean | null
+          theme_config: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          is_custom?: boolean | null
+          theme_config?: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          is_custom?: boolean | null
+          theme_config?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_wallets: {
         Row: {
           address: string
@@ -1982,6 +2639,36 @@ export type Database = {
           id?: string
           is_frozen?: boolean
           network?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallet_balances: {
+        Row: {
+          balance_cmpx: number | null
+          balance_gtk: number | null
+          created_at: string | null
+          id: string
+          last_sync: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          balance_cmpx?: number | null
+          balance_gtk?: number | null
+          created_at?: string | null
+          id?: string
+          last_sync?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          balance_cmpx?: number | null
+          balance_gtk?: number | null
+          created_at?: string | null
+          id?: string
+          last_sync?: string | null
           updated_at?: string | null
           user_id?: string
         }

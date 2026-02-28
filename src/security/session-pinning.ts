@@ -326,7 +326,7 @@ export class BrowserFingerprintGenerator {
   private static checkAdBlock(): boolean {
     try {
       const testAd = document.createElement('div');
-      testAd.innerHTML = '&nbsp;';
+      testAd.textContent = '\u00A0'; // Uso seguro de textContent para espacio en blanco
       testAd.className = 'adsbox pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad';
       testAd.style.cssText = 'position: absolute; top: -10px; left: -10px; height: 1px; width: 1px; visibility: hidden;';
       document.body.appendChild(testAd);

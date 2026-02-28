@@ -90,7 +90,14 @@ class SmartMatchingService {
       // 3. Convertir a UserProfile y calcular matches
       const userProfiles = candidates
         .map((c) => this.mapToUserProfile(c))
-        .filter(Boolean) as UserProfile[];
+        .filter((p): p is UserProfile => {
+          if (!p) return false;
+          // Habilitar variable gender: filtrar candidatos que no coincidan con la preferencia del usuario
+          // y que el usuario no coincida con la preferencia del candidato
+          const isGenderMatch = userProfile.preferences.genderPreference.includes(p.gender);
+          logger.debug("Gender check:", { userGender: userProfile.gender, candidateGender: p.gender, isMatch: isGenderMatch });
+          return isGenderMatch;
+        });
 
       const matches = smartMatchingEngine.findBestMatches(
         userProfile,
@@ -329,8 +336,7 @@ class SmartMatchingService {
       if (options.filters?.hasPhotos && data) {
         // Verificar que tenga avatar_url (por ahora, ya que tabla images puede no existir)
         return data.filter((profile) => {
-          const avatarUrl = (profile as { avatar_url: string | null }).avatar_url;
-          return Boolean(avatarUrl && avatarUrl.trim() !== "");
+          return Boolean(profile.avatar_url && profile.avatar_url.trim() !== "");
         });
       }
 
@@ -341,6 +347,48 @@ class SmartMatchingService {
       });
       return [];
     }
+  }
+
+  /**
+   * Calcula completitud del perfil basándose en los campos requeridos
+   */
+  public calculateCompleteness(profile: {
+    first_name?: string | null;
+    bio?: string | null;
+    age?: number | null;
+    gender?: string | null;
+    city?: string | null;
+    interests?: string[] | string | null;
+    avatar_url?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+    [key: string]: any;
+  }): number {
+    let score = 0;
+    const fields = [
+      "first_name",
+      "bio",
+      "age",
+      "gender",
+      "city",
+      "interests",
+      "avatar_url",
+      "latitude",
+      "longitude",
+    ];
+
+    fields.forEach((field) => {
+      const val = profile[field];
+      if (val) {
+        if (Array.isArray(val)) {
+          if (val.length > 0) score += 100 / fields.length;
+        } else {
+          score += 100 / fields.length;
+        }
+      }
+    });
+
+    return Math.round(score);
   }
 
   /**
@@ -357,103 +405,98 @@ class SmartMatchingService {
     interests?: string[] | string | null;
     is_verified?: boolean | null;
     relationship_type?: string | null;
+    bio?: string | null;
+    openness?: number | null;
+    conscientiousness?: number | null;
+    extraversion?: number | null;
+    agreeableness?: number | null;
+    neuroticism?: number | null;
+    adventurousness?: number | null;
+    discretion?: number | null;
+    account_type?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+    updated_at?: string | null;
+    photo_verified?: boolean | null;
+    id_verified?: boolean | null;
+    age_range_min?: number | null;
+    age_range_max?: number | null;
+    interested_in?: string | null;
+    max_distance?: number | null;
+    profile_completeness?: number | null;
+    city?: string | null;
   }): UserProfile | null {
     try {
       // Parsear intereses (pueden estar en formato string JSON o array)
       let interests: string[] = [];
       if (profile.interests) {
-        if (typeof profile.interests === "string") {
+        if (Array.isArray(profile.interests)) {
+          interests = profile.interests;
+        } else if (typeof profile.interests === "string") {
           try {
             interests = JSON.parse(profile.interests);
           } catch {
-            interests = (profile.interests as string)
-              .split(",")
-              .map((i: string) => i.trim());
+            interests = [profile.interests];
           }
-        } else if (Array.isArray(profile.interests)) {
-          interests = profile.interests;
         }
       }
 
-      // Obtener intereses swinger si existen
-      // TODO: Hacer query a user_swinger_interests si es necesario
-
       // Personalidad (valores por defecto si no existen)
       const personality = {
-        openness: ((profile as any).openness as number) || 50,
-        conscientiousness: ((profile as any).conscientiousness as number) || 50,
-        extraversion: ((profile as any).extraversion as number) || 50,
-        agreeableness: ((profile as any).agreeableness as number) || 50,
-        neuroticism: ((profile as any).neuroticism as number) || 50,
-        adventurousness: ((profile as any).adventurousness as number) || 50,
-        discretion: ((profile as any).discretion as number) || 50,
-      };
-
-      // Preferencias (valores por defecto)
-      const preferences = {
-        ageRange: {
-          min: ((profile as any).preferred_age_min as number) || 18,
-          max: ((profile as any).preferred_age_max as number) || 65,
-        },
-        genderPreference: ((profile as any).looking_for as string[] | string)
-          ? Array.isArray((profile as any).looking_for)
-            ? (profile as any).looking_for
-            : [(profile as any).looking_for]
-          : ["single", "pareja"],
-        maxDistance: ((profile as any).max_distance as number) || 50,
-        interests: interests,
-        dealBreakers: ((profile as any).deal_breakers as string[] | undefined) || [],
-        importance: {
-          personality: ((profile as any).importance_personality as number) || 20,
-          interests: ((profile as any).importance_interests as number) || 25,
-          location: ((profile as any).importance_location as number) || 25,
-          activity: ((profile as any).importance_activity as number) || 15,
-          verification: ((profile as any).importance_verification as number) || 15,
-        },
-      };
-
-      // Actividad (calcular desde datos disponibles)
-      const activity = {
-        lastActive: ((profile as any).updated_at as string)
-          ? new Date((profile as any).updated_at)
-          : new Date(),
-        responseRate: ((profile as any).response_rate as number) || 50,
-        profileCompleteness: this.calculateCompleteness(profile),
-        photosCount: ((profile as any).photos_count as number) || 0,
-        messagesExchanged: ((profile as any).messages_count as number) || 0,
-        meetingsArranged: ((profile as any).meetings_count as number) || 0,
-      };
-
-      // Verificación
-      const verification = {
-        isVerified: ((profile as any).is_verified as boolean) || false,
-        photoVerified: ((profile as any).photo_verified as boolean) || false,
-        phoneVerified: ((profile as any).phone_verified as boolean) || false,
-        idVerified: ((profile as any).id_verified as boolean) || false,
-        coupleVerified: ((profile as any).couple_verified as boolean) || false,
+        openness: profile.openness || 50,
+        conscientiousness: profile.conscientiousness || 50,
+        extraversion: profile.extraversion || 50,
+        agreeableness: profile.agreeableness || 50,
+        neuroticism: profile.neuroticism || 50,
+        adventurousness: profile.adventurousness || 50,
+        discretion: profile.discretion || 50,
       };
 
       return {
-        id: ((profile as any).user_id as string) || ((profile as any).id as string),
-        name: ((profile as any).first_name as string | null) || ((profile as any).name as string | null) || "Usuario",
-        age: ((profile as any).age as number) || 25,
-        gender: ((profile as any).profile_type as string) === "couple" ? "pareja" : "single",
+        id: profile.id || profile.user_id || "",
+        name: profile.display_name || profile.first_name || "Usuario",
+        age: profile.age || 25,
+        gender: (profile.account_type === "pareja" ? "pareja" : "single") as "single" | "pareja",
         location: {
-          city: "Ciudad",
-          ...(((profile as any).latitude as number) && ((profile as any).longitude as number)
-            ? {
-                coordinates: {
-                  lat: ((profile as any).latitude as number),
-                  lng: ((profile as any).longitude as number),
-                },
-              }
-            : {}),
-        },
+          city: profile.city || "Ciudad de México",
+          coordinates: (profile.latitude && profile.longitude) 
+            ? { lat: profile.latitude, lng: profile.longitude }
+            : undefined
+        } as { city: string; coordinates?: { lat: number; lng: number } },
         interests,
         personality,
-        preferences,
-        activity,
-        verification,
+        preferences: {
+          ageRange: { 
+            min: profile.age_range_min || 18, 
+            max: profile.age_range_max || 99 
+          },
+          genderPreference: (profile.interested_in === "pareja" ? ["pareja"] : ["single"]) as ("single" | "pareja")[],
+          maxDistance: profile.max_distance || 50,
+          interests: [],
+          dealBreakers: [],
+          importance: {
+            personality: 50,
+            interests: 50,
+            location: 50,
+            activity: 50,
+            verification: 50
+          }
+        },
+        activity: {
+          lastActive: profile.updated_at ? new Date(profile.updated_at) : new Date(),
+          responseRate: 80,
+          profileCompleteness: profile.profile_completeness || 70,
+          photosCount: profile.avatar_url ? 1 : 0,
+          messagesExchanged: 0,
+          meetingsArranged: 0
+        },
+        verification: {
+          isVerified: !!profile.is_verified,
+          photoVerified: !!profile.photo_verified,
+          phoneVerified: false,
+          idVerified: !!profile.id_verified,
+          coupleVerified: profile.account_type === "pareja"
+        }
       };
     } catch (error) {
       logger.error("Error mapeando perfil:", {
@@ -464,35 +507,10 @@ class SmartMatchingService {
   }
 
   /**
-   * Calcula completitud del perfil
+   * Calcula el porcentaje de completitud del perfil
    */
-  private calculateCompleteness(profile: {
-    first_name?: string | null;
-    bio?: string | null;
-    age?: number | null;
-    interests?: string[] | null;
-    avatar_url?: string | null;
-    [key: string]: any;
-  }): number {
-    let completeness = 0;
-    const fields = [
-      "first_name",
-      "bio",
-      "age",
-      "gender",
-      "city",
-      "interests",
-      "avatar_url",
-      "latitude",
-      "longitude",
-    ];
+  // Removido duplicado private calculateCompleteness anterior y reemplazado por la versión pública habilitada
 
-    fields.forEach((field) => {
-      if (profile[field]) completeness += 100 / fields.length;
-    });
-
-    return Math.round(completeness);
-  }
 
   /**
    * Enriquece matches con conexiones sociales desde Neo4j
@@ -640,9 +658,9 @@ class SmartMatchingService {
         return this.emptyResult();
       }
 
-      const userProfiles = profiles
+      const userProfiles = (profiles || [])
         .map((p) => this.mapToUserProfile(p))
-        .filter(Boolean) as UserProfile[];
+        .filter((p): p is UserProfile => p !== null);
 
       const matches = smartMatchingEngine.findBestMatches(
         userProfile,
@@ -801,11 +819,30 @@ class SmartMatchingService {
         location?: string | null;
         bio?: string | null;
         avatar_url?: string | null;
-        interests?: string[] | null;
+        interests?: string[] | string | null;
         is_verified?: boolean | null;
         gender?: string | null;
         relationship_type?: string | null;
         compatibility_score?: number | null;
+        openness?: number | null;
+        conscientiousness?: number | null;
+        extraversion?: number | null;
+        agreeableness?: number | null;
+        neuroticism?: number | null;
+        adventurousness?: number | null;
+        discretion?: number | null;
+        account_type?: string | null;
+        latitude?: number | null;
+        longitude?: number | null;
+        updated_at?: string | null;
+        photo_verified?: boolean | null;
+        id_verified?: boolean | null;
+        age_range_min?: number | null;
+        age_range_max?: number | null;
+        interested_in?: string | null;
+        max_distance?: number | null;
+        profile_completeness?: number | null;
+        city?: string | null;
       }[] = [];
 
       if (compatibleUserIds.length > 0 && supabase) {
@@ -822,17 +859,21 @@ class SmartMatchingService {
       }
 
       // PASO 4: Fusión en memoria
-      const mergedResults = candidates.map((candidate) => {
+      const results: (MatchScore & { socialScore: number })[] = candidates.map((candidate) => {
         const neo4jData = compatibleUserIds.find(
           (c) => c.userId === candidate.id
         );
+        
+        const mappedProfile = this.mapToUserProfile(candidate);
+        if (!mappedProfile) return null;
+
+        const scoreFromNeo4j = neo4jData?.socialScore || 0;
+        const baseScore = candidate.compatibility_score || 0;
+
         return {
-          ...candidate,
           userId: candidate.id,
-          socialScore: neo4jData?.socialScore || 0,
-          totalScore:
-            (candidate.compatibility_score || 0) +
-            (neo4jData?.socialScore || 0),
+          totalScore: Math.round(baseScore + scoreFromNeo4j),
+          socialScore: scoreFromNeo4j,
           breakdown: {
             personality: 0,
             interests: 0,
@@ -840,11 +881,13 @@ class SmartMatchingService {
             activity: 0,
             verification: 0,
           },
-          reasons: [],
-          redFlags: [],
+          reasons: [] as string[],
+          redFlags: [] as string[],
           confidence: 0.8,
         };
-      });
+      }).filter((r): r is (MatchScore & { socialScore: number }) => r !== null);
+
+      const mergedResults: MatchScore[] = results;
 
       // Ordenar por score total
       mergedResults.sort((a, b) => b.totalScore - a.totalScore);

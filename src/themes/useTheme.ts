@@ -70,31 +70,22 @@ export const useTheme = () => {
         }
 
         if (data) {
-          const theme = data as {
-            bg_url?: string;
-            particles_intensity?: number;
-            glow_level?: "low" | "medium" | "high";
-            enable_particles?: boolean;
-            enable_background_animations?: boolean;
-            animation_speed?: "slow" | "normal" | "fast";
-            enable_glass_ui?: boolean;
-          };
+          const config = (data.theme_config as any) || {};
           setPrefs({
-            background: theme.bg_url || defaultPrefs.background,
+            background: config.background || defaultPrefs.background,
             particlesIntensity:
-              theme.particles_intensity ?? defaultPrefs.particlesIntensity,
-            glowLevel: theme.glow_level || defaultPrefs.glowLevel,
-            isCustom: true,
+              config.particlesIntensity ?? defaultPrefs.particlesIntensity,
+            glowLevel: config.glowLevel || defaultPrefs.glowLevel,
+            isCustom: (data as any).is_custom ?? true,
             enableParticles:
-              theme.enable_particles ?? defaultPrefs.enableParticles,
+              config.enableParticles ?? defaultPrefs.enableParticles,
             enableBackgroundAnimations:
-              theme.enable_background_animations ??
+              config.enableBackgroundAnimations ??
               defaultPrefs.enableBackgroundAnimations,
             animationSpeed:
-              theme.animation_speed || defaultPrefs.animationSpeed,
+              config.animationSpeed || defaultPrefs.animationSpeed,
             enableGlassUI:
-              theme.enable_glass_ui ??
-              prefs.enableGlassUI ??
+              config.enableGlassUI ??
               defaultPrefs.enableGlassUI,
           });
 
@@ -127,44 +118,24 @@ export const useTheme = () => {
             table: "user_themes",
             filter: `user_id=eq.${user.id}`,
           },
-          (payload: unknown) => {
-            const theme = (payload as {
-              new: {
-                bg_url?: string;
-                particles_intensity?: number;
-                glow_level?: "low" | "medium" | "high";
-                enable_particles?: boolean;
-                enable_background_animations?: boolean;
-                animation_speed?: "slow" | "normal" | "fast";
-                enable_glass_ui?: boolean;
-              };
-            }).new;
-
-            const themeSafe = theme as {
-              bg_url?: string;
-              particles_intensity?: number;
-              glow_level?: "low" | "medium" | "high";
-              enable_particles?: boolean;
-              enable_background_animations?: boolean;
-              animation_speed?: "slow" | "normal" | "fast";
-              enable_glass_ui?: boolean;
-            };
+          (payload: any) => {
+            const config = (payload.new?.theme_config as any) || {};
+            
             setPrefs({
-              background: themeSafe.bg_url || defaultPrefs.background,
+              background: config.background || defaultPrefs.background,
               particlesIntensity:
-                themeSafe.particles_intensity ?? defaultPrefs.particlesIntensity,
-              glowLevel: themeSafe.glow_level || defaultPrefs.glowLevel,
-              isCustom: true,
+                config.particlesIntensity ?? defaultPrefs.particlesIntensity,
+              glowLevel: config.glowLevel || defaultPrefs.glowLevel,
+              isCustom: (payload.new as any)?.is_custom ?? true,
               enableParticles:
-                themeSafe.enable_particles ?? defaultPrefs.enableParticles,
+                config.enableParticles ?? defaultPrefs.enableParticles,
               enableBackgroundAnimations:
-                themeSafe.enable_background_animations ??
+                config.enableBackgroundAnimations ??
                 defaultPrefs.enableBackgroundAnimations,
               animationSpeed:
-                themeSafe.animation_speed || defaultPrefs.animationSpeed,
+                config.animationSpeed || defaultPrefs.animationSpeed,
               enableGlassUI:
-                themeSafe.enable_glass_ui ??
-                prefs.enableGlassUI ??
+                config.enableGlassUI ??
                 defaultPrefs.enableGlassUI,
             });
           },

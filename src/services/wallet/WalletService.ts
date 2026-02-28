@@ -3,14 +3,12 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import type { Database, Json } from "@/types/supabase-generated";
+import type { Json } from "@/types/supabase-generated";
 
 export interface WalletBalance {
   userId: string;
   cmpxBalance: number;
   gtkBalance: number;
-  cmpxLocked: number;
-  gtkLocked: number;
   lastSync: string;
   createdAt: string;
   updatedAt: string;
@@ -30,8 +28,8 @@ export interface TokenTransaction {
   createdAt: string;
 }
 
-type WalletBalancesRow = Database['public']['Tables']['wallet_balances']['Row'];
-type TokenTransactionsRow = Database['public']['Tables']['token_transactions']['Row'];
+// type WalletBalancesRow = Database['public']['Tables']['wallet_balances']['Row'];
+// type TokenTransactionsRow = Database['public']['Tables']['token_transactions']['Row'];
 
 export class WalletService {
   private static instance: WalletService;
@@ -58,13 +56,11 @@ export class WalletService {
 
       if (error) throw error;
 
-      const row = data as WalletBalancesRow;
+      const row = data;
       return {
         userId: row.user_id,
-        cmpxBalance: row.cmpx_balance ?? 0,
-        gtkBalance: row.gtk_balance ?? 0,
-        cmpxLocked: row.cmpx_locked ?? 0,
-        gtkLocked: row.gtk_locked ?? 0,
+        cmpxBalance: Number(row.balance_cmpx ?? 0),
+        gtkBalance: Number(row.balance_gtk ?? 0),
         lastSync: row.last_sync ?? new Date().toISOString(),
         createdAt: row.created_at ?? new Date().toISOString(),
         updatedAt: row.updated_at ?? new Date().toISOString(),
@@ -87,10 +83,8 @@ export class WalletService {
         .from('wallet_balances')
         .insert({
           user_id: userId,
-          cmpx_balance: 0,
-          gtk_balance: 0,
-          cmpx_locked: 0,
-          gtk_locked: 0,
+          balance_cmpx: 0,
+          balance_gtk: 0,
         })
         .select()
         .single();
@@ -99,13 +93,11 @@ export class WalletService {
 
       logger.info('Billetera creada exitosamente:', { userId });
 
-      const row = data as WalletBalancesRow;
+      const row = data;
       return {
         userId: row.user_id,
-        cmpxBalance: row.cmpx_balance ?? 0,
-        gtkBalance: row.gtk_balance ?? 0,
-        cmpxLocked: row.cmpx_locked ?? 0,
-        gtkLocked: row.gtk_locked ?? 0,
+        cmpxBalance: Number(row.balance_cmpx ?? 0),
+        gtkBalance: Number(row.balance_gtk ?? 0),
         lastSync: row.last_sync ?? new Date().toISOString(),
         createdAt: row.created_at ?? new Date().toISOString(),
         updatedAt: row.updated_at ?? new Date().toISOString(),
@@ -177,13 +169,11 @@ export class WalletService {
         newBalance,
       });
 
-      const row = updatedWallet as WalletBalancesRow;
+      const row = updatedWallet;
       return {
         userId: row.user_id,
-        cmpxBalance: row.cmpx_balance ?? 0,
-        gtkBalance: row.gtk_balance ?? 0,
-        cmpxLocked: row.cmpx_locked ?? 0,
-        gtkLocked: row.gtk_locked ?? 0,
+        cmpxBalance: Number(row.balance_cmpx ?? 0),
+        gtkBalance: Number(row.balance_gtk ?? 0),
         lastSync: row.last_sync ?? new Date().toISOString(),
         createdAt: row.created_at ?? new Date().toISOString(),
         updatedAt: row.updated_at ?? new Date().toISOString(),
@@ -245,13 +235,11 @@ export class WalletService {
         newBalance,
       });
 
-      const row = updatedWallet as WalletBalancesRow;
+      const row = updatedWallet;
       return {
         userId: row.user_id,
-        cmpxBalance: row.cmpx_balance ?? 0,
-        gtkBalance: row.gtk_balance ?? 0,
-        cmpxLocked: row.cmpx_locked ?? 0,
-        gtkLocked: row.gtk_locked ?? 0,
+        cmpxBalance: Number(row.balance_cmpx ?? 0),
+        gtkBalance: Number(row.balance_gtk ?? 0),
         lastSync: row.last_sync ?? new Date().toISOString(),
         createdAt: row.created_at ?? new Date().toISOString(),
         updatedAt: row.updated_at ?? new Date().toISOString(),
@@ -336,8 +324,7 @@ export class WalletService {
 
       if (error) throw error;
 
-      return (data || []).map((tx) => {
-        const row = tx as TokenTransactionsRow;
+      return (data || []).map((row) => {
         const meta = (row.metadata ?? {}) as Record<string, unknown>;
 
         const balanceAfter =
@@ -347,8 +334,8 @@ export class WalletService {
           id: row.id,
           userId: row.user_id,
           transactionType: row.transaction_type as TokenTransaction['transactionType'],
-          amount: row.amount,
-          tokenType: row.token_type as TokenTransaction['tokenType'],
+          amount: Number(row.amount),
+          tokenType: row.token_type.toLowerCase() as TokenTransaction['tokenType'],
           balanceAfter,
           ...(typeof meta.description === 'string' ? { description: meta.description } : {}),
           metadata: meta,

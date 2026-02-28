@@ -1125,6 +1125,30 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_unlocks: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          owner_id: string
+          visitor_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          owner_id: string
+          visitor_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          owner_id?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
       images: {
         Row: {
           created_at: string | null
@@ -1218,6 +1242,7 @@ export type Database = {
           from_profile: string | null
           id: string
           to_profile: string | null
+          type: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1225,6 +1250,7 @@ export type Database = {
           from_profile?: string | null
           id?: string
           to_profile?: string | null
+          type?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1232,6 +1258,7 @@ export type Database = {
           from_profile?: string | null
           id?: string
           to_profile?: string | null
+          type?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -1240,18 +1267,24 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          profile_id_1: string | null
+          profile_id_2: string | null
           user1_id: string
           user2_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
+          profile_id_1?: string | null
+          profile_id_2?: string | null
           user1_id: string
           user2_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
+          profile_id_1?: string | null
+          profile_id_2?: string | null
           user1_id?: string
           user2_id?: string
         }

@@ -48,24 +48,22 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
         });
       }
 
-      // Fallback: Verificar si es moderador activo (RLS debe filtrar correctamente)
-      const { data: moderatorRow, error: moderatorError } = await supabase
-        .from("moderators")
-        .select("id, user_id, is_active, status")
+      // Fallback: Verificar rol vía tabla user_roles (existe en schema local)
+      const { data: roleRow, error: roleError } = await supabase
+        .from("user_roles")
+        .select("role")
         .eq("user_id", session.user.id)
         .maybeSingle();
 
-      if (moderatorError) {
-        logger.error("❌ Error consultando moderators", {
-          error: moderatorError.message,
+      if (roleError) {
+        logger.error("❌ Error consultando user_roles", {
+          error: roleError.message,
         });
         setIsModerator(false);
         return;
       }
 
-      const isActive = Boolean(
-        moderatorRow?.is_active === true || moderatorRow?.status === "active",
-      );
+      const isActive = roleRow?.role === "moderator" || roleRow?.role === "admin";
       setIsModerator(isActive);
     } catch (error) {
       logger.error("❌ Error checking moderator access", {

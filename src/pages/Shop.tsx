@@ -10,13 +10,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
 interface CMPXPackage {
-  id: string;
+  id: number;
   name: string;
   cmpx_amount: number;
   bonus_cmpx: number;
   price_mxn: number;
   is_popular: boolean;
   description?: string;
+}
+
+interface CMPXPurchase {
+  id: number;
+  user_id: string;
+  package_id: number;
+  package_name: string;
+  cmpx_amount: number;
+  bonus_cmpx: number;
+  price_mxn: number;
+  status: string;
+  created_at: string;
 }
 
 const Shop = () => {
@@ -28,7 +40,7 @@ const Shop = () => {
   const [packages, setPackages] = useState<CMPXPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
-  const [userPurchases, setUserPurchases] = useState<any[]>([]);
+  const [userPurchases, setUserPurchases] = useState<CMPXPurchase[]>([]);
 
   useEffect(() => {
     loadPackages();
@@ -116,7 +128,7 @@ const Shop = () => {
     }
   };
 
-  const handlePurchase = async (packageId: string) => {
+  const handlePurchase = async (packageId: number) => {
     if (!isAuthenticated() || !user) {
       toast({
         title: "Inicia sesión",
@@ -306,7 +318,7 @@ const Shop = () => {
                         ? "bg-yellow-500 hover:bg-yellow-600 text-black font-bold"
                         : "bg-white text-purple-600 hover:bg-white/90"
                     }`}
-                    onClick={() => handlePurchase(pkg.id.toString())}
+                    onClick={() => handlePurchase(pkg.id)}
                     disabled={processing}
                   >
                     {processing ? (
@@ -339,7 +351,7 @@ const Shop = () => {
                   <div key={purchase.id} className="bg-white/5 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-white font-semibold">
-                        {formatNumber(purchase.total_cmpx)} CMPX
+                        {formatNumber(purchase.cmpx_amount + purchase.bonus_cmpx)} CMPX
                       </span>
                       <Badge
                         className={

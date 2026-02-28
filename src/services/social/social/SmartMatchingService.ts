@@ -209,7 +209,6 @@ class SmartMatchingService {
         .from("profiles")
         .select("*")
         .eq("user_id", userId)
-        .eq("is_public", true)
         .single();
 
       if (error || !profile) {
@@ -249,7 +248,6 @@ class SmartMatchingService {
       let query = supabase
         .from("profiles")
         .select("*")
-        .eq("is_public", true)
         .neq("user_id", userId);
 
       // SEGURIDAD: Filtrar por tipo de usuario (demo vs real)
@@ -274,10 +272,6 @@ class SmartMatchingService {
 
         if (ageRange) {
           query = query.gte("age", ageRange.min).lte("age", ageRange.max);
-        }
-
-        if (gender && gender.length > 0) {
-          query = query.in("gender", gender);
         }
 
         if (verifiedOnly) {
@@ -450,7 +444,7 @@ class SmartMatchingService {
         age: ((profile as any).age as number) || 25,
         gender: ((profile as any).profile_type as string) === "couple" ? "pareja" : "single",
         location: {
-          city: ((profile as any).city as string | null) || ((profile as any).location as string | null) || "Ciudad",
+          city: "Ciudad",
           ...(((profile as any).latitude as number) && ((profile as any).longitude as number)
             ? {
                 coordinates: {
@@ -481,7 +475,6 @@ class SmartMatchingService {
     first_name?: string | null;
     bio?: string | null;
     age?: number | null;
-    location?: string | null;
     interests?: string[] | null;
     avatar_url?: string | null;
     [key: string]: any;

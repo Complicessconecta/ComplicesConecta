@@ -217,6 +217,107 @@ export type Database = {
         }
         Relationships: []
       }
+      cmpx_purchases: {
+        Row: {
+          bonus_cmpx: number
+          cmpx_amount: number
+          created_at: string
+          id: number
+          package_id: number
+          package_name: string
+          payment_method: string | null
+          price_mxn: number
+          price_usd: number
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bonus_cmpx?: number
+          cmpx_amount?: number
+          created_at?: string
+          id?: number
+          package_id: number
+          package_name: string
+          payment_method?: string | null
+          price_mxn?: number
+          price_usd?: number
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bonus_cmpx?: number
+          cmpx_amount?: number
+          created_at?: string
+          id?: number
+          package_id?: number
+          package_name?: string
+          payment_method?: string | null
+          price_mxn?: number
+          price_usd?: number
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cmpx_purchases_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "cmpx_shop_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cmpx_shop_packages: {
+        Row: {
+          bonus_cmpx: number
+          cmpx_amount: number
+          created_at: string
+          description: string | null
+          display_order: number
+          id: number
+          is_active: boolean
+          is_popular: boolean
+          name: string
+          price_mxn: number
+          price_usd: number
+          updated_at: string
+        }
+        Insert: {
+          bonus_cmpx?: number
+          cmpx_amount?: number
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: number
+          is_active?: boolean
+          is_popular?: boolean
+          name: string
+          price_mxn?: number
+          price_usd?: number
+          updated_at?: string
+        }
+        Update: {
+          bonus_cmpx?: number
+          cmpx_amount?: number
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: number
+          is_active?: boolean
+          is_popular?: boolean
+          name?: string
+          price_mxn?: number
+          price_usd?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       couple_agreements: {
         Row: {
           agreement_hash: string

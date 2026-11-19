@@ -95,34 +95,61 @@ export default defineConfig(({ mode }) => {
           entryFileNames: "assets/js/[name]-[hash].js",
           assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
           // 🚀 OPTIMIZACIÓN: Manual chunks para resolver warning >1000KB
-          manualChunks: {
+          // Vite 8 usa Rolldown, que solo acepta manualChunks como función
+          // (la forma de objeto dejó de ser válida). Misma división de chunks.
+          manualChunks: (id) => {
             // Separar vendor libraries grandes
-            "vendor-react": ["react", "react-dom", "react-router-dom"],
-            "vendor-ui": [
-              "@radix-ui/react-dialog",
-              "@radix-ui/react-dropdown-menu",
-              "@radix-ui/react-tabs",
-            ],
-            "vendor-supabase": ["@supabase/supabase-js"],
-            "vendor-utils": ["date-fns", "crypto-js", "ethers"],
-            // Separar tipos grandes de Supabase (solo si se importan)
-            // 'types-supabase': ['./src/types/supabase-generated'],
+            if (
+              id.includes("node_modules/react/") ||
+              id.includes("node_modules/react-dom/") ||
+              id.includes("node_modules/react-router-dom/")
+            ) {
+              return "vendor-react";
+            }
+            if (
+              id.includes("node_modules/@radix-ui/react-dialog/") ||
+              id.includes("node_modules/@radix-ui/react-dropdown-menu/") ||
+              id.includes("node_modules/@radix-ui/react-tabs/")
+            ) {
+              return "vendor-ui";
+            }
+            if (id.includes("node_modules/@supabase/supabase-js/")) {
+              return "vendor-supabase";
+            }
+            if (
+              id.includes("node_modules/date-fns/") ||
+              id.includes("node_modules/crypto-js/") ||
+              id.includes("node_modules/ethers/")
+            ) {
+              return "vendor-utils";
+            }
             // Separar páginas grandes
-            "pages-large": [
-              "./src/pages/TokensInfo",
-              "./src/pages/profiles/single/ProfileSingle",
-            ],
-            "pages-chat": ["./src/pages/Chat", "./src/pages/ChatInfo"],
-            "pages-ai": [
-              "./src/pages/AIControlCenter",
-              "./src/components/ai/LegalChatBox",
-              "./src/ai/useLocalAI",
-              "./src/ai/AIWorker",
-            ],
-            "pages-profiles": [
-              "./src/pages/profiles/shared/Profiles",
-              "./src/pages/profiles/shared/ProfileDetail",
-            ],
+            if (
+              id.includes("src/pages/TokensInfo") ||
+              id.includes("src/pages/profiles/single/ProfileSingle")
+            ) {
+              return "pages-large";
+            }
+            if (
+              id.includes("src/pages/Chat") ||
+              id.includes("src/pages/ChatInfo")
+            ) {
+              return "pages-chat";
+            }
+            if (
+              id.includes("src/pages/AIControlCenter") ||
+              id.includes("src/components/ai/LegalChatBox") ||
+              id.includes("src/ai/useLocalAI") ||
+              id.includes("src/ai/AIWorker")
+            ) {
+              return "pages-ai";
+            }
+            if (
+              id.includes("src/pages/profiles/shared/Profiles") ||
+              id.includes("src/pages/profiles/shared/ProfileDetail")
+            ) {
+              return "pages-profiles";
+            }
           },
         },
       },

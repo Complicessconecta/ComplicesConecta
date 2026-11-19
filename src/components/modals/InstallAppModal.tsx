@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { X, Smartphone, Download, Chrome, Globe, CheckCircle } from "lucide-react";
+import { X, Smartphone, Download, Globe, CheckCircle } from "lucide-react";
+import { IconBrandChrome } from "@tabler/icons-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
@@ -211,7 +212,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
               <>
                 <div className="space-y-3 sm:space-y-4">
                   <h3 className="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
-                    <Chrome className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    <IconBrandChrome className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     Instrucciones de Instalación
                   </h3>
 

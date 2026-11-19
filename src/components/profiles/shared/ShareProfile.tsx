@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Share2, Copy, Facebook, Instagram, MessageCircle, QrCode } from "lucide-react";
+import { Share2, Copy, MessageCircle, QrCode } from "lucide-react";
+import { IconBrandFacebook, IconBrandInstagram } from "@tabler/icons-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/forms/Input";
@@ -109,7 +110,7 @@ export const ShareProfile = ({
                 onClick={() => handleShare("facebook")}
                 className="flex items-center gap-2"
               >
-                <Facebook className="h-4 w-4" />
+                <IconBrandFacebook className="h-4 w-4" />
                 Facebook
               </Button>
 
@@ -127,7 +128,7 @@ export const ShareProfile = ({
                 onClick={() => handleShare("instagram")}
                 className="flex items-center gap-2"
               >
-                <Instagram className="h-4 w-4" />
+                <IconBrandInstagram className="h-4 w-4" />
                 Instagram
               </Button>
 

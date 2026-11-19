@@ -218,7 +218,7 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "ethers": "^6.16.0",
     "globals": "^17.5.0",
-    "happy-dom": "^20.9.0",
+    "happy-dom": "^21.0.4",
     "hardhat": "^3.4.0",
     "husky": "^9.1.7",
     "jiti": "^2.6.1",

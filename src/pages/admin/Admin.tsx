@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { safeGetItem } from "@/lib/safe-storage";
 import { Users,Shield, BarChart3, Plus, Trash2, Settings, Crown } from "lucide-react";
 
 // Types 
@@ -92,46 +91,9 @@ export const Admin = () => {
   });
 
   useEffect(() => {
-    // Check for demo authentication first
-    const demoAuth = safeGetItem<string>("demo_authenticated", {
-      validate: true,
-      defaultValue: "false",
-    });
-    const demoUser = safeGetItem<unknown>("demo_user", {
-      validate: false,
-      defaultValue: null,
-    });
-
-    if (demoAuth === "true" && demoUser) {
-      // Parse user safely
-      let user: { accountType?: string; role?: string } | null = null;
-      try {
-        if (typeof demoUser === "string") {
-          user = JSON.parse(demoUser);
-        } else if (typeof demoUser === "object" && demoUser !== null) {
-          user = demoUser as { accountType?: string; role?: string };
-        }
-      } catch (error) {
-        logger.error("Error parsing demo user:", { error: String(error) });
-        user = null;
-      }
-
-      if (user && (user.accountType === "admin" || user.role === "admin")) {
-        // Redirect admin users to production admin panel
-        navigate("/admin-production");
-        return;
-      } else if (user) {
-        toast({
-          title: "Acceso Denegado",
-          description: "No tienes permisos de administrador",
-          variant: "destructive",
-        });
-        navigate("/discover");
-        return;
-      }
-    }
-
-    // Check for real authentication
+    // C3: el bloque demo fue eliminado. Un demo_user con role/accountType
+    // "admin" en localStorage ya no redirige a /admin-production ni concede
+    // acceso: solo la autenticación real + isAdmin() deciden.
     if (!isAuthenticated()) {
       navigate("/auth");
       return;

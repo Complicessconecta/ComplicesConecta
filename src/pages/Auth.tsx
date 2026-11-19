@@ -19,7 +19,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { logger } from "@/lib/logger";
 import { isProductionAdmin } from "@/lib/app-config";
-import { StorageManager } from "@/lib/storage-manager";
 
 interface FormData {
   email: string;
@@ -51,10 +50,8 @@ interface FormData {
   profileTheme: string;
 }
 
-// Interfaces para tipos extendidos
-type NavigatorWithWebDriver = Navigator & {
-  webdriver?: boolean;
-};
+// (C4/C5 2026-11-19: el tipo NavigatorWithWebDriver se eliminó junto con el
+// autofill de TestSprite; ya no se detecta webdriver en este archivo.)
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -114,29 +111,9 @@ const Auth = () => {
     console.log("activeTab cambió:", activeTab);
   }, [activeTab]);
 
-  useEffect(() => {
-    const isAutomated =
-      typeof navigator !== "undefined" && Boolean((navigator as NavigatorWithWebDriver).webdriver);
-    if (!isAutomated) return;
-
-    const testEmail = import.meta.env.VITE_TESTSPRITE_EMAIL as string | undefined;
-    const testPassword = import.meta.env.VITE_TESTSPRITE_PASSWORD as
-      | string
-      | undefined;
-
-    if (!testEmail || !testPassword) return;
-
-    setFormData((prev) => {
-      if (prev.email || prev.password) {
-        return prev;
-      }
-      return {
-        ...prev,
-        email: testEmail,
-        password: testPassword,
-      };
-    });
-  }, []);
+  // C4/C5 (2026-11-19): eliminado el autofill de TestSprite
+  // (VITE_TESTSPRITE_EMAIL / VITE_TESTSPRITE_PASSWORD). Ninguna credencial
+  // se inyecta ya en el formulario desde variables de entorno del bundle.
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -292,7 +269,7 @@ const Auth = () => {
               logger.error("❌ Admin verification failed", {
                 error: rpcError.message,
               });
-              // Permitir acceso por email de env o modo demo sin hacer signOut
+              // Permitir acceso por email de env sin hacer signOut
               if (isAdminUser) {
                 toast({
                   title: "Verificando permisos",
@@ -313,14 +290,14 @@ const Auth = () => {
             });
           }
 
-          // NO hacer signOut() si es admin por email de env o modo demo
-          // Permitir acceso basado en email de env o demo mode
+          // NO hacer signOut() si es admin por email de env
+          // Permitir acceso basado en email de env
           const userEmail = authUser?.email?.toLowerCase();
           const isProductionAdminCheck = userEmail && isProductionAdmin(userEmail);
-          const sessionFlags = StorageManager.getSessionFlags();
-          const isDemoAdminCheck = sessionFlags.demo_authenticated;
 
-          if (isProductionAdminCheck || isDemoAdminCheck) {
+          // C3: el fallback demo (isDemoAdminCheck = sessionFlags.demo_authenticated)
+          // fue eliminado. Una sesión demo nunca concede acceso de admin.
+          if (isProductionAdminCheck) {
             toast({
               title: "Acceso Administrador",
               description: "Bienvenido al panel de administración",

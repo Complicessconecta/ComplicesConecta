@@ -5,7 +5,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { getAppConfig, DEMO_CREDENTIALS, getDemoPassword, handleDemoAuth, clearDemoAuth, isProductionAdmin } from "@/lib/app-config";
+import { getAppConfig, DEMO_CREDENTIALS, handleDemoAuth, clearDemoAuth, isProductionAdmin } from "@/lib/app-config";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -101,8 +101,13 @@ export const useAuth = () => {
             parsedDemoUser.first_name ||
             "Demo User") as string,
           email: (parsedDemoUser.email || "") as string | null,
-          role: parsedDemoUser.role || "user",
-          profile_type: (parsedDemoUser.accountType || "single") as string,
+          // C3: el perfil demo NUNCA es admin. role forzado a "user" y
+          // profile_type limitado a "single"/"couple": un demo_user forjado
+          // con role/accountType "admin" en localStorage no escala privilegios.
+          role: "user",
+          profile_type: (parsedDemoUser.accountType === "couple"
+            ? "couple"
+            : "single") as string,
           is_demo: true,
           is_verified: true,
           is_premium: false,
@@ -481,17 +486,15 @@ export const useAuth = () => {
       if (config.mode === "demo") {
         logger.info("🎭 Modo demo detectado - permitiendo cualquier correo");
 
-        // Verificar si es una credencial demo específica (para contraseña correcta)
+        // C4/C5 (2026-11-19): el modo demo es local y SIN contraseña. Ya no se
+        // lee ni se compara ninguna contraseña demo (antes: getDemoPassword
+        // desde VITE_DEMO_PASSWORD_*). Las credenciales demo conocidas son
+        // cuentas locales y nunca otorgan admin.
         if (DEMO_CREDENTIALS.includes(email)) {
-          const demoPassword = getDemoPassword(email);
-
-          if (demoPassword && password !== demoPassword) {
-            logger.error("🚫 Contraseña incorrecta para usuario demo - acceso denegado");
-            throw new Error("Contraseña incorrecta para usuario demo");
-          }
+          logger.info("🎭 Credencial demo conocida - acceso local sin contraseña", { email });
         } else {
-          // Para cualquier otro correo en modo demo, aceptar cualquier contraseña
-          logger.info("🎭 Correo genérico en modo demo - aceptando cualquier contraseña");
+          // Para cualquier otro correo en modo demo, aceptar sin contraseña
+          logger.info("🎭 Correo genérico en modo demo - aceptando sin contraseña");
         }
 
         // Manejar autenticación demo
@@ -636,23 +639,6 @@ export const useAuth = () => {
       return true;
     }
 
-    if (sessionFlags.demo_authenticated && demoUser) {
-      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
-      
-      if (!parsedDemoUser) {
-        return false;
-      }
-      
-      logger.info("🎭 Demo authenticated check:", {
-        email: parsedDemoUser.email,
-        accountType: parsedDemoUser.accountType,
-        role: parsedDemoUser.role,
-        isAdmin: parsedDemoUser.accountType === "admin" ||
-                parsedDemoUser.role === "admin",
-      });
-      return true;
-    }
-
     // Verificar sesión real
     return Boolean(effectiveUser) || Boolean(session);
   };
@@ -666,31 +652,12 @@ export const useAuth = () => {
   };
 
   // Función para verificar si un usuario es administrador
+  // C3: la rama demo fue eliminada. Un usuario demo nunca es admin:
+  // isAdmin() solo mira email de autenticación (whitelist de producción)
+  // y el role del perfil real cargado desde Supabase (resuelto vía
+  // rpc("is_admin") en loadProfile). El JSON demo de localStorage no
+  // influye en esta decisión.
   const isAdmin = () => {
-    // Demo admin check usando demoUser directo
-    const sessionFlags = StorageManager.getSessionFlags();
-
-    if (sessionFlags.demo_authenticated && demoUser) {
-      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
-      
-      if (!parsedDemoUser) {
-        return false;
-      }
-      
-      const isDemoAdmin =
-        parsedDemoUser.accountType === "admin" ||
-        parsedDemoUser.role === "admin";
-
-      logger.info("🎭 Demo admin check:", {
-        email: parsedDemoUser.email,
-        accountType: parsedDemoUser.accountType,
-        role: parsedDemoUser.role,
-        isDemoAdmin,
-      });
-
-      return isDemoAdmin;
-    }
-
     // CRÍTICO: Verificar admin basado en EMAIL DE AUTENTICACIÓN, no perfil
     const userEmail = user?.email?.toLowerCase();
 
@@ -739,22 +706,8 @@ export const useAuth = () => {
   };
 
   const shouldUseProductionAdmin = () => {
-    const sessionFlags = StorageManager.getSessionFlags();
-
-    // Si es demo admin, usar panel de producción
-    if (sessionFlags.demo_authenticated && demoUser) {
-      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
-      
-      if (!parsedDemoUser) {
-        return false;
-      }
-      
-      return (
-        parsedDemoUser.accountType === "admin" ||
-        parsedDemoUser.role === "admin"
-      );
-    }
-
+    // C3: la rama demo-admin fue eliminada. Un usuario demo nunca usa el
+    // panel de producción; solo un admin real (email de producción) lo hace.
     // Si es admin real, usar panel de producción
     const userEmail = user?.email?.toLowerCase();
     const isRealAdmin = userEmail === (import.meta.env.VITE_ADMIN_EMAIL || "").toLowerCase();
@@ -762,7 +715,6 @@ export const useAuth = () => {
     logger.info("🏭 shouldUseProductionAdmin check", {
       userEmail,
       isRealAdmin,
-      demoAuth: sessionFlags.demo_authenticated,
     });
 
     return isRealAdmin;

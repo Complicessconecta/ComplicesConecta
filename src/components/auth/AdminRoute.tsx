@@ -36,40 +36,10 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
   const checkAdminAccess = async (attempt: number) => {
     try {
-      // Demo mode: permitir acceso admin sin sesión Supabase
-      try {
-        if (typeof window !== "undefined") {
-          const demoAuth = window.localStorage.getItem("demo_authenticated");
-          const demoUserRaw = window.localStorage.getItem("demo_user");
-          if (demoAuth === "true" && demoUserRaw) {
-            let parsedDemoUser: { accountType?: string; role?: string } | null = null;
-            try {
-              parsedDemoUser = JSON.parse(demoUserRaw) as {
-                accountType?: string;
-                role?: string;
-              };
-            } catch {
-              parsedDemoUser = null;
-            }
-
-            const isDemoAdmin =
-              parsedDemoUser?.accountType === "admin" || parsedDemoUser?.role === "admin";
-
-            if (isDemoAdmin) {
-              logger.info("✅ AdminRoute: acceso demo admin autorizado");
-              setIsAdmin(true);
-              setLoading(false);
-              return;
-            }
-
-            // Si hay residuos de demo pero NO es demo admin, no bloquear aquí.
-            // Continuar a la validación real (sesión Supabase / email whitelist / rpc / admin_users).
-            logger.info("ℹ️ AdminRoute: demo activo sin permisos admin, validando sesión real");
-          }
-        }
-      } catch {
-        // no-op: seguir validación normal
-      }
+      // C3 (2026-11-19): demo admin por localStorage ELIMINADO. Un JSON
+      // demo_authenticated/demo_user en localStorage ya no concede admin.
+      // Solo corre la validación real: sesión Supabase + email whitelist
+      // (isProductionAdmin) + rpc("is_admin") + tabla admin_users.
 
       if (!supabase) {
         logger.error("❌ Supabase no está disponible");

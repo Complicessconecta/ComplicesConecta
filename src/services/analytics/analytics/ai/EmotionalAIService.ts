@@ -11,7 +11,6 @@
  * @version 3.5.0
  */
 
-import OpenAI from "openai";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
@@ -31,19 +30,13 @@ export interface ChatMessage {
 
 export class EmotionalAIService {
   private static instance: EmotionalAIService;
-  private openai: OpenAI | null = null;
 
   constructor() {
-    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (openaiKey) {
-      this.openai = new OpenAI({
-        apiKey: openaiKey,
-        dangerouslyAllowBrowser: true,
-      });
-      logger.info("✅ OpenAI inicializado para Emotional AI");
-    } else {
-      logger.warn("⚠️ OpenAI API key no configurada, usando fallback");
-    }
+    // JWT complement (2026-11-19): sin cliente OpenAI directo y sin
+    // VITE_OPENAI_API_KEY en el bundle. Las llamadas van por la Edge
+    // Function openai-proxy (con JWT de sesión + allowlist de modelos);
+    // ver analyzeWithGPT4. Sin sesión o si el proxy falla, se usa el
+    // fallback de patrones (comportamiento previo cuando no había key).
   }
 
   static getInstance(): EmotionalAIService {
@@ -74,13 +67,8 @@ export class EmotionalAIService {
         };
       }
 
-      // 2. Usar GPT-4 para análisis si está disponible
-      if (this.openai) {
-        return await this.analyzeWithGPT4(messages, userId1, userId2);
-      }
-
-      // 3. Fallback: análisis básico con patrones
-      return this.analyzeWithPatterns(messages);
+      // 2. Usar GPT-4 para análisis si está disponible (vía openai-proxy)
+      return await this.analyzeWithGPT4(messages, userId1, userId2);
     } catch (error) {
       logger.error("Error analizando emociones", { error });
       return {
@@ -94,17 +82,21 @@ export class EmotionalAIService {
   }
 
   /**
-   * Análisis con GPT-4
+   * Análisis con GPT-4 (vía openai-proxy, JWT complement 2026-11-19).
+   *
+   * Antes: cliente OpenAI directo con VITE_OPENAI_API_KEY en el bundle.
+   * Ahora: supabase.functions.invoke("openai-proxy") — supabase-js adjunta
+   * el JWT de sesión automáticamente y el proxy valida el modelo contra
+   * su allowlist (gpt-4o-mini está permitido). El proxy reenvía
+   * response_format (solo { type: "json_object" } / { type: "text" }),
+   * así que NO hay pérdida de paridad aquí. Sin sesión o si el proxy
+   * falla, cae al fallback de patrones (igual que antes sin key).
    */
   private async analyzeWithGPT4(
     messages: ChatMessage[],
     userId1: string,
     _userId2: string,
   ): Promise<EmotionalAnalysis> {
-    if (!this.openai) {
-      throw new Error("OpenAI no está disponible");
-    }
-
     const messagesText = messages
       .map(
         (m) => `Usuario ${m.sender_id === userId1 ? "1" : "2"}: ${m.content}`,
@@ -126,13 +118,21 @@ export class EmotionalAIService {
     }`;
 
     try {
-      const completion = await this.openai.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
-        model: "gpt-4o-mini",
-        response_format: { type: "json_object" },
-      });
+      if (!supabase) throw new Error("Supabase not initialized");
 
-      const content = completion.choices?.[0]?.message?.content;
+      const { data, error } = await supabase.functions.invoke(
+        "openai-proxy",
+        {
+          body: {
+            model: "gpt-4o-mini",
+            messages: [{ role: "user", content: prompt }],
+            response_format: { type: "json_object" },
+          },
+        },
+      );
+      if (error) throw error;
+
+      const content = data?.choices?.[0]?.message?.content;
       if (!content) throw new Error("Respuesta vacía de OpenAI");
 
       return JSON.parse(content) as EmotionalAnalysis;

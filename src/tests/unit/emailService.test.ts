@@ -14,6 +14,13 @@ vi.mock("import.meta.env", () => ({
 const { mockSupabaseClient } = vi.hoisted(() => {
   return {
     mockSupabaseClient: {
+      auth: {
+        // C2: EmailService now sends the session JWT (not the anon key)
+        getSession: vi.fn().mockResolvedValue({
+          data: { session: { access_token: "test-session-jwt" } },
+          error: null,
+        }),
+      },
       functions: {
         invoke: vi.fn(),
       },

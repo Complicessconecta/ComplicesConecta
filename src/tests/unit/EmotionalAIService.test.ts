@@ -2,21 +2,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { EmotionalAIService } from "@/services/analytics";
 import { supabase } from "@/integrations/supabase/client";
 
-// Mock OpenAI
-const { mockCreate } = vi.hoisted(() => {
-  return { mockCreate: vi.fn() };
-});
-
-vi.mock("openai", () => {
-  return {
-    default: class OpenAI {
-      chat = {
-        completions: {
-          create: mockCreate,
-        },
-      };
-    },
-  };
+// Mock openai-proxy via supabase.functions.invoke (JWT complement
+// 2026-11-19: EmotionalAIService ya no usa el cliente OpenAI directo ni
+// VITE_OPENAI_API_KEY; llama a la Edge Function openai-proxy con el JWT de
+// sesión. No hay mock del módulo "openai": el proxy se simula con
+// mockInvoke, y su rechazo fuerza el fallback de patrones igual que antes
+// lo hacía el fallo de OpenAI.)
+const { mockInvoke } = vi.hoisted(() => {
+  return { mockInvoke: vi.fn() };
 });
 
 // Mock Supabase
@@ -31,6 +24,9 @@ vi.mock("@/integrations/supabase/client", () => ({
         })),
       })),
     })),
+    functions: {
+      invoke: mockInvoke,
+    },
   },
 }));
 
@@ -102,8 +98,8 @@ describe("EmotionalAIService", () => {
 
       (supabase.from as any).mockReturnValue({ select: mockSelect });
 
-      // Mock OpenAI failure
-      mockCreate.mockRejectedValue(new Error("OpenAI error"));
+      // Mock openai-proxy failure (antes: fallo de OpenAI directo)
+      mockInvoke.mockRejectedValue(new Error("OpenAI error"));
 
       const result = await service.analyzeChatEmotions("user1", "user2");
 
@@ -146,8 +142,8 @@ describe("EmotionalAIService", () => {
 
       (supabase.from as any).mockReturnValue({ select: mockSelect });
 
-      // Mock OpenAI to throw so we force pattern usage
-      mockCreate.mockRejectedValue(new Error("No OpenAI"));
+      // Mock openai-proxy failure so we force pattern usage
+      mockInvoke.mockRejectedValue(new Error("No OpenAI"));
 
       const result = await service.analyzeChatEmotions("user1", "user2");
 

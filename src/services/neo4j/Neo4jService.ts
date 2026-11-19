@@ -64,7 +64,15 @@ class Neo4jService {
       // Usar variables de entorno para conexión
       const uri = process.env.NEO4J_URI || 'bolt://localhost:7687';
       const user = process.env.NEO4J_USER || 'neo4j';
-      const password = process.env.NEO4J_PASSWORD || 'password';
+      // C4/C5 (2026-11-19): sin fallback literal de contraseña. Sin
+      // NEO4J_PASSWORD del servidor no se conecta (antes: 'password').
+      const password = process.env.NEO4J_PASSWORD;
+
+      if (!password) {
+        logger.error('❌ Neo4j sin contraseña del servidor (NEO4J_PASSWORD). No se conecta.');
+        this.isConnected = false;
+        return;
+      }
 
       // Importación dinámica de neo4j-driver
       const neo4j = await import('neo4j-driver');

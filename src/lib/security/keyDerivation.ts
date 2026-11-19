@@ -1,17 +1,22 @@
 /**
  * Derivación de claves de encriptación usando PBKDF2
- * 
+ *
+ * C4 (2026-11-19): fin de la derivación determinista. Antes la clave se
+ * derivaba de una sal fija del repo (APP_ENCRYPTION_SALT, eliminada) + el
+ * userId, así que cualquiera con el repo podía derivarla. Ahora la clave
+ * SOLO se deriva de una passphrase explícita que únicamente conoce el
+ * usuario; sin ella las funciones lanzan un error (fail-closed). No hay
+ * fallback, no hay clave por defecto y la reconstrucción ya no toma userId.
+ * El cifrado de cliente NO protege contra XSS: lo secreto vive en el servidor.
+ *
  * Mejoras de seguridad 2025-2026:
  * - Iteraciones aumentadías a 600000 (recomendado NIST 2025+)
- * - Password base mejorado con constante de aplicación + userId
- * - Validación de versiones en decrypt
- * 
- * NOTA: La derivación de clave basada en userId es determinista por usuario,
- * lo que permite desencriptar datos almacenados anteriormente.
+ * - Validación de versiones en decrypt (solo "1.0"; los blobs "fallback"
+ *   —base64 sin cifrar— se rechazan)
  */
 
 import { logger } from "@/lib/logger";
-import { ENCRYPTION_CONFIG, APP_ENCRYPTION_SALT } from "@/lib/security/encryptionConfig";
+import { ENCRYPTION_CONFIG } from "@/lib/security/encryptionConfig";
 
 /**
  * Interfaz para clave de encriptación derivada
@@ -85,93 +90,92 @@ export async function deriveKey(
 }
 
 /**
- * Genera un password base mejorado para derivación de clave
- * 
- * Mejoras de seguridad:
- * - Combina constante de aplicación + userId
- * - Más fuerte que simplemente `complices_${userId}_encryption_key`
- * - Determinista por usuario (permite desencriptar datos anteriores)
- * 
- * @param userId - ID del usuario
- * @returns Password base para derivación
+ * C4 (2026-11-19): ELIMINADA la derivación determinista de clave.
+ * Antes: generatePasswordBase(userId) = APP_ENCRYPTION_SALT + userId, con lo
+ * que cualquiera con el repo derivaba la clave. Ahora no existe ninguna
+ * función que genere una clave sin passphrase explícita del usuario.
  */
-export function generatePasswordBase(userId: string): string {
-  // Combinar constante de aplicación + userId para password base más fuerte
-  // Esto es determinista por usuario, lo que permite desencriptar datos almacenados anteriormente
-  return `${APP_ENCRYPTION_SALT}_${userId}_encryption_key`;
+export function requirePassphrase(passphrase: string | undefined | null): string {
+  if (!passphrase) {
+    throw new Error(
+      "Cifrado de cliente requiere una passphrase explícita del usuario; sin ella no se deriva ninguna clave (C4 fail-closed)",
+    );
+  }
+  return passphrase;
 }
 
 /**
  * Obtiene o genera una clave de encriptación para un usuario
- * 
- * Mejoras de seguridad:
- * - Cache de claves para performance (evita re-derivación)
- * - Salt único por usuario
- * - Password base mejorado
- * 
- * @param userId - ID del usuario
- * @param keyCache - Cache de claves (Map<string, EncryptionKey>)
+ *
+ * C4 (2026-11-19): la clave SOLO se deriva de la passphrase explícita del
+ * usuario. Sin passphrase lanza un error. El cache es solo en memoria y se
+ * clavea por la passphrase (nunca se persiste); se limpia con clearKeyCache.
+ *
+ * @param passphrase - Passphrase explícita del usuario (obligatoria)
+ * @param keyCache - Cache de claves en memoria (Map<string, EncryptionKey>)
  * @returns Clave de encriptación derivada
  */
 export async function getEncryptionKey(
-  userId: string,
+  passphrase: string,
   keyCache: Map<string, EncryptionKey>,
 ): Promise<EncryptionKey> {
+  const validPassphrase = requirePassphrase(passphrase);
+
   // Verificar cache primero para performance
-  if (keyCache.has(userId)) {
-    return keyCache.get(userId)!;
+  if (keyCache.has(validPassphrase)) {
+    return keyCache.get(validPassphrase)!;
   }
 
-  // Generar salt único por usuario
+  // Generar salt único por cifrado
   const salt = window.crypto.getRandomValues(
     new Uint8Array(ENCRYPTION_CONFIG.saltLength),
   );
 
-  // Generar password base mejorado
-  const password = generatePasswordBase(userId);
-
-  // Derivar clave usando PBKDF2
-  const key = await deriveKey(password, salt);
+  // Derivar clave usando PBKDF2 a partir de la passphrase del usuario
+  const key = await deriveKey(validPassphrase, salt);
 
   const encryptionKey = { key, salt };
-  keyCache.set(userId, encryptionKey);
+  keyCache.set(validPassphrase, encryptionKey);
 
-  logger.info("🔑 Clave de encriptación generada", {
-    userId: userId.substring(0, 8) + "***",
-  });
+  logger.info("🔑 Clave de encriptación generada a partir de passphrase de usuario");
 
   return encryptionKey;
 }
 
 /**
  * Reconstruye una clave de encriptación usando un salt almacenado
- * 
- * Se usa en decrypt para reconstruir la misma clave que se usó en encrypt
- * 
- * @param userId - ID del usuario
+ *
+ * Se usa en decrypt para reconstruir la misma clave que se usó en encrypt.
+ *
+ * C4 (2026-11-19): ya no toma userId; exige la passphrase explícita del
+ * usuario y lanza un error sin ella.
+ *
+ * @param passphrase - Passphrase explícita del usuario (obligatoria)
  * @param saltBuffer - Salt almacenado (en base64)
  * @returns Clave de encriptación derivada
  */
 export async function reconstructEncryptionKey(
-  userId: string,
+  passphrase: string,
   saltBuffer: ArrayBuffer,
 ): Promise<CryptoKey> {
-  // Generar el mismo password base que se usó en encrypt
-  const password = generatePasswordBase(userId);
+  const validPassphrase = requirePassphrase(passphrase);
 
-  // Derivar clave usando el salt almacenado
-  const key = await deriveKey(password, new Uint8Array(saltBuffer));
+  // Derivar clave usando el salt almacenado y la passphrase del usuario
+  const key = await deriveKey(validPassphrase, new Uint8Array(saltBuffer));
 
   return key;
 }
 
 /**
  * Valida la versión de datos encriptados
- * 
+ *
+ * C4 (2026-11-19): solo "1.0" es válida. Los blobs con versión "fallback"
+ * (base64 sin cifrar) se rechazan: nunca se descifran como texto plano.
+ *
  * @param version - Versión del algoritmo
  * @returns true si la versión es válida
  */
 export function validateEncryptionVersion(version: string): boolean {
-  return version === "1.0" || version === "fallback";
+  return version === "1.0";
 }
 

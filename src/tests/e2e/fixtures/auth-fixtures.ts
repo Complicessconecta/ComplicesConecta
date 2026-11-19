@@ -31,7 +31,7 @@ export interface TestUser {
 export const SINGLE_TEST_USER: TestUser = {
   id: "single-test-user-001",
   email: "single@test.com",
-  password: "TestPassword123!",
+  password: "",
   profile: {
     id: "single-profile-001",
     name: "Usuario Single Test",
@@ -53,7 +53,7 @@ export const SINGLE_TEST_USER: TestUser = {
 export const COUPLE_TEST_USER: TestUser = {
   id: "couple-test-user-001",
   email: "couple@test.com",
-  password: "TestPassword123!",
+  password: "",
   profile: {
     id: "couple-profile-001",
     name: "Pareja Test",
@@ -76,7 +76,7 @@ export const COUPLE_TEST_USER: TestUser = {
 export const ADMIN_TEST_USER: TestUser = {
   id: "admin-test-user-001",
   email: "admin@test.com",
-  password: "AdminPassword123!",
+  password: "",
   profile: {
     id: "admin-profile-001",
     name: "Administrador Test",
@@ -98,7 +98,7 @@ export const ADMIN_TEST_USER: TestUser = {
 export const UNVERIFIED_SINGLE_USER: TestUser = {
   id: "unverified-single-001",
   email: "unverified@test.com",
-  password: "TestPassword123!",
+  password: "",
   profile: {
     id: "unverified-profile-001",
     name: "Usuario No Verificado",
@@ -120,11 +120,11 @@ export const UNVERIFIED_SINGLE_USER: TestUser = {
 export const DEMO_CREDENTIALS = {
   single: {
     email: "single@outlook.es",
-    password: "demo_password",
+    password: "",
   },
   couple: {
     email: "pareja@outlook.es",
-    password: "demo_password",
+    password: "",
   },
 };
 

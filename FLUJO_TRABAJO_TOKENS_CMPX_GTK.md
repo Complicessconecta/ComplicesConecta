@@ -18,6 +18,7 @@
 8. [Arquitectura Técnica](#arquitectura-técnica)
 9. [Seguridad y Validaciones](#seguridad-y-validaciones)
 10. [Roadmap Blockchain](#roadmap-blockchain)
+11. [Anexo — Modelo de tokens corregido (2026-11-19)](#anexo--modelo-de-tokens-corregido-2026-11-19)
 
 ---
 
@@ -763,3 +764,50 @@ El sistema de tokens CMPX & GTK de CómplicesConecta implementa una economía di
 - Cumplimiento de regulaciones
 
 Este sistema está diseñado para escalar desde una economía off-chain en beta hasta una economía blockchain completa en producción, manteniendo siempre la mejor experiencia de usuario y seguridad.
+
+---
+
+## 11. Anexo — Modelo de tokens corregido (2026-11-19)
+
+**Fecha del anexo:** 19 de noviembre de 2026
+**Origen:** corrección declarada por el propietario del proyecto (dueño y único desarrollador).
+**Alcance:** este anexo describe el modelo de tokens vigente y **sustituye** las cifras de suministro, distribución, conversión, transferibilidad y APY de este documento y de `docs/strategy/GUIA_TOKENS.md` en todo lo que entren en conflicto con él. Las secciones anteriores del documento se conservan como registro histórico y **no** deben usarse como referencia de cifras.
+
+### 11.1 Modelo vigente
+
+1. **Un solo token nativo para uso interno, sin límite de suministro.** Es el token de funcionamiento interno de la plataforma y se aplica **primero** para el funcionamiento interno:
+   - compras internas,
+   - reservaciones,
+   - donaciones a otros creadores / perfiles,
+   - acceso (contenido y funciones),
+   - regalos,
+   - funciones premium.
+2. **Un token separado para la blockchain**, destinado a inversión y staking. La cadena **aún no está decidida**; las candidatas mencionadas por el propietario son Plasma, ETH, Avax, Arbitrum, Solana, entre otras. No hay cadena, contrato ni distribución vigente para este token hasta que se tome esa decisión.
+3. **Activación del token interno: Q2**, después del lanzamiento y de la fase beta de pre-lanzamiento, junto con la IA nativa (consultas, sugerencias, notificaciones, matches, etc.).
+4. **La wallet se mantiene como demo / referencia** hasta que se defina la cadena, se terminen los contratos y el faucet, después de Q3, y el propietario vea cómo reaccionan la app y el diseño con usuarios reales. Hasta entonces, nada de lo descrito en este documento sobre wallet, staking o conversión on-chain es operativo.
+
+### 11.2 Cifras anteriores marcadas como desactualizadas
+
+No se inventan cifras nuevas. Donde las cifras anteriores entran en conflicto con el modelo vigente, quedan marcadas como **desactualizado — pendiente de nueva distribución**. No debe usarse ninguna de ellas para decisiones de producto, economía o despliegue hasta que el propietario defina la nueva distribución.
+
+| Tema | Cifra anterior | Ubicación | Estado |
+|---|---|---|---|
+| Suministro de CMPX | 1,000,000 CMPX | Este documento, sección "Tipos de Tokens" (CMPX) | **Desactualizado — pendiente de nueva distribución.** El modelo vigente es un token interno sin límite de suministro. |
+| Suministro de CMPX | "Suministro Ilimitado" | `docs/strategy/GUIA_TOKENS.md`, sección CMPX | Coincide en espíritu con el modelo vigente (sin límite), pero la distribución asociada a esa cifra en el mismo documento sigue desactualizada (ver fila siguiente). |
+| Suministro de CMPX | `MAX_SUPPLY = 1_250_000_000` (1.25B) | `contracts/CMPX.sol`, líneas 35-36 (el comentario del encabezado del mismo archivo, línea 21, dice 1,000,000,000 / 1B, en contradicción con el propio `MAX_SUPPLY`) | **Desactualizado — pendiente de nueva distribución.** Es el tope de la distribución anterior y debe ajustarse antes de cualquier despliegue. El contrato **no está desplegado**. |
+| Distribución de CMPX | 60% venta directa / 25% referidos y actividades / 10% eventos y promociones / 5% reserva | `docs/strategy/GUIA_TOKENS.md`, sección "Distribución de CMPX" | **Desactualizado — pendiente de nueva distribución.** Corresponde a la distribución anterior, rehcha por el propietario. |
+| Suministro de GTK | 5,000,000 GTK | Este documento, secciones "Tipos de Tokens" (GTK) y "Distribución de GTK" | **Desactualizado — pendiente de nueva distribución.** El token de blockchain es un token separado cuya cadena y distribución aún no están definidos. |
+| Distribución de GTK | 40% venta pública (2,000,000) / 20% staking rewards (1,000,000) / 15% team y desarrollo (750,000) / 10% liquidez (500,000) / 10% marketing y partnerships (500,000) / 5% reserva (250,000) | Este documento, "Distribución de GTK"; misma tabla de porcentajes en `docs/strategy/GUIA_TOKENS.md`, "Distribución Futura de GTK en Blockchain" | **Desactualizado — pendiente de nueva distribución.** |
+| Suministro de GTK | "Cantidad fija predefinida (a anunciarse en lanzamiento blockchain)" y, en el roadmap del mismo documento, "Hard Cap: 2,000,000 GTK / Soft Cap: 500,000 GTK" | `docs/strategy/GUIA_TOKENS.md`, secciones GTK y "Roadmap Blockchain (Q2-Q4 2026)", Fase 2 | **Desactualizado — pendiente de nueva distribución.** El hard cap de 2,000,000 además contradice el suministro de 5,000,000 de este documento. |
+| Conversión CMPX → GTK | 1:1 (1 CMPX = 1 GTK) | Este documento, secciones "Tipos de Tokens" (CMPX), "Activación de GTK" y "Roadmap Blockchain", Fase 3 | **Desactualizado — pendiente de nueva distribución.** No hay tasa de conversión vigente. |
+| Conversión CMPX → GTK | 100 CMPX = 1 GTK (Ejemplo 3) | `docs/strategy/GUIA_TOKENS.md`, "Ejemplo 3: Usuario Convierte CMPX a GTK" | **Desactualizado — pendiente de nueva distribución.** Además contradice el 1:1 de este documento. |
+| Transferibilidad de CMPX en beta | "No transferible durante beta" / "No transferibles: CMPX no se pueden transferir entre usuarios" | Este documento, secciones "Tipos de Tokens" (CMPX) y "Flujo de Trabajo CMPX", "Límites y Restricciones" | **Desactualizado — pendiente de nueva distribución.** Contradice a `docs/strategy/GUIA_TOKENS.md` (ver fila siguiente); no hay regla vigente definida. |
+| Transferibilidad de CMPX | "Transferible entre usuarios: envío de tokens como regalo entre miembros de la comunidad" | `docs/strategy/GUIA_TOKENS.md`, sección CMPX | **Desactualizado — pendiente de nueva distribución.** Contradice la no transferibilidad declarada en este documento. |
+| Staking APY | 15-35% según duración (30 días: 15%, 90 días: 20%, 180 días: 25%, 270 días: 30%, 365 días: 35%) | Este documento, "Staking GTK" | **Desactualizado — pendiente de nueva distribución.** |
+| Staking APY | 8-18% según duración (90 días: 8%, 180 días: 12%, 365 días: 18%) | `docs/strategy/GUIA_TOKENS.md`, secciones GTK, "¿Cómo Funcionan los Tokens en la App Actualmente?" y ejemplos de staking | **Desactualizado — pendiente de nueva distribución.** Además contradice el 15-35% de este documento. |
+
+### 11.3 Notas
+
+- Los costos en CMPX de funciones concretas (super like, boost, regalos, videollamadas, eventos VIP, etc.), las recompensas por referidos (50 CMPX) y los precios de paquetes en MXN descritos en las secciones anteriores **no forman parte de este anexo** y quedan también sujetos a revisión cuando se defina la nueva distribución; no se confirman aquí como vigentes.
+- El roadmap blockchain de las secciones anteriores (fases, fechas Q2-Q4 2026, IDO, listings, DAO, multi-chain) queda supeditado a la decisión pendiente de cadena y a la activación del token interno en Q2 descrita en 11.1.
+- `contracts/CMPX.sol` no está desplegado; su `MAX_SUPPLY` y su lógica de mint inicial (60% de distribución inicial) pertenecen a la distribución anterior y deben ajustarse antes de cualquier despliegue.

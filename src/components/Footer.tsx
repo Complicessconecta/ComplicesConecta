@@ -1,4 +1,5 @@
-import { Heart, Facebook, Instagram, Twitter, Mail, MessageCircle, } from "lucide-react";
+import { Heart, Mail, MessageCircle, } from "lucide-react";
+import { IconBrandFacebook, IconBrandInstagram, IconBrandTwitter } from "@tabler/icons-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { toast } from "@/hooks/useToast";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
@@ -32,7 +33,7 @@ export const Footer = () => {
                   safeOpenUrl("https://facebook.com/complicesconecta")
                 }
               >
-                <Facebook className="h-5 w-5" />
+                <IconBrandFacebook className="h-5 w-5" />
               </Button>
               <Button
                 {...({ variant: "ghost" } as any)}
@@ -42,7 +43,7 @@ export const Footer = () => {
                   safeOpenUrl("https://instagram.com/complicesconecta")
                 }
               >
-                <Instagram className="h-5 w-5" />
+                <IconBrandInstagram className="h-5 w-5" />
               </Button>
               <Button
                 {...({ variant: "ghost" } as any)}
@@ -52,7 +53,7 @@ export const Footer = () => {
                   safeOpenUrl("https://twitter.com/complicesconecta")
                 }
               >
-                <Twitter className="h-5 w-5" />
+                <IconBrandTwitter className="h-5 w-5" />
               </Button>
             </div>
           </div>

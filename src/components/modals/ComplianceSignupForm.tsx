@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Github, Twitter, Chrome } from "lucide-react";
+import { IconBrandGithub, IconBrandTwitter, IconBrandChrome } from "@tabler/icons-react";
 import { cn } from "@/shared/lib/cn";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
@@ -155,21 +155,21 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({
               variant="outline"
               className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs"
             >
-              <Github className="w-4 h-4" />
+              <IconBrandGithub className="w-4 h-4" />
               <span className="hidden sm:inline">Github</span>
             </Button>
             <Button
               variant="outline"
               className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs"
             >
-              <Twitter className="w-4 h-4" />
+              <IconBrandTwitter className="w-4 h-4" />
               <span className="hidden sm:inline">Twitter</span>
             </Button>
             <Button
               variant="outline"
               className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs"
             >
-              <Chrome className="w-4 h-4" />
+              <IconBrandChrome className="w-4 h-4" />
               <span className="hidden sm:inline">Google</span>
             </Button>
           </div>

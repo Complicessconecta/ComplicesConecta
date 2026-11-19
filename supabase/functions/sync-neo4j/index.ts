@@ -1,11 +1,11 @@
 import { serve } from "std/http/server.ts";
 import { createClient } from "@supabase/supabase-js";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import {
+  authenticate,
+  getCorsHeaders,
+  handleOptions,
+  requireAdmin,
+} from "../_shared/auth.ts";
 
 interface SyncRequest {
   type: "match" | "like" | "user";
@@ -20,18 +20,21 @@ interface SyncRequest {
 
 serve(async (req: Request) => {
   // Handle CORS preflight
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  const preflight = handleOptions(req);
+  if (preflight) return preflight;
 
   try {
+    // C2: only a logged-in user may trigger a Neo4j sync (was: unauthenticated).
+    const auth = await authenticate(req);
+    if ("response" in auth) return auth.response;
+
     // Verificar que Neo4j esté habilitado
     const neo4jEnabled = Deno.env.get("VITE_NEO4J_ENABLED") === "true";
     if (!neo4jEnabled) {
       return new Response(
         JSON.stringify({ success: false, error: "Neo4j está deshabilitado" }),
         {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
           status: 400,
         },
       );
@@ -41,11 +44,66 @@ serve(async (req: Request) => {
     const syncData: SyncRequest = await req.json();
     const { type } = syncData;
 
+    // JWT complement (2026-11-19): ownership check. El llamador solo puede
+    // sincronizar sus propios datos, salvo admin activo. Sin ningún usuario
+    // en el payload no hay nada que comprobar -> 400.
+    const payloadUserIds = [syncData.user1_id, syncData.user2_id, syncData.user_id]
+      .filter((id): id is string => typeof id === "string" && id.length > 0);
+    if (payloadUserIds.length === 0) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "El payload debe incluir user_id (o user1_id/user2_id)",
+        }),
+        {
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+          status: 400,
+        },
+      );
+    }
+    if (!payloadUserIds.includes(auth.user.id)) {
+      const denied = await requireAdmin(req, auth.user, auth.supabase);
+      if (denied) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "Forbidden: solo puedes sincronizar tus propios datos",
+          }),
+          {
+            headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+            status: 403,
+          },
+        );
+      }
+    }
+
+    // JWT complement (2026-11-19): sin fallback de contraseña. Antes:
+    // `Deno.env.get("VITE_NEO4J_PASSWORD") || "complices2025"` — la
+    // contraseña por defecto vivía en el código. Ahora se exige desde el
+    // entorno del servidor (NEO4J_PASSWORD; alias legacy VITE_NEO4J_PASSWORD
+    // aceptado) y sin ella la función falla cerrada con 500. La contraseña
+    // debe rotarse (estuvo en el repo/bundle): ver JWT_COMPLEMENT_SUMMARY.md.
+    // (La variable hoy no se usa para conectar — el driver no está
+    // cableado, ver nota abajo — pero ya no existe ningún valor por
+    // defecto que pueda usarse por accidente cuando se cablee.)
+    const _neo4jPassword =
+      Deno.env.get("NEO4J_PASSWORD") || Deno.env.get("VITE_NEO4J_PASSWORD") || "";
+    if (!_neo4jPassword) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "NEO4J_PASSWORD no configurada en el servidor",
+        }),
+        {
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+          status: 500,
+        },
+      );
+    }
+
     // Configuración de Neo4j (variables no usadas marcadas con _)
     const _neo4jUri = Deno.env.get("VITE_NEO4J_URI") || "bolt://localhost:7687";
     const _neo4jUser = Deno.env.get("VITE_NEO4J_USER") || "neo4j";
-    const _neo4jPassword =
-      Deno.env.get("VITE_NEO4J_PASSWORD") || "complices2025";
 
     // Importar driver de Neo4j (usando fetch para llamar a API interna)
     // NOTA: En producción, usar neo4j-driver directamente si es posible
@@ -142,7 +200,7 @@ serve(async (req: Request) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
@@ -154,7 +212,7 @@ serve(async (req: Request) => {
         error: error instanceof Error ? error.message : String(error),
       }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         status: 500,
       },
     );

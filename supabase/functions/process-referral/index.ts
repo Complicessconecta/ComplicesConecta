@@ -1,11 +1,9 @@
 import { serve } from "std/http/server.ts";
-import { createClient } from "@supabase/supabase-js";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import {
+  authenticate,
+  handleOptions,
+  jsonResponse,
+} from "../_shared/auth.ts";
 
 interface ReferralRequest {
   referralCode: string;
@@ -20,29 +18,39 @@ const TOKEN_CONFIG = {
 
 serve(async (req: Request) => {
   // Handle CORS preflight requests
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  const preflight = handleOptions(req);
+  if (preflight) return preflight;
 
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    );
+    // C2: only a logged-in user may claim a referral (was: unauthenticated).
+    const auth = await authenticate(req);
+    if ("response" in auth) return auth.response;
+
+    const supabase = auth.supabase;
 
     const { referralCode, newUserId }: ReferralRequest = await req.json();
 
+    // C2: a caller may only claim a referral for themselves.
+    if (auth.user.id !== newUserId) {
+      return jsonResponse(
+        req,
+        {
+          success: false,
+          message: "Solo puedes reclamar un referido para tu propia cuenta",
+        },
+        403,
+      );
+    }
+
     // Validar código de referido
     if (!/^CMPX[A-Z0-9]{6}$/.test(referralCode)) {
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        req,
+        {
           success: false,
           message: "Código de referido inválido",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
         },
+        400,
       );
     }
 
@@ -54,29 +62,25 @@ serve(async (req: Request) => {
       .single();
 
     if (inviterError || !inviter) {
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        req,
+        {
           success: false,
           message: "Código de referido no encontrado",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 404,
         },
+        404,
       );
     }
 
     // Verificar que no se auto-refiera
     if (inviter.user_id === newUserId) {
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        req,
+        {
           success: false,
           message: "No puedes referirte a ti mismo",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
         },
+        400,
       );
     }
 
@@ -88,15 +92,13 @@ serve(async (req: Request) => {
       .single();
 
     if (existingUser?.referred_by) {
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        req,
+        {
           success: false,
           message: "Este usuario ya fue referido anteriormente",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
         },
+        400,
       );
     }
 
@@ -120,15 +122,13 @@ serve(async (req: Request) => {
       monthlyEarned + TOKEN_CONFIG.REFERRAL_REWARD >
       TOKEN_CONFIG.MONTHLY_LIMIT
     ) {
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        req,
+        {
           success: false,
           message: `Límite mensual alcanzado (${TOKEN_CONFIG.MONTHLY_LIMIT} CMPX)`,
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
         },
+        400,
       );
     }
 
@@ -151,15 +151,13 @@ serve(async (req: Request) => {
 
     if (transactionError) {
       console.error("Error en transacción:", transactionError);
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        req,
+        {
           success: false,
           message: "Error interno del servidor",
-        }),
-        {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 500,
         },
+        500,
       );
     }
 
@@ -188,25 +186,21 @@ serve(async (req: Request) => {
 
     await supabase.from("referral_rewards").insert(rewards);
 
-    return new Response(
-      JSON.stringify({
+    return jsonResponse(
+      req,
+      {
         success: true,
         message: `¡Recompensas asignadas! ${TOKEN_CONFIG.REFERRAL_REWARD} CMPX para invitador, ${TOKEN_CONFIG.WELCOME_BONUS} CMPX de bienvenida`,
         rewards,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
       },
+      200,
     );
   } catch (error) {
     console.error("Error:", error);
-    return new Response(
-      JSON.stringify({ success: false, message: "Error interno del servidor" }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      },
+    return jsonResponse(
+      req,
+      { success: false, message: "Error interno del servidor" },
+      500,
     );
   }
 });

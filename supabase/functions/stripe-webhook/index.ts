@@ -1,136 +1,35 @@
-// Supabase Edge Function for sending emails
-declare const Deno: {
-  readTextFile(path: string): Promise<string>;
-};
+// supabase/functions/stripe-webhook/index.ts
+//
+// DISABLED — returns 410 Gone. (C2 fix; see C2_FIX_SUMMARY.md.)
+//
+// Rationale: the previous file was not a webhook at all. It was a copy of
+// the send-email handler: it parsed an email request body, only logged the
+// email that "would be sent", and returned success — with no Stripe
+// signature verification (`stripe.webhooks.constructEvent`), no event
+// handling, and it did not even call `serve()`, so it could never have run
+// as a deployed function. Nothing in `src/` calls this function (verified
+// by grep at patch time), and no real Stripe webhook is validated anywhere
+// in the repo.
+//
+// Owner decision still open: either DELETE this function (and remove it
+// from the Supabase dashboard if deployed) or REWRITE it as a real Stripe
+// webhook with signature verification against a STRIPE_WEBHOOK_SECRET.
+// Until then, every request gets 410 Gone so a misconfigured Stripe
+// dashboard fails loudly instead of silently "succeeding".
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import { handleOptions, jsonResponse } from "../_shared/auth.ts";
 
-interface EmailRequest {
-  to: string;
-  template: "welcome" | "confirmation" | "reset-password" | "match" | "event";
-  data?: Record<string, unknown>;
-}
+Deno.serve((req: Request) => {
+  const preflight = handleOptions(req);
+  if (preflight) return preflight;
 
-// Edge Function handler
-export default async function handler(req: Request): Promise<Response> {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-
-  try {
-    const { to, template, data = {} }: EmailRequest = await req.json();
-
-    // Here you would integrate with your email service (SendGrid, Resend, etc.)
-    // For now, we'll return a success response
-
-    const emailData = {
-      to,
-      template,
-      subject: getSubjectByTemplate(template),
-      html: await generateEmailHTML(template, data, to),
-      ...data,
-    };
-
-    console.log("Email would be sent:", emailData);
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: "Email sent successfully",
-        template,
-        to,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      },
-    );
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    return new Response(
-      JSON.stringify({
-        error: errorMessage,
-        success: false,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      },
-    );
-  }
-}
-
-function getSubjectByTemplate(template: string): string {
-  const subjects = {
-    welcome: "¡Bienvenido a ComplicesConecta! 🔥",
-    confirmation: "Confirma tu email - ComplicesConecta ✨",
-    "reset-password": "Restablecer tu contraseña - ComplicesConecta 🔐",
-    match: "¡Tienes un nuevo match! 💕 - ComplicesConecta",
-    event: "🌟 Invitación Exclusiva VIP - ComplicesConecta",
-  };
-  return subjects[template as keyof typeof subjects] || "ComplicesConecta";
-}
-
-function getFallbackTemplate(template: string): string {
-  const fallbackTemplates: Record<string, string> = {
-    welcome: `<html><body><h1>Bienvenido a ComplicesConecta</h1><p>Tu aventura comienza ahora.</p><a href="{{confirmationUrl}}">Confirmar Cuenta</a></body></html>`,
-    confirmation: `<html><body><h1>Confirma tu Email</h1><p>Código: {{token}}</p><a href="{{confirmationUrl}}">Verificar Email</a></body></html>`,
-    "reset-password": `<html><body><h1>Restablecer Contraseña</h1><a href="{{resetUrl}}">Crear Nueva Contraseña</a></body></html>`,
-    match: `<html><body><h1>¡Nuevo Match!</h1><p>{{matchName}} te ha dado like</p><a href="{{chatUrl}}">Iniciar Chat</a></body></html>`,
-    event: `<html><body><h1>Invitación a Evento</h1><p>{{eventName}} - {{eventDate}}</p><a href="{{eventUrl}}">Ver Detalles</a></body></html>`,
-  };
-  return fallbackTemplates[template] || fallbackTemplates.welcome;
-}
-
-async function generateEmailHTML(
-  template: string,
-  data: Record<string, unknown> = {},
-  to: string,
-): Promise<string> {
-  try {
-    console.info(`📨 Procesando email con template: ${template} para ${to}`);
-
-    const templatePath = `./templates/${template}.html`;
-    let htmlContent: string;
-
-    try {
-      htmlContent = await Deno.readTextFile(templatePath);
-      console.info(`✅ Template externo cargado: ${template}.html`);
-    } catch {
-      console.warn(
-        `⚠️ Template file not found: ${templatePath}, using fallback`,
-      );
-      htmlContent = getFallbackTemplate(template);
-    }
-
-    // Replace variables in template
-    let processedHtml = htmlContent;
-    if (data) {
-      console.info(
-        `🔄 Reemplazando ${Object.keys(data).length} variables en template`,
-      );
-      Object.entries(data).forEach(([key, value]) => {
-        const placeholder = `{{${key}}}`;
-        processedHtml = processedHtml.replace(
-          new RegExp(placeholder, "g"),
-          String(value),
-        );
-      });
-    }
-
-    console.info(
-      `✅ Email HTML generado exitosamente para template: ${template}`,
-    );
-    return processedHtml;
-  } catch (error) {
-    console.error(
-      `❌ Error generating email HTML for template ${template}:`,
-      error,
-    );
-    return getFallbackTemplate(template);
-  }
-}
+  return jsonResponse(
+    req,
+    {
+      error: "Gone",
+      message:
+        "stripe-webhook is disabled: the previous implementation was a copy of send-email with no Stripe signature verification and no event handling, and nothing in the app calls it. Delete this function or rewrite it as a real Stripe webhook (see C2_FIX_SUMMARY.md).",
+    },
+    410,
+  );
+});

@@ -7,6 +7,7 @@ import { ethers, JsonRpcProvider,  Wallet, isAddress, formatEther, formatUnits, 
 import CryptoJS from "crypto-js";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { requirePassphrase } from "@/lib/security/keyDerivation";
 import { AppConfig } from "@/config/app-config";
 import { COUPLE_NFT_ABI } from "@/config/abis";
 
@@ -131,8 +132,21 @@ export class WalletService {
     return supabase as any;
   }
   private provider: JsonRpcProvider | null = null;
-  private encryptionKey: string;
-  private encryptionKeyConfigured: boolean;
+
+  // JWT complement (2026-11-19, mismo patrón C4): el cifrado de la clave
+  // privada exige una passphrase EXPLÍCITA del usuario, pasada por
+  // parámetro en cada operación que cifra/descifra. Antes la clave salía
+  // de `VITE_WALLET_ENCRYPTION_KEY` (secreto en el bundle del navegador)
+  // con fallback a la clave literal "demo-wallet-encryption-key": cualquiera
+  // con el bundle descifraba todas las wallets. Ya no hay campo
+  // `encryptionKey` en la instancia ni lectura de entorno. Sin passphrase
+  // las operaciones que firman fallan cerradas (requirePassphrase lanza).
+  // Las lecturas (getWalletByUserId, getTokenBalances, getTestnetTokensInfo,
+  // etc.) NO necesitan passphrase y no cambian. OJO: las wallets ya
+  // guardadas se cifraron con la clave vieja del entorno; con una
+  // passphrase de usuario NO se pueden descifrar — habrá que recrearlas
+  // (decisión del dueño; ver JWT_COMPLEMENT_SUMMARY.md) y rotar
+  // VITE_WALLET_ENCRYPTION_KEY, que ya no se lee en ningún sitio.
 
   // Configuraciones de red
   private static readonly NETWORKS: Record<string, NetworkConfig> = {
@@ -180,12 +194,6 @@ export class WalletService {
   }
 
   private constructor() {
-    // Clave de encriptación desde variables de entorno
-    const envKey = import.meta.env.VITE_WALLET_ENCRYPTION_KEY;
-    const canFallbackToDemoKey = WalletService.isDemoActionAllowed();
-    this.encryptionKeyConfigured = Boolean(envKey) || canFallbackToDemoKey;
-    this.encryptionKey = envKey || "demo-wallet-encryption-key";
-
     // Inicializar provider por defecto (Mumbai testnet)
     this.initializeProvider("mumbai");
   }
@@ -228,11 +236,14 @@ export class WalletService {
    * Crea una nueva wallet para un usuario
    * @param userId ID del usuario en Supabase
    * @param network Red blockchain ('mumbai' por defecto)
+   * @param passphrase Passphrase explícita del usuario (obligatoria en modo
+   * no-demo: sin ella el cifrado de la clave privada falla cerrado)
    * @returns Información de la wallet creada
    */
   public async createWallet(
     userId: string,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<WalletInfo> {
     try {
       logger.info(`Creando wallet para usuario ${userId} en red ${network}`);
@@ -246,8 +257,11 @@ export class WalletService {
       // Generar nueva wallet
       const wallet = ethers.Wallet.createRandom();
 
-      // Encriptar clave privada
-      const encryptedPrivateKey = this.encryptPrivateKey(wallet.privateKey);
+      // Encriptar clave privada (exige passphrase explícita, patrón C4)
+      const encryptedPrivateKey = this.encryptPrivateKey(
+        wallet.privateKey,
+        passphrase,
+      );
 
       // Guardar en Supabase
       const { data, error } = await this.blockchainClient
@@ -314,11 +328,16 @@ export class WalletService {
    * Obtiene o crea una wallet para un usuario
    * @param userId ID del usuario
    * @param network Red blockchain
+   * @param passphrase Passphrase explícita del usuario; solo se necesita si
+   * la wallet NO existe y hay que crearla (o descifrarla después). Si la
+   * wallet ya existe, la lectura no la necesita. Sin passphrase y sin
+   * wallet existente, la creación falla cerrada.
    * @returns Información de la wallet
    */
   public async getOrCreateWallet(
     userId: string,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<WalletInfo> {
     try {
       if (WalletService.isDemoActionAllowed()) {
@@ -328,7 +347,7 @@ export class WalletService {
       let wallet = await this.getWalletByUserId(userId);
 
       if (!wallet) {
-        wallet = await this.createWallet(userId, network);
+        wallet = await this.createWallet(userId, network, passphrase);
       }
 
       return wallet;
@@ -376,11 +395,14 @@ export class WalletService {
    * Crea un signer para transacciones
    * @param userId ID del usuario
    * @param network Red blockchain
+   * @param passphrase Passphrase explícita del usuario (obligatoria: sin
+   * ella no se puede descifrar la clave privada)
    * @returns Signer de Ethers.js
    */
   public async createSigner(
     userId: string,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<Wallet> {
     try {
       const walletInfo = await this.getWalletByUserId(userId);
@@ -388,9 +410,10 @@ export class WalletService {
         throw new Error("Wallet no encontrada para el usuario");
       }
 
-      // Desencriptar clave privada
+      // Desencriptar clave privada (exige passphrase explícita, patrón C4)
       const privateKey = this.decryptPrivateKey(
         walletInfo.encrypted_private_key,
+        passphrase,
       );
 
       // Inicializar provider si es necesario
@@ -421,9 +444,10 @@ export class WalletService {
     toAddress: string,
     amount: string,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<string> {
     try {
-      await this.createSigner(userId, network);
+      await this.createSigner(userId, network, passphrase);
 
       // TODO: Implementar cuando el contrato CMPX esté deployado
       // const cmpxContract = new ethers.Contract(
@@ -460,6 +484,7 @@ export class WalletService {
     partner2: string,
     tokenURI: string,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<number> {
     try {
       // Validar direcciones
@@ -467,7 +492,7 @@ export class WalletService {
         throw new Error("Dirección de partner inválida");
       }
 
-      const signer = await this.createSigner(userId, network);
+      const signer = await this.createSigner(userId, network, passphrase);
 
       // Obtener dirección del contrato
       const networkAddresses = WalletService.CONTRACT_ADDRESSES[network as keyof typeof WalletService.CONTRACT_ADDRESSES];
@@ -544,9 +569,10 @@ export class WalletService {
     vestingPeriod: number,
     rarity: string,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<string> {
     try {
-      await this.createSigner(userId, network);
+      await this.createSigner(userId, network, passphrase);
 
       // TODO: Implementar cuando el contrato StakingPool esté deployado
       // const stakingContract = new ethers.Contract(
@@ -572,19 +598,18 @@ export class WalletService {
   /**
    * Encripta una clave privada usando AES-256
    * @param privateKey Clave privada a encriptar
+   * @param passphrase Passphrase explícita del usuario (obligatoria, patrón
+   * C4: requirePassphrase lanza sin ella; ya no hay clave de entorno ni
+   * fallback demo)
    * @returns Clave privada encriptada
    */
-  private encryptPrivateKey(privateKey: string): string {
+  private encryptPrivateKey(
+    privateKey: string,
+    passphrase?: string,
+  ): string {
     try {
-      if (!this.encryptionKeyConfigured) {
-        throw new Error(
-          "Wallet encryption no configurada (VITE_WALLET_ENCRYPTION_KEY). Operación bloqueada.",
-        );
-      }
-      const encrypted = CryptoJS.AES.encrypt(
-        privateKey,
-        this.encryptionKey,
-      ).toString();
+      const key = requirePassphrase(passphrase);
+      const encrypted = CryptoJS.AES.encrypt(privateKey, key).toString();
       return encrypted;
     } catch (error) {
       logger.error("Error encriptando clave privada:", {
@@ -597,19 +622,20 @@ export class WalletService {
   /**
    * Desencripta una clave privada usando AES-256
    * @param encryptedPrivateKey Clave privada encriptada
+   * @param passphrase Passphrase explícita del usuario (obligatoria, patrón
+   * C4). OJO: los valores guardados antes de este parche se cifraron con
+   * la clave de entorno vieja, no con una passphrase: descifrarlos con una
+   * passphrase devuelve basura y el signer falla; hay que recrear esas
+   * wallets (ver comentario en la clase).
    * @returns Clave privada desencriptada
    */
-  private decryptPrivateKey(encryptedPrivateKey: string): string {
+  private decryptPrivateKey(
+    encryptedPrivateKey: string,
+    passphrase?: string,
+  ): string {
     try {
-      if (!this.encryptionKeyConfigured) {
-        throw new Error(
-          "Wallet encryption no configurada (VITE_WALLET_ENCRYPTION_KEY). Operación bloqueada.",
-        );
-      }
-      const decrypted = CryptoJS.AES.decrypt(
-        encryptedPrivateKey,
-        this.encryptionKey,
-      );
+      const key = requirePassphrase(passphrase);
+      const decrypted = CryptoJS.AES.decrypt(encryptedPrivateKey, key);
       return decrypted.toString(CryptoJS.enc.Utf8);
     } catch (error) {
       logger.error("Error desencriptando clave privada:", {
@@ -701,6 +727,7 @@ export class WalletService {
     userId: string,
     amount: number = WalletService.TESTNET_FREE_TOKENS,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<string> {
     try {
       if (network !== "mumbai") {
@@ -713,7 +740,7 @@ export class WalletService {
         );
       }
 
-      await this.createSigner(userId, network);
+      await this.createSigner(userId, network, passphrase);
 
       // TODO: Implementar cuando el contrato CMPX esté deployado
       // const cmpxContract = new ethers.Contract(
@@ -793,6 +820,7 @@ export class WalletService {
     userId: string,
     amount: number,
     network: string = "mumbai",
+    passphrase?: string,
   ): Promise<string> {
     try {
       if (network !== "mumbai") {
@@ -813,7 +841,7 @@ export class WalletService {
         );
       }
 
-      await this.createSigner(userId, network);
+      await this.createSigner(userId, network, passphrase);
 
       // TODO: Implementar cuando el contrato CMPX esté deployado
       // const cmpxContract = new ethers.Contract(

@@ -16,7 +16,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import OpenAI from "openai";
 
 export interface ConsentScore {
   score: number; // 0-100
@@ -44,22 +43,15 @@ const MIN_MESSAGES_FOR_ANALYSIS = 3; // Mínimo de mensajes para análisis
 
 export class ConsentVerificationService {
   private static instance: ConsentVerificationService;
-  private openai: OpenAI | null = null;
   private activeVerifications: Map<string, ConsentVerification> = new Map();
   private messageSubscriptions: Map<string, () => void> = new Map();
 
   private constructor() {
-    // Inicializar OpenAI si hay API key
-    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (openaiKey) {
-      this.openai = new OpenAI({
-        apiKey: openaiKey,
-        dangerouslyAllowBrowser: true,
-      });
-      logger.info("✅ OpenAI inicializado para Consent Verification");
-    } else {
-      logger.warn("⚠️ OpenAI API key no configurada, usando fallback");
-    }
+    // JWT complement (2026-11-19): sin cliente OpenAI directo y sin
+    // VITE_OPENAI_API_KEY en el bundle. Las llamadas van por la Edge
+    // Function openai-proxy (con JWT de sesión + allowlist de modelos);
+    // ver analyzeWithOpenAI. Si el proxy falla, se usa el fallback de
+    // patrones (comportamiento previo cuando no había key).
   }
 
   static getInstance(): ConsentVerificationService {
@@ -231,18 +223,14 @@ export class ConsentVerificationService {
         };
       }
 
-      // Usar OpenAI para análisis NLP si está disponible
-      if (this.openai) {
-        return await this.analyzeWithOpenAI(
-          recentMessages,
-          senderId,
-          userId1,
-          userId2,
-        );
-      }
-
-      // Fallback: análisis básico con patrones
-      return this.analyzeWithPatterns(recentMessages, senderId);
+      // Usar OpenAI para análisis NLP (vía openai-proxy; si falla, el
+      // propio analyzeWithOpenAI cae al fallback de patrones).
+      return await this.analyzeWithOpenAI(
+        recentMessages,
+        senderId,
+        userId1,
+        userId2,
+      );
     } catch (error) {
       logger.error("Error analizando mensaje", {
         error: error instanceof Error ? error.message : String(error),
@@ -259,7 +247,14 @@ export class ConsentVerificationService {
   }
 
   /**
-   * Análisis con OpenAI GPT-4
+   * Análisis con OpenAI GPT-4 (vía openai-proxy, JWT complement 2026-11-19).
+   *
+   * Antes: cliente OpenAI directo con VITE_OPENAI_API_KEY en el bundle.
+   * Ahora: supabase.functions.invoke("openai-proxy") — supabase-js adjunta
+   * el JWT de sesión automáticamente y el proxy valida el modelo contra su
+   * allowlist (gpt-4-turbo-preview está permitido). El proxy reenvía
+   * temperature y max_tokens, así que NO hay pérdida de paridad aquí.
+   * Si el proxy falla o no hay sesión, cae al fallback de patrones.
    */
   private async analyzeWithOpenAI(
     messages: Array<{ content: string; sender_id: string; created_at: string }>,
@@ -267,10 +262,6 @@ export class ConsentVerificationService {
     userId1: string,
     _userId2: string,
   ): Promise<ConsentScore> {
-    if (!this.openai) {
-      throw new Error("OpenAI no está disponible");
-    }
-
     const messagesText = messages
       .map(
         (m) => `Usuario ${m.sender_id === userId1 ? "1" : "2"}: ${m.content}`,
@@ -297,14 +288,24 @@ Responde SOLO con un JSON válido en este formato exacto:
 }`;
 
     try {
-      const completion = await this.openai.chat.completions.create({
-        model: "gpt-4-turbo-preview",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.3,
-        max_tokens: 200,
-      });
+      if (!supabase) {
+        throw new Error("Supabase no está disponible");
+      }
 
-      const choice = completion.choices[0];
+      const { data, error } = await supabase.functions.invoke(
+        "openai-proxy",
+        {
+          body: {
+            model: "gpt-4-turbo-preview",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.3,
+            max_tokens: 200,
+          },
+        },
+      );
+      if (error) throw error;
+
+      const choice = data?.choices?.[0];
       if (!choice) {
         throw new Error("No se encontró respuesta de OpenAI");
       }

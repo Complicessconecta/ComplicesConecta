@@ -148,37 +148,9 @@ const AdminProduction = () => {
       return;
     }
 
-    // Verificar sesión demo primero
-    const demoAuth = localStorage.getItem("demo_authenticated");
-    const demoUser = localStorage.getItem("demo_user");
-
-    if (demoAuth === "true" && demoUser) {
-      try {
-        const user = JSON.parse(demoUser);
-        logger.info(" Actualizando estado premium para usuario:", {
-          userId: user.id,
-          email: user.email,
-          role: user.role,
-        });
-
-        if (user.accountType === "admin" || user.role === "admin") {
-          logger.info("✅ Admin demo autorizado - cargando panel producción");
-          loadProductionData();
-          return;
-        } else {
-          logger.info("? Usuario demo sin permisos admin");
-          toast({
-            title: "Acceso Denegado",
-            description: "No tienes permisos de administrador",
-            variant: "destructive",
-          });
-          navigate("/auth");
-          return;
-        }
-      } catch (_error) {
-        logger.error("Error parsing demo user:", { error: String(_error) });
-      }
-    }
+    // C3: el bloque demo fue eliminado. Un demo_user con role/accountType
+    // "admin" en localStorage ya no carga el panel de producción.
+    // Solo la autenticación real + isAdmin() deciden el acceso.
 
     // Verificar autenticación
     const authStatus = isAuthenticated();
@@ -213,7 +185,12 @@ const AdminProduction = () => {
 
     logger.info("✅ Acceso autorizado - cargando panel producción");
 
-    // Cargar datos del panel
+    // C3: loadProductionData() ahora se llama también desde la ruta de admin
+    // real. Antes solo la llamaba la rama demo (eliminada), así que los
+    // admins reales nunca cargaban notificaciones, alertas ni el reporte de
+    // auditoría. Se conservan además los loaders reales de perfiles,
+    // estadísticas, FAQ e invitaciones.
+    loadProductionData();
     loadRealProfiles();
     loadRealStats();
     loadRealFAQ();

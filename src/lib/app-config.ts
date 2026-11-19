@@ -73,22 +73,10 @@ export const DEMO_CREDENTIALS = [
   "pareja@outlook.es",
 ];
 
-// Función auxiliar para obtener contraseña desde env o fallback
-const getPasswordFromEnv = (email: string): string | null => {
-  // Convertir email a formato de variable de entorno
-  // Ejemplo: single@outlook.es -> SINGLE_OUTLOOK_ES
-  const envKey = email
-    .toUpperCase()
-    .replace("@", "_")
-    .replace(".", "_")
-    .replace("-", "_");
-
-  // Buscar en variables de entorno primero
-  const envPassword = import.meta.env[`VITE_DEMO_PASSWORD_${envKey}`];
-
-  // Si no existe en env, NO usar fallback por seguridad
-  return envPassword || null;
-};
+// C4/C5 (2026-11-19): las contraseñas demo/admin/producción se eliminaron del
+// bundle. No existe ninguna función que lea VITE_*_PASSWORD en el cliente.
+// El login real es Supabase Auth (signInWithPassword); el modo demo es
+// local y sin contraseña, y nunca otorga admin.
 
 export const getProductionAdminEmails = (): string[] => {
   const envList = (import.meta.env.VITE_PROD_ADMIN_EMAILS as string | undefined)
@@ -134,27 +122,10 @@ export const isDemoAdmin = (email: string): boolean => {
   return false;
 };
 
-// Función para obtener contraseña demo - USA VARIABLES DE ENTORNO
-export const getDemoPassword = (email: string): string | null => {
-  const normalizedEmail = email
-    .toLowerCase()
-    .trim()
-    .replace("@otlook.es", "@outlook.es")
-    .replace("@outllok.es", "@outlook.es")
-    .replace("@outlok.es", "@outlook.es")
-    .replace("@outook.es", "@outlook.es");
-
-  // Usar función auxiliar que consulta env primero, luego fallback
-  return getPasswordFromEnv(normalizedEmail);
-};
-
-// Función para obtener contraseña de producción - USA VARIABLES DE ENTORNO
-export const getProductionPassword = (email: string): string | null => {
-  const normalizedEmail = email.toLowerCase().trim();
-  if (!isProductionAdmin(normalizedEmail)) return null;
-  return import.meta.env.VITE_PROD_PASSWORD_COMPLICESCONECTASW || null;
-  return null;
-};
+// C4/C5 (2026-11-19): getDemoPassword y getProductionPassword se eliminaron.
+// Eran código muerto / inseguro: leían contraseñas de variables VITE_*,
+// que se incrustan en el bundle del navegador y por tanto no son secretas.
+// El login real es Supabase Auth; el modo demo es local y sin contraseña.
 
 // Función centralizada para manejar autenticación demo (SIN )
 export const handleDemoAuth = (
@@ -172,8 +143,9 @@ export const handleDemoAuth = (
     return null;
   }
 
-  // Configurar accountType específico para admins
-  const finalAccountType = accountType;
+  // C3: accountType limitado a "single"/"couple". Un "admin" forjado nunca
+  // se persiste en demo_user: el modo demo no tiene administradores.
+  const finalAccountType = accountType === "couple" ? "couple" : "single";
 
   const demoUser = {
     id: generateDemoUserUUID(email),
@@ -251,26 +223,12 @@ export const shouldUseRealSupabase = () => {
     return true;
   }
 
-  // En modo demo, solo usar Supabase para admins
+  // En modo demo, una sesión demo NUNCA activa Supabase real (C3).
+  // Antes, un demo_user con role "admin" forjado en localStorage activaba
+  // la ruta de Supabase real; ese privilegio ya no existe.
   if (demoAuth === "true") {
-    const demoUser = localStorage.getItem("demo_user");
-    if (demoUser) {
-      try {
-        const user = JSON.parse(demoUser);
-        const useSupabase = user.role === "admin";
-        logger.info("🎭 Usuario demo", {
-          email: user.email,
-          admin: user.role === "admin",
-          usarSupabase: useSupabase,
-        });
-        return useSupabase;
-      } catch (error) {
-        logger.error("❌ Error parsing demo user", {
-          error: error instanceof Error ? error.message : String(error),
-        });
-        return false;
-      }
-    }
+    logger.info("🎭 Sesión demo activa - Supabase real deshabilitado (C3)");
+    return false;
   }
 
   logger.info("✅ Usando Supabase real por defecto");

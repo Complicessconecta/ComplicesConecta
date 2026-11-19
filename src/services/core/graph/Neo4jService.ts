@@ -83,10 +83,14 @@ export class Neo4jService {
   }
 
   constructor() {
+    // C4/C5 (2026-11-19): sin contraseña por defecto y sin leer VITE_NEO4J_PASSWORD
+    // (las variables VITE_* van al bundle del navegador y no son secretas).
+    // La contraseña solo puede venir del servidor (process.env, vía
+    // reinitialize()); sin ella el driver NO se inicializa (ver initializeDriver).
     this.config = {
       uri: getViteEnv("NEO4J_URI") || "bolt://localhost:7687",
       user: getViteEnv("NEO4J_USER") || "neo4j",
-      password: getViteEnv("NEO4J_PASSWORD") || "complices2025",
+      password: "",
       database: getViteEnv("NEO4J_DATABASE") || "neo4j",
     };
 
@@ -131,11 +135,10 @@ export class Neo4jService {
       process.env.NEO4J_USER ||
       "neo4j";
 
-    const password =
-      getViteEnv("NEO4J_PASSWORD") ||
-      process.env.VITE_NEO4J_PASSWORD ||
-      process.env.NEO4J_PASSWORD ||
-      "complices2025";
+    // C4/C5 (2026-11-19): la contraseña solo se lee del entorno del servidor
+    // (process.env.NEO4J_PASSWORD). Sin VITE_NEO4J_PASSWORD y sin fallback
+    // literal: sin contraseña del servidor el driver NO se inicializa.
+    const password = process.env.NEO4J_PASSWORD || "";
 
     const database =
       getViteEnv("NEO4J_DATABASE") ||
@@ -157,7 +160,7 @@ export class Neo4jService {
 
     if (this.isEnabled) {
       this.initializeDriver();
-      this._initialized = true;
+      this._initialized = this.driver !== null;
     } else {
       logger.warn(
         "Neo4j está deshabilitado. Set VITE_NEO4J_ENABLED=true para habilitar.",
@@ -167,9 +170,20 @@ export class Neo4jService {
   }
 
   /**
-   * Inicializa el driver de Neo4j
+   * Inicializa el driver de Neo4j.
+   * C4/C5 (2026-11-19): fail-closed — sin contraseña del servidor el driver
+   * no se inicializa (antes usaba el fallback literal "complices2025").
    */
   private initializeDriver(): void {
+    if (!this.config.password) {
+      logger.warn(
+        "Neo4j sin contraseña del servidor (NEO4J_PASSWORD). Driver no inicializado.",
+      );
+      this.isEnabled = false;
+      this.driver = null;
+      return;
+    }
+
     try {
       this.driver = neo4j.driver(
         this.config.uri,

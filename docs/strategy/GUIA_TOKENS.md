@@ -1,5 +1,7 @@
 # 💰 Guía del Sistema de Tokens - ComplicesConecta
 
+> **⚠️ Nota (2026-11-19): las cifras de este documento están desactualizadas.** El modelo de tokens vigente está en el anexo de `FLUJO_TRABAJO_TOKENS_CMPX_GTK.md`, sección 11, "Anexo — Modelo de tokens corregido (2026-11-19)": un solo token nativo de uso interno sin límite de suministro, y un token separado para blockchain (inversión/staking) cuya cadena aún no está decidida. Las cifras de suministro, distribución, conversión, transferibilidad y APY de este documento quedan marcadas como **desactualizado — pendiente de nueva distribución** y no deben usarse hasta que se defina la nueva distribución. Ver el anexo para el detalle.
+
 **Versión:** 3.7.0  
 **Fecha:** Noviembre, 2025  
 **Última Actualización:** 13 de Noviembre, 2025

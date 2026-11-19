@@ -65,15 +65,14 @@ export const SENSITIVE_DATA_TYPES = {
 } as const;
 
 /**
- * Constante de aplicación para mejorar la derivación de clave
- * 
- * Esta constante se combina con userId para crear una base de password más fuerte
- * que simplemente `complices_${userId}_encryption_key`
- * 
- * NOTA: En producción, esto debería ser un valor único por deployment o
- * almacenado en variables de entorno del servidor
+ * C4 (2026-11-19): APP_ENCRYPTION_SALT ELIMINADA. Era un literal fijo en el
+ * código con el que se derivaba de forma determinista la clave de cifrado
+ * (sal fija + userId), así que cualquiera con el repo podía derivar la clave
+ * y descifrar los datos de localStorage. El cifrado de cliente ahora exige
+ * una passphrase explícita del usuario (ver keyDerivation.ts); sin ella no
+ * hay clave. El cifrado de cliente NO protege contra XSS: lo secreto vive
+ * en el servidor.
  */
-export const APP_ENCRYPTION_SALT = "complices_connect_v3_9_1_secure_salt_2026";
 
 /**
  * Versión del algoritmo de encriptación

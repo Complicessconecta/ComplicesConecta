@@ -1,8 +1,19 @@
 import { logger } from "@/lib/logger";
-import { secureStorage, SecureSessionData } from "@/lib/storage/secure-storage";
+import { secureStorage } from "@/lib/storage/secure-storage";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/supabase-generated";
 import { CertificatePinning } from "@/security/certificate-pinning";
+
+/**
+ * C4/C5 (2026-11-19): la sesión ya NO se copia a localStorage. La única
+ * fuente de sesión es Supabase Auth (getSession, en memoria). La última
+ * actividad solo se guarda en memoria (para detectSessionHijacking) y se
+ * pierde al recargar la página, lo cual es el comportamiento seguro.
+ * clearAllSecureData elimina además la clave legacy `cc_secure_session`.
+ */
+
+// Última actividad de sesión, SOLO en memoria (nunca en localStorage).
+let lastActivityTimestamp: number | null = null;
 
 /**
  * Helpers de seguridad para Supabase
@@ -23,17 +34,30 @@ export class SecurityHelpers {
 
       await CertificatePinning.validateRequestUrl(url);
       
-      // Agregar headers de seguridad
-      const secureHeaders = {
-        ...init?.headers,
-        'X-Requested-With': 'XMLHttpRequest',
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        apikey: supabaseAnonKey,
-        Authorization: `Bearer ${supabaseAnonKey}`,
-        'X-Client-Version': import.meta.env.VITE_APP_VERSION || '1.0.0',
-        'X-Client-Platform': 'web',
-      };
+      // Agregar headers de seguridad.
+      // C2 (2026-11-19): NO sobrescribir un Authorization que ya trae el
+      // llamador. supabase-js pone el JWT de sesión en functions.invoke y
+      // los llamadores también pueden pasarlo explícito; antes, la línea
+      // de abajo reemplazaba cualquier JWT por la anon key, así que TODAS
+      // las Edge Functions con auth (C2) recibían 401 aunque el llamador
+      // hiciera todo bien. La anon key solo es el valor por defecto
+      // cuando nadie puso Authorization (PostgREST/Auth/Realtime, donde
+      // la anon key sí es la credencial correcta).
+      const secureHeaders = new Headers(init?.headers);
+      if (!secureHeaders.has("apikey")) {
+        secureHeaders.set("apikey", supabaseAnonKey);
+      }
+      if (!secureHeaders.has("Authorization")) {
+        secureHeaders.set("Authorization", `Bearer ${supabaseAnonKey}`);
+      }
+      secureHeaders.set("X-Requested-With", "XMLHttpRequest");
+      secureHeaders.set("Cache-Control", "no-cache");
+      secureHeaders.set("Pragma", "no-cache");
+      secureHeaders.set(
+        "X-Client-Version",
+        import.meta.env.VITE_APP_VERSION || "1.0.0",
+      );
+      secureHeaders.set("X-Client-Platform", "web");
 
       // Log de solicitudes sensibles (solo en desarrollo)
       if (import.meta.env.DEV) {
@@ -58,37 +82,32 @@ export class SecurityHelpers {
   }
 
   /**
-   * Configura listeners de sesión para manejo seguro
+   * Configura listeners de sesión para manejo seguro.
+   * C4/C5 (2026-11-19): ya NO se guarda ninguna copia de la sesión en
+   * localStorage (antes: secureStorage.setItem('cc_secure_session', ...)).
+   * La sesión vive solo en Supabase Auth (memoria); aquí solo se actualiza
+   * el timestamp de actividad en memoria.
    */
   static setupSessionListeners(client: SupabaseClient<Database>) {
     client.auth.onAuthStateChange((event, session) => {
       logger.info("🔐 Auth state change:", { event, hasSession: !!session });
 
       if (event === 'SIGNED_IN' && session) {
-        // Guardar datos de sesión de forma segura
-        const sessionData: SecureSessionData = {
-          isAuthenticated: true,
-          userRole: session.user?.user_metadata?.role,
-          lastActivity: Date.now(),
-        };
-
-        secureStorage.setItem('cc_secure_session', sessionData);
-        logger.info("✅ Sesión guardada de forma segura");
+        // Solo memoria: registrar actividad, sin persistir sesión.
+        lastActivityTimestamp = Date.now();
+        logger.info("✅ Sesión iniciada (solo en memoria, sin copia en localStorage)");
       }
 
       if (event === 'SIGNED_OUT') {
         // Limpiar datos seguros al cerrar sesión
+        lastActivityTimestamp = null;
         this.clearAllSecureData();
         logger.info("🧹 Datos seguros limpiados al cerrar sesión");
       }
 
       if (event === 'TOKEN_REFRESHED') {
-        // Actualizar timestamp de actividad
-        const currentData = secureStorage.getItem<SecureSessionData>('cc_secure_session');
-        if (currentData) {
-          currentData.lastActivity = Date.now();
-          secureStorage.setItem('cc_secure_session', currentData);
-        }
+        // Actualizar timestamp de actividad solo en memoria
+        lastActivityTimestamp = Date.now();
       }
     });
   }
@@ -103,6 +122,9 @@ export class SecurityHelpers {
 
       // Limpiar cualquier rastro en localStorage no seguro
       const keysToClean = [
+        // C4/C5: clave legacy de sesión copiada a localStorage (ya no se crea;
+        // se elimina aquí para limpiar navegadores con sesiones viejas).
+        'cc_secure_session',
         'supabase.auth.token',
         'supabase.auth.refreshToken',
         'sb-access-token',
@@ -208,24 +230,25 @@ export class SecurityHelpers {
   }
 
   /**
-   * Detecta posibles riesgos de secuestro de sesión
+   * Detecta posibles riesgos de secuestro de sesión.
+   * C4/C5 (2026-11-19): la última actividad se lee SOLO de memoria (antes:
+   * secureStorage.getItem('cc_secure_session')). Sin actividad registrada
+   * en esta sesión, no hay nada sospechoso que detectar.
    */
   static detectSessionHijacking(): boolean {
     try {
-      const sessionData = secureStorage.getItem<SecureSessionData>('cc_secure_session');
-      
-      if (!sessionData) {
+      if (lastActivityTimestamp === null) {
         return false;
       }
 
       const now = Date.now();
-      const timeSinceLastActivity = now - sessionData.lastActivity;
+      const timeSinceLastActivity = now - lastActivityTimestamp;
       
       // Si la última actividad fue hace más de 1 hora, es sospechoso
       const oneHour = 60 * 60 * 1000;
       if (timeSinceLastActivity > oneHour) {
         logger.warn("⚠️ Posible secuestro de sesión detectado - inactividad prolongada", {
-          lastActivity: new Date(sessionData.lastActivity),
+          lastActivity: new Date(lastActivityTimestamp),
           timeSinceLastActivity: timeSinceLastActivity,
         });
         return true;

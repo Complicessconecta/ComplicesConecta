@@ -1,22 +1,24 @@
 import { serve } from "std/http/server.ts";
-import { createClient } from "@supabase/supabase-js";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+import {
+  authenticate,
+  getCorsHeaders,
+  handleOptions,
+  requireAdmin,
+} from "../_shared/auth.ts";
 
 serve(async (req: Request) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  const preflight = handleOptions(req);
+  if (preflight) return preflight;
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    );
+    // C2: only a logged-in admin may create users (was: unauthenticated).
+    const auth = await authenticate(req);
+    if ("response" in auth) return auth.response;
+
+    const denied = await requireAdmin(req, auth.user, auth.supabase);
+    if (denied) return denied;
+
+    const supabaseClient = auth.supabase;
 
     const { email, password, profileType, name } = await req.json();
 
@@ -53,12 +55,12 @@ serve(async (req: Request) => {
     }
 
     return new Response(JSON.stringify(userData), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       status: 400,
     });
   }

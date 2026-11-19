@@ -52,7 +52,7 @@ const SELECTORS = {
 // 📊 Test data
 const TEST_USER = {
   email: "test@complicesconecta.com",
-  password: "TestPassword123!",
+  password: process.env.E2E_TEST_PASSWORD ?? "",
   name: "Test User",
 };
 

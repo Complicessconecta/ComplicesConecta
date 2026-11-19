@@ -24,6 +24,11 @@ import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
+import {
+  PRIVATE_MEDIA_PLACEHOLDER,
+  toPrivateStoragePath,
+  usePrivateMediaUrls,
+} from "@/lib/storage/private-media";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 function ProfileCouple() {
@@ -79,13 +84,21 @@ function ProfileCouple() {
     number | null
   >(null);
 
-  const baseAssetUrl = import.meta.env.BASE_URL;
+  // C6: rutas de Storage (bucket "media") de las 4 imágenes privadías.
+  // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
+  // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
+  // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
+  // + usuario autenticado); en cualquier otro caso se muestra el placeholder.
   const couplePrivateBaseImages = [
-    `${baseAssetUrl}assets/people/couple/privado/privadocouple1.jpg`,
-    `${baseAssetUrl}assets/people/couple/privado/privadocouple2.jpg`,
-    `${baseAssetUrl}assets/people/couple/privado/privadocouple3.jpg`,
-    `${baseAssetUrl}assets/people/couple/privado/privadocouple4.jpg`,
-  ];
+    "privadocouple1.jpg",
+    "privadocouple2.jpg",
+    "privadocouple3.jpg",
+    "privadocouple4.jpg",
+  ]
+    .map((file) =>
+      toPrivateStoragePath(`/assets/people/couple/privado/${file}`),
+    )
+    .filter((p): p is string => p !== null);
 
   // Función para filtrar imágenes que coincidan con avatar (blindaje biométrico)
   const getFilteredPrivateImages = () => {
@@ -119,6 +132,20 @@ function ProfileCouple() {
   const isGalleryUnlocked =
     !isParentalLocked &&
     (isOwnProfile || demoPrivateUnlocked || privateImageAccess === "approved");
+
+  // C6: resuelve las rutas de Storage (en el mismo orden que
+  // `_shuffledCouplePrivateImages`) a URLs firmadas (1 h) solo cuando la
+  // galería está desbloqueada y hay usuario autenticado. Llamada
+  // incondicional en el top-level (sin early returns antes en el componente).
+  // En cualquier otro caso devuelve el placeholder genérico por posición.
+  const couplePrivateImageUrls = usePrivateMediaUrls(
+    _shuffledCouplePrivateImages,
+    {
+      unlocked: isGalleryUnlocked,
+      userId: user?.id ?? null,
+      ownerId: profile?.id ?? null,
+    },
+  );
 
   // Función para hacer funcional el botón "Ver Fotos Privadías"
   const handleViewPrivatePhotos = async () => {
@@ -1174,51 +1201,67 @@ function ProfileCouple() {
                 )}
 
                 <div className="grid grid-cols-3 gap-4 md:gap-6">
-                  {_shuffledCouplePrivateImages.map((imageSource, idx) => (
-                    <div
-                      key={imageSource}
-                      className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                      onClick={() => {
-                        if (isParentalLocked) return;
+                  {_shuffledCouplePrivateImages.map((storagePath, idx) => {
+                    // C6: la URL visible es la firmada (o el placeholder si
+                    // la galería está bloqueada / sin sesión / sin permiso).
+                    // `storagePath` solo se usa como key estable, nunca como src.
+                    const imageSource =
+                      couplePrivateImageUrls[idx] ??
+                      PRIVATE_MEDIA_PLACEHOLDER;
+                    return (
+                      <div
+                        key={storagePath}
+                        className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                        onClick={() => {
+                          if (isParentalLocked) return;
 
-                        if (isGalleryUnlocked) {
-                          setSelectedImageIndex(idx);
-                          _setShowImageModal(true);
-                          return;
-                        }
+                          if (isGalleryUnlocked) {
+                            setSelectedImageIndex(idx);
+                            _setShowImageModal(true);
+                            return;
+                          }
 
-                        void handleViewPrivatePhotos();
-                      }}
-                    >
-                      <img
-                        src={imageSource}
-                        alt="Private content"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src =
-                            `${import.meta.env.BASE_URL}assets/people/couple/privado/privadocouple1.jpg`;
+                          void handleViewPrivatePhotos();
                         }}
-                        className={cn(
-                          "w-full h-full object-cover transition-[filter,transform] duration-500",
-                          isGalleryUnlocked
-                            ? "blur-0 scale-100"
-                            : "blur-2xl scale-110",
-                        )}
-                      />
+                      >
+                        <img
+                          src={imageSource}
+                          alt="Private content"
+                          onError={(e) => {
+                            // C6: sin fallback a la imagen privada pública;
+                            // solo al placeholder genérico, y sin reintentar
+                            // si ya es el placeholder.
+                            const img =
+                              e.currentTarget as HTMLImageElement;
+                            if (
+                              !img.src.endsWith(PRIVATE_MEDIA_PLACEHOLDER)
+                            ) {
+                              img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                            }
+                          }}
+                          className={cn(
+                            "w-full h-full object-cover transition-[filter,transform] duration-500",
+                            isGalleryUnlocked
+                              ? "blur-0 scale-100"
+                              : "blur-2xl scale-110",
+                          )}
+                        />
 
-                      {!isGalleryUnlocked && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                          <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                            <Lock className="w-6 h-6 text-white" />
+                        {!isGalleryUnlocked && (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                            <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
+                              <Lock className="w-6 h-6 text-white" />
+                            </div>
+                            <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                              {isParentalLocked
+                                ? "Bloqueado por Control Parental"
+                                : "Click para desbloquear"}
+                            </span>
                           </div>
-                          <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                            {isParentalLocked
-                              ? "Bloqueado por Control Parental"
-                              : "Click para desbloquear"}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -1395,7 +1438,7 @@ function ProfileCouple() {
       <ImageModal
         isOpen={showImageModal}
         onClose={() => _setShowImageModal(false)}
-        images={_shuffledCouplePrivateImages}
+        images={couplePrivateImageUrls}
         currentIndex={_selectedImageIndex}
         onNavigate={navigateCarousel}
         onLike={_handleImageLike}

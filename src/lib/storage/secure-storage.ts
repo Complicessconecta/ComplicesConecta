@@ -1,11 +1,46 @@
-import CryptoJS from 'crypto-js';
+/**
+ * @deprecated C4 (2026-11-19) — STUB FAIL-CLOSED.
+ *
+ * El "almacenamiento seguro" anterior era reversible por cualquiera con el
+ * repo: cifraba con AES usando una clave fija ('default-encryption-key-
+ * change-in-production') o la variable VITE_STORAGE_ENCRYPTION_KEY, que se
+ * incrusta en el bundle del navegador y por tanto no es secreta (C4/C5).
+ *
+ * Este módulo ya NO cifra nada:
+ * - setItem() LANZA un error (fail-closed): nada se guarda "cifrado".
+ * - getItem() SIEMPRE devuelve undefined: nada guardado con la clave vieja
+ *   se vuelve a leer (esos datos se consideran comprometidos).
+ * - removeItem()/clear() SÍ funcionan: limpian las claves legacy de
+ *   localStorage, para que los datos viejos no queden ahí.
+ *
+ * La sesión real es Supabase Auth (getSession, en memoria); nada de sesión
+ * se copia a localStorage. Lo que deba ser secreto vive en el servidor.
+ * Las interfaces exportadas se conservan para no romper importadores.
+ */
 
-// Clave de encriptación derivada de variables de entorno o fallback
-const ENCRYPTION_KEY = import.meta.env.VITE_STORAGE_ENCRYPTION_KEY || 'default-encryption-key-change-in-production';
+const LEGACY_KEY_PREFIXES = ["cc_secure_", "demo_"] as const;
+
+function isLegacyKey(key: string | null): boolean {
+  if (!key) return false;
+  return LEGACY_KEY_PREFIXES.some((prefix) => key.startsWith(prefix));
+}
+
+function collectLegacyKeys(): string[] {
+  const keys: string[] = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (isLegacyKey(key)) keys.push(key as string);
+    }
+  } catch {
+    // Sin acceso a localStorage: no hay nada que limpiar.
+  }
+  return keys;
+}
 
 /**
- * Servicio de almacenamiento seguro con cifrado AES
- * Protege datos sensibles en localStorage contra XSS y acceso no autorizado
+ * Servicio de almacenamiento seguro — DEPRECADO, stub fail-closed (C4).
+ * @deprecated No cifra ni guarda nada. Usar Supabase Auth para sesión.
  */
 export class SecureStorage {
   private static instance: SecureStorage;
@@ -20,85 +55,25 @@ export class SecureStorage {
   }
 
   /**
-   * Cifra datos usando AES-256 antes de guardarlos
+   * @deprecated Fail-closed (C4): siempre lanza. Nada se guarda "cifrado".
    */
-  private encrypt(data: string): string {
-    try {
-      return CryptoJS.AES.encrypt(data, ENCRYPTION_KEY).toString();
-    } catch (error) {
-      console.error('Error encrypting data:', error);
-      throw new Error('Failed to encrypt data');
-    }
+  public setItem<T>(key: string, _value: T): void {
+    void key;
+    throw new Error(
+      "SecureStorage está deshabilitado (C4): el cifrado de cliente con clave fija fue eliminado; no se guarda nada en localStorage",
+    );
   }
 
   /**
-   * Descifra datos usando AES-256
+   * @deprecated Fail-closed (C4): siempre devuelve undefined. Los datos
+   * guardados con la clave vieja se consideran comprometidos y no se leen.
    */
-  private decrypt(encryptedData: string): string {
-    try {
-      const bytes = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY);
-      return bytes.toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-      console.error('Error decrypting data:', error);
-      throw new Error('Failed to decrypt data');
-    }
+  public getItem<T>(_key: string): T | undefined {
+    return undefined;
   }
 
   /**
-   * Guarda datos cifrados en localStorage
-   */
-  public setItem<T>(key: string, value: T): void {
-    try {
-      const serializedValue = JSON.stringify(value);
-      const encryptedValue = this.encrypt(serializedValue);
-      localStorage.setItem(key, encryptedValue);
-    } catch (error) {
-      console.error(`Error setting secure item ${key}:`, {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      throw new Error(`Failed to securely store ${key}`);
-    }
-  }
-
-  /**
-   * Obtiene y descifra datos desde localStorage
-   */
-  public getItem<T>(key: string): T | undefined {
-    try {
-      const encryptedValue = localStorage.getItem(key);
-      if (!encryptedValue) return undefined;
-
-      // CORRECCIÓN: Validar formato antes de desencriptar
-      if (typeof encryptedValue !== 'string' || encryptedValue.length === 0) {
-        console.warn(`⚠️ Datos inválidos en ${key}, eliminando`);
-        this.removeItem(key);
-        return undefined;
-      }
-
-      const decryptedValue = this.decrypt(encryptedValue);
-      
-      // CORRECCIÓN: Validar que sea JSON válido
-      try {
-        return JSON.parse(decryptedValue) as T;
-      } catch (parseError) {
-        console.error(`❌ Error parseando JSON de ${key}:`, {
-          error: parseError instanceof Error ? parseError.message : String(parseError)
-        });
-        this.removeItem(key);
-        return undefined;
-      }
-    } catch (error) {
-      console.error(`Error getting secure item ${key}:`, {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      // Si hay error de desencriptación, eliminar el dato corrupto
-      this.removeItem(key);
-      return undefined;
-    }
-  }
-
-  /**
-   * Elimina un item del localStorage
+   * Elimina un item del localStorage (limpieza de claves legacy).
    */
   public removeItem(key: string): void {
     try {
@@ -109,50 +84,40 @@ export class SecureStorage {
   }
 
   /**
-   * Limpia todos los datos seguros
+   * Limpia las claves legacy conocidas (cc_secure_*, demo_*) de localStorage.
    */
   public clear(): void {
     try {
-      // Solo eliminar keys que sabemos que son nuestros (prefijo específico)
-      const keysToRemove: string[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && (key.startsWith('cc_secure_') || key.startsWith('demo_'))) {
-          keysToRemove.push(key);
-        }
-      }
-      keysToRemove.forEach(key => localStorage.removeItem(key));
+      collectLegacyKeys().forEach((key) => localStorage.removeItem(key));
     } catch (error) {
-      console.error('Error clearing secure storage:', error);
+      console.error("Error clearing secure storage:", error);
     }
   }
 
   /**
-   * Verifica si un item existe
+   * Verifica si un item existe (solo presencia en localStorage, sin leerlo).
    */
   public hasItem(key: string): boolean {
-    return localStorage.getItem(key) !== null;
+    try {
+      return localStorage.getItem(key) !== null;
+    } catch {
+      return false;
+    }
   }
 
   /**
-   * Obtiene todos los keys seguros
+   * Obtiene las claves legacy conocidas presentes en localStorage.
    */
   public getKeys(): string[] {
-    const keys: string[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && (key.startsWith('cc_secure_') || key.startsWith('demo_'))) {
-        keys.push(key);
-      }
-    }
-    return keys;
+    return collectLegacyKeys();
   }
 }
 
 // Exportar instancia singleton
 export const secureStorage = SecureStorage.getInstance();
 
-// Tipos para datos comunes
+// Tipos para datos comunes (conservados para compatibilidad de importadores;
+// ya NO se persiste ningún dato de sesión en localStorage).
 export interface SecureSessionData {
   isAuthenticated: boolean;
   userRole?: string;

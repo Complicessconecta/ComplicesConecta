@@ -16,7 +16,6 @@
  * @date 2025-10-30
  */
 
-import OpenAI from "openai";
 import { HfInference } from "@huggingface/inference";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -41,7 +40,6 @@ export interface ChatMessage {
 }
 
 export class ChatSummaryService {
-  private openai: OpenAI | null = null;
   private hf: HfInference | null = null;
   private config: {
     enabled: boolean;
@@ -61,15 +59,15 @@ export class ChatSummaryService {
       rateLimitPerDay: 10,
     };
 
-    // Inicializar OpenAI si hay API key
-    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (openaiKey) {
-      this.openai = new OpenAI({
-        apiKey: openaiKey,
-        dangerouslyAllowBrowser: true, // Solo para desarrollo
-      });
-      logger.info("OpenAI initialized");
-    }
+    // JWT complement (2026-11-19): sin cliente OpenAI directo y sin
+    // VITE_OPENAI_API_KEY en el bundle. El resumen con GPT-4 va por la
+    // Edge Function openai-proxy (JWT de sesión + allowlist); ver
+    // generateWithGPT4. Si el proxy falla, generateSummary cae al fallback
+    // local (comportamiento previo cuando no había key).
+    //
+    // NOTA: la ruta HuggingFace (BART) sigue usando VITE_HUGGINGFACE_API_KEY
+    // en el cliente: no hay proxy de servidor para HuggingFace y migrarla
+    // queda pendiente (ver JWT_COMPLEMENT_SUMMARY.md).
 
     // Inicializar HuggingFace si hay API key
     const hfKey = import.meta.env.VITE_HUGGINGFACE_API_KEY;
@@ -124,9 +122,9 @@ export class ChatSummaryService {
     try {
       if (
         this.config.provider === "openai" ||
-        (this.config.provider === "auto" && this.openai)
+        this.config.provider === "auto"
       ) {
-        logger.debug("Using GPT-4");
+        logger.debug("Using GPT-4 (vía openai-proxy)");
         summary = await this.generateWithGPT4(messages);
         method = "gpt4";
       } else if (this.config.provider === "huggingface" && this.hf) {
@@ -218,12 +216,19 @@ export class ChatSummaryService {
   }
 
   /**
-   * Genera resumen con GPT-4
+   * Genera resumen con GPT-4 (vía openai-proxy, JWT complement 2026-11-19).
+   *
+   * Antes: cliente OpenAI directo con VITE_OPENAI_API_KEY en el bundle.
+   * Ahora: supabase.functions.invoke("openai-proxy") — supabase-js adjunta
+   * el JWT de sesión automáticamente y el proxy valida el modelo contra su
+   * allowlist (gpt-4-turbo-preview está permitido). El proxy reenvía
+   * temperature y max_tokens, así que NO hay pérdida de paridad aquí.
+   * Si el proxy falla (o no hay sesión), generateSummary cae al fallback.
    * @private
    */
   private async generateWithGPT4(messages: ChatMessage[]): Promise<string> {
-    if (!this.openai) {
-      throw new Error("OpenAI not configured");
+    if (!supabase) {
+      throw new Error("Supabase not initialized");
     }
 
     const messagesText = messages
@@ -235,15 +240,18 @@ Enfócate en los temas principales y el tono general:
 
 ${messagesText}`;
 
-    const completion = await this.openai.chat.completions.create({
-      model: "gpt-4-turbo-preview",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 150,
-      temperature: 0.5,
+    const { data, error } = await supabase.functions.invoke("openai-proxy", {
+      body: {
+        model: "gpt-4-turbo-preview",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 150,
+        temperature: 0.5,
+      },
     });
+    if (error) throw error;
 
     return (
-      completion.choices[0]?.message?.content || "No se pudo generar resumen"
+      data?.choices?.[0]?.message?.content || "No se pudo generar resumen"
     );
   }
 

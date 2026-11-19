@@ -25,6 +25,11 @@ import { motion } from "framer-motion";
 import { walletService } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
+import {
+  PRIVATE_MEDIA_PLACEHOLDER,
+  toPrivateStoragePath,
+  usePrivateMediaUrls,
+} from "@/lib/storage/private-media";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
@@ -350,17 +355,20 @@ const ProfileSingle: FC = () => {
     userLiked?: boolean;
   };
 
-  const privateImages = useMemo(
+  // C6: rutas de Storage (bucket "media") de las 58 imágenes privadías.
+  // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
+  // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
+  // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
+  // + usuario autenticado); en cualquier otro caso se muestra el placeholder.
+  const privateImageStoragePaths = useMemo(
     () =>
-      Array.from({ length: 58 }).map((_, idx) => {
-        const i = idx + 1;
-        return {
-          id: String(i),
-          url: `/assets/people/single/privado/aprivadosingle${i}.jpg`,
-          title: "Contenido privado",
-          description: "Acceso privado",
-        };
-      }),
+      Array.from({ length: 58 })
+        .map((_, idx) =>
+          toPrivateStoragePath(
+            `/assets/people/single/privado/aprivadosingle${idx + 1}.jpg`,
+          ),
+        )
+        .filter((p): p is string => p !== null),
     [],
   );
 
@@ -377,18 +385,38 @@ const ProfileSingle: FC = () => {
     [profilePrivateImagesRaw, profile?.avatar_url],
   );
 
-  const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {
-    const source: (PrivateImageItem | string)[] =
-      Array.isArray(profilePrivateImages) && profilePrivateImages.length > 0
-        ? profilePrivateImages
-        : privateImages;
-    return source;
-  }, [profilePrivateImages, privateImages]);
-
   const isGalleryUnlocked =
     isOwnProfile &&
     !isParentalLocked &&
     (demoPrivateUnlocked || privateImageAccess === "approved");
+
+  // C6: resuelve las 58 rutas de Storage a URLs firmadas (1 h) solo cuando
+  // la galería está desbloqueada y hay usuario autenticado. Llamada
+  // incondicional en el top-level (sin early returns antes en el componente).
+  // En cualquier otro caso devuelve el placeholder genérico por posición.
+  const privateImageUrls = usePrivateMediaUrls(privateImageStoragePaths, {
+    unlocked: isGalleryUnlocked,
+    userId: user?.id ?? null,
+    ownerId: profile?.id ?? null,
+  });
+
+  const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {
+    // Imágenes guardadas en el registro del perfil (DB): se pasan tal cual.
+    // Su ubicación de almacenamiento es desconocida y NO forma parte de las
+    // 62 del inventario C6; ver el hallazgo aparte en C6_FIX_SUMMARY.md.
+    if (
+      Array.isArray(profilePrivateImages) &&
+      profilePrivateImages.length > 0
+    ) {
+      return profilePrivateImages;
+    }
+    return privateImageStoragePaths.map((storagePath, idx) => ({
+      id: String(idx + 1),
+      url: privateImageUrls[idx] ?? PRIVATE_MEDIA_PLACEHOLDER,
+      title: "Contenido privado",
+      description: "Acceso privado",
+    }));
+  }, [profilePrivateImages, privateImageStoragePaths, privateImageUrls]);
 
   // Flags internos para bloquear secciones de UI opcionales sin romper lint
   const SHOW_ONLINE_BADGE = false;
@@ -1866,8 +1894,18 @@ const ProfileSingle: FC = () => {
                                   src={imageSource}
                                   alt="Private content"
                                   onError={(e) => {
-                                    (e.currentTarget as HTMLImageElement).src =
-                                      "/assets/people/single/privado/aprivadosingle1.jpg";
+                                    // C6: sin fallback a la imagen privada
+                                    // pública; solo al placeholder genérico,
+                                    // y sin reintentar si ya es el placeholder.
+                                    const img =
+                                      e.currentTarget as HTMLImageElement;
+                                    if (
+                                      !img.src.endsWith(
+                                        PRIVATE_MEDIA_PLACEHOLDER,
+                                      )
+                                    ) {
+                                      img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                                    }
                                   }}
                                   className={cn(
                                     "w-full h-full object-cover transition-[filter,transform] duration-500",

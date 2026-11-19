@@ -11512,7 +11512,6 @@ export type Database = {
       }
       earth: { Args: never; Returns: number }
       escape_html: { Args: { text: string }; Returns: string }
-      exec_sql: { Args: { sql_query: string }; Returns: undefined }
       generate_admin_id: { Args: never; Returns: string }
       generate_couple_report: {
         Args: { couple_id_param: string }

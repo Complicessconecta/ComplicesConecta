@@ -195,26 +195,45 @@ export class NFTService {
       });
       formData.append("pinataOptions", pinataOptions);
 
-      const pinataProxyUrl = import.meta.env.VITE_PINATA_PROXY_URL || '/functions/v1/pinata-proxy';
-
-      const response = await fetch(pinataProxyUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          method: 'pinning/pinFileToIPFS',
-          path: '/pinning/pinFileToIPFS',
-          apiBase: NFTService.PINATA_API_URL,
-          body: formData,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error en Pinata: ${response.statusText}`);
+      // JWT complement (2026-11-19): real multipart upload. The FormData
+      // itself is the top-level body of functions.invoke — verified against
+      // the vendored @supabase/functions-js 2.4.1 source, `invoke` passes
+      // a top-level FormData through untouched and lets fetch set the
+      // multipart boundary. (Nesting it inside a JSON object, as before,
+      // JSON.stringifies it to `{}` and the file bytes never reached
+      // Pinata.) The routing fields travel as string fields inside the
+      // same FormData; pinata-proxy reads them and re-forwards ONLY
+      // file/pinataMetadata/pinataOptions to Pinata.
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error(
+          "No hay sesión activa: inicia sesión para subir a IPFS",
+        );
       }
 
-      const data = await response.json();
+      formData.append("method", "pinning/pinFileToIPFS");
+      formData.append("path", "/pinning/pinFileToIPFS");
+      formData.append("apiBase", NFTService.PINATA_API_URL);
+
+      const { data, error } = await supabase.functions.invoke(
+        "pinata-proxy",
+        {
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        },
+      );
+
+      if (error) {
+        throw new Error(`Error en Pinata: ${error.message}`);
+      }
+
+      if (!data || typeof data.IpfsHash !== "string") {
+        throw new Error("Error en Pinata: respuesta sin IpfsHash");
+      }
       logger.info("Imagen subida exitosamente a IPFS", {
         ipfsHash: data.IpfsHash,
       });
@@ -500,6 +519,38 @@ export class NFTService {
         requesterId,
         partnerId,
       });
+
+      // JWT complement (2026-11-19): mismo short-circuit demo que
+      // mintSingleNFT. Sin sesión real no hay JWT que enviar a
+      // pinata-proxy, así que en demo / sin sesión se falla cerrado en
+      // local (false) en vez de intentar la subida. Decisión del dueño
+      // pendiente: si el flujo demo de NFT de pareja debe crear algo en
+      // localStorage como mintSingleNFT, o quedarse en login-requerido.
+      const isDemoEnv =
+        import.meta.env.VITE_APP_MODE === "demo" ||
+        import.meta.env.MODE === "development";
+      const isDemoAuthActive =
+        isDemoEnv &&
+        typeof window !== "undefined" &&
+        safeGetItem("demo_authenticated") === "true";
+
+      const isDemoUserActive =
+        typeof window !== "undefined" &&
+        (() => {
+          try {
+            return window.localStorage.getItem("demo_user") !== null;
+          } catch {
+            return false;
+          }
+        })();
+
+      if (WalletService.isDemoMode() || isDemoAuthActive || isDemoUserActive) {
+        logger.info("Solicitud de NFT de pareja en modo demo: sin subida", {
+          requesterId,
+          partnerId,
+        });
+        return false;
+      }
 
       const requesterWallet = await this.walletService
         .getOrCreateWallet(requesterId)

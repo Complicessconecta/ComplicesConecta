@@ -1,17 +1,16 @@
 // Supabase Edge Function for sending emails
 import { serve } from "std/http/server.ts";
+import {
+  authenticate,
+  getCorsHeaders,
+  handleOptions,
+} from "../_shared/auth.ts";
 
 declare const Deno: {
   env: {
     get(key: string): string | undefined;
   };
   readTextFile(path: string): Promise<string>;
-};
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
 };
 
 interface EmailRequest {
@@ -22,11 +21,17 @@ interface EmailRequest {
 
 // Edge Function handler
 export default async function handler(req: Request): Promise<Response> {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  const preflight = handleOptions(req);
+  if (preflight) return preflight;
 
   try {
+    // C2: only a logged-in user may request an email (was: unauthenticated).
+    // NOTE: this function still sends nothing — it only logs the email that
+    // "would be sent". Wiring a real provider is a separate decision.
+    // See C2_FIX_SUMMARY.md.
+    const auth = await authenticate(req);
+    if ("response" in auth) return auth.response;
+
     const { to, template, data = {} }: EmailRequest = await req.json();
 
     // Here you would integrate with your email service (SendGrid, Resend, etc.)
@@ -50,7 +55,7 @@ export default async function handler(req: Request): Promise<Response> {
         to,
       }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         status: 200,
       },
     );
@@ -62,7 +67,7 @@ export default async function handler(req: Request): Promise<Response> {
         success: false,
       }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         status: 400,
       },
     );

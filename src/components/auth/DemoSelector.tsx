@@ -48,15 +48,11 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
 
     try {
       const demoEmail = type === "couple" ? "pareja@outlook.es" : "single@outlook.es";
-      const demoPassword =
-        type === "couple"
-          ? import.meta.env.VITE_DEMO_PASSWORD_PAREJA_OUTLOOK_ES
-          : import.meta.env.VITE_DEMO_PASSWORD_SINGLE_OUTLOOK_ES;
 
-      const resolvedDemoPassword = demoPassword || "demo";
-
-      // Usar el método signIn del hook useAuth
-      await signIn(demoEmail, resolvedDemoPassword, type);
+      // C4/C5 (2026-11-19): modo demo sin contraseña. Ya no se lee ninguna
+      // VITE_DEMO_PASSWORD_* ni existe el fallback literal "demo".
+      // El demo es local, nunca admin; el login real es Supabase Auth.
+      await signIn(demoEmail, "", type);
 
       // Establecer estado demo SOLO si signIn fue exitoso
       setDemoAuthenticated(true);

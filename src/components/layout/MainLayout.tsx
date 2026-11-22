@@ -3,7 +3,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/auth/useAuth";
 import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
-import { PageTransitionWrapper } from "@/components/animations/PageTransitions";
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Navigation } from "@/components/Navigation";
@@ -166,13 +165,17 @@ export const MainLayout = () => {
         {/* Main Content */}
         <main className={headerOffsetClass}>
           <div className={showHeaderNav ? "-mt-px" : ""}>
-            <PageTransitionWrapper>
-              <PageBackground>
-                <Suspense fallback={<PageLoader />}>
-                  <Outlet />
-                </Suspense>
-              </PageBackground>
-            </PageTransitionWrapper>
+            {/* Sin PageTransitionWrapper: el AnimatePresence que envolvía
+              el Outlet dejaba atorada la navegación al salir de un chat
+              (la URL cambiaba a /matches o /discover pero la pantalla se
+              quedaba en el chat, en los dos modos: "wait" y por defecto).
+              La transición entre páginas es cosmética; la navegación no
+              debe depender de ella. El Outlet se renderiza directo. */}
+            <PageBackground>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </PageBackground>
           </div>
         </main>
 

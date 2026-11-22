@@ -48,6 +48,13 @@ function ProfileCouple() {
   const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(
     null,
   );
+  // El score se calcula UNA vez aquí, en el top-level e incondicional
+  // (igual que ProfileSingle:246). Antes se llamaba a useProfileScore()
+  // 4 veces dentro del JSX del return principal, que solo se renderiza
+  // cuando el perfil ya cargó: en el primer render (cargando) eran 0
+  // llamadas y en el segundo 4, y React truena con el error #310
+  // ("Rendered more hooks than during the previous render") → /404.
+  const profileScore = useProfileScore(profile);
   const [loading, setLoading] = useState(true);
   const [showPrivateImageRequest, _setShowPrivateImageRequest] =
     useState(false);
@@ -822,16 +829,16 @@ function ProfileCouple() {
                         <Badge
                           className={cn(
                             "profile-badge flex items-center gap-1",
-                            useProfileScore(profile).color,
+                            profileScore.color,
                           )}
                         >
-                          <span>{useProfileScore(profile).icon}</span>
-                          <span>{useProfileScore(profile).label}</span>
+                          <span>{profileScore.icon}</span>
+                          <span>{profileScore.label}</span>
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
-                          Score de confianza: {useProfileScore(profile).score}
+                          Score de confianza: {profileScore.score}
                           /100
                         </p>
                       </TooltipContent>

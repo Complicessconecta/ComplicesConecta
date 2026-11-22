@@ -140,6 +140,15 @@ function ProfileCouple() {
     !isParentalLocked &&
     (isOwnProfile || demoPrivateUnlocked || privateImageAccess === "approved");
 
+  // isDemoMode VA AQUÍ ARRIBA, antes de usePrivateMediaUrls(): si se
+  // declara después, el `demoAssetFallback: isDemoMode` de abajo lee el
+  // const antes de inicializarse (TDZ) → ReferenceError en cada render →
+  // ErrorBoundary → /404. Fue lo que rompió /profile-couple en el PR #44.
+  const isDemoMode =
+    WalletService.isDemoMode() ||
+    (typeof window !== "undefined" &&
+      window.localStorage.getItem("demo_authenticated") === "true");
+
   // C6: resuelve las rutas de Storage (en el mismo orden que
   // `_shuffledCouplePrivateImages`) a URLs firmadas (1 h) solo cuando la
   // galería está desbloqueada y hay usuario autenticado. Llamada
@@ -270,11 +279,6 @@ function ProfileCouple() {
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleRequest[]>([]);
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
-  const isDemoMode =
-    WalletService.isDemoMode() ||
-    (typeof window !== "undefined" &&
-      window.localStorage.getItem("demo_authenticated") === "true");
-
   const displayAccountLabel =
     profile?.username || profile?.couple_name || "Cuenta";
 

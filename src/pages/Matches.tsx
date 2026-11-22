@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, User, Flame, Users, Crown, Sparkles } from "lucide-react";
-// useNavigate removido por no utilizarse
 import { motion } from "framer-motion";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
@@ -23,6 +23,7 @@ export interface Match {
 }
 
 const Matches = () => {
+  const navigate = useNavigate();
   const { isAuthenticated: _isAuthenticated } = useAuth();
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading] = useState(false);
@@ -156,13 +157,52 @@ const Matches = () => {
   });
 
   const handleStartChat = (matchId: number) => {
-    // Navigate to chat or start conversation
+    // Abrir el chat demo con ese match. Chat.tsx lee el :id de la ruta y
+    // el perfil del state para construir y seleccionar la conversación
+    // (en demo el acceso está forzado y los mensajes se agregan en local).
+    // Antes solo hacía un log y el botón no hacía nada visible.
+    const match = matches.find((m) => m.id === matchId);
+    if (!match) {
+      logger.warn("Start chat: match no encontrado", { matchId });
+      return;
+    }
     logger.info("Start chat:", { matchId });
+    navigate(`/chat/${match.id}`, {
+      state: {
+        profile: {
+          id: String(match.id),
+          name: match.name,
+          image: match.image,
+          isOnline: true,
+        },
+      },
+    });
   };
 
   const handleViewProfile = (matchId: number) => {
-    // Navigate to profile
+    // Abrir el detalle del perfil. ProfileDetail lee el :id y el perfil
+    // del state (lo adapta con valores por defecto). Antes solo hacía un
+    // log y el botón no hacía nada visible.
+    const match = matches.find((m) => m.id === matchId);
+    if (!match) {
+      logger.warn("View profile: match no encontrado", { matchId });
+      return;
+    }
     logger.info("View profile:", { matchId });
+    navigate(`/profile/${match.id}`, {
+      state: {
+        profile: {
+          id: match.id,
+          name: match.name,
+          age: match.age,
+          location: "Ciudad de México",
+          interests: match.mutualInterests,
+          image: match.image,
+          isOnline: true,
+          bio: "Conexiones auténticas y experiencias únicas.",
+        },
+      },
+    });
   };
 
   return (

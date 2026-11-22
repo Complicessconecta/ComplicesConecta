@@ -27,7 +27,7 @@ export const Navigation = ({ className }: NavigationProps) => {
 
   const navItems = features.requests
     ? [
-        { id: "feed", icon: Home, label: "Inicio", path: "/feed" },
+        { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
           ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
@@ -51,7 +51,7 @@ export const Navigation = ({ className }: NavigationProps) => {
         },
       ]
     : [
-        { id: "feed", icon: Home, label: "Inicio", path: "/feed" },
+        { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
           ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
@@ -140,7 +140,7 @@ export const Navigation = ({ className }: NavigationProps) => {
                 onClick={() => handleNavigation(item.path)}
                 className={cn(
                   "flex flex-col items-center justify-center p-1 sm:p-1.5 rounded-xl sm:rounded-2xl",
-                  "min-w-[42px] sm:min-w-[55px] w-[42px] sm:w-[55px] min-h-[44px] sm:min-h-[60px] group shrink-0",
+                  "flex-1 min-w-0 sm:flex-none sm:min-w-[55px] sm:w-[55px] min-h-[44px] sm:min-h-[60px] group",
                   "transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95",
                   "relative overflow-visible backdrop-blur-sm cursor-pointer",
                   isActive

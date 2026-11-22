@@ -85,9 +85,11 @@ class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.hasError) {
-      // En producción, redirigir a NotFound para no revelar información del error
-      const isProduction = import.meta.env.PROD;
-      if (isProduction) {
+      // DEBUG TEMPORAL (rama debug/navegacion-chat-2026-11-22, NO MERGEAR):
+      // no redirigir a /404; mostrar el error en pantalla para diagnosticar
+      // por qué el chat se cae al volver con ATRÁS y por qué la vista no
+      // cambia al salir del chat. En producción normal sí redirige.
+      if (false) {
         window.location.href = "/404";
         return null;
       }
@@ -127,7 +129,8 @@ class ErrorBoundary extends React.Component<
                 </p>
               </div>
 
-              {!import.meta.env.PROD && (this.state.error?.stack || this.state.errorInfo?.componentStack) && (
+              {/* DEBUG TEMPORAL: mostrar siempre los detalles técnicos (también en PROD) */}
+              {(this.state.error?.stack || this.state.errorInfo?.componentStack) && (
                 <details className="bg-black/30 border border-white/10 rounded-lg p-3">
                   <summary className="text-white/80 text-xs cursor-pointer select-none">
                     Detalles técnicos

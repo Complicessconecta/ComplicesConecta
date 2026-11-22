@@ -1,5 +1,5 @@
 import React, { Suspense, useState, lazy } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useMatches } from "react-router-dom";
 import { useAuth } from "@/features/auth/useAuth";
 import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
@@ -108,6 +108,18 @@ export const MainLayout = () => {
 
   return (
     <div className="min-h-dvh w-full text-white pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] overflow-x-hidden">
+      {/* DEBUG TEMPORAL (rama debug/navegacion-chat-2026-11-22, NO MERGEAR):
+          muestra la ruta que ve el Router vs la URL del navegador y las
+          rutas que el Router resolvió. Si al tocar Matches desde un chat
+          "router" sigue en /chat/3 mientras "url" dice /matches, el Router
+          no está avisando del cambio; si ambos dicen /matches pero la
+          pantalla sigue en el chat, el Outlet no está cambiando de página. */}
+      <div
+        data-debug-nav
+        className="fixed top-0 left-0 right-0 z-[100] bg-black text-[11px] leading-tight text-yellow-300 font-mono px-2 py-1"
+      >
+        {`router:${location.pathname} | url:${typeof window !== "undefined" ? window.location.pathname : "?"} | rutas:${useMatches().map((m) => m.pathname).join(",")}`}
+      </div>
       <div className="min-h-full relative pb-24 flex flex-col">
         {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
         <AnimationSettingsButton />

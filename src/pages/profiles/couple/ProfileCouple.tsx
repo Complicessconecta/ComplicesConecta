@@ -635,7 +635,11 @@ function ProfileCouple() {
         });
 
         // Verificar si hay sesión demo activa PRIMERO
-        if (demoAuth === "true" && demoUser) {
+        // isDemoMode lee localStorage directo (string "true"); demoAuth de
+        // usePersistedState llega como booleano (JSON.parse("true") === true),
+        // así que `demoAuth === "true"` nunca era verdad y la rama demo
+        // quedaba inalcanzable.
+        if (isDemoMode && demoUser) {
           logger.info("🎬 Cargando perfil demo pareja...");
           // Usar datos demo existentes pero marcados como demo
           const demoCoupleProfile: CoupleProfileWithPartners = {
@@ -757,9 +761,9 @@ function ProfileCouple() {
     };
 
     loadProfile();
-  }, [user, demoAuth, demoUser, navigate, authLoading]);
+  }, [user, demoAuth, demoUser, navigate, authLoading, isDemoMode]);
 
-  if (loading || !profile) {
+  if (loading) {
     return (
       <div className="min-h-screen relative overflow-hidden">
         <div className="relative z-10 flex flex-col min-h-screen">
@@ -769,6 +773,24 @@ function ProfileCouple() {
               <span className="ml-3 text-white">Cargando perfil...</span>
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen relative overflow-hidden">
+        <div className="relative z-10 flex flex-col min-h-screen items-center justify-center p-6 text-center">
+          <p className="text-white font-medium mb-2">
+            No se pudo cargar el perfil de pareja.
+          </p>
+          <p className="text-white/70 text-sm mb-4">
+            Inténtalo de nuevo o vuelve a tu perfil single.
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Reintentar
+          </Button>
         </div>
       </div>
     );

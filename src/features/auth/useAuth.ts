@@ -644,8 +644,18 @@ export const useAuth = () => {
   };
 
   const getProfileType = () => {
-    if (demoUser) {
-      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
+    // Misma lectura fresca que isDemo(): el estado `demoUser` de esta
+    // instancia puede estar obsoleto si el demo se activó por SPA después
+    // de montar (MainLayout/Navigation). Sin esto, un demo de pareja
+    // resolvía como "single" y el botón Perfil navegaba al perfil de
+    // single en vez del de pareja.
+    const storedDemoUser =
+      typeof window !== "undefined"
+        ? safeParseDemoUser(window.localStorage.getItem("demo_user"))
+        : null;
+    const activeDemoUser = storedDemoUser ?? demoUser;
+    if (activeDemoUser) {
+      const parsedDemoUser = safeParseDemoUser(activeDemoUser); // VALIDADO
       return parsedDemoUser?.accountType || "single";
     }
     return profile?.profile_type || "single";
@@ -686,11 +696,23 @@ export const useAuth = () => {
 
   const isDemo = () => {
     const sessionFlags = StorageManager.getSessionFlags();
-    const isDemoActive = sessionFlags.demo_authenticated && demoUser;
+    // Leer demo_user directo de localStorage en cada llamada: useAuth es
+    // un hook por componente (sin estado compartido) y cada instancia lee
+    // demo_user una sola vez al montar. MainLayout/BottomNavigation montan
+    // antes de activar el demo, así que el estado `demoUser` quedaba
+    // obsoleto tras la navegación SPA y el dock no aparecía en el teléfono
+    // (se veía la barra de 10 botones en su lugar). La lectura fresca lo
+    // corrige sin tocar el resto del flujo demo.
+    const storedDemoUser =
+      typeof window !== "undefined"
+        ? safeParseDemoUser(window.localStorage.getItem("demo_user"))
+        : null;
+    const activeDemoUser = storedDemoUser ?? demoUser;
+    const isDemoActive = sessionFlags.demo_authenticated && activeDemoUser;
 
     // Solo log una vez por sesión para evitar spam
     if (isDemoActive && !(window as WindowWithDemoFlags).__demoLoggedOnce) {
-      const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
+      const parsedDemoUser = safeParseDemoUser(activeDemoUser); // VALIDADO
       
       if (!parsedDemoUser) {
         return isDemoActive;

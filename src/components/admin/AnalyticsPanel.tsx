@@ -133,7 +133,7 @@ export function AnalyticsPanel() {
   // Helper: Convertir porcentaje a clase CSS
   const getWidthClass = useCallback((percentage: number): string => {
     const rounded = Math.round(percentage / 5) * 5; // Redondear al múltiplo de 5 más cercano
-    return `w-${Math.min(100, Math.max(0, rounded))}`;
+    return `progress-w-${Math.min(100, Math.max(0, rounded))}`;
   }, []);
 
   // Helper: Generar datos mock de gráficos

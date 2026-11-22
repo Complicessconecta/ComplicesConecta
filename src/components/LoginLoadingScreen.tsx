@@ -28,7 +28,7 @@ export const LoginLoadingScreen = ({
   // Helper function to convert progress to CSS class
   const getWidthClass = (percentage: number): string => {
     const rounded = Math.round(percentage / 5) * 5; // Round to nearest 5
-    return `w-${Math.min(100, Math.max(0, rounded))}`;
+    return `progress-w-${Math.min(100, Math.max(0, rounded))}`;
   };
 
   // Helper function to get animation delay class

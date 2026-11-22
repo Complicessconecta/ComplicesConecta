@@ -30,7 +30,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
   // Helper function to convert score to CSS class
   const getWidthClass = (percentage: number): string => {
     const rounded = Math.round(percentage / 5) * 5; // Round to nearest 5
-    return `w-${Math.min(100, Math.max(0, rounded))}`;
+    return `progress-w-${Math.min(100, Math.max(0, rounded))}`;
   };
 
   // Default factors if breakdown is not provided

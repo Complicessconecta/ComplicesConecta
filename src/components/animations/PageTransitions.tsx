@@ -64,15 +64,13 @@ export const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({
   const transitionType = routeTransitions[location.pathname] || "fade";
   const variants = pageTransitions[transitionType];
 
-  // Sin mode="wait": con "wait" la ruta nueva no se monta hasta que la
-  // página anterior termina su animación de salida, y al salir de un chat
-  // esa salida nunca se completaba (reproducido 3 veces: la URL cambiaba
-  // a /matches o /discover pero la pantalla se quedaba en el chat y la
-  // página destino nunca se montaba). Con el modo por defecto la ruta
-  // nueva se monta de inmediato y la anterior sale en paralelo: la
-  // navegación ya no puede quedarse atorada detrás de una animación.
+  // REVERSIÓN del PR #46: quitar mode="wait" NO arregló la navegación
+  // desde el chat (el síntoma persistió igual) y ADEMÁS rompió
+  // Matches → Mensaje (el chat se caía a /404 al montarse junto con la
+  // página anterior). Se restaura mode="wait"; la navegación desde el
+  // chat sigue pendiente de diagnóstico por otra vía.
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
         variants={variants}

@@ -2,7 +2,6 @@
 import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
-import { Navigation } from "@/components/Navigation";
 import { useAuth } from "@/features/auth/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -78,8 +77,8 @@ export const ProfileLayout: React.FC = () => {
         <Outlet />
       </main>
 
-      {/* Barra de navegación inferior para perfiles */}
-      <Navigation />
+      {/* La barra inferior la renderiza MainLayout (Navigation o el dock);
+          aquí NO se renderiza otra para no duplicarla ni tapar el dock. */}
     </>
   );
 };

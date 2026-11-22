@@ -22,7 +22,7 @@ const PageLoader = () => (
 );
 
 export const MainLayout = () => {
-  const { profile: _profile, isAuthenticated, user, signOut } = useAuth();
+  const { profile: _profile, isAuthenticated, user, signOut, isDemo } = useAuth();
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -84,6 +84,18 @@ export const MainLayout = () => {
 
   // Bottom Navigation solo para usuarios logueados (incluye sesiones demo)
   const showBottomNavigation = hasSession || hasDemoSession;
+
+  // El dock de 5 botones (BottomNavigation) se muestra solo en demo y en
+  // rutas de perfil (misma condición que en BottomNavigation.tsx). Cuando el
+  // dock está visible, la barra de 10 botones (Navigation, z-50) no debe
+  // renderizarse: la pintaba encima del dock (z-40) y no se podía tocar.
+  // Exclusión mutua: una sola barra inferior a la vez.
+  const showDock =
+    isDemo() &&
+    (pathname === "/profile" ||
+      pathname === "/profile-single" ||
+      pathname === "/profile-couple" ||
+      pathname.startsWith("/profile-"));
 
   // Chat FAB no se muestra en rutas de perfil
   const isProfileRoute =
@@ -164,8 +176,8 @@ export const MainLayout = () => {
           </div>
         </main>
 
-        {/* Bottom Navigation (perfil/app) */}
-        {showBottomNavigation && <Navigation />}
+        {/* Bottom Navigation (perfil/app) — solo cuando el dock no está visible */}
+        {showBottomNavigation && !showDock && <Navigation />}
         
         {/* Bottom Navigation for Demo Profiles */}
         <BottomNavigation />

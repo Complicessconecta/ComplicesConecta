@@ -398,6 +398,10 @@ const ProfileSingle: FC = () => {
     unlocked: isGalleryUnlocked,
     userId: user?.id ?? null,
     ownerId: profile?.id ?? null,
+    // SOLO DEMO: el bucket `media` no existe aún; las imágenes demo se
+    // resuelven desde /assets/... (ver private-media.ts). Perfiles reales:
+    // sin este flag, URLs firmadas o placeholder.
+    demoAssetFallback: isDemoMode(),
   });
 
   const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {

@@ -19,9 +19,19 @@ import { SecureMediaService } from "@/lib/secureMediaService";
  * permiso denegado, bucket/ruta inexistente o cualquier error — se devuelve
  * el placeholder genérico `/placeholder.svg`.
  *
- * NO hay fallback a la ruta pública: un fallback silencioso anularía el
- * arreglo. Si la URL firmada no se puede generar, la imagen simplemente no
- * se muestra (placeholder).
+ * NO hay fallback a la ruta pública para perfiles REALES: un fallback
+ * silencioso anularía el arreglo. Si la URL firmada no se puede generar,
+ * la imagen simplemente no se muestra (placeholder).
+ *
+ * EXCEPCIÓN SOLO-DEMO (2026-11-22, a petición del propietario): en modo
+ * demo, las galerías de los perfiles demo resuelven sus imágenes desde
+ * `/assets/...` (`demoAssetFallback: true` en `usePrivateMediaUrls`). Esas
+ * imágenes son contenido demo que ya se distribuye en `public/` (no hay
+ * contenido privado real en juego) y el bucket `media` sigue sin existir,
+ * así que sin este fallback la galería demo solo mostraba placeholders.
+ * La puerta de acceso (`unlocked` + `userId`) se respeta igual; el cambio
+ * es solo DE DÓNDE sale la URL, no quién puede verla. Perfiles reales:
+ * sin cambios, siguen con URLs firmadas o placeholder.
  *
  * Estado de la migración física (2026-11-19): el bucket privado, las
  * políticas RLS y la subida de las 62 imágenes a Storage todavía NO existen;
@@ -196,6 +206,26 @@ export interface UsePrivateMediaUrlsOptions {
   userId: string | null | undefined;
   /** Id del perfil dueño del contenido (`profile?.id`); `null` si aún no cargó. */
   ownerId?: string | null | undefined;
+  /**
+   * SOLO DEMO: cuando es `true`, las rutas se resuelven a sus URLs públicas
+   * de `/assets/...` en vez de a URLs firmadas del bucket `media`. Solo
+   * para las galerías de los perfiles demo (contenido demo que ya se
+   * distribuye en `public/`); los perfiles reales nunca pasan este flag y
+   * siguen con el flujo de URLs firmadas. La puerta `unlocked` + `userId`
+   * se respeta igual.
+   */
+  demoAssetFallback?: boolean;
+}
+
+/**
+ * Inversa de `toPrivateStoragePath`: convierte una ruta de Storage
+ * (`people/...`) a su URL pública legacy (`/assets/people/...`). Solo se
+ * usa para el fallback SOLO-DEMO de `usePrivateMediaUrls`; ningún otro
+ * código debe construir URLs públicas hacia contenido privado.
+ */
+export function toPublicAssetPath(storagePath: string): string {
+  const path = storagePath.replace(/^\/+/, "");
+  return `/assets/${path}`;
 }
 
 /**
@@ -211,13 +241,14 @@ export interface UsePrivateMediaUrlsOptions {
  * - El primer render siempre devuelve placeholders; las URLs firmadas se
  *   resuelven en un `useEffect` y se actualizan al desbloquear / cambiar de
  *   usuario / cargar el perfil dueño.
- * - No hay fallback a la ruta pública en ningún caso.
+ * - No hay fallback a la ruta pública en ningún caso, salvo la excepción
+ *   SOLO-DEMO (`demoAssetFallback: true`, contenido demo de `/assets/`).
  */
 export function usePrivateMediaUrls(
   storagePaths: string[],
   options: UsePrivateMediaUrlsOptions,
 ): string[] {
-  const { unlocked, userId, ownerId } = options;
+  const { unlocked, userId, ownerId, demoAssetFallback } = options;
 
   // Clave estable para comparar el contenido del array sin depender de su identidad.
   const pathsKey = useMemo(() => storagePaths.join("\n"), [storagePaths]);
@@ -239,6 +270,15 @@ export function usePrivateMediaUrls(
     let cancelled = false;
     const paths = pathsKey.split("\n").filter((p) => p.length > 0);
 
+    // SOLO DEMO: el bucket `media` no existe aún; resolver las imágenes
+    // demo desde /assets/... en vez de intentar firmarlas (siempre fallaba
+    // y dejaba placeholders). La puerta `unlocked` + `userId` ya se verificó
+    // arriba; los perfiles reales nunca pasan demoAssetFallback.
+    if (demoAssetFallback) {
+      setUrls(paths.map((p) => toPublicAssetPath(p)));
+      return;
+    }
+
     void resolvePrivateMediaUrls(paths, userId, ownerId).then((resolved) => {
       if (!cancelled) {
         setUrls(resolved);
@@ -248,7 +288,7 @@ export function usePrivateMediaUrls(
     return () => {
       cancelled = true;
     };
-  }, [unlocked, userId, ownerId, pathsKey, placeholders]);
+  }, [unlocked, userId, ownerId, pathsKey, placeholders, demoAssetFallback]);
 
   return urls;
 }

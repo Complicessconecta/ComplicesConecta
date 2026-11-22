@@ -37,7 +37,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ className = 
 
   return (
     <div className={cn(
-      "fixed bottom-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl border-t border-white/20 safe-area-inset-bottom",
+      "fixed bottom-0 left-0 right-0 z-40 bg-linear-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-xl border-t border-purple-500/40 shadow-lg shadow-purple-900/50 safe-area-inset-bottom",
       className
     )}>
       <nav className="flex justify-around items-center h-16 px-2">
@@ -52,7 +52,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ className = 
               className={cn(
                 "flex flex-col items-center justify-center py-1 px-2 rounded-lg transition-all duration-200 min-w-0 flex-1",
                 active
-                  ? "text-purple-400"
+                  ? "text-white bg-white/10"
                   : "text-white/60 hover:text-white/80"
               )}
             >

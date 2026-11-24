@@ -1,7 +1,23 @@
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, ArrowLeft, Lock, Globe, Shield, Users, Heart, Zap, Eye, UserCheck } from "lucide-react";
+import {
+  MessageCircle,
+  ArrowLeft,
+  Lock,
+  Globe,
+  Shield,
+  Users,
+  Heart,
+  Zap,
+  Eye,
+  UserCheck,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const ChatInfo = () => {
@@ -199,4 +215,3 @@ export const ChatInfo = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
-

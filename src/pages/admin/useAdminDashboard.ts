@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/hooks/useToast";
 
-
 // Interfaces para los datos del dashboard
 export interface DashboardStats {
   totalUsers: number;
@@ -29,7 +28,6 @@ export interface UserActivity {
   email?: string;
   is_active: boolean;
 }
-
 
 // NOTE: This is simulated data and does not match the 'reports' table schema.
 // Keeping it as a local type for now.
@@ -161,17 +159,12 @@ export const useAdminDashboard = (dateRange: string) => {
       const { data: recentUsers, error: recentUsersError } = await supabase
         .from("profiles")
 
-
         .select("*")
         .order("updated_at", { ascending: false })
         .limit(10);
 
-
-
-        if (!recentUsersError && recentUsers) {
+      if (!recentUsersError && recentUsers) {
         setUserActivity(
-
-
           recentUsers.map((u) => ({
             ...u,
             display_name: u.name || null,

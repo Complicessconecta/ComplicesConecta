@@ -1,13 +1,61 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, UserPlus, Coins, Shield, Gift, TrendingUp, Lock, ChevronDown, ChevronUp, Star, Zap, Users, Calendar, FileText, Scale, Globe, DollarSign, Rocket, Building2, Target, BarChart3, Heart, Video, MessageSquare, Crown, Ticket, Sparkles, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft,
+  UserPlus,
+  Coins,
+  Shield,
+  Gift,
+  TrendingUp,
+  Lock,
+  ChevronDown,
+  ChevronUp,
+  Star,
+  Zap,
+  Users,
+  Calendar,
+  FileText,
+  Scale,
+  Globe,
+  DollarSign,
+  Rocket,
+  Building2,
+  Target,
+  BarChart3,
+  Heart,
+  Video,
+  MessageSquare,
+  Crown,
+  Ticket,
+  Sparkles,
+  CheckCircle2,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "@/styles/TokensInfo.css";
 import { useAuth } from "@/features/auth/useAuth";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from "recharts";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from "recharts";
 import { TokenAnalyticsService } from "@/services/analytics";
 import { TokensSubnav } from "@/components/TokensSubnav";
 // import { TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado - usar src/services/TokenService.ts
@@ -20,7 +68,14 @@ const TOKEN_CONFIG = {
 };
 
 // CustomLabel component para PieChart con color blanco
-const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+const CustomPieLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+}: any) => {
   if (percent < 0.01) return null;
 
   const RADIAN = Math.PI / 180;
@@ -55,12 +110,7 @@ interface FAQItem {
   question: string;
   answer: string;
   category:
-    | "general"
-    | "security"
-    | "rewards"
-    | "premium"
-    | "blockchain"
-    | "investors";
+    "general" | "security" | "rewards" | "premium" | "blockchain" | "investors";
 }
 
 const faqData: FAQItem[] = [
@@ -185,7 +235,8 @@ export default function TokensInfo() {
           nftHolders: tokenMetrics.nftMetrics.nftHolders, // Holders reales de NFTs
           gtkTotalSupply: tokenMetrics.totalSupply.gtk, // Total supply GTK: 5,000,000
           gtkCirculatingSupply: tokenMetrics.circulatingSupply.gtk, // GTK en circulación: 0
-          gtkLocked: tokenMetrics.totalSupply.gtk - tokenMetrics.circulatingSupply.gtk, // GTK bloqueado: 5,000,000
+          gtkLocked:
+            tokenMetrics.totalSupply.gtk - tokenMetrics.circulatingSupply.gtk, // GTK bloqueado: 5,000,000
         };
 
         setGlobalStats(stats);
@@ -404,7 +455,9 @@ export default function TokensInfo() {
   ];
 
   return (
-    <div className={`min-h-dvh relative overflow-x-hidden ${isActive ? "page-active" : ""}`}>
+    <div
+      className={`min-h-dvh relative overflow-x-hidden ${isActive ? "page-active" : ""}`}
+    >
       <TokensSubnav />
       {/* Header */}
       <div className="sticky top-0 z-50 bg-linear-to-r from-purple-900/95 to-purple-800/95 backdrop-blur-xl border-b border-white/30 shadow-2xl">
@@ -532,7 +585,11 @@ export default function TokensInfo() {
                             <div className="text-purple-300 text-sm">
                               En Circulación
                             </div>
-                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
+                            <img
+                              src="/assets/icons/cmpx-token.svg"
+                              alt="CMPX"
+                              className="w-6 h-6"
+                            />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.totalCirculation.toLocaleString()}
@@ -546,7 +603,11 @@ export default function TokensInfo() {
                             <div className="text-red-300 text-sm">
                               Bloqueados
                             </div>
-                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
+                            <img
+                              src="/assets/icons/cmpx-token.svg"
+                              alt="CMPX"
+                              className="w-6 h-6"
+                            />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.locked.toLocaleString()}
@@ -558,7 +619,11 @@ export default function TokensInfo() {
                             <div className="text-blue-300 text-sm">
                               Staking Global
                             </div>
-                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
+                            <img
+                              src="/assets/icons/cmpx-token.svg"
+                              alt="CMPX"
+                              className="w-6 h-6"
+                            />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.globalStaking.toLocaleString()}
@@ -570,7 +635,11 @@ export default function TokensInfo() {
                             <div className="text-green-300 text-sm">
                               Liberación Mensual
                             </div>
-                            <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-6 h-6" />
+                            <img
+                              src="/assets/icons/cmpx-token.svg"
+                              alt="CMPX"
+                              className="w-6 h-6"
+                            />
                           </div>
                           <div className="text-2xl font-bold text-white">
                             {globalStats.monthlyRelease.toLocaleString()}
@@ -606,7 +675,11 @@ export default function TokensInfo() {
                       {/* Gráfico de distribución de tokens - Glassmorphism Style */}
                       <div className="bg-linear-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
                         <div className="flex items-center justify-center gap-3 mb-6">
-                          <img src="/assets/icons/gtk-token.svg" alt="GTK" className="w-10 h-10" />
+                          <img
+                            src="/assets/icons/gtk-token.svg"
+                            alt="GTK"
+                            className="w-10 h-10"
+                          />
                           <h4 className="text-xl font-bold text-white font-sans tracking-tight">
                             Distribución de Tokens GTK
                           </h4>
@@ -653,8 +726,11 @@ export default function TokensInfo() {
                                   key={`cell-${index}`}
                                   fill={entry.color}
                                   style={{
-                                    filter: entry.value > 0 ? 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))' : 'none',
-                                    transition: 'all 0.3s ease'
+                                    filter:
+                                      entry.value > 0
+                                        ? "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))"
+                                        : "none",
+                                    transition: "all 0.3s ease",
                                   }}
                                 />
                               ))}
@@ -667,10 +743,10 @@ export default function TokensInfo() {
                                 color: "#ffffff",
                                 fontSize: "14px",
                                 fontWeight: 600,
-                                fontFamily: 'Inter, sans-serif',
+                                fontFamily: "Inter, sans-serif",
                                 backdropFilter: "blur(10px)",
                                 boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
-                                padding: "12px 16px"
+                                padding: "12px 16px",
                               }}
                               itemStyle={{
                                 color: "#ffffff",
@@ -684,24 +760,32 @@ export default function TokensInfo() {
                               wrapperStyle={{
                                 paddingTop: "20px",
                                 fontSize: "13px",
-                                fontFamily: 'Inter, sans-serif'
+                                fontFamily: "Inter, sans-serif",
                               }}
                               formatter={(value: string, _entry: any) => {
                                 const item = [
                                   {
                                     name: "En Circulación",
-                                    value: globalStats.gtkCirculatingSupply
+                                    value: globalStats.gtkCirculatingSupply,
                                   },
                                   {
                                     name: "Bloqueados",
-                                    value: globalStats.gtkLocked
-                                  }
-                                ].find(i => i.name === value);
-                                const totalSupply = globalStats.gtkTotalSupply || 5000000; // Total supply fijo de GTK
-                                const percent = item ? ((item.value / totalSupply) * 100).toFixed(1) : '0.0';
+                                    value: globalStats.gtkLocked,
+                                  },
+                                ].find((i) => i.name === value);
+                                const totalSupply =
+                                  globalStats.gtkTotalSupply || 5000000; // Total supply fijo de GTK
+                                const percent = item
+                                  ? ((item.value / totalSupply) * 100).toFixed(
+                                      1,
+                                    )
+                                  : "0.0";
                                 return (
                                   <span className="text-white font-medium">
-                                    {value}: <span className="text-purple-300">{percent}%</span>
+                                    {value}:{" "}
+                                    <span className="text-purple-300">
+                                      {percent}%
+                                    </span>
                                   </span>
                                 );
                               }}
@@ -918,11 +1002,19 @@ export default function TokensInfo() {
                       {/* Gráfico del Ecosistema de Tokens */}
                       <div className="bg-linear-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-2xl">
                         <div className="flex items-center justify-center gap-3 mb-6">
-                          <img src="/assets/icons/cmpx-token.svg" alt="CMPX" className="w-10 h-10" />
+                          <img
+                            src="/assets/icons/cmpx-token.svg"
+                            alt="CMPX"
+                            className="w-10 h-10"
+                          />
                           <h4 className="text-xl font-bold text-white font-sans tracking-tight">
                             Ecosistema de Tokens ComplicesConecta
                           </h4>
-                          <img src="/assets/icons/gtk-token.svg" alt="GTK" className="w-10 h-10" />
+                          <img
+                            src="/assets/icons/gtk-token.svg"
+                            alt="GTK"
+                            className="w-10 h-10"
+                          />
                         </div>
                         <div className="w-full max-w-lg mx-auto mb-8 opacity-90 hover:opacity-100 transition-opacity duration-500">
                           <img
@@ -1803,19 +1895,22 @@ export default function TokensInfo() {
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>Comisiones:</strong> 90% para el creador, 5% fee de la app, 5% treasury
+                      <strong>Comisiones:</strong> 90% para el creador, 5% fee
+                      de la app, 5% treasury
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>Retiros:</strong> Semanales (KYC requerido para montos mayores a $1,000 USD)
+                      <strong>Retiros:</strong> Semanales (KYC requerido para
+                      montos mayores a $1,000 USD)
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>Método de pago:</strong> Stripe (fiat) → conversión automática a CMPX
+                      <strong>Método de pago:</strong> Stripe (fiat) →
+                      conversión automática a CMPX
                     </span>
                   </li>
                 </ul>
@@ -1841,7 +1936,8 @@ export default function TokensInfo() {
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                     <span>
-                      <strong>Staking de NFTs:</strong> 10% APY en CMPX, vesting de 30 días
+                      <strong>Staking de NFTs:</strong> 10% APY en CMPX, vesting
+                      de 30 días
                     </span>
                   </li>
                 </ul>
@@ -1856,19 +1952,22 @@ export default function TokensInfo() {
                 <li className="flex items-start gap-2">
                   <Shield className="h-4 w-4 text-fuchsia-400 shrink-0 mt-0.5" />
                   <span>
-                    <strong>Gas:</strong> Cubierto por la app en testnet, pagado con CMPX en mainnet
+                    <strong>Gas:</strong> Cubierto por la app en testnet, pagado
+                    con CMPX en mainnet
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Shield className="h-4 w-4 text-fuchsia-400 shrink-0 mt-0.5" />
                   <span>
-                    <strong>NFTs internos:</strong> No transferibles fuera de la app, solo uso interno
+                    <strong>NFTs internos:</strong> No transferibles fuera de la
+                    app, solo uso interno
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Shield className="h-4 w-4 text-fuchsia-400 shrink-0 mt-0.5" />
                   <span>
-                    <strong>Cumplimiento:</strong> Aceptación de términos y condiciones al usar el servicio
+                    <strong>Cumplimiento:</strong> Aceptación de términos y
+                    condiciones al usar el servicio
                   </span>
                 </li>
               </ul>
@@ -1994,6 +2093,3 @@ export default function TokensInfo() {
     </div>
   );
 }
-
-
-

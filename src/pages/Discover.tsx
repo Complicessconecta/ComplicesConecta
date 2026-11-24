@@ -3,7 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from "lucide-react";
+import {
+  Heart,
+  Flame,
+  RefreshCw,
+  Filter,
+  Star,
+  Home,
+  User,
+  Search,
+  Sliders,
+} from "lucide-react";
 import SuperLikesModal from "@/components/modals/SuperLikesModal";
 import PremiumModal from "@/components/modals/PremiumModal";
 import CompatibilityModal from "@/components/modals/CompatibilityModal";
@@ -13,7 +23,10 @@ import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { pickProfileImage, type Gender } from "@/lib/media";
 import { calculateDistance, getLocationDisplay } from "@/lib/distance-utils";
-import { type CoupleProfileWithPartners, getAllCoupleProfiles } from "@/services/social/couple/CoupleProfilesService";
+import {
+  type CoupleProfileWithPartners,
+  getAllCoupleProfiles,
+} from "@/services/social/couple/CoupleProfilesService";
 import { generateDemoProfiles, type DemoProfile } from "@/demo/demoData";
 import { safeGetItem } from "@/lib/safe-storage";
 import { generateFilterDemoCards, type FilterDemoCard } from "@/lib/infoCards";
@@ -33,8 +46,10 @@ import { generateRandomProfiles } from "@/utils/discover/generateRandomProfiles"
 
 const normalizeGender = (value: unknown): Gender => {
   const raw = typeof value === "string" ? value.trim().toLowerCase() : "";
-  if (raw === "male" || raw === "m" || raw === "hombre" || raw === "man") return "male";
-  if (raw === "female" || raw === "f" || raw === "mujer" || raw === "woman") return "female";
+  if (raw === "male" || raw === "m" || raw === "hombre" || raw === "man")
+    return "male";
+  if (raw === "female" || raw === "f" || raw === "mujer" || raw === "woman")
+    return "female";
   return "unknown";
 };
 
@@ -267,46 +282,47 @@ export const Discover = () => {
         const convertedProfiles: Profile[] = realProfiles.map(
           (profile: any) => {
             const normalizedGender = normalizeGender(profile.gender);
-            return ({
-            id: profile.id,
-            name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
-            age: profile.age || 25,
-            location: getLocationDisplay(location), // Ubicacin real implementada con useGeolocation
-            distance: calculateDistance(
-              location,
-              profile.latitude && profile.longitude
-                ? { latitude: profile.latitude, longitude: profile.longitude }
-                : null,
-            ), // Clculo de distancia implementado con coordenadas reales
-            interests: Array.isArray(profile.interests)
-              ? profile.interests
-              : [], // Sistema de intereses conectado con Supabase
-            image: pickProfileImage(
-              {
-                id: profile.id,
-                name: profile.first_name,
-                type: "single",
-                gender: normalizedGender,
-              },
-              usedImages,
-            ), // Avatar URL desde Supabase profiles
-            bio: profile.bio || "Sin descripcin",
-            isOnline: profile.is_online || false,
-            lastActive: profile.last_active
-              ? new Date(profile.last_active).toLocaleString("es-ES", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  day: "numeric",
-                  month: "short",
-                })
-              : "Hace 1 hora",
-            isVerified: profile.is_premium || false,
-            isPremium: profile.is_premium || false,
-            rating: 4.5,
-            matchScore: Math.floor(Math.random() * 40) + 60,
-            profileType: (profile.account_type as any) || "single",
-            gender: normalizedGender === "unknown" ? undefined : normalizedGender,
-            });
+            return {
+              id: profile.id,
+              name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
+              age: profile.age || 25,
+              location: getLocationDisplay(location), // Ubicacin real implementada con useGeolocation
+              distance: calculateDistance(
+                location,
+                profile.latitude && profile.longitude
+                  ? { latitude: profile.latitude, longitude: profile.longitude }
+                  : null,
+              ), // Clculo de distancia implementado con coordenadas reales
+              interests: Array.isArray(profile.interests)
+                ? profile.interests
+                : [], // Sistema de intereses conectado con Supabase
+              image: pickProfileImage(
+                {
+                  id: profile.id,
+                  name: profile.first_name,
+                  type: "single",
+                  gender: normalizedGender,
+                },
+                usedImages,
+              ), // Avatar URL desde Supabase profiles
+              bio: profile.bio || "Sin descripcin",
+              isOnline: profile.is_online || false,
+              lastActive: profile.last_active
+                ? new Date(profile.last_active).toLocaleString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    day: "numeric",
+                    month: "short",
+                  })
+                : "Hace 1 hora",
+              isVerified: profile.is_premium || false,
+              isPremium: profile.is_premium || false,
+              rating: 4.5,
+              matchScore: Math.floor(Math.random() * 40) + 60,
+              profileType: (profile.account_type as any) || "single",
+              gender:
+                normalizedGender === "unknown" ? undefined : normalizedGender,
+            };
           },
         );
 
@@ -975,4 +991,3 @@ export const Discover = () => {
     </div>
   );
 };
-

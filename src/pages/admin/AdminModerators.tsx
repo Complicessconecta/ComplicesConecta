@@ -1,7 +1,23 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, UserPlus, Shield, Eye, Ban, CheckCircle, XCircle, Mail, Calendar, Activity } from "lucide-react";
+import {
+  ArrowLeft,
+  UserPlus,
+  Shield,
+  Eye,
+  Ban,
+  CheckCircle,
+  XCircle,
+  Mail,
+  Calendar,
+  Activity,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent,CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -369,9 +385,7 @@ const AdminModerators = () => {
       <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900">
         <AdminNav userRole="admin" />
         <div className="flex items-center justify-center h-64 pt-24">
-          <div className="text-white text-xl">
-            Cargando moderadores...
-          </div>
+          <div className="text-white text-xl">Cargando moderadores...</div>
         </div>
       </div>
     );
@@ -692,4 +706,3 @@ const AdminModerators = () => {
 };
 
 export default AdminModerators;
-

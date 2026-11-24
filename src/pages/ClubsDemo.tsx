@@ -1,25 +1,41 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles } from "lucide-react";
+import {
+  Building,
+  CheckCircle,
+  Share2,
+  Star,
+  ArrowLeft,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
-import ClubAdminPanel from '@/components/admin/panels/ClubAdminPanel';
+import {
+  ClubProfileAdmin,
+  ClubProfileEvents,
+  ClubProfileGallery,
+  ClubProfileHeader,
+  ClubProfileReviews,
+} from "@/components/clubs";
+import ClubAdminPanel from "@/components/admin/panels/ClubAdminPanel";
 import type { Club as ClubEntity } from "@/entities/club";
 
 const DEMO_CLUB: ClubEntity = {
   id: "demo",
   name: "Aura Club Privado",
   slug: "aura-club-privado",
-  description: "Un espacio exclusivo donde las conexiones fluyen naturalmente. Ambiente sofisticado, música cuidadosamente seleccionada y una comunidad que valora la discreción y el respeto mutuo.",
+  description:
+    "Un espacio exclusivo donde las conexiones fluyen naturalmente. Ambiente sofisticado, música cuidadosamente seleccionada y una comunidad que valora la discreción y el respeto mutuo.",
   address: "Av. Insurgentes Sur 123, Col. Condesa",
   city: "Ciudad de México",
   state: "CDMX",
   latitude: 19.4326,
   longitude: -99.1332,
-  logo_url: "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&h=400&fit=crop",
-  cover_image_url: "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1920&q=80",
+  logo_url:
+    "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&h=400&fit=crop",
+  cover_image_url:
+    "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1920&q=80",
   is_featured: true,
   is_active: true,
   rating_average: 4.8,
@@ -94,7 +110,8 @@ const DEMO_EVENTS = [
   {
     id: "evt-1",
     title: "Noche de Máscaras",
-    description: "Velada de misterio y elegancia. Dress code: formal oscuro con máscara.",
+    description:
+      "Velada de misterio y elegancia. Dress code: formal oscuro con máscara.",
     date: new Date().toISOString(),
     startTime: "22:00",
     endTime: "03:00",
@@ -108,7 +125,8 @@ const DEMO_EVENTS = [
   {
     id: "evt-2",
     title: "Velvet Social",
-    description: "DJ invitado + dress code noir. Experiencia sensorial con mixología premium.",
+    description:
+      "DJ invitado + dress code noir. Experiencia sensorial con mixología premium.",
     date: new Date(Date.now() + 86400000 * 4).toISOString(),
     startTime: "21:30",
     endTime: "02:30",
@@ -122,7 +140,8 @@ const DEMO_EVENTS = [
   {
     id: "evt-3",
     title: "Ritual de Luna",
-    description: "Experiencia sensorial + mixología molecular bajo la luz de la luna.",
+    description:
+      "Experiencia sensorial + mixología molecular bajo la luz de la luna.",
     date: new Date(Date.now() + 86400000 * 10).toISOString(),
     startTime: "23:00",
     endTime: "04:00",
@@ -136,7 +155,8 @@ const DEMO_EVENTS = [
   {
     id: "evt-4",
     title: "Encuentro de Cómplices",
-    description: "Noche de networking para parejas y solteros con afinidades compartidas.",
+    description:
+      "Noche de networking para parejas y solteros con afinidades compartidas.",
     date: new Date(Date.now() + 86400000 * 14).toISOString(),
     startTime: "20:00",
     endTime: "02:00",
@@ -150,7 +170,8 @@ const DEMO_EVENTS = [
   {
     id: "evt-5",
     title: "Cena Clandestina",
-    description: "Cena de 5 tiempos con maridaje en espacio íntimo. Solo 40 cupos.",
+    description:
+      "Cena de 5 tiempos con maridaje en espacio íntimo. Solo 40 cupos.",
     date: new Date(Date.now() + 86400000 * 18).toISOString(),
     startTime: "20:30",
     endTime: "01:00",
@@ -164,7 +185,8 @@ const DEMO_EVENTS = [
   {
     id: "evt-6",
     title: "After Hours",
-    description: "Continúa la fiesta después del cierre. Música deep house y ambiente relajado.",
+    description:
+      "Continúa la fiesta después del cierre. Música deep house y ambiente relajado.",
     date: new Date(Date.now() + 86400000 * 21).toISOString(),
     startTime: "01:00",
     endTime: "06:00",
@@ -183,7 +205,8 @@ const DEMO_REVIEWS = [
     userId: "u1",
     userName: "Sofía & Diego",
     rating: 5,
-    comment: "Excelente ambiente y seguridad. El staff es muy atento y el lugar tiene una vibra única. Definitivamente volveremos.",
+    comment:
+      "Excelente ambiente y seguridad. El staff es muy atento y el lugar tiene una vibra única. Definitivamente volveremos.",
     checkInDate: new Date().toISOString(),
     helpfulCount: 12,
     isVerified: true,
@@ -194,7 +217,8 @@ const DEMO_REVIEWS = [
     userId: "u2",
     userName: "Luna & Max",
     rating: 4,
-    comment: "Gran vibra, el staff nos atendió perfecto. La zona VIP vale totalmente la pena.",
+    comment:
+      "Gran vibra, el staff nos atendió perfecto. La zona VIP vale totalmente la pena.",
     checkInDate: new Date(Date.now() - 86400000 * 2).toISOString(),
     helpfulCount: 8,
     isVerified: true,
@@ -205,7 +229,8 @@ const DEMO_REVIEWS = [
     userId: "u3",
     userName: "Neón Lovers",
     rating: 5,
-    comment: "Eventos top y música impecable. Cada noche es una experiencia diferente.",
+    comment:
+      "Eventos top y música impecable. Cada noche es una experiencia diferente.",
     checkInDate: new Date(Date.now() - 86400000 * 5).toISOString(),
     helpfulCount: 18,
     isVerified: true,
@@ -216,7 +241,8 @@ const DEMO_REVIEWS = [
     userId: "u4",
     userName: "Cómplices Nocturnos",
     rating: 5,
-    comment: "La discreción y el respeto que se respira aquí no lo hemos encontrado en otro lugar. Altamente recomendado.",
+    comment:
+      "La discreción y el respeto que se respira aquí no lo hemos encontrado en otro lugar. Altamente recomendado.",
     checkInDate: new Date(Date.now() - 86400000 * 8).toISOString(),
     helpfulCount: 24,
     isVerified: true,
@@ -227,7 +253,8 @@ const DEMO_REVIEWS = [
     userId: "u5",
     userName: "Aventura en Pareja",
     rating: 4,
-    comment: "Los cócteles son excelentes y la música siempre está en punto. Nos encantó la terraza.",
+    comment:
+      "Los cócteles son excelentes y la música siempre está en punto. Nos encantó la terraza.",
     checkInDate: new Date(Date.now() - 86400000 * 12).toISOString(),
     helpfulCount: 9,
     isVerified: true,
@@ -238,7 +265,8 @@ const DEMO_REVIEWS = [
     userId: "u6",
     userName: "Noche Estrellada",
     rating: 5,
-    comment: "Un oasis en la ciudad. Perfecto para conocer personas con mente abierta sin presiones.",
+    comment:
+      "Un oasis en la ciudad. Perfecto para conocer personas con mente abierta sin presiones.",
     checkInDate: new Date(Date.now() - 86400000 * 15).toISOString(),
     helpfulCount: 15,
     isVerified: true,
@@ -249,7 +277,8 @@ const DEMO_REVIEWS = [
     userId: "u7",
     userName: "Pasión CDMX",
     rating: 5,
-    comment: "Llevamos 3 años viniendo y nunca decepciona. La calidad de los eventos es constante.",
+    comment:
+      "Llevamos 3 años viniendo y nunca decepciona. La calidad de los eventos es constante.",
     checkInDate: new Date(Date.now() - 86400000 * 20).toISOString(),
     helpfulCount: 31,
     isVerified: true,
@@ -260,7 +289,8 @@ const DEMO_REVIEWS = [
     userId: "u8",
     userName: "Nuevos Exploradores",
     rating: 4,
-    comment: "Primera vez y nos sentimos muy cómodos. El personal explicó todo muy bien.",
+    comment:
+      "Primera vez y nos sentimos muy cómodos. El personal explicó todo muy bien.",
     checkInDate: new Date(Date.now() - 86400000 * 25).toISOString(),
     helpfulCount: 7,
     isVerified: true,
@@ -277,7 +307,7 @@ const DEMO_IMAGES = [
     uploadedAt: new Date().toISOString(),
   },
   {
-    id: "img-2", 
+    id: "img-2",
     url: "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=800",
     alt: "Club bar",
     caption: "Bar principal",
@@ -355,7 +385,9 @@ export const ClubsDemo = () => {
   const navigate = useNavigate();
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [interestLevel, setInterestLevel] = useState<"neutral" | "tour" | "vip">("neutral");
+  const [interestLevel, setInterestLevel] = useState<
+    "neutral" | "tour" | "vip"
+  >("neutral");
 
   const club = useMemo(() => DEMO_CLUB, []);
 
@@ -376,7 +408,9 @@ export const ClubsDemo = () => {
                     Volver al Club Demo
                   </Button>
                   <div className="min-w-0">
-                    <div className="text-white font-bold truncate">Panel Administración</div>
+                    <div className="text-white font-bold truncate">
+                      Panel Administración
+                    </div>
                     <div className="text-white/70 text-xs truncate">
                       Gestión de clubs - Modo Demo
                     </div>
@@ -397,7 +431,11 @@ export const ClubsDemo = () => {
               {/* Club Profile Content */}
               <ClubProfileHeader club={DEMO_CLUB} />
               <ClubProfileEvents events={DEMO_EVENTS} />
-              <ClubProfileReviews reviews={DEMO_REVIEWS} averageRating={DEMO_ANALYTICS.averageRating} totalReviews={DEMO_REVIEWS.length} />
+              <ClubProfileReviews
+                reviews={DEMO_REVIEWS}
+                averageRating={DEMO_ANALYTICS.averageRating}
+                totalReviews={DEMO_REVIEWS.length}
+              />
               <ClubProfileGallery images={DEMO_IMAGES} />
               <ClubProfileAdmin analytics={DEMO_ANALYTICS} />
             </div>
@@ -410,12 +448,16 @@ export const ClubsDemo = () => {
   return (
     <div className="min-h-screen bg-transparent p-4 sm:p-6 relative overflow-hidden">
       {/* Fondo animado */}
-      <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1920&q=80)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-      }} />
+      <div
+        className="absolute inset-0 bg-cover bg-center animate-pulse"
+        style={{
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1920&q=80)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+        }}
+      />
       <div className="absolute inset-0 bg-linear-to-b from-purple-900/80 to-blue-900/80" />
 
       <div className="relative z-10 max-w-7xl mx-auto space-y-6">
@@ -472,7 +514,8 @@ export const ClubsDemo = () => {
                   <div className="text-white font-semibold">Demo completo</div>
                 </div>
                 <div className="text-white/80 text-sm">
-                  Este demo muestra cómo se vería un Club real (galería, eventos, reseñas y panel admin de ejemplo).
+                  Este demo muestra cómo se vería un Club real (galería,
+                  eventos, reseñas y panel admin de ejemplo).
                 </div>
               </div>
 

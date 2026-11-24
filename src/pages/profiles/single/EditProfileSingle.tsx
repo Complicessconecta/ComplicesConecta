@@ -15,12 +15,14 @@ import type { Database } from "@/types/supabase-generated";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
 import { logger } from "@/lib/logger";
-import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfileTheme";
+import {
+  useDemoThemeConfig,
+  useProfileTheme,
+} from "@/features/profile/useProfileTheme";
 import { motion } from "framer-motion";
 
 type Tables<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Row"];
-
 
 const EditProfileSingle = () => {
   const navigate = useNavigate();
@@ -633,4 +635,3 @@ const EditProfileSingle = () => {
 };
 
 export default EditProfileSingle;
-

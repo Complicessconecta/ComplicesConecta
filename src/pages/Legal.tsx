@@ -1,11 +1,31 @@
 import type { FC } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info } from "lucide-react";
+import {
+  FileText,
+  Shield,
+  AlertTriangle,
+  Users,
+  BookOpen,
+  Gavel,
+  Eye,
+  Calendar,
+  AlertCircle,
+  CheckCircle2,
+  Globe,
+  Lock,
+  ExternalLink,
+  Info,
+} from "lucide-react";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 const Legal: FC = () => {
@@ -402,9 +422,7 @@ const Legal: FC = () => {
 
                       <Button
                         className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30"
-                        onClick={() =>
-                          safeOpenUrl(`/docs/legal/${doc.file}`)
-                        }
+                        onClick={() => safeOpenUrl(`/docs/legal/${doc.file}`)}
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />
                         Ver Documento
@@ -520,4 +538,3 @@ const Legal: FC = () => {
 };
 
 export default Legal;
-

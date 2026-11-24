@@ -122,7 +122,9 @@ const Index = () => {
   }
 
   return (
-    <div className={`relative min-h-screen w-full overflow-x-hidden selection:bg-complices-pink selection:text-white ${isActive ? "page-active" : ""}`}>
+    <div
+      className={`relative min-h-screen w-full overflow-x-hidden selection:bg-complices-pink selection:text-white ${isActive ? "page-active" : ""}`}
+    >
       {/* CAPA 1: CONTENIDO (Hijo Activo) */}
       {/* Z-index positivo para asegurar que el texto sea clickeable */}
       <div className="relative z-10 flex flex-col min-h-screen">

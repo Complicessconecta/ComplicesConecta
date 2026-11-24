@@ -1,19 +1,55 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { logger } from "@/lib/logger";
-import { Shield, AlertTriangle, Users, Clock, CheckCircle, XCircle, Eye, Ban, MessageSquare, User, Fingerprint, Globe } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Modal";
+import {
+  Shield,
+  AlertTriangle,
+  Users,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Eye,
+  Ban,
+  MessageSquare,
+  User,
+  Fingerprint,
+  Globe,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem,SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { ReportType, ReportStatus, ModerationAction } from "@/lib/roles";
-import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from "@/services/auth/permanentBan";
+import {
+  createPermanentBan,
+  getPermanentBans,
+  liftPermanentBan,
+  type PermanentBanData,
+} from "@/services/auth/permanentBan";
 import { Database } from "@/types/supabase-generated";
 
 type BanSeverity = "low" | "medium" | "high" | "critical";
@@ -249,8 +285,7 @@ const ModeratorDashboard = () => {
           is_permanent: !suspensionRow.ends_at,
           status: suspensionRow.is_active ? "active" : "lifted",
           user_email: userName || suspensionRow.user_id || "Usuario",
-          suspended_by_email:
-            suspendedByName || "Sistema",
+          suspended_by_email: suspendedByName || "Sistema",
           ...(userName ? { user: { name: userName } } : {}),
           ...(suspendedByName
             ? { suspended_by_user: { name: suspendedByName } }
@@ -597,7 +632,7 @@ const ModeratorDashboard = () => {
                         (log) =>
                           log.created_at &&
                           new Date(log.created_at).toDateString() ===
-                          new Date().toDateString(),
+                            new Date().toDateString(),
                       ).length
                     }
                   </p>
@@ -840,9 +875,9 @@ const ModeratorDashboard = () => {
                     <CardDescription className="text-white/70">
                       Suspendido el{" "}
                       {suspension.suspended_until
-                        ? new Date(suspension.suspended_until).toLocaleDateString(
-                            "es-ES",
-                          )
+                        ? new Date(
+                            suspension.suspended_until,
+                          ).toLocaleDateString("es-ES")
                         : "Fecha no disponible"}
                     </CardDescription>
                   </CardHeader>
@@ -1207,4 +1242,3 @@ const ModeratorDashboard = () => {
 };
 
 export default ModeratorDashboard;
-

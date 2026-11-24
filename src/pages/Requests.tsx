@@ -3,7 +3,16 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserPlus, UserCheck, UserX, Clock, GalleryHorizontal, MessageSquare, MailQuestion, Send } from "lucide-react";
+import {
+  UserPlus,
+  UserCheck,
+  UserX,
+  Clock,
+  GalleryHorizontal,
+  MessageSquare,
+  MailQuestion,
+  Send,
+} from "lucide-react";
 import { useFeatures } from "@/hooks/useFeatures";
 import { invitationService, type Invitation } from "@/lib/invitations";
 import { useAuth } from "@/features/auth/useAuth";
@@ -145,9 +154,7 @@ const Requests = () => {
     // Verificar autenticación real - solo redirigir si realmente no está autenticado
     try {
       if (!isAuthenticated()) {
-        logger.info(
-          "Usuario no autenticado en Requests, redirigiendo a /auth",
-        );
+        logger.info("Usuario no autenticado en Requests, redirigiendo a /auth");
         navigate("/auth");
         return;
       }
@@ -374,7 +381,8 @@ const Requests = () => {
                             <div className="flex items-center text-sm text-white/80">
                               {getInvitationTypeIcon(inv.type)}
                               <span>
-                                Invitación de <strong>{inv.from_profile}</strong>
+                                Invitación de{" "}
+                                <strong>{inv.from_profile}</strong>
                               </span>
                             </div>
                             {getStatusBadge(inv.status)}
@@ -480,4 +488,3 @@ const Requests = () => {
 };
 
 export default Requests;
-

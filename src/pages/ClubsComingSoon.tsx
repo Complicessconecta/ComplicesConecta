@@ -1,6 +1,22 @@
-import { Building, Clock, Sparkles, Target, Award, Globe, MapPin, Star, Camera } from "lucide-react";
+import {
+  Building,
+  Clock,
+  Sparkles,
+  Target,
+  Award,
+  Globe,
+  MapPin,
+  Star,
+  Camera,
+} from "lucide-react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 const ClubsComingSoon = () => {
   const clubSystemInfo = {
@@ -187,10 +203,13 @@ const ClubsComingSoon = () => {
                     <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                       <Globe className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Página Pública Profesional</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Página Pública Profesional
+                    </h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    URL única /clubs/{'{slug}'} con información completa, galería de fotos y calendario de eventos
+                    URL única /clubs/{"{slug}"} con información completa,
+                    galería de fotos y calendario de eventos
                   </p>
                 </div>
 
@@ -199,10 +218,13 @@ const ClubsComingSoon = () => {
                     <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <MapPin className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Check-ins Verificados</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Check-ins Verificados
+                    </h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Sistema geolocalizado (radio 50m) con WorldID para verificación auténtica
+                    Sistema geolocalizado (radio 50m) con WorldID para
+                    verificación auténtica
                   </p>
                 </div>
 
@@ -211,10 +233,13 @@ const ClubsComingSoon = () => {
                     <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                       <Star className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Reseñas Auténticas</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Reseñas Auténticas
+                    </h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Solo usuarios con check-in real pueden reseñar, garantizando opiniones genuinas
+                    Solo usuarios con check-in real pueden reseñar, garantizando
+                    opiniones genuinas
                   </p>
                 </div>
 
@@ -223,10 +248,13 @@ const ClubsComingSoon = () => {
                     <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Camera className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Flyers Editables con IA</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Flyers Editables con IA
+                    </h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Watermark automático, blur en imágenes sensibles y moderación antes de publicar
+                    Watermark automático, blur en imágenes sensibles y
+                    moderación antes de publicar
                   </p>
                 </div>
 
@@ -235,10 +263,13 @@ const ClubsComingSoon = () => {
                     <div className="p-2 bg-linear-to-r from-pink-500 to-rose-600 rounded-lg">
                       <Award className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Publicidad Premium</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Publicidad Premium
+                    </h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Destacado en Discover, banners promocionales y promoción de eventos VIP
+                    Destacado en Discover, banners promocionales y promoción de
+                    eventos VIP
                   </p>
                 </div>
 
@@ -247,10 +278,13 @@ const ClubsComingSoon = () => {
                     <div className="p-2 bg-linear-to-r from-indigo-500 to-violet-600 rounded-lg">
                       <Building className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Integración con Tokens</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      Integración con Tokens
+                    </h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Sistema de descuentos con CMPX, beneficios especiales para holders de GTK y usuarios premium
+                    Sistema de descuentos con CMPX, beneficios especiales para
+                    holders de GTK y usuarios premium
                   </p>
                 </div>
               </div>
@@ -271,8 +305,9 @@ const ClubsComingSoon = () => {
                 Lanzamiento Estimado: Q2 2026
               </h3>
               <p className="text-white/80 max-w-2xl mx-auto">
-                Estamos trabajando arduamente para traerte la mejor experiencia de clubs verificados.
-                Mientras tanto, puedes registrarte para ser uno de los primeros clubs en unirse.
+                Estamos trabajando arduamente para traerte la mejor experiencia
+                de clubs verificados. Mientras tanto, puedes registrarte para
+                ser uno de los primeros clubs en unirse.
               </p>
             </CardContent>
           </Card>
@@ -283,4 +318,3 @@ const ClubsComingSoon = () => {
 };
 
 export default ClubsComingSoon;
-

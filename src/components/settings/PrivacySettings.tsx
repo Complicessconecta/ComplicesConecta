@@ -36,7 +36,7 @@ export const PrivacySettings = () => {
     // TODO: Implementar guardado en backend
     toast({
       title: "Configuración guardada",
-      description: "Tus preferencias de privacidad han sido guardadías",
+      description: "Tus preferencias de privacidad han sido guardadas",
     });
   };
 
@@ -372,7 +372,7 @@ export const PrivacySettings = () => {
                         <li>Tu historial de matches</li>
                         <li>Tus mensajes (anonimizados)</li>
                         <li>Tus posts y stories</li>
-                        <li>Todías tus preferencias</li>
+                        <li>Todas tus preferencias</li>
                       </ul>
                       <strong className="block mt-3 text-destructive">
                         Esta acción NO se puede deshacer.

@@ -85,7 +85,7 @@ export const initializeAnalytics = (
   currentConfig = { ...defaultConfig, ...config };
   currentSessionId = generateSessionId();
 
-  // Cargar métricas almacenadías
+  // Cargar métricas almacenadas
   loadStoredMetrics();
 
   // Configurar listeners de rendimiento
@@ -271,7 +271,7 @@ const updateUserMetrics = (event: AnalyticsEvent): void => {
     premiumFeatures: [],
   };
 
-  // Actualizar métricas basadías en eventos
+  // Actualizar métricas basadas en eventos
   switch (event.category) {
     case "profile":
       if (event.action === "view") userMetrics.profileViews++;
@@ -405,7 +405,7 @@ const sendEventToServer = async (event: AnalyticsEvent): Promise<void> => {
 };
 
 /**
- * Cargar métricas almacenadías
+ * Cargar métricas almacenadas
  */
 const loadStoredMetrics = (): void => {
   try {
@@ -423,7 +423,7 @@ const loadStoredMetrics = (): void => {
       });
     }
   } catch (error) {
-    logger.warn("Error cargando métricas almacenadías", { error });
+    logger.warn("Error cargando métricas almacenadas", { error });
   }
 };
 

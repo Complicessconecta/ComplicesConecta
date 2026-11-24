@@ -559,7 +559,7 @@ const EditProfileCouple = () => {
                 </div>
                 <div>
                   <p className="text-xs text-white/80 mb-2">
-                    Imágenes Privadías
+                    Imágenes Privadas
                   </p>
                   <div className="border-2 border-dashed border-fuchsia-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-fuchsia-400 mb-2" />
@@ -731,7 +731,7 @@ const EditProfileCouple = () => {
                 </div>
                 <div>
                   <p className="text-xs text-white/80 mb-2">
-                    Imágenes Privadías
+                    Imágenes Privadas
                   </p>
                   <div className="border-2 border-dashed border-blue-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-blue-400 mb-2" />
@@ -953,7 +953,7 @@ const EditProfileCouple = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">
-                  Aparecer en búsquedías
+                  Aparecer en búsquedas
                 </span>
                 <input
                   type="checkbox"
@@ -964,12 +964,12 @@ const EditProfileCouple = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">
-                  Solo parejas verificadías
+                  Solo parejas verificadas
                 </span>
                 <input
                   type="checkbox"
                   className="rounded bg-white/20 border-white/30"
-                  title="Solo mostrar parejas verificadías"
+                  title="Solo mostrar parejas verificadas"
                 />
               </div>
             </div>

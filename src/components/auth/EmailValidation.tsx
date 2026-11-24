@@ -31,7 +31,7 @@ export const EmailValidation = ({
     type: "info",
   });
 
-  // Debounce para evitar múltiples llamadías
+  // Debounce para evitar múltiples llamadas
   useEffect(() => {
     if (!email || email.length < 3) {
       setValidationState({

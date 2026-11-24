@@ -42,7 +42,7 @@ export class AndroidSecurityManager {
   }
 
   /**
-   * Ejecuta todías las verificaciones de seguridad
+   * Ejecuta todas las verificaciones de seguridad
    */
   public async performSecurityCheck(): Promise<SecurityCheck> {
     this.securityChecks = {
@@ -53,7 +53,7 @@ export class AndroidSecurityManager {
       threats: [],
     };
 
-    // Agregar amenazas detectadías
+    // Agregar amenazas detectadas
     if (this.securityChecks.isRooted) {
       this.securityChecks.threats.push("ROOT_DETECTED");
     }

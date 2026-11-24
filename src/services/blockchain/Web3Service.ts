@@ -50,7 +50,7 @@ export interface NetworkInfo {
 }
 
 /**
- * Redes soportadías
+ * Redes soportadas
  */
 export const SUPPORTED_NETWORKS: Record<number, NetworkInfo> = {
   137: {

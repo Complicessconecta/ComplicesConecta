@@ -37,7 +37,7 @@ export interface CoupleProfile {
   is_premium: boolean;
   created_at: string;
   updated_at: string;
-  // Campos adicionales para funcionalidades avanzadías
+  // Campos adicionales para funcionalidades avanzadas
   photos: string[];
   videos: string[];
   preferences: CouplePreferences;

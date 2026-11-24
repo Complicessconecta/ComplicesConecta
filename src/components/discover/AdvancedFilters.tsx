@@ -67,7 +67,7 @@ export const AdvancedFilters = ({
   };
 
   const availableInterests = [
-    "Fiestas Privadías",
+    "Fiestas Privadas",
     "Intercambio de Parejas",
     "Eventos VIP",
     "Discreción Total",
@@ -75,7 +75,7 @@ export const AdvancedFilters = ({
     "Terceras Personas",
     "Intercambio Suave",
     "Clubs Exclusivos",
-    "Parejas Verificadías",
+    "Parejas Verificadas",
     "Lifestyle Swinger",
     "Naturaleza",
     "Viajes",

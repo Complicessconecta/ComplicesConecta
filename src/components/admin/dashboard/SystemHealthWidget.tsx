@@ -46,7 +46,7 @@ export const SystemHealthWidget = () => {
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            Acciones Rápidías
+            Acciones Rápidas
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">

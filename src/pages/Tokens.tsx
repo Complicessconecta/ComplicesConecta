@@ -209,7 +209,7 @@ export default function Tokens() {
       supply: "Ilimitado",
       purpose: "Consumo diario",
       features: [
-        "Compra directa con dinero real (MXN, USD, criptomonedías)",
+        "Compra directa con dinero real (MXN, USD, criptomonedas)",
         "Uso para regalos virtuales, eventos VIP, funciones premium",
         "Transferible entre usuarios de la comunidad",
         "Ingresos recurrentes para la plataforma",
@@ -224,17 +224,17 @@ export default function Tokens() {
         {
           icon: <Crown className="h-5 w-5" />,
           title: "Eventos VIP",
-          desc: "Entradías exclusivas para eventos privados",
+          desc: "Entradas exclusivas para eventos privados",
         },
         {
           icon: <Star className="h-5 w-5" />,
           title: "Funciones Premium",
-          desc: "Super likes, boosts y características avanzadías",
+          desc: "Super likes, boosts y características avanzadas",
         },
         {
           icon: <Camera className="h-5 w-5" />,
           title: "Contenido Exclusivo",
-          desc: "Acceso a galerías privadías y contenido especial",
+          desc: "Acceso a galerías privadas y contenido especial",
         },
         {
           icon: <Sparkles className="h-5 w-5" />,
@@ -675,7 +675,7 @@ export default function Tokens() {
                           ) : (
                             <>
                               En espera de un Acuerdo Prenupcial Activo. Tus
-                              operaciones quedarán registradías con IP, timestamp
+                              operaciones quedarán registradas con IP, timestamp
                               y hash en cuanto el contrato se active.
                             </>
                           )}

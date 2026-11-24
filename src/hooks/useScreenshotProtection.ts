@@ -49,7 +49,7 @@ export const useScreenshotProtection = (
       message.style.cssText = "color:#374151;margin:0 0 20px 0;line-height:1.5;";
 
       const line1 = document.createElement("span");
-      line1.textContent = "Las capturas de pantalla están restringidías en este contenido.";
+      line1.textContent = "Las capturas de pantalla están restringidas en este contenido.";
       const br = document.createElement("br");
       const line2 = document.createElement("span");
       line2.textContent = "Método detectado: ";

@@ -662,7 +662,7 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
       return categories[activeCategory as keyof typeof categories].emojis;
     }
 
-    // Buscar en todías las categorías
+    // Buscar en todas las categorías
     const allEmojis = Object.values(categories).flatMap((cat) => cat.emojis);
 
     return allEmojis.filter(

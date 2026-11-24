@@ -65,7 +65,7 @@ export type UpdateBannerInput = Partial<CreateBannerInput>;
 
 class BannerManagementServiceClass {
   /**
-   * Obtener todías las configuraciones de banners
+   * Obtener todas las configuraciones de banners
    */
   async getAllBanners(): Promise<BannerConfig[]> {
     try {

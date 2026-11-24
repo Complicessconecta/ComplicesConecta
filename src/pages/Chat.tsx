@@ -533,7 +533,7 @@ const Chat = () => {
     }
   }, [chatPartnerId, location.key, selectedChat]);
 
-  // Private chats - conexiones verificadías
+  // Private chats - conexiones verificadas
   const privateChats: ChatUser[] = [
     {
       id: "1",
@@ -1397,7 +1397,7 @@ const Chat = () => {
                   <div className="flex items-center text-white/90">
                     <Globe className="h-4 w-4 mr-1 text-green-300" />
                     <span className="drop-shadow-md">
-                      Salas pblicas moderadías
+                      Salas pblicas moderadas
                     </span>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
 /**
- * PageWrapper - Componente envolvente para todías las páginas públicas
+ * PageWrapper - Componente envolvente para todas las páginas públicas
  * Proporciona:
  * - HeaderNav automático
  * - Backgrounds adaptativos según dispositivo

@@ -88,7 +88,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
     return "jpeg";
   };
 
-  // Generar URLs optimizadías
+  // Generar URLs optimizadas
   const generateOptimizedUrls = (baseSrc: string) => {
     const format = getBestFormat();
     const options: ImageOptimizationOptions = {

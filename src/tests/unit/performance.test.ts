@@ -1,6 +1,6 @@
 /**
  * Performance Tests - Tests para validar optimizaciones de performance
- * Valida que las optimizaciones implementadías funcionen correctamente
+ * Valida que las optimizaciones implementadas funcionen correctamente
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -373,7 +373,7 @@ describe("Integration Performance Tests", () => {
 
       const results = await Promise.all(promises);
 
-      // Verificar que todías las requests completaron
+      // Verificar que todas las requests completaron
       expect(results.length).toBeGreaterThan(0);
       results.forEach((result: any) => {
         expect(Array.isArray(result)).toBe(true);

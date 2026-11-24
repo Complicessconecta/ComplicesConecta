@@ -15,7 +15,7 @@ export interface GroupChatLimits {
   canBeModerator: boolean; // Puede moderar
   hasVIPAccess: boolean; // Acceso salas VIP
   hasPriority: boolean; // Prioridad en mensajes
-  canVideoCall: boolean; // Videollamadías grupales
+  canVideoCall: boolean; // Videollamadas grupales
   maxVideoParticipants: number; // Máx personas en video
 }
 
@@ -121,10 +121,10 @@ export const getUpgradeMessage = (limitType: string): string => {
   const plan = getUserPlan();
 
   const messages: Record<string, string> = {
-    rooms: `Has alcanzado el límite de salas públicas de tu plan ${plan}. Upgrade a Premium para salas ilimitadías.`,
+    rooms: `Has alcanzado el límite de salas públicas de tu plan ${plan}. Upgrade a Premium para salas ilimitadas.`,
     messages: `Has alcanzado el límite de mensajes diarios. Upgrade a Básico para mensajes ilimitados.`,
     create: `Solo usuarios Premium+ pueden crear salas. Upgrade ahora.`,
-    video: `Videollamadías solo disponibles en plan VIP. Upgrade ahora.`,
+    video: `Videollamadas solo disponibles en plan VIP. Upgrade ahora.`,
     moderate: `Solo usuarios Premium+ pueden ser moderadores. Upgrade ahora.`,
   };
 

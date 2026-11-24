@@ -33,7 +33,7 @@ const FAQ = () => {
   });
 
   const faqCategories = {
-    verificacion: {
+    verificación: {
       title: "Verificación KYC",
       icon: UserCheck,
       color: "text-blue-500",
@@ -41,17 +41,17 @@ const FAQ = () => {
         {
           question: "¿Cómo funciona la verificación KYC?",
           answer:
-            "Utilizamos tecnologa blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadías accedan a la plataforma.",
+            "Utilizamos tecnologa blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
         },
         {
           question: "¿Qué documentos necesito para verificarme?",
           answer:
-            "Necesitas una identificacin oficial vigente (INE, pasaporte o cdula profesional) y una selfie clara. El proceso es completamente seguro y tus datos estn protegidos.",
+            "Necesitas una identificacin oficial vigente (INE, pasaporte o cdula profesional) y una selfie clara. El proceso es completamente seguro y tus datos están protegidos.",
         },
         {
-          question: "Cunto tarda la verificacin?",
+          question: "Cuánto tarda la verificación?",
           answer:
-            "La verificacin KYC toma entre 24-48 horas hbiles. Los miembros Premium tienen verificacin prioritaria en menos de 12 horas.",
+            "La verificación KYC toma entre 24-48 horas hábiles. Los miembros Premium tienen verificación prioritaria en menos de 12 horas.",
         },
       ],
     },
@@ -63,7 +63,7 @@ const FAQ = () => {
         {
           question: "Es seguro el chat privado?",
           answer:
-            "Absolutamente. Todías las conversaciones estn encriptadías end-to-end con AES-GCM. Adems, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discrecin son nuestra mxima prioridad.",
+            "Absolutamente. Todas las conversaciones están encriptadas end-to-end con AES-GCM. Además, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discreción son nuestra máxima prioridad.",
         },
         {
           question: "Cmo protegen mis datos personales?",
@@ -71,21 +71,21 @@ const FAQ = () => {
             "Utilizamos encriptacin de grado militar y cumplimos con GDPR. Nunca compartimos tu informacin personal con terceros sin tu consentimiento explcito.",
         },
         {
-          question: "Puedo controlar quin ve mi perfil?",
+          question: "Puedo controlar quién ve mi perfil?",
           answer:
-            "S, tienes control total sobre tu privacidad. Puedes configurar quin puede ver tu perfil, fotos privadías y contactarte.",
+            "Sí, tienes control total sobre tu privacidad. Puedes configurar quién puede ver tu perfil, fotos privadas y contactarte.",
         },
       ],
     },
     galerias: {
-      title: "Galeras Privadías",
+      title: "Galerías Privadas",
       icon: GalleryHorizontal,
       color: "text-purple-500",
       faqs: [
         {
-          question: "Como funcionan las galeras privadías?",
+          question: "Como funcionan las galerías privadas?",
           answer:
-            "Las galeras privadías te permiten compartir fotos ntimas solo con personas que hayas autorizado. Tienes control total sobre quin puede acceder. Adems, puedes crear Galeras NFT-Verificadías usando tokens GTK, lo que garantiza autenticidad y verificacin de tus galeras.",
+            "Las galerías privadas te permiten compartir fotos íntimas solo con personas que hayas autorizado. Tienes control total sobre quién puede acceder. Además, puedes crear Galerías NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificación de tus galerías.",
         },
         {
           question: "Como envio una invitacion de galera?",
@@ -107,17 +107,17 @@ const FAQ = () => {
         {
           question: "Como funcionan las invitaciones?",
           answer:
-            "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadías o participar en eventos exclusivos.",
+            "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos.",
         },
         {
           question: "Que tipos de invitaciones existen?",
           answer:
-            "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadías) y de chat (para conversaciones privadías).",
+            "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadas) y de chat (para conversaciones privadas).",
         },
         {
           question: "Puedo rechazar una invitacin?",
           answer:
-            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadías no pueden volver a enviarte invitaciones del mismo tipo.",
+            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo.",
         },
       ],
     },
@@ -129,12 +129,12 @@ const FAQ = () => {
         {
           question: "Como son los eventos VIP?",
           answer:
-            "Son fiestas privadías y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas ntimas y experiencias nicas para la comunidad swinger.",
+            "Son fiestas privadas y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas íntimas y experiencias únicas para la comunidad swinger.",
         },
         {
           question: "Como puedo acceder a eventos VIP?",
           answer:
-            "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadías en tu ubicación y preferencias.",
+            "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias.",
         },
         {
           question: "Los eventos son seguros y discretos?",
@@ -178,7 +178,7 @@ const FAQ = () => {
         {
           question: "Que hago si alguien me acosa?",
           answer:
-            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidías rpidías para proteger a nuestra comunidad.",
+            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rpidas para proteger a nuestra comunidad.",
         },
         {
           question: "Hay moderadores activos?",
@@ -198,9 +198,9 @@ const FAQ = () => {
             "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores ms abajo para ayudarnos a identificar y corregir cualquier problema que encuentres.",
         },
         {
-          question: "Problemas con la aplicacion movil?",
+          question: "Problemas con la aplicación móvil?",
           answer:
-            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app movil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
+            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app móvil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
         },
         {
           question: "Problemas con pagos o suscripciones?",
@@ -382,7 +382,7 @@ Fecha: ${new Date().toLocaleString()}
                     Reporte de Errores Beta
                   </CardTitle>
                   <p className="text-white/90">
-                    Ayudanos a mejorar reportando errores, bugs o problemas que
+                    Ayúdanos a mejorar reportando errores, bugs o problemas que
                     encuentres
                   </p>
                 </CardHeader>

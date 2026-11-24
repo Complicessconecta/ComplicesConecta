@@ -229,7 +229,7 @@ export function toPublicAssetPath(storagePath: string): string {
 }
 
 /**
- * Hook para galerías privadías (C6).
+ * Hook para galerías privadas (C6).
  *
  * Devuelve un array de la misma longitud y en el mismo orden que
  * `storagePaths`: URLs firmadas (1 h) solo cuando `unlocked` es `true` Y hay

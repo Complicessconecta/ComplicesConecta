@@ -581,7 +581,7 @@ export const PerformancePanel = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-white">
                 <BarChart3 className="w-5 h-5 text-purple-400" />
-                Métricas Detalladías
+                Métricas Detalladas
               </CardTitle>
             </CardHeader>
             <CardContent>

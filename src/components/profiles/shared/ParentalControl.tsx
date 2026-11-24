@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Button } from "@/components/ui/buttons/Button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { Baby, Lock, Unlock, Shield, Clock } from "lucide-react";
+import { Baby, Lock, Unlock, Shield, Clock, X } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import "@/styles/ParentalControl.css";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -16,6 +16,10 @@ interface ParentalControlProps {
   onToggle: (locked: boolean) => void;
   onUnlock?: () => void;
   showLockScreen?: boolean;
+  // Cerrar el modal sin desbloquear (X, Escape, Cancelar). Sin onClose el
+  // modal no ofrece cierre: antes no había ninguna salida salvo el PIN
+  // correcto o recargar la página.
+  onClose?: () => void;
 }
 
 type RestrictionLevel = "soft" | "medium" | "strict";
@@ -67,6 +71,7 @@ export const ParentalControl = ({
   onToggle,
   onUnlock,
   showLockScreen = true,
+  onClose,
 }: ParentalControlProps) => {
   const [showPinInput, setShowPinInput] = useState(false);
   const [pin, setPin] = useState("");
@@ -211,6 +216,23 @@ export const ParentalControl = ({
     }
   };
 
+  // Cerrar el modal sin desbloquear: limpia el PIN y avisa al padre.
+  const handleClose = useCallback(() => {
+    setShowPinInput(false);
+    setPin("");
+    if (onClose) onClose();
+  }, [onClose]);
+
+  // Escape cierra el modal (solo cuando está abierto y hay onClose).
+  useEffect(() => {
+    if (!(isLocked && showLockScreen) || !onClose) return undefined;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isLocked, showLockScreen, onClose, handleClose]);
+
   const handleRestrictionChange = (level: RestrictionLevel) => {
     setRestrictionLevel(level);
     if (secondsLeft !== null) {
@@ -239,7 +261,17 @@ export const ParentalControl = ({
           exit={{ opacity: 0, scale: 0.9 }}
           className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
-          <Card className="w-full max-w-sm bg-linear-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
+          <Card className="relative w-full max-w-sm bg-linear-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
+            {onClose && (
+              <button
+                type="button"
+                onClick={handleClose}
+                aria-label="Cerrar"
+                className="absolute top-3 right-3 p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
             <CardHeader className="text-center pb-4">
               <div
                 className="mx-auto mb-4 p-3 rounded-full w-fit border-2 border-red-500/40 parental-control-icon"
@@ -314,8 +346,14 @@ export const ParentalControl = ({
                   <div className="flex gap-2">
                     <Button
                       onClick={() => {
-                        setShowPinInput(false);
-                        setPin("");
+                        // Cancelar cierra el modal; sin onClose vuelve al
+                        // paso informativo (comportamiento anterior).
+                        if (onClose) {
+                          handleClose();
+                        } else {
+                          setShowPinInput(false);
+                          setPin("");
+                        }
                       }}
                       variant="outline"
                       className="flex-1 bg-white/5 backdrop-blur-sm border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 rounded-xl py-2.5 text-xs font-semibold"
@@ -432,7 +470,7 @@ export const ParentalControl = ({
         </div>
         <p className="text-xs text-zinc-300 leading-relaxed">
           Protección activa contra contenido sensible. Se requerirá PIN para
-          acceder a galerías privadías.
+          acceder a galerías privadas.
         </p>
       </div>
 

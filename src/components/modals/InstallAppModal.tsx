@@ -42,7 +42,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
       "Haz clic en el botón 'Descargar APK' para iniciar la descarga",
       "Ve a la carpeta de Descargas de tu dispositivo",
       "Toca el archivo 'app-release.apk' descargado",
-      "Si aparece una advertencia, toca 'Configuración' y habilita 'Instalar aplicaciones desconocidías'",
+      "Si aparece una advertencia, toca 'Configuración' y habilita 'Instalar aplicaciones desconocidas'",
       "Regresa y toca 'Instalar' para completar la instalación",
     ],
     firefox: [
@@ -50,7 +50,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
       "Firefox mostrará una notificación de descarga completada",
       "Toca la notificación o ve a Descargas",
       "Toca el archivo APK descargado",
-      "Permite la instalación desde fuentes desconocidías si se solicita",
+      "Permite la instalación desde fuentes desconocidas si se solicita",
     ],
     opera: [
       "Haz clic en el botón 'Descargar APK' para iniciar la descarga",
@@ -70,7 +70,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
       "Haz clic en el botón 'Descargar APK' para iniciar la descarga",
       "Edge mostrará el progreso de descarga en la parte inferior",
       "Una vez completada, toca el archivo descargado",
-      "Permite la instalación desde fuentes desconocidías",
+      "Permite la instalación desde fuentes desconocidas",
       "Sigue las instrucciones para completar la instalación",
     ],
   };
@@ -261,7 +261,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                       <p>
                         Esta aplicación requiere Android 5.0 o superior.
                         Asegúrate de habilitar la instalación desde fuentes
-                        desconocidías en la configuración de tu dispositivo.
+                        desconocidas en la configuración de tu dispositivo.
                       </p>
                     </div>
                   </div>

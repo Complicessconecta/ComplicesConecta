@@ -192,24 +192,24 @@ export function CacheDashboard() {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Estadísticas detalladías */}
+            {/* Estadísticas detalladas */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Cpu className="h-5 w-5" />
-                  Estadísticas Detalladías
+                  Estadísticas Detalladas
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">
-                    Entradías en Memoria:
+                    Entradas en Memoria:
                   </span>
                   <span className="font-medium">{stats.memoryEntries}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">
-                    Entradías Persistentes:
+                    Entradas Persistentes:
                   </span>
                   <span className="font-medium">{stats.persistentEntries}</span>
                 </div>
@@ -400,7 +400,7 @@ export function CacheDashboard() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">
-                        Entradías:
+                        Entradas:
                       </span>
                       <span className="font-medium">{stats.memoryEntries}</span>
                     </div>
@@ -420,7 +420,7 @@ export function CacheDashboard() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">
-                        Entradías:
+                        Entradas:
                       </span>
                       <span className="font-medium">
                         {stats.persistentEntries}
@@ -465,7 +465,7 @@ export function CacheDashboard() {
                 <div className="border-t pt-4">
                   <h4 className="font-medium mb-3">Configuración Avanzada</h4>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Las configuraciones avanzadías están disponibles a través de
+                    Las configuraciones avanzadas están disponibles a través de
                     la API del servicio de cache.
                   </p>
                   <Button variant="outline" onClick={resetConfig}>

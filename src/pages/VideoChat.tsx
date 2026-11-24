@@ -117,7 +117,7 @@ const VideoChat = () => {
               </h1>
             </div>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Llamadías de video seguras y privadías con tecnologa WebRTC para
+              Llamadas de video seguras y privadas con tecnologa WebRTC para
               conexiones auténticas
             </p>
           </div>
@@ -351,7 +351,7 @@ const VideoChat = () => {
           {/* Call History */}
           <section className="mt-16">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">
-              Historial de Llamadías
+              Historial de Llamadas
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {callHistory.map((call) => (

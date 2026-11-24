@@ -1,5 +1,5 @@
 /**
- * AI Services - Tipos y Interfaces Compartidías
+ * AI Services - Tipos y Interfaces Compartidas
  *
  * Archivo creado para romper dependencia circular entre:
  * - AILayerService.ts

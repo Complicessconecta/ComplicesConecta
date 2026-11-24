@@ -310,7 +310,7 @@ export class SecurityService {
     const unusualIndicators = [
       patterns.loginFrequency > 20, // Más de 20 logins por período
       patterns.sessionDuration < 5, // Sesiones muy cortas
-      patterns.actionCount > 100, // Muchas acciones rápidías
+      patterns.actionCount > 100, // Muchas acciones rápidas
       patterns.deviceCount > 5, // Muchos dispositivos
       patterns.locationCount > 10, // Muchas ubicaciones
       patterns.timePattern === "unusual", // Patrón temporal extraño

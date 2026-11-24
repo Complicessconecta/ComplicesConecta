@@ -306,7 +306,7 @@ export class PostsService {
       if (error || !storiesData || storiesData.length === 0) {
         logger.warn("No feed data from Supabase, using demo posts", { error });
         const demoPosts = this.generateMockPosts(10);
-        // Guardar en cache para evitar llamadías repetidías
+        // Guardar en cache para evitar llamadas repetidas
         this.feedCache.set(cacheKey, {
           data: demoPosts,
           timestamp: Date.now(),

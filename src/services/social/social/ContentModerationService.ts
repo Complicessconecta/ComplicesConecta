@@ -549,7 +549,7 @@ class ContentModerationService {
   }
 
   /**
-   * Modera imágenes subidías por usuarios usando análisis de contenido
+   * Modera imágenes subidas por usuarios usando análisis de contenido
    * Implementa detección de contenido explícito y verificación de autenticidad
    */
   async moderateImage(
@@ -842,7 +842,7 @@ class ContentModerationService {
     );
     const isTooShort = bio.length < 20;
 
-    // Detectar posibles bios copiadías (muy similares a otras)
+    // Detectar posibles bios copiadas (muy similares a otras)
     // Por ahora, solo verificamos si es exactamente igual a patrones comunes
     const isCopied = false; // Se puede implementar comparación con base de datos
 

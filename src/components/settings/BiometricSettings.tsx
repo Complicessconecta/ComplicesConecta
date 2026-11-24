@@ -128,8 +128,8 @@ export const BiometricSettings: React.FC = () => {
       const success = await clearBiometricSessions();
       if (success) {
         toast({
-          title: "Sesiones limpiadías",
-          description: "Todías las sesiones biométricas han sido cerradías",
+          title: "Sesiones limpiadas",
+          description: "Todas las sesiones biométricas han sido cerradas",
           variant: "default",
         });
       }
@@ -268,7 +268,7 @@ export const BiometricSettings: React.FC = () => {
             {isLoading ? (
               <Loader className="h-4 w-4 animate-spin mx-auto" />
             ) : (
-              "Cerrar todías las sesiones biométricas"
+              "Cerrar todas las sesiones biométricas"
             )}
           </button>
         </div>
@@ -282,7 +282,7 @@ export const BiometricSettings: React.FC = () => {
         <ul className="text-sm text-gray-600 space-y-1">
           <li>• Tus datos biométricos nunca salen de tu dispositivo</li>
           <li>
-            • Solo se almacenan referencias encriptadías en nuestros servidores
+            • Solo se almacenan referencias encriptadas en nuestros servidores
           </li>
           <li>• Puedes desactivar esta función en cualquier momento</li>
           <li>• Compatible con Touch ID, Face ID y lectores de huella</li>

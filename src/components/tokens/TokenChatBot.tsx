@@ -142,12 +142,12 @@ ${hasPendingRewards ? "🎁 ¡Tienes recompensas pendientes!" : ""}`;
       return "😊 No tienes recompensas pendientes en este momento.\n\n💡 **Maneras de ganar CMPX:**\n• Verificar World ID (+100 CMPX)\n• Invitar cuates (+50 CMPX cada uno)\n• Completar perfil (+25 CMPX)\n• Dar feedback beta (+20 CMPX)\n• Iniciar sesión diario (+5 CMPX)";
     }
 
-    return `🎁 **Recompensas disponibles:**\n${rewards.join("\n")}\n\n¿Quieres reclamar todías tus recompensas ahorita?`;
+    return `🎁 **Recompensas disponibles:**\n${rewards.join("\n")}\n\n¿Quieres reclamar todas tus recompensas ahorita?`;
   };
 
   const getStakingMessage = (): string => {
     return `🔒 **¿Qué es el staking?**
-Es como una alcancía especial: guardías tus CMPX por 30 días y al final recibes un +10% de recompensa.
+Es como una alcancía especial: guardas tus CMPX por 30 días y al final recibes un +10% de recompensa.
 
 💡 **Ejemplo:**
 Si metes 100 CMPX → En 30 días tendrás 110 CMPX
@@ -198,7 +198,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         addBotMessage(getRewardsMessage(), [
           {
             id: "claim-all",
-            label: "✅ Reclamar todías",
+            label: "✅ Reclamar todas",
             action: handleClaimRewards,
           },
           {
@@ -242,7 +242,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
       if (totalClaimed > 0) {
         await refreshTokens();
         addBotMessage(
-          `🎉 **¡Recompensas reclamadías con éxito!**
+          `🎉 **¡Recompensas reclamadas con éxito!**
 
 ✅ Total agregado: ${totalClaimed} CMPX
 📋 Recompensas: ${claimedRewards.join(", ")}

@@ -574,7 +574,7 @@ class SmartMatchingService {
   }
 
   /**
-   * Obtiene recomendaciones basadías en "friends of friends"
+   * Obtiene recomendaciones basadas en "friends of friends"
    */
   async getRecommendedUsers(
     userId: string,
@@ -690,7 +690,7 @@ class SmartMatchingService {
         ).length,
       };
 
-      logger.info("✅ Recomendaciones FOF obtenidías", {
+      logger.info("✅ Recomendaciones FOF obtenidas", {
         userId: userId.substring(0, 8) + "***",
         total: filteredMatches.length,
         avgScore: stats.averageScore,
@@ -773,7 +773,7 @@ class SmartMatchingService {
             });
           });
 
-          logger.info("📊 Neo4j: Conexiones sociales encontradías", {
+          logger.info("📊 Neo4j: Conexiones sociales encontradas", {
             count: compatibleUserIds.length,
           });
         } catch (error) {

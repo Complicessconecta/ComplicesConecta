@@ -257,7 +257,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5 text-purple-400" />
-            Galerías NFT-Verificadías
+            Galerías NFT-Verificadas
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

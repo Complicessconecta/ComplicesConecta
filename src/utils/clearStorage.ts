@@ -32,7 +32,7 @@ const safeGetItem = <T>(
 
 export const clearAllStorage = () => {
   try {
-    // Limpiar todías las claves relacionadías con autenticación
+    // Limpiar todas las claves relacionadas con autenticación
     const keysToRemove = [
       "demo_authenticated",
       "demo_user",

@@ -13,12 +13,12 @@ export const ProfileSettings = () => {
   const [profile, setProfile] = useState({
     name: "María González",
     age: 28,
-    bio: "Pareja aventurera buscando conexiones auténticas y experiencias compartidías. Abiertos a explorar nuevas dimensiones de intimidad y amistad.",
+    bio: "Pareja aventurera buscando conexiones auténticas y experiencias compartidas. Abiertos a explorar nuevas dimensiones de intimidad y amistad.",
     profession: "Diseñadora Gráfica",
     education: "Universidad Complutense de Madrid",
     interests: [
       "Comunicación",
-      "Experiencias Compartidías",
+      "Experiencias Compartidas",
       "Bienestar",
       "Conexión Auténtica",
       "Exploración Personal",

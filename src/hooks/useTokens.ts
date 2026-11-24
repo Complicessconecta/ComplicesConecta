@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services";
 
-// Interfaces simplificadías para demo vs real
+// Interfaces simplificadas para demo vs real
 export interface TokenBalance {
   cmpx: number;
   gtk: number;
@@ -529,7 +529,7 @@ export const useTokens = () => {
     refreshTokenData();
   };
 
-  // Funciones adicionales requeridías por los componentes
+  // Funciones adicionales requeridas por los componentes
   const startStaking = async (amount: number) => {
     return await stakeTokens("cmpx", amount, 30);
   };
@@ -595,7 +595,7 @@ export const useTokens = () => {
     return false;
   };
 
-  // Propiedades computadías
+  // Propiedades computadas
   const pendingRewards = rewards.filter((r) => !r.claimed);
   const hasPendingRewards = pendingRewards.length > 0;
   const hasActiveStaking = stakingRecords.some((s) => s.status === "active");
@@ -628,7 +628,7 @@ export const useTokens = () => {
     loading,
     error,
 
-    // Propiedades computadías
+    // Propiedades computadas
     pendingRewards,
     hasPendingRewards,
     hasActiveStaking,

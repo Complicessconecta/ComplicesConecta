@@ -79,7 +79,7 @@ export function useProfileStats(
   }, []);
 
   /**
-   * Cargar todías las estadísticas
+   * Cargar todas las estadísticas
    */
   const loadAllStats = useCallback(async () => {
     try {

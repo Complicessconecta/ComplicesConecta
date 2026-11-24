@@ -119,7 +119,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
             <p className="text-white/90 text-sm leading-relaxed">
               <strong>💡 Modo Demo:</strong> Explora ComplicesConecta sin crear
               una cuenta. Puedes navegar por la aplicación, ver perfiles de
-              ejemplo y probar todías las funcionalidades.
+              ejemplo y probar todas las funcionalidades.
             </p>
           </div>
 

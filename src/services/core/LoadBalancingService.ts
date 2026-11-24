@@ -440,7 +440,7 @@ export class LoadBalancingService {
   }
 
   /**
-   * Limpieza de sesiones expiradías
+   * Limpieza de sesiones expiradas
    */
   private startSessionCleanup(): void {
     setInterval(() => {

@@ -1,7 +1,7 @@
 /**
  * AI Integration Service
  * Servicio centralizado para manejar chatbots, tokens predictivos y Q&A con LLMs avanzados
- * Integración con Neo4j para matching AI-driven y recomendaciones basadías en grafos
+ * Integración con Neo4j para matching AI-driven y recomendaciones basadas en grafos
  */
 
 import { logger } from '@/lib/logger';
@@ -684,7 +684,7 @@ class AIIntegrationService {
   }
 
   private async getRelevantFeatures(): Promise<string[]> {
-    // Obtener características relevantes basadías en la pregunta
+    // Obtener características relevantes basadas en la pregunta
     return ['profiles', 'matching', 'chat']; // Placeholder
   }
 }

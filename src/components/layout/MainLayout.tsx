@@ -45,7 +45,7 @@ export const MainLayout = () => {
   const pathname = location.pathname;
 
   // Lista explícita de rutas donde NO debe aparecer HeaderNav
-  // HeaderNav es consistente en TOdías las páginas públicas (incluso logueado)
+  // HeaderNav es consistente en TOdas las páginas públicas (incluso logueado)
   const HIDE_HEADER_EXACT = new Set<string>(["/auth"]);
   const HIDE_HEADER_PREFIXES: string[] = [
     "/profile",

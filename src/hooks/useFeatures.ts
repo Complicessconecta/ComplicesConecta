@@ -13,17 +13,17 @@ export function useFeatures() {
       isPremium: phase === "premium" || phase === "vip",
       isVIP: phase === "vip",
 
-      // Funciones avanzadías
+      // Funciones avanzadas
       features: {
-        requests: true, // Solicitudes habilitadías siempre
+        requests: true, // Solicitudes habilitadas siempre
         chatPublic: true, // Chat público habilitado
         chatPrivate: true, // Chat privado habilitado
         profileVisibility: true, // Control de visibilidad habilitado
-        galleryPublicPrivate: true, // Galerías habilitadías
+        galleryPublicPrivate: true, // Galerías habilitadas
         messagingPrivacy: true, // Restricción de mensajes
 
-        // 🚀 Funciones premium - HABILITAdías DURANTE BETA
-        // Todías las funciones premium están disponibles hasta el cierre de beta
+        // 🚀 Funciones premium - HABILITAdas DURANTE BETA
+        // Todas las funciones premium están disponibles hasta el cierre de beta
         // Después se manejará con suscripciones
         eventsVIP: true, // Habilitado durante beta
         ghostMode: true, // Habilitado durante beta

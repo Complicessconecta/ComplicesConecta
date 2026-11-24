@@ -244,7 +244,7 @@ export class RateLimitService {
   }
 
   /**
-   * Obtener todías las configuraciones de rate limit
+   * Obtener todas las configuraciones de rate limit
    */
   getAllConfigs(): Map<string, RateLimitConfig> {
     return new Map(this.configs);

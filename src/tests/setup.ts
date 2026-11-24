@@ -101,7 +101,7 @@ export const preventInfiniteLoop = (maxIterations: number = 100) => {
       iterations++;
       if (iterations > maxIterations) {
         throw new Error(
-          `⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadías`,
+          `⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadas`,
         );
       }
       return iterations;

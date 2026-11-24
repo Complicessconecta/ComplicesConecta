@@ -11,7 +11,7 @@ export interface GtagEvent {
   event_category?: string;
   event_label?: string;
   value?: number;
-  [key: string]: unknown; // Para propiedades adicionales desconocidías
+  [key: string]: unknown; // Para propiedades adicionales desconocidas
 }
 
 /**
@@ -27,7 +27,7 @@ export interface GtagParameters {
   session_id?: string;
   page_path?: string;
   page_title?: string;
-  [key: string]: unknown; // Para propiedades adicionales desconocidías
+  [key: string]: unknown; // Para propiedades adicionales desconocidas
 }
 
 /**
@@ -39,7 +39,7 @@ export interface GtagItem {
   item_category?: string;
   price?: number;
   quantity?: number;
-  [key: string]: unknown; // Para propiedades adicionales desconocidías
+  [key: string]: unknown; // Para propiedades adicionales desconocidas
 }
 
 /**
@@ -51,7 +51,7 @@ export interface MessagePayload {
   from?: string;
   collapseKey?: string;
   messageId?: string;
-  [key: string]: unknown; // Para propiedades adicionales desconocidías
+  [key: string]: unknown; // Para propiedades adicionales desconocidas
 }
 
 /**
@@ -66,7 +66,7 @@ export interface NotificationData {
   sound?: string;
   tag?: string;
   requireInteraction?: boolean;
-  [key: string]: unknown; // Para propiedades adicionales desconocidías
+  [key: string]: unknown; // Para propiedades adicionales desconocidas
 }
 
 /**

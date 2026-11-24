@@ -20,7 +20,7 @@ export interface AppConfig {
   };
 }
 
-// Cache para evitar múltiples llamadías y logs repetitivos
+// Cache para evitar múltiples llamadas y logs repetitivos
 let cachedConfig: AppConfig | null = null;
 
 // Obtener configuración desde variables de entorno
@@ -67,7 +67,7 @@ export const getAppConfig = (): AppConfig => {
   return cachedConfig;
 };
 
-// Credenciales demo permitidías (SOLO para demo)
+// Credenciales demo permitidas (SOLO para demo)
 export const DEMO_CREDENTIALS = [
   "single@outlook.es",
   "pareja@outlook.es",
@@ -241,7 +241,7 @@ export const appConfig = getAppConfig();
 // Log de configuración inicial
 logger.info("🚀 ComplicesConecta iniciado", { modo: appConfig.mode });
 if (appConfig.mode === "demo") {
-  logger.info("🎭 Modo demo activo - credenciales de prueba habilitadías");
+  logger.info("🎭 Modo demo activo - credenciales de prueba habilitadas");
 } else {
   logger.info("🔐 Modo producción activo - autenticación real requerida");
 }

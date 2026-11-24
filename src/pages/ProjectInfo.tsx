@@ -137,7 +137,7 @@ export default function ProjectInfo() {
                     <li> Video chat P2P con WebRTC</li>
                     <li> Push notifications nativas</li>
                     <li> Sistema de conexiones y privacidad</li>
-                    <li> Galerías privadías con NFT</li>
+                    <li> Galerías privadas con NFT</li>
                     <li> Perfiles de pareja avanzados</li>
                     <li> Eventos VIP exclusivos</li>
                     <li> Sistema de tokens CMPX y GTK</li>
@@ -196,7 +196,7 @@ export default function ProjectInfo() {
                   </h2>
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> ? Verificador IA de Consentimiento en Chats</li>
-                    <li> ? Galeras NFT-Verificadías con GTK</li>
+                    <li> ? Galerías NFT-Verificadas con GTK</li>
                     <li> ? Matching Predictivo con Graphs Sociales (Neo4j)</li>
                     <li> ? Eventos Virtuales Sostenibles con Tokens</li>
                     <li> ? Neo4j Graph Database 100% operativo</li>
@@ -221,8 +221,8 @@ export default function ProjectInfo() {
                   </h2>
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> ?? Perfiles de pareja completos</li>
-                    <li> ??? Galeras pblicas y privadías</li>
-                    <li> ?? Sistema de verificacin</li>
+                    <li> ??? Galerías públicas y privadas</li>
+                    <li> ?? Sistema de verificación</li>
                     <li> ?? Eventos y experiencias</li>
                   </ul>
 
@@ -259,7 +259,7 @@ export default function ProjectInfo() {
                     <li> Revisar reportes de usuarios y contenido</li>
                     <li> Mantener un ambiente seguro y respetuoso</li>
                     <li> Aplicar las polticas de la comunidad</li>
-                    <li> Asistir a usuarios con dudías o problemas</li>
+                    <li> Asistir a usuarios con dudas o problemas</li>
                     <li> Colaborar con el equipo de desarrollo</li>
                   </ul>
 
@@ -484,7 +484,7 @@ const ModeratorApplicationModal = () => {
 
       toast({
         title: "Solicitud enviada exitosamente!",
-        description: `Tu solicitud para moderador ha sido registrada. Te contactaremos en las prximas 48 horas.`,
+        description: `Tu solicitud para moderador ha sido registrada. Te contactaremos en las próximas 48 horas.`,
         duration: 7000,
       });
 

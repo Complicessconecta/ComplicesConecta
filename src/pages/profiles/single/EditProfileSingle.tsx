@@ -588,7 +588,7 @@ const EditProfileSingle = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">
-                  Aparecer en búsquedías
+                  Aparecer en búsquedas
                 </span>
                 <input
                   type="checkbox"

@@ -56,7 +56,7 @@ export class StorageManager {
     }
   }
 
-  // Limpiar todías las sesiones
+  // Limpiar todas las sesiones
   static clearAllSessions() {
     this.ALLOWED_KEYS.forEach((key) => {
       localStorage.removeItem(key);

@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 
-// Interfaces actualizadías para coincidir con el schema de Supabase
+// Interfaces actualizadas para coincidir con el schema de Supabase
 
 export interface Interest {
   id: number; // ID numérico en la BD

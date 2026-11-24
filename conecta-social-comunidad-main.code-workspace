@@ -13,8 +13,6 @@
     "CodeGPT.apiKey": "Gemini CLI",
     "java.configuration.updateBuildConfiguration": "automatic",
     "powershell.cwd": "conecta-social-comunidad-main",
-    "java.project.sourcePaths": [
-      "src/types"
-    ],
+    "java.project.sourcePaths": ["src/types"],
   },
 }

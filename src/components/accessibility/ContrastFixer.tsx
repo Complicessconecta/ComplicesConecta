@@ -161,4 +161,3 @@ export function ContrastFixer({
 }
 
 export default ContrastFixer;
-

@@ -9,6 +9,7 @@
 ## ✅ Actualización 1 Feb 2026 (Refactor de useAuth Completado)
 
 **Fase 1: Race Conditions y Parseo Inseguro**
+
 - ✅ Función `safeParseDemoUser()` con validación de estructura mínima
 - ✅ Race conditions eliminadas en useEffect inicial
 - ✅ Parseo inseguro corregido en 7 ocurrencias
@@ -16,24 +17,29 @@
 - ✅ Propiedades duplicadas corregidas en mockData.ts
 
 **Fase 2: Promise No Manejada y Validación en Storage**
+
 - ✅ Promise no manejada corregida en client.ts
 - ✅ Timeout configurable (10s dev, 5s prod)
 - ✅ Validación de datos en secure-storage.ts
 
 **Fase 3: Dependencias Circulares y Race Conditions en signOut**
+
 - ✅ Dependencias circulares corregidas en loadProfile
 - ✅ Race condition en signOut corregido con Promise.all()
 
 **Fase 4: Validación de Datos y Manejo de Errores**
+
 - ✅ Validación de campos requeridos en Supabase queries
 - ✅ Manejo de errores mejorado en signOut
 
 **Fase 5: Verificación Final**
+
 - ✅ npm run build:check (OK)
 - ✅ npm run lint (OK)
 - ✅ npx cap sync android (OK)
 
 **Commits:**
+
 - e3aa390b: Fase 1 - Corrige race conditions y parseo inseguro en useAuth
 - c293cfd6: Fase 2 - Corrige Promise no manejada y validación en storage
 - 078bacfa: Fase 3 - Corrige dependencias circulares y race conditions en signOut
@@ -45,11 +51,13 @@
 ## 📊 Estado de fuentes .md (consolidación)
 
 ### ✅ Archivos Solucionados (Movidos a docs-unified/auditorias/)
+
 1. **RIESGOS_ANALISIS_SOLUTIONS.md** - Análisis de riesgos y fases de implementación
 2. **AUDITORIA_SEGURIDAD_SRC_2026-01-22.md** - Seguridad SRC completada
 3. **BUILD_ERRORS_STATUS.md** - Errores TypeScript corregidos (0 en producción)
 
 ### ⏳ Archivos Pendientes (sin consolidar a docs-unified)
+
 1. **audit-report.md** - Auditoría general de código
 2. **audit-hallazgos.md** - Hallazgos aplicados
 3. **ESTADO_DOMINIOS_REFACTOR_2026-01-24.md** - Estado del refactor de dominios
@@ -66,6 +74,7 @@
 14. **REFACTOR_DOMINIOS_ESTADO.md** - Estado refactor dominios
 
 ### ✅ Archivos ya implementados (obsoletos como "pendientes")
+
 1. **docs-unified/auditorias/PROBLEMAS_PENDIENTES_CONSOLIDADOS.md** - Ya reflejado aquí
 
 ---
@@ -90,42 +99,51 @@ Los reportes históricos (auditorías completadas) permanecen como referencia en
 ## 📝 Próximos Pasos
 
 ### Fase 1: Auditoría y Riesgos (Pendiente)
+
 - [ ] Revisar AUDITORIA_SEGURIDAD_SRC_2026-01-22.md y aplicar correcciones pendientes
 - [ ] Revisar BUILD_ERRORS_STATUS.md y corregir errores restantes
 - [ ] Revisar audit-report.md y audit-hallazgos.md
 
 ### Fase 2: Refactor de Dominios (Pendiente)
+
 - [ ] Revisar ESTADO_DOMINIOS_REFACTOR_2026-01-24.md
 - [ ] Revisar FASE2_COMPAT_LAYER_2026-01-24.md
 - [ ] Revisar FASE4_CLEANUP_2026-01-24.md
 - [ ] Revisar FASE5_VALIDATION_2026-01-24.md
 
 ### Fase 3: Implementación de Clubs (Pendiente)
+
 - [ ] Revisar FASES_IMPLEMENTACION_CLUBS.md
 - [ ] Revisar FLUJOS_FALTANTES_INCOMPLETOS_CLUBS.md
 - [ ] Implementar flujos faltantes
 
 ### Fase 4: Tokens CMPX/GTK (Pendiente)
+
 - [ ] Revisar FLUJO_TRABAJO_TOKENS_CMPX_GTK.md
 - [ ] Implementar flujo completo
 
 ### Fase 5: Refactor Safe (Pendiente)
+
 - [ ] Revisar FLUJO_REFACTOR_SAFE_FASES_LIB_SERVICES_2026-01-24.md
 - [ ] Implementar refactor seguro
 
 ### Fase 6: Planificación (Pendiente)
+
 - [ ] Revisar PLANIFICACION_IMPLEMENTACION_PRIORIDADES_ALTA.md
 - [ ] Priorizar tareas pendientes
 
 ### Fase 7: IDs Únicos Admin (Pendiente)
+
 - [ ] Revisar PROGRESO_IDS_UNICOS_ADMIN_2026-01-24.md
 - [ ] Implementar IDs únicos
 
 ### Fase 8: RLS Hardening (Pendiente)
+
 - [ ] Revisar RLS_HARDENING_PLAN_2026-01-27.md
 - [ ] Implementar hardening
 
 ### Fase 9: Refactor Dominios (Pendiente)
+
 - [ ] Revisar REFACTOR_DOMINIOS_ESTADO.md
 - [ ] Continuar refactor
 
@@ -169,9 +187,11 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
 ## 📋 Lista de Pendientes Priorizados
 
 ### Prioridad Alta (0 pendientes)
+
 - Ninguno (todos los riesgos de useAuth corregidos)
 
 ### Prioridad Media (14 pendientes)
+
 1. Revisar AUDITORIA_SEGURIDAD_SRC_2026-01-22.md
 2. Revisar BUILD_ERRORS_STATUS.md
 3. Revisar audit-report.md
@@ -188,6 +208,7 @@ Los siguientes archivos han sido consolidados en `docs-unified/auditorias/` y el
 14. Revisar PROGRESO_IDS_UNICOS_ADMIN_2026-01-24.md
 
 ### Prioridad Baja (0 pendientes)
+
 - Ninguno
 
 ---

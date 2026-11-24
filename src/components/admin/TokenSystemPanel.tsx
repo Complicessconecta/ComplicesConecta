@@ -1,17 +1,56 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, TrendingUp, Shield, RefreshCw, AlertTriangle, CheckCircle2, Wallet, Activity, DollarSign, BarChart3, PieChart, Users, Zap, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import {
+  Coins,
+  TrendingUp,
+  Shield,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle2,
+  Wallet,
+  Activity,
+  DollarSign,
+  BarChart3,
+  PieChart,
+  Users,
+  Zap,
+  ArrowUpRight,
+  ArrowDownLeft,
+} from "lucide-react";
 import "@/styles/TokenSystemPanel.css";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/forms/Input";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
-import { Settings, Plus, Minus, Gift, History as HistoryIcon } from "lucide-react";
+import {
+  Settings,
+  Plus,
+  Minus,
+  Gift,
+  History as HistoryIcon,
+} from "lucide-react";
 
 interface TokenTransaction {
   id: string;
@@ -109,13 +148,14 @@ export function TokenSystemPanel() {
         user_name: `Usuario ${Math.floor(Math.random() * 20) + 1}`,
         token_type: Math.random() > 0.5 ? "CMPX" : "GTK",
         amount: Math.floor(Math.random() * 500) + 10,
-        transaction_type: [
-          "earn_daily",
-          "earn_referral",
-          "spend_boost",
-          "spend_premium",
-          "admin_adjustment",
-        ][Math.floor(Math.random() * 5)] || "unknown",
+        transaction_type:
+          [
+            "earn_daily",
+            "earn_referral",
+            "spend_boost",
+            "spend_premium",
+            "admin_adjustment",
+          ][Math.floor(Math.random() * 5)] || "unknown",
         description: "Transacción de prueba",
         created_at: new Date(
           Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
@@ -545,7 +585,9 @@ export function TokenSystemPanel() {
                             {transaction.amount}
                           </div>
                           <div className="text-xs text-gray-500 capitalize">
-                            {(transaction.transaction_type ?? "Unknown").replace("_", " ")}
+                            {(
+                              transaction.transaction_type ?? "Unknown"
+                            ).replace("_", " ")}
                           </div>
                         </div>
                         {getStatusBadge(transaction.status)}
@@ -629,7 +671,11 @@ export function TokenSystemPanel() {
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
                         className="bg-yellow-600 h-3 rounded-full token-progress animate"
-                        style={{ '--progress-width': `${(tokenStats.circulatingCMPX / tokenStats.totalCMPX) * 100}%` } as React.CSSProperties}
+                        style={
+                          {
+                            "--progress-width": `${(tokenStats.circulatingCMPX / tokenStats.totalCMPX) * 100}%`,
+                          } as React.CSSProperties
+                        }
                       ></div>
                     </div>
                   </div>
@@ -647,7 +693,11 @@ export function TokenSystemPanel() {
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
                         className="bg-purple-600 h-3 rounded-full token-progress"
-                        style={{ '--progress-width': `${(tokenStats.circulatingGTK / tokenStats.totalGTK) * 100}%` } as React.CSSProperties}
+                        style={
+                          {
+                            "--progress-width": `${(tokenStats.circulatingGTK / tokenStats.totalGTK) * 100}%`,
+                          } as React.CSSProperties
+                        }
                       ></div>
                     </div>
                   </div>
@@ -755,4 +805,3 @@ export function TokenSystemPanel() {
     </div>
   );
 }
-

@@ -28,6 +28,7 @@
 ### Objetivo Principal
 
 Implementar un ecosistema completo de clubes con:
+
 - **Economía dual de tokens** (CMPX para consumo, GTK para blockchain)
 - **Monetización híbrida** (Stripe + tokens)
 - **Sistema de reservas seguro** con QR
@@ -345,9 +346,10 @@ export interface WalletBalance {
 export interface TokenTransaction {
   id: string;
   userId: string;
-  transactionType: 'earn' | 'spend' | 'transfer' | 'stake' | 'unstake' | 'reward';
+  transactionType:
+    "earn" | "spend" | "transfer" | "stake" | "unstake" | "reward";
   amount: number;
-  tokenType: 'cmpx' | 'gtk';
+  tokenType: "cmpx" | "gtk";
   balanceAfter: number;
   description?: string;
   metadata?: Record<string, any>;
@@ -374,9 +376,9 @@ export class WalletService {
   async getWalletBalance(userId: string): Promise<WalletBalance | null> {
     try {
       const { data, error } = await supabase
-        .from('wallet_balances')
-        .select('*')
-        .eq('user_id', userId)
+        .from("wallet_balances")
+        .select("*")
+        .eq("user_id", userId)
         .single();
 
       if (error) throw error;
@@ -390,7 +392,7 @@ export class WalletService {
         lastSync: data.last_sync,
       };
     } catch (error) {
-      logger.error('Error obteniendo balance de billetera:', {
+      logger.error("Error obteniendo balance de billetera:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -404,7 +406,7 @@ export class WalletService {
   async createWallet(userId: string): Promise<WalletBalance> {
     try {
       const { data, error } = await supabase
-        .from('wallet_balances')
+        .from("wallet_balances")
         .insert({
           user_id: userId,
           cmpx_balance: 0,
@@ -426,7 +428,7 @@ export class WalletService {
         lastSync: data.last_sync,
       };
     } catch (error) {
-      logger.error('Error creando billetera:', {
+      logger.error("Error creando billetera:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -440,31 +442,42 @@ export class WalletService {
   async addTokens(
     userId: string,
     amount: number,
-    tokenType: 'cmpx' | 'gtk',
-    transactionType: 'earn' | 'reward' | 'transfer',
+    tokenType: "cmpx" | "gtk",
+    transactionType: "earn" | "reward" | "transfer",
     description?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<WalletBalance> {
     try {
       // Obtener balance actual
       const currentBalance = await this.getWalletBalance(userId);
       if (!currentBalance) {
         await this.createWallet(userId);
-        return this.addTokens(userId, amount, tokenType, transactionType, description, metadata);
+        return this.addTokens(
+          userId,
+          amount,
+          tokenType,
+          transactionType,
+          description,
+          metadata,
+        );
       }
 
-      const balanceField = tokenType === 'cmpx' ? 'cmpx_balance' : 'gtk_balance';
-      const currentAmount = tokenType === 'cmpx' ? currentBalance.cmpxBalance : currentBalance.gtkBalance;
+      const balanceField =
+        tokenType === "cmpx" ? "cmpx_balance" : "gtk_balance";
+      const currentAmount =
+        tokenType === "cmpx"
+          ? currentBalance.cmpxBalance
+          : currentBalance.gtkBalance;
       const newAmount = currentAmount + amount;
 
       // Actualizar balance
       const { data, error } = await supabase
-        .from('wallet_balances')
+        .from("wallet_balances")
         .update({
           [balanceField]: newAmount,
           last_sync: new Date().toISOString(),
         })
-        .eq('user_id', userId)
+        .eq("user_id", userId)
         .select()
         .single();
 
@@ -478,7 +491,7 @@ export class WalletService {
         tokenType,
         newAmount,
         description,
-        metadata
+        metadata,
       );
 
       return {
@@ -490,7 +503,7 @@ export class WalletService {
         lastSync: data.last_sync,
       };
     } catch (error) {
-      logger.error('Error añadiendo tokens:', {
+      logger.error("Error añadiendo tokens:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
         amount,
@@ -506,20 +519,23 @@ export class WalletService {
   async deductTokens(
     userId: string,
     amount: number,
-    tokenType: 'cmpx' | 'gtk',
-    transactionType: 'spend' | 'transfer' | 'stake',
+    tokenType: "cmpx" | "gtk",
+    transactionType: "spend" | "transfer" | "stake",
     description?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<WalletBalance> {
     try {
       // Obtener balance actual
       const currentBalance = await this.getWalletBalance(userId);
       if (!currentBalance) {
-        throw new Error('Wallet not found');
+        throw new Error("Wallet not found");
       }
 
-      const balanceField = tokenType === 'cmpx' ? 'cmpxBalance' : 'gtkBalance';
-      const currentAmount = tokenType === 'cmpx' ? currentBalance.cmpxBalance : currentBalance.gtkBalance;
+      const balanceField = tokenType === "cmpx" ? "cmpxBalance" : "gtkBalance";
+      const currentAmount =
+        tokenType === "cmpx"
+          ? currentBalance.cmpxBalance
+          : currentBalance.gtkBalance;
 
       if (currentAmount < amount) {
         throw new Error(`Insufficient ${tokenType.toUpperCase()} balance`);
@@ -529,12 +545,12 @@ export class WalletService {
 
       // Actualizar balance
       const { data, error } = await supabase
-        .from('wallet_balances')
+        .from("wallet_balances")
         .update({
           [balanceField]: newAmount,
           last_sync: new Date().toISOString(),
         })
-        .eq('user_id', userId)
+        .eq("user_id", userId)
         .select()
         .single();
 
@@ -548,7 +564,7 @@ export class WalletService {
         tokenType,
         newAmount,
         description,
-        metadata
+        metadata,
       );
 
       return {
@@ -560,7 +576,7 @@ export class WalletService {
         lastSync: data.last_sync,
       };
     } catch (error) {
-      logger.error('Error deduciendo tokens:', {
+      logger.error("Error deduciendo tokens:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
         amount,
@@ -580,10 +596,10 @@ export class WalletService {
     tokenType: string,
     balanceAfter: number,
     description?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<void> {
     try {
-      await supabase.from('token_transactions').insert({
+      await supabase.from("token_transactions").insert({
         user_id: userId,
         transaction_type: transactionType,
         amount: amount,
@@ -593,7 +609,7 @@ export class WalletService {
         metadata,
       });
     } catch (error) {
-      logger.error('Error registrando transacción:', {
+      logger.error("Error registrando transacción:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
         transactionType,
@@ -608,14 +624,14 @@ export class WalletService {
   async getTransactionHistory(
     userId: string,
     limit: number = 50,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<TokenTransaction[]> {
     try {
       const { data, error } = await supabase
-        .from('token_transactions')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
+        .from("token_transactions")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
         .range(offset, offset + limit - 1);
 
       if (error) throw error;
@@ -634,7 +650,7 @@ export class WalletService {
         createdAt: tx.created_at,
       }));
     } catch (error) {
-      logger.error('Error obteniendo historial de transacciones:', {
+      logger.error("Error obteniendo historial de transacciones:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -651,9 +667,9 @@ export const walletService = WalletService.getInstance();
 **Archivo:** `src/hooks/useWallet.ts`
 
 ```typescript
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/features/auth/useAuth';
-import { walletService, WalletBalance } from '@/services/wallet/WalletService';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/features/auth/useAuth";
+import { walletService, WalletBalance } from "@/services/wallet/WalletService";
 
 export function useWallet() {
   const { user } = useAuth();
@@ -727,48 +743,54 @@ export function useWallet() {
 **Archivo:** `supabase/functions/create-reservation-intent/index.ts`
 
 ```typescript
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import Stripe from "https://esm.sh/stripe?target=deno"
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe?target=deno";
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-  apiVersion: '2022-11-15',
-})
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
+  apiVersion: "2022-11-15",
+});
 
 serve(async (req) => {
   try {
-    const { clubId, userId, amount, clubTier, currency = 'usd' } = await req.json()
+    const {
+      clubId,
+      userId,
+      amount,
+      clubTier,
+      currency = "usd",
+    } = await req.json();
 
     // Validaciones
     if (!clubId || !userId || !amount) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400, headers: { "Content-Type": "application/json" } },
+      );
     }
 
     // LÓGICA DE NEGOCIO: 20% si es Free, 0% si es Premium
-    const commissionPercentage = clubTier === 'premium' ? 0 : 0.20;
+    const commissionPercentage = clubTier === "premium" ? 0 : 0.2;
     const applicationFee = Math.round(amount * commissionPercentage);
 
     // Obtener cuenta Stripe del club
     const { data: club } = await supabase
-      .from('clubs')
-      .select('stripe_account_id')
-      .eq('id', clubId)
+      .from("clubs")
+      .select("stripe_account_id")
+      .eq("id", clubId)
       .single();
 
     if (!club?.stripe_account_id) {
       return new Response(
-        JSON.stringify({ error: 'Club does not have Stripe account' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      )
+        JSON.stringify({ error: "Club does not have Stripe account" }),
+        { status: 400, headers: { "Content-Type": "application/json" } },
+      );
     }
 
     // Crear PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: currency,
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       application_fee_amount: applicationFee,
       transfer_data: {
         destination: club.stripe_account_id,
@@ -777,10 +799,10 @@ serve(async (req) => {
         club_id: clubId,
         user_id: userId,
         tier: clubTier,
-        type: 'reservation',
+        type: "reservation",
         commission_percentage: commissionPercentage,
       },
-    })
+    });
 
     return new Response(
       JSON.stringify({
@@ -789,16 +811,16 @@ serve(async (req) => {
         applicationFee,
         commissionPercentage,
       }),
-      { headers: { 'Content-Type': 'application/json' } }
-    )
+      { headers: { "Content-Type": "application/json" } },
+    );
   } catch (error) {
-    console.error('Error creating payment intent:', error)
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    )
+    console.error("Error creating payment intent:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
-})
+});
 ```
 
 #### 3.2. Servicio de Reservas
@@ -809,15 +831,15 @@ serve(async (req) => {
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { walletService } from "@/services/wallet/WalletService";
-import crypto from 'crypto';
+import crypto from "crypto";
 
 export interface CreateReservationParams {
   clubId: string;
   userId: string;
   amount: number;
-  currency: 'usd' | 'cmpx' | 'gtk';
-  paymentMethod: 'stripe' | 'cmpx' | 'gtk';
-  accessType: 'general' | 'vip';
+  currency: "usd" | "cmpx" | "gtk";
+  paymentMethod: "stripe" | "cmpx" | "gtk";
+  accessType: "general" | "vip";
   stripePaymentIntentId?: string;
 }
 
@@ -853,41 +875,47 @@ export class ReservationService {
   /**
    * Crear reserva con QR
    */
-  async createReservation(params: CreateReservationParams): Promise<Reservation> {
+  async createReservation(
+    params: CreateReservationParams,
+  ): Promise<Reservation> {
     try {
       // Obtener información del club
       const { data: club } = await supabase
-        .from('clubs')
-        .select('membership_tier, name')
-        .eq('id', params.clubId)
+        .from("clubs")
+        .select("membership_tier, name")
+        .eq("id", params.clubId)
         .single();
 
       if (!club) {
-        throw new Error('Club not found');
+        throw new Error("Club not found");
       }
 
       // Calcular comisión
-      const commissionPercentage = club.membership_tier === 'premium' ? 0 : 0.20;
+      const commissionPercentage = club.membership_tier === "premium" ? 0 : 0.2;
       const commissionAmount = params.amount * commissionPercentage;
 
       // Generar QR hash único
-      const qrHash = this.generateQRHash(params.clubId, params.userId, Date.now());
+      const qrHash = this.generateQRHash(
+        params.clubId,
+        params.userId,
+        Date.now(),
+      );
 
       // Si pago con tokens, deducir de billetera
-      if (params.paymentMethod === 'cmpx' || params.paymentMethod === 'gtk') {
+      if (params.paymentMethod === "cmpx" || params.paymentMethod === "gtk") {
         await walletService.deductTokens(
           params.userId,
           params.amount,
           params.paymentMethod,
-          'spend',
+          "spend",
           `Reserva en ${club.name}`,
-          { clubId: params.clubId, reservationType: 'reservation' }
+          { clubId: params.clubId, reservationType: "reservation" },
         );
       }
 
       // Crear reserva
       const { data, error } = await supabase
-        .from('reservations')
+        .from("reservations")
         .insert({
           club_id: params.clubId,
           user_id: params.userId,
@@ -895,7 +923,7 @@ export class ReservationService {
           amount: params.amount,
           currency: params.currency,
           payment_method: params.paymentMethod,
-          status: 'paid',
+          status: "paid",
           access_type: params.accessType,
           commission_amount: commissionAmount,
           stripe_payment_intent_id: params.stripePaymentIntentId,
@@ -906,7 +934,7 @@ export class ReservationService {
 
       if (error) throw error;
 
-      logger.info('Reserva creada exitosamente:', {
+      logger.info("Reserva creada exitosamente:", {
         reservationId: data.id,
         clubId: params.clubId,
         userId: params.userId,
@@ -932,7 +960,7 @@ export class ReservationService {
         expiresAt: data.expires_at,
       };
     } catch (error) {
-      logger.error('Error creando reserva:', {
+      logger.error("Error creando reserva:", {
         error: error instanceof Error ? error.message : String(error),
         params,
       });
@@ -943,9 +971,13 @@ export class ReservationService {
   /**
    * Generar hash único para QR
    */
-  private generateQRHash(clubId: string, userId: string, timestamp: number): string {
+  private generateQRHash(
+    clubId: string,
+    userId: string,
+    timestamp: number,
+  ): string {
     const data = `${clubId}-${userId}-${timestamp}`;
-    return crypto.createHash('sha256').update(data).digest('hex');
+    return crypto.createHash("sha256").update(data).digest("hex");
   }
 
   /**
@@ -954,10 +986,10 @@ export class ReservationService {
   async validateQR(qrHash: string): Promise<Reservation | null> {
     try {
       const { data, error } = await supabase
-        .from('reservations')
-        .select('*')
-        .eq('qr_hash', qrHash)
-        .eq('status', 'paid')
+        .from("reservations")
+        .select("*")
+        .eq("qr_hash", qrHash)
+        .eq("status", "paid")
         .single();
 
       if (error || !data) {
@@ -966,12 +998,12 @@ export class ReservationService {
 
       // Verificar que no esté expirado
       if (new Date(data.expires_at) < new Date()) {
-        await this.updateReservationStatus(data.id, 'expired');
+        await this.updateReservationStatus(data.id, "expired");
         return null;
       }
 
       // Marcar como usado
-      await this.updateReservationStatus(data.id, 'used');
+      await this.updateReservationStatus(data.id, "used");
 
       return {
         id: data.id,
@@ -981,7 +1013,7 @@ export class ReservationService {
         amount: parseFloat(data.amount),
         currency: data.currency,
         paymentMethod: data.payment_method,
-        status: 'used',
+        status: "used",
         accessType: data.access_type,
         commissionAmount: parseFloat(data.commission_amount),
         commissionPaid: data.commission_paid,
@@ -989,7 +1021,7 @@ export class ReservationService {
         expiresAt: data.expires_at,
       };
     } catch (error) {
-      logger.error('Error validando QR:', {
+      logger.error("Error validando QR:", {
         error: error instanceof Error ? error.message : String(error),
         qrHash,
       });
@@ -1002,18 +1034,18 @@ export class ReservationService {
    */
   private async updateReservationStatus(
     reservationId: string,
-    status: 'pending' | 'paid' | 'used' | 'expired' | 'cancelled'
+    status: "pending" | "paid" | "used" | "expired" | "cancelled",
   ): Promise<void> {
     try {
       await supabase
-        .from('reservations')
+        .from("reservations")
         .update({
           status,
-          used_at: status === 'used' ? new Date().toISOString() : null,
+          used_at: status === "used" ? new Date().toISOString() : null,
         })
-        .eq('id', reservationId);
+        .eq("id", reservationId);
     } catch (error) {
-      logger.error('Error actualizando estado de reserva:', {
+      logger.error("Error actualizando estado de reserva:", {
         error: error instanceof Error ? error.message : String(error),
         reservationId,
         status,
@@ -1513,24 +1545,26 @@ export class ClubRankingService {
     try {
       // Obtener estadísticas del club
       const { data: club } = await supabase
-        .from('clubs')
-        .select('total_reviews, average_rating')
-        .eq('id', clubId)
+        .from("clubs")
+        .select("total_reviews, average_rating")
+        .eq("id", clubId)
         .single();
 
       if (!club) {
-        throw new Error('Club not found');
+        throw new Error("Club not found");
       }
 
       // Obtener promedio global
       const { data: globalStats } = await supabase
-        .from('clubs')
-        .select('average_rating')
-        .gt('total_reviews', 0);
+        .from("clubs")
+        .select("average_rating")
+        .gt("total_reviews", 0);
 
-      const globalAverage = globalStats && globalStats.length > 0
-        ? globalStats.reduce((sum, c) => sum + (c.average_rating || 0), 0) / globalStats.length
-        : 3.5;
+      const globalAverage =
+        globalStats && globalStats.length > 0
+          ? globalStats.reduce((sum, c) => sum + (c.average_rating || 0), 0) /
+            globalStats.length
+          : 3.5;
 
       // Parámetros
       const v = club.total_reviews || 0;
@@ -1543,11 +1577,11 @@ export class ClubRankingService {
 
       // Actualizar score del club
       await supabase
-        .from('clubs')
+        .from("clubs")
         .update({ bayesian_score: bayesianScore })
-        .eq('id', clubId);
+        .eq("id", clubId);
 
-      logger.info('Score bayesiano calculado:', {
+      logger.info("Score bayesiano calculado:", {
         clubId,
         bayesianScore,
         totalReviews: v,
@@ -1556,7 +1590,7 @@ export class ClubRankingService {
 
       return bayesianScore;
     } catch (error) {
-      logger.error('Error calculando score bayesiano:', {
+      logger.error("Error calculando score bayesiano:", {
         error: error instanceof Error ? error.message : String(error),
         clubId,
       });
@@ -1569,16 +1603,16 @@ export class ClubRankingService {
    */
   async recalculateAllRankings(): Promise<void> {
     try {
-      logger.info('Iniciando recalculo de rankings de clubes...');
+      logger.info("Iniciando recalculo de rankings de clubes...");
 
       // Obtener todos los clubes con reseñas
       const { data: clubs } = await supabase
-        .from('clubs')
-        .select('id, total_reviews, average_rating')
-        .gt('total_reviews', 0);
+        .from("clubs")
+        .select("id, total_reviews, average_rating")
+        .gt("total_reviews", 0);
 
       if (!clubs || clubs.length === 0) {
-        logger.info('No hay clubes con reseñas para recalcular');
+        logger.info("No hay clubes con reseñas para recalcular");
         return;
       }
 
@@ -1587,7 +1621,7 @@ export class ClubRankingService {
         clubs.map(async (club) => {
           const score = await this.calculateBayesianScore(club.id);
           return { clubId: club.id, score };
-        })
+        }),
       );
 
       // Ordenar por score descendente y asignar ranks
@@ -1597,15 +1631,15 @@ export class ClubRankingService {
       await Promise.all(
         rankings.map((ranking, index) =>
           supabase
-            .from('clubs')
+            .from("clubs")
             .update({ bayesian_score: ranking.score })
-            .eq('id', ranking.clubId)
-        )
+            .eq("id", ranking.clubId),
+        ),
       );
 
       logger.info(`Rankings recalculados para ${clubs.length} clubes`);
     } catch (error) {
-      logger.error('Error recalculando rankings:', {
+      logger.error("Error recalculando rankings:", {
         error: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -1618,10 +1652,10 @@ export class ClubRankingService {
   async getTopClubs(limit: number = 10): Promise<ClubRanking[]> {
     try {
       const { data, error } = await supabase
-        .from('clubs')
-        .select('id, name, bayesian_score, total_reviews, average_rating')
-        .gt('total_reviews', 0)
-        .order('bayesian_score', { ascending: false })
+        .from("clubs")
+        .select("id, name, bayesian_score, total_reviews, average_rating")
+        .gt("total_reviews", 0)
+        .order("bayesian_score", { ascending: false })
         .limit(limit);
 
       if (error) throw error;
@@ -1634,7 +1668,7 @@ export class ClubRankingService {
         rank: index + 1,
       }));
     } catch (error) {
-      logger.error('Error obteniendo top clubes:', {
+      logger.error("Error obteniendo top clubes:", {
         error: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -1650,18 +1684,18 @@ export const clubRankingService = ClubRankingService.getInstance();
 **Archivo:** `supabase/functions/recalculate-rankings/index.ts`
 
 ```typescript
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { clubRankingService } from './ClubRankingService.ts'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { clubRankingService } from "./ClubRankingService.ts";
 
 serve(async (req) => {
   try {
     // Verificar autenticación (opcional para cron jobs)
-    const authHeader = req.headers.get('authorization');
-    if (authHeader !== `Bearer ${Deno.env.get('CRON_SECRET')}`) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      )
+    const authHeader = req.headers.get("authorization");
+    if (authHeader !== `Bearer ${Deno.env.get("CRON_SECRET")}`) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Recalcular rankings
@@ -1670,19 +1704,19 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Rankings recalculated successfully',
+        message: "Rankings recalculated successfully",
         timestamp: new Date().toISOString(),
       }),
-      { headers: { 'Content-Type': 'application/json' } }
-    )
+      { headers: { "Content-Type": "application/json" } },
+    );
   } catch (error) {
-    console.error('Error in ranking recalculation:', error)
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    )
+    console.error("Error in ranking recalculation:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
-})
+});
 ```
 
 ### Checklist Fase 6
@@ -1744,7 +1778,7 @@ export class GeolocationService {
    */
   applyPrivacyOffset(
     coordinates: Coordinates,
-    offsetDistance: number = 1000 // 1km por defecto
+    offsetDistance: number = 1000, // 1km por defecto
   ): PrivacyProtectedLocation {
     // Generar offset aleatorio en dirección aleatoria
     const angle = Math.random() * 2 * Math.PI;
@@ -1767,10 +1801,7 @@ export class GeolocationService {
   /**
    * Calcular distancia entre dos puntos (Haversine formula)
    */
-  calculateDistance(
-    coords1: Coordinates,
-    coords2: Coordinates
-  ): number {
+  calculateDistance(coords1: Coordinates, coords2: Coordinates): number {
     const R = 6371; // Radio de la Tierra en km
     const dLat = this.toRad(coords2.latitude - coords1.latitude);
     const dLon = this.toRad(coords2.longitude - coords1.longitude);
@@ -1793,7 +1824,7 @@ export class GeolocationService {
    */
   async getClubsWithinRadius(
     userLocation: Coordinates,
-    radiusKm: number = 10
+    radiusKm: number = 10,
   ): Promise<any[]> {
     try {
       // Aplicar offset de privacidad a la ubicación del usuario
@@ -1801,7 +1832,8 @@ export class GeolocationService {
 
       // Bounding box para búsqueda eficiente
       const latDelta = radiusKm / 111;
-      const lonDelta = radiusKm / (111 * Math.cos(this.toRad(protectedLocation.latitude)));
+      const lonDelta =
+        radiusKm / (111 * Math.cos(this.toRad(protectedLocation.latitude)));
 
       const minLat = protectedLocation.latitude - latDelta;
       const maxLat = protectedLocation.latitude + latDelta;
@@ -1813,7 +1845,7 @@ export class GeolocationService {
         minLat,
         maxLat,
         minLon,
-        maxLon
+        maxLon,
       );
 
       // Filtrar por distancia exacta
@@ -1825,14 +1857,14 @@ export class GeolocationService {
         return distance <= radiusKm;
       });
 
-      logger.info('Clubes encontrados en radio:', {
+      logger.info("Clubes encontrados en radio:", {
         radius: radiusKm,
         count: clubsWithinRadius.length,
       });
 
       return clubsWithinRadius;
     } catch (error) {
-      logger.error('Error buscando clubes en radio:', {
+      logger.error("Error buscando clubes en radio:", {
         error: error instanceof Error ? error.message : String(error),
         radius: radiusKm,
       });
@@ -1847,7 +1879,7 @@ export class GeolocationService {
     minLat: number,
     maxLat: number,
     minLon: number,
-    maxLon: number
+    maxLon: number,
   ): Promise<any[]> {
     // Implementación con Supabase
     // Placeholder - implementar con consulta real
@@ -2272,80 +2304,86 @@ function StatisticsTab() {
 **Archivo:** `supabase/functions/stripe-webhook/index.ts`
 
 ```typescript
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import Stripe from "https://esm.sh/stripe?target=deno"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe?target=deno";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-  apiVersion: '2022-11-15',
-})
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
+  apiVersion: "2022-11-15",
+});
 
 const supabase = createClient(
-  Deno.env.get('SUPABASE_URL')!,
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-)
+  Deno.env.get("SUPABASE_URL")!,
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+);
 
 serve(async (req) => {
-  const signature = req.headers.get('stripe-signature')
-  const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')
+  const signature = req.headers.get("stripe-signature");
+  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
 
   if (!signature || !webhookSecret) {
-    return new Response('Missing signature', { status: 400 })
+    return new Response("Missing signature", { status: 400 });
   }
 
   try {
-    const body = await req.text()
-    const event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+    const body = await req.text();
+    const event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      webhookSecret,
+    );
 
-    console.log('Stripe webhook received:', event.type)
+    console.log("Stripe webhook received:", event.type);
 
     switch (event.type) {
-      case 'payment_intent.succeeded': {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent
-        const { club_id, user_id, tier, type } = paymentIntent.metadata
+      case "payment_intent.succeeded": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        const { club_id, user_id, tier, type } = paymentIntent.metadata;
 
-        if (type === 'reservation') {
+        if (type === "reservation") {
           // Generar QR y crear reserva
-          const qrHash = crypto.randomUUID()
+          const qrHash = crypto.randomUUID();
 
-          await supabase.from('reservations').insert({
+          await supabase.from("reservations").insert({
             club_id,
             user_id,
             qr_hash: qrHash,
             amount: paymentIntent.amount / 100,
-            currency: 'usd',
-            payment_method: 'stripe',
-            status: 'paid',
+            currency: "usd",
+            payment_method: "stripe",
+            status: "paid",
             stripe_payment_intent_id: paymentIntent.id,
-            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-          })
+            expires_at: new Date(
+              Date.now() + 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          });
 
-          console.log('Reservation created:', { club_id, user_id, qrHash })
+          console.log("Reservation created:", { club_id, user_id, qrHash });
         }
-        break
+        break;
       }
 
-      case 'payment_intent.payment_failed': {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('Payment failed:', paymentIntent.id)
-        break
+      case "payment_intent.payment_failed": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        console.log("Payment failed:", paymentIntent.id);
+        break;
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`)
+        console.log(`Unhandled event type: ${event.type}`);
     }
 
     return new Response(JSON.stringify({ received: true }), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error('Webhook error:', error)
+    console.error("Webhook error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+      headers: { "Content-Type": "application/json" },
+    });
   }
-})
+});
 ```
 
 ### Checklist Fase 9
@@ -2376,62 +2414,64 @@ serve(async (req) => {
 **Archivo:** `src/tests/services/WalletService.test.ts`
 
 ```typescript
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { WalletService } from '@/services/wallet/WalletService';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { WalletService } from "@/services/wallet/WalletService";
 
-describe('WalletService', () => {
+describe("WalletService", () => {
   let walletService: WalletService;
-  const mockUserId = 'test-user-id';
+  const mockUserId = "test-user-id";
 
   beforeEach(() => {
     walletService = WalletService.getInstance();
     vi.clearAllMocks();
   });
 
-  describe('getWalletBalance', () => {
-    it('should return user balance', async () => {
+  describe("getWalletBalance", () => {
+    it("should return user balance", async () => {
       const balance = await walletService.getWalletBalance(mockUserId);
       expect(balance).toBeDefined();
       expect(balance?.userId).toBe(mockUserId);
     });
   });
 
-  describe('addTokens', () => {
-    it('should add tokens to wallet', async () => {
+  describe("addTokens", () => {
+    it("should add tokens to wallet", async () => {
       const initialBalance = await walletService.getWalletBalance(mockUserId);
       const amountToAdd = 100;
 
       const newBalance = await walletService.addTokens(
         mockUserId,
         amountToAdd,
-        'cmpx',
-        'earn',
-        'Test transaction'
+        "cmpx",
+        "earn",
+        "Test transaction",
       );
 
-      expect(newBalance.cmpxBalance).toBe(initialBalance?.cmpxBalance + amountToAdd);
+      expect(newBalance.cmpxBalance).toBe(
+        initialBalance?.cmpxBalance + amountToAdd,
+      );
     });
   });
 
-  describe('deductTokens', () => {
-    it('should deduct tokens from wallet', async () => {
+  describe("deductTokens", () => {
+    it("should deduct tokens from wallet", async () => {
       const amountToDeduct = 50;
 
       const newBalance = await walletService.deductTokens(
         mockUserId,
         amountToDeduct,
-        'cmpx',
-        'spend',
-        'Test transaction'
+        "cmpx",
+        "spend",
+        "Test transaction",
       );
 
       expect(newBalance.cmpxBalance).toBeLessThan(1000000);
     });
 
-    it('should throw error if insufficient balance', async () => {
+    it("should throw error if insufficient balance", async () => {
       await expect(
-        walletService.deductTokens(mockUserId, 999999999, 'cmpx', 'spend')
-      ).rejects.toThrow('Insufficient CMPX balance');
+        walletService.deductTokens(mockUserId, 999999999, "cmpx", "spend"),
+      ).rejects.toThrow("Insufficient CMPX balance");
     });
   });
 });
@@ -2442,54 +2482,54 @@ describe('WalletService', () => {
 **Archivo:** `src/tests/services/ReservationService.test.ts`
 
 ```typescript
-import { describe, it, expect, beforeEach } from 'vitest';
-import { ReservationService } from '@/services/reservations/ReservationService';
+import { describe, it, expect, beforeEach } from "vitest";
+import { ReservationService } from "@/services/reservations/ReservationService";
 
-describe('ReservationService', () => {
+describe("ReservationService", () => {
   let reservationService: ReservationService;
-  const mockClubId = 'test-club-id';
-  const mockUserId = 'test-user-id';
+  const mockClubId = "test-club-id";
+  const mockUserId = "test-user-id";
 
   beforeEach(() => {
     reservationService = ReservationService.getInstance();
   });
 
-  describe('createReservation', () => {
-    it('should create reservation with QR', async () => {
+  describe("createReservation", () => {
+    it("should create reservation with QR", async () => {
       const reservation = await reservationService.createReservation({
         clubId: mockClubId,
         userId: mockUserId,
         amount: 100,
-        currency: 'usd',
-        paymentMethod: 'stripe',
-        accessType: 'general',
+        currency: "usd",
+        paymentMethod: "stripe",
+        accessType: "general",
       });
 
       expect(reservation).toBeDefined();
       expect(reservation.qrHash).toBeDefined();
-      expect(reservation.status).toBe('paid');
+      expect(reservation.status).toBe("paid");
     });
   });
 
-  describe('validateQR', () => {
-    it('should validate QR and mark as used', async () => {
+  describe("validateQR", () => {
+    it("should validate QR and mark as used", async () => {
       const reservation = await reservationService.createReservation({
         clubId: mockClubId,
         userId: mockUserId,
         amount: 100,
-        currency: 'usd',
-        paymentMethod: 'stripe',
-        accessType: 'general',
+        currency: "usd",
+        paymentMethod: "stripe",
+        accessType: "general",
       });
 
       const validated = await reservationService.validateQR(reservation.qrHash);
 
       expect(validated).toBeDefined();
-      expect(validated?.status).toBe('used');
+      expect(validated?.status).toBe("used");
     });
 
-    it('should return null for invalid QR', async () => {
-      const validated = await reservationService.validateQR('invalid-qr-hash');
+    it("should return null for invalid QR", async () => {
+      const validated = await reservationService.validateQR("invalid-qr-hash");
       expect(validated).toBeNull();
     });
   });
@@ -2547,18 +2587,18 @@ describe('ReservationService', () => {
 
 ## 🎯 Resumen de Fases
 
-| Fase | Descripción | Prioridad | Tiempo Estimado |
-|------|-------------|-----------|-----------------|
-| 1 | Fundamentos de Base de Datos | Alta | 2-3 días |
-| 2 | Módulo de Billetera y Tokens CMPX | Alta | 2-3 días |
-| 3 | Lógica de Cobro y Comisiones | Alta | 2-3 días |
-| 4 | Componente de Billetera UI | Media | 1-2 días |
-| 5 | Sistema de Reservas con QR | Media | 2-3 días |
-| 6 | Ranking Bayesiano de Clubes | Media | 1-2 días |
-| 7 | Geolocalización con Privacidad | Media | 1-2 días |
-| 8 | Actualización de ClubProfileAdmin | Media | 2-3 días |
-| 9 | Webhooks y Automatización | Alta | 1-2 días |
-| 10 | Testing y Despliegue | Alta | 3-4 días |
+| Fase | Descripción                       | Prioridad | Tiempo Estimado |
+| ---- | --------------------------------- | --------- | --------------- |
+| 1    | Fundamentos de Base de Datos      | Alta      | 2-3 días        |
+| 2    | Módulo de Billetera y Tokens CMPX | Alta      | 2-3 días        |
+| 3    | Lógica de Cobro y Comisiones      | Alta      | 2-3 días        |
+| 4    | Componente de Billetera UI        | Media     | 1-2 días        |
+| 5    | Sistema de Reservas con QR        | Media     | 2-3 días        |
+| 6    | Ranking Bayesiano de Clubes       | Media     | 1-2 días        |
+| 7    | Geolocalización con Privacidad    | Media     | 1-2 días        |
+| 8    | Actualización de ClubProfileAdmin | Media     | 2-3 días        |
+| 9    | Webhooks y Automatización         | Alta      | 1-2 días        |
+| 10   | Testing y Despliegue              | Alta      | 3-4 días        |
 
 **Tiempo Total Estimado:** 17-27 días
 
@@ -3076,14 +3116,14 @@ export class SafeArrivalService {
     try {
       // Obtener contactos de confianza del usuario
       const { data: contacts, error } = await supabase
-        .from('trust_contacts')
-        .select('name, phone, email')
-        .eq('user_id', userId);
+        .from("trust_contacts")
+        .select("name, phone, email")
+        .eq("user_id", userId);
 
       if (error) throw error;
 
       if (!contacts || contacts.length === 0) {
-        logger.info('No hay contactos de confianza configurados', { userId });
+        logger.info("No hay contactos de confianza configurados", { userId });
         return;
       }
 
@@ -3092,13 +3132,13 @@ export class SafeArrivalService {
         await this.sendNotification(contact as TrustContact, clubName);
       }
 
-      logger.info('Notificaciones enviadas a contactos de confianza', {
+      logger.info("Notificaciones enviadas a contactos de confianza", {
         userId,
         clubName,
         contactsCount: contacts.length,
       });
     } catch (error) {
-      logger.error('Error notificando contactos de confianza:', {
+      logger.error("Error notificando contactos de confianza:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -3109,15 +3149,20 @@ export class SafeArrivalService {
   /**
    * Enviar notificación a un contacto (SMS/Email)
    */
-  private async sendNotification(contact: TrustContact, clubName: string): Promise<void> {
+  private async sendNotification(
+    contact: TrustContact,
+    clubName: string,
+  ): Promise<void> {
     // En producción, integrar con servicio de SMS (Twilio) o Email (SendGrid)
-    logger.info('Enviando notificación Safe Arrival:', {
+    logger.info("Enviando notificación Safe Arrival:", {
       contact: contact.name,
       clubName,
     });
 
     // Simulación para demo
-    console.log(`📱 SMS enviado a ${contact.phone}: "Llegó seguro a ${clubName}"`);
+    console.log(
+      `📱 SMS enviado a ${contact.phone}: "Llegó seguro a ${clubName}"`,
+    );
   }
 
   /**
@@ -3126,9 +3171,9 @@ export class SafeArrivalService {
   async getTrustContacts(userId: string): Promise<TrustContact[]> {
     try {
       const { data, error } = await supabase
-        .from('trust_contacts')
-        .select('*')
-        .eq('user_id', userId);
+        .from("trust_contacts")
+        .select("*")
+        .eq("user_id", userId);
 
       if (error) throw error;
 
@@ -3138,7 +3183,7 @@ export class SafeArrivalService {
         email: contact.email,
       }));
     } catch (error) {
-      logger.error('Error obteniendo contactos de confianza:', {
+      logger.error("Error obteniendo contactos de confianza:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -3183,12 +3228,13 @@ export class QRValidationService {
    */
   async validateQR(qrHash: string): Promise<QRValidationResult> {
     try {
-      logger.info('Validando QR:', { qrHash });
+      logger.info("Validando QR:", { qrHash });
 
       // Consultar la tabla reservations
       const { data: reservation, error } = await supabase
-        .from('reservations')
-        .select(`
+        .from("reservations")
+        .select(
+          `
           *,
           users!inner (
             name,
@@ -3197,61 +3243,62 @@ export class QRValidationService {
           clubs!inner (
             name
           )
-        `)
-        .eq('qr_hash', qrHash)
+        `,
+        )
+        .eq("qr_hash", qrHash)
         .single();
 
       if (error || !reservation) {
-        logger.warn('QR inválido o no encontrado', { qrHash });
+        logger.warn("QR inválido o no encontrado", { qrHash });
         return {
           success: false,
-          message: 'QR Inválido o no encontrado',
+          message: "QR Inválido o no encontrado",
         };
       }
 
       // Verificar estado
-      if (reservation.status === 'used') {
-        logger.warn('QR ya utilizado', { reservationId: reservation.id });
+      if (reservation.status === "used") {
+        logger.warn("QR ya utilizado", { reservationId: reservation.id });
         return {
           success: false,
-          message: 'Código ya utilizado',
+          message: "Código ya utilizado",
         };
       }
 
-      if (reservation.status === 'expired') {
-        logger.warn('QR expirado', { reservationId: reservation.id });
+      if (reservation.status === "expired") {
+        logger.warn("QR expirado", { reservationId: reservation.id });
         return {
           success: false,
-          message: 'Fecha incorrecta (expirado)',
+          message: "Fecha incorrecta (expirado)",
         };
       }
 
-      if (reservation.status !== 'paid') {
-        logger.warn('QR no pagado', { reservationId: reservation.id });
+      if (reservation.status !== "paid") {
+        logger.warn("QR no pagado", { reservationId: reservation.id });
         return {
           success: false,
-          message: 'Reserva no completada',
+          message: "Reserva no completada",
         };
       }
 
       // Marcar como usado
       const { error: updateError } = await supabase
-        .from('reservations')
+        .from("reservations")
         .update({
-          status: 'used',
+          status: "used",
           check_in_at: new Date().toISOString(),
         })
-        .eq('id', reservation.id);
+        .eq("id", reservation.id);
 
       if (updateError) throw updateError;
 
       // Notificar Safe Arrival
       await safeArrivalService.notifyTrustContacts(
         reservation.user_id,
-        reservation.clubs.name
+        reservation.clubs.name,
       );
 
-      logger.info('QR validado exitosamente:', {
+      logger.info("QR validado exitosamente:", {
         reservationId: reservation.id,
         userName: reservation.users.name,
       });
@@ -3263,13 +3310,13 @@ export class QRValidationService {
         reservationId: reservation.id,
       };
     } catch (error) {
-      logger.error('Error validando QR:', {
+      logger.error("Error validando QR:", {
         error: error instanceof Error ? error.message : String(error),
         qrHash,
       });
       return {
         success: false,
-        message: 'Error al validar QR',
+        message: "Error al validar QR",
       };
     }
   }
@@ -3307,13 +3354,13 @@ export const qrValidationService = QRValidationService.getInstance();
 **Archivo:** `src/hooks/useDemoStore.ts`
 
 ```typescript
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface DemoState {
   // Configuración del Club
-  clubTier: 'free' | 'premium';
+  clubTier: "free" | "premium";
   entryPrice: number;
-  vibeStatus: 'unknown' | 'hot' | 'chill' | 'packed' | 'quiet';
+  vibeStatus: "unknown" | "hot" | "chill" | "packed" | "quiet";
 
   // Estado de Reservas
   reservationMade: boolean;
@@ -3338,7 +3385,7 @@ interface DemoState {
   legalDisclaimerAccepted: boolean;
 
   // Acciones
-  setClubTier: (tier: 'free' | 'premium') => void;
+  setClubTier: (tier: "free" | "premium") => void;
   setEntryPrice: (price: number) => void;
   setVibeStatus: (status: string) => void;
   makeReservation: () => void;
@@ -3349,12 +3396,12 @@ interface DemoState {
 
 export const useDemoStore = create<DemoState>((set, get) => ({
   // Estado inicial
-  clubTier: 'free',
+  clubTier: "free",
   entryPrice: 100,
-  vibeStatus: 'unknown',
+  vibeStatus: "unknown",
   reservationMade: false,
   qrGenerated: false,
-  qrHash: '',
+  qrHash: "",
   qrScanned: false,
   scanResult: null,
   cmpxBalance: 500,
@@ -3385,7 +3432,7 @@ export const useDemoStore = create<DemoState>((set, get) => ({
       set({
         scanResult: {
           success: false,
-          message: 'No hay QR generado para escanear',
+          message: "No hay QR generado para escanear",
         },
       });
       return;
@@ -3399,9 +3446,9 @@ export const useDemoStore = create<DemoState>((set, get) => ({
         qrScanned: true,
         scanResult: {
           success: true,
-          message: '✅ Acceso Concedido',
-          userName: 'Usuario Demo',
-          membershipLevel: 'VIP',
+          message: "✅ Acceso Concedido",
+          userName: "Usuario Demo",
+          membershipLevel: "VIP",
         },
       });
 
@@ -3414,7 +3461,7 @@ export const useDemoStore = create<DemoState>((set, get) => ({
         qrScanned: true,
         scanResult: {
           success: false,
-          message: '❌ QR Inválido o Expirado',
+          message: "❌ QR Inválido o Expirado",
         },
       });
     }
@@ -3422,17 +3469,18 @@ export const useDemoStore = create<DemoState>((set, get) => ({
 
   acceptLegalDisclaimer: () => set({ legalDisclaimerAccepted: true }),
 
-  resetDemo: () => set({
-    clubTier: 'free',
-    entryPrice: 100,
-    vibeStatus: 'unknown',
-    reservationMade: false,
-    qrGenerated: false,
-    qrHash: '',
-    qrScanned: false,
-    scanResult: null,
-    legalDisclaimerAccepted: false,
-  }),
+  resetDemo: () =>
+    set({
+      clubTier: "free",
+      entryPrice: 100,
+      vibeStatus: "unknown",
+      reservationMade: false,
+      qrGenerated: false,
+      qrHash: "",
+      qrScanned: false,
+      scanResult: null,
+      legalDisclaimerAccepted: false,
+    }),
 }));
 ```
 
@@ -3742,18 +3790,18 @@ export function ClubDemoEcosystem() {
 
 ## 🎯 Resumen de Fases (Actualizado)
 
-| Fase | Descripción | Prioridad | Tiempo Estimado |
-|------|-------------|-----------|-----------------|
-| 1 | Fundamentos de Base de Datos | Alta | 2-3 días |
-| 2 | Módulo de Billetera y Tokens CMPX | Alta | 2-3 días |
-| 3 | Lógica de Cobro y Comisiones | Alta | 2-3 días |
-| 4 | Componente de Billetera UI | Media | 1-2 días |
-| 5 | Sistema de Reservas con QR | Media | 2-3 días |
-| 6 | Ranking Bayesiano de Clubes | Media | 1-2 días |
-| 7 | Geolocalización con Privacidad | Media | 1-2 días |
-| 8 | Actualización de ClubProfileAdmin | Media | 2-3 días |
-| 9 | Webhooks y Automatización | Alta | 1-2 días |
-| 10 | Testing y Despliegue | Alta | 3-4 días |
-| 11 | Club Demo Experience & Sandbox | Alta | 2-3 días |
+| Fase | Descripción                       | Prioridad | Tiempo Estimado |
+| ---- | --------------------------------- | --------- | --------------- |
+| 1    | Fundamentos de Base de Datos      | Alta      | 2-3 días        |
+| 2    | Módulo de Billetera y Tokens CMPX | Alta      | 2-3 días        |
+| 3    | Lógica de Cobro y Comisiones      | Alta      | 2-3 días        |
+| 4    | Componente de Billetera UI        | Media     | 1-2 días        |
+| 5    | Sistema de Reservas con QR        | Media     | 2-3 días        |
+| 6    | Ranking Bayesiano de Clubes       | Media     | 1-2 días        |
+| 7    | Geolocalización con Privacidad    | Media     | 1-2 días        |
+| 8    | Actualización de ClubProfileAdmin | Media     | 2-3 días        |
+| 9    | Webhooks y Automatización         | Alta      | 1-2 días        |
+| 10   | Testing y Despliegue              | Alta      | 3-4 días        |
+| 11   | Club Demo Experience & Sandbox    | Alta      | 2-3 días        |
 
 **Tiempo Total Estimado:** 19-30 días

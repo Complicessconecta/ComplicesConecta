@@ -89,7 +89,12 @@ export const LoginLoadingScreen = ({
     `¡Bienvenido Administrador ${personalizedName}!`,
   ];
 
-  const loadingTexts = userType === "admin" ? adminTexts : userType === "couple" ? coupleTexts : singleTexts;
+  const loadingTexts =
+    userType === "admin"
+      ? adminTexts
+      : userType === "couple"
+        ? coupleTexts
+        : singleTexts;
 
   const icons = [Shield, UserCheck, Users, Heart];
 
@@ -155,7 +160,9 @@ export const LoginLoadingScreen = ({
         {/* Progress Bar */}
         <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3">
           <div className="progress-bar-container">
-            <div className={`progress-bar progress-bar-gradient ${getWidthClass(progress)}`}>
+            <div
+              className={`progress-bar progress-bar-gradient ${getWidthClass(progress)}`}
+            >
               <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
             </div>
           </div>
@@ -166,10 +173,14 @@ export const LoginLoadingScreen = ({
         <div className="absolute top-10 left-10 animate-float hidden sm:block">
           <Sparkles className="w-6 h-6 text-fuchsia-300/60" />
         </div>
-        <div className={`absolute bottom-10 right-10 animate-float hidden sm:block ${getDelayClass(1)}`}>
+        <div
+          className={`absolute bottom-10 right-10 animate-float hidden sm:block ${getDelayClass(1)}`}
+        >
           <Heart className="w-8 h-8 text-red-300/60" />
         </div>
-        <div className={`absolute top-1/3 right-20 animate-float hidden sm:block ${getDelayClass(2)}`}>
+        <div
+          className={`absolute top-1/3 right-20 animate-float hidden sm:block ${getDelayClass(2)}`}
+        >
           <Users className="w-5 h-5 text-purple-300/60" />
         </div>
       </div>

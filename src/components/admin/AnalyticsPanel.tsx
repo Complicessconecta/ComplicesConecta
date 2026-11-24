@@ -16,14 +16,37 @@
 
 import "@/styles/AnalyticsPanel.css";
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Users, Activity, UserPlus, TrendingUp, Download, RefreshCw, Eye, Heart, MessageCircle, DollarSign as CurrencyDollarIcon } from "lucide-react";
+import {
+  BarChart3,
+  Users,
+  Activity,
+  UserPlus,
+  TrendingUp,
+  Download,
+  RefreshCw,
+  Eye,
+  Heart,
+  MessageCircle,
+  DollarSign as CurrencyDollarIcon,
+} from "lucide-react";
 import { logger } from "@/lib/logger";
 
 // Importaciones para analytics de tokens
@@ -137,20 +160,23 @@ export function AnalyticsPanel() {
   }, []);
 
   // Helper: Generar datos mock de gráficos
-  const generateMockChartData = useCallback((days: number): ChartDataPoint[] => {
-    const mockChartData: ChartDataPoint[] = [];
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      mockChartData.push({
-        date: date.toISOString().split("T")[0] || "",
-        users: Math.floor(Math.random() * 50) + 20,
-        sessions: Math.floor(Math.random() * 100) + 50,
-        engagement: Math.floor(Math.random() * 30) + 40,
-      });
-    }
-    return mockChartData;
-  }, []);
+  const generateMockChartData = useCallback(
+    (days: number): ChartDataPoint[] => {
+      const mockChartData: ChartDataPoint[] = [];
+      for (let i = days - 1; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        mockChartData.push({
+          date: date.toISOString().split("T")[0] || "",
+          users: Math.floor(Math.random() * 50) + 20,
+          sessions: Math.floor(Math.random() * 100) + 50,
+          engagement: Math.floor(Math.random() * 30) + 40,
+        });
+      }
+      return mockChartData;
+    },
+    [],
+  );
 
   // Helper: Generar datos mock de analytics
   const generateMockAnalytics = useCallback(() => {
@@ -170,7 +196,12 @@ export function AnalyticsPanel() {
     generateMockDemographics();
     const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
     setChartData(generateMockChartData(days));
-  }, [timeRange, generateMockAnalytics, generateMockDemographics, generateMockChartData]);
+  }, [
+    timeRange,
+    generateMockAnalytics,
+    generateMockDemographics,
+    generateMockChartData,
+  ]);
 
   // Cargar analytics de usuarios
   const loadUserAnalytics = useCallback(async () => {
@@ -200,12 +231,14 @@ export function AnalyticsPanel() {
       const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 
       const totalUsers = profiles?.length || 0;
-      const newUsersToday = (profiles as ProfileRow[])?.filter(
-        (p) => p.created_at && new Date(p.created_at) >= today,
-      ).length || 0;
-      const newUsersWeek = (profiles as ProfileRow[])?.filter(
-        (p) => p.created_at && new Date(p.created_at) >= weekAgo,
-      ).length || 0;
+      const newUsersToday =
+        (profiles as ProfileRow[])?.filter(
+          (p) => p.created_at && new Date(p.created_at) >= today,
+        ).length || 0;
+      const newUsersWeek =
+        (profiles as ProfileRow[])?.filter(
+          (p) => p.created_at && new Date(p.created_at) >= weekAgo,
+        ).length || 0;
 
       // Cálculos mock para métricas complejas
       const activeUsers = Math.floor(totalUsers * 0.3);
@@ -225,7 +258,9 @@ export function AnalyticsPanel() {
         profileCompletionRate,
       });
     } catch (error) {
-      logger.error("❌ Error procesando analytics de usuarios:", { error: String(error) });
+      logger.error("❌ Error procesando analytics de usuarios:", {
+        error: String(error),
+      });
       generateMockAnalytics();
     }
   }, [generateMockAnalytics]);
@@ -236,7 +271,9 @@ export function AnalyticsPanel() {
       const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
       setChartData(generateMockChartData(days));
     } catch (error) {
-      logger.error("❌ Error cargando datos de gráficos:", { error: String(error) });
+      logger.error("❌ Error cargando datos de gráficos:", {
+        error: String(error),
+      });
     }
   }, [timeRange, generateMockChartData]);
 
@@ -271,16 +308,23 @@ export function AnalyticsPanel() {
       // Procesar distribución de edad
       profiles.forEach((profile) => {
         if (profile.age !== undefined && profile.age !== null) {
-          if (profile.age >= 18 && profile.age <= 24 && ageGroups[0]) ageGroups[0].count++;
-          else if (profile.age >= 25 && profile.age <= 34 && ageGroups[1]) ageGroups[1].count++;
-          else if (profile.age >= 35 && profile.age <= 44 && ageGroups[2]) ageGroups[2].count++;
+          if (profile.age >= 18 && profile.age <= 24 && ageGroups[0])
+            ageGroups[0].count++;
+          else if (profile.age >= 25 && profile.age <= 34 && ageGroups[1])
+            ageGroups[1].count++;
+          else if (profile.age >= 35 && profile.age <= 44 && ageGroups[2])
+            ageGroups[2].count++;
           else if (profile.age >= 45 && ageGroups[3]) ageGroups[3].count++;
         }
       });
 
-      const totalWithAge = ageGroups.reduce((sum, group) => sum + group.count, 0);
+      const totalWithAge = ageGroups.reduce(
+        (sum, group) => sum + group.count,
+        0,
+      );
       ageGroups.forEach((group) => {
-        group.percentage = totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
+        group.percentage =
+          totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
       });
 
       // Mock de distribución de género (columna gender no existe en profiles)
@@ -332,7 +376,9 @@ export function AnalyticsPanel() {
         locationDistribution,
       });
     } catch (error) {
-      logger.error("❌ Error cargando datos demográficos:", { error: String(error) });
+      logger.error("❌ Error cargando datos demográficos:", {
+        error: String(error),
+      });
       generateMockDemographics();
     }
   }, [generateMockDemographics]);
@@ -359,18 +405,23 @@ export function AnalyticsPanel() {
   const loadTokenMetrics = useCallback(async () => {
     try {
       setTokenLoading(true);
-      const response = await TokenAnalyticsService.getInstance().generateCurrentMetrics();
+      const response =
+        await TokenAnalyticsService.getInstance().generateCurrentMetrics();
 
       if (response.success && response.metrics) {
         setTokenMetrics(response.metrics);
         logger.info("✅ Métricas de tokens cargadas");
       } else {
         setTokenError(response.error || "Error cargando métricas de tokens");
-        logger.warn("⚠️ Error cargando métricas de tokens:", { error: response.error });
+        logger.warn("⚠️ Error cargando métricas de tokens:", {
+          error: response.error,
+        });
       }
     } catch (error) {
       setTokenError("Error inesperado cargando métricas de tokens");
-      logger.error("❌ Error inesperado cargando métricas de tokens:", { error: String(error) });
+      logger.error("❌ Error inesperado cargando métricas de tokens:", {
+        error: String(error),
+      });
     } finally {
       setTokenLoading(false);
     }
@@ -384,7 +435,9 @@ export function AnalyticsPanel() {
       setRealTimeMetrics(rtMetrics);
       setSystemMetrics(sysMetrics);
     } catch (error) {
-      logger.error("❌ Error cargando métricas en tiempo real:", { error: String(error) });
+      logger.error("❌ Error cargando métricas en tiempo real:", {
+        error: String(error),
+      });
     }
   }, []);
 
@@ -392,7 +445,10 @@ export function AnalyticsPanel() {
   const generateTokenReport = useCallback(async () => {
     try {
       setIsGeneratingReport(true);
-      const response = await TokenAnalyticsService.getInstance().generateAutomaticReport("daily");
+      const response =
+        await TokenAnalyticsService.getInstance().generateAutomaticReport(
+          "daily",
+        );
 
       if (response.success && response.report) {
         logger.info("✅ Reporte de tokens generado:", response.report);
@@ -406,7 +462,9 @@ export function AnalyticsPanel() {
       }
     } catch (error) {
       setTokenError("Error inesperado generando reporte");
-      logger.error("❌ Error inesperado generando reporte:", { error: String(error) });
+      logger.error("❌ Error inesperado generando reporte:", {
+        error: String(error),
+      });
     } finally {
       setIsGeneratingReport(false);
     }
@@ -1037,4 +1095,3 @@ export function AnalyticsPanel() {
     </div>
   );
 }
-

@@ -1,8 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit, Trash2, Eye, Ban, CheckCircle, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import React, { useState, useEffect } from "react";
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  Ban,
+  CheckCircle,
+  Loader2,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 // Datos mock simplificados
 const MOCK_CLUBS = [
@@ -15,10 +30,10 @@ const MOCK_CLUBS = [
     isActive: true,
     isVerified: true,
     category: "premium",
-    createdAt: "2026-01-26"
+    createdAt: "2026-01-26",
   },
   {
-    id: "demo-2", 
+    id: "demo-2",
     name: "Noche VIP Lounge",
     city: "Guadalajara",
     rating: 4.5,
@@ -26,7 +41,7 @@ const MOCK_CLUBS = [
     isActive: true,
     isVerified: true,
     category: "standard",
-    createdAt: "2026-01-25"
+    createdAt: "2026-01-25",
   },
   {
     id: "demo-3",
@@ -37,8 +52,8 @@ const MOCK_CLUBS = [
     isActive: false,
     isVerified: false,
     category: "standard",
-    createdAt: "2026-01-24"
-  }
+    createdAt: "2026-01-24",
+  },
 ];
 
 interface SimpleClub {
@@ -56,8 +71,8 @@ interface SimpleClub {
 const ClubAdminPanelSimple: React.FC = () => {
   const [clubs, setClubs] = useState<SimpleClub[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Cargar datos mock
   useEffect(() => {
@@ -68,34 +83,44 @@ const ClubAdminPanelSimple: React.FC = () => {
   }, []);
 
   // Filtrar clubs
-  const filteredClubs = clubs.filter(club => {
-    const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         club.city.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'all' ||
-                         (statusFilter === 'active' && club.isActive) ||
-                         (statusFilter === 'inactive' && !club.isActive) ||
-                         (statusFilter === 'verified' && club.isVerified) ||
-                         (statusFilter === 'unverified' && !club.isVerified);
+  const filteredClubs = clubs.filter((club) => {
+    const matchesSearch =
+      club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      club.city.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "active" && club.isActive) ||
+      (statusFilter === "inactive" && !club.isActive) ||
+      (statusFilter === "verified" && club.isVerified) ||
+      (statusFilter === "unverified" && !club.isVerified);
 
     return matchesSearch && matchesStatus;
   });
 
   // Eliminar club (mock)
   const handleDeleteClub = (clubId: string, clubName: string) => {
-    if (!confirm(`¿Estás seguro de que deseas eliminar el club "${clubName}"?`)) {
+    if (
+      !confirm(`¿Estás seguro de que deseas eliminar el club "${clubName}"?`)
+    ) {
       return;
     }
-    setClubs(clubs.filter(club => club.id !== clubId));
+    setClubs(clubs.filter((club) => club.id !== clubId));
   };
 
   // Toggle estado del club (mock)
-  const handleToggleStatus = (clubId: string, clubName: string, currentStatus: boolean) => {
+  const handleToggleStatus = (
+    clubId: string,
+    clubName: string,
+    currentStatus: boolean,
+  ) => {
     const newStatus = !currentStatus;
-    setClubs(clubs.map(club => 
-      club.id === clubId ? { ...club, isActive: newStatus } : club
-    ));
-    alert(`Club "${clubName}" ${newStatus ? 'activado' : 'suspendido'} (Demo)`);
+    setClubs(
+      clubs.map((club) =>
+        club.id === clubId ? { ...club, isActive: newStatus } : club,
+      ),
+    );
+    alert(`Club "${clubName}" ${newStatus ? "activado" : "suspendido"} (Demo)`);
   };
 
   const getStatusBadge = (club: SimpleClub) => {
@@ -110,10 +135,14 @@ const ClubAdminPanelSimple: React.FC = () => {
 
   const getCategoryBadge = (category: string) => {
     const colors: Record<string, "default" | "secondary" | "destructive"> = {
-      premium: 'default',
-      standard: 'secondary',
+      premium: "default",
+      standard: "secondary",
     };
-    return <Badge variant={colors[category] || 'secondary'}>{category.toUpperCase()}</Badge>;
+    return (
+      <Badge variant={colors[category] || "secondary"}>
+        {category.toUpperCase()}
+      </Badge>
+    );
   };
 
   if (loading) {
@@ -132,12 +161,14 @@ const ClubAdminPanelSimple: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Administración de Clubs</h2>
+          <h2 className="text-3xl font-bold tracking-tight">
+            Administración de Clubs
+          </h2>
           <p className="text-muted-foreground">
             Gestiona todos los clubs de la plataforma (Modo Demo)
           </p>
         </div>
-        <Button onClick={() => alert('Crear nuevo club (Demo)')}>
+        <Button onClick={() => alert("Crear nuevo club (Demo)")}>
           <Plus className="mr-2 h-4 w-4" />
           Nuevo Club
         </Button>
@@ -161,7 +192,7 @@ const ClubAdminPanelSimple: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {clubs.filter(c => c.isActive).length}
+              {clubs.filter((c) => c.isActive).length}
             </div>
           </CardContent>
         </Card>
@@ -172,7 +203,7 @@ const ClubAdminPanelSimple: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {clubs.filter(c => c.isVerified).length}
+              {clubs.filter((c) => c.isVerified).length}
             </div>
           </CardContent>
         </Card>
@@ -183,7 +214,7 @@ const ClubAdminPanelSimple: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              {clubs.filter(c => !c.isActive).length}
+              {clubs.filter((c) => !c.isActive).length}
             </div>
           </CardContent>
         </Card>
@@ -217,9 +248,7 @@ const ClubAdminPanelSimple: React.FC = () => {
               <option value="verified">Verificados</option>
               <option value="unverified">No Verificados</option>
             </select>
-            <Button variant="outline">
-              Exportar
-            </Button>
+            <Button variant="outline">Exportar</Button>
           </div>
         </CardContent>
       </Card>
@@ -237,35 +266,63 @@ const ClubAdminPanelSimple: React.FC = () => {
             <table className="w-full border-collapse border border-gray-200">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border border-gray-200 px-4 py-2 text-left">Nombre</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Ciudad</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Categoría</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Estado</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Rating</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Check-ins</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Acciones</th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    Nombre
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    Ciudad
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    Categoría
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    Estado
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    Rating
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    Check-ins
+                  </th>
+                  <th className="border border-gray-200 px-4 py-2 text-left">
+                    Acciones
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredClubs.map((club) => (
                   <tr key={club.id} className="hover:bg-gray-50">
-                    <td className="border border-gray-200 px-4 py-2 font-medium">{club.name}</td>
-                    <td className="border border-gray-200 px-4 py-2">{club.city}</td>
-                    <td className="border border-gray-200 px-4 py-2">{getCategoryBadge(club.category)}</td>
-                    <td className="border border-gray-200 px-4 py-2">{getStatusBadge(club)}</td>
+                    <td className="border border-gray-200 px-4 py-2 font-medium">
+                      {club.name}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {club.city}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {getCategoryBadge(club.category)}
+                    </td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {getStatusBadge(club)}
+                    </td>
                     <td className="border border-gray-200 px-4 py-2">
                       <div className="flex items-center gap-1">
                         <span>{club.rating}</span>
-                        <span className="text-muted-foreground">({club.checkIns})</span>
+                        <span className="text-muted-foreground">
+                          ({club.checkIns})
+                        </span>
                       </div>
                     </td>
-                    <td className="border border-gray-200 px-4 py-2">{club.checkIns}</td>
+                    <td className="border border-gray-200 px-4 py-2">
+                      {club.checkIns}
+                    </td>
                     <td className="border border-gray-200 px-4 py-2">
                       <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => alert(`Ver detalles de ${club.name} (Demo)`)}
+                          onClick={() =>
+                            alert(`Ver detalles de ${club.name} (Demo)`)
+                          }
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -279,7 +336,13 @@ const ClubAdminPanelSimple: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleToggleStatus(club.id, club.name, club.isActive)}
+                          onClick={() =>
+                            handleToggleStatus(
+                              club.id,
+                              club.name,
+                              club.isActive,
+                            )
+                          }
                         >
                           <Ban className="h-4 w-4" />
                         </Button>

@@ -54,6 +54,7 @@ notepad .env
 ```
 
 **Variables requeridas**:
+
 ```env
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
 GRAFANA_ADMIN_USER=admin
@@ -61,6 +62,7 @@ GRAFANA_ADMIN_PASSWORD=your-secure-password
 ```
 
 **Obtener Service Role Key**:
+
 1. Ir a https://app.supabase.com/project/axtvqnozatbmllvwzuim/settings/api
 2. Copiar la clave `service_role` (secret)
 3. Pegar en `.env`
@@ -72,6 +74,7 @@ docker-compose up -d
 ```
 
 **Servicios iniciados**:
+
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000
 - Alertmanager: http://localhost:9093
@@ -131,40 +134,43 @@ docker-compose up -d
 ### Modificar Intervalos de Scrape
 
 Editar `prometheus/prometheus.yml`:
+
 ```yaml
 scrape_configs:
-  - job_name: 'supabase-complicesconecta'
-    scrape_interval: 30s  # Cambiar de 60s a 30s
+  - job_name: "supabase-complicesconecta"
+    scrape_interval: 30s # Cambiar de 60s a 30s
 ```
 
 ### Agregar Proyectos Adicionales
 
 Agregar nuevo scrape job en `prometheus/prometheus.yml`:
+
 ```yaml
-- job_name: 'supabase-project2'
+- job_name: "supabase-project2"
   scrape_interval: 60s
-  metrics_path: '/customer/v1/privileged/metrics'
+  metrics_path: "/customer/v1/privileged/metrics"
   scheme: https
   basic_auth:
-    username: 'service_role'
-    password: '${SUPABASE_PROJECT2_SERVICE_ROLE_KEY}'
+    username: "service_role"
+    password: "${SUPABASE_PROJECT2_SERVICE_ROLE_KEY}"
   static_configs:
     - targets:
-        - 'project2-ref.supabase.co:443'
+        - "project2-ref.supabase.co:443"
       labels:
-        project: 'project2'
+        project: "project2"
 ```
 
 ### Configurar Notificaciones de Alertas
 
 Editar `alertmanager/alertmanager.yml`:
+
 ```yaml
 receivers:
-  - name: 'slack-notifications'
+  - name: "slack-notifications"
     slack_configs:
-      - api_url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
-        channel: '#alerts'
-        title: 'Supabase Alert: {{ .GroupLabels.alertname }}'
+      - api_url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+        channel: "#alerts"
+        title: "Supabase Alert: {{ .GroupLabels.alertname }}"
 ```
 
 ---
@@ -242,11 +248,13 @@ receivers:
 ## 🛠️ Comandos Útiles
 
 ### Iniciar stack
+
 ```bash
 docker-compose up -d
 ```
 
 ### Ver logs
+
 ```bash
 # Todos los servicios
 docker-compose logs -f
@@ -259,16 +267,19 @@ docker-compose logs -f grafana
 ```
 
 ### Detener stack
+
 ```bash
 docker-compose down
 ```
 
 ### Reiniciar servicio específico
+
 ```bash
 docker-compose restart prometheus
 ```
 
 ### Actualizar configuración
+
 ```bash
 # Recargar Prometheus sin reiniciar
 curl -X POST http://localhost:9090/-/reload
@@ -290,7 +301,8 @@ curl -X POST http://localhost:9090/-/reload
 ### Error: "Cannot scrape metrics"
 
 **Causa**: Service Role Key incorrecta o expirada  
-**Solución**: 
+**Solución**:
+
 1. Verificar clave en `.env`
 2. Obtener nueva clave de Supabase
 3. Reiniciar Prometheus: `docker-compose restart prometheus`
@@ -299,6 +311,7 @@ curl -X POST http://localhost:9090/-/reload
 
 **Causa**: Datasource no configurado correctamente  
 **Solución**:
+
 1. Ir a Configuration → Data Sources
 2. Verificar URL de Prometheus: `http://prometheus:9090`
 3. Probar conexión
@@ -307,6 +320,7 @@ curl -X POST http://localhost:9090/-/reload
 
 **Causa**: Reglas de alertas no cargadas  
 **Solución**:
+
 1. Verificar archivos en `prometheus/alerts/`
 2. Reiniciar Prometheus: `docker-compose restart prometheus`
 3. Verificar logs de Prometheus
@@ -316,9 +330,11 @@ curl -X POST http://localhost:9090/-/reload
 ## 📞 Soporte
 
 Para problemas con Supabase:
+
 - [Supabase Support](https://supabase.com/support)
 
 Para problemas con Prometheus/Grafana:
+
 - [Prometheus Community](https://prometheus.io/community/)
 - [Grafana Community](https://community.grafana.com/)
 

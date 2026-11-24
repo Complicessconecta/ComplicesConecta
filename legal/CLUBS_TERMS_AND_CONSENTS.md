@@ -23,6 +23,7 @@
 ## 🎯 OBJETIVO
 
 Establecer los términos y condiciones específicos para:
+
 - Propietarios de clubs que se registran en la plataforma
 - Usuarios que interactúan con clubs (check-ins, reseñas, eventos)
 - Proteger legalmente a ComplicesConecta frente a disputas
@@ -50,6 +51,7 @@ Al registrar tu club en ComplicesConecta, declaras bajo protesta de decir verdad
 - ❌ Reembolsos o cancelaciones de eventos del club
 
 **Responsabilidad del club:**
+
 - ✅ Publicar precios exactos y actualizados
 - ✅ Indicar claramente qué incluye cada tarifa
 - ✅ Manejar directamente sus políticas de reembolso
@@ -64,6 +66,7 @@ Al registrar tu club en ComplicesConecta, declaras bajo protesta de decir verdad
 - ❌ Capacidad máxima o permisos de operación
 
 **Responsabilidad del club:**
+
 - ✅ Mantener licencias y permisos vigentes
 - ✅ Implementar medidas de seguridad adecuadas
 - ✅ Cumplir con normativas locales y federales
@@ -84,11 +87,13 @@ Al hacer check-in en un club, aceptas:
 ### 2. RESEÑAS Y COMENTARIOS
 
 **Solo usuarios con check-in verificado pueden:**
+
 - ✅ Publicar reseñas sobre el club
 - ✅ Calificar servicios y experiencias
 - ✅ Compartir fotos (con consentimiento)
 
 **Prohibido:**
+
 - ❌ Reseñas falsas o sin check-in real
 - ❌ Fotos sin consentimiento de personas
 - ❌ Acoso, difamación o contenido ilegal
@@ -109,6 +114,7 @@ Al hacer check-in en un club, aceptas:
 ### Para Clubs:
 
 **Suspensión inmediata por:**
+
 - Información falsa o engañosa
 - Operación sin licencias vigentes
 - Quejas verificadas de usuarios
@@ -117,6 +123,7 @@ Al hacer check-in en un club, aceptas:
 ### Para Usuarios:
 
 **Suspensión inmediata por:**
+
 - Check-ins falsos
 - Reseñas sin verificación
 - Acoso o comportamiento inapropiado
@@ -192,6 +199,7 @@ Al hacer check-in en un club, aceptas:
 ## 📞 CONTACTO LEGAL
 
 **Para dudas o disputas:**
+
 - **Email:** legal@complicesconecta.com
 - **Teléfono:** +52 (55) 1234-5678
 - **Horario:** Lunes a Viernes, 9:00 - 18:00 hrs
@@ -202,4 +210,4 @@ Al hacer check-in en un club, aceptas:
 
 ---
 
-*Este documento complementa pero no reemplaza los Términos y Condiciones Generales de ComplicesConecta.*
+_Este documento complementa pero no reemplaza los Términos y Condiciones Generales de ComplicesConecta._

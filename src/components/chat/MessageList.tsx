@@ -69,9 +69,11 @@ export const MessageList: React.FC<MessageListProps> = ({
           !isOwn &&
           (index === 0 ||
             messages[index - 1]?.sender_id !== message.sender_id ||
-            (new Date(message.created_at).getTime() -
-              new Date(messages[index - 1]?.created_at || message.created_at).getTime() >
-              300000)); // 5 minutos
+            new Date(message.created_at).getTime() -
+              new Date(
+                messages[index - 1]?.created_at || message.created_at,
+              ).getTime() >
+              300000); // 5 minutos
 
         const timeAgo = formatDistanceToNow(new Date(message.created_at), {
           addSuffix: true,
@@ -150,4 +152,3 @@ export const MessageList: React.FC<MessageListProps> = ({
     </div>
   );
 };
-

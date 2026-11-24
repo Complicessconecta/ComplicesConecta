@@ -1,4 +1,3 @@
-
 // FIX: Estructura de DOM ideal para modales modernos:
 // 1. Modal renderizado fuera del layout principal usando createPortal
 // 2. Overlay fijo que cubre toda la pantalla (inset-0)
@@ -12,14 +11,23 @@ import { createPortal } from "react-dom";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { X, Sparkles, Shield, Heart, Zap, Gift, Star, Globe, HelpCircle } from "lucide-react";
+import {
+  X,
+  Sparkles,
+  Shield,
+  Heart,
+  Zap,
+  Gift,
+  Star,
+  Globe,
+  HelpCircle,
+} from "lucide-react";
 import "@/styles/WelcomeModal.css";
 
 interface WelcomeModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
 
 export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -178,7 +186,8 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   // FIX: No renderizar nada si no está montado (SSR) o no está abierto
   // FIX: Verificar que document.body existe para evitar error en SSR
-  if (!mounted || !isOpen || typeof document === "undefined" || !document.body) return null;
+  if (!mounted || !isOpen || typeof document === "undefined" || !document.body)
+    return null;
 
   const firstStep = welcomeSteps[0];
   if (!firstStep) return null;
@@ -428,4 +437,3 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
     document.body,
   );
 };
-

@@ -33,12 +33,12 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
   isOwner = false,
   onReply,
 }) => {
-  const [sortBy, setSort] = useState<'recent' | 'highest' | 'lowest'>('recent');
+  const [sortBy, setSort] = useState<"recent" | "highest" | "lowest">("recent");
 
   const sortedReviews = [...reviews].sort((a, b) => {
-    if (sortBy === 'recent') {
+    if (sortBy === "recent") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else if (sortBy === 'highest') {
+    } else if (sortBy === "highest") {
       return b.rating - a.rating;
     } else {
       return a.rating - b.rating;
@@ -47,10 +47,10 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return date.toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -59,20 +59,20 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
       <Star
         key={i}
         className={`h-4 w-4 ${
-          i < rating
-            ? 'text-yellow-400 fill-current'
-            : 'text-gray-400'
+          i < rating ? "text-yellow-400 fill-current" : "text-gray-400"
         }`}
       />
     ));
   };
 
-  const ratingDistribution = [5, 4, 3, 2, 1].map(star => ({
+  const ratingDistribution = [5, 4, 3, 2, 1].map((star) => ({
     star,
-    count: reviews.filter(r => r.rating === star).length,
-    percentage: reviews.length > 0
-      ? (reviews.filter(r => r.rating === star).length / reviews.length) * 100
-      : 0
+    count: reviews.filter((r) => r.rating === star).length,
+    percentage:
+      reviews.length > 0
+        ? (reviews.filter((r) => r.rating === star).length / reviews.length) *
+          100
+        : 0,
   }));
 
   return (
@@ -87,7 +87,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
             <div>
               <h3 className="text-xl font-bold text-white">Reseñas</h3>
               <p className="text-white/60 text-sm">
-                {totalReviews} {totalReviews === 1 ? 'reseña' : 'reseñas'}
+                {totalReviews} {totalReviews === 1 ? "reseña" : "reseñas"}
               </p>
             </div>
           </div>
@@ -116,7 +116,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
                 {renderStars(Math.round(averageRating))}
               </div>
               <p className="text-white/60 text-sm">
-                {totalReviews} {totalReviews === 1 ? 'reseña' : 'reseñas'}
+                {totalReviews} {totalReviews === 1 ? "reseña" : "reseñas"}
               </p>
             </div>
 
@@ -224,4 +224,3 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
     </Card>
   );
 };
-

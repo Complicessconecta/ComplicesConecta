@@ -21,7 +21,13 @@ const PageLoader = () => (
 );
 
 export const MainLayout = () => {
-  const { profile: _profile, isAuthenticated, user, signOut, isDemo } = useAuth();
+  const {
+    profile: _profile,
+    isAuthenticated,
+    user,
+    signOut,
+    isDemo,
+  } = useAuth();
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -120,7 +126,9 @@ export const MainLayout = () => {
               <div className="w-full max-w-[1920px] mx-auto">
                 <div className="flex items-center justify-between h-16 px-4 lg:px-6 gap-3">
                   <div className="min-w-0">
-                    <div className="text-white font-bold truncate">Club Demo</div>
+                    <div className="text-white font-bold truncate">
+                      Club Demo
+                    </div>
                     <div className="text-white/70 text-xs truncate">
                       Perfil demo verificado
                     </div>
@@ -181,7 +189,7 @@ export const MainLayout = () => {
 
         {/* Bottom Navigation (perfil/app) — solo cuando el dock no está visible */}
         {showBottomNavigation && !showDock && <Navigation />}
-        
+
         {/* Bottom Navigation for Demo Profiles */}
         <BottomNavigation />
 
@@ -221,4 +229,3 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
     </div>
   );
 };
-

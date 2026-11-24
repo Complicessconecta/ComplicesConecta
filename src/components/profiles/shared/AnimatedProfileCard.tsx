@@ -5,7 +5,11 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { cn } from "@/shared/lib/cn";
-import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
+import {
+  isTouchDevice,
+  getAnimationConfig,
+  addTouchSupport,
+} from "@/utils/mobile";
 
 interface ProfileCardProps {
   id: number;
@@ -292,14 +296,23 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
               >
                 <motion.div
                   animate={isLiked ? { scale: [1, 1.4, 1] } : {}}
-                  transition={{ duration: 0.4, type: "spring", stiffness: 300, damping: 15 }}
+                  transition={{
+                    duration: 0.4,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 15,
+                  }}
                 >
                   <Heart
                     className={`w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 transition-colors duration-300 ${isLiked ? "fill-current text-red-500" : ""}`}
                   />
                 </motion.div>
-                <span className="hidden sm:inline font-medium">{isLiked ? "Te Gusta" : "Me Gusta"}</span>
-                <span className="sm:hidden sr-only">{isLiked ? "Te Gusta" : "Me Gusta"}</span>
+                <span className="hidden sm:inline font-medium">
+                  {isLiked ? "Te Gusta" : "Me Gusta"}
+                </span>
+                <span className="sm:hidden sr-only">
+                  {isLiked ? "Te Gusta" : "Me Gusta"}
+                </span>
               </Button>
 
               <Button
@@ -308,7 +321,9 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 onClick={() => {
                   if (isPrivate && !canMessage) {
                     // Perfil privado: mostrar mensaje de acceso requerido
-                    alert("Este perfil es privado. Debes solicitar acceso para chatear.");
+                    alert(
+                      "Este perfil es privado. Debes solicitar acceso para chatear.",
+                    );
                     return;
                   }
                   onMessage?.(profileId ?? id);
@@ -338,7 +353,9 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 onClick={() => {
                   if (isPrivate && !canMessage) {
                     // Perfil privado: mostrar mensaje de acceso requerido
-                    alert("Este perfil es privado. Debes solicitar acceso para ver el perfil completo.");
+                    alert(
+                      "Este perfil es privado. Debes solicitar acceso para ver el perfil completo.",
+                    );
                     return;
                   }
                   setShowViews(!showViews);
@@ -348,7 +365,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   "relative transition-all duration-300 px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation group",
                   isPrivate && !canMessage
                     ? "bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-500/40"
-                    : "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20"
+                    : "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20",
                 )}
                 title={`${isPrivate && !canMessage ? "Perfil privado - Solicitar acceso" : `${viewCount} visualizaciones`}`}
               >

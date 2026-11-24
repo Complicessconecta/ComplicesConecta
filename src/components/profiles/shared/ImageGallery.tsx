@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Eye, Lock, Unlock, Trash2, Sparkles } from "lucide-react";
 import { getUserImages, deleteImage, ImageUpload } from "@/lib/images";
 import { useToast } from "@/hooks/useToast";
@@ -50,7 +55,11 @@ export function ImageGallery({
       if (error) throw error;
 
       if (data) {
-        setUnlockedProfiles(data.map((item) => item.profile_id).filter((id): id is string => id !== null));
+        setUnlockedProfiles(
+          data
+            .map((item) => item.profile_id)
+            .filter((id): id is string => id !== null),
+        );
       }
     } catch (error) {
       logger.error("Error loading unlocked galleries:", { error });
@@ -138,14 +147,12 @@ export function ImageGallery({
       if (success) {
         // Persistir el desbloqueo en la base de datos
         if (supabase) {
-          const { error } = await supabase
-            .from("gallery_unlocks")
-            .insert({ 
-              user_id: user.id, 
-              profile_id: profileId,
-              target_profile_id: profileId,
-              gallery_item_id: profileId 
-            } as any);
+          const { error } = await supabase.from("gallery_unlocks").insert({
+            user_id: user.id,
+            profile_id: profileId,
+            target_profile_id: profileId,
+            gallery_item_id: profileId,
+          } as any);
           if (error) throw new Error("No se pudo registrar el desbloqueo.");
         }
 
@@ -440,4 +447,3 @@ function ImageCard({
     </Card>
   );
 }
-

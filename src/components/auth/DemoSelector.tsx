@@ -9,7 +9,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Users, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
@@ -47,7 +53,8 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
     setSelectedType(type);
 
     try {
-      const demoEmail = type === "couple" ? "pareja@outlook.es" : "single@outlook.es";
+      const demoEmail =
+        type === "couple" ? "pareja@outlook.es" : "single@outlook.es";
 
       // C4/C5 (2026-11-19): modo demo sin contraseña. Ya no se lee ninguna
       // VITE_DEMO_PASSWORD_* ni existe el fallback literal "demo".
@@ -247,4 +254,3 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
 };
 
 export default DemoSelector;
-

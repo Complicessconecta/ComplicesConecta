@@ -1,9 +1,27 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence, type Variants, type Transition } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  type Variants,
+  type Transition,
+} from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Home, Search, Heart, MessageCircle, User, Menu, X, Bell, Settings, LogOut, Crown, Sparkles } from "lucide-react";
+import {
+  Home,
+  Search,
+  Heart,
+  MessageCircle,
+  User,
+  Menu,
+  X,
+  Bell,
+  Settings,
+  LogOut,
+  Crown,
+  Sparkles,
+} from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
@@ -180,7 +198,11 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                       <Avatar className="w-12 h-12">
                         <AvatarImage
                           src={profile?.avatar_url || undefined}
-                          alt={profile?.display_name || profile?.first_name || "User"}
+                          alt={
+                            profile?.display_name ||
+                            profile?.first_name ||
+                            "User"
+                          }
                         />
                         <AvatarFallback className="bg-linear-to-br from-purple-600 to-blue-600 text-white">
                           {profile?.display_name?.charAt(0)?.toUpperCase() ||
@@ -367,12 +389,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
         )}
         onClick={handleClick}
       >
-        <div
-          className={cn(
-            "relative shrink-0",
-            isMobileBottomBar && "mb-0.5",
-          )}
-        >
+        <div className={cn("relative shrink-0", isMobileBottomBar && "mb-0.5")}>
           {item.icon}
           {item.badge && item.badge > 0 && (
             <Badge className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs bg-red-500 text-white">

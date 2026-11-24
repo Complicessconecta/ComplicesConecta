@@ -1,7 +1,20 @@
-import { Building, MapPin, Phone, Globe, Clock, Star, CheckCircle, Award } from "lucide-react";
+import {
+  Building,
+  MapPin,
+  Phone,
+  Globe,
+  Clock,
+  Star,
+  CheckCircle,
+  Award,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/cards/Card";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover/popover";
 import type { Club } from "@/entities/club";
 import { SafeImage } from "@/components/ui/SafeImage";
 
@@ -39,11 +52,15 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
         ) : (
           <>
             {/* Imagen de banner animada */}
-            <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
-              backgroundImage: 'url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200&q=80)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }} />
+            <div
+              className="absolute inset-0 bg-cover bg-center animate-pulse"
+              style={{
+                backgroundImage:
+                  "url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200&q=80)",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
             <div className="absolute inset-0 bg-linear-to-b from-transparent to-purple-900/60" />
             <div className="w-full h-full flex items-center justify-center relative z-10">
               <Building className="h-24 w-24 text-white/40 animate-bounce" />
@@ -117,28 +134,30 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <h1 className="text-3xl font-bold text-white">{club.name}</h1>
-              {typeof club.live_status === "string" && club.live_status.trim().length > 0 && (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button type="button">
-                      <Badge
-                        className={
-                          club.live_status.includes("🔥")
-                            ? "bg-red-500/20 text-red-200 border border-red-400/40 animate-pulse"
-                            : "bg-white/10 text-white/90 border border-white/20"
-                        }
-                      >
-                        Vibe: {club.live_status}
-                      </Badge>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="bg-black/80 border border-white/10 text-white">
-                    Este club está reportando gran actividad ahora mismo. ¡Reserva tu lugar!
-                  </PopoverContent>
-                </Popover>
-              )}
+              {typeof club.live_status === "string" &&
+                club.live_status.trim().length > 0 && (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button type="button">
+                        <Badge
+                          className={
+                            club.live_status.includes("🔥")
+                              ? "bg-red-500/20 text-red-200 border border-red-400/40 animate-pulse"
+                              : "bg-white/10 text-white/90 border border-white/20"
+                          }
+                        >
+                          Vibe: {club.live_status}
+                        </Badge>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="bg-black/80 border border-white/10 text-white">
+                      Este club está reportando gran actividad ahora mismo.
+                      ¡Reserva tu lugar!
+                    </PopoverContent>
+                  </Popover>
+                )}
             </div>
-            
+
             {/* Rating */}
             <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center gap-1">

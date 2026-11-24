@@ -1,13 +1,14 @@
-
 /**
  * BackgroundControls - Controles para partículas y backgrounds
  * Se integra en la sección de "Configuración de Animaciones"
  */
 
-
 import React, { useEffect, useState } from "react";
 import { Sparkles, Zap, RotateCcw, Layers } from "lucide-react";
-import { useBackgroundPreferences, type BackgroundMode } from "@/hooks/useBackgroundPreferences";
+import {
+  useBackgroundPreferences,
+  type BackgroundMode,
+} from "@/hooks/useBackgroundPreferences";
 
 interface BackgroundControlsProps {
   onClose?: () => void;
@@ -116,7 +117,11 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
           </div>
           <button
             onClick={handleParticlesToggle}
-            aria-label={localPrefs.particlesEnabled ? "Desactivar partículas" : "Activar partículas"}
+            aria-label={
+              localPrefs.particlesEnabled
+                ? "Desactivar partículas"
+                : "Activar partículas"
+            }
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.particlesEnabled
                 ? "bg-linear-to-r from-purple-600 to-pink-600"
@@ -154,7 +159,11 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
           </div>
           <button
             onClick={handleTransparenciesToggle}
-            aria-label={localPrefs.transparenciesEnabled ? "Desactivar transparencias" : "Activar transparencias"}
+            aria-label={
+              localPrefs.transparenciesEnabled
+                ? "Desactivar transparencias"
+                : "Activar transparencias"
+            }
             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
               localPrefs.transparenciesEnabled
                 ? "bg-linear-to-r from-blue-600 to-cyan-600"
@@ -270,4 +279,3 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
 };
 
 export default BackgroundControls;
-

@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Heart, ThumbsDown } from "lucide-react";
 
@@ -47,16 +52,12 @@ export const SingleLookingForSection: React.FC<
               )}
             </div>
           ) : (
-            <p className="text-sm text-white/60">
-              Aún no defines qué buscas.
-            </p>
+            <p className="text-sm text-white/60">Aún no defines qué buscas.</p>
           )}
         </div>
 
         <div>
-          <p className="text-xs text-white/50 mb-1.5">
-            Situación sentimental
-          </p>
+          <p className="text-xs text-white/50 mb-1.5">Situación sentimental</p>
           <Badge className="bg-emerald-500/20 text-emerald-100 border-emerald-400/30 font-normal">
             {relationshipStatus}
           </Badge>

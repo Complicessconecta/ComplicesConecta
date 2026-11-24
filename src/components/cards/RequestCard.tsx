@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { Check, X, MessageCircle, Clock, User, CheckCircle } from "lucide-react";
+import {
+  Check,
+  X,
+  MessageCircle,
+  Clock,
+  User,
+  CheckCircle,
+} from "lucide-react";
 import { RequestsService } from "@/lib/requests";
 import { logger } from "@/lib/logger";
 
@@ -346,4 +353,3 @@ export default RequestCard;
  * - Verificación is_verified antes de mostrar badge
  * - Manejo de errores en formatDate con try/catch
  */
-

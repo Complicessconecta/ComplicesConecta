@@ -43,9 +43,12 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
           return;
         }
       } catch (error: any) {
-        logger.error("⚠️ Error verificando staff via rpc:is_admin_or_moderator", {
-          error: error?.message,
-        });
+        logger.error(
+          "⚠️ Error verificando staff via rpc:is_admin_or_moderator",
+          {
+            error: error?.message,
+          },
+        );
       }
 
       // Fallback: Verificar si es moderador activo (RLS debe filtrar correctamente)

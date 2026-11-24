@@ -216,4 +216,3 @@ export const ModalLoader: React.FC = () => (
 );
 
 export default LazyComponentLoader;
-

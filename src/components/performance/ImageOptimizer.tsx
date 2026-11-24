@@ -4,7 +4,16 @@
  */
 
 import React, { useState, useEffect, useRef } from "react";
-import { supportsWebP, supportsAVIF,  optimizeImageUrl,  generateSrcSet, createLazyLoader, preloadImage, type ImageOptimizationOptions, type OptimizedImageProps } from "@/utils/imageOptimization";
+import {
+  supportsWebP,
+  supportsAVIF,
+  optimizeImageUrl,
+  generateSrcSet,
+  createLazyLoader,
+  preloadImage,
+  type ImageOptimizationOptions,
+  type OptimizedImageProps,
+} from "@/utils/imageOptimization";
 import { logger } from "@/lib/logger";
 
 interface ImageOptimizerProps extends Omit<
@@ -366,4 +375,3 @@ export const useImagePreloader = (images: string[]) => {
 };
 
 export default OptimizedImage;
-

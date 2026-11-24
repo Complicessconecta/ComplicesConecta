@@ -1,8 +1,21 @@
 import React, { useState } from "react";
-import { Bell, X, Check, Trash2, Settings, Volume2, VolumeX } from "lucide-react";
+import {
+  Bell,
+  X,
+  Check,
+  Trash2,
+  Settings,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
@@ -323,4 +336,3 @@ export function NotificationCenter({
 }
 
 export default NotificationCenter;
-

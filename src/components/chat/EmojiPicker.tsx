@@ -775,4 +775,3 @@ export const EmojiPicker: React.FC<EmojiPickerProps> = ({
 };
 
 export default EmojiPicker;
-

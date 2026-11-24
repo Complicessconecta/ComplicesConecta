@@ -130,4 +130,3 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({
     </AnimatePresence>
   );
 };
-

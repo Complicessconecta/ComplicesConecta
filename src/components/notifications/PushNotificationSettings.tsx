@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Bell, BellOff, Settings, TestTube, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Bell,
+  BellOff,
+  Settings,
+  TestTube,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
@@ -9,8 +16,7 @@ interface PushNotificationSettingsProps {
 }
 
 export const PushNotificationSettings: React.FC<
-
-PushNotificationSettingsProps
+  PushNotificationSettingsProps
 > = ({ className = "" }) => {
   const { user } = useAuth();
   const [showDetails, setShowDetails] = useState(false);
@@ -260,4 +266,3 @@ PushNotificationSettingsProps
 };
 
 export default PushNotificationSettings;
-

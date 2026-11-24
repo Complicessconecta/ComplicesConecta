@@ -2,7 +2,16 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-import { Heart, Flame, CheckCircle, Crown, Star, MapPin, MessageCircle, User } from "lucide-react";
+import {
+  Heart,
+  Flame,
+  CheckCircle,
+  Crown,
+  Star,
+  MapPin,
+  MessageCircle,
+  User,
+} from "lucide-react";
 
 // Constantes
 const FALLBACK_IMAGE_URL =
@@ -228,4 +237,3 @@ DiscoverProfileCard.displayName = "DiscoverProfileCard";
 // ✅ Arquitectura: Mantenida ubicación en discover/, preparado para unificación con ProfileCard.tsx
 // ✅ Campos corregidos: Eliminado 'name' → 'first_name + last_name', 'location' → coordenadas
 // ✅ Event handling: Agregado stopPropagation en botones para evitar conflictos con click del card
-

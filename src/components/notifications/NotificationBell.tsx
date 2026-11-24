@@ -3,7 +3,12 @@ import { Bell, X, Check, Mail, UserPlus, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
@@ -75,7 +80,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
     }
 
     loadNotifications();
-    
+
     // Set up real-time subscription
     if (!supabase) {
       logger.error("Supabase no está disponible");
@@ -537,4 +542,3 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 };
 
 export default NotificationBell;
-

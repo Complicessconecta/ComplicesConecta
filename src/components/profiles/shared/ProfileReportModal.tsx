@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { X, AlertTriangle, Shield, User, CreditCard, Baby, Flag } from "lucide-react";
+import {
+  X,
+  AlertTriangle,
+  Shield,
+  User,
+  CreditCard,
+  Baby,
+  Flag,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { profileReportService } from "@/features/profile/ProfileReportService";
 import { toast } from "sonner";

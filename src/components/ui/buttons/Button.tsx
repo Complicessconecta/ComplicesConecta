@@ -186,8 +186,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         {...restMotionProps}
-        {...(resolvedWhileHover !== undefined ? { whileHover: resolvedWhileHover } : {})}
-        {...(resolvedWhileTap !== undefined ? { whileTap: resolvedWhileTap } : {})}
+        {...(resolvedWhileHover !== undefined
+          ? { whileHover: resolvedWhileHover }
+          : {})}
+        {...(resolvedWhileTap !== undefined
+          ? { whileTap: resolvedWhileTap }
+          : {})}
         {...(resolvedAnimate !== undefined ? { animate: resolvedAnimate } : {})}
         transition={
           motionTransition ?? {
@@ -242,4 +246,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-

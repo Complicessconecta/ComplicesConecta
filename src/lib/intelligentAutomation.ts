@@ -827,4 +827,3 @@ IntelligentAutomationService.initialize().catch((error) => {
 });
 
 export default IntelligentAutomationService;
-

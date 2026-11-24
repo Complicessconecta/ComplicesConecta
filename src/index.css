@@ -211,7 +211,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
-html, body {
+html,
+body {
   height: 100%;
 }
 

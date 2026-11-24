@@ -9,11 +9,7 @@ import { MapPin, Camera as CameraIcon, Bell, ArrowRight } from "lucide-react";
 
 export type PermissionType = "camera" | "location" | "notifications";
 export type PermissionStatus =
-  | "granted"
-  | "denied"
-  | "prompt"
-  | "prompt-with-rationale"
-  | "limited";
+  "granted" | "denied" | "prompt" | "prompt-with-rationale" | "limited";
 
 interface PermissionState {
   camera: PermissionStatus;

@@ -1,19 +1,22 @@
-
 // ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { getAppConfig, DEMO_CREDENTIALS, handleDemoAuth, clearDemoAuth, isProductionAdmin } from "@/lib/app-config";
+import {
+  getAppConfig,
+  DEMO_CREDENTIALS,
+  handleDemoAuth,
+  clearDemoAuth,
+  isProductionAdmin,
+} from "@/lib/app-config";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { setDatadogUser } from "@/config/datadog-rum.config";
 import { Profile } from "@/types/supabase-custom";
 import type { DatadogRUM } from "@/types/datadog";
-
-
 
 // Interfaces para tipos extendidos
 interface WindowWithDemoFlags extends Window {
@@ -23,22 +26,22 @@ interface WindowWithDemoFlags extends Window {
 // Función segura para parsear demoUser con validación
 function safeParseDemoUser<T>(data: T): Profile | null {
   if (!data) return null;
-  
+
   try {
-    const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-    
+    const parsed = typeof data === "string" ? JSON.parse(data) : data;
+
     // Validar estructura mínima
-    if (!parsed || typeof parsed !== 'object') return null;
-    
-    const required = ['id', 'email'];
+    if (!parsed || typeof parsed !== "object") return null;
+
+    const required = ["id", "email"];
     for (const field of required) {
       if (!(field in parsed)) return null;
     }
-    
+
     return parsed as Profile;
   } catch (error) {
-    logger.error("❌ Error parseando demoUser:", { 
-      error: error instanceof Error ? error.message : String(error) 
+    logger.error("❌ Error parseando demoUser:", {
+      error: error instanceof Error ? error.message : String(error),
     });
     return null;
   }
@@ -53,7 +56,10 @@ export const useAuth = () => {
   }>("auth_tokens", {});
 
   // Usar usePersistedState para demo_user directamente
-  const [demoUser, _setDemoUser] = usePersistedState<Profile | null>("demo_user", null);
+  const [demoUser, _setDemoUser] = usePersistedState<Profile | null>(
+    "demo_user",
+    null,
+  );
 
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -67,37 +73,37 @@ export const useAuth = () => {
 
   // Función para cargar perfil
 
-  const loadProfile = useCallback(async (userId: string) => {
-    if (profileLoaded.current) {
-      logger.info("⚠️ Perfil ya cargado, evitando recarga", { userId });
-      return;
-    }
-
-    // CRÍTICO: Verificar modo demo PRIMERO antes de cargar perfil
-    const sessionFlags = StorageManager.getSessionFlags();
-    const currentDemoUser = demoUser; // Capturar valor actual en lugar de depender de él
-
-    if (sessionFlags.demo_authenticated && currentDemoUser) {
-      const parsedDemoUser = safeParseDemoUser(currentDemoUser); // VALIDADO
-      
-      if (!parsedDemoUser) {
-        logger.error("❌ demoUser corrupto o inválido");
-        // Recuperación automática: limpiar sesión demo corrupta
-        clearDemoAuth();
-        _setDemoUser(null);
-        setUser(null);
-        setSession(null);
-        setProfile(null);
-        profileLoaded.current = false;
+  const loadProfile = useCallback(
+    async (userId: string) => {
+      if (profileLoaded.current) {
+        logger.info("⚠️ Perfil ya cargado, evitando recarga", { userId });
         return;
       }
-      
-      const demoProfile = {
+
+      // CRÍTICO: Verificar modo demo PRIMERO antes de cargar perfil
+      const sessionFlags = StorageManager.getSessionFlags();
+      const currentDemoUser = demoUser; // Capturar valor actual en lugar de depender de él
+
+      if (sessionFlags.demo_authenticated && currentDemoUser) {
+        const parsedDemoUser = safeParseDemoUser(currentDemoUser); // VALIDADO
+
+        if (!parsedDemoUser) {
+          logger.error("❌ demoUser corrupto o inválido");
+          // Recuperación automática: limpiar sesión demo corrupta
+          clearDemoAuth();
+          _setDemoUser(null);
+          setUser(null);
+          setSession(null);
+          setProfile(null);
+          profileLoaded.current = false;
+          return;
+        }
+
+        const demoProfile = {
           id: parsedDemoUser.id || "demo-user-1",
           first_name: parsedDemoUser.first_name || "Demo User",
           last_name: "",
-          display_name:
-            (parsedDemoUser.displayName ||
+          display_name: (parsedDemoUser.displayName ||
             parsedDemoUser.first_name ||
             "Demo User") as string,
           email: (parsedDemoUser.email || "") as string | null,
@@ -122,145 +128,160 @@ export const useAuth = () => {
         setProfile(demoProfile);
         profileLoaded.current = true;
         return;
-    }
+      }
 
-    // Cache deshabilitado - cargar siempre desde Supabase
-    // if (cachedProfile) {
-    //   logger.info('✅ Perfil cargado exitosamente', { userId: cachedProfile.id });
-    //   setProfile(cachedProfile);
-    //   profileLoaded.current = true;
-    //   return;
-    // }
+      // Cache deshabilitado - cargar siempre desde Supabase
+      // if (cachedProfile) {
+      //   logger.info('✅ Perfil cargado exitosamente', { userId: cachedProfile.id });
+      //   setProfile(cachedProfile);
+      //   profileLoaded.current = true;
+      //   return;
+      // }
 
-    // CRÍTICO: NO intentar cargar desde Supabase si es usuario demo
-    // Ya verificado arriba, pero doble verificación por seguridad
-    if (sessionFlags.demo_authenticated) {
-      logger.info("🎭 Usuario demo - evitando carga desde Supabase", { userId });
-      return;
-    }
-
-    // CRÍTICO: Verificar si el userId es un UUID demo generado
-    // Los UUIDs demo tienen formato específico que no existen en Supabase
-    // Verificar si el userId está en la lista de usuarios demo conocidos
-    const demoUUIDs = [
-      "0830e194-17e3-417e-a300-00017e3eb04f", // djwacko28@gmail.com
-      // Agregar más UUIDs demo según sea necesario
-    ];
-    const isDemoUUID = userId.startsWith("demo-") ||
-                      userId.includes("demo") ||
-                      demoUUIDs.includes(userId);
-    if (isDemoUUID) {
-      logger.info("🎭 UUID demo detectado - evitando carga desde Supabase", { userId });
-      return;
-    }
-
-    try {
-      logger.info("🔍 Iniciando verificación de autenticación", { userId });
-
-      if (!supabase) {
-        logger.error("❌ Supabase no está disponible");
+      // CRÍTICO: NO intentar cargar desde Supabase si es usuario demo
+      // Ya verificado arriba, pero doble verificación por seguridad
+      if (sessionFlags.demo_authenticated) {
+        logger.info("🎭 Usuario demo - evitando carga desde Supabase", {
+          userId,
+        });
         return;
       }
 
-      // Usar la vista unificada vw_profiles_unified para consultar ambas tablas según account_type
-      const result = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
-
-      const { data, error } = result;
-
-      logger.info("🔍 Consulta ejecutada", { userId });
-      logger.info("🔍 Resultado data", { count: Array.isArray(data) ? data.length : 1 });
-
-      if (error) {
-        logger.error("❌ Error fetching profile:", { error: error.message, details: error.details });
-        if (error.code === "PGRST116") {
-          setProfile(null);
-        }
+      // CRÍTICO: Verificar si el userId es un UUID demo generado
+      // Los UUIDs demo tienen formato específico que no existen en Supabase
+      // Verificar si el userId está en la lista de usuarios demo conocidos
+      const demoUUIDs = [
+        "0830e194-17e3-417e-a300-00017e3eb04f", // djwacko28@gmail.com
+        // Agregar más UUIDs demo según sea necesario
+      ];
+      const isDemoUUID =
+        userId.startsWith("demo-") ||
+        userId.includes("demo") ||
+        demoUUIDs.includes(userId);
+      if (isDemoUUID) {
+        logger.info("🎭 UUID demo detectado - evitando carga desde Supabase", {
+          userId,
+        });
         return;
       }
 
-      if (data) {
-        const profileData = data;
-        if (!profileData) {
-          logger.info("🔍 Perfil no encontrado o vacío", { userId });
-          setProfile(null);
+      try {
+        logger.info("🔍 Iniciando verificación de autenticación", { userId });
+
+        if (!supabase) {
+          logger.error("❌ Supabase no está disponible");
           return;
         }
 
-        // Validar campos requeridos
-        const requiredFields = ['id', 'first_name', 'email'];
-        for (const field of requiredFields) {
-          if (!(field in profileData)) {
-            logger.error(`❌ Campo requerido faltante: ${field}`, { profileData });
+        // Usar la vista unificada vw_profiles_unified para consultar ambas tablas según account_type
+        const result = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        const { data, error } = result;
+
+        logger.info("🔍 Consulta ejecutada", { userId });
+        logger.info("🔍 Resultado data", {
+          count: Array.isArray(data) ? data.length : 1,
+        });
+
+        if (error) {
+          logger.error("❌ Error fetching profile:", {
+            error: error.message,
+            details: error.details,
+          });
+          if (error.code === "PGRST116") {
+            setProfile(null);
+          }
+          return;
+        }
+
+        if (data) {
+          const profileData = data;
+          if (!profileData) {
+            logger.info("🔍 Perfil no encontrado o vacío", { userId });
             setProfile(null);
             return;
           }
-        }
 
-        logger.info("📋 Contenido detallado del perfil", {
-          id: profileData?.id,
-          firstName: profileData?.first_name,
-          email: profileData?.email,
-        });
-        let resolvedRole = profileData.role || "user";
-        try {
-          const { data: isAdminRpc, error: adminError } = await supabase.rpc("is_admin");
-          if (adminError) {
-            logger.error("❌ Error verificando admin en loadProfile:", {
-              error: adminError.message,
-            });
-          } else if (isAdminRpc === true) {
-            resolvedRole = "admin";
+          // Validar campos requeridos
+          const requiredFields = ["id", "first_name", "email"];
+          for (const field of requiredFields) {
+            if (!(field in profileData)) {
+              logger.error(`❌ Campo requerido faltante: ${field}`, {
+                profileData,
+              });
+              setProfile(null);
+              return;
+            }
           }
-        } catch (error) {
-          logger.error("❌ Error inesperado al verificar admin:", {
-            error: error instanceof Error ? error.message : String(error),
+
+          logger.info("📋 Contenido detallado del perfil", {
+            id: profileData?.id,
+            firstName: profileData?.first_name,
+            email: profileData?.email,
           });
+          let resolvedRole = profileData.role || "user";
+          try {
+            const { data: isAdminRpc, error: adminError } =
+              await supabase.rpc("is_admin");
+            if (adminError) {
+              logger.error("❌ Error verificando admin en loadProfile:", {
+                error: adminError.message,
+              });
+            } else if (isAdminRpc === true) {
+              resolvedRole = "admin";
+            }
+          } catch (error) {
+            logger.error("❌ Error inesperado al verificar admin:", {
+              error: error instanceof Error ? error.message : String(error),
+            });
+          }
+
+          const resolvedProfile: Profile = {
+            ...profileData,
+            created_at: profileData.created_at ?? undefined,
+            interested_in: profileData.interested_in?.join(", ") ?? null,
+            updated_at: profileData.updated_at ?? undefined,
+            role: resolvedRole,
+          };
+
+          logger.info("✅ Perfil real cargado", {
+            firstName: resolvedProfile?.first_name,
+            role: resolvedProfile?.role,
+          });
+          profileLoaded.current = true;
+          setProfile(resolvedProfile);
+
+          // Actualizar usuario en Datadog RUM
+          try {
+            setDatadogUser(
+              resolvedProfile?.id || userId,
+              resolvedProfile?.email ?? undefined,
+              resolvedProfile?.display_name ??
+                resolvedProfile?.first_name ??
+                undefined,
+            );
+          } catch (error) {
+            logger.error("❌ Error actualizando usuario en Datadog RUM:", {
+              error,
+            });
+          }
+        } else {
+          logger.info("⚠️ No se encontró perfil para el usuario", { userId });
+          setProfile(null);
         }
-
-        const resolvedProfile: Profile = {
-          ...profileData,
-          created_at: profileData.created_at ?? undefined,
-          interested_in: profileData.interested_in?.join(", ") ?? null,
-          updated_at: profileData.updated_at ?? undefined,
-          role: resolvedRole,
-        };
-
-        logger.info("✅ Perfil real cargado", {
-          firstName: resolvedProfile?.first_name,
-          role: resolvedProfile?.role,
+      } catch (error) {
+        logger.error("❌ Error in loadProfile", {
+          error: error instanceof Error ? error.message : String(error),
         });
-        profileLoaded.current = true;
-        setProfile(resolvedProfile);
-
-        // Actualizar usuario en Datadog RUM
-        try {
-          setDatadogUser(
-            resolvedProfile?.id || userId,
-            resolvedProfile?.email ?? undefined,
-            resolvedProfile?.display_name ??
-              resolvedProfile?.first_name ??
-              undefined,
-          );
-        } catch (error) {
-          logger.error("❌ Error actualizando usuario en Datadog RUM:", {
-            error,
-          });
-        }
-      } else {
-        logger.info("⚠️ No se encontró perfil para el usuario", { userId });
         setProfile(null);
       }
-    } catch (error) {
-      logger.error("❌ Error in loadProfile", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      setProfile(null);
-    }
-  }, [demoUser, supabase]); // Agregar dependencias correctas
+    },
+    [demoUser, supabase],
+  ); // Agregar dependencias correctas
 
   // Función auxiliar para determinar si usar Supabase real
   const shouldUseRealSupabase = () => {
@@ -286,7 +307,7 @@ export const useAuth = () => {
       (async () => {
         try {
           const parsedDemoUser = safeParseDemoUser(demoUser); // VALIDADO
-          
+
           if (!parsedDemoUser) {
             logger.error("❌ demoUser corrupto o inválido en init");
             // Recuperación automática: limpiar sesión demo corrupta
@@ -299,22 +320,24 @@ export const useAuth = () => {
             setLoading(false);
             return;
           }
-          
+
           const mockUser: User = {
             id: parsedDemoUser.id || "demo-user-1",
             email: parsedDemoUser.email || "",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            app_metadata: { provider: 'email', providers: ['email'] },
+            app_metadata: { provider: "email", providers: ["email"] },
             user_metadata: {},
-            aud: 'authenticated',
+            aud: "authenticated",
           };
 
           setUser(mockUser);
           await loadProfile(mockUser.id); // Esperar carga completa
           setLoading(false); // Solo después de que profile esté cargado
 
-          logger.info("✅ Usuario demo inicializado:", { email: mockUser.email });
+          logger.info("✅ Usuario demo inicializado:", {
+            email: mockUser.email,
+          });
         } catch (error) {
           logger.error("❌ Error inicializando usuario demo:", { error });
           setLoading(false);
@@ -337,14 +360,16 @@ export const useAuth = () => {
       // CORRECCIÓN: Esperar carga completa de sesión y perfil
       (async () => {
         try {
-          const { data: { session } } = await supabase.auth.getSession();
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
           setSession(session);
           setUser(session?.user ?? null);
-          
+
           if (session?.user) {
             await loadProfile(session.user.id); // Esperar carga completa
           }
-          
+
           setLoading(false); // Solo después de que profile esté cargado
         } catch (error) {
           logger.error("❌ Error cargando sesión:", { error });
@@ -408,7 +433,8 @@ export const useAuth = () => {
         cleanupPromises.push(
           (async () => {
             try {
-              const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
+              const { SecurityHelpers } =
+                await import("@/integrations/supabase/security-helpers");
               SecurityHelpers.clearAllSecureData();
               logger.info("🧹 Limpieza de seguridad completada");
             } catch (error) {
@@ -416,7 +442,7 @@ export const useAuth = () => {
                 error: error instanceof Error ? error.message : String(error),
               });
             }
-          })()
+          })(),
         );
 
         // Limpiar usuario en Datadog RUM
@@ -424,7 +450,7 @@ export const useAuth = () => {
           (async () => {
             try {
               const ddRum = window.DD_RUM as DatadogRUM | undefined;
-              if (typeof window !== 'undefined' && ddRum) {
+              if (typeof window !== "undefined" && ddRum) {
                 ddRum.clearUser();
               }
             } catch (error) {
@@ -432,7 +458,7 @@ export const useAuth = () => {
                 error: error instanceof Error ? error.message : String(error),
               });
             }
-          })()
+          })(),
         );
 
         // Esperar todas las promesas de limpieza
@@ -446,11 +472,15 @@ export const useAuth = () => {
         });
         // CORRECCIÓN: Forzar limpieza incluso con error
         try {
-          const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
+          const { SecurityHelpers } =
+            await import("@/integrations/supabase/security-helpers");
           SecurityHelpers.clearAllSecureData();
         } catch (cleanupError) {
           logger.error("❌ Error en limpieza forzada:", {
-            error: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
+            error:
+              cleanupError instanceof Error
+                ? cleanupError.message
+                : String(cleanupError),
           });
         }
         // Redirigir incluso si hay error
@@ -462,11 +492,15 @@ export const useAuth = () => {
       });
       // CORRECCIÓN: Forzar limpieza incluso con error
       try {
-        const { SecurityHelpers } = await import("@/integrations/supabase/security-helpers");
+        const { SecurityHelpers } =
+          await import("@/integrations/supabase/security-helpers");
         SecurityHelpers.clearAllSecureData();
       } catch (cleanupError) {
         logger.error("❌ Error en limpieza forzada:", {
-          error: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
+          error:
+            cleanupError instanceof Error
+              ? cleanupError.message
+              : String(cleanupError),
         });
       }
       // Redirigir incluso si hay error
@@ -492,10 +526,15 @@ export const useAuth = () => {
         // desde VITE_DEMO_PASSWORD_*). Las credenciales demo conocidas son
         // cuentas locales y nunca otorgan admin.
         if (DEMO_CREDENTIALS.includes(email)) {
-          logger.info("🎭 Credencial demo conocida - acceso local sin contraseña", { email });
+          logger.info(
+            "🎭 Credencial demo conocida - acceso local sin contraseña",
+            { email },
+          );
         } else {
           // Para cualquier otro correo en modo demo, aceptar sin contraseña
-          logger.info("🎭 Correo genérico en modo demo - aceptando sin contraseña");
+          logger.info(
+            "🎭 Correo genérico en modo demo - aceptando sin contraseña",
+          );
         }
 
         // Manejar autenticación demo
@@ -504,17 +543,17 @@ export const useAuth = () => {
           // CRÍTICO: Persistir demo_user antes de loadProfile para que loadProfile entre en la rama demo
           const mockUser: User = {
             ...(demoAuth.user as object),
-            app_metadata: { provider: 'email', providers: ['email'] },
+            app_metadata: { provider: "email", providers: ["email"] },
             user_metadata: {},
-            aud: 'authenticated',
+            aud: "authenticated",
           } as User;
 
           const mockSession: Session = {
             ...(demoAuth.session as object),
             user: mockUser,
             expires_in: 3600,
-            token_type: 'bearer',
-            refresh_token: 'demo-refresh-token',
+            token_type: "bearer",
+            refresh_token: "demo-refresh-token",
           } as Session;
 
           const demoProfileData: Profile = {
@@ -587,7 +626,10 @@ export const useAuth = () => {
       }
 
       // Usuario real (no demo, no admin especial) - intentar autenticación con Supabase
-      logger.info("🔗 Usuario real detectado - intentando autenticación con Supabase", { email });
+      logger.info(
+        "🔗 Usuario real detectado - intentando autenticación con Supabase",
+        { email },
+      );
 
       // Limpiar cualquier sesión demo antes de autenticar
       clearDemoAuth();
@@ -714,11 +756,11 @@ export const useAuth = () => {
     // Solo log una vez por sesión para evitar spam
     if (isDemoActive && !(window as WindowWithDemoFlags).__demoLoggedOnce) {
       const parsedDemoUser = safeParseDemoUser(activeDemoUser); // VALIDADO
-      
+
       if (!parsedDemoUser) {
         return isDemoActive;
       }
-      
+
       logger.info("🎭 Demo mode active", {
         email: parsedDemoUser.email,
         role: parsedDemoUser.role,
@@ -733,7 +775,8 @@ export const useAuth = () => {
     // panel de producción; solo un admin real (email de producción) lo hace.
     // Si es admin real, usar panel de producción
     const userEmail = user?.email?.toLowerCase();
-    const isRealAdmin = userEmail === (import.meta.env.VITE_ADMIN_EMAIL || "").toLowerCase();
+    const isRealAdmin =
+      userEmail === (import.meta.env.VITE_ADMIN_EMAIL || "").toLowerCase();
 
     logger.info("🏭 shouldUseProductionAdmin check", {
       userEmail,
@@ -747,7 +790,6 @@ export const useAuth = () => {
     const sessionFlags = StorageManager.getSessionFlags();
     return sessionFlags.demo_authenticated;
   };
-
 
   return {
     user: effectiveUser,

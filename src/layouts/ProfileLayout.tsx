@@ -3,7 +3,13 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { useAuth } from "@/features/auth/useAuth";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const ProfileLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -15,9 +21,7 @@ export const ProfileLayout: React.FC = () => {
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-60">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                className="demo-user-heartbeat bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-2xl shadow-2xl shadow-purple-500/30 border border-white/20 backdrop-blur-md hover:[animation-play-state:paused] w-full max-w-xs"
-              >
+              <Button className="demo-user-heartbeat bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-2xl shadow-2xl shadow-purple-500/30 border border-white/20 backdrop-blur-md hover:[animation-play-state:paused] w-full max-w-xs">
                 <span className="flex flex-col items-center leading-tight">
                   <span className="text-sm font-bold">Demo User</span>
                   <span className="text-[10px] text-white/90">
@@ -28,7 +32,11 @@ export const ProfileLayout: React.FC = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">
               <DropdownMenuLabel>
-                {isDemoMode() ? "DEMO" : isAuthenticated() ? "Sesión Activa" : "Cuenta"}
+                {isDemoMode()
+                  ? "DEMO"
+                  : isAuthenticated()
+                    ? "Sesión Activa"
+                    : "Cuenta"}
               </DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {

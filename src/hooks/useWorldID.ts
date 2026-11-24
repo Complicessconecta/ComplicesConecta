@@ -52,9 +52,7 @@ export const useWorldID = () => {
 
       const { data, error } = await supabase
         .from("worldid_verifications")
-        .select(
-          "id, nullifier_hash, verification_level, is_active, created_at",
-        )
+        .select("id, nullifier_hash, verification_level, is_active, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -94,7 +92,9 @@ export const useWorldID = () => {
         isLoading: false,
         ...(data.nullifier_hash ? { nullifierHash: data.nullifier_hash } : {}),
         ...(data.created_at && { verifiedAt: data.created_at }),
-        ...(data.verification_level && { verificationLevel: data.verification_level }),
+        ...(data.verification_level && {
+          verificationLevel: data.verification_level,
+        }),
       });
     } catch (err) {
       logger.error("Error checking verification status:", {

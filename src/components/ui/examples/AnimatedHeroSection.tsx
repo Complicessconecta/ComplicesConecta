@@ -11,11 +11,10 @@ export const AnimatedHeroSection = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-24">
       {/* Contenido principal con animaciones escalonadas */}
       <div className="relative text-center px-4 max-w-6xl mx-auto w-full">
-        
         {/* Logo ComplicesConecta - Animación 1 */}
         <FadeInUp delay={0.1}>
           <div className="mb-12 flex justify-center">
-            <motion.div 
+            <motion.div
               className="flex items-center space-x-6 group"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
@@ -30,7 +29,7 @@ export const AnimatedHeroSection = () => {
                     filter: "drop-shadow(0 0 30px rgba(236,72,153,0.8))",
                   }}
                 />
-                <motion.div 
+                <motion.div
                   className="absolute inset-0"
                   animate={{
                     scale: [1, 1.1, 1],
@@ -103,8 +102,8 @@ export const AnimatedHeroSection = () => {
 
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-light">
               <span className="bg-linear-to-r from-pink-100 via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
-                Sistema de verificación KYC, chat encriptado y eventos exclusivos
-                para la comunidad lifestyle
+                Sistema de verificación KYC, chat encriptado y eventos
+                exclusivos para la comunidad lifestyle
               </span>
             </p>
           </div>
@@ -119,7 +118,7 @@ export const AnimatedHeroSection = () => {
               { label: "∞", value: "Posibilidades" },
             ].map((stat, index) => (
               <ScaleIn key={index} delay={0.6 + index * 0.1}>
-                <motion.div 
+                <motion.div
                   className="text-center group"
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.3 }}
@@ -160,4 +159,3 @@ export const AnimatedHeroSection = () => {
     </section>
   );
 };
-

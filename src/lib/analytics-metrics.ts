@@ -456,4 +456,3 @@ export const trackError = (
 };
 
 logger.info("📊 Sistema de Analytics y Métricas inicializado", {});
-

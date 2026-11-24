@@ -77,8 +77,6 @@ class ContentModerationEngine {
   private readonly SPAM_PATTERNS = SPAM_PATTERNS;
   private readonly PERSONAL_INFO_PATTERNS = PERSONAL_INFO_PATTERNS;
 
-
-
   constructor(config: Partial<ModerationConfig> = {}) {
     this.config = {
       strictness: "moderate",
@@ -624,4 +622,3 @@ export {
 };
 
 export default ContentModerationEngine;
-

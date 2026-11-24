@@ -1,13 +1,13 @@
 /**
  * Utilidades criptográficas para conversión de datos
- * 
+ *
  * Funciones auxiliares para convertir entre ArrayBuffer y Base64
  * Usadas por el sistema de encriptación
  */
 
 /**
  * Convierte ArrayBuffer a string Base64
- * 
+ *
  * @param buffer - ArrayBuffer a convertir
  * @returns String en formato Base64
  */
@@ -22,7 +22,7 @@ export function arrayBufferToBase64(buffer: ArrayBuffer): string {
 
 /**
  * Convierte string Base64 a ArrayBuffer
- * 
+ *
  * @param base64 - String en formato Base64
  * @returns ArrayBuffer
  */
@@ -37,7 +37,7 @@ export function base64ToArrayBuffer(base64: string): ArrayBuffer {
 
 /**
  * Convierte Uint8Array a string Base64
- * 
+ *
  * @param bytes - Uint8Array a convertir
  * @returns String en formato Base64
  */
@@ -48,7 +48,7 @@ export function uint8ArrayToBase64(bytes: Uint8Array): string {
 
 /**
  * Convierte string Base64 a Uint8Array
- * 
+ *
  * @param base64 - String en formato Base64
  * @returns Uint8Array
  */
@@ -63,11 +63,13 @@ export function base64ToUint8Array(base64: string): Uint8Array {
 
 /**
  * Convierte ArrayBufferLike a ArrayBuffer
- * 
+ *
  * @param bufferLike - ArrayBufferLike a convertir
  * @returns ArrayBuffer
  */
-export function arrayBufferLikeToArrayBuffer(bufferLike: ArrayBufferLike): ArrayBuffer {
+export function arrayBufferLikeToArrayBuffer(
+  bufferLike: ArrayBufferLike,
+): ArrayBuffer {
   if (bufferLike instanceof ArrayBuffer) {
     return bufferLike;
   }
@@ -77,4 +79,3 @@ export function arrayBufferLikeToArrayBuffer(bufferLike: ArrayBufferLike): Array
   new Uint8Array(arrayBuffer).set(uint8Array);
   return arrayBuffer;
 }
-

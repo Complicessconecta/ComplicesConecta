@@ -94,4 +94,3 @@ export const FeatureCards: FC<FeatureCardsProps> = ({ className }) => {
     </div>
   );
 };
-

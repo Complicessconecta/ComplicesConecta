@@ -315,4 +315,3 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 };
 
 export default ProtectedMedia;
-

@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -216,7 +221,11 @@ export const LocationSettings = () => {
                   </Label>
                   <p className="text-sm text-muted-foreground">
                     Nivel {s2LevelValue}: ~
-                    {s2LevelValue <= 12 ? "100+" : s2LevelValue <= 15 ? "1" : "0.1"}
+                    {s2LevelValue <= 12
+                      ? "100+"
+                      : s2LevelValue <= 15
+                        ? "1"
+                        : "0.1"}
                     km² (más bajo = más privacidad)
                   </p>
                 </div>
@@ -283,4 +292,3 @@ export const LocationSettings = () => {
     </div>
   );
 };
-

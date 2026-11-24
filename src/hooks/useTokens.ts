@@ -10,7 +10,10 @@ import { validateStaking } from "@/lib/validation/zod/zod-schemas";
 import { shouldUseRealSupabase, getAppConfig } from "@/lib/app-config";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services";
+import {
+  TokenService,
+  type TokenTransaction as ServiceTokenTransaction,
+} from "@/services";
 
 // Interfaces simplificadas para demo vs real
 export interface TokenBalance {
@@ -216,7 +219,9 @@ export const useTokens = () => {
         ];
         setRewards(mockRewards);
 
-        logger.info("Datos de tokens demo cargados - Balance:", { ...demoBalance });
+        logger.info("Datos de tokens demo cargados - Balance:", {
+          ...demoBalance,
+        });
       } else {
         // Cargar datos reales desde Supabase usando TokenService
         logger.info(
@@ -659,4 +664,3 @@ export const useTokens = () => {
     appMode: config.mode,
   };
 };
-

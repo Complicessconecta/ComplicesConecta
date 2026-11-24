@@ -7,13 +7,13 @@ import { useRef } from "react";
  * @param delay - Retraso en segundos (opcional)
  * @param className - Clases CSS adicionales (opcional)
  */
-export const FadeInUp = ({ 
-  children, 
-  delay = 0, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  delay?: number; 
+export const FadeInUp = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -24,10 +24,10 @@ export const FadeInUp = ({
       ref={ref}
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay,
-        ease: "easeOut"
+        ease: "easeOut",
       }}
       className={className}
     >
@@ -42,13 +42,13 @@ export const FadeInUp = ({
  * @param delay - Retraso en segundos (opcional)
  * @param className - Clases CSS adicionales (opcional)
  */
-export const FadeIn = ({ 
-  children, 
-  delay = 0, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  delay?: number; 
+export const FadeIn = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -59,10 +59,10 @@ export const FadeIn = ({
       ref={ref}
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay,
-        ease: "easeOut"
+        ease: "easeOut",
       }}
       className={className}
     >
@@ -77,13 +77,13 @@ export const FadeIn = ({
  * @param delay - Retraso en segundos (opcional)
  * @param className - Clases CSS adicionales (opcional)
  */
-export const ScaleIn = ({ 
-  children, 
-  delay = 0, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  delay?: number; 
+export const ScaleIn = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -94,10 +94,10 @@ export const ScaleIn = ({
       ref={ref}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-      transition={{ 
-        duration: 0.5, 
+      transition={{
+        duration: 0.5,
         delay,
-        ease: "easeOut"
+        ease: "easeOut",
       }}
       className={className}
     >
@@ -112,13 +112,13 @@ export const ScaleIn = ({
  * @param delay - Retraso en segundos (opcional)
  * @param className - Clases CSS adicionales (opcional)
  */
-export const SlideInLeft = ({ 
-  children, 
-  delay = 0, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  delay?: number; 
+export const SlideInLeft = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -129,10 +129,10 @@ export const SlideInLeft = ({
       ref={ref}
       initial={{ opacity: 0, x: -50 }}
       animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay,
-        ease: "easeOut"
+        ease: "easeOut",
       }}
       className={className}
     >
@@ -147,13 +147,13 @@ export const SlideInLeft = ({
  * @param delay - Retraso en segundos (opcional)
  * @param className - Clases CSS adicionales (opcional)
  */
-export const SlideInRight = ({ 
-  children, 
-  delay = 0, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  delay?: number; 
+export const SlideInRight = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -164,10 +164,10 @@ export const SlideInRight = ({
       ref={ref}
       initial={{ opacity: 0, x: 50 }}
       animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay,
-        ease: "easeOut"
+        ease: "easeOut",
       }}
       className={className}
     >
@@ -182,13 +182,13 @@ export const SlideInRight = ({
  * @param staggerDelay - Retraso entre cada elemento (opcional)
  * @param className - Clases CSS adicionales (opcional)
  */
-export const StaggeredChildren = ({ 
-  children, 
-  staggerDelay = 0.1, 
-  className = "" 
-}: { 
-  children: React.ReactNode[]; 
-  staggerDelay?: number; 
+export const StaggeredChildren = ({
+  children,
+  staggerDelay = 0.1,
+  className = "",
+}: {
+  children: React.ReactNode[];
+  staggerDelay?: number;
   className?: string;
 }) => {
   const ref = useRef(null);

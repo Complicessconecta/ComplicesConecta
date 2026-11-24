@@ -62,7 +62,8 @@ export const MatchCard: FC<MatchCardProps> = ({
     "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
   const defaultImageCouple =
     "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=600&fit=crop";
-  const defaultImage = accountType === "couple" ? defaultImageCouple : defaultImageSingle;
+  const defaultImage =
+    accountType === "couple" ? defaultImageCouple : defaultImageSingle;
 
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.8, rotateY: -30 },
@@ -109,11 +110,7 @@ export const MatchCard: FC<MatchCardProps> = ({
           <div className="relative">
             <div className="aspect-3/4 relative">
               <img
-                src={
-                  avatar ||
-                  images[0] ||
-                  defaultImage
-                }
+                src={avatar || images[0] || defaultImage}
                 alt={name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -271,11 +268,7 @@ export const MatchCard: FC<MatchCardProps> = ({
         <div className="relative">
           <div className="aspect-3/4 relative">
             <img
-              src={
-                avatar ||
-                images[0] ||
-                defaultImage
-              }
+              src={avatar || images[0] || defaultImage}
               alt={name}
               className="w-full h-full object-cover"
               onError={(e) => {

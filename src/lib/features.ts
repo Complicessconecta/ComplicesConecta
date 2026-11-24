@@ -218,4 +218,3 @@ logger.info(`🪙 Tokens enabled: ${isFeatureEnabled("tokens")}`);
 logger.info(
   `👑 Premium features: ${isFeatureEnabled("premiumChat") ? "enabled" : "disabled"}`,
 );
-

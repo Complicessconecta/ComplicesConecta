@@ -4,6 +4,16 @@ import { useToast } from "@/hooks/useToast";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { Button } from "@/components/ui/buttons/Button";
 
+// Rechaza PINs débiles: 4 dígitos iguales o secuencia consecutiva
+// ascendente/descendente (0000, 1111, 0123, 1234, 4321, 9876...).
+export const isWeakPin = (pin: string): boolean => {
+  if (/^(\d)\1{3}$/.test(pin)) return true;
+  const digits = pin.split("").map(Number);
+  const ascending = digits.every((d, i) => i === 0 || d === digits[i - 1] + 1);
+  const descending = digits.every((d, i) => i === 0 || d === digits[i - 1] - 1);
+  return ascending || descending;
+};
+
 export const PinSettings: React.FC = () => {
   const { toast } = useToast();
   const [storedPin, setStoredPin] = usePersistedState<string>("app_pin", "");
@@ -41,6 +51,23 @@ export const PinSettings: React.FC = () => {
       toast({
         title: "Error",
         description: "Los PINs no coinciden",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (newPin === "1234") {
+      toast({
+        title: "Error",
+        description: "No puedes usar el PIN por defecto 1234",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (isWeakPin(newPin)) {
+      toast({
+        title: "Error",
+        description:
+          "El PIN no puede ser una secuencia consecutiva ni dígitos repetidos",
         variant: "destructive",
       });
       return;

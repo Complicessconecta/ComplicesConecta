@@ -18,6 +18,13 @@ vi.mock("@/hooks/usePersistedState", () => ({
   },
 }));
 
+// El modo demo se controla por test: por defecto demo (los tests
+// existentes asumen que el PIN demo 1234 desbloquea).
+const demoFlag = vi.hoisted(() => ({ value: true }));
+vi.mock("@/lib/app-config", () => ({
+  isDemoMode: () => demoFlag.value,
+}));
+
 describe("ParentalControl", () => {
   const defaultProps = {
     isLocked: true,
@@ -27,6 +34,7 @@ describe("ParentalControl", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    demoFlag.value = true;
     vi.useFakeTimers();
   });
 
@@ -63,6 +71,30 @@ describe("ParentalControl", () => {
 
     expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
     expect(defaultProps.onUnlock).toHaveBeenCalled();
+  });
+
+  it("1234 no desbloquea fuera de demo", () => {
+    demoFlag.value = false;
+    render(<ParentalControl {...defaultProps} />);
+
+    // Open PIN input
+    fireEvent.click(screen.getByText(/Desbloquear/i));
+
+    // Enter PIN "1234" (solo válido en demo)
+    const input = screen.getByPlaceholderText("••••");
+    fireEvent.change(input, {
+      target: { value: "1234" },
+    });
+
+    // Click Confirm
+    fireEvent.click(screen.getByText(/Confirmar/i));
+
+    expect(defaultProps.onToggle).not.toHaveBeenCalledWith(false);
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Sin PIN configurado",
+      }),
+    );
   });
 
   it("handles incorrect PIN entry and lockout", async () => {

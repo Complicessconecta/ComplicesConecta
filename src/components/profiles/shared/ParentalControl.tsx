@@ -9,6 +9,7 @@ import { cn } from "@/shared/lib/cn";
 import "@/styles/ParentalControl.css";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { toast } from "@/hooks/useToast";
+import { isDemoMode } from "@/lib/app-config";
 
 interface ParentalControlProps {
   isLocked: boolean;
@@ -69,7 +70,9 @@ export const ParentalControl = ({
 }: ParentalControlProps) => {
   const [showPinInput, setShowPinInput] = useState(false);
   const [pin, setPin] = useState("");
-  const [savedPin] = usePersistedState("app_pin", import.meta.env.PROD ? "1234" : "");
+  // Sin PIN por defecto: en demo vale el PIN demo "1234" (ver handlePinSubmit);
+  // un usuario registrado debe configurar su propio PIN en Ajustes.
+  const [savedPin] = usePersistedState("app_pin", "");
   const [pinCreatedAt] = usePersistedState<number>("pin_created_at", Date.now());
   const [pinExpiresAt] = usePersistedState<number>("pin_expires_at", Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
   const [mustChangePin] = usePersistedState<boolean>("must_change_pin", import.meta.env.PROD);
@@ -130,9 +133,14 @@ export const ParentalControl = ({
   const handlePinSubmit = () => {
     if (lockoutUntil && Date.now() < lockoutUntil) return;
 
-    // Aceptar PIN default "1234" siempre como fallback
-    const isDefaultPin = pin === "1234";
-    const pinMatches = pin === savedPin || isDefaultPin;
+    // El PIN demo "1234" solo es válido en modo demo; fuera de demo
+    // un usuario registrado debe usar su propio PIN (o biometría).
+    const isDemo = isDemoMode();
+    const isDefaultPin = isDemo && pin === "1234";
+    // Un PIN "1234" guardado de antes (default viejo) no vale fuera de demo.
+    const effectiveSavedPin =
+      isDemo || savedPin !== "1234" ? savedPin : "";
+    const pinMatches = pin === effectiveSavedPin || isDefaultPin;
 
     if (pinMatches) {
       // Verificar expiración del PIN
@@ -173,7 +181,14 @@ export const ParentalControl = ({
       setAttempts(newAttempts);
       setPin("");
 
-      if (newAttempts >= 3) {
+      // Sin PIN configurado (y no es demo): orientar a crearlo.
+      if (!effectiveSavedPin && !isDemo) {
+        toast({
+          title: "Sin PIN configurado",
+          description: "Ve a Configuración > Seguridad para crear tu PIN.",
+          variant: "destructive",
+        });
+      } else if (newAttempts >= 3) {
         setLockoutUntil(Date.now() + 30000); // 30 seconds lockout
         toast({
           title: "Bloqueo temporal",
@@ -482,7 +497,7 @@ export const ParentalControl = ({
         <p className="mt-2 pt-2 border-t border-white/10">
           <strong>📌 PIN actual:</strong>{" "}
           <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">
-            {savedPin}
+            {savedPin ? "••••" : "Sin configurar"}
           </span>
           <br />
           <span className="text-zinc-200 text-[11px]">

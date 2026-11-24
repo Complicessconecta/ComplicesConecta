@@ -17,9 +17,16 @@
  */
 
 import * as tf from "@tensorflow/tfjs";
-import type { CompatibilityFeatures, ModelConfig } from "@/services/analytics/analytics/ai/types";
+import type {
+  CompatibilityFeatures,
+  ModelConfig,
+} from "@/services/analytics/analytics/ai/types";
 import { logger } from "@/lib/logger";
-import { normalizeFeatures, fallbackPrediction, generateDummyFeatures } from "@/services/analytics/analytics/ai/utils";
+import {
+  normalizeFeatures,
+  fallbackPrediction,
+  generateDummyFeatures,
+} from "@/services/analytics/analytics/ai/utils";
 
 /**
  * PyTorchScoringModel - Modelo ML para scoring de compatibilidad
@@ -93,7 +100,9 @@ export class PyTorchScoringModel {
     } catch (error) {
       logger.error("Error loading model", { error });
       this.model = null;
-      throw new Error(`Failed to load PyTorch model: ${error}`);
+      throw new Error(`Failed to load PyTorch model: ${error}`, {
+        cause: error,
+      });
     } finally {
       this.isLoading = false;
     }
@@ -232,4 +241,3 @@ export class PyTorchScoringModel {
 // Singleton instance para reutilizar modelo en toda la app
 // Solo se carga una vez en memoria
 export const pytorchModel = new PyTorchScoringModel();
-

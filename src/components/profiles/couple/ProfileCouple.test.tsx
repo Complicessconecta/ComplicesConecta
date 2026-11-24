@@ -4,14 +4,58 @@ import { vi, describe, beforeEach, test, expect } from "vitest";
 import React from "react";
 import ProfileCouple from "@/pages/profiles/couple/ProfileCouple";
 import { useToast } from "@/hooks/useToast";
-import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
+
+// Control del RPC de Supabase por test. Por defecto rechaza (como el
+// cliente stub sin backend); cada test lo reconfigura antes de renderizar.
+const { mockRpc } = vi.hoisted(() => ({ mockRpc: vi.fn() }));
+
+// Supabase: el componente solo usa `supabase.rpc("get_profile_by_user_id")`
+// para cargar el perfil, y `supabase.from(...)` en las secciones hijas
+// (p. ej. CouplePrivacySection). El stub de `from` resuelve
+// { data: null } para que esas secciones caigan a su fallback de
+// localStorage sin tocar red.
+vi.mock("@/integrations/supabase/client", () => {
+  const queryStub: any = new Proxy(
+    {},
+    {
+      get(_target, prop) {
+        if (typeof prop === "symbol") return undefined;
+        if (prop === "then")
+          return (resolve: (value: unknown) => void) =>
+            resolve({ data: null, error: null });
+        if (prop === "catch") return () => queryStub;
+        return (..._args: unknown[]) => queryStub;
+      },
+    },
+  );
+  return {
+    supabase: {
+      rpc: (...args: unknown[]) => mockRpc(...args),
+      from: (..._args: unknown[]) => queryStub,
+      storage: {
+        from: () => ({
+          createSignedUrl: async () => ({ data: null, error: null }),
+          getPublicUrl: () => ({ data: { publicUrl: "" } }),
+        }),
+      },
+      auth: {
+        getSession: async () => ({ data: { session: null }, error: null }),
+        getUser: async () => ({ data: { user: null }, error: null }),
+        onAuthStateChange: () => ({
+          data: { subscription: { unsubscribe: () => {} } },
+        }),
+      },
+    },
+    isDemoMode: false,
+  };
+});
 
 // Mock dependencies
 vi.mock("@/components/Navigation", () => ({
   default: () => <div data-testid="navigation">Navigation</div>,
 }));
 
-vi.mock("@/components/ui/Card", () => ({
+vi.mock("@/components/ui/cards/Card", () => ({
   Card: ({ children, className }: any) => (
     <div className={className}>{children}</div>
   ),
@@ -22,7 +66,7 @@ vi.mock("@/components/ui/Card", () => ({
   CardTitle: ({ children }: any) => <div>{children}</div>,
 }));
 
-vi.mock("@/components/ui/Button", () => ({
+vi.mock("@/components/ui/buttons/Button", () => ({
   Button: ({ children, onClick }: any) => (
     <button onClick={onClick}>{children}</button>
   ),
@@ -41,8 +85,8 @@ vi.mock("@/lib/logger", () => ({
   },
 }));
 
-// Mock services
-vi.mock("@/services/WalletService", () => ({
+// Mock services (rutas reales que importa el componente)
+vi.mock("@/services/payments/WalletService", () => ({
   walletService: {
     getOrCreateWallet: vi.fn().mockResolvedValue({}),
     getTokenBalances: vi
@@ -55,12 +99,14 @@ vi.mock("@/services/WalletService", () => ({
   },
 }));
 
-vi.mock("@/services/NFTService", () => ({
+vi.mock("@/services/payments/NFTService", () => ({
   nftService: {
     getUserNFTs: vi.fn().mockResolvedValue([]),
     getCoupleNFTRequests: vi.fn().mockResolvedValue([]),
     requestCoupleNFT: vi.fn(),
   },
+  seedDemoNFTs: vi.fn(),
+  DEFAULT_DEMO_NFTS: [],
 }));
 
 // Mock UI components to prevent rendering issues
@@ -150,32 +196,6 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Mock generateMockCoupleProfiles
-vi.mock("@/fixtures/coupleProfiles", () => ({
-  generateMockCoupleProfiles: vi.fn(() => [
-    {
-      id: "mock-couple-1",
-      profile_id: "CC-MOCK-001",
-      couple_name: "Mock Couple",
-      username: "@mock_couple",
-      partner1_first_name: "Partner 1",
-      partner2_first_name: "Partner 2",
-      is_verified: true,
-      relationship_type: "man-woman",
-      partner1_age: 30,
-      partner2_age: 30,
-      partner1_gender: "male",
-      partner2_gender: "female",
-    },
-  ]),
-  useProfileScore: vi.fn(() => ({
-    score: 100,
-    label: "High",
-    color: "green",
-    icon: "🏆",
-  })),
-}));
-
 vi.mock("@/features/profile/useProfileScore", () => ({
   useProfileScore: () => ({
     score: 95,
@@ -193,6 +213,12 @@ describe("ProfileCouple", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+
+    // Por defecto el RPC rechaza: reproduce el cliente stub sin backend
+    // (la rama de error de DB del componente).
+    mockRpc.mockRejectedValue(
+      new Error("Supabase not configured - using stub client"),
+    );
 
     // Mock ResizeObserver to prevent Radix UI errors
     global.ResizeObserver = vi.fn().mockImplementation(() => ({
@@ -218,14 +244,45 @@ describe("ProfileCouple", () => {
   });
 
   test("renders loading state initially", () => {
+    // El RPC nunca resuelve: la carga queda pendiente y el estado de
+    // carga sigue visible (sin esto, el RPC resuelve/rechaza en el mismo
+    // tick de act() y el loading nunca se llega a observar).
+    mockRpc.mockImplementation(() => new Promise(() => {}));
     renderWithRouter(<ProfileCouple />);
     expect(screen.getByText(/Cargando perfil.../i)).toBeTruthy();
   });
 
   test("renders profile content after loading", async () => {
+    // El RPC devuelve un perfil de pareja válido: el componente toma la
+    // rama de carga real (antes el test dependía del fallback a mocks del
+    // catch externo, que la rama de error de DB ya no alcanza).
+    mockRpc.mockResolvedValue({
+      data: {
+        account_type: "couple",
+        couple_id: "mock-couple-1",
+        profile_id: "CC-MOCK-001",
+        name: "Mock Couple",
+        nickname: "mock_couple",
+        location: "CDMX",
+        bio: "Perfil de ejemplo",
+        is_verified: true,
+        relationship_type: "man-woman",
+        his_name: "Partner 1",
+        her_name: "Partner 2",
+        his_age: 30,
+        her_age: 30,
+        his_gender: "male",
+        her_gender: "female",
+        interested_in: ["female"],
+        user_id: "test-user-1",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      error: null,
+    });
+
     renderWithRouter(<ProfileCouple />);
 
-    // Wait for profile to load (component has a 1.5s delay)
     await waitFor(
       () => {
         expect(screen.queryByText(/Cargando perfil.../i)).toBeNull();
@@ -239,10 +296,8 @@ describe("ProfileCouple", () => {
   });
 
   test("renders demo profile when demo mode is active", async () => {
-    // Mock usePersistedState to return demo auth true
-    // Note: Since we can't easily mock hooks used inside component that are not directly mocked in test file
-    // without more setup, and usePersistedState uses localStorage, we can mock localStorage.
-    localStorage.setItem("demo_authenticated", JSON.stringify("true"));
+    // demo_authenticated se lee en crudo (getItem() === "true"), sin JSON.
+    localStorage.setItem("demo_authenticated", "true");
     localStorage.setItem("demo_user", JSON.stringify({ name: "Demo User" }));
 
     renderWithRouter(<ProfileCouple />);
@@ -262,11 +317,8 @@ describe("ProfileCouple", () => {
       dismiss: vi.fn(),
     });
 
-    // Mock failure
-    vi.mocked(generateMockCoupleProfiles).mockImplementationOnce(() => {
-      throw new Error("Loading failed");
-    });
-
+    // El RPC rechaza por defecto (beforeEach): la rama de error de DB
+    // del componente muestra el toast "Error al cargar perfil".
     renderWithRouter(<ProfileCouple />);
 
     // Should eventually call toast

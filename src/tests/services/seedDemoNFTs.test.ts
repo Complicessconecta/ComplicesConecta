@@ -13,7 +13,9 @@ vi.mock("@/utils/safeLocalStorage", () => ({
 }));
 
 vi.mock("@/services/payments/WalletService", () => ({
-  WalletService: { isDemoMode: () => true },
+  // NFTService llama a WalletService.getInstance() en su constructor:
+  // el mock debe exponerlo o la importación del módulo truena.
+  WalletService: { isDemoMode: () => true, getInstance: () => ({}) },
   walletService: {},
 }));
 

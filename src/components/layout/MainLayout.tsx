@@ -113,7 +113,9 @@ export const MainLayout = () => {
               <div className="w-full max-w-[1920px] mx-auto">
                 <div className="flex items-center justify-between h-16 px-4 lg:px-6 gap-3">
                   <div className="min-w-0">
-                    <div className="text-white font-bold truncate">Club Demo</div>
+                    <div className="text-white font-bold truncate">
+                      Club Demo
+                    </div>
                     <div className="text-white/70 text-xs truncate">
                       Perfil demo verificado
                     </div>
@@ -198,13 +200,17 @@ const BackButton: React.FC = () => {
   const pathname = location.pathname;
 
   // Rutas que ya tienen su propio regreso o navegación: landing, auth,
-  // club demo (botón Volver propio) y tokens (TokensSubnav).
+  // club demo (botón Volver propio), tokens (TokensSubnav) y chat (su
+  // propio "Volver": en el hilo vuelve a la lista y en la lista al feed).
+  // La píldora fija de aquí flotaba sobre el hilo y la galería del chat.
   if (
     pathname === "/" ||
     pathname === "/auth" ||
     pathname === "/clubs/demo" ||
     pathname === "/tokens" ||
-    pathname.startsWith("/tokens/")
+    pathname.startsWith("/tokens/") ||
+    pathname === "/chat" ||
+    pathname.startsWith("/chat/")
   ) {
     return null;
   }
@@ -264,11 +270,12 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
         </div>
         <div className="h-[420px] bg-black/40">
           <Suspense fallback={<PageLoader />}>
-            <ChatLazy />
+            {/* embedded: el Chat a pantalla completa (h-screen) se
+                desbordaba dentro del dock de 420px y se solapaba. */}
+            <ChatLazy embedded />
           </Suspense>
         </div>
       </div>
     </div>
   );
 };
-

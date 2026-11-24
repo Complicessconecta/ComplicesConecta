@@ -3,10 +3,24 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
-import { PasswordValidator, isPasswordValid } from "@/components/auth/PasswordValidator";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import {
+  PasswordValidator,
+  isPasswordValid,
+} from "@/components/auth/PasswordValidator";
 import { NicknameValidator } from "@/components/auth/NicknameValidator";
 import { InterestsSelector } from "@/components/auth/InterestsSelector";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
@@ -14,6 +28,7 @@ import { Users } from "lucide-react";
 import { toast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { getZodiacSignFromDate } from "@/lib/zodiac";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -23,6 +38,8 @@ interface CoupleRegistrationData {
   hisFirstName: string;
   hisLastName: string;
   hisAge: string;
+  /** Fecha de nacimiento ISO (opcional): de aquí se deriva el signo. */
+  hisBirthDate: string;
   hisGender: string;
   hisInterests: string[];
 
@@ -30,6 +47,8 @@ interface CoupleRegistrationData {
   herFirstName: string;
   herLastName: string;
   herAge: string;
+  /** Fecha de nacimiento ISO (opcional): de aquí se deriva el signo. */
+  herBirthDate: string;
   herGender: string;
   herInterests: string[];
 
@@ -95,11 +114,13 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     hisFirstName: "",
     hisLastName: "",
     hisAge: "",
+    hisBirthDate: "",
     hisGender: "",
     hisInterests: [],
     herFirstName: "",
     herLastName: "",
     herAge: "",
+    herBirthDate: "",
     herGender: "",
     herInterests: [],
     coupleNickname: "",
@@ -194,7 +215,9 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     return /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(name) && name.trim().length >= 2;
   };
 
-  const validateEmailUnique = async (email: string): Promise<{ isValid: boolean; message?: string }> => {
+  const validateEmailUnique = async (
+    email: string,
+  ): Promise<{ isValid: boolean; message?: string }> => {
     // Validación básica de formato
     if (!validateEmail(email)) {
       return { isValid: false, message: "Formato de email inválido" };
@@ -293,6 +316,16 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             her_gender: formData.herGender,
             her_interests: formData.herInterests,
             is_verified: false,
+            // Fechas de nacimiento en privacy_settings (jsonb): de ahí se
+            // derivan los signos zodiacales de cada integrante.
+            privacy_settings: {
+              ...(formData.hisBirthDate
+                ? { birthDate: formData.hisBirthDate }
+                : {}),
+              ...(formData.herBirthDate
+                ? { birthDate2: formData.herBirthDate }
+                : {}),
+            },
           });
 
         // También crear un perfil básico en la tabla profiles para compatibilidad
@@ -344,7 +377,8 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         });
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Error desconocido";
+      const message =
+        error instanceof Error ? error.message : "Error desconocido";
 
       logger.error("❌ Error en registro de pareja", {
         error: message,
@@ -431,7 +465,36 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
               max="99"
               required
             />
+            {formData.hisAge && parseInt(formData.hisAge) < 18 && (
+              <p className="text-red-400 text-sm mt-1">
+                Debe ser mayor de 18 años
+              </p>
+            )}
           </div>
+          <div>
+            <Label className="text-white">
+              Fecha de nacimiento (opcional, para su signo)
+            </Label>
+            <Input
+              type="date"
+              value={formData.hisBirthDate}
+              onChange={(e) =>
+                handleInputChange("hisBirthDate", e.target.value)
+              }
+              className="bg-white/10 text-white placeholder:text-white/80 border-white/20 [color-scheme:dark]"
+              max={new Date().toISOString().slice(0, 10)}
+            />
+            {formData.hisBirthDate &&
+              getZodiacSignFromDate(formData.hisBirthDate) && (
+                <p className="text-white/70 text-sm mt-1">
+                  Su signo:{" "}
+                  {getZodiacSignFromDate(formData.hisBirthDate)?.symbol}{" "}
+                  {getZodiacSignFromDate(formData.hisBirthDate)?.name}
+                </p>
+              )}
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-white">Género *</Label>
             <Select
@@ -512,7 +575,36 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
               max="99"
               required
             />
+            {formData.herAge && parseInt(formData.herAge) < 18 && (
+              <p className="text-red-400 text-sm mt-1">
+                Debe ser mayor de 18 años
+              </p>
+            )}
           </div>
+          <div>
+            <Label className="text-white">
+              Fecha de nacimiento (opcional, para su signo)
+            </Label>
+            <Input
+              type="date"
+              value={formData.herBirthDate}
+              onChange={(e) =>
+                handleInputChange("herBirthDate", e.target.value)
+              }
+              className="bg-white/10 text-white placeholder:text-white/80 border-white/20 [color-scheme:dark]"
+              max={new Date().toISOString().slice(0, 10)}
+            />
+            {formData.herBirthDate &&
+              getZodiacSignFromDate(formData.herBirthDate) && (
+                <p className="text-white/70 text-sm mt-1">
+                  Su signo:{" "}
+                  {getZodiacSignFromDate(formData.herBirthDate)?.symbol}{" "}
+                  {getZodiacSignFromDate(formData.herBirthDate)?.name}
+                </p>
+              )}
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-white">Género *</Label>
             <Select
@@ -607,9 +699,11 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           className={`bg-white/10 text-white placeholder:text-white/80 ${
             formData.email && !validateEmail(formData.email)
               ? "border-red-400"
-              : formData.email && !emailValidation.isValid && !emailValidation.isValidating
-              ? "border-yellow-400"
-              : "border-white/20"
+              : formData.email &&
+                  !emailValidation.isValid &&
+                  !emailValidation.isValidating
+                ? "border-yellow-400"
+                : "border-white/20"
           }`}
           placeholder="pareja@email.com"
           required
@@ -617,15 +711,25 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         {formData.email && !validateEmail(formData.email) && (
           <p className="text-red-400 text-sm mt-1">Email inválido</p>
         )}
-        {formData.email && validateEmail(formData.email) && emailValidation.isValidating && (
-          <p className="text-yellow-400 text-sm mt-1">Validando email...</p>
-        )}
-        {formData.email && validateEmail(formData.email) && !emailValidation.isValidating && !emailValidation.isValid && emailValidation.message && (
-          <p className="text-yellow-400 text-sm mt-1">{emailValidation.message}</p>
-        )}
-        {formData.email && validateEmail(formData.email) && emailValidation.isValid && (
-          <p className="text-green-400 text-sm mt-1">✓ Email válido</p>
-        )}
+        {formData.email &&
+          validateEmail(formData.email) &&
+          emailValidation.isValidating && (
+            <p className="text-yellow-400 text-sm mt-1">Validando email...</p>
+          )}
+        {formData.email &&
+          validateEmail(formData.email) &&
+          !emailValidation.isValidating &&
+          !emailValidation.isValid &&
+          emailValidation.message && (
+            <p className="text-yellow-400 text-sm mt-1">
+              {emailValidation.message}
+            </p>
+          )}
+        {formData.email &&
+          validateEmail(formData.email) &&
+          emailValidation.isValid && (
+            <p className="text-green-400 text-sm mt-1">✓ Email válido</p>
+          )}
       </div>
 
       <div>

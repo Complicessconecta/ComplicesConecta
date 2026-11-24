@@ -66,6 +66,28 @@ const DEMO_ROSTER: Array<{
   { name: "Pablo & Raquel", gender: "unknown", profileType: "couple", age: 27, location: "Mérida" },
 ];
 
+/**
+ * Fotos de pareja VERIFICADAS (revisadas una a una): el pool "couple" de
+ * @/lib/media mezcla retratos de una sola persona — hombre en escritorio,
+ * mujer haciendo ejercicio, retrato de mujer, un bebé, grafiti, un grupo
+ * familiar — así que las tarjetas de pareja del demo salían con foto de
+ * un solo hombre. Hasta que ese pool se limpie, el demo usa solo estas
+ * tres fotos de pareja; al agotarse se reutilizan en rotación.
+ */
+const DEMO_COUPLE_IMAGES = [
+  "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop",
+];
+
+/** Foto de pareja verificada, sin repetir hasta agotar la lista. */
+const pickVerifiedCoupleImage = (coupleIndex: number, used: Set<string>): string => {
+  const unused = DEMO_COUPLE_IMAGES.find((url) => !used.has(url));
+  const url = unused ?? DEMO_COUPLE_IMAGES[coupleIndex % DEMO_COUPLE_IMAGES.length]!;
+  used.add(url);
+  return url;
+};
+
 export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
   const bios = [
     "Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones auténticas y experiencias compartidas.",
@@ -84,6 +106,9 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
   // hasta agotar el pool de cada categoría.
   const usedImages = new Set<string>();
   const experienceLevels = ["principiante", "intermedio", "experimentado"];
+
+  // Índice de pareja para rotar las fotos de pareja verificadas.
+  let coupleIndex = 0;
 
   return Array.from({ length: count }, (_, i) => {
     const entry = DEMO_ROSTER[i % DEMO_ROSTER.length]!;
@@ -111,15 +136,21 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
       location: entry.location,
       distance: 3 + ((i * 11) % 47),
       interests,
-      image: pickProfileImage(
-        {
-          id: generateDemoUUID(`demo-profile-${i + 1}`),
-          name: entry.name,
-          type: profileType,
-          gender,
-        },
-        usedImages,
-      ),
+      // Las parejas NO usan pickProfileImage: su pool "couple" de
+      // @/lib/media está contaminado con fotos de una sola persona y
+      // las tarjetas de pareja salían con foto de un solo hombre.
+      image:
+        profileType === "couple"
+          ? pickVerifiedCoupleImage(coupleIndex++, usedImages)
+          : pickProfileImage(
+              {
+                id: generateDemoUUID(`demo-profile-${i + 1}`),
+                name: entry.name,
+                type: profileType,
+                gender,
+              },
+              usedImages,
+            ),
       bio: bios[i % bios.length] ?? "Sin bio disponible",
       isOnline: i % 3 !== 0,
       lastActive: `Hace ${((i * 7) % 50) + 5} min`,

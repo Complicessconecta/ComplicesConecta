@@ -1,9 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from "lucide-react";
+import {
+  Heart,
+  Flame,
+  RefreshCw,
+  Filter,
+  Star,
+  Home,
+  User,
+  Search,
+  Sliders,
+} from "lucide-react";
 import SuperLikesModal from "@/components/modals/SuperLikesModal";
 import PremiumModal from "@/components/modals/PremiumModal";
 import CompatibilityModal from "@/components/modals/CompatibilityModal";
@@ -13,7 +23,10 @@ import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { pickProfileImage, type Gender, type ProfileType } from "@/lib/media";
 import { calculateDistance, getLocationDisplay } from "@/lib/distance-utils";
-import { type CoupleProfileWithPartners, getAllCoupleProfiles } from "@/services/social/couple/CoupleProfilesService";
+import {
+  type CoupleProfileWithPartners,
+  getAllCoupleProfiles,
+} from "@/services/social/couple/CoupleProfilesService";
 import { generateDemoProfiles, type DemoProfile } from "@/demo/demoData";
 import { safeGetItem } from "@/lib/safe-storage";
 import { generateFilterDemoCards, type FilterDemoCard } from "@/lib/infoCards";
@@ -30,11 +43,18 @@ import type { Profile, Filters } from "@/types/discover.types";
 import { generalInterests } from "@/constants/discover/generalInterests";
 import { explicitInterests } from "@/constants/discover/explicitInterests";
 import { generateRandomProfiles } from "@/utils/discover/generateRandomProfiles";
+import {
+  readPrivacySettingsSync,
+  shouldShowInDiscover,
+  type PrivacySettings,
+} from "@/lib/visibility";
 
 const normalizeGender = (value: unknown): Gender => {
   const raw = typeof value === "string" ? value.trim().toLowerCase() : "";
-  if (raw === "male" || raw === "m" || raw === "hombre" || raw === "man") return "male";
-  if (raw === "female" || raw === "f" || raw === "mujer" || raw === "woman") return "female";
+  if (raw === "male" || raw === "m" || raw === "hombre" || raw === "man")
+    return "male";
+  if (raw === "female" || raw === "f" || raw === "mujer" || raw === "woman")
+    return "female";
   return "unknown";
 };
 
@@ -77,6 +97,29 @@ export const Discover = () => {
     relationshipType: [],
   });
 
+  // Ajustes de privacidad DEL ESPECTADOR (no del perfil listado): el
+  // toggle "Acceso a perfiles sin verificar" de su propia sección de
+  // Privacidad decide el arranque del filtro de verificados — si lo
+  // tiene desactivado, Discover arranca mostrando SOLO verificados.
+  // Demo: localStorage; real pareja: couple_profiles.privacy_settings;
+  // real single: local (profiles no tiene la columna; ver visibility.ts).
+  const viewerPrivacy: PrivacySettings | null = useMemo(() => {
+    if (!user?.id) return null;
+    const type = user.email === "pareja@outlook.es" ? "couple" : "single";
+    return readPrivacySettingsSync(user.id, type);
+  }, [user?.id, user?.email]);
+
+  // Arrancar el filtro de verificados desde el ajuste del espectador.
+  useEffect(() => {
+    if (viewerPrivacy && viewerPrivacy.allowUnverified === false) {
+      setFilters((prev) =>
+        prev.verified ? prev : { ...prev, verified: true },
+      );
+    }
+    // Solo al montar / cambiar de usuario, no en cada cambio de filtros.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
   // Determinar si el usuario es demo/producción
   const isDemoOrProduction = () => {
     const authStatus = isAuthenticated();
@@ -110,6 +153,16 @@ export const Discover = () => {
     }
   }, []);
 
+  // El interruptor "Mostrar perfiles sin verificar" de Discover es el
+  // control en vivo de la misma preferencia que el toggle
+  // `allowUnverified` de Privacidad: activado = se ven verificados y
+  // no verificados; desactivado = solo verificados. La invisibilidad
+  // del perfil listado se aplica siempre encima (ver visibility.ts).
+  const effectiveViewerPrivacy: PrivacySettings | null = useMemo(() => {
+    if (!viewerPrivacy) return null;
+    return { ...viewerPrivacy, allowUnverified: !filters.verified };
+  }, [viewerPrivacy, filters.verified]);
+
   // Aplicar filtros
   useEffect(() => {
     const applyFilters = () => {
@@ -140,7 +193,14 @@ export const Discover = () => {
           filters.interests.some((interest) =>
             profile.interests.includes(interest),
           );
-        const verifiedMatch = !filters.verified || profile.isVerified;
+        // Verificados (según el interruptor) + invisibles (nunca aparecen).
+        // Demo: los perfiles demo no traen dato de invisibilidad, así que
+        // aquí solo se aplica la regla de verificados; la de invisibilidad
+        // actúa cuando el perfil trae `privacySettings`/`invisible`.
+        const visibilityMatch = shouldShowInDiscover(
+          { id: profile.id, isVerified: profile.isVerified },
+          effectiveViewerPrivacy,
+        );
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
         const relationshipTypeMatch = relationshipMatch(profile.profileType);
@@ -149,7 +209,7 @@ export const Discover = () => {
           ageMatch &&
           distanceMatch &&
           interestsMatch &&
-          verifiedMatch &&
+          visibilityMatch &&
           premiumMatch &&
           onlineMatch &&
           relationshipTypeMatch
@@ -182,7 +242,22 @@ export const Discover = () => {
           filters.interests.some((interest) =>
             profile.interests.includes(interest),
           );
-        const verifiedMatch = !filters.verified || profile.isVerified;
+        // Verificados (según el interruptor) + invisibles (nunca aparecen).
+        // Real single: `profiles` no tiene columna `privacy_settings`, así
+        // que la invisibilidad no se puede aplicar hasta la migración; la
+        // regla de verificados sí (ver el mapeo en loadRealProfiles).
+        const visibilityMatch = shouldShowInDiscover(
+          {
+            id: profile.id,
+            isVerified: profile.isVerified,
+            privacySettings: (
+              profile as unknown as {
+                privacySettings?: PrivacySettings | null;
+              }
+            ).privacySettings,
+          },
+          effectiveViewerPrivacy,
+        );
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
         const relationshipTypeMatch = relationshipMatch(profile.profileType);
@@ -191,7 +266,7 @@ export const Discover = () => {
           ageMatch &&
           distanceMatch &&
           interestsMatch &&
-          verifiedMatch &&
+          visibilityMatch &&
           premiumMatch &&
           onlineMatch &&
           relationshipTypeMatch
@@ -216,7 +291,17 @@ export const Discover = () => {
 
         // Los perfiles de pareja no tienen interests en el tipo actual, permitir match
         const interestsMatch = filters.interests.length === 0;
-        const verifiedMatch = !filters.verified || couple.is_verified;
+        // Verificados (según el interruptor) + invisibles (nunca aparecen).
+        // La invisibilidad de parejas se aplica desde
+        // `couple_profiles.privacy_settings` (vía el servicio).
+        const visibilityMatch = shouldShowInDiscover(
+          {
+            id: couple.id,
+            is_verified: couple.is_verified ?? false,
+            privacySettings: couple.privacy_settings ?? null,
+          },
+          effectiveViewerPrivacy,
+        );
         const premiumMatch = !filters.premium || couple.is_premium;
         const onlineMatch = !filters.online || couple.isOnline;
         // Las parejas solo pasan el filtro "Pareja" (o sin filtro de tipo).
@@ -226,7 +311,7 @@ export const Discover = () => {
           ageMatch &&
           distanceMatch &&
           interestsMatch &&
-          verifiedMatch &&
+          visibilityMatch &&
           premiumMatch &&
           onlineMatch &&
           relationshipTypeMatch
@@ -237,7 +322,14 @@ export const Discover = () => {
     };
 
     applyFilters();
-  }, [filters, demoProfiles, profiles, coupleProfiles, location]);
+  }, [
+    filters,
+    demoProfiles,
+    profiles,
+    coupleProfiles,
+    location,
+    effectiveViewerPrivacy,
+  ]);
 
   // Función para cargar perfiles reales desde Supabase
   const loadRealProfiles = useCallback(async () => {
@@ -290,46 +382,50 @@ export const Discover = () => {
         const convertedProfiles: Profile[] = realProfiles.map(
           (profile: any, index: number) => {
             const normalizedGender = normalizeGender(profile.gender);
-            return ({
-            id: profile.id,
-            name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
-            age: profile.age || 25,
-            location: getLocationDisplay(location), // Ubicacin real implementada con useGeolocation
-            distance: calculateDistance(
-              location,
-              profile.latitude && profile.longitude
-                ? { latitude: profile.latitude, longitude: profile.longitude }
-                : null,
-            ), // Clculo de distancia implementado con coordenadas reales
-            interests: Array.isArray(profile.interests)
-              ? profile.interests
-              : [], // Sistema de intereses conectado con Supabase
-            image: pickProfileImage(
-              {
-                id: profile.id,
-                name: profile.first_name,
-                type: "single",
-                gender: normalizedGender,
-              },
-              usedImages,
-            ), // Avatar URL desde Supabase profiles
-            bio: profile.bio || "Sin descripcin",
-            isOnline: profile.is_online || false,
-            lastActive: profile.last_active
-              ? new Date(profile.last_active).toLocaleString("es-ES", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  day: "numeric",
-                  month: "short",
-                })
-              : "Hace 1 hora",
-            isVerified: profile.is_premium || false,
-            isPremium: profile.is_premium || false,
-            rating: 4.5,
-            matchScore: 60 + ((index * 7) % 40),
-            profileType: (profile.account_type as any) || "single",
-            gender: normalizedGender === "unknown" ? undefined : normalizedGender,
-            });
+            return {
+              id: profile.id,
+              name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
+              age: profile.age || 25,
+              location: getLocationDisplay(location), // Ubicacin real implementada con useGeolocation
+              distance: calculateDistance(
+                location,
+                profile.latitude && profile.longitude
+                  ? { latitude: profile.latitude, longitude: profile.longitude }
+                  : null,
+              ), // Clculo de distancia implementado con coordenadas reales
+              interests: Array.isArray(profile.interests)
+                ? profile.interests
+                : [], // Sistema de intereses conectado con Supabase
+              image: pickProfileImage(
+                {
+                  id: profile.id,
+                  name: profile.first_name,
+                  type: "single",
+                  gender: normalizedGender,
+                },
+                usedImages,
+              ), // Avatar URL desde Supabase profiles
+              bio: profile.bio || "Sin descripcin",
+              isOnline: profile.is_online || false,
+              lastActive: profile.last_active
+                ? new Date(profile.last_active).toLocaleString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    day: "numeric",
+                    month: "short",
+                  })
+                : "Hace 1 hora",
+              // CORRECCIÓN: verificado es `is_verified`, no `is_premium`
+              // (antes todo perfil premium contaba como verificado y ningún
+              // perfil verificado no-premium aparecía con el filtro).
+              isVerified: profile.is_verified || false,
+              isPremium: profile.is_premium || false,
+              rating: 4.5,
+              matchScore: 60 + ((index * 7) % 40),
+              profileType: (profile.account_type as any) || "single",
+              gender:
+                normalizedGender === "unknown" ? undefined : normalizedGender,
+            };
           },
         );
 
@@ -827,22 +923,30 @@ export const Discover = () => {
                   </div>
                 </div>
 
-                {/* Verificacion */}
+                {/* Verificación: activado = se ven verificados Y no
+                    verificados; desactivado = SOLO verificados. Es el
+                    mismo ajuste que "Acceso a perfiles sin verificar"
+                    de Privacidad; aquí se controla en vivo. */}
                 <div className="mb-4">
                   <label className="flex items-center gap-2 text-sm font-medium text-purple-800 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={filters.verified}
+                      checked={!filters.verified}
                       className="w-4 h-4 text-purple-600 border-purple-300 rounded focus:ring-purple-500"
                       onChange={(e) => {
                         setFilters((prev) => ({
                           ...prev,
-                          verified: e.target.checked,
+                          verified: !e.target.checked,
                         }));
                       }}
                     />
-                    Solo perfiles verificados
+                    Mostrar perfiles sin verificar
                   </label>
+                  <p className="text-xs text-purple-800/70 mt-1 ml-6">
+                    {filters.verified
+                      ? "Solo se muestran perfiles verificados."
+                      : "Se muestran perfiles verificados y sin verificar."}
+                  </p>
                 </div>
 
                 {/* Boton Limpiar Filtros */}
@@ -932,6 +1036,7 @@ export const Discover = () => {
                           interests={profile.interests}
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
+                          isVerified={profile.isVerified ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
@@ -964,6 +1069,7 @@ export const Discover = () => {
                           interests={profile.interests}
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
+                          isVerified={profile.isVerified ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
@@ -997,6 +1103,7 @@ export const Discover = () => {
                           interests={profile.interests}
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
+                          isVerified={profile.isVerified ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
@@ -1035,4 +1142,3 @@ export const Discover = () => {
     </div>
   );
 };
-

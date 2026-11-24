@@ -1,0 +1,430 @@
+/**
+ * Enforcement real de los ajustes de privacidad (antes solo visuales).
+ *
+ * Dónde vive cada ajuste:
+ * - Demo: localStorage, claves `single_privacy:<userId>` y
+ *   `couple_privacy:<userId>` (las mismas que ya usaban las secciones
+ *   de Privacidad; este módulo solo las lee, no cambia el formato).
+ * - Real pareja: `couple_profiles.privacy_settings` (jsonb, existe por
+ *   la migración 20251027210460).
+ * - Real single: `profiles.privacy_settings` (jsonb, migración
+ *   20261124040000_add_privacy_settings_to_profiles.sql en el repo;
+ *   PENDIENTE aplicarla en Supabase producción). Hasta que se aplique,
+ *   el ajuste del single en real solo vive en localStorage de ese
+ *   dispositivo. `loadPrivacySettings` lo documenta en su retorno.
+ *
+ * Las claves extra `birthDate`, `birthDate2`, `zodiacSign` y
+ * `zodiacSign2` viajan dentro del mismo JSON y las secciones de
+ * Privacidad las conservan al guardar (no se borran).
+ */
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
+import { logger } from "@/lib/logger";
+import {
+  getZodiacSignById,
+  getZodiacSignFromDate,
+  type ZodiacSign,
+} from "@/lib/zodiac";
+
+export type ProfileType = "single" | "couple";
+
+export interface PrivacySettings {
+  /** Modo invisible: no aparece en Discover/búsquedas ni visitas recientes. */
+  invisible: boolean;
+  /** Permitir que perfiles sin verificar vean este perfil / se muestren. */
+  allowUnverified: boolean;
+  showRegion: boolean;
+  friendsListVisible: boolean;
+  birthdayCake: boolean;
+  zodiacVisible: boolean;
+  watermark: boolean;
+  /** Solo contactos verificados pueden escribirte. */
+  limitMessages: boolean;
+  videoChat: boolean;
+  /** Fecha de nacimiento ISO ("YYYY-MM-DD"). Extra, no es toggle. */
+  birthDate?: string;
+  /** Fecha de nacimiento de la segunda persona (pareja). Extra. */
+  birthDate2?: string;
+  /** Signo elegido a mano (id, p. ej. "aries"). "" = automático. Extra. */
+  zodiacSign?: string;
+  /** Signo manual de la segunda persona (pareja). Extra. */
+  zodiacSign2?: string;
+}
+
+export const DEFAULT_PRIVACY_SETTINGS: PrivacySettings = {
+  invisible: false,
+  allowUnverified: true,
+  showRegion: true,
+  friendsListVisible: true,
+  birthdayCake: true,
+  zodiacVisible: true,
+  watermark: false,
+  limitMessages: false,
+  videoChat: true,
+};
+
+const BOOLEAN_KEYS = [
+  "invisible",
+  "allowUnverified",
+  "showRegion",
+  "friendsListVisible",
+  "birthdayCake",
+  "zodiacVisible",
+  "watermark",
+  "limitMessages",
+  "videoChat",
+] as const;
+
+type BooleanPrivacyKey = (typeof BOOLEAN_KEYS)[number];
+
+/** Evento que disparan las secciones de Privacidad al guardar un cambio. */
+export const PRIVACY_SETTINGS_CHANGED_EVENT = "complices:privacy-changed";
+
+export function notifyPrivacySettingsChanged(userId: string): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent(PRIVACY_SETTINGS_CHANGED_EVENT, { detail: { userId } }),
+  );
+}
+
+export function privacyStorageKey(userId: string, type: ProfileType): string {
+  return `${type === "couple" ? "couple" : "single"}_privacy:${userId}`;
+}
+
+/**
+ * Normaliza ajustes de privacidad desde cualquier fuente (objeto Json de
+ * Supabase, string de localStorage o null) sobre los valores por defecto.
+ * Solo se copian claves conocidas con el tipo esperado.
+ */
+export function normalizePrivacySettings(raw: unknown): PrivacySettings {
+  const next: PrivacySettings = { ...DEFAULT_PRIVACY_SETTINGS };
+  let parsed: Record<string, unknown> | null = null;
+  if (typeof raw === "string") {
+    try {
+      const p: unknown = JSON.parse(raw);
+      if (p && typeof p === "object" && !Array.isArray(p)) {
+        parsed = p as Record<string, unknown>;
+      }
+    } catch {
+      parsed = null;
+    }
+  } else if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+    parsed = raw as Record<string, unknown>;
+  }
+  if (!parsed) return next;
+  for (const key of BOOLEAN_KEYS) {
+    if (typeof parsed[key] === "boolean") {
+      next[key as BooleanPrivacyKey] = parsed[key] as boolean;
+    }
+  }
+  if (typeof parsed.birthDate === "string") next.birthDate = parsed.birthDate;
+  if (typeof parsed.birthDate2 === "string")
+    next.birthDate2 = parsed.birthDate2;
+  if (typeof parsed.zodiacSign === "string")
+    next.zodiacSign = parsed.zodiacSign;
+  if (typeof parsed.zodiacSign2 === "string")
+    next.zodiacSign2 = parsed.zodiacSign2;
+  return next;
+}
+
+function parseStoredSettings(raw: string | null): PrivacySettings {
+  if (!raw) return { ...DEFAULT_PRIVACY_SETTINGS };
+  return normalizePrivacySettings(raw);
+}
+
+function readLocalSettings(userId: string, type: ProfileType): PrivacySettings {
+  if (typeof window === "undefined" || !userId) {
+    return { ...DEFAULT_PRIVACY_SETTINGS };
+  }
+  try {
+    return parseStoredSettings(
+      window.localStorage.getItem(privacyStorageKey(userId, type)),
+    );
+  } catch {
+    return { ...DEFAULT_PRIVACY_SETTINGS };
+  }
+}
+
+function writeLocalSettings(
+  userId: string,
+  type: ProfileType,
+  settings: PrivacySettings,
+): void {
+  if (typeof window === "undefined" || !userId) return;
+  try {
+    window.localStorage.setItem(
+      privacyStorageKey(userId, type),
+      JSON.stringify(settings),
+    );
+  } catch {
+    // Sin almacenamiento: el cambio solo vive en esta sesión.
+  }
+}
+
+/**
+ * Lectura síncrona (demo y respaldo local). En demo es la fuente real;
+ * en producción es el respaldo cuando la BD no tiene la columna
+ * (caso single) o falla la lectura.
+ */
+export function readPrivacySettingsSync(
+  userId: string,
+  type: ProfileType,
+): PrivacySettings {
+  return readLocalSettings(userId, type);
+}
+
+/**
+ * Carga los ajustes del perfil indicado.
+ * - Pareja en real: lee `couple_profiles.privacy_settings` y lo mezcla
+ *   con el local (el local gana solo si la BD no trae la clave).
+ * - Single en real: `profiles` NO tiene `privacy_settings`; devuelve
+ *   el local y `fromDatabase: false` (pendiente migración).
+ */
+export async function loadPrivacySettings(
+  userId: string,
+  type: ProfileType,
+): Promise<{ settings: PrivacySettings; fromDatabase: boolean }> {
+  const local = readLocalSettings(userId, type);
+  if (!userId || !supabase) {
+    return { settings: local, fromDatabase: false };
+  }
+  // Pareja: couple_profiles.privacy_settings. Single: profiles
+  // .privacy_settings (migración 20261124040000; si aún no está
+  // aplicada en producción, la lectura falla y se usa el local).
+  const table = type === "couple" ? "couple_profiles" : "profiles";
+  try {
+    const { data, error } = await supabase
+      .from(table)
+      .select("privacy_settings")
+      .eq("id", userId)
+      .single();
+    if (error || !data) return { settings: local, fromDatabase: false };
+    const stored = data.privacy_settings;
+    if (
+      typeof stored !== "object" ||
+      stored === null ||
+      Array.isArray(stored)
+    ) {
+      return { settings: local, fromDatabase: false };
+    }
+    const record = stored as Record<string, Json>;
+    const merged: PrivacySettings = { ...local };
+    for (const key of BOOLEAN_KEYS) {
+      if (typeof record[key] === "boolean") {
+        merged[key as BooleanPrivacyKey] = record[key] as boolean;
+      }
+    }
+    if (typeof record.birthDate === "string")
+      merged.birthDate = record.birthDate;
+    if (typeof record.birthDate2 === "string")
+      merged.birthDate2 = record.birthDate2;
+    if (typeof record.zodiacSign === "string")
+      merged.zodiacSign = record.zodiacSign;
+    if (typeof record.zodiacSign2 === "string")
+      merged.zodiacSign2 = record.zodiacSign2;
+    return { settings: merged, fromDatabase: true };
+  } catch (err) {
+    logger.error("Error cargando privacy_settings:", {
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return { settings: local, fromDatabase: false };
+  }
+}
+
+/**
+ * Guarda claves extra (fecha de nacimiento / signo manual) sin tocar
+ * los toggles. Demo: localStorage. En real: además mezcla las claves
+ * en `couple_profiles.privacy_settings` (pareja) o
+ * `profiles.privacy_settings` (single; migración 20261124040000, si aún
+ * no está aplicada en producción el guardado en BD falla y queda el local).
+ */
+export function savePrivacySettingsExtra(
+  userId: string,
+  type: ProfileType,
+  extras: Partial<
+    Pick<
+      PrivacySettings,
+      "birthDate" | "birthDate2" | "zodiacSign" | "zodiacSign2"
+    >
+  >,
+): void {
+  if (!userId) return;
+  const next = { ...readLocalSettings(userId, type), ...extras };
+  writeLocalSettings(userId, type, next);
+  if (supabase) {
+    // PostgrestBuilder es PromiseLike (sin .catch): async/await con
+    // try/catch en vez de encadenar .then().catch().
+    void (async () => {
+      try {
+        const table = type === "couple" ? "couple_profiles" : "profiles";
+        const { data } = await supabase
+          .from(table)
+          .select("privacy_settings")
+          .eq("id", userId)
+          .single();
+        const stored = data?.privacy_settings;
+        const record =
+          typeof stored === "object" &&
+          stored !== null &&
+          !Array.isArray(stored)
+            ? (stored as Record<string, Json>)
+            : {};
+        const { error } = await supabase
+          .from(table)
+          .update({ privacy_settings: { ...record, ...extras } })
+          .eq("id", userId);
+        if (error) {
+          logger.error("Error guardando extras de privacy_settings:", {
+            error: error.message,
+          });
+        }
+      } catch (err: unknown) {
+        logger.error("Error guardando extras de privacy_settings:", {
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    })();
+  }
+  notifyPrivacySettingsChanged(userId);
+}
+
+/**
+ * Hook para leer los ajustes de un perfil y reaccionar cuando la
+ * sección de Privacidad los cambia en la misma página.
+ */
+export function usePrivacySettings(
+  userId: string | undefined | null,
+  type: ProfileType,
+): PrivacySettings {
+  const [settings, setSettings] = useState<PrivacySettings>(() =>
+    readLocalSettings(userId ?? "", type),
+  );
+  useEffect(() => {
+    if (!userId) return;
+    setSettings(readLocalSettings(userId, type));
+    const reload = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (!detail?.userId || detail.userId === userId) {
+        setSettings(readLocalSettings(userId, type));
+      }
+    };
+    window.addEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, reload);
+    return () =>
+      window.removeEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, reload);
+  }, [userId, type]);
+  return settings;
+}
+
+/** El perfil es invisible: no debe aparecer en ningún listado ajeno. */
+export function isProfileInvisible(
+  settings: PrivacySettings | null | undefined,
+): boolean {
+  return settings?.invisible === true;
+}
+
+export interface DiscoverProfileLike {
+  id?: string | number;
+  /** Campo real (`is_verified`) o demo (`isVerified`). */
+  isVerified?: boolean;
+  is_verified?: boolean;
+  /** Ajustes del perfil listado, cuando la fuente los trae. */
+  privacySettings?: PrivacySettings | null | undefined;
+  /** Atajo plano cuando la fuente trae el flag suelto. */
+  invisible?: boolean;
+}
+
+function profileIsVerified(profile: DiscoverProfileLike): boolean {
+  return profile.isVerified === true || profile.is_verified === true;
+}
+
+function profileIsInvisible(profile: DiscoverProfileLike): boolean {
+  if (profile.invisible === true) return true;
+  return isProfileInvisible(profile.privacySettings);
+}
+
+/**
+ * ¿Este perfil puede aparecer en Discover / búsquedas para este
+ * espectador? Enforcement real:
+ * - Perfil invisible → nunca aparece (ni en Discover ni en visitas
+ *   recientes; ver `shouldShowInRecentVisits`).
+ * - Espectador con `allowUnverified === false` → solo ve verificados
+ *   (el filtro "Mostrar perfiles sin verificar" de Discover arranca
+ *   de este ajuste; desactivado = solo verificados).
+ */
+export function shouldShowInDiscover(
+  profile: DiscoverProfileLike,
+  viewerPrivacy?: PrivacySettings | null,
+): boolean {
+  if (profileIsInvisible(profile)) return false;
+  if (viewerPrivacy && viewerPrivacy.allowUnverified === false) {
+    return profileIsVerified(profile);
+  }
+  return true;
+}
+
+/**
+ * ¿Este perfil puede aparecer en la lista de visitas recientes de
+ * otro usuario? Misma regla que Discover: invisible = no aparece.
+ * NOTA: hoy no existe en la app ninguna lista de "visitas recientes"
+ * (solo el contador de Visitas en ProfileStats); esta función es el
+ * punto de filtrado para cuando esa lista exista.
+ */
+export function shouldShowInRecentVisits(
+  profile: DiscoverProfileLike,
+): boolean {
+  return !profileIsInvisible(profile);
+}
+
+/** Insignia de verificado de un perfil (real o demo). */
+export function isVerifiedProfile(profile: DiscoverProfileLike): boolean {
+  return profileIsVerified(profile);
+}
+
+/** Signo zodiacal a mostrar para un perfil, según sus ajustes. */
+export function getProfileZodiacSign(
+  settings: PrivacySettings | null | undefined,
+  partnerIndex: 0 | 1 = 0,
+): ZodiacSign | null {
+  if (!settings) return null;
+  const birthDate =
+    partnerIndex === 0 ? settings.birthDate : settings.birthDate2;
+  const manual =
+    partnerIndex === 0 ? settings.zodiacSign : settings.zodiacSign2;
+  return (
+    getZodiacSignById(manual ?? null) ??
+    getZodiacSignFromDate(birthDate ?? null)
+  );
+}
+
+/**
+ * ¿El dueño de este perfil tiene la marca de agua activa? Las galerías
+ * compartidas no siempre saben si el perfil es single o pareja, así que
+ * se consultan ambas claves locales (en real, la de pareja además se
+ * lee de `couple_profiles.privacy_settings` vía `loadPrivacySettings`).
+ */
+export function readWatermarkForProfile(userId: string): boolean {
+  if (!userId) return false;
+  return (
+    readLocalSettings(userId, "single").watermark ||
+    readLocalSettings(userId, "couple").watermark
+  );
+}
+
+/** Etiqueta de visibilidad para el encabezado del perfil propio. */
+export function getVisibilityBadge(
+  settings: PrivacySettings | null | undefined,
+  isOnline: boolean,
+): { label: string; title: string } {
+  if (isProfileInvisible(settings)) {
+    return {
+      label: "👻 Invisible",
+      title:
+        "Modo invisible: no apareces en Discover, búsquedas ni visitas recientes.",
+    };
+  }
+  if (isOnline) {
+    return { label: "🟢 En línea", title: "Visible y en línea." };
+  }
+  return { label: "👁️ Visible", title: "Visible en Discover y búsquedas." };
+}

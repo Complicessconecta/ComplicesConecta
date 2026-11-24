@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles, TicketPercent } from "lucide-react";
+import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles, TicketPercent, Eye } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
@@ -192,44 +192,6 @@ const DEMO_REVIEWS = [
   },
 ];
 
-const DEMO_IMAGES = [
-  {
-    id: "img-1",
-    url: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800",
-    alt: "Club interior",
-    caption: "Interior del club",
-    uploadedAt: new Date().toISOString(),
-  },
-  {
-    id: "img-2", 
-    url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800",
-    alt: "Club bar",
-    caption: "Bar principal",
-    uploadedAt: new Date().toISOString(),
-  },
-  {
-    id: "img-3",
-    url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
-    alt: "Cócteles",
-    caption: "Mixología premium",
-    uploadedAt: new Date().toISOString(),
-  },
-  {
-    id: "img-4",
-    url: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800",
-    alt: "Bebidas",
-    caption: "Barra de tragos",
-    uploadedAt: new Date().toISOString(),
-  },
-  {
-    id: "img-5",
-    url: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800",
-    alt: "Terraza",
-    caption: "Terraza exterior",
-    uploadedAt: new Date().toISOString(),
-  },
-];
-
 const DEMO_ANALYTICS = {
   totalVisits: 12450,
   totalCheckIns: 420,
@@ -275,9 +237,63 @@ const safeShare = async (title: string) => {
   }
 };
 
+// Descuentos del club (club_discounts): se usa en la vista admin y en la
+// pública; antes el bloque vivía duplicado solo en la pública.
+const ClubDiscountsCard = ({
+  discounts,
+}: {
+  discounts: ClubDiscountItem[];
+}) => {
+  if (discounts.length === 0) return null;
+  return (
+    <Card className="bg-black/70 backdrop-blur-xl border-white/15">
+      <CardContent className="p-4 sm:p-6">
+        <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+          <TicketPercent className="h-5 w-5 text-fuchsia-400" />
+          Descuentos del club
+        </h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {discounts.map((d) => (
+            <div
+              key={d.id}
+              className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-4"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-white font-mono font-bold tracking-wider">
+                  {d.code}
+                </span>
+                <Badge className="bg-fuchsia-600 text-white">
+                  {d.discountPercent !== null
+                    ? `${d.discountPercent}% OFF`
+                    : d.discountAmount !== null
+                      ? `$${d.discountAmount} OFF`
+                      : "Promo"}
+                </Badge>
+              </div>
+              {d.description && (
+                <p className="text-white/70 text-sm mt-2">{d.description}</p>
+              )}
+              <p className="text-white/50 text-xs mt-2">
+                {d.usesCount} usados
+                {d.maxUses !== null ? ` de ${d.maxUses}` : ""}
+                {d.validUntil
+                  ? ` · vence ${new Date(d.validUntil).toLocaleDateString("es-MX")}`
+                  : ""}
+              </p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 export const ClubsDemo = () => {
   const navigate = useNavigate();
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  // Demo en modo creador/administrador por defecto: entrar a un club en
+  // demo muestra la vista admin (Panel Admin, stats, eventos/descuentos/
+  // miembros) y la vista pública queda a un toque en "Ver perfil público".
+  const [showAdminPanel, setShowAdminPanel] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [interestLevel, setInterestLevel] = useState<"neutral" | "tour" | "vip">("neutral");
   // Eventos y descuentos del club: se leen de club_events / club_discounts
@@ -303,46 +319,49 @@ export const ClubsDemo = () => {
   if (showAdminPanel) {
     return (
       <div className="min-h-screen bg-transparent p-4 sm:p-6">
-        <div className="max-w-7xl mx-auto">
-          <Card className="bg-black/70 backdrop-blur-xl border-white/15 mb-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <Card className="bg-black/70 backdrop-blur-xl border-white/15">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2 min-w-0">
+              {/* Fila con wrap: en móvil (~360 px) los 6 elementos no caben
+                  en una sola línea; antes el botón "Volver" salía truncado
+                  ("Volve...") y el título quedaba en "C." / "P..". Cada
+                  grupo envuelve entero en vez de recortarse. */}
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                <div className="flex min-w-0 flex-1 items-center gap-2">
                   <Button
                     variant="outline"
                     onClick={() => setShowAdminPanel(false)}
-                    className="border-white/30 text-white hover:bg-white/10"
+                    className="shrink-0 border-white/30 text-white hover:bg-white/10"
                   >
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Volver al Club Demo
+                    <Eye className="h-4 w-4 mr-2 shrink-0" />
+                    Ver perfil público
                   </Button>
                   <div className="min-w-0">
                     <div className="text-white font-bold truncate">Panel Administración</div>
                     <div className="text-white/70 text-xs truncate">
-                      Gestión de clubs - Modo Demo
+                      Vista de creador — Modo Demo
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-wrap items-center gap-2">
                   <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
                     Admin
+                  </Badge>
+                  <Badge className="bg-green-500/90 text-white">
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                    Verificado
                   </Badge>
                 </div>
               </div>
             </CardContent>
           </Card>
-          {showAdminPanel ? (
+          {/* Vista de creador: identidad del club, stats, descuentos y el
+              Panel Admin (clubs registrados, eventos y miembros). La vista
+              pública completa sigue en "Ver perfil público". */}
+          <ClubProfileHeader club={club} />
+          <ClubProfileAdmin analytics={DEMO_ANALYTICS} clubId={club.id} />
+          <ClubDiscountsCard discounts={discounts} />
             <ClubAdminPanel />
-          ) : (
-            <div className="space-y-6">
-              {/* Club Profile Content */}
-              <ClubProfileHeader club={DEMO_CLUB} />
-              <ClubProfileEvents events={events} />
-              <ClubProfileReviews reviews={DEMO_REVIEWS} averageRating={DEMO_ANALYTICS.averageRating} totalReviews={DEMO_REVIEWS.length} />
-              <ClubProfileGallery images={DEMO_IMAGES} />
-              <ClubProfileAdmin analytics={DEMO_ANALYTICS} />
-            </div>
-          )}
         </div>
       </div>
     );
@@ -362,14 +381,18 @@ export const ClubsDemo = () => {
       <div className="relative z-10 max-w-7xl mx-auto space-y-6">
         <Card className="bg-black/70 backdrop-blur-xl border-white/15">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2 min-w-0">
+            {/* Fila con wrap: en móvil (~360 px) los 6 elementos no caben
+                en una sola línea; antes el botón "Volver" salía truncado
+                ("Volve...") y el título quedaba en "C." / "P..". Cada
+                grupo envuelve entero en vez de recortarse. */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <div className="flex min-w-0 flex-1 items-center gap-2">
                 <Button
                   variant="outline"
                   onClick={() => navigate("/clubs-public")}
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="shrink-0 border-white/30 text-white hover:bg-white/10"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  <ArrowLeft className="h-4 w-4 mr-2 shrink-0" />
                   Volver
                 </Button>
                 <div className="min-w-0">
@@ -380,7 +403,7 @@ export const ClubsDemo = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
                   Admin
                 </Badge>
@@ -392,7 +415,7 @@ export const ClubsDemo = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowAdminPanel(true)}
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="shrink-0 border-white/30 text-white hover:bg-white/10"
                   title="Panel de administración del club"
                 >
                   Panel Admin
@@ -401,7 +424,7 @@ export const ClubsDemo = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => void safeShare("Club Demo")}
-                  className="bg-white/10 hover:bg-white/20 p-2"
+                  className="shrink-0 bg-white/10 hover:bg-white/20 p-2"
                   title="Compartir"
                 >
                   <Share2 className="h-4 w-4 text-white" />
@@ -426,7 +449,9 @@ export const ClubsDemo = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Con wrap: en móvil los 3 botones no caben en una línea y
+                  "Seguir" quedaba cortado en el borde derecho. */}
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outline"
                   onClick={() => navigate("/clubs-public")}
@@ -492,40 +517,7 @@ export const ClubsDemo = () => {
 
         <ClubProfileGallery images={DEMO_GALLERY} />
         <ClubProfileEvents events={events} />
-        {discounts.length > 0 && (
-          <Card className="bg-black/70 backdrop-blur-xl border-white/15">
-            <CardContent className="p-4 sm:p-6">
-              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                <TicketPercent className="h-5 w-5 text-fuchsia-400" />
-                Descuentos del club
-              </h3>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {discounts.map((d) => (
-                  <div key={d.id} className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-white font-mono font-bold tracking-wider">{d.code}</span>
-                      <Badge className="bg-fuchsia-600 text-white">
-                        {d.discountPercent !== null
-                          ? `${d.discountPercent}% OFF`
-                          : d.discountAmount !== null
-                            ? `$${d.discountAmount} OFF`
-                            : "Promo"}
-                      </Badge>
-                    </div>
-                    {d.description && (
-                      <p className="text-white/70 text-sm mt-2">{d.description}</p>
-                    )}
-                    <p className="text-white/50 text-xs mt-2">
-                      {d.usesCount} usados
-                      {d.maxUses !== null ? ` de ${d.maxUses}` : ""}
-                      {d.validUntil ? ` · vence ${new Date(d.validUntil).toLocaleDateString("es-MX")}` : ""}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <ClubDiscountsCard discounts={discounts} />
         <ClubProfileReviews
           reviews={DEMO_REVIEWS}
           averageRating={club.rating_average}

@@ -326,7 +326,9 @@ export const Clubs = () => {
     }
 
     if (slug === "demo") {
-      setSelectedClub(DEMO_CLUB);
+      // Demo en modo creador/admin: la vista pública es /clubs-public/demo;
+      // /clubs/demo muestra el panel de administración del club.
+      navigate("/clubs/demo", { replace: true });
       return;
     }
 
@@ -1243,7 +1245,7 @@ export const Clubs = () => {
 
                         <div className="flex gap-2">
                           <Button
-                            onClick={() => navigate(`/clubs-public/${DEMO_CLUB.slug}`)}
+                            onClick={() => navigate("/clubs/demo")}
                             className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />

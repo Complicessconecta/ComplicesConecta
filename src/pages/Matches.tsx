@@ -60,7 +60,7 @@ const Matches = () => {
       name: "Carmen & Roberto",
       age: 35,
       image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop",
       compatibility: 91,
       mutualInterests: [
         "Intercambio Suave",
@@ -103,7 +103,7 @@ const Matches = () => {
       name: "Miguel & Elena",
       age: 34,
       image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=600&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=600&fit=crop",
       compatibility: 92,
       mutualInterests: [
         "Parejas Swinger",

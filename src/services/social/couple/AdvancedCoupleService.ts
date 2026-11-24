@@ -11,6 +11,10 @@
 // @ts-nocheck
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import {
+  normalizePrivacySettings,
+  type PrivacySettings,
+} from "@/lib/visibility";
 import type { Database } from "@/types/supabase-generated";
 
 type _Tables<T extends keyof Database["public"]["Tables"]> =
@@ -35,6 +39,8 @@ export interface CoupleProfile {
   is_active: boolean;
   is_verified: boolean;
   is_premium: boolean;
+  /** Ajustes de privacidad (jsonb) para enforcement en Discover. */
+  privacy_settings?: PrivacySettings | null;
   created_at: string;
   updated_at: string;
   // Campos adicionales para funcionalidades avanzadas
@@ -377,6 +383,7 @@ export class AdvancedCoupleService {
         is_active: true,
         is_verified: item.is_verified || false,
         is_premium: item.is_premium || false,
+        privacy_settings: normalizePrivacySettings(item.privacy_settings),
         photos: item.photos || [],
         videos: [],
         preferences: {

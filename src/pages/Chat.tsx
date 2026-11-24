@@ -1,5 +1,5 @@
 import { useState, useEffect, type ChangeEvent, type KeyboardEvent } from "react";
-import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus, Smile, Paperclip, Image, Mic } from "lucide-react";
+import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -8,9 +8,6 @@ import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { mockPrivacySettings } from "@/lib/data";
-import { EmojiPicker } from "@/components/chat/EmojiPicker";
-import { ChatFileUpload } from "@/components/chat/ChatFileUpload";
-import { VoiceRecorder } from "@/components/chat/VoiceRecorder";
 import { invitationService } from "@/lib/invitations";
 // Tipos reemplazados con tipos locales para compatibilidad
 export interface SimpleChatRoom {
@@ -62,6 +59,116 @@ export interface Message {
   type: "text" | "image";
 }
 
+// NOTA: estos arrays viven a nivel de módulo (no dentro del componente)
+// para que su identidad sea estable entre renders. El efecto de
+// sincronización de rooms depende de ellos; si se recrearan en cada
+// render, el efecto dispararía _setRooms en bucle y las transiciones
+// de navegación del Router nunca harían commit (la URL cambia pero
+// la vista se queda atorada en el chat).
+// Private chats - conexiones verificadías
+const privateChats: ChatUser[] = [
+  {
+    id: "1",
+    name: "Anabella & Julio",
+    image:
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Están libres este fin de semana? 🔥💕",
+    timestamp: "5 min",
+    isOnline: true,
+    unreadCount: 2,
+    isPrivate: true,
+    roomType: "private",
+  },
+  {
+    id: "2",
+    name: "Sofia",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Me encantó conocerlos en la fiesta 🎉✨",
+    timestamp: "1 h",
+    isOnline: true,
+    unreadCount: 0,
+    isPrivate: true,
+    roomType: "private",
+  },
+  {
+    id: "3",
+    name: "Carmen & Roberto",
+    image:
+      "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Vienen al evento VIP del sábado? 🌟",
+    timestamp: "3 h",
+    isOnline: false,
+    unreadCount: 0,
+    isPrivate: true,
+    roomType: "private",
+  },
+  {
+    id: "4",
+    name: "Ral",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Qué tal si nos vemos para tomar algo? 🍷",
+    timestamp: "2 h",
+    isOnline: false,
+    unreadCount: 1,
+    isPrivate: true,
+    roomType: "private",
+  },
+];
+
+// Public chats - salas comunitarias
+const publicChats: ChatUser[] = [
+  {
+    id: "101",
+    name: "🌍 Sala General Lifestyle",
+    image:
+      "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Bienvenidos a la comunidad swinger!",
+    timestamp: "10 min",
+    isOnline: true,
+    unreadCount: 5,
+    isPrivate: false,
+    roomType: "public",
+  },
+  {
+    id: "102",
+    name: "💕 Parejas CDMX",
+    image:
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Evento swinger este sábado en Polanco 🎊",
+    timestamp: "30 min",
+    isOnline: true,
+    unreadCount: 12,
+    isPrivate: false,
+    roomType: "public",
+  },
+  {
+    id: "103",
+    name: "💫 Singles Lifestyle",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Alguien para intercambio hoy?",
+    timestamp: "1 h",
+    isOnline: true,
+    unreadCount: 3,
+    isPrivate: false,
+    roomType: "public",
+  },
+  {
+    id: "104",
+    name: "🔒 Eventos Privados",
+    image:
+      "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Club exclusivo abre sus puertas",
+    timestamp: "2 h",
+    isOnline: true,
+    unreadCount: 8,
+    isPrivate: false,
+    roomType: "public",
+  },
+];
+
 const Chat = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -74,10 +181,6 @@ const Chat = () => {
   );
   const [messages, setMessages] = useState<SimpleChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showFileUpload, setShowFileUpload] = useState(false);
-  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
-  const [showConversationsMenu, setShowConversationsMenu] = useState(false);
   const [_isLoading, _setIsLoading] = useState(false);
   const [_isConnected, _setIsConnected] = useState(true);
   const [_connectionStatus, _setConnectionStatus] = useState<
@@ -540,110 +643,6 @@ const Chat = () => {
     }
   }, [chatPartnerId, location.key, selectedChat]);
 
-  // Private chats - conexiones verificadías
-  const privateChats: ChatUser[] = [
-    {
-      id: "1",
-      name: "Anabella & Julio",
-      image:
-        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Están libres este fin de semana? 🔥💕",
-      timestamp: "5 min",
-      isOnline: true,
-      unreadCount: 2,
-      isPrivate: true,
-      roomType: "private",
-    },
-    {
-      id: "2",
-      name: "Sofia",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Me encantó conocerlos en la fiesta 🎉✨",
-      timestamp: "1 h",
-      isOnline: true,
-      unreadCount: 0,
-      isPrivate: true,
-      roomType: "private",
-    },
-    {
-      id: "3",
-      name: "Carmen & Roberto",
-      image:
-        "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Vienen al evento VIP del sábado? 🌟",
-      timestamp: "3 h",
-      isOnline: false,
-      unreadCount: 0,
-      isPrivate: true,
-      roomType: "private",
-    },
-    {
-      id: "4",
-      name: "Ral",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Qué tal si nos vemos para tomar algo? 🍷",
-      timestamp: "2 h",
-      isOnline: false,
-      unreadCount: 1,
-      isPrivate: true,
-      roomType: "private",
-    },
-  ];
-
-  // Public chats - salas comunitarias
-  const publicChats: ChatUser[] = [
-    {
-      id: "101",
-      name: "🌍 Sala General Lifestyle",
-      image:
-        "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Bienvenidos a la comunidad swinger!",
-      timestamp: "10 min",
-      isOnline: true,
-      unreadCount: 5,
-      isPrivate: false,
-      roomType: "public",
-    },
-    {
-      id: "102",
-      name: "💕 Parejas CDMX",
-      image:
-        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Evento swinger este sábado en Polanco 🎊",
-      timestamp: "30 min",
-      isOnline: true,
-      unreadCount: 12,
-      isPrivate: false,
-      roomType: "public",
-    },
-    {
-      id: "103",
-      name: "💫 Singles Lifestyle",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Alguien para intercambio hoy?",
-      timestamp: "1 h",
-      isOnline: true,
-      unreadCount: 3,
-      isPrivate: false,
-      roomType: "public",
-    },
-    {
-      id: "104",
-      name: "🔒 Eventos Privados",
-      image:
-        "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Club exclusivo abre sus puertas",
-      timestamp: "2 h",
-      isOnline: true,
-      unreadCount: 8,
-      isPrivate: false,
-      roomType: "public",
-    },
-  ];
-
   useEffect(() => {
     const sourceChats = activeTab === "private" ? privateChats : publicChats;
     const mappedRooms: SimpleChatRoom[] = sourceChats.map((chat) => ({
@@ -737,9 +736,8 @@ const Chat = () => {
     };
   }, [selectedChat, user?.id, isProduction, activeRoomId, startMonitoring, stopMonitoring]);
 
-  const handleSendMessage = (content?: string) => {
-    const text = (content ?? newMessage).trim();
-    if (!selectedChat || !text) return;
+  const handleSendMessage = () => {
+    if (!selectedChat || !newMessage.trim()) return;
 
     // Bloquear envio si el chat est pausado por bajo consenso
     if (isPaused) {
@@ -755,7 +753,7 @@ const Chat = () => {
 
     // Usar datos reales en produccin, mock en demo
     if (isProduction) {
-      sendRealMessage(text).catch((err) => {
+      sendRealMessage(newMessage).catch((err) => {
         logger.error("Error en sendRealMessage:", { error: err });
       });
       return;
@@ -787,25 +785,13 @@ const Chat = () => {
       sender_id: "0",
       sender_name: "Tú",
       room_id: selectedChat.id.toString(),
-      content: text,
+      content: newMessage,
       created_at: new Date().toISOString(),
       message_type: "text",
     };
 
     setMessages((prev) => [...prev, message]);
     setNewMessage("");
-  };
-
-  // Adjuntos y voz (demo): se envían como mensaje con el nombre/duración.
-  // La subida real al bucket media queda pendiente.
-  const handleFilesSelected = (files: File[]) => {
-    setShowFileUpload(false);
-    files.forEach((file) => handleSendMessage(`📎 ${file.name}`));
-  };
-
-  const handleAudioReady = (_blob: Blob, duration: number) => {
-    setShowVoiceRecorder(false);
-    handleSendMessage(`🎤 Audio (${Math.round(duration)}s)`);
   };
 
   const checkMessagePermissions = (chat: ChatUser) => {
@@ -863,49 +849,16 @@ const Chat = () => {
                     variant="ghost"
                     size="sm"
                     className="text-white hover:bg-white/10"
-                    onClick={() => navigate("/video-chat")}
                   >
                     <Video className="h-4 w-4" />
                   </Button>
-                  <div className="relative">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-white hover:bg-white/10"
-                      onClick={() => setShowConversationsMenu((v) => !v)}
-                    >
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                    {showConversationsMenu && (
-                      <>
-                        <button
-                          aria-label="Cerrar menú"
-                          className="fixed inset-0 z-20 cursor-default"
-                          onClick={() => setShowConversationsMenu(false)}
-                        />
-                        <div className="absolute right-0 top-full mt-1 z-30 w-44 rounded-lg border border-white/20 bg-purple-950/95 backdrop-blur-md shadow-xl py-1">
-                          <button
-                            className="w-full text-left px-3 py-2 text-sm text-white hover:bg-white/10"
-                            onClick={() => {
-                              setShowConversationsMenu(false);
-                              navigate("/requests");
-                            }}
-                          >
-                            Solicitudes
-                          </button>
-                          <button
-                            className="w-full text-left px-3 py-2 text-sm text-white hover:bg-white/10"
-                            onClick={() => {
-                              setShowConversationsMenu(false);
-                              navigate("/discover");
-                            }}
-                          >
-                            Descubrir
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/10"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -1387,110 +1340,30 @@ const Chat = () => {
                     </div>
 
                     {/* Input de mensaje */}
-                    <div className="relative">
-                      {showEmojiPicker && (
-                        <div className="absolute bottom-full left-0 mb-2 z-20">
-                          <EmojiPicker
-                            onEmojiSelect={(emoji) =>
-                              setNewMessage((prev) => prev + emoji)
-                            }
-                            onClose={() => setShowEmojiPicker(false)}
-                          />
-                        </div>
-                      )}
-                      {showFileUpload && (
-                        <div className="absolute bottom-full left-0 mb-2 z-20">
-                          <ChatFileUpload
-                            onFileSelect={handleFilesSelected}
-                            onCancel={() => setShowFileUpload(false)}
-                          />
-                        </div>
-                      )}
-                      {showVoiceRecorder && (
-                        <div className="absolute bottom-full left-0 mb-2 z-20">
-                          <VoiceRecorder
-                            onAudioReady={handleAudioReady}
-                            onCancel={() => setShowVoiceRecorder(false)}
-                          />
-                        </div>
-                      )}
-                      <div className="flex gap-1 sm:gap-2 items-center">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-white/70 hover:bg-white/10 px-2"
-                          disabled={isPaused}
-                          onClick={() => {
-                            setShowFileUpload(false);
-                            setShowVoiceRecorder(false);
-                            setShowEmojiPicker((v) => !v);
-                          }}
-                        >
-                          <Smile className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-white/70 hover:bg-white/10 px-2"
-                          disabled={isPaused}
-                          onClick={() => {
-                            setShowEmojiPicker(false);
-                            setShowVoiceRecorder(false);
-                            setShowFileUpload(true);
-                          }}
-                        >
-                          <Paperclip className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-white/70 hover:bg-white/10 px-2"
-                          disabled={isPaused}
-                          onClick={() => {
-                            setShowEmojiPicker(false);
-                            setShowVoiceRecorder(false);
-                            setShowFileUpload(true);
-                          }}
-                        >
-                          <Image className="h-4 w-4" />
-                        </Button>
-                        <Input
-                          type="text"
-                          placeholder="Escribe tu mensaje..."
-                          value={newMessage}
-                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                            setNewMessage(e.target.value)
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        placeholder="Escribe tu mensaje..."
+                        value={newMessage}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          setNewMessage(e.target.value)
+                        }
+                        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                          if (e.key === "Enter" && !isPaused) {
+                            handleSendMessage();
                           }
-                          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                            if (e.key === "Enter" && !isPaused) {
-                              handleSendMessage();
-                            }
-                          }}
-                          className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
-                          disabled={isPaused}
-                        />
-                        <Button
-                          onClick={() => handleSendMessage()}
-                          disabled={!newMessage.trim() || isPaused}
-                          gradient={true}
-                          className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
-                        >
-                          <Send className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-white/70 hover:bg-white/10 px-2"
-                          disabled={isPaused}
-                          onClick={() => {
-                            setShowEmojiPicker(false);
-                            setShowFileUpload(false);
-                            setShowVoiceRecorder((v) => !v);
-                          }}
-                        >
-                          <Mic className="h-4 w-4" />
-                        </Button>
-                      </div>
+                        }}
+                        className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
+                        disabled={isPaused}
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        disabled={!newMessage.trim() || isPaused}
+                        gradient={true}
+                        className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
                     </div>
                     {isPaused && (
                       <p className="text-xs text-white/70 mt-2 text-center">

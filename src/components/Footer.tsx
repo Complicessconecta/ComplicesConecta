@@ -1,5 +1,9 @@
-import { Heart, Mail, MessageCircle, } from "lucide-react";
-import { IconBrandFacebook, IconBrandInstagram, IconBrandTwitter } from "@tabler/icons-react";
+import { Heart, Mail, MessageCircle } from "lucide-react";
+import {
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandTwitter,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { toast } from "@/hooks/useToast";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
@@ -21,8 +25,8 @@ export const Footer = () => {
             </div>
             <p className="text-background/80 mb-4 leading-relaxed">
               MX<strong>Primera app lifestyle en México</strong> con
-              implementación completa de Ley Olimpia. Plataforma Proximante líder para
-              conexiones auténticas con máxima Protección Digital.
+              implementación completa de Ley Olimpia. Plataforma Proximante
+              líder para conexiones auténticas con máxima Protección Digital.
             </p>
             <div className="flex space-x-3">
               <Button
@@ -186,9 +190,7 @@ export const Footer = () => {
               <div className="flex items-center space-x-3">
                 <MessageCircle className="h-4 w-4 text-primary" />
                 <button
-                  onClick={() =>
-                    safeOpenUrl("https://wa.me/5617184109")
-                  }
+                  onClick={() => safeOpenUrl("https://wa.me/5617184109")}
                   className="text-background/80 hover:text-primary transition-all duration-300 hover:scale-105 transform flex items-center space-x-2 group"
                 >
                   <span className="group-hover:animate-pulse">
@@ -242,8 +244,8 @@ export const Footer = () => {
         <div className="border-t border-background/20 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-background/60 text-sm">
-              2025 ComplicesConecta v4.0.0 - Sistema CMPX/GTK + World ID "Proximamente"
-              Integration. Todos los derechos reservados.
+              2025 ComplicesConecta v4.0.0 - Sistema CMPX/GTK + World ID
+              "Proximamente" Integration. Todos los derechos reservados.
             </div>
             <div className="flex space-x-6 text-sm">
               <Link

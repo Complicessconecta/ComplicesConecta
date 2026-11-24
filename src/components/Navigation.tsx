@@ -1,5 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles, Building2 } from "lucide-react";
+import {
+  Home,
+  MessageCircle,
+  Heart,
+  User,
+  Settings,
+  Coins,
+  Search,
+  UserPlus,
+  Sparkles,
+  Building2,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useFeatures } from "@/hooks/useFeatures";
 import { cn } from "@/shared/lib/cn";
@@ -30,7 +41,14 @@ export const Navigation = ({ className }: NavigationProps) => {
         { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
-          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          ? [
+              {
+                id: "clubs-demo",
+                icon: Building2,
+                label: "Clubs",
+                path: "/clubs/demo",
+              },
+            ]
           : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         {
@@ -54,7 +72,14 @@ export const Navigation = ({ className }: NavigationProps) => {
         { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
-          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          ? [
+              {
+                id: "clubs-demo",
+                icon: Building2,
+                label: "Clubs",
+                path: "/clubs/demo",
+              },
+            ]
           : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         { id: "matches", icon: Heart, label: "Matches", path: "/matches" },
@@ -102,7 +127,10 @@ export const Navigation = ({ className }: NavigationProps) => {
   }
 
   // Evitar doble navegación en páginas de Tokens (ya existe TokensSubnav)
-  if (location.pathname === "/tokens" || location.pathname.startsWith("/tokens")) {
+  if (
+    location.pathname === "/tokens" ||
+    location.pathname.startsWith("/tokens")
+  ) {
     return null;
   }
 

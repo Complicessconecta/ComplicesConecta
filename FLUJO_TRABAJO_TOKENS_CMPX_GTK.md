@@ -32,6 +32,7 @@ El sistema de tokens de CómplicesConecta implementa una **economía digital dua
 ### Propósito Principal
 
 Los tokens sirven como:
+
 - **Incentivo de participación:** Recompensas por referidos y actividad en la comunidad
 - **Acceso a funciones premium:** Super likes, boosts, contenido exclusivo
 - **Inversión y staking:** Generación de rewards pasivos
@@ -44,6 +45,7 @@ Los tokens sirven como:
 ### CMPX (Complices Platform eXperience)
 
 **Características:**
+
 - **Tipo:** Token interno (off-chain durante beta)
 - **Total Supply:** 1,000,000 CMPX
 - **Estado:** Activo en fase beta
@@ -51,6 +53,7 @@ Los tokens sirven como:
 - **Conversión:** Se convertirá 1:1 a GTK en producción
 
 **Funciones:**
+
 - Recompensas por referidos
 - Bienvenida de nuevos usuarios
 - Compra de funciones premium
@@ -59,6 +62,7 @@ Los tokens sirven como:
 ### GTK (Governance Token Key)
 
 **Características:**
+
 - **Tipo:** Token blockchain (ERC20)
 - **Total Supply:** 5,000,000 GTK
 - **Estado:** Pausado (activación en producción)
@@ -66,6 +70,7 @@ Los tokens sirven como:
 - **Red:** Polygon (L2 de Ethereum)
 
 **Funciones:**
+
 - Staking con APY competitivo (15-35%)
 - Gobernanza del protocolo
 - Liquidez en exchanges
@@ -82,14 +87,15 @@ Los tokens sirven como:
 ```typescript
 // Configuración de recompensas
 const TOKEN_CONFIG = {
-  REFERRAL_REWARD: 50,      // 50 CMPX por referido exitoso
-  WELCOME_BONUS: 50,        // 50 CMPX por usar código de referido
-  MONTHLY_LIMIT: 500,       // Límite mensual de ganancias
-  RESET_DAY: 1,              // Reset el día 1 de cada mes
+  REFERRAL_REWARD: 50, // 50 CMPX por referido exitoso
+  WELCOME_BONUS: 50, // 50 CMPX por usar código de referido
+  MONTHLY_LIMIT: 500, // Límite mensual de ganancias
+  RESET_DAY: 1, // Reset el día 1 de cada mes
 };
 ```
 
 **Flujo:**
+
 1. Usuario A genera código de referido único
 2. Usuario B se registra con código de A
 3. Sistema valida código y previene auto-referidos
@@ -97,6 +103,7 @@ const TOKEN_CONFIG = {
 5. Sistema verifica límite mensual (max 500 CMPX)
 
 **Validaciones:**
+
 - Código de referido único y no expirado
 - Usuario B no es auto-referido de A
 - Usuario B no ha usado el código antes
@@ -106,15 +113,16 @@ const TOKEN_CONFIG = {
 
 **Precios de compra (MXN):**
 
-| Cantidad | Precio (MXN) | Descuento | Precio/Token |
-|----------|---------------|-----------|--------------|
-| 100 CMPX | $20 MXN       | 0%        | $0.20        |
-| 500 CMPX | $90 MXN       | 10%       | $0.18        |
+| Cantidad   | Precio (MXN) | Descuento | Precio/Token |
+| ---------- | ------------ | --------- | ------------ |
+| 100 CMPX   | $20 MXN      | 0%        | $0.20        |
+| 500 CMPX   | $90 MXN      | 10%       | $0.18        |
 | 1,000 CMPX | $160 MXN     | 20%       | $0.16        |
 | 2,500 CMPX | $350 MXN     | 30%       | $0.14        |
 | 5,000 CMPX | $600 MXN     | 40%       | $0.12        |
 
 **Flujo:**
+
 1. Usuario selecciona paquete de CMPX
 2. Sistema procesa pago (integración con pasarela)
 3. Tokens se acreditan en wallet interna
@@ -124,25 +132,26 @@ const TOKEN_CONFIG = {
 
 #### A. Casos de Uso Principal
 
-| Función | Costo (CMPX) | Descripción |
-|---------|---------------|-------------|
-| Super Like | 10 | Destaca like entre otros usuarios |
-| Boost de Perfil | 50 | Aparece más en Discover por 24h |
-| Regalo Virtual (Básico) | 50 | Flores, chocolates virtuales |
-| Regalo Virtual (Premium) | 200 | Regalos personalizados |
-| Regalo Virtual (Lujo) | 500 | Regalos premium con efectos |
-| Video Llamada (15 min) | 75 | Sesión de video chat |
-| Video Llamada (30 min) | 120 | Sesión extendida |
-| Video Llamada (60 min) | 200 | Sesión premium |
-| Evento VIP (Entrada) | 200 | Acceso a evento exclusivo |
-| Evento VIP (Premium) | 500 | Acceso VIP con beneficios |
-| Evento VIP (Lujo) | 1,000 | Acceso exclusivo total |
-| Desbloquear Galería Privada | 100 | Acceso temporal a contenido |
-| Chat Premium (30 días) | 100 | Mensajes ilimitados |
-| Filtros Avanzados (30 días) | 75 | Búsquedas más precisas |
-| Likes Ilimitados (30 días) | 50 | Sin límites diarios |
+| Función                     | Costo (CMPX) | Descripción                       |
+| --------------------------- | ------------ | --------------------------------- |
+| Super Like                  | 10           | Destaca like entre otros usuarios |
+| Boost de Perfil             | 50           | Aparece más en Discover por 24h   |
+| Regalo Virtual (Básico)     | 50           | Flores, chocolates virtuales      |
+| Regalo Virtual (Premium)    | 200          | Regalos personalizados            |
+| Regalo Virtual (Lujo)       | 500          | Regalos premium con efectos       |
+| Video Llamada (15 min)      | 75           | Sesión de video chat              |
+| Video Llamada (30 min)      | 120          | Sesión extendida                  |
+| Video Llamada (60 min)      | 200          | Sesión premium                    |
+| Evento VIP (Entrada)        | 200          | Acceso a evento exclusivo         |
+| Evento VIP (Premium)        | 500          | Acceso VIP con beneficios         |
+| Evento VIP (Lujo)           | 1,000        | Acceso exclusivo total            |
+| Desbloquear Galería Privada | 100          | Acceso temporal a contenido       |
+| Chat Premium (30 días)      | 100          | Mensajes ilimitados               |
+| Filtros Avanzados (30 días) | 75           | Búsquedas más precisas            |
+| Likes Ilimitados (30 días)  | 50           | Sin límites diarios               |
 
 **Flujo de consumo:**
+
 1. Usuario selecciona función premium
 2. Sistema verifica balance suficiente
 3. Si balance suficiente → Deduce CMPX
@@ -160,17 +169,19 @@ const TOKEN_CONFIG = {
 ### 3. Gestión de Balance
 
 **Interfaz TokenBalance:**
+
 ```typescript
 interface TokenBalance {
   userId: string;
-  cmpxBalance: number;      // Balance actual CMPX
-  gtkBalance: number;       // Balance actual GTK (futuro)
-  stakedAmount: number;     // Cantidad staked
-  lastUpdated: string;      // Timestamp de última actualización
+  cmpxBalance: number; // Balance actual CMPX
+  gtkBalance: number; // Balance actual GTK (futuro)
+  stakedAmount: number; // Cantidad staked
+  lastUpdated: string; // Timestamp de última actualización
 }
 ```
 
 **Flujo de actualización:**
+
 1. Cache local (5 minutos TTL)
 2. Verificación en base de datos
 3. Actualización de balance
@@ -184,12 +195,14 @@ interface TokenBalance {
 ### 1. Activación de GTK (Producción)
 
 **Conversión CMPX → GTK:**
+
 - Ratio 1:1 (1 CMPX = 1 GTK)
 - Automática al migrar a blockchain
 - Preserva historial de transacciones
 - Mantiene ownership de tokens
 
 **Smart Contracts:**
+
 - Token ERC20 en Polygon
 - Contratos de staking
 - Contratos de rewards
@@ -199,15 +212,16 @@ interface TokenBalance {
 
 **Opciones de Staking:**
 
-| Duración | APY | Mínimo | Penalidad |
-|----------|-----|--------|-----------|
-| 30 días   | 15% | 100 GTK | 5%        |
-| 90 días   | 20% | 100 GTK | 5%        |
-| 180 días  | 25% | 100 GTK | 5%        |
-| 270 días  | 30% | 100 GTK | 5%        |
-| 365 días  | 35% | 100 GTK | 5%        |
+| Duración | APY | Mínimo  | Penalidad |
+| -------- | --- | ------- | --------- |
+| 30 días  | 15% | 100 GTK | 5%        |
+| 90 días  | 20% | 100 GTK | 5%        |
+| 180 días | 25% | 100 GTK | 5%        |
+| 270 días | 30% | 100 GTK | 5%        |
+| 365 días | 35% | 100 GTK | 5%        |
 
 **Flujo de Staking:**
+
 1. Usuario selecciona duración y cantidad
 2. Sistema verifica balance GTK suficiente
 3. Usuario aprueba transacción en wallet
@@ -217,22 +231,24 @@ interface TokenBalance {
 7. Rewards se distribuyen automáticamente
 
 **Cálculo de Rewards:**
+
 ```typescript
 // Fórmula de rewards
-const dailyReward = (stakedAmount * apy / 100) / 365;
+const dailyReward = (stakedAmount * apy) / 100 / 365;
 const totalReward = dailyReward * daysStaked;
 ```
 
 **Interfaz StakingRecommendation:**
+
 ```typescript
 interface StakingRecommendation {
   userId: string;
-  recommendedStake: number;    // Cantidad recomendada
-  predictedAPY: number;        // APY predicho
-  riskLevel: 'low' | 'medium' | 'high';
-  timeframe: string;            // Duración recomendada
-  confidence: number;          // Confianza (0-1)
-  reasoning: string;           // Explicación de IA
+  recommendedStake: number; // Cantidad recomendada
+  predictedAPY: number; // APY predicho
+  riskLevel: "low" | "medium" | "high";
+  timeframe: string; // Duración recomendada
+  confidence: number; // Confianza (0-1)
+  reasoning: string; // Explicación de IA
 }
 ```
 
@@ -240,14 +256,14 @@ interface StakingRecommendation {
 
 **Total Supply:** 5,000,000 GTK
 
-| Categoría | Porcentaje | Cantidad | Descripción |
-|-----------|------------|----------|-------------|
-| Venta Pública (ICO/IDO) | 40% | 2,000,000 | Inversores y usuarios tempranos |
-| Staking Rewards Pool | 20% | 1,000,000 | Recompensas para stakers |
-| Team y Desarrollo | 15% | 750,000 | Vesting 3 años |
-| Liquidez en Exchanges | 10% | 500,000 | DEX/CEX para comercio |
-| Marketing y Partnerships | 10% | 500,000 | Alianzas estratégicas |
-| Reserva de Emergencias | 5% | 250,000 | Desarrollo futuro |
+| Categoría                | Porcentaje | Cantidad  | Descripción                     |
+| ------------------------ | ---------- | --------- | ------------------------------- |
+| Venta Pública (ICO/IDO)  | 40%        | 2,000,000 | Inversores y usuarios tempranos |
+| Staking Rewards Pool     | 20%        | 1,000,000 | Recompensas para stakers        |
+| Team y Desarrollo        | 15%        | 750,000   | Vesting 3 años                  |
+| Liquidez en Exchanges    | 10%        | 500,000   | DEX/CEX para comercio           |
+| Marketing y Partnerships | 10%        | 500,000   | Alianzas estratégicas           |
+| Reserva de Emergencias   | 5%         | 250,000   | Desarrollo futuro               |
 
 ---
 
@@ -272,6 +288,7 @@ Usuario B (Referee)
 ```
 
 **Validaciones implementadas:**
+
 - Código único por usuario
 - Prevención de auto-referidos
 - Verificación de IP (mismo IP = sospechoso)
@@ -282,6 +299,7 @@ Usuario B (Referee)
 ### 2. Bienvenida
 
 **Bonus de bienvenida:**
+
 - 50 CMPX al usar código de referido válido
 - Solo una vez por usuario
 - Se acredita inmediatamente después de registro exitoso
@@ -289,6 +307,7 @@ Usuario B (Referee)
 ### 3. World ID (Futuro)
 
 **Integración planificada:**
+
 - Verificación de identidad humana con Worldcoin
 - 100 CMPX adicionales por verificar
 - Tecnología blockchain para privacidad
@@ -301,6 +320,7 @@ Usuario B (Referee)
 ### 1. Super Like
 
 **Flujo:**
+
 1. Usuario ve perfil en Discover
 2. Toca botón "Super Like" (icono corazón)
 3. Sistema verifica balance (10 CMPX)
@@ -315,6 +335,7 @@ Usuario B (Referee)
 ### 2. Boost de Perfil
 
 **Flujo:**
+
 1. Usuario compra boost (50 CMPX)
 2. Sistema activa boost por 24 horas
 3. Perfil aparece más en Discover (algoritmo modificado)
@@ -326,11 +347,13 @@ Usuario B (Referee)
 ### 3. Regalos Virtuales
 
 **Niveles de regalos:**
+
 - **Básico (50 CMPX):** Flores, chocolates, corazones
 - **Premium (200 CMPX):** Regalos personalizados
 - **Lujo (500 CMPX):** Regalos con efectos especiales
 
 **Flujo:**
+
 1. Usuario selecciona regalo en chat
 2. Sistema verifica balance
 3. Si balance suficiente:
@@ -344,11 +367,13 @@ Usuario B (Referee)
 ### 4. Video Llamadas
 
 **Duraciones y costos:**
+
 - 15 min: 75 CMPX
 - 30 min: 120 CMPX
 - 60 min: 200 CMPX
 
 **Flujo:**
+
 1. Usuario solicita videollamada
 2. Sistema verifica balance
 3. Si balance suficiente:
@@ -362,11 +387,13 @@ Usuario B (Referee)
 ### 5. Eventos VIP
 
 **Niveles de acceso:**
+
 - **Entrada (200 CMPX):** Acceso básico
 - **Premium (500 CMPX):** Acceso + beneficios extra
 - **Lujo (1,000 CMPX):** Acceso total + experiencias exclusivas
 
 **Flujo:**
+
 1. Usuario compra entrada
 2. Sistema genera ticket único
 3. Ticket se guarda en wallet
@@ -389,31 +416,36 @@ class TokenService {
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
   // Obtener balance de tokens
-  async getTokenBalance(userId: string): Promise<TokenBalance>
+  async getTokenBalance(userId: string): Promise<TokenBalance>;
 
   // Generar recomendación de staking con IA
-  async getStakingRecommendation(userId: string): Promise<StakingRecommendation>
+  async getStakingRecommendation(
+    userId: string,
+  ): Promise<StakingRecommendation>;
 
   // Explicar transacción con IA
   async explainTransaction(
     transactionHash: string,
-    transactionType: 'stake' | 'unstake' | 'transfer' | 'reward',
+    transactionType: "stake" | "unstake" | "transfer" | "reward",
     amount: number,
-    tokenType: 'CMPX' | 'GTK',
-    userId: string
-  ): Promise<TransactionExplanation>
+    tokenType: "CMPX" | "GTK",
+    userId: string,
+  ): Promise<TransactionExplanation>;
 
   // Predecir uso de tokens con IA
-  async predictTokenUsage(userId: string): Promise<TokenUsagePrediction>
+  async predictTokenUsage(userId: string): Promise<TokenUsagePrediction>;
 
   // Simular staking (en producción interactúa con contratos)
-  async simulateStake(userId: string, amount: number): Promise<{
+  async simulateStake(
+    userId: string,
+    amount: number,
+  ): Promise<{
     success: boolean;
     transactionHash: string;
     newBalance: number;
     stakedAmount: number;
     estimatedAPY: number;
-  }>
+  }>;
 }
 ```
 
@@ -448,6 +480,7 @@ async predictTokenUsage(userId: string): Promise<TokenUsagePrediction> {
 ```
 
 **Factores analizados:**
+
 - Uso diario promedio
 - Tendencia de consumo (creciente/decreciente/estable)
 - Tipos de transacciones más frecuentes
@@ -457,6 +490,7 @@ async predictTokenUsage(userId: string): Promise<TokenUsagePrediction> {
 ### 3. Recomendaciones de Staking con IA
 
 **Prompt de IA:**
+
 ```
 Analiza el siguiente perfil de usuario y genera una recomendación de staking:
 
@@ -476,6 +510,7 @@ Responde en formato JSON.
 ```
 
 **Salida esperada:**
+
 ```json
 {
   "recommendedStake": 1000,
@@ -490,6 +525,7 @@ Responde en formato JSON.
 ### 4. Explicación de Transacciones con IA
 
 **Flujo:**
+
 1. Usuario solicita explicación de transacción
 2. Sistema construye prompt con detalles
 3. IA genera explicación amigable
@@ -497,6 +533,7 @@ Responde en formato JSON.
 5. Explicación se muestra al usuario
 
 **Ejemplo de prompt:**
+
 ```
 Explica esta transacción de blockchain en términos simples para un usuario de CómplicesConecta:
 
@@ -581,6 +618,7 @@ CREATE TABLE staking_positions (
 ### 3. Cache
 
 **Estrategia de cache:**
+
 - Balance: 5 minutos TTL
 - Recomendaciones de staking: 10 minutos TTL
 - Predicciones de uso: 15 minutos TTL
@@ -589,6 +627,7 @@ CREATE TABLE staking_positions (
 ### 4. Integración Blockchain (Futuro)
 
 **Smart Contracts:**
+
 ```
 contracts/
 ├── GTKToken.sol          # Token ERC20
@@ -598,6 +637,7 @@ contracts/
 ```
 
 **Interacción:**
+
 - Web3.js / Ethers.js para conectar wallet
 - Polygon network (L2)
 - Gas optimization con Layer 2
@@ -610,12 +650,14 @@ contracts/
 ### 1. Validaciones de Referidos
 
 **Prevención de abuso:**
+
 - Auto-referidos: Verificar IP y device fingerprint
 - Múltiples cuentas: Detección de patrones sospechosos
 - Límites mensales: 500 CMPX por usuario
 - Expiración de códigos: Opcional, configurable
 
 **Validación de código:**
+
 ```typescript
 async validateReferralCode(code: string, userId: string): Promise<boolean> {
   // 1. Verificar que el código existe
@@ -645,6 +687,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 ### 2. Validaciones de Transacciones
 
 **Checks antes de cada transacción:**
+
 1. Verificar balance suficiente
 2. Verificar que el usuario es el propietario
 3. Verificar que el token no está staked
@@ -655,6 +698,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 ### 3. Seguridad de Smart Contracts
 
 **Prácticas de seguridad:**
+
 - Auditoría de contratos (Certik, OpenZeppelin)
 - Pruebas exhaustivas (unit tests, integration tests)
 - Time locks para cambios críticos
@@ -664,6 +708,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 ### 4. Prevención de Ataques
 
 **Ataques prevenidos:**
+
 - **Replay attacks:** Nonces en transacciones
 - **Front-running:** Commit-reveal scheme
 - **Flash loan attacks:** Límites de retiro
@@ -675,6 +720,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 ## 🗺️ Roadmap Blockchain
 
 ### Fase 1: Beta (Actual)
+
 - ✅ CMPX off-chain
 - ✅ Sistema de referidos
 - ✅ Casos de uso premium
@@ -682,6 +728,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 - ⏳ World ID integration (en desarrollo)
 
 ### Fase 2: Pre-Launch
+
 - ⏳ Auditoría de smart contracts
 - ⏳ Testnet deployment (Polygon Mumbai)
 - ⏳ Beta testing con usuarios seleccionados
@@ -689,6 +736,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 - ⏳ KYC/AML compliance
 
 ### Fase 3: Launch
+
 - ⏳ Conversión CMPX → GTK (1:1)
 - ⏳ Mainnet deployment (Polygon)
 - ⏳ Liquidez en DEX (Uniswap)
@@ -696,6 +744,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 - ⏳ Marketing y community building
 
 ### Fase 4: Post-Launch
+
 - ⏳ Gobernanza descentralizada (DAO)
 - ⏳ Integración con otros protocolos DeFi
 - ⏳ NFTs premium con beneficios GTK
@@ -709,6 +758,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 ### Métricas de Usuario
 
 **Por usuario:**
+
 - Balance promedio CMPX
 - Frecuencia de uso de tokens
 - Casos de uso más populares
@@ -718,6 +768,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 ### Métricas Globales
 
 **Del ecosistema:**
+
 - Total CMPX en circulación
 - Total CMPX staked
 - Distribución de tokens (Gini coefficient)
@@ -727,6 +778,7 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 ### Métricas de Staking
 
 **Cuando GTK esté activo:**
+
 - Total GTK staked
 - APY promedio
 - Duración promedio de staking
@@ -740,24 +792,28 @@ async validateReferralCode(code: string, userId: string): Promise<boolean> {
 El sistema de tokens CMPX & GTK de CómplicesConecta implementa una economía digital robusta y escalable:
 
 **CMPX (Beta):**
+
 - Incentiva participación en la comunidad
 - Facilita acceso a funciones premium
 - Prepara usuarios para economía blockchain
 - Integración con IA para personalización
 
 **GTK (Producción):**
+
 - Permite staking con APY competitivo
 - Habilita gobernanza descentralizada
 - Ofrece liquidez en exchanges
 - Crea valor a largo plazo
 
 **Integración con IA:**
+
 - Predicciones personalizadas de uso
 - Recomendaciones de staking inteligentes
 - Explicaciones amigables de transacciones
 - Análisis de comportamiento del usuario
 
 **Seguridad:**
+
 - Validaciones múltiples en referidos
 - Prevención de abuso y fraudes
 - Auditoría de smart contracts
@@ -790,21 +846,21 @@ Este sistema está diseñado para escalar desde una economía off-chain en beta 
 
 No se inventan cifras nuevas. Donde las cifras anteriores entran en conflicto con el modelo vigente, quedan marcadas como **desactualizado — pendiente de nueva distribución**. No debe usarse ninguna de ellas para decisiones de producto, economía o despliegue hasta que el propietario defina la nueva distribución.
 
-| Tema | Cifra anterior | Ubicación | Estado |
-|---|---|---|---|
-| Suministro de CMPX | 1,000,000 CMPX | Este documento, sección "Tipos de Tokens" (CMPX) | **Desactualizado — pendiente de nueva distribución.** El modelo vigente es un token interno sin límite de suministro. |
-| Suministro de CMPX | "Suministro Ilimitado" | `docs/strategy/GUIA_TOKENS.md`, sección CMPX | Coincide en espíritu con el modelo vigente (sin límite), pero la distribución asociada a esa cifra en el mismo documento sigue desactualizada (ver fila siguiente). |
-| Suministro de CMPX | `MAX_SUPPLY = 1_250_000_000` (1.25B) | `contracts/CMPX.sol`, líneas 35-36 (el comentario del encabezado del mismo archivo, línea 21, dice 1,000,000,000 / 1B, en contradicción con el propio `MAX_SUPPLY`) | **Desactualizado — pendiente de nueva distribución.** Es el tope de la distribución anterior y debe ajustarse antes de cualquier despliegue. El contrato **no está desplegado**. |
-| Distribución de CMPX | 60% venta directa / 25% referidos y actividades / 10% eventos y promociones / 5% reserva | `docs/strategy/GUIA_TOKENS.md`, sección "Distribución de CMPX" | **Desactualizado — pendiente de nueva distribución.** Corresponde a la distribución anterior, rehcha por el propietario. |
-| Suministro de GTK | 5,000,000 GTK | Este documento, secciones "Tipos de Tokens" (GTK) y "Distribución de GTK" | **Desactualizado — pendiente de nueva distribución.** El token de blockchain es un token separado cuya cadena y distribución aún no están definidos. |
-| Distribución de GTK | 40% venta pública (2,000,000) / 20% staking rewards (1,000,000) / 15% team y desarrollo (750,000) / 10% liquidez (500,000) / 10% marketing y partnerships (500,000) / 5% reserva (250,000) | Este documento, "Distribución de GTK"; misma tabla de porcentajes en `docs/strategy/GUIA_TOKENS.md`, "Distribución Futura de GTK en Blockchain" | **Desactualizado — pendiente de nueva distribución.** |
-| Suministro de GTK | "Cantidad fija predefinida (a anunciarse en lanzamiento blockchain)" y, en el roadmap del mismo documento, "Hard Cap: 2,000,000 GTK / Soft Cap: 500,000 GTK" | `docs/strategy/GUIA_TOKENS.md`, secciones GTK y "Roadmap Blockchain (Q2-Q4 2026)", Fase 2 | **Desactualizado — pendiente de nueva distribución.** El hard cap de 2,000,000 además contradice el suministro de 5,000,000 de este documento. |
-| Conversión CMPX → GTK | 1:1 (1 CMPX = 1 GTK) | Este documento, secciones "Tipos de Tokens" (CMPX), "Activación de GTK" y "Roadmap Blockchain", Fase 3 | **Desactualizado — pendiente de nueva distribución.** No hay tasa de conversión vigente. |
-| Conversión CMPX → GTK | 100 CMPX = 1 GTK (Ejemplo 3) | `docs/strategy/GUIA_TOKENS.md`, "Ejemplo 3: Usuario Convierte CMPX a GTK" | **Desactualizado — pendiente de nueva distribución.** Además contradice el 1:1 de este documento. |
-| Transferibilidad de CMPX en beta | "No transferible durante beta" / "No transferibles: CMPX no se pueden transferir entre usuarios" | Este documento, secciones "Tipos de Tokens" (CMPX) y "Flujo de Trabajo CMPX", "Límites y Restricciones" | **Desactualizado — pendiente de nueva distribución.** Contradice a `docs/strategy/GUIA_TOKENS.md` (ver fila siguiente); no hay regla vigente definida. |
-| Transferibilidad de CMPX | "Transferible entre usuarios: envío de tokens como regalo entre miembros de la comunidad" | `docs/strategy/GUIA_TOKENS.md`, sección CMPX | **Desactualizado — pendiente de nueva distribución.** Contradice la no transferibilidad declarada en este documento. |
-| Staking APY | 15-35% según duración (30 días: 15%, 90 días: 20%, 180 días: 25%, 270 días: 30%, 365 días: 35%) | Este documento, "Staking GTK" | **Desactualizado — pendiente de nueva distribución.** |
-| Staking APY | 8-18% según duración (90 días: 8%, 180 días: 12%, 365 días: 18%) | `docs/strategy/GUIA_TOKENS.md`, secciones GTK, "¿Cómo Funcionan los Tokens en la App Actualmente?" y ejemplos de staking | **Desactualizado — pendiente de nueva distribución.** Además contradice el 15-35% de este documento. |
+| Tema                             | Cifra anterior                                                                                                                                                                             | Ubicación                                                                                                                                                           | Estado                                                                                                                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Suministro de CMPX               | 1,000,000 CMPX                                                                                                                                                                             | Este documento, sección "Tipos de Tokens" (CMPX)                                                                                                                    | **Desactualizado — pendiente de nueva distribución.** El modelo vigente es un token interno sin límite de suministro.                                                            |
+| Suministro de CMPX               | "Suministro Ilimitado"                                                                                                                                                                     | `docs/strategy/GUIA_TOKENS.md`, sección CMPX                                                                                                                        | Coincide en espíritu con el modelo vigente (sin límite), pero la distribución asociada a esa cifra en el mismo documento sigue desactualizada (ver fila siguiente).              |
+| Suministro de CMPX               | `MAX_SUPPLY = 1_250_000_000` (1.25B)                                                                                                                                                       | `contracts/CMPX.sol`, líneas 35-36 (el comentario del encabezado del mismo archivo, línea 21, dice 1,000,000,000 / 1B, en contradicción con el propio `MAX_SUPPLY`) | **Desactualizado — pendiente de nueva distribución.** Es el tope de la distribución anterior y debe ajustarse antes de cualquier despliegue. El contrato **no está desplegado**. |
+| Distribución de CMPX             | 60% venta directa / 25% referidos y actividades / 10% eventos y promociones / 5% reserva                                                                                                   | `docs/strategy/GUIA_TOKENS.md`, sección "Distribución de CMPX"                                                                                                      | **Desactualizado — pendiente de nueva distribución.** Corresponde a la distribución anterior, rehcha por el propietario.                                                         |
+| Suministro de GTK                | 5,000,000 GTK                                                                                                                                                                              | Este documento, secciones "Tipos de Tokens" (GTK) y "Distribución de GTK"                                                                                           | **Desactualizado — pendiente de nueva distribución.** El token de blockchain es un token separado cuya cadena y distribución aún no están definidos.                             |
+| Distribución de GTK              | 40% venta pública (2,000,000) / 20% staking rewards (1,000,000) / 15% team y desarrollo (750,000) / 10% liquidez (500,000) / 10% marketing y partnerships (500,000) / 5% reserva (250,000) | Este documento, "Distribución de GTK"; misma tabla de porcentajes en `docs/strategy/GUIA_TOKENS.md`, "Distribución Futura de GTK en Blockchain"                     | **Desactualizado — pendiente de nueva distribución.**                                                                                                                            |
+| Suministro de GTK                | "Cantidad fija predefinida (a anunciarse en lanzamiento blockchain)" y, en el roadmap del mismo documento, "Hard Cap: 2,000,000 GTK / Soft Cap: 500,000 GTK"                               | `docs/strategy/GUIA_TOKENS.md`, secciones GTK y "Roadmap Blockchain (Q2-Q4 2026)", Fase 2                                                                           | **Desactualizado — pendiente de nueva distribución.** El hard cap de 2,000,000 además contradice el suministro de 5,000,000 de este documento.                                   |
+| Conversión CMPX → GTK            | 1:1 (1 CMPX = 1 GTK)                                                                                                                                                                       | Este documento, secciones "Tipos de Tokens" (CMPX), "Activación de GTK" y "Roadmap Blockchain", Fase 3                                                              | **Desactualizado — pendiente de nueva distribución.** No hay tasa de conversión vigente.                                                                                         |
+| Conversión CMPX → GTK            | 100 CMPX = 1 GTK (Ejemplo 3)                                                                                                                                                               | `docs/strategy/GUIA_TOKENS.md`, "Ejemplo 3: Usuario Convierte CMPX a GTK"                                                                                           | **Desactualizado — pendiente de nueva distribución.** Además contradice el 1:1 de este documento.                                                                                |
+| Transferibilidad de CMPX en beta | "No transferible durante beta" / "No transferibles: CMPX no se pueden transferir entre usuarios"                                                                                           | Este documento, secciones "Tipos de Tokens" (CMPX) y "Flujo de Trabajo CMPX", "Límites y Restricciones"                                                             | **Desactualizado — pendiente de nueva distribución.** Contradice a `docs/strategy/GUIA_TOKENS.md` (ver fila siguiente); no hay regla vigente definida.                           |
+| Transferibilidad de CMPX         | "Transferible entre usuarios: envío de tokens como regalo entre miembros de la comunidad"                                                                                                  | `docs/strategy/GUIA_TOKENS.md`, sección CMPX                                                                                                                        | **Desactualizado — pendiente de nueva distribución.** Contradice la no transferibilidad declarada en este documento.                                                             |
+| Staking APY                      | 15-35% según duración (30 días: 15%, 90 días: 20%, 180 días: 25%, 270 días: 30%, 365 días: 35%)                                                                                            | Este documento, "Staking GTK"                                                                                                                                       | **Desactualizado — pendiente de nueva distribución.**                                                                                                                            |
+| Staking APY                      | 8-18% según duración (90 días: 8%, 180 días: 12%, 365 días: 18%)                                                                                                                           | `docs/strategy/GUIA_TOKENS.md`, secciones GTK, "¿Cómo Funcionan los Tokens en la App Actualmente?" y ejemplos de staking                                            | **Desactualizado — pendiente de nueva distribución.** Además contradice el 15-35% de este documento.                                                                             |
 
 ### 11.3 Notas
 

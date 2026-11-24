@@ -9,6 +9,7 @@
 ## 1. Seguridad (src/) – Auditoría estática
 
 ### H001 – Uso de `innerHTML` (XSS potencial)
+
 - **Ruta(s):**
   - `src/tests/security/media-access.test.ts`
   - `src/security/session-pinning.ts` (solo set de HTML fijo para adblock test)
@@ -20,11 +21,13 @@
   - En `session-pinning.ts`: mantener solo contenido fijo (sin interpolación externa).
 
 ### H002 – `dangerouslySetInnerHTML` (inyección CSS)
+
 - **Ruta(s):** no encontrado en `src/` en el estado actual.
 - **Síntoma:** N/A.
 - **Solución:** N/A.
 
 ### H003 – Scripts externos (supply-chain / CSP)
+
 - **Ruta(s) referenciadas por auditoría:**
   - `src/services/social/notifications/OneSignalService.ts`
   - `src/config/posthog.config.ts`
@@ -34,6 +37,7 @@
   - Si hay warnings por falta de config: asegurar feature flags y carga condicional.
 
 ### H004 – `localStorage` para demo
+
 - **Ruta(s) referenciadas por auditoría:**
   - `src/services/payments/NFTService.ts`
 - **Síntoma:** persistencia local para datos demo.
@@ -46,6 +50,7 @@
 ## 2. Type-Safety / Eliminación de `as any` (progreso)
 
 ### TS001 – Uso de `(supabase as any)` en servicios/páginas
+
 - **Ruta(s) (pendientes según barrido):**
   - `src/services/social/InvitationsService.ts`
   - `src/services/social/chat/ChatPrivacyService.ts`
@@ -65,6 +70,7 @@
 ## 3. Estructura / Duplicados / Barrels
 
 ### ST001 – Duplicado AppLayout
+
 - **Ruta(s):**
   - `src/components/AppLayout.tsx`
   - `src/layouts/AppLayout.tsx`
@@ -75,6 +81,7 @@
   - Verificar build/lint.
 
 ### ST002 – Proxy innecesario ChatPrivacyService
+
 - **Ruta(s):**
   - `src/services/chat/ChatPrivacyService.ts` (proxy)
   - `src/services/social/chat/ChatPrivacyService.ts` (real)
@@ -88,6 +95,7 @@
 ## 4. Planificación DB (ANTES de migrar: verificar local/remoto)
 
 ### DB001 – Tablas sugeridas por planificación (Match)
+
 - **Tablas:** `likes`, `matches`
 - **Síntoma:** features core dependen de estas tablas.
 - **Solución:**
@@ -95,6 +103,7 @@
   - Solo si faltan: crear migración idempotente + policies.
 
 ### DB002 – Clubs (expansión)
+
 - **Tablas/ajustes planificados:** `club_profiles` + related (events/discounts/etc.)
 - **Síntoma:** roadmap de clubs requiere tablas.
 - **Solución:**
@@ -106,6 +115,7 @@
 ## 5. Verificación obligatoria (local y remoto)
 
 ### Local (Docker Desktop / Supabase local)
+
 - **Requisito:** Docker Desktop activo.
 - **Objetivo:** confirmar tablas/columnas/policies existentes antes de tocar migraciones.
 - **Checkpoints:**
@@ -114,11 +124,13 @@
   - Consultas a `information_schema.tables/columns` y `pg_policies`.
 
 **Resultado (LOCAL):**
+
 - **Tablas existentes (ejemplos):** `admin_users`, `clubs`, `club_applications`, `club_events`, `reports`.
 - **RLS habilitado (confirmado):** `admin_users`, `clubs`, `club_applications`, `club_events`, `reports`.
 - **Tablas NO existentes (confirmado):** `likes`, `matches`, `profile_likes`, `user_tokens`, `transactions`, `invitations`, `chat_messages`, `club_profiles`.
 
 ### Remoto (Supabase project)
+
 - **Objetivo:** confirmar que remoto no tiene drift vs local.
 - **Checkpoints:**
   - `supabase link --project-ref <ref>`
@@ -126,6 +138,7 @@
   - Consultas SQL a `pg_policies`/`pg_tables`.
 
 **Resultado (REMOTO):**
+
 - Se generó dump de schema remoto: `docs-unified/auditorias/REMOTE_SCHEMA_public.sql`.
 - Búsqueda en el dump (CREATE TABLE / ENABLE RLS / CREATE POLICY) para:
   - `likes`, `matches`, `profile_likes`, `user_tokens`, `transactions`, `invitations`, `chat_messages`, `club_profiles`

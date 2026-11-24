@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, FileText, Scale, Lock, ScrollText } from "lucide-react";
+import {
+  LayoutDashboard,
+  FileText,
+  Scale,
+  Lock,
+  ScrollText,
+} from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 
 export const TokensSubnav = () => {
@@ -19,7 +25,9 @@ export const TokensSubnav = () => {
   if (!hasSession) return null;
 
   const tabs = [
-    ...(hasSession ? [{ name: "Dashboard", path: "/tokens", icon: LayoutDashboard }] : []),
+    ...(hasSession
+      ? [{ name: "Dashboard", path: "/tokens", icon: LayoutDashboard }]
+      : []),
     { name: "Info", path: "/tokens-info", icon: FileText },
     { name: "Legal", path: "/tokens-legal", icon: Scale },
     { name: "Privacidad", path: "/tokens-privacy", icon: Lock },

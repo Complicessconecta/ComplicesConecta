@@ -11,6 +11,7 @@
 Se realizó un audit de seguridad completo en la base de datos de Supabase para CómplicesConecta, identificando y mitigando vulnerabilidades críticas relacionadas con la implementación de Stripe Wrapper y configuración general de seguridad.
 
 **Estado General:**
+
 - ✅ Tablas sin RLS: 0 (todas protegidas)
 - ⚠️ Credenciales expuestas: 1 (Stripe - requiere acción)
 - ✅ Permisos de schema: Restringidos (stripe, private)
@@ -25,16 +26,19 @@ Se realizó un audit de seguridad completo en la base de datos de Supabase para 
 **Estado:** RESUELTO
 
 **Tablas afectadas:**
+
 - `public.app_config`
 - `public.invitation_templates`
 - `public.user_roles`
 
 **Riesgo:**
+
 - Cualquier usuario autenticado podría acceder/modificar datos sensibles
 - Configuración de la aplicación expuesta
 - Roles de usuario manipulables
 
 **Mitigación aplicada:**
+
 ```sql
 -- RLS habilitado en todas las tablas
 ALTER TABLE public.app_config ENABLE ROW LEVEL SECURITY;
@@ -48,6 +52,7 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ```
 
 **Políticas RLS creadas:**
+
 - `Service role can manage app config`
 - `Authenticated users can read app config`
 - `Admin can view invitation templates`
@@ -64,6 +69,7 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 **Estado:** PARCIALMENTE MITIGADO
 
 **Vulnerabilidad:**
+
 ```sql
 -- Credenciales en texto plano en pg_foreign_server
 SELECT srvname, srvoptions FROM pg_foreign_server WHERE srvname = 'stripe_server';
@@ -75,16 +81,19 @@ stripe_server| {api_key=sk_live_YOUR_STRIPE_SECRET_KEY_HERE,...}
 ```
 
 **Riesgo:**
+
 - Cualquier usuario con acceso a `pg_foreign_server` puede ver la clave
 - Clave expuesta en backups de base de datos
 - Violación de compliance (PCI DSS, SOC 2)
 
 **Mitigación actual:**
+
 - ✅ Scripts de migración usan placeholders (`sk_live_YOUR_STRIPE_SECRET_KEY_HERE`)
 - ✅ Schema `stripe` restringido (solo postgres)
 - ✅ Foreign tables no accesibles via API
 
 **Acción requerida:**
+
 1. **Rotar credenciales inmediatamente:**
    - Ir a Stripe Dashboard
    - Revocar clave actual (`sk_live_YOUR_CURRENT_STRIPE_KEY`)
@@ -92,6 +101,7 @@ stripe_server| {api_key=sk_live_YOUR_STRIPE_SECRET_KEY_HERE,...}
    - Actualizar en base de datos
 
 2. **Implementar Vault (cuando esté disponible):**
+
    ```sql
    -- Migración a Vault
    INSERT INTO vault.secrets (name, description, secret)
@@ -100,7 +110,7 @@ stripe_server| {api_key=sk_live_YOUR_STRIPE_SECRET_KEY_HERE,...}
      'Stripe Secret Key for CómplicesConecta',
      'sk_live_NEW_KEY_HERE'
    );
-   
+
    -- Actualizar server
    ALTER SERVER stripe_server OPTIONS (
      SET api_key_id 'stripe_api_key',
@@ -121,6 +131,7 @@ stripe_server| {api_key=sk_live_YOUR_STRIPE_SECRET_KEY_HERE,...}
 **Estado:** RESUELTO
 
 **Vulnerabilidad inicial:**
+
 ```sql
 -- Schema stripe sin restricciones
 SELECT nspname, nspacl FROM pg_namespace WHERE nspname = 'stripe';
@@ -132,10 +143,12 @@ stripe  | (vacío - acceso público)
 ```
 
 **Riesgo:**
+
 - Cualquier usuario podría acceder a foreign tables
 - Datos financieros expuestos via API
 
 **Mitigación aplicada:**
+
 ```sql
 -- Revocar acceso público
 REVOKE ALL ON SCHEMA stripe FROM PUBLIC;
@@ -151,9 +164,9 @@ DO $$
 DECLARE
   table_rec RECORD;
 BEGIN
-  FOR table_rec IN 
-    SELECT foreign_table_name 
-    FROM information_schema.foreign_tables 
+  FOR table_rec IN
+    SELECT foreign_table_name
+    FROM information_schema.foreign_tables
     WHERE foreign_table_schema = 'stripe'
   LOOP
     EXECUTE format('REVOKE ALL ON TABLE stripe.%I FROM PUBLIC', table_rec.foreign_table_name);
@@ -165,10 +178,11 @@ END $$;
 ```
 
 **Estado actual:**
+
 ```sql
-SELECT nspname, 
+SELECT nspname,
        CASE WHEN nspacl::text LIKE '%PUBLIC%' THEN 'PUBLIC ACCESS' ELSE 'RESTRICTED' END as access
-FROM pg_namespace 
+FROM pg_namespace
 WHERE nspname IN ('stripe', 'private');
 
 -- Resultado:
@@ -184,21 +198,21 @@ private | RESTRICTED
 
 ### Antes del Hardening
 
-| Métrica | Valor | Estado |
-|---------|-------|--------|
-| Tablas sin RLS | 3 | 🔴 CRÍTICO |
-| Credenciales expuestas | 1 | 🔴 CRÍTICO |
-| Schemas públicos | 2 | 🟡 MEDIO |
-| Políticas RLS | 84 | 🟢 BIEN |
+| Métrica                | Valor | Estado     |
+| ---------------------- | ----- | ---------- |
+| Tablas sin RLS         | 3     | 🔴 CRÍTICO |
+| Credenciales expuestas | 1     | 🔴 CRÍTICO |
+| Schemas públicos       | 2     | 🟡 MEDIO   |
+| Políticas RLS          | 84    | 🟢 BIEN    |
 
 ### Después del Hardening
 
-| Métrica | Valor | Estado |
-|---------|-------|--------|
-| Tablas sin RLS | 0 | 🟢 RESUELTO |
-| Credenciales expuestas | 1 | 🟡 REQUIERE ACCIÓN |
-| Schemas públicos | 0 | 🟢 RESUELTO |
-| Políticas RLS | 91 | 🟢 BIEN (+7 nuevas) |
+| Métrica                | Valor | Estado              |
+| ---------------------- | ----- | ------------------- |
+| Tablas sin RLS         | 0     | 🟢 RESUELTO         |
+| Credenciales expuestas | 1     | 🟡 REQUIERE ACCIÓN  |
+| Schemas públicos       | 0     | 🟢 RESUELTO         |
+| Políticas RLS          | 91    | 🟢 BIEN (+7 nuevas) |
 
 ---
 
@@ -207,6 +221,7 @@ private | RESTRICTED
 ### 1. Row Level Security Extendido
 
 **Nuevas políticas RLS:**
+
 - `app_config`: 2 políticas
 - `invitation_templates`: 2 políticas
 - `user_roles`: 3 políticas
@@ -216,11 +231,13 @@ private | RESTRICTED
 ### 2. Restricción de Schemas Privados
 
 **Schema `stripe`:**
+
 - ✅ Revocado acceso de PUBLIC, anon, authenticated
 - ✅ Solo postgres tiene acceso
 - ✅ Foreign tables protegidas
 
 **Schema `private`:**
+
 - ✅ Revocado acceso de PUBLIC, anon, authenticated
 - ✅ Solo postgres y service_role tienen acceso
 - ✅ Materialized views protegidas
@@ -228,6 +245,7 @@ private | RESTRICTED
 ### 3. Scripts de Mitigación
 
 **Archivos creados:**
+
 - `20260113000002_security_hardening.sql` - Script completo con Vault
 - `20260113000002_security_hardening_simple.sql` - Script simplificado (ejecutado)
 
@@ -238,6 +256,7 @@ private | RESTRICTED
 ### 1. Credenciales Stripe - CRÍTICO
 
 **Acción inmediata:**
+
 ```bash
 # 1. Rotar credenciales en Stripe Dashboard
 # 2. Actualizar en base de datos
@@ -248,6 +267,7 @@ ALTER SERVER stripe_server OPTIONS (
 ```
 
 **Acción a largo plazo:**
+
 - Implementar Vault cuando esté disponible
 - Usar variables de entorno en Edge Functions
 - Configurar rotación automática de credenciales
@@ -257,6 +277,7 @@ ALTER SERVER stripe_server OPTIONS (
 **Riesgo:** Datos desactualizados en `private.stripe_products` y `private.stripe_prices`
 
 **Recomendación:**
+
 ```sql
 -- Implementar pg_cron para refresh automático
 SELECT cron.schedule(
@@ -274,6 +295,7 @@ SELECT cron.schedule(
 **Riesgo:** Views en `public` sin SECURITY BARRIER (PostgreSQL < 15)
 
 **Recomendación:**
+
 - Actualizar a PostgreSQL 15+ cuando esté disponible
 - Usar SECURITY BARRIER en todas las views
 - Implementar funciones SECURITY DEFINER para queries complejos
@@ -283,6 +305,7 @@ SELECT cron.schedule(
 **Riesgo:** No hay registro de cambios en tablas críticas
 
 **Recomendación:**
+
 ```sql
 -- Crear tabla de audit log
 CREATE TABLE security.audit_log (
@@ -349,20 +372,20 @@ FOR EACH ROW EXECUTE FUNCTION security.audit_trigger();
 SELECT 'Security Audit Results' as report_type, NOW() as generated_at;
 
 -- Tablas sin RLS
-SELECT schemaname, tablename, rowsecurity 
-FROM pg_tables 
+SELECT schemaname, tablename, rowsecurity
+FROM pg_tables
 WHERE schemaname = 'public' AND rowsecurity = false;
 
 -- Credenciales expuestas
-SELECT srvname, 
+SELECT srvname,
        CASE WHEN srvoptions::text LIKE '%api_key=%sk_%' THEN 'CRITICAL' ELSE 'OK' END as status
-FROM pg_foreign_server 
+FROM pg_foreign_server
 WHERE srvname LIKE '%stripe%';
 
 -- Permisos de schema
-SELECT nspname, 
+SELECT nspname,
        CASE WHEN nspacl::text LIKE '%PUBLIC%' THEN 'PUBLIC ACCESS' ELSE 'RESTRICTED' END as access
-FROM pg_namespace 
+FROM pg_namespace
 WHERE nspname IN ('stripe', 'private');
 ```
 
@@ -426,21 +449,21 @@ ALTER SERVER stripe_server OPTIONS (
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!);
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!);
 
 serve(async (req) => {
-  const signature = req.headers.get('stripe-signature');
-  const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
-  
+  const signature = req.headers.get("stripe-signature");
+  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+
   const event = stripe.webhooks.constructEvent(
     await req.text(),
     signature,
-    webhookSecret
+    webhookSecret,
   );
 
   // Manejar eventos
   switch (event.type) {
-    case 'payment_intent.succeeded':
+    case "payment_intent.succeeded":
       await handlePaymentSucceeded(event.data.object);
       break;
     // ... más eventos
@@ -523,16 +546,16 @@ DECLARE
 BEGIN
   DELETE FROM security.rate_limits
   WHERE window_end < NOW();
-  
+
   INSERT INTO security.rate_limits (user_id, endpoint, request_count, window_start, window_end)
   VALUES (p_user_id, p_endpoint, 1, NOW(), NOW() + (p_window_minutes || ' minutes')::INTERVAL)
   ON CONFLICT (user_id, endpoint, window_start) DO UPDATE
   SET request_count = rate_limits.request_count + 1;
-  
+
   SELECT request_count INTO v_request_count
   FROM security.rate_limits
   WHERE user_id = p_user_id AND endpoint = p_endpoint;
-  
+
   RETURN v_request_count <= p_max_requests;
 END;
 $$;
@@ -563,11 +586,13 @@ $$;
 ### Estado General
 
 ✅ **Mitigaciones aplicadas exitosamente:**
+
 - RLS habilitado en todas las tablas críticas
 - Schemas privados restringidos
 - Políticas de acceso granulares implementadas
 
 ⚠️ **Acciones requeridas:**
+
 - Rotar credenciales Stripe inmediatamente (CRÍTICO)
 - Implementar Vault para gestión de credenciales
 - Configurar refresh automático de materialized views

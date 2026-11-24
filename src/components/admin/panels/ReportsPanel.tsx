@@ -7,7 +7,13 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ExclamationTriangleIcon, CheckCircleIcon, XCircleIcon, ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import {
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ClockIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 import { reportService } from "@/services";
 import { logger } from "@/lib/logger";
 
@@ -32,7 +38,9 @@ export const ReportsPanel: React.FC = () => {
   const [filter, setFilter] = useState<FilterType>("all");
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [_selectedReport, _setSelectedReport] = useState<LocalReport | null>(null);
+  const [_selectedReport, _setSelectedReport] = useState<LocalReport | null>(
+    null,
+  );
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   // Usar reportService importado directamente
@@ -330,4 +338,3 @@ export const ReportsPanel: React.FC = () => {
     </div>
   );
 };
-

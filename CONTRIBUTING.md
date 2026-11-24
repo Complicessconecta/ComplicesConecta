@@ -248,27 +248,32 @@ Descripción clara de los cambios realizados.
 ComplicesConecta implementa múltiples capas de seguridad para proteger datos sensibles y prevenir ataques:
 
 #### **Protección de Datos**
+
 - **Encriptación AES-256**: Datos en reposo y tránsito protegidos con encriptación de nivel bancario
 - **TLS 1.3**: Todas las conexiones seguras con protocolo TLS 1.3
 - **Row Level Security (RLS)**: 65+ políticas RLS activas protegiendo acceso a datos sensibles
 - **Enmascaramiento de Datos**: Emails enmascarados en logs (ab***@domain.com), datos sensibles protegidos
 
 #### **Protección contra Ataques**
+
 - **Protección Anti-DDoS**: Rate limiting de 100 requests/minuto, bloqueo automático de IPs maliciosas
 - **Protección XSS**: Escapado de HTML en todos los outputs, Content Security Policy configurada
 - **Protección Anti-Inyección SQL**: Sanitización de inputs, validación de formatos, triggers automáticos
 
 #### **Autenticación y Autorización**
+
 - **Autenticación Biométrica**: Huella digital y Face ID, MFA opcional para usuarios premium
 - **JWT Tokens**: Expiración configurable (1 hora por defecto) con firma RS256
 - **Gestión de Administradores**: Tabla `admin_users` con RLS estricto, auditoría completa de cambios
 
 #### **Auditoría y Monitoreo**
+
 - **Monitoreo 24/7**: Detección de actividad sospechosa, alertas automáticas
 - **Auditoría Forense**: Tabla `security_audit_log` con logging de eventos de seguridad
 - **Detección de Actividad Sospechosa**: Múltiples IPs en corto tiempo, alta tasa de requests
 
 #### **Cumplimiento Legal**
+
 - **GDPR/LFPDPPP + Ley Olimpia**: Cumplimiento completo con regulaciones de protección de datos
 - **ISO 27001 Ready**: Preparado para certificación ISO 27001
 - **SOC 2 Type II Ready**: Preparado para auditoría SOC 2 Type II
@@ -277,29 +282,32 @@ ComplicesConecta implementa múltiples capas de seguridad para proteger datos se
 ### **Directrices de Seguridad para Contribuidores**
 
 #### **Nunca exponer datos sensibles**
+
 - ❌ No incluir emails, contraseñas, tokens o API keys en el código
 - ❌ No loggear datos sensibles en producción
 - ❌ No hardcodear credenciales en archivos de configuración
 
 #### **Usar variables de entorno**
+
 ```typescript
 // ✅ CORRECTO
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // ❌ INCORRECTO
-const supabaseUrl = 'https://xxx.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+const supabaseUrl = "https://xxx.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 ```
 
 #### **Validar y sanitizar inputs**
+
 ```typescript
 // ✅ CORRECTO
-import { sanitizeInput, is_valid_email } from '@/lib/security';
+import { sanitizeInput, is_valid_email } from "@/lib/security";
 
 const email = sanitizeInput(userInput);
 if (!is_valid_email(email)) {
-  throw new Error('Email inválido');
+  throw new Error("Email inválido");
 }
 
 // ❌ INCORRECTO
@@ -307,6 +315,7 @@ const email = userInput; // Sin validación ni sanitización
 ```
 
 #### **Usar políticas RLS en Supabase**
+
 ```sql
 -- ✅ CORRECTO
 CREATE POLICY "Users can view own data" ON sensitive_table
@@ -320,13 +329,16 @@ CREATE POLICY "All users can view all data" ON sensitive_table
 ```
 
 #### **Reportar vulnerabilidades de seguridad**
+
 Si encuentras una vulnerabilidad de seguridad, por favor repórtala de manera responsable:
+
 - 📧 Email: security@complicesconecta.com
 - 📋 Incluye: Descripción detallada, pasos para reproducir, impacto sugerido
 - ⏱️ Respuesta: Dentro de 48 horas
 - 🎁 Recompensa: Bug bounty para vulnerabilidades críticas
 
 ### **Documentación de Seguridad**
+
 - [Medidas de Seguridad v3.8.0](docs/legal/SECURITY_MEASURES_V3.8.0.md) - Documentación completa de seguridad
 - [Auditoría de Seguridad](AUDITORIA_SRC_COMPLETA.md) - Auditoría exhaustiva de código y base de datos
 - [Política de Proveedores](docs/legal/SUPPLIER_SECURITY_POLICY.md) - Política de seguridad para proveedores

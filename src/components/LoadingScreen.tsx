@@ -83,10 +83,7 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
 
         {/* Progress Bar */}
         <div className="progress-bar-container">
-          <div
-            ref={progressFillRef}
-            className="progress-bar-fill"
-          >
+          <div ref={progressFillRef} className="progress-bar-fill">
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
           </div>
         </div>
@@ -97,12 +94,8 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         {/* Loading Dots */}
         <div className="flex justify-center mt-6 space-x-2">
           <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce"></div>
-          <div
-            className="w-3 h-3 bg-white/60 rounded-full animate-bounce loading-dot-delay-1"
-          ></div>
-          <div
-            className="w-3 h-3 bg-white/60 rounded-full animate-bounce loading-dot-delay-2"
-          ></div>
+          <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce loading-dot-delay-1"></div>
+          <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce loading-dot-delay-2"></div>
         </div>
       </div>
 

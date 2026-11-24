@@ -3,7 +3,7 @@
 **Fecha:** Enero 10, 2026  
 **Versión:** v3.8.0  
 **Estado:** Production Ready Enhanced  
-**Puntuación de Seguridad:** 100/100  
+**Puntuación de Seguridad:** 100/100
 
 ---
 
@@ -38,13 +38,13 @@ CómplicesConecta implementa una arquitectura de seguridad multicapa diseñada p
 
 ### Encriptación
 
-| Tipo de Datos | Método | Ubicación |
-|---------------|--------|-----------|
-| Datos en reposo | AES-256 | Supabase PostgreSQL |
-| Datos en tránsito | TLS 1.3 | Todas las conexiones |
-| Contraseñas | bcrypt (cost factor 12) | Base de datos |
-| Tokens | JWT con firma RS256 | Autenticación |
-| Datos biométricos | AES-256 + HMAC | LocalStorage encriptado |
+| Tipo de Datos     | Método                  | Ubicación               |
+| ----------------- | ----------------------- | ----------------------- |
+| Datos en reposo   | AES-256                 | Supabase PostgreSQL     |
+| Datos en tránsito | TLS 1.3                 | Todas las conexiones    |
+| Contraseñas       | bcrypt (cost factor 12) | Base de datos           |
+| Tokens            | JWT con firma RS256     | Autenticación           |
+| Datos biométricos | AES-256 + HMAC          | LocalStorage encriptado |
 
 ### Row Level Security (RLS)
 
@@ -87,10 +87,13 @@ CREATE POLICY "Users can view own data" ON sensitive_table
 
 ```typescript
 // Validación de acceso a datos sensibles
-function hasAccessToSensitiveData(targetUserId: UUID, dataType: string): boolean {
-    // Usuario siempre puede acceder a sus propios datos
-    // Admins pueden acceder a cualquier dato
-    // Validación por tipo de dato: email, phone, financial
+function hasAccessToSensitiveData(
+  targetUserId: UUID,
+  dataType: string,
+): boolean {
+  // Usuario siempre puede acceder a sus propios datos
+  // Admins pueden acceder a cualquier dato
+  // Validación por tipo de dato: email, phone, financial
 }
 ```
 
@@ -201,12 +204,12 @@ function hasAccessToSensitiveData(targetUserId: UUID, dataType: string): boolean
 
 ### Métricas de Seguridad
 
-| Métrica | Valor | Objetivo |
-|---------|-------|----------|
-| Tiempo de respuesta a incidentes | <1 hora | <30 min |
-| Uptime | 99.9% | 99.99% |
-| Vulnerabilidades críticas | 0 | 0 |
-| Intentos de ataque bloqueados | 100% | 100% |
+| Métrica                          | Valor   | Objetivo |
+| -------------------------------- | ------- | -------- |
+| Tiempo de respuesta a incidentes | <1 hora | <30 min  |
+| Uptime                           | 99.9%   | 99.99%   |
+| Vulnerabilidades críticas        | 0       | 0        |
+| Intentos de ataque bloqueados    | 100%    | 100%     |
 
 ---
 
@@ -284,18 +287,21 @@ $$;
 ## 📈 Roadmap de Seguridad
 
 ### Q1 2026
+
 - [ ] Implementación de 2FA obligatorio para admins
 - [ ] Integración con SOC 2 Type II
 - [ ] Penetration testing externo
 - [ ] Implementación de WebAuthn
 
 ### Q2 2026
+
 - [ ] Machine learning para detección de fraudes
 - [ ] Integración con SIEM
 - [ ] Automatización de respuesta a incidentes
 - [ ] Auditoría continua de seguridad
 
 ### Q3 2026
+
 - [ ] Implementación de Zero Trust Architecture
 - [ ] Integración con IAM enterprise
 - [ ] Advanced Threat Protection
@@ -328,8 +334,8 @@ Aceptamos reportes de vulnerabilidades a través de nuestro programa de Bug Boun
 
 **Última actualización:** Enero 10, 2026  
 **Próxima revisión:** Abril 2026  
-**Versión:** v3.8.0  
+**Versión:** v3.8.0
 
 ---
 
-*Este documento es confidencial y está destinado solo para uso interno y para inversores autorizados.*
+_Este documento es confidencial y está destinado solo para uso interno y para inversores autorizados._

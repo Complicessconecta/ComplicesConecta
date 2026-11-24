@@ -38,34 +38,42 @@ Esto normalmente indica:
 ### Lista de tablas/views faltantes en tipos + rutas donde se usan (revalidado)
 
 #### `chat_permissions`
+
 - **Ruta**: `src/services/social/chat/ChatPrivacyService.ts`
 - **Síntoma**: Uso de `.from("chat_permissions")` pero no existe en `Database.public.Tables`.
 
 #### `chat_requests`
+
 - **Ruta**: `src/services/social/chat/ChatPrivacyService.ts`
 - **Síntoma**: Uso de `.from("chat_requests")` pero no existe en `Database.public.Tables`.
 
 #### `club_applications`
+
 - **Ruta**: `src/pages/Clubs.tsx`
 - **Síntoma**: Uso de `.from("club_applications")` pero no existe en `Database.public.Tables`.
 
 #### `content_permissions`
+
 - **Ruta**: `src/services/auth/auth/ContentProtectionService.ts`
 - **Síntoma**: Uso de `.from("content_permissions")` pero no existe en `Database.public.Tables`.
 
 #### `content_violations`
+
 - **Ruta**: `src/services/auth/auth/ContentProtectionService.ts`
 - **Síntoma**: Uso de `.from("content_violations")` pero no existe en `Database.public.Tables`.
 
 #### `couple_profiles_with_partners`
+
 - **Ruta**: `src/features/profile/coupleProfilesCompatibility.ts`
 - **Síntoma**: Uso de `.from("couple_profiles_with_partners")` pero no existe en `Database.public.Tables`.
 
 #### `gallery_access`
+
 - **Ruta**: `src/services/social/chat/ChatPrivacyService.ts`
 - **Síntoma**: Uso de `.from("gallery_access")` pero no existe en `Database.public.Tables`.
 
 #### `partner_requests`
+
 - **Ruta**: `src/components/clubs/PartnerRequestModal.tsx`
 - **Síntoma**: Uso de `.from("partner_requests")` pero no existe en `Database.public.Tables`.
 

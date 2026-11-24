@@ -21,9 +21,9 @@
 
 ## TABLA DE ARCHIVOS IDENTIFICADOS
 
-| Archivo | Ruta | Síntoma | Justificación | Estado |
-|---------|------|---------|---------------|--------|
-| (Se llenará durante la auditoría) | | | | |
+| Archivo                           | Ruta | Síntoma | Justificación | Estado |
+| --------------------------------- | ---- | ------- | ------------- | ------ |
+| (Se llenará durante la auditoría) |      |         |               |        |
 
 ---
 
@@ -32,12 +32,14 @@
 ### src/ai
 
 #### AIWorker.ts
+
 - **Ruta:** `src/ai/AIWorker.ts`
 - **Síntoma:** Uso de `as any` en línea 86 (`private engine: any | null = null;`)
 - **Justificación:** Tipado laxo para evitar problemas con versiones futuras de WebLLM. Es aceptable según reglas del proyecto.
 - **Estado:** ✅ ACEPTABLE - Documentado en BARRIDO_SRC_ESTADO.md
 
 #### useLocalAI.ts
+
 - **Ruta:** `src/ai/useLocalAI.ts`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Hook React bien estructurado, imports correctos desde `./AIWorker`
@@ -46,24 +48,28 @@
 ### src/components
 
 #### ui/buttons/Button.tsx
+
 - **Ruta:** `src/components/ui/buttons/Button.tsx`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Componente Button bien estructurado con variantes, imports correctos desde @radix-ui y @/shared/lib/cn
 - **Estado:** ✅ CORRECTO
 
 #### ui/cards/Card.tsx
+
 - **Ruta:** `src/components/ui/cards/Card.tsx`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Componente Card bien estructurado con subcomponentes, imports correctos desde @/shared/lib/cn
 - **Estado:** ✅ CORRECTO
 
 #### ui/Modal.tsx
+
 - **Ruta:** `src/components/ui/Modal.tsx`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Componente Modal bien estructurado usando @radix-ui/react-dialog, exports compatibles con código existente
 - **Estado:** ✅ CORRECTO
 
 #### ui/index.ts
+
 - **Ruta:** `src/components/ui/index.ts`
 - **Síntoma:** Exporta UnifiedModal desde @/components/modals/UnifiedModal (ubicación diferente)
 - **Justificación:** Exporta componentes de múltiples ubicaciones, pero es intencional para centralizar exports
@@ -72,62 +78,74 @@
 ### src/features
 
 #### auth/useAuth.ts
+
 - **Ruta:** `src/features/auth/useAuth.ts`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Hook useAuth bien estructurado con manejo de tokens, sesión y perfil. Imports correctos desde @/integrations/supabase/client, @/lib/app-config, @/lib/storage-manager, @/lib/logger, @/hooks/usePersistedState, @/config/datadog-rum.config, @/types/supabase-custom
 - **Estado:** ✅ CORRECTO
 
 #### auth/useBiometricAuth.ts
+
 - **Ruta:** `src/features/auth/useBiometricAuth.ts`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Hook useBiometricAuth bien estructurado usando @capacitor/core y @capgo/capacitor-native-biometric. Imports correctos desde @/hooks/usePersistedState, @/lib/logger
 - **Estado:** ✅ CORRECTO
 
 #### chat/useChatSummary.ts
+
 - **Ruta:** `src/features/chat/useChatSummary.ts`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Hook useChatSummary bien estructurado. Imports correctos desde @/features/chat/ChatSummaryService, @/features/auth/useAuth, @/lib/logger
 - **Estado:** ✅ CORRECTO
 
 #### chat/ChatSummaryService.ts
+
 - **Ruta:** `src/features/chat/ChatSummaryService.ts`
 - **Síntoma:** Sin síntomas detectados
 - **Justificación:** Servicio ChatSummaryService bien estructurado con integración OpenAI y HuggingFace. Imports correctos desde @/integrations/supabase/client, @/lib/logger, @/types/chat-summary.types
 - **Estado:** ✅ CORRECTO
 
 ### src/hooks
+
 **Estado:** ✅ VERIFICADO - Sin síntomas detectados
 **Archivos analizados:** useTokens.ts, useAdvancedCache.ts, useAdvancedModeration.ts, index.ts, usePersistedState.ts, useToast.ts, useInterests.ts
 **Resultado:** Todos los hooks están bien estructurados con imports correctos, sin duplicados ni conflictos
 
 ### src/integrations
+
 **Estado:** ✅ VERIFICADO - Sin síntomas detectados
 **Archivos analizados:** wallet/WalletConsentInjection.tsx, supabase/client.ts, supabase/types.ts
 **Resultado:** Todos los archivos están bien estructurados con imports correctos, sin duplicados ni conflictos
 
 ### src/layouts
+
 **Estado:** ✅ VERIFICADO - Sin síntomas detectados
 **Archivos analizados:** ResponsiveLayout.tsx (en ambos src/layouts y src/components/layout)
 **Resultado:** Ambos archivos son intencionales para arquitectura responsive, no hay duplicados
 
 ### src/lib
+
 **Estado:** ✅ VERIFICADO - Sin síntomas detectados
 **Archivos analizados:** logger.ts, env-utils.ts, utils.ts, tokenPremium.ts, images.ts, index.ts
 **Resultado:** Todos los archivos están bien estructurados con imports correctos, sin duplicados ni conflicts
 
 ### src/pages
+
 **Estado:** ✅ VERIFICADO - Sin síntomas detectados
 **Archivos analizados:** Discover.tsx, Chat.tsx, Clubs.tsx, Invest.tsx, ModeratorDashboard.tsx, y otros archivos de páginas
 **Resultado:** Todos los archivos están bien estructurados con imports correctos, sin duplicados ni conflicts
 
 ### src/services
+
 **Estado:** ✅ VERIFICADO - Sin síntomas detectados
 **Archivos analizados:** TokenService.ts, AdvancedCacheService.ts, ContentModerationService.ts, MatchService.ts, ChatSummaryService.ts, y otros servicios
 **Resultado:** Todos los servicios están bien estructurados con imports correctos, sin duplicados ni conflicts
 
 ### src/types
+
 **Estado:** ⚠️ DUPLICIDADES IDENTIFICADAS
 **Archivos con síntomas:**
+
 - supabase.ts (266KB) - Principal
 - supabase-remote.ts (261KB) - Duplicado
 - supabase-updated.ts (261KB) - Duplicado
@@ -148,6 +166,7 @@
 **Resultado:** No se encontraron coincidencias significativas entre archivos de diferentes directorios.
 
 **Excepciones documentadas:**
+
 1. **ResponsiveLayout.tsx** - Existe en `src/layouts` y `src/components/layout` (intencional para arquitectura responsive)
 2. **Archivos de tipos Supabase** - Múltiples archivos duplicados en `src/types` (ya documentados en BARRIDO_SRC_ESTADO.md)
 
@@ -158,6 +177,7 @@
 **Resultado:** No se requiere consolidación adicional.
 
 **Justificación:**
+
 1. Solo se encontraron duplicidades en `src/types` (ya documentadas y decididas mantener)
 2. ResponsiveLayout en dos ubicaciones es intencional para arquitectura responsive
 3. Todos los demás directorios están verificados sin síntomas
@@ -172,6 +192,7 @@
 **Estado:** ✅ COMPLETADO
 
 ### Directorios auditados:
+
 - ✅ src/ai - VERIFICADO (2 archivos)
 - ✅ src/components - VERIFICADO (múltiples archivos)
 - ✅ src/features - VERIFICADO (múltiples archivos)
@@ -184,15 +205,18 @@
 - ⚠️ src/types - DUPLICIDADES IDENTIFICADAS (10 archivos)
 
 ### Archivos con síntomas:
+
 1. **AIWorker.ts** - Uso de `as any` (aceptable)
 2. **Archivos de tipos Supabase** - 10 archivos duplicados (ya documentados en BARRIDO_SRC_ESTADO.md)
 
 ### Decisión:
+
 - Mantener todos los archivos como están
 - Las duplicidades en types están documentadas y no causan errores
 - Build, type-check y lint pasan sin problemas
 
 ### Verificación:
+
 - `npm run type-check`: ✅ PASADO
 - `npm run lint`: ✅ PASADO
 
@@ -210,6 +234,7 @@
 #### 1. MEMORY LEAKS - setInterval sin cleanup
 
 **Archivos afectados:**
+
 - `src/services/auth/mfa/MFAService.ts` (línea 322-327)
 - `src/services/auth/security/SecurityMonitor.ts` (línea 234-249)
 - `src/middleware/rateLimiter.ts` (línea 117-120)
@@ -237,6 +262,7 @@
 **Justificación:** Los setInterval globales (en archivos de servicio) nunca se limpian, acumulando timers indefinidamente. Los setInterval en hooks React sin cleanup causan memory leaks cuando el componente se desmonta.
 
 **Solución:**
+
 1. Para servicios globales: Implementar método `cleanup()` que detenga todos los intervalos
 2. Para hooks React: Usar `useEffect` con cleanup function que llame `clearInterval`
 
@@ -251,6 +277,7 @@
 **Síntoma:** Credenciales biométricas y sesiones almacenadas en localStorage sin encriptación
 
 **Justificación:**
+
 - Línea 872: `localStorage.setItem('biometric_credential_${userId}', credentialId)` - credenciales en texto plano
 - Línea 880: `localStorage.getItem('biometric_credential_${userId}')` - lectura sin desencriptar
 - Línea 894: `localStorage.setItem('biometric_session_${sessionId}', JSON.stringify(session))` - sesiones en texto plano
@@ -269,6 +296,7 @@
 **Síntoma:** Validaciones de código MFA son placeholders que aceptan cualquier código
 
 **Justificación:**
+
 - Línea 164-168: `verifyTOTP` solo verifica que el código tenga 6 dígitos numéricos
 - Línea 177-181: `verifySMS` solo verifica que el código tenga 6 dígitos numéricos
 - Línea 190-193: `verifyEmail` solo verifica que el código tenga 8 caracteres
@@ -287,6 +315,7 @@
 **Síntoma:** Datos sensibles expuestos en logs
 
 **Justificación:**
+
 - Línea 145: `fullData: JSON.stringify(data, null, 2)` - expone todo el perfil del usuario en logs
 - Línea 502-509: Logs detallados de verificación de admin con emails y roles
 
@@ -303,6 +332,7 @@
 **Síntoma:** Operaciones de like y match sin control de concurrencia
 
 **Justificación:**
+
 - Línea 48-50: Insert de like sin control de concurrencia
 - Línea 83-88: Verificación de like mutuo sin locking
 - Línea 119-127: Creación de match sin control de duplicados (solo ignora error 23505)
@@ -320,6 +350,7 @@
 **Síntoma:** Flujo de chat permite acceso sin verificación de match mutuo
 
 **Justificación:**
+
 - Línea 34-54: `canChat` verifica permisos de chat pero no verifica match mutuo
 - Línea 110-129: `hasGalleryAccess` verifica permisos pero no verifica match mutuo
 
@@ -336,6 +367,7 @@
 **Síntoma:** Map sin límite de tamaño para caché de métricas
 
 **Justificación:**
+
 - Línea 95: `private intervalCache: Map<string, ReturnType<typeof setInterval>>` - sin límite
 - Línea 96: `private readonly CACHE_TTL = 5 * 60 * 1000` - TTL pero no cleanup automático
 
@@ -352,6 +384,7 @@
 **Síntoma:** Validación insuficiente de IDs de usuario
 
 **Justificación:**
+
 - Línea 37-43: Validación básica de IDs pero no valida formato UUID
 - Línea 198-202: Validación de UUID solo en `getMatchedUserIds` pero no en otros métodos
 
@@ -364,16 +397,19 @@
 ### ✅ FLUJOS CORRECTOS
 
 #### 1. Flujo de autenticación
+
 - **Estado:** ✅ CORRECTO
 - **Archivos:** `src/features/auth/useAuth.ts`
 - **Justificación:** Flujo completo con manejo de sesión demo y real, cleanup adecuado en signOut
 
 #### 2. Flujo de matching
+
 - **Estado:** ✅ CORRECTO
 - **Archivos:** `src/services/social/MatchService.ts`
 - **Justificación:** Flujo completo de like → verificación de match mutuo → creación de match
 
 #### 3. Flujo de biometría
+
 - **Estado:** ⚠️ PARCIALMENTE CORRECTO
 - **Archivos:** `src/features/auth/useBiometricAuth.ts`, `src/lib/multimediaSecurity.ts`
 - **Justificación:** Flujo completo pero con brecha de seguridad en almacenamiento de credenciales
@@ -395,11 +431,11 @@
 
 ### 📊 RESUMEN DE SEVERIDAD
 
-| Severidad | Cantidad | Problemas |
-|-----------|----------|-----------|
-| 🔴 CRÍTICA | 2 | LocalStorage sin encriptación, MFA placeholder |
-| 🔴 ALTA | 1 | Memory leaks por setInterval sin cleanup |
-| 🟡 MEDIA | 5 | Logs con datos sensibles, race conditions, bypass de gating, Map sin límite, validación insuficiente |
+| Severidad  | Cantidad | Problemas                                                                                            |
+| ---------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| 🔴 CRÍTICA | 2        | LocalStorage sin encriptación, MFA placeholder                                                       |
+| 🔴 ALTA    | 1        | Memory leaks por setInterval sin cleanup                                                             |
+| 🟡 MEDIA   | 5        | Logs con datos sensibles, race conditions, bypass de gating, Map sin límite, validación insuficiente |
 
 ---
 
@@ -429,6 +465,7 @@
 **Síntoma:** Política SELECT permite acceso total sin restricciones
 
 **Código:**
+
 ```sql
 CREATE POLICY token_analytics_read ON token_analytics FOR SELECT
     USING (TRUE);
@@ -439,6 +476,7 @@ CREATE POLICY token_analytics_read ON token_analytics FOR SELECT
 **Impacto:** Exposición de datos financieros de todos los usuarios
 
 **Solución:** Restringir acceso a:
+
 - Usuarios: Solo sus propias métricas
 - Admins: Todas las métricas
 
@@ -453,6 +491,7 @@ CREATE POLICY token_analytics_read ON token_analytics FOR SELECT
 **Síntoma:** Política SELECT permite acceso total sin restricciones
 
 **Código:**
+
 ```sql
 CREATE POLICY virtual_events_read ON virtual_events FOR SELECT
     USING (TRUE);
@@ -463,6 +502,7 @@ CREATE POLICY virtual_events_read ON virtual_events FOR SELECT
 **Impacto:** Exposición de eventos privados y datos de asistencia
 
 **Solución:** Restringir acceso a:
+
 - Organizadores: Eventos que organizan
 - Participantes: Eventos en los que participan
 - Admins: Todos los eventos
@@ -478,6 +518,7 @@ CREATE POLICY virtual_events_read ON virtual_events FOR SELECT
 **Síntoma:** Política SELECT permite acceso total a todos los perfiles
 
 **Código:**
+
 ```sql
 CREATE POLICY "Users can view all profiles" ON profiles
     FOR SELECT
@@ -489,6 +530,7 @@ CREATE POLICY "Users can view all profiles" ON profiles
 **Impacto:** Exposición de datos personales de todos los usuarios
 
 **Solución:** Restringir acceso a:
+
 - Usuarios: Solo perfiles públicos
 - Propio perfil: Siempre accesible
 - Admins: Todos los perfiles
@@ -506,6 +548,7 @@ CREATE POLICY "Users can view all profiles" ON profiles
 **Síntoma:** Verificación de admin usa `raw_user_meta_data->>'role' = 'admin'`
 
 **Código ejemplo:**
+
 ```sql
 auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin')
 ```
@@ -523,6 +566,7 @@ auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'ad
 #### 5. FALTA DE POLÍTICAS RLS PARA TABLAS SENSIBLES
 
 **Tablas sin políticas RLS identificadas:**
+
 - `gallery_access_requests` - Solicitudes de acceso a galería privada
 - `gallery_commissions` - Comisiones de galería
 - `swinger_interests` - Intereses de usuarios (datos sensibles)
@@ -546,6 +590,7 @@ auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'ad
 **Archivos:** Múltiples archivos de migraciones
 
 **Código:**
+
 ```sql
 CREATE POLICY "Users can view their own wallets" ON user_wallets
     FOR SELECT
@@ -567,6 +612,7 @@ CREATE POLICY "Users can update own wallet" ON user_wallets
 **Archivos:** Múltiples archivos de migraciones
 
 **Código:**
+
 ```sql
 CREATE POLICY "Users can view own token balance" ON user_token_balances
     FOR SELECT
@@ -588,6 +634,7 @@ CREATE POLICY "Users can update own token balance" ON user_token_balances
 **Archivos:** Múltiples archivos de migraciones
 
 **Código:**
+
 ```sql
 CREATE POLICY moderator_payments_read ON moderator_payments FOR SELECT
     USING (moderator_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
@@ -604,6 +651,7 @@ CREATE POLICY moderator_payments_read ON moderator_payments FOR SELECT
 **Archivos:** Múltiples archivos de migraciones
 
 **Código:**
+
 ```sql
 CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
     USING (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
@@ -636,10 +684,10 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 
 ### 📊 RESUMEN DE SEVERIDAD DE SUPABASE
 
-| Severidad | Cantidad | Problemas |
-|-----------|----------|-----------|
-| 🔴 CRÍTICA | 3 | token_analytics (acceso total), virtual_events (acceso total), profiles (acceso total) |
-| 🟡 MEDIA | 2 | Verificación de admin en metadata, Tablas sin políticas RLS |
+| Severidad  | Cantidad | Problemas                                                                              |
+| ---------- | -------- | -------------------------------------------------------------------------------------- |
+| 🔴 CRÍTICA | 3        | token_analytics (acceso total), virtual_events (acceso total), profiles (acceso total) |
+| 🟡 MEDIA   | 2        | Verificación de admin en metadata, Tablas sin políticas RLS                            |
 
 ---
 
@@ -666,6 +714,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 **Archivo:** `supabase/migrations/20260110_SECURITY_FIX_RLS_CRITICAL.sql`
 
 **Implementación:**
+
 - Tabla `admin_users` creada con RLS habilitado
 - Políticas RLS estrictas: solo super_admins pueden gestionar administradores
 - Funciones helper `is_admin()` y `is_super_admin()` creadas
@@ -680,6 +729,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 **Archivo:** `supabase/migrations/20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql`
 
 **Implementación:**
+
 - Política insegura "Users can view all profiles" eliminada
 - Nueva política "Users can view public and own profiles" creada
 - Usuarios solo ven su propio perfil y perfiles públicos
@@ -692,6 +742,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 3. POLÍTICAS RLS CORREGIDAS PARA user_wallets
 
 **Implementación:**
+
 - Usuarios solo pueden ver su propia wallet
 - Admins pueden ver todas las wallets
 - Políticas INSERT y UPDATE restringidas
@@ -703,6 +754,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 4. POLÍTICAS RLS CORREGIDAS PARA couple_profiles
 
 **Implementación:**
+
 - Usuarios solo ven sus propios perfiles de pareja
 - Políticas basadas en `partner_1_id` y `partner_2_id`
 
@@ -713,6 +765,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 5. POLÍTICAS RLS CORREGIDAS PARA notifications
 
 **Implementación:**
+
 - Usuarios solo ven sus propias notificaciones
 - Sistema puede insertar notificaciones
 
@@ -723,6 +776,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 6. POLÍTICAS RLS CORREGIDAS PARA user_consents
 
 **Implementación:**
+
 - Usuarios solo ven sus propios consentimientos
 - Cumplimiento con Ley Olimpia
 
@@ -733,6 +787,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 7. POLÍTICAS RLS CORREGIDAS PARA reports
 
 **Implementación:**
+
 - Usuarios solo ven sus propios reportes
 - Rate limiting: máximo 5 reportes por usuario en 24 horas
 - Admins pueden actualizar reportes
@@ -744,6 +799,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 8. POLÍTICAS RLS CORREGIDAS PARA invitations
 
 **Implementación:**
+
 - Usuarios solo ven sus propias invitaciones
 - Basado en `inviter_id` y `invitee_email`
 
@@ -754,6 +810,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 9. POLÍTICAS RLS CORREGIDAS PARA blockchain_transactions
 
 **Implementación:**
+
 - Usuarios solo ven sus propias transacciones
 - Sistema puede insertar transacciones
 
@@ -764,6 +821,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 10. POLÍTICAS RLS CORREGIDAS PARA user_nfts
 
 **Implementación:**
+
 - Usuarios solo ven sus propios NFTs
 - Basado en `owner_id`
 
@@ -774,6 +832,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 11. POLÍTICAS RLS CORREGIDAS PARA gallery_permissions
 
 **Implementación:**
+
 - Usuarios solo ven sus propios permisos de galería
 - Basado en `owner_id` y `viewer_id`
 
@@ -783,20 +842,20 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 
 ### 📊 RESUMEN DE CORRECCIONES
 
-| Elemento | Estado | Migración |
-|----------|--------|-----------|
-| Tabla admin_users | ✅ Creada | 20260110_SECURITY_FIX_RLS_CRITICAL.sql |
-| Funciones is_admin/is_super_admin | ✅ Creadas | 20260110_SECURITY_FIX_RLS_CRITICAL.sql |
-| Políticas profiles | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas user_wallets | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas couple_profiles | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas notifications | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas user_consents | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas reports | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas invitations | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Elemento                          | Estado        | Migración                                     |
+| --------------------------------- | ------------- | --------------------------------------------- |
+| Tabla admin_users                 | ✅ Creada     | 20260110_SECURITY_FIX_RLS_CRITICAL.sql        |
+| Funciones is_admin/is_super_admin | ✅ Creadas    | 20260110_SECURITY_FIX_RLS_CRITICAL.sql        |
+| Políticas profiles                | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas user_wallets            | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas couple_profiles         | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas notifications           | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas user_consents           | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas reports                 | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas invitations             | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
 | Políticas blockchain_transactions | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas user_nfts | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
-| Políticas gallery_permissions | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas user_nfts               | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
+| Políticas gallery_permissions     | ✅ Corregidas | 20260110_SECURITY_FIX_RLS_EXISTING_TABLES.sql |
 
 ---
 
@@ -830,6 +889,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 **Estado:** ✅ COMPLETADO
 
 **Resultados:**
+
 - Todas las brechas de seguridad críticas han sido corregidas
 - Todas las brechas de seguridad media han sido corregidas
 - Tabla `admin_users` implementada con RLS estricto
@@ -837,6 +897,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 - Políticas RLS corregidas para todas las tablas sensibles
 
 **Verificación:**
+
 - Tablas con RLS habilitado: 26
 - Políticas RLS seguras implementadas: 30+
 - Funciones de seguridad creadas: 2
@@ -848,6 +909,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 **Estado:** ✅ SEGURO
 
 **Brechas corregidas:**
+
 - 🔴 CRÍTICA (3): ✅ CORREGIDAS
 - 🟡 MEDIA (2): ✅ CORREGIDAS
 
@@ -871,6 +933,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 **Archivo:** `supabase/migrations/20260110_SECURITY_HARDENING.sql`
 
 **Implementación:**
+
 - Función `sanitize_input()` para eliminar caracteres peligrosos (', ;, --)
 - Función `is_valid_email()` para validar formato de email
 - Función `is_valid_uuid()` para validar formato de UUID
@@ -884,6 +947,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 2. PROTECCIÓN DE DATOS SENSIBLES
 
 **Implementación:**
+
 - Función `mask_email()` para enmascarar emails en logs (ej: ab***@domain.com)
 - Función `mask_sensitive_data()` para enmascarar teléfonos, tarjetas de crédito
 - Vista `profiles_safe` sin datos sensibles
@@ -897,6 +961,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 3. PROTECCIÓN CONTRA ATAQUES DDoS
 
 **Implementación:**
+
 - Tabla `rate_limits` para tracking de requests por usuario/IP
 - Función `check_rate_limit()` para verificar límites (100 requests/minuto por defecto)
 - Función `block_ip()` para bloquear IPs maliciosas
@@ -910,6 +975,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 4. PROTECCIÓN CONTRA XSS E HTML INJECTION
 
 **Implementación:**
+
 - Función `escape_html()` para escapar caracteres HTML peligrosos (<, >, ", ')
 - Función `sanitize_user_content()` para sanitizar contenido de usuario
 - Sanitización automática en triggers de profiles
@@ -922,6 +988,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 5. AUDITORÍA DE SEGURIDAD
 
 **Implementación:**
+
 - Tabla `security_audit_log` para logging de eventos de seguridad
 - Función `log_security_event()` para registrar eventos
 - Trigger `audit_profile_changes()` para auditar cambios en profiles
@@ -935,6 +1002,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 6. MONITOREO DE ACTIVIDAD SOSPECHOSA
 
 **Implementación:**
+
 - Función `detect_suspicious_activity()` para detectar patrones anómalos
 - Detección de múltiples IPs en corto tiempo
 - Detección de alta tasa de requests
@@ -948,6 +1016,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 #### 7. VALIDACIÓN DE PERMISOS
 
 **Implementación:**
+
 - Función `has_access_to_sensitive_data()` para validar acceso
 - Validación por tipo de dato: email, phone, financial
 - Verificación de permisos de admin
@@ -959,15 +1028,15 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 
 ### 📊 RESUMEN DE HARDENING DE SEGURIDAD
 
-| Categoría | Funciones/Creadas | Estado |
-|-----------|-------------------|--------|
-| Protección SQL Injection | 3 funciones + triggers | ✅ COMPLETADO |
-| Protección Datos Sensibles | 3 funciones + 2 vistas | ✅ COMPLETADO |
-| Protección DDoS | 4 funciones + 1 tabla | ✅ COMPLETADO |
-| Protección XSS | 2 funciones | ✅ COMPLETADO |
-| Auditoría Seguridad | 2 funciones + 1 tabla + triggers | ✅ COMPLETADO |
-| Monitoreo Actividad | 1 función | ✅ COMPLETADO |
-| Validación Permisos | 1 función | ✅ COMPLETADO |
+| Categoría                  | Funciones/Creadas                | Estado        |
+| -------------------------- | -------------------------------- | ------------- |
+| Protección SQL Injection   | 3 funciones + triggers           | ✅ COMPLETADO |
+| Protección Datos Sensibles | 3 funciones + 2 vistas           | ✅ COMPLETADO |
+| Protección DDoS            | 4 funciones + 1 tabla            | ✅ COMPLETADO |
+| Protección XSS             | 2 funciones                      | ✅ COMPLETADO |
+| Auditoría Seguridad        | 2 funciones + 1 tabla + triggers | ✅ COMPLETADO |
+| Monitoreo Actividad        | 1 función                        | ✅ COMPLETADO |
+| Validación Permisos        | 1 función                        | ✅ COMPLETADO |
 
 ---
 
@@ -1011,6 +1080,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 **Estado:** ✅ COMPLETADO
 
 **Resultados:**
+
 - Todas las medidas de seguridad implementadas exitosamente
 - Protección completa contra inyección SQL
 - Protección completa contra ataques DDoS
@@ -1020,6 +1090,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 - Monitoreo de actividad sospechosa implementado
 
 **Verificación:**
+
 - Funciones de seguridad creadas: 16
 - Tablas de seguridad creadas: 2
 - Vistas seguras creadas: 2
@@ -1032,6 +1103,7 @@ CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
 **Estado:** ✅ SEGURO Y ENDURECIDO
 
 **Capas de seguridad implementadas:**
+
 - 🔒 Validación de Input
 - 🔒 Protección SQL Injection
 - 🔒 Rate Limiting (DDoS)

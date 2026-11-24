@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Switch } from "@/components/ui/switch";
 import { ShieldCheck } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
+import { logger } from "@/lib/logger";
 
 export interface SinglePrivacySettings {
   invisible: boolean;
@@ -81,6 +84,7 @@ const ROWS: Array<{
 
 interface SinglePrivacySectionProps {
   userId: string;
+  isDemoMode?: boolean;
 }
 
 /**
@@ -88,44 +92,124 @@ interface SinglePrivacySectionProps {
  * CouplePrivacySection, modelo del video). SOLO perfil propio: el padre
  * no la renderiza para visitantes.
  *
- * PENDIENTE DE BACKEND: no existe un store de ajustes de privacidad; la
- * columna profiles.privacy_settings (Json) existe en la BD pero la vista
- * del perfil no la expone. Por ahora los ajustes se guardan en
- * localStorage por dispositivo (clave `single_privacy:<userId>`), igual
- * que el PIN. Cuando el backend exponga privacy_settings, este componente
- * debe leer/escribir ahí en vez de localStorage.
+ * En producción los ajustes viven en profiles.privacy_settings (Json):
+ * se leen al montar y se guardan en la cuenta con cada cambio, mezclados
+ * con las demás claves del JSON (p. ej. media_public) para no borrarlas.
+ * En demo (o sin cliente Supabase) se usa localStorage por dispositivo
+ * (clave `single_privacy:<userId>`), igual que el PIN. Si la escritura
+ * en la BD falla, el cambio se guarda en local como respaldo.
  */
 export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
   userId,
+  isDemoMode = false,
 }) => {
   const [settings, setSettings] =
     useState<SinglePrivacySettings>(DEFAULT_PRIVACY);
+  // Claves del JSON que no gestiona esta sección (p. ej. media_public):
+  // se conservan al guardar para no borrarlas.
+  const storedExtras = useRef<Record<string, Json>>({});
+
+  const saveToLocalStorage = (next: SinglePrivacySettings) => {
+    try {
+      window.localStorage.setItem(
+        `single_privacy:${userId}`,
+        JSON.stringify(next),
+      );
+    } catch {
+      // Sin almacenamiento: el cambio solo vive en esta sesión.
+    }
+  };
 
   useEffect(() => {
     if (!userId) return;
-    try {
-      const raw = window.localStorage.getItem(`single_privacy:${userId}`);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as Partial<SinglePrivacySettings>;
-      setSettings({ ...DEFAULT_PRIVACY, ...parsed });
-    } catch {
-      // localStorage corrupto o no disponible: se queda el default.
+    const loadFromLocalStorage = () => {
+      try {
+        const raw = window.localStorage.getItem(`single_privacy:${userId}`);
+        if (!raw) return;
+        const parsed = JSON.parse(raw) as Partial<SinglePrivacySettings>;
+        setSettings({ ...DEFAULT_PRIVACY, ...parsed });
+      } catch {
+        // localStorage corrupto o no disponible: se queda el default.
+      }
+    };
+    if (isDemoMode || !supabase) {
+      loadFromLocalStorage();
+      return;
     }
-  }, [userId]);
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("privacy_settings")
+          .eq("id", userId)
+          .single();
+        if (cancelled) return;
+        const stored = data?.privacy_settings;
+        if (
+          error ||
+          typeof stored !== "object" ||
+          stored === null ||
+          Array.isArray(stored)
+        ) {
+          loadFromLocalStorage();
+          return;
+        }
+        const record = stored as Record<string, Json>;
+        const extras: Record<string, Json> = {};
+        const managed: Partial<SinglePrivacySettings> = {};
+        Object.keys(record).forEach((key) => {
+          if (
+            key in DEFAULT_PRIVACY &&
+            typeof record[key] === "boolean"
+          ) {
+            managed[key as keyof SinglePrivacySettings] =
+              record[key] as boolean;
+          } else {
+            extras[key] = record[key];
+          }
+        });
+        storedExtras.current = extras;
+        setSettings({ ...DEFAULT_PRIVACY, ...managed });
+      } catch (err) {
+        logger.error("Error cargando privacy_settings:", {
+          error: err instanceof Error ? err.message : String(err),
+        });
+        if (!cancelled) loadFromLocalStorage();
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, isDemoMode]);
 
   if (!userId) return null;
 
   const toggle = (key: keyof SinglePrivacySettings) => {
     setSettings((prev) => {
       const next = { ...prev, [key]: !prev[key] };
-      try {
-        window.localStorage.setItem(
-          `single_privacy:${userId}`,
-          JSON.stringify(next),
-        );
-      } catch {
-        // Sin almacenamiento: el cambio solo vive en esta sesión.
+      if (isDemoMode || !supabase) {
+        saveToLocalStorage(next);
+        return next;
       }
+      const merged: Record<string, Json> = {
+        ...storedExtras.current,
+        ...next,
+      };
+      void supabase
+        .from("profiles")
+        .update({ privacy_settings: merged })
+        .eq("id", userId)
+        .then(({ error }) => {
+          if (error) {
+            logger.error("Error guardando privacy_settings:", {
+              error: error.message,
+            });
+            saveToLocalStorage(next);
+          } else {
+            storedExtras.current = merged;
+          }
+        });
       return next;
     });
   };
@@ -138,8 +222,10 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
           Privacidad
         </CardTitle>
         <p className="text-xs text-white/60 mt-1">
-          Solo tú ves estos ajustes. Se guardan en este dispositivo; la
-          sincronización con tu cuenta está pendiente.
+          Solo tú ves estos ajustes.{" "}
+          {isDemoMode
+            ? "En demo se guardan en este dispositivo."
+            : "Se guardan en tu cuenta y se aplican en todos tus dispositivos."}
         </p>
       </CardHeader>
       <CardContent className="space-y-4">

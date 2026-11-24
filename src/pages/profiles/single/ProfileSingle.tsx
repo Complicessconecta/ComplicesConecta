@@ -1829,6 +1829,7 @@ const ProfileSingle: FC = () => {
           {isOwnProfile && (
             <SinglePrivacySection
               userId={user?.id ?? profile?.id ?? ""}
+              isDemoMode={singleIsDemo}
             />
           )}
 

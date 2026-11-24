@@ -7347,6 +7347,7 @@ export type Database = {
           photo_verified: boolean | null
           photo_verified_at: string | null
           pin_hash: string | null
+          privacy_settings: Json | null
           profile_theme: string | null
           role: string | null
           s2_cell_id: string | null
@@ -7416,6 +7417,7 @@ export type Database = {
           photo_verified?: boolean | null
           photo_verified_at?: string | null
           pin_hash?: string | null
+          privacy_settings?: Json | null
           profile_theme?: string | null
           role?: string | null
           s2_cell_id?: string | null
@@ -7485,6 +7487,7 @@ export type Database = {
           photo_verified?: boolean | null
           photo_verified_at?: string | null
           pin_hash?: string | null
+          privacy_settings?: Json | null
           profile_theme?: string | null
           role?: string | null
           s2_cell_id?: string | null

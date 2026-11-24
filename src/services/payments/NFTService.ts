@@ -29,6 +29,77 @@ import type { Database } from "@/types/supabase-generated";
 
 const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
 
+/**
+ * Los 4 NFTs demo por defecto (misma fuente que los defaults de
+ * <DemoWallet>: Legendario y Raro son de single; Épico y Común son de
+ * pareja, is_couple: true). Única fuente de verdad: DemoWallet los importa
+ * de aquí para no duplicar la lista.
+ */
+export const DEFAULT_DEMO_NFTS = [
+  {
+    id: "nft-1",
+    name: "Cómplice Legendario",
+    rarity: "legendary",
+    image: "/assets/nfts/imagen4.gif",
+    value: 5000,
+    is_couple: false,
+  },
+  {
+    id: "nft-2",
+    name: "Cómplice Épico",
+    rarity: "epic",
+    image: "/assets/nfts/imagen3.jpg",
+    value: 2000,
+    is_couple: true,
+  },
+  {
+    id: "nft-3",
+    name: "Cómplice Raro",
+    rarity: "rare",
+    image: "/assets/nfts/imagen1.jpg",
+    value: 750,
+    is_couple: false,
+  },
+  {
+    id: "nft-4",
+    name: "Cómplice Común",
+    rarity: "common",
+    image: "/assets/nfts/imagen2.jpg",
+    value: 100,
+    is_couple: true,
+  },
+] as const;
+
+/**
+ * Siembra los 4 NFTs demo en localStorage para el usuario dado, SOLO si su
+ * llave `demo_nfts:<userId>` aún no existe. No sobrescribe una colección ya
+ * minteada/guardada. Espejo de Single: ProfileCouple no renderiza
+ * <DemoWallet>, así que sin esta siembra `getUserNFTs(uid)` devuelve [] y la
+ * sección "Blockchain & NFTs de Pareja" nunca aparece (hasAnyNFTs false).
+ */
+export function seedDemoNFTs(userId: string): void {
+  if (!userId) return;
+  if (typeof window === "undefined") return;
+  const key = getDemoNFTStorageKey(userId);
+  try {
+    if (window.localStorage.getItem(key) !== null) return;
+    const payload = DEFAULT_DEMO_NFTS.map((nft) => ({
+      id: nft.id,
+      name: nft.name,
+      rarity: nft.rarity,
+      image: nft.image,
+      value: nft.value,
+      is_couple: nft.is_couple,
+      created_at: new Date().toISOString(),
+      token_id: DEFAULT_DEMO_NFTS.length,
+      metadata_uri: "ipfs://demo-metadata-hash",
+    }));
+    window.localStorage.setItem(key, JSON.stringify(payload));
+  } catch {
+    // no-op: sin localStorage no hay demo que sembrar
+  }
+}
+
 const getDemoNftImageForIndex = (index: number): string => {
   const images = [
     "/assets/nfts/imagen1.jpg",

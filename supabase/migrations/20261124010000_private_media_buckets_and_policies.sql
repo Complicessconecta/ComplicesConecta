@@ -47,8 +47,11 @@ INSERT INTO storage.buckets (id, name, public)
 VALUES ('profile-images', 'profile-images', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
--- RLS ya viene habilitado en storage.objects en Supabase; se reafirma.
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+-- RLS ya viene habilitado en storage.objects en Supabase y NO se reafirma
+-- aquí: ALTER TABLE sobre storage.objects falla con ERROR 42501
+-- ("must be owner of table objects") porque esa tabla pertenece a
+-- supabase_storage_admin, no al rol postgres del editor SQL / db push.
+-- Las políticas CREATE POLICY de abajo sí funcionan con postgres.
 
 -- ----------------------------------------------------------------------------
 -- 2. Políticas de Storage para el bucket `media` (privado)

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
@@ -9,6 +10,7 @@ import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
+import { ReportDialog } from "@/components/dialogs/ReportDialog";
 import { toast } from "@/hooks/useToast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { clsx } from "clsx";
@@ -27,6 +29,9 @@ const ProfileDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
+  // Modal de reporte (mismo componente legible que en los perfiles
+  // propios): antes el botón "Reportar perfil" solo mostraba un toast.
+  const [showReportDialog, setShowReportDialog] = useState(false);
 
   // Verificar autenticación demo
   const demoAuth = localStorage.getItem("demo_authenticated");
@@ -472,11 +477,7 @@ const ProfileDetail = () => {
                         logger.info("Reportando perfil de", {
                           profileName: profile.name,
                         });
-                        toast({
-                          title: "Perfil reportado",
-                          description:
-                            "Gracias por ayudarnos a mantener la comunidad segura.",
-                        });
+                        setShowReportDialog(true);
                       }}
                       className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300"
                     >
@@ -577,6 +578,20 @@ const ProfileDetail = () => {
         </main>
 
         <Footer />
+        <ReportDialog
+          isOpen={showReportDialog}
+          onOpenChange={setShowReportDialog}
+          profileId={String(profile.id)}
+          profileName={profile.name}
+          onReport={(reason) => {
+            logger.info("Reporte enviado desde detalle de perfil", { reason });
+            toast({
+              title: "Perfil reportado",
+              description:
+                "Gracias por ayudarnos a mantener la comunidad segura.",
+            });
+          }}
+        />
       </div>
     </div>
   );

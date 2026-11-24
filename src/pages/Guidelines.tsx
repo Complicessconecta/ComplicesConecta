@@ -213,7 +213,7 @@ const GuidelinesPage = () => {
                     <li> Las fotos deben ser tuyas o de tu pareja</li>
                     <li>
                       {" "}
-                      Evita contenido excesivamente explcito en fotos pblicas
+                      Evita contenido excesivamente explcito en fotos públicas
                     </li>
                     <li> Respeta los derechos de autor</li>
                   </ul>

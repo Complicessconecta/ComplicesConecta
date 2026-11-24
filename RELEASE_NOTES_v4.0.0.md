@@ -1,5 +1,37 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 24 Nov 2026 - 14:05 (Ronda de fixes post full test)
+
+- **💬 Chat — persistencia y compositor completos:**
+  - Mensajes enviados persisten al navegar y volver (demo: `localStorage` `chat_messages:<roomId>`; real: `loadMessages` y realtime ahora filtran por `room_id`)
+  - Flecha ← del hilo vuelve a la LISTA (antes `/feed`); a ≤500 px un solo panel con compositor visible; pestaña Público al primer clic; contador de miembros fijo por sala; emoji/adjuntar/audio cableados; badge Privado = hilos reales (4); `/chat/1` como pareja ya no se bloquea con historial
+
+- **❤️ Feed/Discover — like con la regla de Wacko:**
+  - Corazón ROJO y contador +1 al dar me gusta, sin color y −1 al desmarcar; optimista con persistencia demo y sin "Error — No se pudo procesar el like" en demo
+  - Compositor en /feed; compartir real (Web Share / copiar enlace); Discover abre el perfil al clicar, filtro "Pareja" real, botón Chat abre el hilo; datos demo canónicos y estables
+
+- **👫 Perfiles espejo:**
+  - Pareja con "Galería de Fotos" pública (3 fotos); Reportar legible en perfiles propios y /profile/1; PIN persistente; editor de pareja carga valores existentes; Tokens canónicos (2000/1500/2)
+
+- **🧭 Dock y navegación:**
+  - Dock estable con 10 iconos solo en rutas de perfil; /feed con navegación; botón de regreso en páginas sin dock; Ley Olimpia y Moderadores sin recargar; /settings es Configuración de verdad; /swinger-dashboard ya no es 404
+
+- **🔒 Privacidad y ajustes:**
+  - 9 toggles con estado visual + toast; "Mostrar distancia" persiste (nuevo `settingsStorage.ts`)
+
+- **🏢 Clubs — tablas cableadas:**
+  - Nuevo `clubContentService.ts`: `club_events`, `club_discounts`, `club_members` se leen y escriben de verdad (ClubsDemo, ClubAdminPanel, ModeratorDashboard, ClubsPublic); sin Club Demo duplicado; filtros de ciudad/búsqueda corregidos; tabla admin legible y carga con timeout; portada con imagen verificada (adiós al "NO DISPONIBLE")
+
+- **📄 Docs y textos:**
+  - `vercel.json` excluye `/docs/*` del rewrite (los .md ya no sirven `index.html`); 93 correcciones de mojibake; "Reclamar 100 CMPX" acredita con toast; Solicitudes aceptadas persisten; Analytics con datos reales; landing sin splash falso; fotos/nombres coherentes
+
+- **✅ Verificaciones:**
+  - `tsc --noEmit` (TS 5.7.2): 21 errores en la rama (28 en master), 0 nuevos
+  - `vitest` con `VITE_SUPABASE_*` dummy: TokenDashboard 6/6; ProfileSingle y ProfileCouple con 1 fallo preexistente cada uno (iguales en master)
+  - `prettier --check`: 54 archivos tocados ya fallaban en master (0 nuevos); 3 archivos nuevos limpios
+  - ⚠️ Aplicar la migración `20261124030000` en producción (Supabase) — paso aparte, no en este PR
+  - ⚠️ Sin verificación interactiva en el navegador tras estos fixes — falta probarlo en el teléfono tras merge + deploy
+
 ## 📅 Bitácora 24 Nov 2026 - 12:55 (Fixes video 7 + Clubs/Admin/Moderador completos)
 
 - **🎟️ Tokens — "Invalid Date" corregido:**

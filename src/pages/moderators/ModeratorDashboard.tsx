@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { ReportType, ReportStatus, ModerationAction } from "@/lib/roles";
 import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from "@/services/auth/permanentBan";
+import { loadClubEvents, loadClubMembers } from "@/services/clubs/clubContentService";
 import { Database } from "@/types/supabase-generated";
 
 type BanSeverity = "low" | "medium" | "high" | "critical";
@@ -94,6 +95,27 @@ const ModeratorDashboard = () => {
   const [suspensions, setSuspensions] = useState<UserSuspension[]>([]);
   const [clubApplications, setClubApplications] = useState<ClubApplicationRow[]>([]);
   const [clubs, setClubs] = useState<ClubRow[]>([]);
+  // Conteos de eventos/miembros por club (club_events / club_members).
+  const [clubContentCounts, setClubContentCounts] = useState<Record<string, { events: number; members: number }>>({});
+
+  useEffect(() => {
+    if (clubs.length === 0) return;
+    let cancelled = false;
+    void Promise.all(
+      clubs.slice(0, 10).map(async (club) => {
+        const [{ items: ev }, { items: mb }] = await Promise.all([
+          loadClubEvents(club.id),
+          loadClubMembers(club.id),
+        ]);
+        return [club.id, { events: ev.length, members: mb.length }] as const;
+      }),
+    ).then((entries) => {
+      if (!cancelled) setClubContentCounts(Object.fromEntries(entries));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [clubs]);
   const [permanentBans, setPermanentBans] = useState<
     (PermanentBanRow & {
       user?: { name: string };
@@ -389,7 +411,7 @@ const ModeratorDashboard = () => {
 
       if (updateError) throw updateError;
 
-      // Registrar la accin en los logs
+      // Registrar la acción en los logs
       const moderationAction =
         action === "approve" ? "report_approved" : "report_dismissed";
       const { error: logError } = await supabase
@@ -533,7 +555,7 @@ const ModeratorDashboard = () => {
 
       if (error) throw error;
 
-      // Registrar la accin en los logs
+      // Registrar la acción en los logs
       const suspension = suspensions.find((s) => s.id === suspensionId);
       if (suspension) {
         await supabase.from("moderation_logs").insert([
@@ -607,7 +629,7 @@ const ModeratorDashboard = () => {
       <div className="min-h-screen bg-hero-gradient flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white">Cargando panel de moderacin...</p>
+          <p className="text-white">Cargando panel de moderación...</p>
         </div>
       </div>
     );
@@ -1229,7 +1251,9 @@ const ModeratorDashboard = () => {
                     No hay clubs registrados.
                   </p>
                 ) : (
-                  clubs.map((club) => (
+                  clubs.map((club) => {
+                    const counts = clubContentCounts[club.id];
+                    return (
                     <div
                       key={club.id}
                       className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
@@ -1239,6 +1263,9 @@ const ModeratorDashboard = () => {
                         <p className="text-white/60 text-sm">
                           {club.city}, {club.state ?? ""} ·{" "}
                           {club.is_active ? "Activo" : "Inactivo"}
+                          {counts
+                            ? ` · ${counts.events} eventos · ${counts.members} miembros`
+                            : ""}
                         </p>
                       </div>
                       <Button
@@ -1250,7 +1277,8 @@ const ModeratorDashboard = () => {
                         {club.is_active ? "Desactivar" : "Activar"}
                       </Button>
                     </div>
-                  ))
+                    );
+                  })
                 )}
               </CardContent>
             </Card>
@@ -1262,10 +1290,10 @@ const ModeratorDashboard = () => {
                 <CardContent className="p-8 text-center">
                   <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-white text-lg">
-                    No hay historial de moderacin
+                    No hay historial de moderación
                   </p>
                   <p className="text-white/60">
-                    Las acciones de moderacin aparecern aqu
+                    Las acciones de moderación aparecern aqu
                   </p>
                 </CardContent>
               </Card>

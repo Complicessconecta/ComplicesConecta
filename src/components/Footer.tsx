@@ -20,9 +20,9 @@ export const Footer = () => {
               </h3>
             </div>
             <p className="text-background/80 mb-4 leading-relaxed">
-              MX<strong>Primera app lifestyle en México</strong> con
-              implementación completa de Ley Olimpia. Plataforma Proximante líder para
-              conexiones auténticas con máxima Protección Digital.
+              Primera app lifestyle en México con implementación completa de
+              Ley Olimpia. Plataforma próximamente líder para conexiones
+              auténticas con máxima Protección Digital.
             </p>
             <div className="flex space-x-3">
               <Button
@@ -192,7 +192,7 @@ export const Footer = () => {
                   className="text-background/80 hover:text-primary transition-all duration-300 hover:scale-105 transform flex items-center space-x-2 group"
                 >
                   <span className="group-hover:animate-pulse">
-                    Proximamente: Soporte atravez de WhatsApp y Telegram
+                    Proximamente: Soporte a través de WhatsApp y Telegram
                   </span>
                 </button>
               </div>
@@ -205,11 +205,12 @@ export const Footer = () => {
                 <input
                   type="email"
                   placeholder="Tu email"
-                  className="flex-1 px-3 py-2 bg-background/10 border border-background/20 rounded-md text-background placeholder-background/60 focus:outline-none focus:border-primary"
+                  className="flex-1 min-w-0 px-3 py-2 bg-background/10 border border-background/20 rounded-md text-background placeholder-background/60 focus:outline-none focus:border-primary"
                 />
                 <Button
                   {...({ variant: "love" } as any)}
                   size="sm"
+                  className="shrink-0 whitespace-nowrap"
                   onClick={() => {
                     const email = (
                       document.querySelector(

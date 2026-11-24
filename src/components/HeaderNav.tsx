@@ -101,7 +101,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     { name: "Noticias", path: "/news", icon: FileText, category: "Contenido & Empresa" },
     { name: "Carreras", path: "/careers", icon: Building2, category: "Contenido & Empresa" },
     { name: "Inversionistas", path: "/invest", icon: DollarSign, category: "Contenido & Empresa" },
-    { name: "Inversores", path: "/investors", icon: DollarSign, category: "Contenido & Empresa" },
     { name: "Donaciones", path: "/donations", icon: DollarSign, category: "Contenido & Empresa" },
     { name: "Moderadores", path: "/moderators", icon: Users, category: "Contenido & Empresa" },
     { name: "Proyecto", path: "/project-info", icon: FileText, category: "Contenido & Empresa" },

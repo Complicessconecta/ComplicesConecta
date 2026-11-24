@@ -68,7 +68,7 @@ const FAQ = () => {
         {
           question: "Cmo protegen mis datos personales?",
           answer:
-            "Utilizamos encriptacin de grado militar y cumplimos con GDPR. Nunca compartimos tu informacin personal con terceros sin tu consentimiento explcito.",
+            "Utilizamos encriptacin de grado militar y cumplimos con GDPR. Nunca compartimos tu información personal con terceros sin tu consentimiento explcito.",
         },
         {
           question: "Puedo controlar quién ve mi perfil?",
@@ -88,14 +88,14 @@ const FAQ = () => {
             "Las galerías privadas te permiten compartir fotos íntimas solo con personas que hayas autorizado. Tienes control total sobre quién puede acceder. Además, puedes crear Galerías NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificación de tus galerías.",
         },
         {
-          question: "Como envio una invitacion de galera?",
+          question: "Como envio una invitacion de galería?",
           answer:
-            "Desde cualquier perfil, puedes enviar una invitacion para acceder a tu galera privada. La persona debe aceptar la invitacion para ver tu contenido privado.",
+            "Desde cualquier perfil, puedes enviar una invitacion para acceder a tu galería privada. La persona debe aceptar la invitacion para ver tu contenido privado.",
         },
         {
-          question: "Puedo revocar el acceso a mi galera?",
+          question: "Puedo revocar el acceso a mi galería?",
           answer:
-            "S, puedes revocar el acceso a tu galera privada en cualquier momento desde tu configuracin de privacidad.",
+            "S, puedes revocar el acceso a tu galería privada en cualquier momento desde tu configuracin de privacidad.",
         },
       ],
     },
@@ -112,7 +112,7 @@ const FAQ = () => {
         {
           question: "Que tipos de invitaciones existen?",
           answer:
-            "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadas) y de chat (para conversaciones privadas).",
+            "Hay tres tipos: invitaciones de perfil (para conectar), de galería (para ver fotos privadas) y de chat (para conversaciones privadas).",
         },
         {
           question: "Puedo rechazar una invitacin?",
@@ -173,7 +173,7 @@ const FAQ = () => {
         {
           question: "Como puedo reportar un perfil?",
           answer:
-            "Puedes reportar cualquier perfil sospechoso directamente desde su pgina. Nuestro equipo de moderacin revisa todos los reportes en menos de 24 horas.",
+            "Puedes reportar cualquier perfil sospechoso directamente desde su página. Nuestro equipo de moderación revisa todos los reportes en menos de 24 horas.",
         },
         {
           question: "Que hago si alguien me acosa?",
@@ -183,7 +183,7 @@ const FAQ = () => {
         {
           question: "Hay moderadores activos?",
           answer:
-            "S, tenemos un equipo de moderacin 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad.",
+            "S, tenemos un equipo de moderación 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad.",
         },
       ],
     },
@@ -205,7 +205,7 @@ const FAQ = () => {
         {
           question: "Problemas con pagos o suscripciones?",
           answer:
-            "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contctanos inmediatamente a travs del formulario con todos los detalles de la transaccin.",
+            "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contctanos inmediatamente a travs del formulario con todos los detalles de la transacción.",
         },
       ],
     },

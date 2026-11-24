@@ -3,7 +3,7 @@
  * Perfiles mock para desarrollo y testing
  */
 
-import { v4 as uuidv4 } from "uuid";
+import { generateDemoUUID } from "@/lib/demo-uuid";
 import { pickProfileImage, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
 import { getAutoInterests } from "@/lib/lifestyle-interests";
 
@@ -29,64 +29,44 @@ export interface DemoProfile {
   isDemo: true;
 }
 
+/**
+ * Roster canónico de perfiles demo de Discover.
+ * DETERMINISTA: nombres únicos (sin repetidos), género coherente con el
+ * nombre — Ana es mujer y lleva foto de mujer, Francisco es hombre y
+ * lleva foto de hombre —, ids estables entre cargas (generateDemoUUID con
+ * seed fijo, nunca uuidv4 ni Math.random), y contadores/orden fijos.
+ * Las parejas se nombran "X & Y" para que el filtro "Pareja" las distinga.
+ */
+const DEMO_ROSTER: Array<{
+  name: string;
+  gender: Gender;
+  profileType: ProfileType;
+  age: number;
+  location: string;
+}> = [
+  { name: "Ana", gender: "female", profileType: "single", age: 26, location: "Guadalajara" },
+  { name: "Francisco", gender: "male", profileType: "single", age: 34, location: "Ciudad de México" },
+  { name: "María & Juan", gender: "unknown", profileType: "couple", age: 29, location: "Guadalajara" },
+  { name: "Carlos", gender: "male", profileType: "single", age: 32, location: "Monterrey" },
+  { name: "Laura", gender: "female", profileType: "single", age: 27, location: "Puebla" },
+  { name: "Carmen & Roberto", gender: "unknown", profileType: "couple", age: 31, location: "Ciudad de México" },
+  { name: "Miguel", gender: "male", profileType: "single", age: 35, location: "Tijuana" },
+  { name: "Lucía", gender: "female", profileType: "single", age: 24, location: "Mérida" },
+  { name: "Javier & Elena", gender: "unknown", profileType: "couple", age: 33, location: "Querétaro" },
+  { name: "David", gender: "male", profileType: "single", age: 30, location: "León" },
+  { name: "Cristina", gender: "female", profileType: "single", age: 28, location: "Monterrey" },
+  { name: "Alejandro", gender: "male", profileType: "single", age: 36, location: "Guadalajara" },
+  { name: "Rosa & Daniel", gender: "unknown", profileType: "couple", age: 30, location: "Puebla" },
+  { name: "Isabel", gender: "female", profileType: "single", age: 25, location: "Ciudad de México" },
+  { name: "Rafael", gender: "male", profileType: "single", age: 38, location: "Torreón" },
+  { name: "Pilar", gender: "female", profileType: "single", age: 29, location: "San Luis Potosí" },
+  { name: "Sergio & Teresa", gender: "unknown", profileType: "couple", age: 34, location: "Cuernavaca" },
+  { name: "Manuel", gender: "male", profileType: "single", age: 41, location: "Mexicali" },
+  { name: "Dolores", gender: "female", profileType: "single", age: 33, location: "Aguascalientes" },
+  { name: "Pablo & Raquel", gender: "unknown", profileType: "couple", age: 27, location: "Mérida" },
+];
+
 export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
-  const nombres = [
-    "Alejandro",
-    "María",
-    "Carlos",
-    "Ana",
-    "José",
-    "Laura",
-    "Miguel",
-    "Carmen",
-    "Antonio",
-    "Isabel",
-    "Manuel",
-    "Pilar",
-    "Francisco",
-    "Dolores",
-    "David",
-    "Cristina",
-    "Javier",
-    "Rosa",
-    "Daniel",
-    "Antonia",
-    "Rafael",
-    "Francisca",
-    "José Luis",
-    "Lucía",
-    "Jesús",
-    "Mercedes",
-    "Ángel",
-    "Josefa",
-    "Marcos",
-    "Elena",
-    "Pedro",
-    "Teresa",
-    "Sergio",
-    "Raquel",
-    "Pablo",
-    "Manuela",
-  ];
-
-  const ubicaciones = [
-    "Ciudad de México",
-    "Guadalajara",
-    "Monterrey",
-    "Puebla",
-    "Tijuana",
-    "León",
-    "Juárez",
-    "Torreón",
-    "Querétaro",
-    "San Luis Potosí",
-    "Mérida",
-    "Mexicali",
-    "Aguascalientes",
-    "Cuernavaca",
-    "Saltillo",
-  ];
-
   const bios = [
     "Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones auténticas y experiencias compartidas.",
     "Pareja liberal en busca de otras parejas afines para intercambios. Discreción y comunicación abierta son clave.",
@@ -100,49 +80,56 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
 
   resetImageCounters();
 
-  return Array.from({ length: count }, (_, _i) => {
-    const profileType: ProfileType = Math.random() > 0.7 ? "couple" : "single";
-    const gender: Gender = Math.random() > 0.5 ? "male" : "female";
+  // Un solo `used` compartido por toda la tanda: sin fotos repetidas
+  // hasta agotar el pool de cada categoría.
+  const usedImages = new Set<string>();
+  const experienceLevels = ["principiante", "intermedio", "experimentado"];
+
+  return Array.from({ length: count }, (_, i) => {
+    const entry = DEMO_ROSTER[i % DEMO_ROSTER.length]!;
+    const profileType: ProfileType = entry.profileType;
+    const gender: Gender = entry.gender;
     const partnerGender: Gender = gender === "male" ? "female" : "male";
 
-    // Nivel de experiencia aleatorio para intereses más variados
-    const experienceLevels = ["principiante", "intermedio", "experimentado"];
+    // Nivel de experiencia determinista por posición.
     const experienceLevel =
-      experienceLevels[Math.floor(Math.random() * experienceLevels.length)];
+      experienceLevels[i % experienceLevels.length]!;
 
-    // Generar intereses automáticos apropiados para el lifestyle swinger
-    const interests = getAutoInterests(profileType, experienceLevel, gender);
+    // Intereses automáticos apropiados para el lifestyle swinger
+    // (getAutoInterests es determinista). Las parejas no tienen género
+    // único: se pasa undefined.
+    const interests = getAutoInterests(
+      profileType,
+      experienceLevel,
+      gender === "unknown" ? undefined : gender,
+    );
 
-    const selectedName = nombres[Math.floor(Math.random() * nombres.length)];
-    const selectedLocation = ubicaciones[Math.floor(Math.random() * ubicaciones.length)];
-    const selectedBio = bios[Math.floor(Math.random() * bios.length)];
-
-    const profile: any = {
-      id: uuidv4(),
-      name: selectedName ?? "Usuario",
-      age: Math.floor(Math.random() * 20) + 25,
-      location: selectedLocation ?? "Ubicación no especificada",
-      distance: Math.floor(Math.random() * 50) + 1,
+    const profile: DemoProfile = {
+      id: generateDemoUUID(`demo-profile-${i + 1}`),
+      name: entry.name,
+      age: entry.age,
+      location: entry.location,
+      distance: 3 + ((i * 11) % 47),
       interests,
       image: pickProfileImage(
         {
-          id: uuidv4(),
-          name: selectedName ?? "Usuario",
+          id: generateDemoUUID(`demo-profile-${i + 1}`),
+          name: entry.name,
           type: profileType,
           gender,
         },
-        new Set(),
+        usedImages,
       ),
-      bio: selectedBio ?? "Sin bio disponible",
-      isOnline: Math.random() > 0.3,
-      lastActive: `Hace ${Math.floor(Math.random() * 60)} min`,
-      isVerified: Math.random() > 0.4,
-      isPremium: Math.random() > 0.7,
-      rating: Math.floor(Math.random() * 2) + 4,
-      matchScore: Math.floor(Math.random() * 30) + 70,
+      bio: bios[i % bios.length] ?? "Sin bio disponible",
+      isOnline: i % 3 !== 0,
+      lastActive: `Hace ${((i * 7) % 50) + 5} min`,
+      isVerified: i % 4 !== 0,
+      isPremium: i % 5 === 0,
+      rating: 4 + (i % 2) * 0.5,
+      matchScore: 70 + ((i * 7) % 28),
       profileType,
       gender,
-      theme: Math.random() > 0.5 ? "romantic" : "adventurous",
+      theme: i % 2 === 0 ? "romantic" : "adventurous",
       isDemo: true as const,
     };
 

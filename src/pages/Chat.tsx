@@ -1,5 +1,5 @@
 import { useState, useEffect, type ChangeEvent, type KeyboardEvent } from "react";
-import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
+import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus, Smile, Paperclip, Mic } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -31,7 +31,10 @@ import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
-import { safeGetItem } from "@/lib/safe-storage";
+import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
+import { EmojiPicker } from "@/components/chat/EmojiPicker";
+import { ChatFileUpload } from "@/components/chat/ChatFileUpload";
+import { VoiceRecorder } from "@/components/chat/VoiceRecorder";
 import { useRealtimeChat } from "@/features/chat/useRealtimeChat";
 import { matchService } from "@/services/social";
 import { tokenService } from "@/services/payments/TokenService";
@@ -169,6 +172,70 @@ const publicChats: ChatUser[] = [
   },
 ];
 
+// Nº de miembros ESTABLE por sala pública (antes: Math.random() en cada
+// render, el contador cambiaba 30→57→37 sin motivo).
+const PUBLIC_ROOM_MEMBERS: Record<string, number> = {
+  "101": 42,
+  "102": 57,
+  "103": 28,
+  "104": 19,
+};
+
+// Persistencia demo: mensajes enviados por sala en localStorage.
+const chatMessagesKey = (chatId: string) => `chat_messages:${chatId}`;
+
+const readPersistedChatMessages = (chatId: string): SimpleChatMessage[] => {
+  try {
+    const raw = safeGetItem<string>(chatMessagesKey(chatId), {
+      defaultValue: "",
+    });
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as SimpleChatMessage[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const writePersistedChatMessages = (
+  chatId: string,
+  msgs: SimpleChatMessage[],
+): void => {
+  safeSetItem(chatMessagesKey(chatId), JSON.stringify(msgs));
+};
+
+// Historial semilla de cada hilo demo (lo que ya veía el usuario antes de
+// escribir nada). Los mensajes enviados se añaden encima desde localStorage.
+const getSeedMessages = (chatId: string): SimpleChatMessage[] => [
+  {
+    id: "1",
+    sender_id: chatId,
+    sender_name: "Demo User",
+    room_id: chatId,
+    content: "Hola! Cómo están?",
+    created_at: new Date().toISOString(),
+    message_type: "text",
+  },
+  {
+    id: "2",
+    sender_id: "0",
+    sender_name: "Tú",
+    room_id: chatId,
+    content: "Muy bien! Y ustedes?",
+    created_at: new Date().toISOString(),
+    message_type: "text",
+  },
+  {
+    id: "3",
+    sender_id: chatId,
+    sender_name: "Demo User",
+    room_id: chatId,
+    content: "Genial, les interesa conocernos mejor?",
+    created_at: new Date().toISOString(),
+    message_type: "text",
+  },
+];
+
 const Chat = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -201,6 +268,26 @@ const Chat = () => {
   );
   const [galleryProcessing, setGalleryProcessing] = useState(false);
   const galleryPrice = 100;
+
+  // Vista previa (lastMessage) por hilo: en demo se restaura desde los
+  // mensajes enviados persistidos en localStorage, para que no se pierda
+  // al navegar y volver.
+  const [lastMessageByChat, setLastMessageByChat] = useState<
+    Record<string, string>
+  >(() => {
+    const overrides: Record<string, string> = {};
+    [...privateChats, ...publicChats].forEach((chat) => {
+      const stored = readPersistedChatMessages(chat.id);
+      const last = stored[stored.length - 1];
+      if (last) overrides[chat.id] = last.content;
+    });
+    return overrides;
+  });
+
+  // Paneles del compositor (emoji / adjuntar / audio)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
 
   const getGalleryOwnerId = (): string | null => {
     // Producción: el dueño del contenido privado del chat 1:1 es el partner
@@ -376,6 +463,30 @@ const Chat = () => {
     _setRealMessages(mapped);
   }, [realtimeMessages, isProduction, activeRoomId]);
 
+  // Vista previa de un hilo en la lista: último mensaje enviado (demo, desde
+  // localStorage) o último mensaje real (producción, sala seleccionada).
+  const previewFor = (chat: ChatUser): string => {
+    const sent = lastMessageByChat[chat.id];
+    if (sent) return sent;
+    if (isProduction && selectedChat?.id === chat.id && realtimeMessages.length > 0) {
+      const last = realtimeMessages[realtimeMessages.length - 1];
+      if (last?.content) return String(last.content);
+    }
+    return chat.lastMessage;
+  };
+
+  // Un hilo con historial (semilla demo o mensajes reales) no se bloquea:
+  // si ya hay conversación, el usuario es participante de ese hilo.
+  const threadHasHistory = (chat: ChatUser): boolean => {
+    if (!isProduction) {
+      return (
+        getSeedMessages(chat.id).length > 0 ||
+        readPersistedChatMessages(chat.id).length > 0
+      );
+    }
+    return realtimeMessages.length > 0 || _realMessages.length > 0;
+  };
+
   const handleUnlockGallery = async () => {
     if (!user || !selectedChat) return;
     try {
@@ -546,43 +657,35 @@ const Chat = () => {
     }
   };
 
-  // Load messages for a specific chat
+  // Load messages for a specific chat (demo: semilla + enviados persistidos
+  // en localStorage, para que sobrevivan a navegar y volver).
   const loadMessages = (chatId: string) => {
-    const mockMessages: SimpleChatMessage[] = [
-      {
-        id: "1",
-        sender_id: chatId,
-        sender_name: "Demo User",
-        room_id: chatId,
-        content: "Hola! Cómo están?",
-        created_at: new Date().toISOString(),
-        message_type: "text",
-      },
-      {
-        id: "2",
-        sender_id: "0",
-        sender_name: "Tú",
-        room_id: chatId,
-        content: "Muy bien! Y ustedes?",
-        created_at: new Date().toISOString(),
-        message_type: "text",
-      },
-      {
-        id: "3",
-        sender_id: chatId,
-        sender_name: "Demo User",
-        room_id: chatId,
-        content: "Genial, les interesa conocernos mejor?",
-        created_at: new Date().toISOString(),
-        message_type: "text",
-      },
-    ];
-    setMessages(mockMessages);
+    setMessages([
+      ...getSeedMessages(chatId),
+      ...readPersistedChatMessages(chatId),
+    ]);
   };
 
   // Check chat access permissions for private chats
   useEffect(() => {
     const checkChatAccess = async () => {
+      // En demo el acceso es libre: no dejar que la verificación por
+      // invitación (IDs mock sin invitación "chat" aceptada) pise a false
+      // el mapa que el efecto de modo demo pone a true. Sin este guard,
+      // todos los privados demo acababan bloqueados (p. ej. /chat/1).
+      const demoAuth = safeGetItem<string>("demo_authenticated", {
+        validate: true,
+        defaultValue: "false",
+      });
+      if (demoAuth === "true") {
+        const demoAccessMap: { [key: string]: boolean } = {};
+        [...privateChats, ...publicChats].forEach((chat) => {
+          demoAccessMap[chat.id] = true;
+        });
+        setHasChatAccess(demoAccessMap);
+        return;
+      }
+
       const currentUserId = "1"; // Mock current user ID
       const accessMap: { [key: string]: boolean } = {};
 
@@ -628,10 +731,15 @@ const Chat = () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
-    const roomType =
-      (urlParams.get("room") as "private" | "public") || "private";
-
-    setActiveTab(roomType);
+    // Solo imponer el tab desde la URL cuando viene explícito (?room=...).
+    // Antes se forzaba "private" en cada cambio de selectedChat: el tab
+    // Público necesitaba dos clics (el primero lo revertía este efecto)
+    // y al abrir una sala pública la lista volvía a los privados.
+    if (urlParams.has("room")) {
+      const roomType =
+        (urlParams.get("room") as "private" | "public") || "private";
+      setActiveTab(roomType);
+    }
 
     if (userId) {
       const allChats = [...privateChats, ...publicChats];
@@ -760,7 +868,14 @@ const Chat = () => {
     }
 
     // Lgica para modo demo
-    if (selectedChat.isPrivate && !hasChatAccess[selectedChat.id]) {
+    // Un hilo con historial no se bloquea por falta de invitación: si ya
+    // hay conversación, el usuario es participante (mismo flujo en single
+    // y en pareja; el bloqueo solo aplica a hilos privados sin historial).
+    if (
+      selectedChat.isPrivate &&
+      !hasChatAccess[selectedChat.id] &&
+      !threadHasHistory(selectedChat)
+    ) {
       toast({
         title: "Acceso Denegado",
         description:
@@ -790,8 +905,23 @@ const Chat = () => {
       message_type: "text",
     };
 
+    // Persistir el mensaje enviado (demo): sobrevive a navegar y volver.
+    // La vista previa del hilo se actualiza con el mismo mensaje.
+    const persisted = [
+      ...readPersistedChatMessages(selectedChat.id.toString()),
+      message,
+    ];
+    writePersistedChatMessages(selectedChat.id.toString(), persisted);
+    setLastMessageByChat((prev) => ({
+      ...prev,
+      [selectedChat.id]: message.content,
+    }));
+
     setMessages((prev) => [...prev, message]);
     setNewMessage("");
+    setShowEmojiPicker(false);
+    setShowFileUpload(false);
+    setShowVoiceRecorder(false);
   };
 
   const checkMessagePermissions = (chat: ChatUser) => {
@@ -828,15 +958,23 @@ const Chat = () => {
       <div
         className={`relative z-10 flex h-screen ${hasActiveSession ? "pt-4" : "pt-16"} ${hasActiveSession ? "pb-4" : "pb-20"}`}
       >
-        {/* Chat List Sidebar */}
-        <div className="w-full sm:w-80 shrink-0 bg-linear-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex flex-col">
+        {/* Chat List Sidebar: en móvil es UN solo panel — lista O hilo,
+            nunca los dos partidos. Con hilo abierto la lista se oculta. */}
+        <div
+          className={`${selectedChat ? "hidden sm:flex" : "flex"} w-full sm:w-80 shrink-0 bg-linear-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex-col`}
+        >
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-white hover:bg-white/20 p-2 sm:hidden"
-                onClick={() => navigate("/feed")}
+                onClick={() => {
+                  // Dentro de un hilo: volver a la LISTA de conversaciones,
+                  // no a /feed. Solo sin hilo abierto se sale al feed.
+                  if (selectedChat) setSelectedChat(null);
+                  else navigate("/feed");
+                }}
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -890,13 +1028,11 @@ const Chat = () => {
               >
                 <Lock className="h-4 w-4" />
                 Privado
-                {privateChats.reduce((acc, chat) => acc + chat.unreadCount, 0) >
-                  0 && (
+                {/* Badge = nº real de hilos privados (antes sumaba los no
+                    leídos: decía 3 y la lista muestra 4 hilos). */}
+                {privateChats.length > 0 && (
                   <Badge className="bg-red-500 text-white text-xs">
-                    {privateChats.reduce(
-                      (acc, chat) => acc + chat.unreadCount,
-                      0,
-                    )}
+                    {privateChats.length}
                   </Badge>
                 )}
               </Button>
@@ -986,7 +1122,7 @@ const Chat = () => {
                             </span>
                           </div>
                           <p className="text-sm text-white/90 truncate font-medium">
-                            {chat.lastMessage}
+                            {previewFor(chat)}
                           </p>
                         </div>
                         {chat.unreadCount > 0 && (
@@ -1046,7 +1182,7 @@ const Chat = () => {
                             </span>
                           </div>
                           <p className="text-sm text-white/90 truncate font-medium">
-                            {chat.lastMessage}
+                            {previewFor(chat)}
                           </p>
                         </div>
                         {chat.unreadCount > 0 && (
@@ -1107,7 +1243,7 @@ const Chat = () => {
                     </div>
                     <p className="text-sm text-white/90 drop-shadow-md">
                       {selectedChat.roomType === "public"
-                        ? `Sala pblica  ${Math.floor(Math.random() * 50) + 10} miembros activos`
+                        ? `Sala pública ${PUBLIC_ROOM_MEMBERS[selectedChat.id] ?? 24} miembros activos`
                         : selectedChat.isOnline
                           ? "En lnea"
                           : `ltima vez ${selectedChat.timestamp}`}
@@ -1231,8 +1367,13 @@ const Chat = () => {
               </div>
 
               {/* Input para enviar mensajes */}
-              <div className="p-4 border-t border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30 chat-input">
-                {selectedChat?.isPrivate && !hasChatAccess[selectedChat.id] ? (
+              <div className="p-4 border-t border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30 chat-input relative">
+                {/* El bloqueo solo aplica a hilos privados sin historial ni
+                    acceso: con historial el usuario ya es participante y el
+                    compositor debe aparecer (igual en single y en pareja). */}
+                {selectedChat?.isPrivate &&
+                !hasChatAccess[selectedChat.id] &&
+                !threadHasHistory(selectedChat) ? (
                   <div className="text-center space-y-4 bg-linear-to-br from-purple-900/50 via-purple-800/50 to-blue-900/50 rounded-lg p-6 border border-white/20">
                     <div className="flex items-center justify-center text-white mb-3">
                       <Lock className="h-6 w-6 mr-2" />
@@ -1285,7 +1426,61 @@ const Chat = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {/* Botones de galera y solicitudes */}
+                    {/* Paneles del compositor: se abren sobre el input */}
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-full left-2 mb-2 z-20 max-w-[calc(100vw-2rem)]">
+                        <EmojiPicker
+                          onEmojiSelect={(emoji) =>
+                            setNewMessage((prev) => prev + emoji)
+                          }
+                          onClose={() => setShowEmojiPicker(false)}
+                          className="max-w-[calc(100vw-2rem)]"
+                        />
+                      </div>
+                    )}
+                    {showFileUpload && (
+                      <div className="absolute bottom-full left-2 mb-2 z-20 max-w-[calc(100vw-2rem)]">
+                        <ChatFileUpload
+                          onFileSelect={(files) => {
+                            setShowFileUpload(false);
+                            if (isProduction) {
+                              toast({
+                                title: "Subida no disponible",
+                                description:
+                                  "El envío de archivos aún no está conectado en producción.",
+                              });
+                            } else {
+                              toast({
+                                title: "Archivos recibidos (demo)",
+                                description: `${files.length} archivo(s) seleccionado(s): ${files.map((f) => f.name).join(", ")}. Envío real pendiente.`,
+                              });
+                            }
+                          }}
+                          onCancel={() => setShowFileUpload(false)}
+                          className="max-w-[calc(100vw-2rem)]"
+                        />
+                      </div>
+                    )}
+                    {showVoiceRecorder && (
+                      <div className="absolute bottom-full left-2 mb-2 z-20 max-w-[calc(100vw-2rem)]">
+                        <VoiceRecorder
+                          onAudioReady={(_blob, duration) => {
+                            setShowVoiceRecorder(false);
+                            toast({
+                              title: isProduction
+                                ? "Nota de voz no disponible"
+                                : "Nota de voz grabada (demo)",
+                              description: isProduction
+                                ? "El envío de audio aún no está conectado en producción."
+                                : `Audio de ${duration}s listo. Envío real pendiente.`,
+                            });
+                          }}
+                          onCancel={() => setShowVoiceRecorder(false)}
+                          className="max-w-[calc(100vw-2rem)]"
+                        />
+                      </div>
+                    )}
+                    {/* Botones de galería y solicitudes */}
                     <div className="flex flex-wrap gap-2 justify-center">
                       <Button
                         onClick={() => {
@@ -1324,16 +1519,16 @@ const Chat = () => {
                         onClick={() => {
                           if (selectedChat?.roomType === "private") {
                             toast({
-                              title: "Galera Privada",
+                              title: "Galería Privada",
                               description:
-                                "Accediendo a galera privada con " +
+                                "Accediendo a galería privada con " +
                                 selectedChat.name,
                             });
                           } else {
                             toast({
-                              title: "Galera Pblica",
+                              title: "Galería Pública",
                               description:
-                                "Accediendo a galera pblica de la sala",
+                                "Accediendo a galería pública de la sala",
                             });
                           }
                         }}
@@ -1343,7 +1538,56 @@ const Chat = () => {
                         <Globe className="h-3 w-3 mr-1" />
                         {selectedChat?.roomType === "private"
                           ? "Privada"
-                          : "Pblica"}
+                          : "Pública"}
+                      </Button>
+                    </div>
+
+                    {/* Barra de herramientas del compositor: emoji, adjuntar, audio */}
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Emojis"
+                        title="Emojis"
+                        disabled={isPaused}
+                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        onClick={() => {
+                          setShowFileUpload(false);
+                          setShowVoiceRecorder(false);
+                          setShowEmojiPicker((v) => !v);
+                        }}
+                      >
+                        <Smile className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Adjuntar archivo"
+                        title="Adjuntar archivo"
+                        disabled={isPaused}
+                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        onClick={() => {
+                          setShowEmojiPicker(false);
+                          setShowVoiceRecorder(false);
+                          setShowFileUpload((v) => !v);
+                        }}
+                      >
+                        <Paperclip className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Grabar audio"
+                        title="Grabar audio"
+                        disabled={isPaused}
+                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        onClick={() => {
+                          setShowEmojiPicker(false);
+                          setShowFileUpload(false);
+                          setShowVoiceRecorder((v) => !v);
+                        }}
+                      >
+                        <Mic className="h-4 w-4" />
                       </Button>
                     </div>
 
@@ -1399,7 +1643,7 @@ const Chat = () => {
                 <p className="mb-4 text-white/90 drop-shadow-md">
                   {activeTab === "private"
                     ? "Elige un chat privado para conversar de forma segura"
-                    : "nete a una sala pblica para conocer la comunidad"}
+                    : "nete a una sala pública para conocer la comunidad"}
                 </p>
                 <div className="flex items-center justify-center text-sm space-x-4">
                   <div className="flex items-center text-white/90">
@@ -1411,7 +1655,7 @@ const Chat = () => {
                   <div className="flex items-center text-white/90">
                     <Globe className="h-4 w-4 mr-1 text-green-300" />
                     <span className="drop-shadow-md">
-                      Salas pblicas moderadías
+                      Salas públicas moderadías
                     </span>
                   </div>
                 </div>

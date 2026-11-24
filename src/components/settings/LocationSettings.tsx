@@ -260,7 +260,7 @@ export const LocationSettings = () => {
                   Historial de ubicaciones
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  Recordar ubicaciones visitadías
+                  Recordar ubicaciones visitadas
                 </p>
               </div>
               <Switch

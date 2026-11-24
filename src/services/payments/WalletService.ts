@@ -66,7 +66,7 @@ interface NetworkConfig {
  *
  * Características principales:
  * - Wallet interna con Supabase + Ethers.js
- * - Encriptación AES-256 de claves privadías
+ * - Encriptación AES-256 de claves privadas
  * - Soporte para Mumbai testnet y Polygon mainnet
  * - Gestión de tokens CMPX y GTK
  * - Transacciones gasless para testnet
@@ -174,7 +174,7 @@ export class WalletService {
     },
   };
 
-  // Direcciones de contratos (centralizadías en AppConfig)
+  // Direcciones de contratos (centralizadas en AppConfig)
   private static readonly CONTRACT_ADDRESSES =
     AppConfig.blockchain.contractAddresses;
 

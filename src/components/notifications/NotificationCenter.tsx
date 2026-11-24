@@ -193,7 +193,7 @@ export function NotificationCenter({
                   className="h-7"
                 >
                   <Check className="h-3 w-3 mr-1" />
-                  Marcar todías como leídías
+                  Marcar todas como leídas
                 </Button>
               </div>
             )}

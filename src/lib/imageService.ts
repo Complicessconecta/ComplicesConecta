@@ -1,7 +1,7 @@
 // src/lib/imageService.ts
 /**
  * Servicio de imágenes dinámicas para perfiles
- * Reemplaza URLs hardcodeadías con generación dinámica
+ * Reemplaza URLs hardcodeadas con generación dinámica
  */
 
 export interface ImageConfig {
@@ -43,7 +43,7 @@ const COUPLE_IMAGE_IDS = [
   "1571019613454-1cb2f99b2d8b", // Pareja casual
 ];
 
-// Coordenadías de ciudades mexicanas
+// Coordenadas de ciudades mexicanas
 export const MEXICAN_CITIES: CityCoordinates[] = [
   { name: "CDMX", lat: 19.4326, lng: -99.1332, range: 0.1 },
   { name: "Guadalajara", lat: 20.6597, lng: -103.3496, range: 0.1 },
@@ -109,7 +109,7 @@ export const getRandomProfileImage = (
 };
 
 /**
- * Genera coordenadías aleatorias para una ciudad mexicana
+ * Genera coordenadas aleatorias para una ciudad mexicana
  */
 export const getRandomMexicanCoordinates = (): {
   lat: number;

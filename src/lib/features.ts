@@ -18,7 +18,7 @@ export interface FeatureFlags {
   tokens: boolean;
   referrals: boolean;
 
-  // Funciones premium (deshabilitadías en beta)
+  // Funciones premium (deshabilitadas en beta)
   premiumChat: boolean;
   vipEvents: boolean;
   prioritySupport: boolean;
@@ -46,7 +46,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     tokens: true,
     referrals: true,
 
-    // Premium (HABILITAdías EN BETA - Solo con tokens, sin Stripe)
+    // Premium (HABILITAdas EN BETA - Solo con tokens, sin Stripe)
     premiumChat: true,
     vipEvents: true,
     prioritySupport: true,
@@ -54,7 +54,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     unlimitedLikes: true,
     readReceipts: true,
 
-    // VIP (DESHABILITAdías)
+    // VIP (DESHABILITAdas)
     exclusiveEvents: false,
     personalConcierge: false,
     customBadges: false,
@@ -72,7 +72,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     tokens: true,
     referrals: true,
 
-    // Premium (HABILITAdías)
+    // Premium (HABILITAdas)
     premiumChat: true,
     vipEvents: true,
     prioritySupport: true,
@@ -80,14 +80,14 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     unlimitedLikes: true,
     readReceipts: true,
 
-    // VIP (DESHABILITAdías)
+    // VIP (DESHABILITAdas)
     exclusiveEvents: false,
     personalConcierge: false,
     customBadges: false,
   },
 
   vip: {
-    // Todías habilitadías
+    // Todas habilitadas
     chat: true,
     profiles: true,
     discover: true,
@@ -154,7 +154,7 @@ export function useFeatures() {
 }
 
 /**
- * Obtiene mensaje explicativo para funciones deshabilitadías
+ * Obtiene mensaje explicativo para funciones deshabilitadas
  */
 export function getFeatureDisabledMessage(
   _feature: keyof FeatureFlags,
@@ -177,7 +177,7 @@ export function getFeatureDisabledMessage(
 export const PREMIUM_FEATURES_LIST = [
   {
     name: "Chat Premium",
-    description: "Mensajes ilimitados y funciones avanzadías",
+    description: "Mensajes ilimitados y funciones avanzadas",
     icon: "💬",
     key: "premiumChat" as keyof FeatureFlags,
   },
@@ -195,7 +195,7 @@ export const PREMIUM_FEATURES_LIST = [
   },
   {
     name: "Filtros Avanzados",
-    description: "Búsquedías más precisas y detalladías",
+    description: "Búsquedas más precisas y detalladas",
     icon: "🔍",
     key: "advancedFilters" as keyof FeatureFlags,
   },

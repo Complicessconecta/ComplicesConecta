@@ -131,8 +131,8 @@ const Gallery = ({
           <h2 className="text-2xl font-bold text-white mb-1">Galería</h2>
           <p className="text-white/70">
             {isOwner
-              ? "Gestiona tus fotos públicas y privadías"
-              : "Explora las fotos compartidías"}
+              ? "Gestiona tus fotos públicas y privadas"
+              : "Explora las fotos compartidas"}
           </p>
         </div>
 
@@ -284,8 +284,8 @@ const Gallery = ({
               </h3>
               <p className="text-white/70">
                 {isOwner
-                  ? "Sube fotos privadías para compartir solo con tus conexiones."
-                  : "Este usuario no ha compartido fotos privadías contigo aún."}
+                  ? "Sube fotos privadas para compartir solo con tus conexiones."
+                  : "Este usuario no ha compartido fotos privadas contigo aún."}
               </p>
             </Card>
           ) : (

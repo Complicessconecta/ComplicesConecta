@@ -138,7 +138,7 @@ export function pickProfileImage(
     attempts++;
   }
 
-  // Fallback: usar cualquier imagen del pool si todías están usadías
+  // Fallback: usar cualquier imagen del pool si todas están usadas
   for (const img of pool) {
     if (img) {
       selectedImage = img;

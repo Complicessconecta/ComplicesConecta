@@ -10,7 +10,7 @@
  * El cifrado de cliente NO protege contra XSS: lo secreto vive en el servidor.
  *
  * Mejoras de seguridad 2025-2026:
- * - Iteraciones aumentadías a 600000 (recomendado NIST 2025+)
+ * - Iteraciones aumentadas a 600000 (recomendado NIST 2025+)
  * - Validación de versiones en decrypt (solo "1.0"; los blobs "fallback"
  *   —base64 sin cifrar— se rechazan)
  */
@@ -43,7 +43,7 @@ export function checkCryptoSupport(): boolean {
  * Genera una clave de encriptación derivada de contraseña usando PBKDF2
  * 
  * Mejoras de seguridad:
- * - Iteraciones aumentadías a 600000 (recomendado NIST 2025+)
+ * - Iteraciones aumentadas a 600000 (recomendado NIST 2025+)
  * - SHA-256 para hash
  * - AES-GCM 256-bit para clave final
  * 
@@ -72,7 +72,7 @@ export async function deriveKey(
     ["deriveKey"],
   );
 
-  // Derivar clave final usando PBKDF2 con iteraciones aumentadías
+  // Derivar clave final usando PBKDF2 con iteraciones aumentadas
   const key = await window.crypto.subtle.deriveKey(
     {
       name: "PBKDF2",

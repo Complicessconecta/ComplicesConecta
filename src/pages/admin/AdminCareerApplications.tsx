@@ -92,7 +92,7 @@ const AdminCareerApplications = () => {
       }
 
       setApplications(data || []);
-      logger.info("Solicitudes cargadías exitosamente:", {
+      logger.info("Solicitudes cargadas exitosamente:", {
         count: data?.length || 0,
       });
     } catch (error: any) {

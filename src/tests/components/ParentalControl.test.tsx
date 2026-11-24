@@ -97,6 +97,24 @@ describe("ParentalControl", () => {
     );
   });
 
+  it("el modal se puede cerrar con X, Escape y Cancelar", () => {
+    const onClose = vi.fn();
+    render(<ParentalControl {...defaultProps} onClose={onClose} />);
+
+    // X cierra el modal
+    fireEvent.click(screen.getByLabelText("Cerrar"));
+    expect(onClose).toHaveBeenCalledTimes(1);
+
+    // Escape cierra el modal
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(2);
+
+    // Cancelar (en el paso del PIN) cierra el modal
+    fireEvent.click(screen.getByText(/Desbloquear/i));
+    fireEvent.click(screen.getByText(/Cancelar/i));
+    expect(onClose).toHaveBeenCalledTimes(3);
+  });
+
   it("handles incorrect PIN entry and lockout", async () => {
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(screen.getByText(/Desbloquear/i));

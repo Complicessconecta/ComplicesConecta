@@ -329,7 +329,7 @@ const ModeratorRequest = () => {
                     Compensacin
                   </h4>
                   <p className="text-white/70">
-                    Tokens CMPX mensuales segn horas dedicadías
+                    Tokens CMPX mensuales segn horas dedicadas
                   </p>
                 </div>
                 <div>

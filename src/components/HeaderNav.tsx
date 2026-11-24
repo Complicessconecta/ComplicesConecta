@@ -154,7 +154,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   };
 
   // Ocultar HeaderNav cuando el usuario está autenticado
-  // Solo mostrar en páginas públicas (no autenticadías)
+  // Solo mostrar en páginas públicas (no autenticadas)
   if (hasSession) {
     return null;
   }
@@ -494,7 +494,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
       {/* Espaciador para contenido */}
       <div className="h-16"></div>
 
-      {/* Animaciones personalizadías del corazón */}
+      {/* Animaciones personalizadas del corazón */}
       <style>{`
         @keyframes heartBeat {
           0%, 100% { transform: scale(1); }

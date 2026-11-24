@@ -171,14 +171,14 @@ class AnalyticsMetrics {
   getUserMetrics(userId: string): UserMetrics | null {
     const metrics = this.userSessions.get(userId);
     if (metrics) {
-      logger.info("📊 Analytics: Métricas obtenidías", { userId, metrics });
+      logger.info("📊 Analytics: Métricas obtenidas", { userId, metrics });
     }
     return metrics || null;
   }
 
   // Obtener métricas del sistema
   getSystemMetrics(): SystemMetrics {
-    logger.info("📊 Analytics: Métricas del sistema obtenidías", {
+    logger.info("📊 Analytics: Métricas del sistema obtenidas", {
       system: this.systemMetrics,
     });
     return { ...this.systemMetrics };
@@ -207,9 +207,9 @@ class AnalyticsMetrics {
     return metrics;
   }
 
-  // Procesar métricas acumuladías
+  // Procesar métricas acumuladas
   private processMetrics() {
-    logger.info("📊 Analytics: Procesando métricas acumuladías...");
+    logger.info("📊 Analytics: Procesando métricas acumuladas...");
 
     // Calcular duración promedio de sesión
     const activeSessions = Array.from(this.userSessions.values());
@@ -233,7 +233,7 @@ class AnalyticsMetrics {
     // Guardar en cache
     this.saveMetricsToCache();
 
-    logger.info("📊 Analytics: Métricas procesadías", {
+    logger.info("📊 Analytics: Métricas procesadas", {
       activeSessions: activeSessions.length,
       eventBuffer: this.eventBuffer.length,
       averageSessionDuration:
@@ -312,7 +312,7 @@ class AnalyticsMetrics {
       );
       if (cachedMetrics) {
         this.systemMetrics = { ...cachedMetrics };
-        logger.info("📊 Analytics: Métricas cargadías desde cache");
+        logger.info("📊 Analytics: Métricas cargadas desde cache");
       }
     } catch (error) {
       logger.error("📊 Analytics: Error al cargar métricas desde cache", {

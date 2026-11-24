@@ -52,7 +52,7 @@ interface AnimationContextType {
 const defaultConfig: AnimationConfig = {
   reducedMotion: false,
   animationSpeed: "normal",
-  enableParticles: true, // ✅ ALWAYS TRUE - Partículas habilitadías por defecto
+  enableParticles: true, // ✅ ALWAYS TRUE - Partículas habilitadas por defecto
   enableBackgroundAnimations: true,
 };
 

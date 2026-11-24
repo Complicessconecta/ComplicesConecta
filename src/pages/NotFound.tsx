@@ -16,7 +16,7 @@ const NotFound = () => {
   const [showLogs, setShowLogs] = useState(false);
 
   const sparkles = useMemo(() => {
-    // Generar posiciones determinísticas basadías en un seed
+    // Generar posiciones determinísticas basadas en un seed
     return Array.from({ length: 12 }, (_, i) => ({
       x: (i * 73) % 100,
       y: (i * 97) % 100,

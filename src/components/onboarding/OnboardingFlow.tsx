@@ -169,7 +169,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
                   <div className="text-4xl mb-3">💬</div>
                   <h4 className="font-bold mb-2">Chat Seguro</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Conversaciones privadías y protegidías
+                    Conversaciones privadas y protegidas
                   </p>
                 </CardContent>
               </Card>
@@ -206,7 +206,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
                     <p className="font-medium">Cumplimiento Ley Olimpia</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       Tu contenido está protegido contra descargas no
-                      autorizadías
+                      autorizadas
                     </p>
                   </div>
                 </div>

@@ -188,7 +188,7 @@ export class ErrorAlertService {
   }
 
   /**
-   * Cargar alertas persistidías
+   * Cargar alertas persistidas
    */
   private loadPersistedAlerts(): void {
     if (typeof window === "undefined" || !window.localStorage) return;
@@ -417,7 +417,7 @@ export class ErrorAlertService {
   }
 
   /**
-   * Obtener alertas filtradías
+   * Obtener alertas filtradas
    */
   getAlerts(filter?: {
     severity?: ErrorAlert["severity"];
@@ -470,7 +470,7 @@ export class ErrorAlertService {
   }
 
   /**
-   * Resolver todías las alertas
+   * Resolver todas las alertas
    */
   resolveAll(): void {
     let count = 0;

@@ -39,7 +39,7 @@ export const generateFilterDemoCards = (): FilterDemoCard[] => {
         "Ajusta el rango de edad para ver solo perfiles que coincidan con tus preferencias.",
       benefits: [
         "Conexiones más compatibles",
-        "Ahorra tiempo en búsquedías",
+        "Ahorra tiempo en búsquedas",
         "Mayor probabilidad de match",
       ],
       ctaText: "Probar Filtros",
@@ -72,7 +72,7 @@ export const generateFilterDemoCards = (): FilterDemoCard[] => {
       explanation:
         "Selecciona intereses específicos para encontrar personas afines a ti.",
       benefits: [
-        "Conexiones más profundías",
+        "Conexiones más profundas",
         "Intereses compartidos",
         "Conversaciones naturales",
       ],
@@ -120,7 +120,7 @@ export const generateFilterDemoCards = (): FilterDemoCard[] => {
       filterType: "online",
       demoValue: "Activos ahora",
       explanation:
-        "Filtra por usuarios que están conectados para respuestas más rápidías.",
+        "Filtra por usuarios que están conectados para respuestas más rápidas.",
       benefits: [
         "Respuestas inmediatas",
         "Conversaciones en vivo",

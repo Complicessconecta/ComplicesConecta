@@ -250,7 +250,7 @@ class Neo4jService {
       }
 
       // Simular actualización
-      logger.info(`Actualizadías ${entities.length} interacciones para usuario ${userId}`);
+      logger.info(`Actualizadas ${entities.length} interacciones para usuario ${userId}`);
 
       // Invalidar cache
       this.cache.delete(`context_${userId}`);

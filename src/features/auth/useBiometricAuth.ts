@@ -330,7 +330,7 @@ export const useBiometricAuth = () => {
         server: SERVER,
       });
       setIsBiometricEnabled(false);
-      toast.info("Sesiones biométricas limpiadías.");
+      toast.info("Sesiones biométricas limpiadas.");
       return true;
     } catch (error) {
       logger.error("Error limpiando sesiones biométricas:", { error });

@@ -101,7 +101,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
             <p className="text-xs text-white/60">
               Este asistente usa tu estado legal real (contrato activo, disputas
               y evidencias) para explicarte por qué ciertas acciones están
-              bloqueadías.
+              bloqueadas.
             </p>
           )}
           {messages.map((m) => (

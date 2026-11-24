@@ -71,7 +71,7 @@ const MediaViewer = ({
     React.createElement(
       "div",
       {},
-      "Las capturas de pantalla y descargas están monitoreadías",
+      "Las capturas de pantalla y descargas están monitoreadas",
     ),
     React.createElement("img", { role: "img", alt: "Protected media" }),
     showControls &&
@@ -361,7 +361,7 @@ describe("MediaViewer Component", () => {
 
     expect(screen.getByText("Aviso de Seguridad")).toBeInTheDocument();
     expect(
-      screen.getByText(/capturas de pantalla y descargas están monitoreadías/),
+      screen.getByText(/capturas de pantalla y descargas están monitoreadas/),
     ).toBeInTheDocument();
   });
 

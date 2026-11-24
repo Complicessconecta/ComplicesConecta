@@ -65,7 +65,7 @@ function ProfileCouple() {
   const setShowReportDialog = _setShowReportDialog;
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   // La galería privada carga BLOQUEADA: el valor anterior (false) dejaba
-  // las fotos privadías visibles sin PIN en la primera carga del perfil.
+  // las fotos privadas visibles sin PIN en la primera carga del perfil.
   const [isParentalLocked, _setIsParentalLocked] = usePersistedState(
     "parentalLock",
     true,
@@ -100,7 +100,7 @@ function ProfileCouple() {
     number | null
   >(null);
 
-  // C6: rutas de Storage (bucket "media") de las 4 imágenes privadías.
+  // C6: rutas de Storage (bucket "media") de las 4 imágenes privadas.
   // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
   // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
   // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
@@ -176,7 +176,7 @@ function ProfileCouple() {
     },
   );
 
-  // Función para hacer funcional el botón "Ver Fotos Privadías"
+  // Función para hacer funcional el botón "Ver Fotos Privadas"
   const handleViewPrivatePhotos = async () => {
     // Bloqueado: el perfil propio abre la pantalla del PIN; un visitante
     // sigue al flujo de solicitud de acceso (no se le puede pedir el PIN
@@ -1157,7 +1157,7 @@ function ProfileCouple() {
                         </Button>
                       )}
 
-                      {/* Botón para solicitar acceso a fotos privadías */}
+                      {/* Botón para solicitar acceso a fotos privadas */}
                       {privateImageAccess === "none" && (
                         <Button
                           onClick={handleViewPrivatePhotos}
@@ -1165,9 +1165,9 @@ function ProfileCouple() {
                         >
                           <Lock className="w-4 h-4" />
                           <span className="hidden sm:inline">
-                            Ver Fotos Privadías
+                            Ver Fotos Privadas
                           </span>
-                          <span className="sm:hidden">Privadías</span>
+                          <span className="sm:hidden">Privadas</span>
                         </Button>
                       )}
 
@@ -1193,9 +1193,9 @@ function ProfileCouple() {
                         >
                           <Images className="w-4 h-4" />
                           <span className="hidden sm:inline">
-                            Fotos Privadías
+                            Fotos Privadas
                           </span>
-                          <span className="sm:hidden">Privadías</span>
+                          <span className="sm:hidden">Privadas</span>
                         </Button>
                       )}
                     </div>
@@ -1249,7 +1249,7 @@ function ProfileCouple() {
                 {privateImageAccess === "denied" && (
                   <div className="text-center py-6">
                     <p className="text-white/70 text-sm">
-                      Tu solicitud para ver las fotos privadías fue denegada.
+                      Tu solicitud para ver las fotos privadas fue denegada.
                     </p>
                   </div>
                 )}
@@ -1467,6 +1467,7 @@ function ProfileCouple() {
       <ParentalControl
         isLocked={isParentalLocked}
         showLockScreen={showParentalUnlock}
+        onClose={() => setShowParentalUnlock(false)}
         onToggle={(locked) => {
           _setIsParentalLocked(locked);
           if (!locked) {

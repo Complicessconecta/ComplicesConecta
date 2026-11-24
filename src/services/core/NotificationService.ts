@@ -89,7 +89,7 @@ export class NotificationService {
       // Suscribirse a notificaciones en tiempo real
       await this.subscribeToRealtime(userId);
 
-      // Cargar notificaciones no leídías
+      // Cargar notificaciones no leídas
       await this.loadUnreadNotifications(userId);
     } catch (error) {
       logger.error("[NotificationService] Initialization error:", { error });
@@ -350,7 +350,7 @@ export class NotificationService {
   }
 
   /**
-   * Cargar notificaciones no leídías
+   * Cargar notificaciones no leídas
    */
   async loadUnreadNotifications(userId: string): Promise<Notification[]> {
     try {
@@ -436,7 +436,7 @@ export class NotificationService {
   }
 
   /**
-   * Marcar todías como leídías
+   * Marcar todas como leídas
    */
   async markAllAsRead(userId: string): Promise<void> {
     try {
@@ -480,7 +480,7 @@ export class NotificationService {
   }
 
   /**
-   * Obtener contador de no leídías
+   * Obtener contador de no leídas
    */
   getUnreadCount(): number {
     return this.notificationQueue.filter((n) => !n.read).length;

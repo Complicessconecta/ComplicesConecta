@@ -2,7 +2,7 @@
  * QueryOptimizationService - Optimización avanzada de consultas de base de datos
  * Implementa técnicas de optimización para mejorar performance:
  * - Índices inteligentes
- * - Consultas paginadías eficientes
+ * - Consultas paginadas eficientes
  * - Cache de consultas frecuentes
  * - Análisis de performance de queries
  */
@@ -312,7 +312,7 @@ export class QueryOptimizationService {
   }
 
   /**
-   * Ejecuta consulta con optimizaciones aplicadías
+   * Ejecuta consulta con optimizaciones aplicadas
    */
   private async executeWithOptimizations(
     queryFn: () => Promise<any>,

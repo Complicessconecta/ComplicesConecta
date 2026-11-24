@@ -317,9 +317,9 @@ export class ChatRoomService {
   }
 
   /**
-   * Obtener salas de chat privadías del usuario
+   * Obtener salas de chat privadas del usuario
    * @param userId ID del usuario
-   * @returns Lista de salas privadías
+   * @returns Lista de salas privadas
    */
   static async getUserPrivateRooms(userId: string): Promise<ChatRoom[]> {
     try {
@@ -338,7 +338,7 @@ export class ChatRoomService {
 
       return data?.map((m: any) => m.chat_rooms).filter(Boolean) || [];
     } catch (error) {
-      logger.error("Error obteniendo salas privadías del usuario:", { error });
+      logger.error("Error obteniendo salas privadas del usuario:", { error });
       return [];
     }
   }

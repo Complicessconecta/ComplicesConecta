@@ -46,7 +46,7 @@ const CustomPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }:
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
 
-// Imágenes actualizadías
+// Imágenes actualizadas
 import GraficoFluxEconomia from "@/assets/svg/grafico-flux-economia.svg";
 import GraficoTokensApp from "@/assets/svg/grafico-tokens-app.svg";
 import WalletInterna from "@/assets/svg/wallet-interna.svg";
@@ -115,13 +115,13 @@ const faqData: FAQItem[] = [
   {
     question: "¿Cuándo estará disponible World ID?",
     answer:
-      "La integración con World ID está en desarrollo y se activará próximamente. Te notificaremos cuando esté disponible para que puedías verificar tu identidad y obtener las recompensas.",
+      "La integración con World ID está en desarrollo y se activará próximamente. Te notificaremos cuando esté disponible para que puedas verificar tu identidad y obtener las recompensas.",
     category: "general",
   },
   {
     question: "¿Qué pasa si encuentro un error?",
     answer:
-      "Reporta cualquier problema a través del soporte. Todías las transacciones están auditadías y podemos corregir errores legítimos.",
+      "Reporta cualquier problema a través del soporte. Todas las transacciones están auditadas y podemos corregir errores legítimos.",
     category: "security",
   },
 ];
@@ -338,13 +338,13 @@ export default function TokensInfo() {
       name: "Chat Premium (30 días)",
       icon: <MessageSquare className="h-5 w-5" />,
       cost: 100,
-      description: "Mensajes ilimitados y funciones avanzadías",
+      description: "Mensajes ilimitados y funciones avanzadas",
     },
     {
       name: "Filtros Avanzados (30 días)",
       icon: <Zap className="h-5 w-5" />,
       cost: 75,
-      description: "Búsquedías más precisas",
+      description: "Búsquedas más precisas",
     },
     {
       name: "Likes Ilimitados (30 días)",
@@ -966,7 +966,7 @@ export default function TokensInfo() {
                         <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <span>
                           <strong>Compra Directa:</strong> Adquiere con dinero
-                          real (MXN, USD, criptomonedías)
+                          real (MXN, USD, criptomonedas)
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
@@ -1902,7 +1902,7 @@ export default function TokensInfo() {
                   }`}
                 >
                   {cat === "all"
-                    ? "Todías"
+                    ? "Todas"
                     : cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </Button>
               ))}

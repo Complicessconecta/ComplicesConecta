@@ -67,7 +67,7 @@ const LOOKING_FOR_OPTIONS = [
   "Full swap",
   "Juego suave / voyeur",
   "Eventos en clubs swinger",
-  "Citas privadías en hotel",
+  "Citas privadas en hotel",
   "Tríos y más dinámicas",
 ];
 

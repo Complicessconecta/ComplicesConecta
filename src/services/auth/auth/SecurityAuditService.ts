@@ -427,7 +427,7 @@ export class SecurityAuditService {
   }
 
   /**
-   * Analiza amenazas detectadías
+   * Analiza amenazas detectadas
    */
   async analyzeThreats(): Promise<ThreatDetection[]> {
     try {
@@ -700,7 +700,7 @@ export class SecurityAuditService {
     const recommendations: string[] = [];
 
     if (metrics.securityScore < 70) {
-      recommendations.push("Implementar medidías de seguridad adicionales");
+      recommendations.push("Implementar medidas de seguridad adicionales");
     }
 
     if (metrics.criticalEvents > 5) {

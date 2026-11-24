@@ -36,7 +36,7 @@ const Matches = () => {
       image:
         "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=600&fit=crop",
       compatibility: 98,
-      mutualInterests: ["Fiestas Privadías", "Intercambio", "Eventos VIP"],
+      mutualInterests: ["Fiestas Privadas", "Intercambio", "Eventos VIP"],
       distance: 1.2,
       matchedAt: "Hace 2 horas",
       hasUnreadMessage: true,
@@ -65,7 +65,7 @@ const Matches = () => {
       mutualInterests: [
         "Intercambio Suave",
         "Clubs Exclusivos",
-        "Parejas Verificadías",
+        "Parejas Verificadas",
       ],
       distance: 5.8,
       matchedAt: "Hace 3 días",

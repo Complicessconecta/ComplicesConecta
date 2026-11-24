@@ -291,7 +291,7 @@ export const PinSettings: React.FC = () => {
           <li>Última actualización: {pinCreatedLabel}</li>
           <li>Expira: {pinExpiresLabel}</li>
           <li>
-            Si olvidías tu PIN, tendrás que restablecerlo autenticándote
+            Si olvidas tu PIN, tendrás que restablecerlo autenticándote
             nuevamente.
           </li>
         </ul>

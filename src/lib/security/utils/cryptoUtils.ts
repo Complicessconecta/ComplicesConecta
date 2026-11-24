@@ -2,7 +2,7 @@
  * Utilidades criptográficas para conversión de datos
  * 
  * Funciones auxiliares para convertir entre ArrayBuffer y Base64
- * Usadías por el sistema de encriptación
+ * Usadas por el sistema de encriptación
  */
 
 /**

@@ -153,7 +153,7 @@ export const Discover = () => {
           if (profile.distance !== undefined) {
             distanceMatch = profile.distance <= filters.distance;
           } else {
-            // Si no tiene distancia pero tiene coordenadías, calcularla
+            // Si no tiene distancia pero tiene coordenadas, calcularla
             // Esto se maneja en loadRealProfiles, as que aqu solo verificamos la distancia ya calculada
             distanceMatch = true; // Permitir si no hay distancia disponible
           }
@@ -189,9 +189,9 @@ export const Discover = () => {
         // Filtro de distancia para parejas
         let distanceMatch = true;
         if (location && couple.location) {
-          // Calcular distancia - los perfiles de pareja pueden no tener coordenadías exactas
-          // Usar la distancia calculada previamente o permitir el match si no hay coordenadías
-          distanceMatch = true; // Por ahora permitir todos si no hay coordenadías precisas
+          // Calcular distancia - los perfiles de pareja pueden no tener coordenadas exactas
+          // Usar la distancia calculada previamente o permitir el match si no hay coordenadas
+          distanceMatch = true; // Por ahora permitir todos si no hay coordenadas precisas
         }
 
         // Los perfiles de pareja no tienen interests en el tipo actual, permitir match
@@ -277,7 +277,7 @@ export const Discover = () => {
               profile.latitude && profile.longitude
                 ? { latitude: profile.latitude, longitude: profile.longitude }
                 : null,
-            ), // Clculo de distancia implementado con coordenadías reales
+            ), // Clculo de distancia implementado con coordenadas reales
             interests: Array.isArray(profile.interests)
               ? profile.interests
               : [], // Sistema de intereses conectado con Supabase

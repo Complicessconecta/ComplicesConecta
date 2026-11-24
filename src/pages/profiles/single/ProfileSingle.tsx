@@ -237,7 +237,7 @@ const ProfileSingle: FC = () => {
     }
   };
 
-  // Demo: controlar desbloqueo visual de fotos privadías en el propio perfil
+  // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
@@ -251,7 +251,7 @@ const ProfileSingle: FC = () => {
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
   // Estado para control parental: la galería privada carga BLOQUEADA.
-  // (Antes: false, y las fotos privadías quedaban visibles sin PIN en la
+  // (Antes: false, y las fotos privadas quedaban visibles sin PIN en la
   // primera carga del perfil.)
   const [isParentalLocked, setIsParentalLocked] = usePersistedState<boolean>(
     "parentalControlLocked",
@@ -354,7 +354,7 @@ const ProfileSingle: FC = () => {
   const demoTheme = isDemoProfile ? "demo_premium" : undefined;
   useProfileTheme("single", ["male"], demoTheme);
 
-  // Datos de imágenes privadías para el carrusel
+  // Datos de imágenes privadas para el carrusel
   type PrivateImageItem = {
     id?: string;
     url?: string;
@@ -364,7 +364,7 @@ const ProfileSingle: FC = () => {
     userLiked?: boolean;
   };
 
-  // C6: rutas de Storage (bucket "media") de las 58 imágenes privadías.
+  // C6: rutas de Storage (bucket "media") de las 58 imágenes privadas.
   // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
   // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
   // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
@@ -398,6 +398,21 @@ const ProfileSingle: FC = () => {
     isOwnProfile &&
     !isParentalLocked &&
     (demoPrivateUnlocked || privateImageAccess === "approved");
+
+  // Una cuenta de pareja no tiene perfil single: redirigir a su perfil de
+  // pareja. Sin esta guardia, /profile-single mostraba los datos de la
+  // pareja (Carmen & Roberto) en demo. Simétrico al redirect de
+  // ProfileCouple cuando el usuario no tiene perfil de pareja.
+  useEffect(() => {
+    if (isLoading) return;
+    const accountType =
+      (profile as unknown as Record<string, unknown>)?.account_type ??
+      (profile as unknown as Record<string, unknown>)?.accountType ??
+      (user as unknown as Record<string, unknown>)?.accountType;
+    if (accountType === "couple") {
+      navigate("/profile-couple", { replace: true });
+    }
+  }, [isLoading, profile, user, navigate]);
 
   // C6: resuelve las 58 rutas de Storage a URLs firmadas (1 h) solo cuando
   // la galería está desbloqueada y hay usuario autenticado. Llamada
@@ -587,7 +602,7 @@ const ProfileSingle: FC = () => {
     if (!privateGalleryRef.current) {
       toast({
         title: "Galería privada",
-        description: "No se pudo ubicar la sección de fotos privadías.",
+        description: "No se pudo ubicar la sección de fotos privadas.",
         variant: "destructive",
       });
       return;
@@ -600,7 +615,7 @@ const ProfileSingle: FC = () => {
 
     toast({
       title: "Galería privada",
-      description: "Desplazándote a tus fotos privadías.",
+      description: "Desplazándote a tus fotos privadas.",
     });
   };
 
@@ -1043,7 +1058,7 @@ const ProfileSingle: FC = () => {
                       </DropdownMenu>
                     )}
 
-                    {/* Botón para solicitar acceso a fotos privadías */}
+                    {/* Botón para solicitar acceso a fotos privadas */}
                     {privateImageAccess === "none" && (
                       <Button
                         onClick={handleViewPrivatePhotos}
@@ -1089,7 +1104,7 @@ const ProfileSingle: FC = () => {
             </CardContent>
           </Card>
 
-          {/* Estadísticas mejoradías */}
+          {/* Estadísticas mejoradas */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -1603,14 +1618,14 @@ const ProfileSingle: FC = () => {
                   {
                     title: "Lifestyle Exclusivo",
                     description:
-                      "Conexiones seleccionadías para un círculo íntimo y sofisticado.",
+                      "Conexiones seleccionadas para un círculo íntimo y sofisticado.",
                     link: "#",
                     icon: <TrendingUp className="w-5 h-5" />,
                   },
                   {
                     title: "Eventos VIP",
                     description:
-                      "Acceso prioritario a fiestas privadías y experiencias lifestyle.",
+                      "Acceso prioritario a fiestas privadas y experiencias lifestyle.",
                     link: "#",
                     icon: <Calendar className="w-5 h-5" />,
                   },
@@ -1638,7 +1653,7 @@ const ProfileSingle: FC = () => {
                   {
                     title: "Match Inteligente",
                     description:
-                      "Recomendaciones basadías en intereses y compatibilidad real.",
+                      "Recomendaciones basadas en intereses y compatibilidad real.",
                     link: "#",
                     icon: <Users className="w-5 h-5" />,
                   },
@@ -1673,7 +1688,7 @@ const ProfileSingle: FC = () => {
                         </h4>
                         <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
                           <p className="text-center">
-                            Accede a eventos exclusivos, fiestas privadías y
+                            Accede a eventos exclusivos, fiestas privadas y
                             matchmaking prioritario.
                           </p>
                           {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
@@ -1854,7 +1869,9 @@ const ProfileSingle: FC = () => {
                 {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}
                 <div className="mb-4">
                   <p className="text-white/60 text-xs mb-2">
-                    🔒 Galería Privada (requiere desbloqueo con PIN)
+                    {isGalleryUnlocked
+                      ? "🔒 Galería Privada (desbloqueada)"
+                      : "🔒 Galería Privada (requiere desbloqueo con PIN)"}
                   </p>
                   <Carousel
                     className="mt-4"
@@ -1995,7 +2012,7 @@ const ProfileSingle: FC = () => {
         </div>
       </div>
 
-      {/* Modal de solicitud de acceso a fotos privadías */}
+      {/* Modal de solicitud de acceso a fotos privadas */}
       {showPrivateImageRequest && (
         <PrivateImageRequest
           isOpen={showPrivateImageRequest}
@@ -2025,14 +2042,15 @@ const ProfileSingle: FC = () => {
         <ParentalControl
           isLocked={isParentalLocked}
           showLockScreen={showParentalUnlock}
+          onClose={() => setShowParentalUnlock(false)}
           onToggle={(locked) => {
             setIsParentalLocked(locked);
-            // Si se desbloquea, permitir acceso a imágenes privadías
+            // Si se desbloquea, permitir acceso a imágenes privadas
             if (!locked) {
               setDemoPrivateUnlocked(true);
               setShowParentalUnlock(false);
             } else {
-              // Si se bloquea, ocultar imágenes privadías
+              // Si se bloquea, ocultar imágenes privadas
               setDemoPrivateUnlocked(false);
               setShowParentalUnlock(false);
             }

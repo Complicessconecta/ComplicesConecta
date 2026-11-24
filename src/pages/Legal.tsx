@@ -72,7 +72,7 @@ const Legal: FC = () => {
       details: [
         "Recopilación y uso de datos personales",
         "Derechos de los usuarios sobre sus datos",
-        "Medidías de seguridad implementadías",
+        "Medidas de seguridad implementadas",
         "Compartición de datos con terceros",
         "Cumplimiento GDPR y Normativas Mexicanas",
       ],
@@ -306,7 +306,7 @@ const Legal: FC = () => {
                       <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Cooperación con autoridades:</strong>{" "}
-                        Colaboración directa con fiscalías especializadías
+                        Colaboración directa con fiscalías especializadas
                       </span>
                     </li>
                   </ul>

@@ -127,7 +127,7 @@ export class DataPrivacyService {
         // Tokens y transacciones
         supabase.from("token_transactions").select("*").eq("user_id", userId),
 
-        // Preferencias (almacenadías en profiles JSONB o couple_profiles.preferences)
+        // Preferencias (almacenadas en profiles JSONB o couple_profiles.preferences)
         // Nota: user_preferences no existe como tabla, se usa profiles.privacy_settings o couple_profiles.preferences
         Promise.resolve({ data: null, error: null }),
       ]);

@@ -105,7 +105,7 @@ const Terms: FC = () => {
                   Mantenga siempre un trato respetuoso hacia otros usuarios.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Consentimiento:</strong> Todías
+                  <strong className="text-white">Consentimiento:</strong> Todas
                   las interacciones deben ser consensuales. No se tolerar el
                   acoso o comportamiento no deseado.
                 </p>
@@ -133,7 +133,7 @@ const Terms: FC = () => {
               <CardContent className="space-y-4">
                 <p className="text-white/80">
                   <strong className="text-white">Protección de datos:</strong>{" "}
-                  Implementamos medidías de seguridad para proteger su
+                  Implementamos medidas de seguridad para proteger su
                   información personal.
                 </p>
                 <p className="text-white/80">

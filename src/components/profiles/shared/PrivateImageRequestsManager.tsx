@@ -47,7 +47,7 @@ export const PrivateImageRequestsManager: React.FC<
             requesterId: "user-123",
             requesterName: "María García",
             requesterAvatar: "/assets/people/single/1.jpg",
-            message: "Hola, me gustaría ver tus fotos privadías para conocerte mejor.",
+            message: "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
             timestamp: Date.now() - 3600000, // Hace 1 hora
             status: "pending",
           },
@@ -86,7 +86,7 @@ export const PrivateImageRequestsManager: React.FC<
 
       toast({
         title: "Solicitud aprobada",
-        description: "El usuario ahora puede ver tus imágenes privadías.",
+        description: "El usuario ahora puede ver tus imágenes privadas.",
       });
 
       onAccessGranted?.(requesterId);
@@ -113,7 +113,7 @@ export const PrivateImageRequestsManager: React.FC<
 
       toast({
         title: "Solicitud denegada",
-        description: "El usuario no podrá ver tus imágenes privadías.",
+        description: "El usuario no podrá ver tus imágenes privadas.",
       });
 
       onAccessDenied?.(requesterId);
@@ -248,11 +248,11 @@ export const PrivateImageRequestsManager: React.FC<
           </div>
         )}
 
-        {/* Solicitudes Aprobadías */}
+        {/* Solicitudes Aprobadas */}
         {approvedRequests.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">
-              Aprobadías
+              Aprobadas
             </p>
             {approvedRequests.map((request) => (
               <div
@@ -282,11 +282,11 @@ export const PrivateImageRequestsManager: React.FC<
           </div>
         )}
 
-        {/* Solicitudes Denegadías */}
+        {/* Solicitudes Denegadas */}
         {deniedRequests.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">
-              Denegadías
+              Denegadas
             </p>
             {deniedRequests.map((request) => (
               <div

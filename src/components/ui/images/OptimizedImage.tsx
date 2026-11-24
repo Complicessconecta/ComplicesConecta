@@ -16,7 +16,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const imgRef = useRef<HTMLImageElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Generar URLs optimizadías
+  // Generar URLs optimizadas
   const optimizeOptions: { quality?: number; width?: number; height?: number } =
     { quality };
   if (typeof width === "number") optimizeOptions.width = width;

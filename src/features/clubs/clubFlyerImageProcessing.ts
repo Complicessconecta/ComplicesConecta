@@ -248,7 +248,7 @@ export const processClubFlyerImage = async (
 
     // 1. Detectar caras
     const faces = await detectFaces(imageUrl);
-    logger.info(`👤 Caras detectadías: ${faces.length}`);
+    logger.info(`👤 Caras detectadas: ${faces.length}`);
 
     // 2. Detectar tatuajes (regiones alrededor de caras)
     const tattoos: Array<{

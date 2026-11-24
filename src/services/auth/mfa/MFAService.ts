@@ -281,7 +281,7 @@ export class MFAService {
   }
 
   /**
-   * Limpiar sesiones expiradías
+   * Limpiar sesiones expiradas
    */
   cleanup(): void {
     const now = new Date();

@@ -293,7 +293,7 @@ class OneSignalService {
   }
 
   /**
-   * Verifica si las notificaciones están habilitadías
+   * Verifica si las notificaciones están habilitadas
    */
   async isSubscribed(): Promise<boolean> {
     try {

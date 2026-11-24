@@ -91,7 +91,7 @@ export function useNotifications(
   );
 
   /**
-   * Marcar todías como leídías
+   * Marcar todas como leídas
    */
   const markAllAsRead = useCallback(async () => {
     if (!userId) return;
@@ -140,12 +140,12 @@ export function useNotifications(
       updateFromService();
     });
 
-    // Suscribirse a notificaciones leídías
+    // Suscribirse a notificaciones leídas
     const unsubscribeRead = notificationService.addListener("read", () => {
       updateFromService();
     });
 
-    // Suscribirse a todías leídías
+    // Suscribirse a todas leídas
     const unsubscribeAllRead = notificationService.addListener(
       "all-read",
       () => {
@@ -162,7 +162,7 @@ export function useNotifications(
   }, [userId, autoLoad, loadNotifications, updateFromService]);
 
   /**
-   * Calcular contador de no leídías
+   * Calcular contador de no leídas
    */
   const unreadCount = useMemo(() => {
     return notifications.filter((n) => !n.read).length;

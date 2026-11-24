@@ -21,7 +21,7 @@ const StoriesInfo = () => {
     },
     {
       icon: Heart,
-      title: "Interacciones Privadías",
+      title: "Interacciones Privadas",
       description: "Reacciones y comentarios privados que solo tú puedes ver",
     },
     {
@@ -183,7 +183,7 @@ const StoriesInfo = () => {
           </h2>
           <p className="mt-3 text-sm text-zinc-300">
             Verifica tu perfil, obtén el badge oficial y desbloquea métricas de
-            visualizaciones privadías.
+            visualizaciones privadas.
           </p>
           <Button
             onClick={() => navigate("/auth")}

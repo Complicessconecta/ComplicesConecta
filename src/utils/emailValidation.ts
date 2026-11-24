@@ -104,7 +104,7 @@ export const validateEmailRealtime = async (
   onValidation: (result: EmailValidationResult) => void,
   debounceMs: number = 500,
 ) => {
-  // Debounce para evitar demasiadías consultas
+  // Debounce para evitar demasiadas consultas
   const timeoutId = setTimeout(async () => {
     if (email && email.length > 3) {
       const result = await validateEmail(email);

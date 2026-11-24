@@ -22,7 +22,7 @@ export const localStorageSchemas = {
 };
 
 /**
- * Tipo para las claves válidías de localStorage
+ * Tipo para las claves válidas de localStorage
  */
 export type LocalStorageKey = keyof typeof localStorageSchemas | string;
 

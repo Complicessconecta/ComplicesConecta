@@ -161,7 +161,7 @@ export const RequestsService = {
   },
 
   /**
-   * Obtiene solicitudes recibidías
+   * Obtiene solicitudes recibidas
    */
   async getReceivedRequests(): Promise<RequestsResponse> {
     try {
@@ -206,7 +206,7 @@ export const RequestsService = {
           item.status && item.status !== "pending"
             ? item.updated_at || null
             : null,
-        profile: (item as any).sender_profile, // Para solicitudes recibidías, el perfil es el remitente
+        profile: (item as any).sender_profile, // Para solicitudes recibidas, el perfil es el remitente
       }));
 
       return { data: transformedData };
@@ -219,7 +219,7 @@ export const RequestsService = {
   },
 
   /**
-   * Obtiene solicitudes enviadías
+   * Obtiene solicitudes enviadas
    */
   async getSentRequests(): Promise<RequestsResponse> {
     try {
@@ -263,7 +263,7 @@ export const RequestsService = {
           item.status && item.status !== "pending"
             ? item.updated_at || null
             : null,
-        profile: (item as any).receiver_profile, // Para solicitudes enviadías, el perfil es el destinatario
+        profile: (item as any).receiver_profile, // Para solicitudes enviadas, el perfil es el destinatario
       }));
 
       return { data: transformedData };
@@ -305,28 +305,28 @@ export const RequestsService = {
         };
       }
 
-      // Solicitudes enviadías pendientes - null-safe
+      // Solicitudes enviadas pendientes - null-safe
       const { count: pendingSent } = await supabase
         .from("invitations")
         .select("*", { count: "exact", head: true })
         .eq("from_profile", user.user.id)
         .eq("status", "pending");
 
-      // Solicitudes recibidías pendientes - null-safe
+      // Solicitudes recibidas pendientes - null-safe
       const { count: pendingReceived } = await supabase
         .from("invitations")
         .select("*", { count: "exact", head: true })
         .eq("to_profile", user.user.id)
         .eq("status", "pending");
 
-      // Solicitudes aceptadías - null-safe
+      // Solicitudes aceptadas - null-safe
       const { count: accepted } = await supabase
         .from("invitations")
         .select("*", { count: "exact", head: true })
         .or(`from_profile.eq.${user.user.id},to_profile.eq.${user.user.id}`)
         .eq("status", "accepted");
 
-      // Solicitudes rechazadías - null-safe
+      // Solicitudes rechazadas - null-safe
       const { count: declined } = await supabase
         .from("invitations")
         .select("*", { count: "exact", head: true })
@@ -431,7 +431,7 @@ export const RequestsService = {
  *
  * ✅ Tipos Estrictos Sincronizados:
  * - Importados tipos de Database desde Supabase
- * - Eliminadías interfaces manuales inconsistentes
+ * - Eliminadas interfaces manuales inconsistentes
  * - Definidos tipos InvitationStatus, InvitationType basados en schema
  * - RequestProfile sin campo avatar_url inexistente
  *
@@ -444,7 +444,7 @@ export const RequestsService = {
  * ✅ Tipos de Respuesta Consistentes:
  * - ApiResponse<T> genérico para respuestas
  * - RequestsResponse, StatsResponse, ConnectionCheckResponse tipados
- * - Eliminadías interfaces redundantes
+ * - Eliminadas interfaces redundantes
  *
  * ✅ Compatibilidad Mantenida:
  * - Preservada funcionalidad existente
@@ -453,7 +453,7 @@ export const RequestsService = {
  *
  * ✅ Correcciones Críticas:
  * - Agregado is_verified en selects de profiles
- * - Removidías referencias a avatar_url
+ * - Removidas referencias a avatar_url
  * - Tipos de estado correctos (InvitationStatus)
  * - Manejo de errores mejorado con tipos estrictos
  */

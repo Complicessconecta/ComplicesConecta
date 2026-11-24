@@ -439,7 +439,9 @@ export class SustainableEventsService {
       coupleId: data.couple_id || null,
       title: data.title,
       description: data.description || "",
-      eventType: data.event_type ? this.mapEventTypeFromDB(data.event_type) : null,
+      eventType: data.event_type
+        ? this.mapEventTypeFromDB(data.event_type)
+        : null,
       location: data.location || "",
       date: data.date,
       maxParticipants: data.max_participants || 0,

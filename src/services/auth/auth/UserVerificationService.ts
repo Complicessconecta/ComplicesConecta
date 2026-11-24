@@ -96,7 +96,10 @@ export class UserVerificationService {
       );
 
       if (error) {
-        logger.error("Error verificando con World ID:", { error: error.message, details: error.details });
+        logger.error("Error verificando con World ID:", {
+          error: error.message,
+          details: error.details,
+        });
         return {
           success: false,
           method: "world_id",
@@ -306,7 +309,8 @@ export class UserVerificationService {
           success: false,
           method: "document",
           verified: false,
-          error: ocrResult.error || "Error extrayendo información del documento",
+          error:
+            ocrResult.error || "Error extrayendo información del documento",
         };
       }
 
@@ -566,7 +570,10 @@ export class UserVerificationService {
         .eq("user_id", userId);
 
       if (error) {
-        logger.error("Error actualizando estado de verificación:", { error: error.message, details: error.details });
+        logger.error("Error actualizando estado de verificación:", {
+          error: error.message,
+          details: error.details,
+        });
       } else {
         logger.info("✅ Estado de verificación actualizado", {
           userId: userId.substring(0, 8) + "***",

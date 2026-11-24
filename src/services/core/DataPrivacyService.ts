@@ -562,4 +562,3 @@ export class DataPrivacyService {
 export const dataPrivacyService = DataPrivacyService.getInstance();
 
 // Nota: La clase ya está exportada más arriba; no re-exportar para evitar duplicados
-

@@ -155,8 +155,7 @@ export class TestingService {
 
       // Test 2: TokenAnalyticsService
       async () => {
-        const { TokenAnalyticsService } =
-          await import("@/services/analytics");
+        const { TokenAnalyticsService } = await import("@/services/analytics");
         const service = TokenAnalyticsService.getInstance();
         const metrics = await service.generateCurrentMetrics();
         if (!metrics.success) {
@@ -166,8 +165,7 @@ export class TestingService {
 
       // Test 3: ContentModerationService
       async () => {
-        const { contentModerationService } =
-          await import("@/services/social");
+        const { contentModerationService } = await import("@/services/social");
         const result =
           await contentModerationService.moderateText("Test content");
         if (!result.isAppropriate) {
@@ -239,8 +237,7 @@ export class TestingService {
 
       // Test 4: Security + Audit integration
       async () => {
-        const { securityService } =
-          await import("@/services/auth");
+        const { securityService } = await import("@/services/auth");
         const analysis = await securityService.analyzeUserActivity("test-user");
         if (analysis.riskScore < 0 || analysis.riskScore > 100) {
           throw new Error("Security analysis integration failed");
@@ -267,8 +264,7 @@ export class TestingService {
 
       // Test 2: Content moderation flow
       async () => {
-        const { contentModerationService } =
-          await import("@/services/social");
+        const { contentModerationService } = await import("@/services/social");
         const testContent = "This is a test post for moderation";
         const moderation =
           await contentModerationService.moderateText(testContent);
@@ -279,8 +275,7 @@ export class TestingService {
 
       // Test 3: Analytics and reporting flow
       async () => {
-        const { TokenAnalyticsService } =
-          await import("@/services/analytics");
+        const { TokenAnalyticsService } = await import("@/services/analytics");
         const { advancedCacheService } =
           await import("@/services/core/AdvancedCacheService");
 

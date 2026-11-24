@@ -187,4 +187,3 @@ export class WalletProtectionService {
     logger.debug("Conflictos de wallet limpiados");
   }
 }
-

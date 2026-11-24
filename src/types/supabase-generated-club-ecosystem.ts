@@ -19,10 +19,10 @@ export interface Reservation {
   user_id: string;
   qr_hash: string;
   amount: number;
-  currency: 'usd' | 'cmpx' | 'gtk';
-  payment_method: 'stripe' | 'cmpx' | 'gtk';
-  status: 'pending' | 'paid' | 'used' | 'expired' | 'cancelled';
-  access_type: 'general' | 'vip';
+  currency: "usd" | "cmpx" | "gtk";
+  payment_method: "stripe" | "cmpx" | "gtk";
+  status: "pending" | "paid" | "used" | "expired" | "cancelled";
+  access_type: "general" | "vip";
   commission_amount: number;
   commission_paid: boolean;
   stripe_payment_intent_id?: string;
@@ -35,9 +35,10 @@ export interface Reservation {
 export interface TokenTransaction {
   id: string;
   user_id: string;
-  transaction_type: 'earn' | 'spend' | 'transfer' | 'stake' | 'unstake' | 'reward';
+  transaction_type:
+    "earn" | "spend" | "transfer" | "stake" | "unstake" | "reward";
   amount: number;
-  token_type: 'cmpx' | 'gtk';
+  token_type: "cmpx" | "gtk";
   balance_after: number;
   description?: string;
   metadata?: Record<string, unknown>;

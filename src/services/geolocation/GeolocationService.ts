@@ -37,7 +37,7 @@ export class GeolocationService {
    */
   applyPrivacyOffset(
     latitude: number,
-    longitude: number
+    longitude: number,
   ): PrivacyProtectedLocation {
     // Generar ángulo aleatorio (0-360 grados)
     const angle = Math.random() * 2 * Math.PI;
@@ -62,10 +62,7 @@ export class GeolocationService {
   /**
    * Calcular distancia entre dos coordenadas (Haversine formula)
    */
-  calculateDistance(
-    coord1: Coordinates,
-    coord2: Coordinates
-  ): number {
+  calculateDistance(coord1: Coordinates, coord2: Coordinates): number {
     const R = this.EARTH_RADIUS_KM;
     const dLat = this.toRadians(coord2.latitude - coord1.latitude);
     const dLon = this.toRadians(coord2.longitude - coord1.longitude);
@@ -88,8 +85,10 @@ export class GeolocationService {
   async getClubsWithinRadius(
     center: Coordinates,
     radiusKm: number,
-    limit: number = 20
-  ): Promise<Array<{ id: string; name: string; latitude: number; longitude: number }>> {
+    limit: number = 20,
+  ): Promise<
+    Array<{ id: string; name: string; latitude: number; longitude: number }>
+  > {
     try {
       // Convertir radio a grados
       const radiusDegrees = radiusKm / this.EARTH_RADIUS_KM;
@@ -99,39 +98,63 @@ export class GeolocationService {
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/clubs?select=id,name,latitude,longitude&latitude=gte.${center.latitude - radiusDegrees}&latitude=lte.${center.latitude + radiusDegrees}&longitude=gte.${center.longitude - radiusDegrees}&longitude=lte.${center.longitude + radiusDegrees}&limit=${limit}`,
         {
           headers: {
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+            apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
           },
-        }
+        },
       ).then((res) => res.json());
 
       if (error) throw error;
 
       // Filtrar por distancia exacta y ordenar
       const clubs = (data || [])
-        .map((club: { id: string; name: string; latitude: number; longitude: number }) => ({
-          id: club.id,
-          name: club.name,
-          latitude: club.latitude,
-          longitude: club.longitude,
-        }))
-        .filter((club: { id: string; name: string; latitude: number; longitude: number }) => {
-          const distance = this.calculateDistance(center, club);
-          return distance <= radiusKm;
-        })
+        .map(
+          (club: {
+            id: string;
+            name: string;
+            latitude: number;
+            longitude: number;
+          }) => ({
+            id: club.id,
+            name: club.name,
+            latitude: club.latitude,
+            longitude: club.longitude,
+          }),
+        )
+        .filter(
+          (club: {
+            id: string;
+            name: string;
+            latitude: number;
+            longitude: number;
+          }) => {
+            const distance = this.calculateDistance(center, club);
+            return distance <= radiusKm;
+          },
+        )
         .sort(
           (
-            a: { id: string; name: string; latitude: number; longitude: number },
-            b: { id: string; name: string; latitude: number; longitude: number }
+            a: {
+              id: string;
+              name: string;
+              latitude: number;
+              longitude: number;
+            },
+            b: {
+              id: string;
+              name: string;
+              latitude: number;
+              longitude: number;
+            },
           ) => {
-          const distanceA = this.calculateDistance(center, a);
-          const distanceB = this.calculateDistance(center, b);
-          return distanceA - distanceB;
-          }
+            const distanceA = this.calculateDistance(center, a);
+            const distanceB = this.calculateDistance(center, b);
+            return distanceA - distanceB;
+          },
         );
 
       return clubs;
     } catch (error) {
-      logger.error('Error obteniendo clubes dentro del radio:', {
+      logger.error("Error obteniendo clubes dentro del radio:", {
         error: error instanceof Error ? error.message : String(error),
         center,
         radiusKm,
@@ -150,30 +173,37 @@ export class GeolocationService {
       east: number;
       west: number;
     },
-    limit: number = 20
-  ): Promise<Array<{ id: string; name: string; latitude: number; longitude: number }>> {
+    limit: number = 20,
+  ): Promise<
+    Array<{ id: string; name: string; latitude: number; longitude: number }>
+  > {
     try {
       const { data, error } = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/clubs?select=id,name,latitude,longitude&latitude=gte.${bounds.south}&latitude=lte.${bounds.north}&longitude=gte.${bounds.west}&longitude=lte.${bounds.east}&limit=${limit}`,
         {
           headers: {
-            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+            apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
           },
-        }
+        },
       ).then((res) => res.json());
 
       if (error) throw error;
 
       return (data || []).map(
-        (club: { id: string; name: string; latitude: number; longitude: number }) => ({
+        (club: {
+          id: string;
+          name: string;
+          latitude: number;
+          longitude: number;
+        }) => ({
           id: club.id,
           name: club.name,
           latitude: club.latitude,
           longitude: club.longitude,
-        })
+        }),
       );
     } catch (error) {
-      logger.error('Error buscando clubes en bounding box:', {
+      logger.error("Error buscando clubes en bounding box:", {
         error: error instanceof Error ? error.message : String(error),
         bounds,
       });
@@ -193,7 +223,7 @@ export class GeolocationService {
    */
   calculateBoundingBox(
     center: Coordinates,
-    radiusKm: number
+    radiusKm: number,
   ): {
     north: number;
     south: number;

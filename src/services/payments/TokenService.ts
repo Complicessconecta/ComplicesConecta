@@ -33,12 +33,7 @@ export interface TokenTransaction {
   id: string;
   user_id: string;
   transaction_type:
-    | "earn"
-    | "spend"
-    | "transfer"
-    | "reward"
-    | "stake"
-    | "unstake";
+    "earn" | "spend" | "transfer" | "reward" | "stake" | "unstake";
   token_type: "cmpx" | "gtk";
   amount: number;
   balance_after: number;

@@ -11,10 +11,7 @@ export interface DatadogRUM {
     email?: string;
     [key: string]: unknown;
   }): void;
-  addAction(action: {
-    name: string;
-    context?: Record<string, unknown>;
-  }): void;
+  addAction(action: { name: string; context?: Record<string, unknown> }): void;
   addError(error: Error | unknown, context?: Record<string, unknown>): void;
   startView(name: string, context?: Record<string, unknown>): void;
   stopView(name: string, context?: Record<string, unknown>): void;

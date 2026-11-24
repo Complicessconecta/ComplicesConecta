@@ -22,7 +22,10 @@ export interface SMSVerificationResult {
 
 export class SMSService {
   private static instance: SMSService;
-  private verificationCodes: Map<string, { code: string; expiresAt: number; attempts: number }> = new Map();
+  private verificationCodes: Map<
+    string,
+    { code: string; expiresAt: number; attempts: number }
+  > = new Map();
 
   private constructor() {}
 
@@ -259,7 +262,10 @@ export const smsService = SMSService.getInstance();
 
 // Limpiar códigos expirados cada 5 minutos
 if (typeof window !== "undefined") {
-  setInterval(() => {
-    smsService.cleanExpiredCodes();
-  }, 5 * 60 * 1000);
+  setInterval(
+    () => {
+      smsService.cleanExpiredCodes();
+    },
+    5 * 60 * 1000,
+  );
 }

@@ -322,4 +322,3 @@ declare global {
 }
 
 export const oneSignalService = OneSignalService.getInstance();
-

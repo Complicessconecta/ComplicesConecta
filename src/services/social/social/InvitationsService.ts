@@ -184,39 +184,41 @@ class InvitationsService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error getting referral analytics:", { error: error.message, details: error.details });
+        logger.error("Error getting referral analytics:", {
+          error: error.message,
+          details: error.details,
+        });
         return [];
       }
 
-      const rows = (Array.isArray(data) ? data : []) as unknown as _InvitationRow[];
+      const rows = (Array.isArray(data)
+        ? data
+        : []) as unknown as _InvitationRow[];
 
       // Mapear datos de Supabase al formato esperado
       const invitations: Invitation[] = rows.map((invitation) => ({
-          id: invitation.id,
-          inviter_id: invitation.from_profile ?? "",
-          invitee_email: invitation.to_profile ?? "", // Usar to_profile como ID
-          // invitation_type puede ser nulo si no existe en la tabla
-          invitation_type: null,
-          type:
-            (invitation.type as "couple" | "friend" | "connection") ??
-            "connection",
-          status:
-            (invitation.status as
-              | "pending"
-              | "accepted"
-              | "declined"
-              | "expired") || "pending",
-          expires_at: null,
-          metadata: {},
-          created_at: invitation.created_at || "",
-          updated_at: invitation.updated_at || invitation.created_at || "",
-          inviter: {
-            id: invitation.from_profile ?? "",
-            first_name: "Usuario",
-            last_name: "Anónimo",
-            avatar_url: "",
-          },
-        }));
+        id: invitation.id,
+        inviter_id: invitation.from_profile ?? "",
+        invitee_email: invitation.to_profile ?? "", // Usar to_profile como ID
+        // invitation_type puede ser nulo si no existe en la tabla
+        invitation_type: null,
+        type:
+          (invitation.type as "couple" | "friend" | "connection") ??
+          "connection",
+        status:
+          (invitation.status as
+            "pending" | "accepted" | "declined" | "expired") || "pending",
+        expires_at: null,
+        metadata: {},
+        created_at: invitation.created_at || "",
+        updated_at: invitation.updated_at || invitation.created_at || "",
+        inviter: {
+          id: invitation.from_profile ?? "",
+          first_name: "Usuario",
+          last_name: "Anónimo",
+          avatar_url: "",
+        },
+      }));
 
       logger.info("✅ Invitations loaded successfully from Supabase", {
         count: invitations.length,
@@ -266,7 +268,10 @@ class InvitationsService {
         .single();
 
       if (error) {
-        logger.error("Error creating invitation in Supabase:", { error: error.message, details: error.details });
+        logger.error("Error creating invitation in Supabase:", {
+          error: error.message,
+          details: error.details,
+        });
         return null;
       }
 
@@ -314,14 +319,19 @@ class InvitationsService {
         .eq("id", invitationId);
 
       if (error) {
-        logger.error("Error updating referral balance:", { error: error.message, details: error.details });
+        logger.error("Error updating referral balance:", {
+          error: error.message,
+          details: error.details,
+        });
         return false;
       }
 
       logger.info("✅ Invitation accepted successfully", { invitationId });
       return true;
     } catch (error) {
-      logger.error("Error checking referral balance:", { error: String(error) });
+      logger.error("Error checking referral balance:", {
+        error: String(error),
+      });
       return false;
     }
   }
@@ -347,7 +357,10 @@ class InvitationsService {
         .eq("id", invitationId);
 
       if (error) {
-        logger.error("Error canceling invitation:", { error: error.message, details: error.details });
+        logger.error("Error canceling invitation:", {
+          error: error.message,
+          details: error.details,
+        });
         return false;
       }
 
@@ -395,7 +408,10 @@ class InvitationsService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error getting gallery permissions from Supabase:", { error: error.message, details: error.details });
+        logger.error("Error getting gallery permissions from Supabase:", {
+          error: error.message,
+          details: error.details,
+        });
         return [];
       }
 
@@ -412,12 +428,14 @@ class InvitationsService {
           perm.gallery_owner_id || perm.profile_id || perm.granted_by || "",
         granted_by: perm.granted_by || "",
         granted_to: perm.granted_to || "",
-        permission_type: (perm.permission_type as "view" | "comment" | "share") ??
-          "view",
+        permission_type:
+          (perm.permission_type as "view" | "comment" | "share") ?? "view",
         status:
           (perm.status as "active" | "revoked" | "expired") ??
           ("active" as const),
-        ...(perm.expires_at !== undefined ? { expires_at: perm.expires_at } : {}),
+        ...(perm.expires_at !== undefined
+          ? { expires_at: perm.expires_at }
+          : {}),
         created_at: perm.created_at || "",
         updated_at: perm.updated_at || perm.created_at || "",
       }));
@@ -512,7 +530,10 @@ class InvitationsService {
         .eq("id", permissionId);
 
       if (error) {
-        logger.error("Error revoking gallery permission:", { error: error.message, details: error.details });
+        logger.error("Error revoking gallery permission:", {
+          error: error.message,
+          details: error.details,
+        });
         return false;
       }
 
@@ -547,10 +568,10 @@ class InvitationsService {
         .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error(
-          "Error getting invitation templates from Supabase:",
-          { error: error.message, details: error.details },
-        );
+        logger.error("Error getting invitation templates from Supabase:", {
+          error: error.message,
+          details: error.details,
+        });
         return [];
       }
 
@@ -613,10 +634,10 @@ class InvitationsService {
         .eq("from_profile", userId);
 
       if (error) {
-        logger.error(
-          "Error getting invitation statistics from Supabase:",
-          { error: error.message, details: error.details },
-        );
+        logger.error("Error getting invitation statistics from Supabase:", {
+          error: error.message,
+          details: error.details,
+        });
         return {
           totalInvitations: 0,
           pendingInvitations: 0,
@@ -737,4 +758,3 @@ class InvitationsService {
 }
 
 export const invitationsService = InvitationsService.getInstance();
-

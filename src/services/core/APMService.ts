@@ -473,7 +473,10 @@ export class APMService {
     // Check response time
     const avgResponseTime = this.calculateAverageResponseTime();
     const responseTimeThreshold = this.config.alertThresholds.responseTime;
-    if (responseTimeThreshold !== undefined && avgResponseTime > responseTimeThreshold) {
+    if (
+      responseTimeThreshold !== undefined &&
+      avgResponseTime > responseTimeThreshold
+    ) {
       this.createAlert(
         "slow_response_time",
         "Slow response time detected",
@@ -712,4 +715,3 @@ export class APMService {
 }
 
 export const apmService = new APMService();
-

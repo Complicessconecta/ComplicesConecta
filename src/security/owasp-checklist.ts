@@ -226,4 +226,3 @@ export const isOWASPCompliant = (percentage: number = 80): boolean => {
   const summary = getOWASPSummary();
   return summary.percentage >= percentage;
 };
-

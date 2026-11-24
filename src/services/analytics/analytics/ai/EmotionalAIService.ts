@@ -120,16 +120,13 @@ export class EmotionalAIService {
     try {
       if (!supabase) throw new Error("Supabase not initialized");
 
-      const { data, error } = await supabase.functions.invoke(
-        "openai-proxy",
-        {
-          body: {
-            model: "gpt-4o-mini",
-            messages: [{ role: "user", content: prompt }],
-            response_format: { type: "json_object" },
-          },
+      const { data, error } = await supabase.functions.invoke("openai-proxy", {
+        body: {
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: prompt }],
+          response_format: { type: "json_object" },
         },
-      );
+      });
       if (error) throw error;
 
       const content = data?.choices?.[0]?.message?.content;
@@ -221,4 +218,3 @@ export class EmotionalAIService {
 }
 
 export const emotionalAIService = EmotionalAIService.getInstance();
-

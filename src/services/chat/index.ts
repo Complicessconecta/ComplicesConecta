@@ -4,4 +4,4 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from '@/services/chat/ChatRoomService';
+export * from "@/services/chat/ChatRoomService";

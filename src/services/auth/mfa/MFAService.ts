@@ -322,9 +322,12 @@ let mfaCleanupInterval: ReturnType<typeof setInterval> | null = null;
 
 export const startCleanupScheduler = () => {
   if (mfaCleanupInterval) return;
-  mfaCleanupInterval = setInterval(() => {
-    mfaService.cleanup();
-  }, 5 * 60 * 1000);
+  mfaCleanupInterval = setInterval(
+    () => {
+      mfaService.cleanup();
+    },
+    5 * 60 * 1000,
+  );
 };
 
 export const stopCleanupScheduler = () => {
@@ -334,4 +337,3 @@ export const stopCleanupScheduler = () => {
 };
 
 startCleanupScheduler();
-

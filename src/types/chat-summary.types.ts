@@ -45,4 +45,3 @@ export interface MessageData {
   content: string;
   created_at: string;
 }
-

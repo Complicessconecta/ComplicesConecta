@@ -7,11 +7,19 @@
  * @version 3.5.0
  */
 
-import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingContext } from "@/lib/ai/smartMatching";
+import {
+  smartMatchingEngine,
+  type UserProfile,
+  type MatchScore,
+  type MatchingContext,
+} from "@/lib/ai/smartMatching";
 import { supabase } from "@/lib/supabase";
 import { logger } from "@/lib/logger";
 import { neo4jService } from "@/services/core/graph/Neo4jService";
-import { AdvancedFeaturesService, type ConversationStarter } from "@/lib/advancedFeatures";
+import {
+  AdvancedFeaturesService,
+  type ConversationStarter,
+} from "@/lib/advancedFeatures";
 
 const MATCH_PROFILE_FIELDS =
   "id,user_id,account_type,age,age_range_min,age_range_max,avatar_url,bio,city,display_name,first_name,gender,interested_in,interests,is_active,is_blocked,is_demo,is_verified,last_active,latitude,location,longitude,max_distance,personality_traits,photo_verified,phone_verified_at,profile_theme,sexual_orientation,suspended,updated_at";
@@ -333,7 +341,10 @@ class SmartMatchingService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error obteniendo candidatos:", { error: error.message, details: error.details });
+        logger.error("Error obteniendo candidatos:", {
+          error: error.message,
+          details: error.details,
+        });
         return [];
       }
 
@@ -729,7 +740,7 @@ class SmartMatchingService {
    */
   async getMatchesV2(
     userId: string,
-    options: MatchSearchOptions = {}
+    options: MatchSearchOptions = {},
   ): Promise<MatchSearchResult> {
     try {
       logger.info("🚀 [V2] Buscando matches con patrón Hydration", {
@@ -762,7 +773,7 @@ class SmartMatchingService {
           const friendsOfFriends = await neo4jService.getFriendsOfFriends(
             userId,
             20, // limit
-            true // excludeMatched
+            true, // excludeMatched
           );
 
           friendsOfFriends.forEach((fof: any) => {
@@ -779,7 +790,7 @@ class SmartMatchingService {
         } catch (error) {
           logger.warn(
             "⚠️ Error consultando Neo4j, continuando con Supabase solo",
-            { error }
+            { error },
           );
         }
       }
@@ -805,7 +816,7 @@ class SmartMatchingService {
       // PASO 4: Fusión en memoria
       const mergedResults = candidates.map((candidate) => {
         const neo4jData = compatibleUserIds.find(
-          (c) => c.userId === candidate.user_id
+          (c) => c.userId === candidate.user_id,
         );
         return {
           ...candidate,
@@ -875,4 +886,3 @@ export const smartMatchingService = SmartMatchingService.getInstance();
 
 // Exportar también como clase para testing
 export { SmartMatchingService };
-

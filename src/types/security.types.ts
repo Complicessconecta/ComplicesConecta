@@ -64,4 +64,3 @@ export interface MappedAuditLog {
   timestamp: string;
   riskScore: number;
 }
-

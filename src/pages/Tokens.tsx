@@ -592,7 +592,7 @@ export default function Tokens() {
             </motion.div>
           )}
 
-          {hasActiveSession && !hasWallet && (
+          {hasActiveSession && !hasWallet && shouldUseRealSupabase() && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

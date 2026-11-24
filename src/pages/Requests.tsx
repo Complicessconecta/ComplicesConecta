@@ -46,8 +46,43 @@ const Requests = () => {
     return user?.id ?? null;
   }, [demoAuth, demoUser, user]);
 
+  // Decisiones demo persistidas: antes loadDemoInvitations reconstruía
+  // la lista estática con "pending" en cada carga y Aceptar solo vivía
+  // en memoria (la tarjeta volvía a "Pendiente" al recargar el efecto
+  // o al navegar y volver).
+  const DEMO_DECISIONS_KEY = "demo_invitation_status";
+  const loadDemoDecisions = (): Record<string, Invitation["status"]> => {
+    try {
+      const raw = window.localStorage.getItem(DEMO_DECISIONS_KEY);
+      return raw ? (JSON.parse(raw) as Record<string, Invitation["status"]>) : {};
+    } catch {
+      return {};
+    }
+  };
+  const saveDemoDecision = (id: string, status: Invitation["status"]) => {
+    try {
+      const map = loadDemoDecisions();
+      map[id] = status;
+      window.localStorage.setItem(DEMO_DECISIONS_KEY, JSON.stringify(map));
+    } catch {
+      // Sin localStorage la decisión solo vive en memoria.
+    }
+  };
+
   const loadDemoInvitations = () => {
-    // Solicitudes demo recibidías
+    const decisions = loadDemoDecisions();
+    const applyDecision = (inv: Invitation): Invitation =>
+      decisions[inv.id]
+        ? {
+            ...inv,
+            status: decisions[inv.id] as Invitation["status"],
+            decided_at:
+              decisions[inv.id] !== "pending"
+                ? inv.decided_at ?? new Date().toISOString()
+                : null,
+          }
+        : inv;
+    // Solicitudes demo recibidas
     const demoReceived: Invitation[] = [
       {
         id: "demo-inv-1",
@@ -57,7 +92,7 @@ const Requests = () => {
         status: "pending",
         message:
           "Hola! Nos encantaria conocerte mejor. Te gustaria chatear con nosotros?",
-        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrs
+        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrás
         decided_at: null,
       },
       {
@@ -67,8 +102,8 @@ const Requests = () => {
         type: "gallery",
         status: "pending",
         message:
-          "Hola guapa, nos gusta mucho tu perfil. Nos permites ver tu galera privada?",
-        created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 horas atrs
+          "Hola guapa, nos gusta mucho tu perfil. Nos permites ver tu galería privada?",
+        created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 horas atrás
         decided_at: null,
       },
       {
@@ -78,12 +113,12 @@ const Requests = () => {
         type: "profile",
         status: "accepted",
         message: "Que tal si nos conocemos mejor?",
-        created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 da atrs
+        created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 da atrás
         decided_at: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
       },
     ];
 
-    // Solicitudes demo enviadías
+    // Solicitudes demo enviadas
     const demoSent: Invitation[] = [
       {
         id: "demo-sent-1",
@@ -92,7 +127,7 @@ const Requests = () => {
         type: "chat",
         status: "accepted",
         message: "Hola, me encanta su perfil. Les gustaria platicar?",
-        created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 horas atrs
+        created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 horas atrás
         decided_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
       },
       {
@@ -102,14 +137,14 @@ const Requests = () => {
         type: "profile",
         status: "pending",
         message: "Hola, me pareces muy interesante. Te gustara conocernos?",
-        created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 horas atrs
+        created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 horas atrás
         decided_at: null,
       },
     ];
 
-    setReceivedInvitations(demoReceived);
-    setSentInvitations(demoSent);
-    logger.info("✅ Solicitudes demo cargadías:", {
+    setReceivedInvitations(demoReceived.map(applyDecision));
+    setSentInvitations(demoSent.map(applyDecision));
+    logger.info("✅ Solicitudes demo cargadas:", {
       received: demoReceived.length,
       sent: demoSent.length,
     });
@@ -175,20 +210,23 @@ const Requests = () => {
     action: "accept" | "decline",
   ) => {
     try {
-      // Si es modo demo, simular la accin
+      // Actualización optimista PRIMERO: la tarjeta cambia de "Pendiente"
+      // a aceptada/rechazada de inmediato, también en modo real (antes
+      // solo se recargaba la lista tras el servicio y un fallo de
+      // persistencia dejaba la tarjeta en "Pendiente" pese al toast).
+      const nextStatus =
+        action === "accept" ? "accepted" : ("declined" as const);
+      setReceivedInvitations((prev) =>
+        prev.map((inv) =>
+          inv.id === invitationId
+            ? { ...inv, status: nextStatus, decided_at: new Date().toISOString() }
+            : inv,
+        ),
+      );
+
+      // Si es modo demo, simular la acción
       if (String(demoAuth) === "true") {
-        // Actualizar el estado local para demo
-        setReceivedInvitations((prev) =>
-          prev.map((inv) =>
-            inv.id === invitationId
-              ? {
-                  ...inv,
-                  status:
-                    action === "accept" ? "accepted" : ("declined" as const),
-                }
-              : inv,
-          ),
-        );
+        saveDemoDecision(invitationId, nextStatus);
 
         toast({
           title: `Invitación ${action === "accept" ? "aceptada" : "rechazada"}`,
@@ -207,9 +245,17 @@ const Requests = () => {
       });
       loadInvitations(); // Refresh the list
     } catch {
+      // Revertir la actualización optimista si el servicio falló.
+      setReceivedInvitations((prev) =>
+        prev.map((inv) =>
+          inv.id === invitationId
+            ? { ...inv, status: "pending", decided_at: null }
+            : inv,
+        ),
+      );
       toast({
         title: "Error",
-        description: "No se pudo procesar la solicitud. Intentalo de nuevo.",
+        description: "No se pudo procesar la solicitud. Inténtalo de nuevo.",
         variant: "destructive",
       });
     }
@@ -302,12 +348,12 @@ const Requests = () => {
               Invitaciones
             </h1>
             <p className="text-white/80 text-lg">
-              Gestiona tus invitaciones recibidías y enviadías
+              Gestiona tus invitaciones recibidas y enviadas
             </p>
             {_acceptedCount > 0 && (
               <div className="mt-3">
                 <Badge className="bg-green-500/20 text-green-100 border border-green-400/30">
-                  Aceptadías: {_acceptedCount}
+                  Aceptadas: {_acceptedCount}
                 </Badge>
               </div>
             )}
@@ -327,7 +373,7 @@ const Requests = () => {
                   className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80 hover:text-white flex items-center gap-2"
                 >
                   <MailQuestion className="h-4 w-4" />
-                  Recibidías
+                  Recibidas
                   {receivedInvitations.length > 0 && (
                     <Badge className="bg-red-500 text-white text-xs">
                       {receivedInvitations.length}
@@ -345,7 +391,7 @@ const Requests = () => {
                   className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80 hover:text-white flex items-center gap-2"
                 >
                   <Send className="h-4 w-4" />
-                  Enviadías
+                  Enviadas
                   {sentInvitations.length > 0 && (
                     <Badge className="bg-blue-500 text-white text-xs">
                       {sentInvitations.length}
@@ -360,7 +406,7 @@ const Requests = () => {
                     <Card className="p-8 text-center bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
                       <UserPlus className="h-16 w-16 mx-auto mb-4 text-white/50" />
                       <h3 className="text-xl font-semibold text-white mb-2">
-                        No hay invitaciones recibidías
+                        No hay invitaciones recibidas
                       </h3>
                       <p className="text-white/70">
                         Cuando alguien te envie una invitación, aparecer aqui.

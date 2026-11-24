@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
@@ -7,16 +7,54 @@ import { Switch } from "@/components/ui/switch";
 import { MapPin, Navigation, AlertCircle } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from "@/lib/logger";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { loadSettingsStateRemote, saveSettingsState } from "@/components/settings/settingsStorage";
+
+const DEFAULT_LOCATION = {
+  search_radius: 25,
+  auto_detect_location: false,
+  show_distance: true,
+  precise_location: true,
+  location_history: false,
+  s2_level: 15,
+  geolocation_enabled: true,
+};
 
 export const LocationSettings = () => {
-  const [searchRadius, setSearchRadius] = useState([25]);
-  const [autoDetectLocation, setAutoDetectLocation] = useState(false);
-  const [showDistance, setShowDistance] = useState(true);
-  const [preciseLocation, setPreciseLocation] = useState(true);
-  const [locationHistory, setLocationHistory] = useState(false);
-  const [s2Level, setS2Level] = useState([15]); // Nivel de precisión S2 (10-20)
-  const [geolocationEnabled, setGeolocationEnabled] = useState(true);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [loaded, setLoaded] = useState(false);
+  const [searchRadius, setSearchRadius] = useState([DEFAULT_LOCATION.search_radius]);
+  const [autoDetectLocation, setAutoDetectLocation] = useState(DEFAULT_LOCATION.auto_detect_location);
+  const [showDistance, setShowDistance] = useState(DEFAULT_LOCATION.show_distance);
+  const [preciseLocation, setPreciseLocation] = useState(DEFAULT_LOCATION.precise_location);
+  const [locationHistory, setLocationHistory] = useState(DEFAULT_LOCATION.location_history);
+  const [s2Level, setS2Level] = useState([DEFAULT_LOCATION.s2_level]); // Nivel de precisión S2 (10-20)
+  const [geolocationEnabled, setGeolocationEnabled] = useState(DEFAULT_LOCATION.geolocation_enabled);
   const { location, error, isLoading, getCurrentLocation } = useGeolocation();
+
+  // Cargar los valores guardados (localStorage en demo, BD en real).
+  // Antes el estado siempre arrancaba en los defaults y Guardar solo
+  // hacía log: "Mostrar distancia" no persistía tras Guardar.
+  useEffect(() => {
+    if (!user?.id || loaded) return;
+    let cancelled = false;
+    void loadSettingsStateRemote(user.id, DEFAULT_LOCATION).then((stored) => {
+      if (cancelled) return;
+      setSearchRadius([stored.search_radius]);
+      setAutoDetectLocation(stored.auto_detect_location);
+      setShowDistance(stored.show_distance);
+      setPreciseLocation(stored.precise_location);
+      setLocationHistory(stored.location_history);
+      setS2Level([stored.s2_level]);
+      setGeolocationEnabled(stored.geolocation_enabled);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, loaded]);
 
   const s2LevelValue = s2Level[0] ?? 15;
 
@@ -26,30 +64,30 @@ export const LocationSettings = () => {
   };
 
   const handleSave = async () => {
+    const patch = {
+      search_radius: searchRadius[0],
+      auto_detect_location: autoDetectLocation,
+      show_distance: showDistance,
+      precise_location: preciseLocation,
+      location_history: locationHistory,
+      s2_level: s2Level[0],
+      geolocation_enabled: geolocationEnabled,
+    };
     try {
-      logger.info("Guardando configuración de ubicación:", {
-        searchRadius: searchRadius[0],
-        autoDetectLocation,
-        showDistance,
-        preciseLocation,
-        locationHistory,
-        s2Level: s2Level[0],
-        geolocationEnabled,
-      });
-
-      // TODO: Guardar s2_level en perfil del usuario
-      // const { data: { user } } = await supabase.auth.getUser();
-      // if (user) {
-      //   await supabase
-      //     .from('profiles')
-      //     .update({ s2_level: s2Level[0] })
-      //     .eq('user_id', user.id);
-      // }
-
-      // Aquí iría la lógica para guardar en el backend
+      logger.info("Guardando configuración de ubicación:", patch);
+      await saveSettingsState(user?.id, patch);
       logger.info("✅ Configuración de ubicación guardada");
+      toast({
+        title: "Configuración guardada",
+        description: "Tus preferencias de ubicación han sido guardadas",
+      });
     } catch (error) {
       logger.error("Error guardando configuración:", { error });
+      toast({
+        title: "Error",
+        description: "No se pudo guardar la configuración de ubicación",
+        variant: "destructive",
+      });
     }
   };
 

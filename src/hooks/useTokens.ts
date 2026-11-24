@@ -583,20 +583,24 @@ export const useTokens = () => {
 
   const claimWorldIdReward = async () => {
     logger.info("🌍 Reclamando recompensa World ID");
-    // Mock implementation for demo
+    // Demo: la recompensa se acredita de inmediato (+100 CMPX) y queda
+    // marcada como reclamada. Antes solo añadía una recompensa "Pendiente"
+    // de 500 CMPX sin tocar el saldo ni avisar: el botón parecía no hacer
+    // nada (ni toast ni cambio de saldo).
     if (isDemo()) {
       const worldIdReward: Reward = {
         id: `world-id-${Date.now()}`,
         user_id: user?.id || "",
         type: "world_id",
         token_type: "cmpx",
-        amount: 500,
+        amount: 100,
         description: "Recompensa por verificación World ID",
-        claimed: false,
+        claimed: true,
         expires_at: null,
         created_at: new Date().toISOString(),
       };
       setRewards((prev) => [worldIdReward, ...prev]);
+      setBalance((prev) => ({ ...prev, cmpx: prev.cmpx + 100 }));
       return true;
     }
     return false;

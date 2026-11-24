@@ -53,6 +53,16 @@ const EditProfileSingle = () => {
   // Usar intereses seguros desde la fuente única de verdad
   const availableInterests = SAFE_INTERESTS;
 
+  // Intereses demo que muestra el perfil cuando demo_user aún no trae
+  // selección (ProfileSingle: DEMO_SINGLE_INTEREST_TITLES[0,2,4]). El
+  // editor debe precargarlos: antes dejaba `interests` en [] y Guardar
+  // escribía [] en demo_user, con lo que el perfil perdía los intereses.
+  const DEMO_SINGLE_EDITOR_INTERESTS = [
+    "Lifestyle Exclusivo",
+    "Privacidad Total",
+    "Chat Encriptado",
+  ] as const;
+
   // Poblar el formulario con la identidad demo guardada en `demo_user`.
   // Los campos que el demo no trae (o trae vacíos) usan los valores
   // canónicos del perfil demo (Sofía, 28, CDMX, México), los mismos que
@@ -84,7 +94,11 @@ const EditProfileSingle = () => {
       bio: asString(user.bio),
       location: asString(user.location) || "CDMX, México",
       profession: asString(user.profession),
-      interests: asStringArray(user.interests),
+      // Sin selección guardada, precargar los intereses que el perfil ya
+      // muestra (ver arriba): Guardar sin cambios no debe borrarlos.
+      interests: asStringArray(user.interests).length > 0
+        ? asStringArray(user.interests)
+        : [...DEMO_SINGLE_EDITOR_INTERESTS],
       explicitInterests: asStringArray(user.explicitInterests),
       avatar: asString(user.avatar) || asString(user.avatar_url),
     });

@@ -1,12 +1,19 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles } from "lucide-react";
+import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles, TicketPercent } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
 import ClubAdminPanel from '@/components/admin/panels/ClubAdminPanel';
 import type { Club as ClubEntity } from "@/entities/club";
+import {
+  DEMO_CLUB_EVENTS,
+  loadClubDiscounts,
+  loadClubEvents,
+  type ClubDiscountItem,
+  type ClubEventItem,
+} from "@/services/clubs/clubContentService";
 
 const DEMO_CLUB: ClubEntity = {
   id: "demo",
@@ -19,7 +26,7 @@ const DEMO_CLUB: ClubEntity = {
   latitude: 19.4326,
   longitude: -99.1332,
   logo_url: "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&h=400&fit=crop",
-  cover_image_url: "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1920&q=80",
+  cover_image_url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1920&q=80",
   is_featured: true,
   is_active: true,
   rating_average: 4.8,
@@ -34,7 +41,7 @@ const DEMO_CLUB: ClubEntity = {
 const DEMO_GALLERY = [
   {
     id: "demo-1",
-    url: "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
+    url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200",
     caption: "Entrada principal",
     isPrivate: false,
     uploadedAt: new Date().toISOString(),
@@ -90,92 +97,9 @@ const DEMO_GALLERY = [
   },
 ];
 
-const DEMO_EVENTS = [
-  {
-    id: "evt-1",
-    title: "Noche de Máscaras",
-    description: "Velada de misterio y elegancia. Dress code: formal oscuro con máscara.",
-    date: new Date().toISOString(),
-    startTime: "22:00",
-    endTime: "03:00",
-    location: "CDMX",
-    capacity: 300,
-    registeredCount: 120,
-    isVip: true,
-    price: 500,
-    currency: "$",
-  },
-  {
-    id: "evt-2",
-    title: "Velvet Social",
-    description: "DJ invitado + dress code noir. Experiencia sensorial con mixología premium.",
-    date: new Date(Date.now() + 86400000 * 4).toISOString(),
-    startTime: "21:30",
-    endTime: "02:30",
-    location: "CDMX",
-    capacity: 180,
-    registeredCount: 96,
-    isVip: false,
-    price: 350,
-    currency: "$",
-  },
-  {
-    id: "evt-3",
-    title: "Ritual de Luna",
-    description: "Experiencia sensorial + mixología molecular bajo la luz de la luna.",
-    date: new Date(Date.now() + 86400000 * 10).toISOString(),
-    startTime: "23:00",
-    endTime: "04:00",
-    location: "CDMX",
-    capacity: 240,
-    registeredCount: 144,
-    isVip: true,
-    price: 650,
-    currency: "$",
-  },
-  {
-    id: "evt-4",
-    title: "Encuentro de Cómplices",
-    description: "Noche de networking para parejas y solteros con afinidades compartidas.",
-    date: new Date(Date.now() + 86400000 * 14).toISOString(),
-    startTime: "20:00",
-    endTime: "02:00",
-    location: "CDMX",
-    capacity: 200,
-    registeredCount: 85,
-    isVip: false,
-    price: 400,
-    currency: "$",
-  },
-  {
-    id: "evt-5",
-    title: "Cena Clandestina",
-    description: "Cena de 5 tiempos con maridaje en espacio íntimo. Solo 40 cupos.",
-    date: new Date(Date.now() + 86400000 * 18).toISOString(),
-    startTime: "20:30",
-    endTime: "01:00",
-    location: "CDMX",
-    capacity: 40,
-    registeredCount: 38,
-    isVip: true,
-    price: 1200,
-    currency: "$",
-  },
-  {
-    id: "evt-6",
-    title: "After Hours",
-    description: "Continúa la fiesta después del cierre. Música deep house y ambiente relajado.",
-    date: new Date(Date.now() + 86400000 * 21).toISOString(),
-    startTime: "01:00",
-    endTime: "06:00",
-    location: "CDMX",
-    capacity: 100,
-    registeredCount: 67,
-    isVip: true,
-    price: 300,
-    currency: "$",
-  },
-];
+// Los eventos demo viven en clubContentService (DEMO_CLUB_EVENTS);
+// ClubsDemo los carga desde club_events con ese respaldo.
+
 
 const DEMO_REVIEWS = [
   {
@@ -278,7 +202,7 @@ const DEMO_IMAGES = [
   },
   {
     id: "img-2", 
-    url: "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=800",
+    url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800",
     alt: "Club bar",
     caption: "Bar principal",
     uploadedAt: new Date().toISOString(),
@@ -356,6 +280,23 @@ export const ClubsDemo = () => {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [interestLevel, setInterestLevel] = useState<"neutral" | "tour" | "vip">("neutral");
+  // Eventos y descuentos del club: se leen de club_events / club_discounts
+  // (migración 20261124030000) con respaldo demo si la BD no responde o
+  // la migración aún no está aplicada. Antes eran arrays en memoria.
+  const [events, setEvents] = useState<ClubEventItem[]>(DEMO_CLUB_EVENTS);
+  const [discounts, setDiscounts] = useState<ClubDiscountItem[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    void loadClubEvents(DEMO_CLUB.id).then(({ items }) => {
+      if (!cancelled) setEvents(items);
+    });
+    void loadClubDiscounts(DEMO_CLUB.id).then(({ items }) => {
+      if (!cancelled) setDiscounts(items);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const club = useMemo(() => DEMO_CLUB, []);
 
@@ -396,7 +337,7 @@ export const ClubsDemo = () => {
             <div className="space-y-6">
               {/* Club Profile Content */}
               <ClubProfileHeader club={DEMO_CLUB} />
-              <ClubProfileEvents events={DEMO_EVENTS} />
+              <ClubProfileEvents events={events} />
               <ClubProfileReviews reviews={DEMO_REVIEWS} averageRating={DEMO_ANALYTICS.averageRating} totalReviews={DEMO_REVIEWS.length} />
               <ClubProfileGallery images={DEMO_IMAGES} />
               <ClubProfileAdmin analytics={DEMO_ANALYTICS} />
@@ -411,7 +352,7 @@ export const ClubsDemo = () => {
     <div className="min-h-screen bg-transparent p-4 sm:p-6 relative overflow-hidden">
       {/* Fondo animado */}
       <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1920&q=80)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1920&q=80)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -550,7 +491,41 @@ export const ClubsDemo = () => {
         </Card>
 
         <ClubProfileGallery images={DEMO_GALLERY} />
-        <ClubProfileEvents events={DEMO_EVENTS} />
+        <ClubProfileEvents events={events} />
+        {discounts.length > 0 && (
+          <Card className="bg-black/70 backdrop-blur-xl border-white/15">
+            <CardContent className="p-4 sm:p-6">
+              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                <TicketPercent className="h-5 w-5 text-fuchsia-400" />
+                Descuentos del club
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {discounts.map((d) => (
+                  <div key={d.id} className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-white font-mono font-bold tracking-wider">{d.code}</span>
+                      <Badge className="bg-fuchsia-600 text-white">
+                        {d.discountPercent !== null
+                          ? `${d.discountPercent}% OFF`
+                          : d.discountAmount !== null
+                            ? `$${d.discountAmount} OFF`
+                            : "Promo"}
+                      </Badge>
+                    </div>
+                    {d.description && (
+                      <p className="text-white/70 text-sm mt-2">{d.description}</p>
+                    )}
+                    <p className="text-white/50 text-xs mt-2">
+                      {d.usesCount} usados
+                      {d.maxUses !== null ? ` de ${d.maxUses}` : ""}
+                      {d.validUntil ? ` · vence ${new Date(d.validUntil).toLocaleDateString("es-MX")}` : ""}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
         <ClubProfileReviews
           reviews={DEMO_REVIEWS}
           averageRating={club.rating_average}

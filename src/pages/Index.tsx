@@ -16,7 +16,7 @@ const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, profile, isAuthenticated, loading: authLoading } = useAuth();
-  const { isLoading, setIsLoading } = useLoading();
+  const { setIsLoading } = useLoading();
   const [showWelcome, setShowWelcome] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<
@@ -32,32 +32,16 @@ const Index = () => {
     false,
   );
   const welcomeModalChecked = useRef(false);
-  const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const loadingInitializedRef = useRef(false);
 
   // @isActive - página de inicio pública
   const isActive = location.pathname === "/";
 
-  // Iniciar loading al montar Index
+  // Sin splash de carga falso: antes la landing forzaba 3 s de
+  // LoadingScreen con barra de progreso en cada visita. El splash solo
+  // aparece mientras la autenticación realmente está cargando.
   useEffect(() => {
-    if (!loadingInitializedRef.current) {
-      loadingInitializedRef.current = true;
-      setIsLoading(true);
-
-      loadingTimeoutRef.current = setTimeout(() => {
-        setIsLoading(false);
-        loadingTimeoutRef.current = null;
-      }, 3000);
-    }
-
-    return () => {
-      if (!loadingTimeoutRef.current) return;
-      clearTimeout(loadingTimeoutRef.current);
-      loadingTimeoutRef.current = null;
-    };
-  }, []);
-
-  // No cancelar isLoading cuando authLoading cambia, dejar que el timeout controle el tiempo
+    setIsLoading(false);
+  }, [setIsLoading]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -117,7 +101,7 @@ const Index = () => {
     }
   };
 
-  if (isLoading) {
+  if (authLoading) {
     return <LoadingScreen onComplete={() => setIsLoading(false)} />;
   }
 

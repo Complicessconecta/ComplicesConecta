@@ -106,8 +106,14 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
         onHoverEnd={() => setIsHovered(false)}
       >
         <Card className="overflow-hidden bg-linear-to-br from-white/10 to-white/5 backdrop-blur-md border-white/20 shadow-xl">
-          {/* Image Container */}
-          <div className="relative aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] overflow-hidden">
+          {/* Image Container: clicar la foto abre el perfil */}
+          <div
+            className="relative aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] overflow-hidden cursor-pointer"
+            onClick={() => onViewProfile?.(profileId ?? id)}
+            role="button"
+            aria-label={`Ver perfil de ${name}`}
+            title={`Ver perfil de ${name}`}
+          >
             <AnimatePresence mode="wait">
               {imageError ? (
                 <motion.div
@@ -186,13 +192,19 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
               >
                 <button
                   type="button"
-                  onClick={prevImage}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prevImage();
+                  }}
                   className="flex-1 bg-linear-to-r from-black/20 to-transparent hover:from-black/40 transition-all duration-300"
                   aria-label="Imagen anterior"
                 />
                 <button
                   type="button"
-                  onClick={nextImage}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextImage();
+                  }}
                   className="flex-1 bg-gradient-to-l from-black/20 to-transparent hover:from-black/40 transition-all duration-300"
                   aria-label="Siguiente imagen"
                 />
@@ -206,7 +218,10 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   <button
                     key={index}
                     type="button"
-                    onClick={() => setCurrentImageIndex(index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex(index);
+                    }}
                     className={cn(
                       "w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 touch-manipulation",
                       index === currentImageIndex
@@ -237,8 +252,10 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
             {/* Name and Age */}
             <div className="flex items-center justify-between">
               <motion.h3
-                className="text-base sm:text-lg font-bold text-white truncate"
+                className="text-base sm:text-lg font-bold text-white truncate cursor-pointer hover:underline"
                 layoutId={`name-${id}`}
+                onClick={() => onViewProfile?.(profileId ?? id)}
+                title={`Ver perfil de ${name}`}
               >
                 {name}, {age}
               </motion.h3>
@@ -364,7 +381,9 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                     return;
                   }
                   setShowViews(!showViews);
-                  onViewProfile?.(id);
+                  // El id que se pasa es el id REAL del perfil (profileId),
+                  // no el numérico derivado: ese nunca igualaba a ningún perfil.
+                  onViewProfile?.(profileId ?? id);
                 }}
                 className={cn(
                   "relative transition-all duration-300 px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation group",

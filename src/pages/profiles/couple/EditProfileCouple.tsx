@@ -17,6 +17,35 @@ import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfi
 import { motion } from "framer-motion";
 
 const EditProfileCouple = () => {
+  // Valores que el perfil de pareja ya muestra en demo (ProfileCouple):
+  // los títulos de intereses de respaldo, la bio visible y las galerías
+  // actual (3 públicas + 4 privadas). El editor debe precargarlos: antes
+  // dejaba bio e intereses en [] y Guardar escribía [] en demo_user, con
+  // lo que el perfil perdía los intereses y el "Completo" bajaba de 83% a
+  // 67% (full test 2026-11-24).
+  const DEMO_COUPLE_INTEREST_TITLES = [
+    "Lifestyle Exclusivo",
+    "Eventos VIP",
+    "Privacidad Total",
+    "Verificación Real",
+    "Chat Encriptado",
+    "Match Inteligente",
+  ] as const;
+  const DEMO_COUPLE_BIO =
+    "Una pareja aventurera que busca nuevas experiencias y conexiones auténticas.";
+  const DEMO_PARTNER_BIO = "Usuario de demostración.";
+  const DEMO_COUPLE_PUBLIC_IMAGES = [
+    "/assets/people/couple/c1.jpg",
+    "/assets/people/couple/c2.jpg",
+    "/assets/people/couple/c3.jpg",
+  ];
+  const DEMO_COUPLE_PRIVATE_IMAGES = [
+    "/assets/people/couple/privado/privadocouple1.jpg",
+    "/assets/people/couple/privado/privadocouple2.jpg",
+    "/assets/people/couple/privado/privadocouple3.jpg",
+    "/assets/people/couple/privado/privadocouple4.jpg",
+  ];
+
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [formData, setFormData] = useState({
@@ -106,8 +135,9 @@ const EditProfileCouple = () => {
       value.every((item) => typeof item === "string")
         ? (value as string[])
         : [];
-    const partner = (stored: any, firstName: string, age: string) => {
+    const partner = (stored: any, firstName: string, age: string, fallbackInterests: string[]) => {
       const nameParts = asString(stored?.name).split(" ");
+      const storedInterests = asStringArray(stored?.interests);
       return {
         firstName:
           asString(stored?.firstName) ||
@@ -124,14 +154,19 @@ const EditProfileCouple = () => {
             ? String(stored.age)
             : age,
         profession: asString(stored?.profession),
-        bio: asString(stored?.bio),
+        // Sin bio guardada, la que el perfil ya muestra en demo.
+        bio: asString(stored?.bio) || DEMO_PARTNER_BIO,
         avatar: asString(stored?.avatar) || asString(stored?.avatar_url),
-        interests: asStringArray(stored?.interests),
+        // Sin intereses guardados, los que el perfil ya muestra en demo:
+        // Guardar sin cambios no debe escribir [] y bajar el "Completo".
+        interests:
+          storedInterests.length > 0 ? storedInterests : fallbackInterests,
         publicImages: asStringArray(stored?.publicImages),
         privateImages: asStringArray(stored?.privateImages),
       };
     };
 
+    const storedInterests = asStringArray(user.interests);
     setProfile(user);
     setFormData({
       coupleName:
@@ -140,11 +175,23 @@ const EditProfileCouple = () => {
         asString(user.couple_name) ||
         "Carmen & Roberto",
       location: asString(user.location) || "CDMX, México",
-      bio: asString(user.bio) || asString(user.couple_bio),
-      interests: asStringArray(user.interests),
+      // Sin bio guardada, la que el perfil ya muestra en demo.
+      bio: asString(user.bio) || asString(user.couple_bio) || DEMO_COUPLE_BIO,
+      interests:
+        storedInterests.length > 0
+          ? storedInterests
+          : [...DEMO_COUPLE_INTEREST_TITLES],
       explicitInterests: asStringArray(user.explicitInterests),
-      partner1: partner(user.partner1, "Carmen", "25"),
-      partner2: partner(user.partner2, "Roberto", "28"),
+      partner1: partner(user.partner1, "Carmen", "25", [
+        DEMO_COUPLE_INTEREST_TITLES[0],
+        DEMO_COUPLE_INTEREST_TITLES[2],
+        DEMO_COUPLE_INTEREST_TITLES[4],
+      ]),
+      partner2: partner(user.partner2, "Roberto", "28", [
+        DEMO_COUPLE_INTEREST_TITLES[1],
+        DEMO_COUPLE_INTEREST_TITLES[3],
+        DEMO_COUPLE_INTEREST_TITLES[5],
+      ]),
     });
   };
 
@@ -303,6 +350,66 @@ const EditProfileCouple = () => {
     logger.error("Error subiendo imagen", { error });
   };
 
+  const handleRemoveGalleryImage = (
+    partner: "partner1" | "partner2",
+    type: "public" | "private",
+    url: string,
+  ) => {
+    const key = type === "public" ? "publicImages" : "privateImages";
+    setFormData((prev) => ({
+      ...prev,
+      [partner]: {
+        ...prev[partner],
+        [key]: prev[partner][key].filter((u) => u !== url),
+      },
+    }));
+  };
+
+  // Fotos actuales de la pareja (las que ya muestra el perfil) + las
+  // añadidas en esta sesión. Las actuales son de solo lectura aquí: el
+  // editor antes mostraba las zonas vacías aunque el perfil tiene
+  // contenido. Solo las añadidas se pueden quitar (X).
+  const renderGalleryStrip = (
+    currentImages: string[],
+    addedImages: string[],
+    partner: "partner1" | "partner2",
+    type: "public" | "private",
+  ) => {
+    const all = [...currentImages, ...addedImages];
+    if (all.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-2 mt-3">
+        {all.map((url) => {
+          const isAdded = addedImages.includes(url);
+          return (
+            <div
+              key={`${type}-${url}`}
+              className="relative w-16 h-16 rounded-lg overflow-hidden border border-white/20"
+            >
+              <img
+                src={url}
+                alt="Foto de la pareja"
+                className="w-full h-full object-cover"
+              />
+              {isAdded && (
+                <button
+                  type="button"
+                  aria-label="Quitar foto añadida"
+                  onClick={() =>
+                    handleRemoveGalleryImage(partner, type, url)
+                  }
+                  className="absolute top-0.5 right-0.5 p-0.5 rounded-full bg-black/70 text-white hover:bg-black/90"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   const handleSave = async () => {
     // Antes solo registraba y navegaba: la selección de intereses se perdía
     // y el perfil seguía mostrando los títulos demo. Ahora persiste en la
@@ -315,22 +422,35 @@ const EditProfileCouple = () => {
         const demoUser = JSON.parse(
           window.localStorage.getItem("demo_user") || "{}",
         );
+        // Guardar el formulario COMPLETO en la misma fuente que lee el
+        // perfil y el editor: antes solo se persistían los intereses y
+        // cualquier cambio de bio, nombre, ubicación o fotos se perdía al
+        // guardar (y Guardar sin cambios escribía intereses []).
         const updatedUser = {
           ...demoUser,
+          name: formData.coupleName,
+          coupleName: formData.coupleName,
+          couple_name: formData.coupleName,
+          location: formData.location,
+          bio: formData.bio,
+          couple_bio: formData.bio,
           interests: formData.interests ?? [],
+          explicitInterests: formData.explicitInterests ?? [],
           partner1: {
             ...(demoUser.partner1 ?? {}),
+            ...formData.partner1,
             interests: formData.partner1?.interests ?? [],
           },
           partner2: {
             ...(demoUser.partner2 ?? {}),
+            ...formData.partner2,
             interests: formData.partner2?.interests ?? [],
           },
         };
         window.localStorage.setItem("demo_user", JSON.stringify(updatedUser));
-        logger.info("Intereses de pareja guardados (demo)");
+        logger.info("Perfil de pareja guardado (demo)");
       } catch (error) {
-        logger.error("Error guardando intereses en demo", {
+        logger.error("Error guardando perfil de pareja en demo", {
           error: String(error),
         });
       }
@@ -630,6 +750,12 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PUBLIC_IMAGES,
+                      formData.partner1.publicImages,
+                      "partner1",
+                      "public",
+                    )}
                   </div>
                 </div>
                 <div>
@@ -651,6 +777,12 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PRIVATE_IMAGES,
+                      formData.partner1.privateImages,
+                      "partner1",
+                      "private",
+                    )}
                   </div>
                 </div>
               </div>
@@ -802,6 +934,12 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PUBLIC_IMAGES,
+                      formData.partner2.publicImages,
+                      "partner2",
+                      "public",
+                    )}
                   </div>
                 </div>
                 <div>
@@ -823,6 +961,12 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PRIVATE_IMAGES,
+                      formData.partner2.privateImages,
+                      "partner2",
+                      "private",
+                    )}
                   </div>
                 </div>
               </div>

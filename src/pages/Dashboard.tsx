@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Footer } from "@/components/Footer";
 import { Gamification } from "@/components/gamification/Gamification";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import { useTokens } from "@/hooks/useTokens";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Bell, TrendingUp } from "lucide-react";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -28,6 +29,14 @@ const DashboardCore = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  // Analytics con datos reales de la sesión (useTokens): antes la pestaña
+  // era un placeholder ("Esta sección mostrará estadísticas...").
+  const {
+    balance: tokenBalance,
+    transactions: tokenTransactions,
+    pendingRewards,
+    hasActiveStaking,
+  } = useTokens();
 
   // Función robusta para cargar perfil
   const loadUserProfile = useCallback(() => {
@@ -215,16 +224,36 @@ const DashboardCore = () => {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <div className="text-center py-12">
-              <TrendingUp className="h-16 w-16 text-white/60 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-white">
-                Analytics Detallados
-              </h3>
-              <p className="text-white/80">
-                Esta sección mostrará estadísticas avanzadas de tu perfil y
-                actividad
-              </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[
+                { label: "CMPX disponibles", value: tokenBalance.cmpxBalance },
+                { label: "CMPX en staking", value: tokenBalance.cmpxStaked },
+                { label: "GTK", value: tokenBalance.gtkBalance },
+                {
+                  label: "Transacciones",
+                  value: tokenTransactions.length,
+                },
+                {
+                  label: "Recompensas pendientes",
+                  value: pendingRewards.length,
+                },
+                {
+                  label: "Staking activo",
+                  value: hasActiveStaking ? "Sí" : "No",
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 text-center"
+                >
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-sm text-white/70">{stat.label}</p>
+                </div>
+              ))}
             </div>
+            <p className="text-white/60 text-sm text-center">
+              Datos de tu sesión actual (demo o real según tu cuenta).
+            </p>
           </TabsContent>
         </Tabs>
       </main>

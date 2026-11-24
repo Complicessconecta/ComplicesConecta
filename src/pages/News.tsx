@@ -93,7 +93,7 @@ const News: FC = () => {
       highlights: [
         "Performance Monitoring Service - Mtricas Web Vitals (LCP, FCP, FID, CLS, TTFB)",
         "Error Alert Service - Captura automtica con categorizacin inteligente",
-        "Analytics Dashboard - 4 pestaas (Overview, Moderacin, Histrico, Configuracin)",
+        "Analytics Dashboard - 4 pestaas (Overview, Moderación, Histrico, Configuracin)",
         "Historical Charts con Recharts - Line, Area, Composed, Bar charts",
         "Sistema de Webhooks - Slack, Discord, Custom con rate limiting",
         "Integracin Sentry completa - Error tracking + Source maps + Session Replay",
@@ -178,7 +178,7 @@ const News: FC = () => {
         "Sistema de autenticacin y perfiles (single/pareja)",
         "Base de datos con RLS y polticas de seguridad",
         "UI/UX inicial con Tailwind CSS",
-        "Funcionalidades core: matches, chat, galera",
+        "Funcionalidades core: matches, chat, galería",
       ],
       color: "from-gray-500 to-slate-600",
     },
@@ -561,7 +561,7 @@ const News: FC = () => {
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-3 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
                   <Eye className="h-4 w-4 mr-2" />
-                  Conocer Ms
+                  Conocer Más
                 </Button>
               </div>
             </CardContent>

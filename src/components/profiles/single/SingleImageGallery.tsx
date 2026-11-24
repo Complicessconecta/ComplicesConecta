@@ -239,6 +239,10 @@ export const SingleImageGallery: React.FC<SingleImageGalleryProps> = ({
               checked={newImagePublic}
               onCheckedChange={setNewImagePublic}
               disabled={disabled || isUploading}
+              // Colores explícitos: el Switch compartido usa tokens que en
+              // Tailwind v4 no resuelven (canales HSL sin hsl()); sin esto
+              // la perilla quedaba invisible y sin estado visual.
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
             <Label htmlFor="new-image-public" className="text-sm">
               {newImagePublic

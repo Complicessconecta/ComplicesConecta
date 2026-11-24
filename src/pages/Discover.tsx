@@ -11,7 +11,7 @@ import EventsModal from "@/components/modals/EventsModal";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { pickProfileImage, type Gender } from "@/lib/media";
+import { pickProfileImage, type Gender, type ProfileType } from "@/lib/media";
 import { calculateDistance, getLocationDisplay } from "@/lib/distance-utils";
 import { type CoupleProfileWithPartners, getAllCoupleProfiles } from "@/services/social/couple/CoupleProfilesService";
 import { generateDemoProfiles, type DemoProfile } from "@/demo/demoData";
@@ -113,6 +113,22 @@ export const Discover = () => {
   // Aplicar filtros
   useEffect(() => {
     const applyFilters = () => {
+      // Filtro "Tipo de Relación": "Pareja" deja solo parejas, "Soltero/a"
+      // solo singles. "Abierto" y "Poliamoroso" no tienen campo en los
+      // datos, así que no filtran por sí solos.
+      const relationshipMatch = (
+        profileType: ProfileType | undefined,
+      ): boolean => {
+        const selected = filters.relationshipType;
+        if (selected.length === 0) return true;
+        const wantsCouple = selected.includes("Pareja");
+        const wantsSingle = selected.includes("Soltero/a");
+        if (!wantsCouple && !wantsSingle) return true;
+        if (profileType === "couple") return wantsCouple;
+        if (profileType === "single") return wantsSingle;
+        return true;
+      };
+
       // Filtrar perfiles demo
       const filteredDemo = demoProfiles.filter((profile) => {
         const ageMatch =
@@ -127,6 +143,7 @@ export const Discover = () => {
         const verifiedMatch = !filters.verified || profile.isVerified;
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
+        const relationshipTypeMatch = relationshipMatch(profile.profileType);
 
         return (
           ageMatch &&
@@ -134,7 +151,8 @@ export const Discover = () => {
           interestsMatch &&
           verifiedMatch &&
           premiumMatch &&
-          onlineMatch
+          onlineMatch &&
+          relationshipTypeMatch
         );
       });
 
@@ -167,6 +185,7 @@ export const Discover = () => {
         const verifiedMatch = !filters.verified || profile.isVerified;
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
+        const relationshipTypeMatch = relationshipMatch(profile.profileType);
 
         return (
           ageMatch &&
@@ -174,7 +193,8 @@ export const Discover = () => {
           interestsMatch &&
           verifiedMatch &&
           premiumMatch &&
-          onlineMatch
+          onlineMatch &&
+          relationshipTypeMatch
         );
       });
 
@@ -199,6 +219,8 @@ export const Discover = () => {
         const verifiedMatch = !filters.verified || couple.is_verified;
         const premiumMatch = !filters.premium || couple.is_premium;
         const onlineMatch = !filters.online || couple.isOnline;
+        // Las parejas solo pasan el filtro "Pareja" (o sin filtro de tipo).
+        const relationshipTypeMatch = relationshipMatch("couple");
 
         return (
           ageMatch &&
@@ -206,7 +228,8 @@ export const Discover = () => {
           interestsMatch &&
           verifiedMatch &&
           premiumMatch &&
-          onlineMatch
+          onlineMatch &&
+          relationshipTypeMatch
         );
       });
 
@@ -265,7 +288,7 @@ export const Discover = () => {
 
         // Convertir perfiles de Supabase al formato esperado
         const convertedProfiles: Profile[] = realProfiles.map(
-          (profile: any) => {
+          (profile: any, index: number) => {
             const normalizedGender = normalizeGender(profile.gender);
             return ({
             id: profile.id,
@@ -303,7 +326,7 @@ export const Discover = () => {
             isVerified: profile.is_premium || false,
             isPremium: profile.is_premium || false,
             rating: 4.5,
-            matchScore: Math.floor(Math.random() * 40) + 60,
+            matchScore: 60 + ((index * 7) % 40),
             profileType: (profile.account_type as any) || "single",
             gender: normalizedGender === "unknown" ? undefined : normalizedGender,
             });
@@ -427,6 +450,20 @@ export const Discover = () => {
       return;
     }
 
+    // MODO DEMO: like local, sin Supabase ni matchService. La tarjeta ya
+    // muestra el corazón rojo; aquí solo se confirma la acción y nunca se
+    // muestra "Error — No se pudo procesar el like".
+    if (
+      user.email === "single@outlook.es" ||
+      user.email === "pareja@outlook.es"
+    ) {
+      toast({
+        title: "Like enviado!",
+        description: "Le has dado like a este perfil.",
+      });
+      return;
+    }
+
     try {
       const { success, isMatch, error } = await matchService.createLike(
         user.id,
@@ -469,11 +506,22 @@ export const Discover = () => {
   };
 
   const handleViewProfile = (profileId: number | string) => {
+    // El id que se navega es el id REAL del perfil (uuid string de demo o
+    // de Supabase), nunca el id numérico derivado de la tarjeta, que no
+    // igualaba a ningún perfil. ProfileDetail lo resuelve desde
+    // location.state.profile.
+    const id = profileId.toString();
     const profile =
-      profiles.find((p) => p.id === profileId.toString()) ||
-      demoProfiles.find((p) => p.id === profileId.toString());
+      profiles.find((p) => p.id === id) ||
+      demoProfiles.find((p) => p.id === id);
     if (profile) {
       navigate(`/profile/${profile.id}`, { state: { profile } });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Perfil no encontrado",
+        description: "No se pudo abrir este perfil.",
+      });
     }
   };
 
@@ -487,12 +535,13 @@ export const Discover = () => {
       logger.error("Error: profileId inválido", { profileId });
       return;
     }
-    // Mantener flujo demo sin gating de match
+    // Mantener flujo demo sin gating de match: abrir el hilo con esa
+    // persona (/chat/:id del perfil), no /chat-info.
     if (
       user?.email === "single@outlook.es" ||
       user?.email === "pareja@outlook.es"
     ) {
-      navigate("/chat-info");
+      navigate(`/chat/${profileId}`);
       return;
     }
 
@@ -536,9 +585,20 @@ export const Discover = () => {
   };
 
   const handleRefresh = () => {
-    const newProfiles = generateRandomProfiles();
-    setProfiles(newProfiles);
-    setFilteredProfiles(newProfiles);
+    // En demo se regeneran los perfiles demo canónicos (orden y datos
+    // estables); en real se regeneran los aleatorios de fallback.
+    const isDemoUser =
+      user?.email === "single@outlook.es" ||
+      user?.email === "pareja@outlook.es";
+    if (isDemoUser) {
+      const demos = generateDemoProfiles(20);
+      setDemoProfiles(demos);
+      setFilteredDemoProfiles(demos);
+    } else {
+      const newProfiles = generateRandomProfiles();
+      setProfiles(newProfiles);
+      setFilteredProfiles(newProfiles);
+    }
     toast({
       title: "Perfiles actualizados",
       description: "Se han cargado nuevos perfiles para ti.",
@@ -927,7 +987,7 @@ export const Discover = () => {
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                       >
                         <AnimatedProfileCard
-                          id={parseInt(profile.id)}
+                          id={index + 1}
                           profileId={profile.id}
                           name={profile.name}
                           age={profile.age}

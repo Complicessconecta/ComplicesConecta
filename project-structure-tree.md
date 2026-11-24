@@ -393,6 +393,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       ProfileTabs.tsx
 |   |   |       ProfileThemeDemo.tsx
 |   |   |       ProfileThemeShowcase.tsx
+|   |   |       ProtectedMedia.tsx
 |   |   |       ReportProfileDialog.tsx
 |   |   |       ShareProfile.tsx
 |   |   |       useProfileQuery.ts
@@ -777,6 +778,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   app-config.ts
 |   |   asset-loader.ts
 |   |   capture-console-errors.ts
+|   |   chatLimits.ts
 |   |   data.ts
 |   |   demo-uuid.ts
 |   |   distance-utils.ts
@@ -812,8 +814,10 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   tokenPremium.ts
 |   |   userAgent.ts
 |   |   validation.ts
+|   |   visibility.ts
 |   |   visual-validation.ts
 |   |   wallet-silencer.ts
+|   |   zodiac.ts
 |   |   
 |   +---ai
 |   |       contentModeration.ts

@@ -43,12 +43,13 @@ const CoupleProfileCard = ({
   const themeConfig = useProfileTheme("couple", genders);
 
   // Use couple images if available, otherwise use placeholder
+  // (fotos de pareja verificadas, no retratos individuales).
   const partner1Avatar =
     profile.couple_images?.[0] ||
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face";
+    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop";
   const partner2Avatar =
     profile.couple_images?.[1] ||
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face";
+    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=600&fit=crop";
 
   // Handlers sincronizados con MainProfileCard
   const handleViewProfile = () => {

@@ -535,7 +535,11 @@ export const ParentalControl = ({
         <p className="mt-2 pt-2 border-t border-white/10">
           <strong>📌 PIN actual:</strong>{" "}
           <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">
-            {savedPin ? "••••" : "Sin configurar"}
+            {savedPin
+              ? "••••"
+              : isDemoMode()
+                ? "PIN demo activo (1234)"
+                : "Sin configurar"}
           </span>
           <br />
           <span className="text-zinc-200 text-[11px]">

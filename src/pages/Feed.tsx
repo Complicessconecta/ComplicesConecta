@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-import { Heart, MessageCircle, Share2, MoreHorizontal, MapPin, Clock, CheckCircle, Loader2, Plus } from "lucide-react";
-import { postsService, type Post } from "@/services/social";
+import { Heart, MessageCircle, Share2, MoreHorizontal, MapPin, Clock, CheckCircle, Loader2, Plus, Send } from "lucide-react";
+import { postsService, getDemoLikedPostIds, type Post } from "@/services/social";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
@@ -11,36 +11,45 @@ import { motion, AnimatePresence } from "framer-motion";
 const Feed = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingMore, _setLoadingMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [expandedComments, setExpandedComments] = useState<Set<string>>(
     new Set(),
   );
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+  const [composerText, setComposerText] = useState("");
+  const [publishing, setPublishing] = useState(false);
+  const composerRef = useRef<HTMLTextAreaElement>(null);
   const { isAuthenticated: _isAuthenticated, isDemoMode } = useAuth();
   const { toast } = useToast();
 
   // Cargar posts iniciales y estado de likes
   useEffect(() => {
     loadPosts();
-
-    // Cargar likes guardados en localStorage
-    const likedPostsStr = localStorage.getItem("demo_liked_posts") || "[]";
-    const savedLikedPosts: string[] = JSON.parse(likedPostsStr);
-    setLikedPosts(new Set(savedLikedPosts));
   }, []);
+
+  /** Suma +1 al contador de los posts con like guardado (persistencia demo). */
+  const applyLikedCounts = (list: Post[], liked: Set<string>): Post[] =>
+    list.map((p) =>
+      liked.has(p.id) ? { ...p, likes_count: p.likes_count + 1 } : p,
+    );
 
   const loadPosts = async (pageNum = 0) => {
     try {
       if (pageNum === 0) setLoading(true);
+      else setLoadingMore(true);
 
       const newPosts = await postsService.getFeed(pageNum, 20);
+      // En demo el feed es inmediato (posts demo sin esperar a Supabase).
+      const liked = new Set(getDemoLikedPostIds());
+      setLikedPosts(liked);
+      const withLikedCounts = applyLikedCounts(newPosts, liked);
 
       if (pageNum === 0) {
-        setPosts(newPosts);
+        setPosts(withLikedCounts);
       } else {
-        setPosts((prev) => [...prev, ...newPosts]);
+        setPosts((prev) => [...prev, ...withLikedCounts]);
       }
 
       setHasMore(newPosts.length === 20);
@@ -54,40 +63,90 @@ const Feed = () => {
       });
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
+  /**
+   * Like optimista, regla de Wacko: al dar me gusta el corazón se pone
+   * ROJO y el contador sube +1 (10 → 11); al desmarcarlo pierde el color
+   * y baja −1 (11 → 10). En demo el toggle es local (localStorage) y
+   * nunca muestra "Error — No se pudo procesar el like".
+   */
   const handleLike = async (post: Post) => {
-    try {
-      const newLikedState = await postsService.toggleLike(post.id);
+    const nextLiked = !likedPosts.has(post.id);
 
-      // Actualizar estado de likes para animación
+    // Optimista: corazón y contador cambian al instante.
+    setLikedPosts((prev) => {
+      const next = new Set(prev);
+      if (nextLiked) {
+        next.add(post.id);
+      } else {
+        next.delete(post.id);
+      }
+      return next;
+    });
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p.id === post.id
+          ? { ...p, likes_count: p.likes_count + (nextLiked ? 1 : -1) }
+          : p,
+      ),
+    );
+
+    const confirmed = await postsService.toggleLike(post.id);
+    if (confirmed !== nextLiked) {
+      // El servicio discrepa del estado optimista: reconciliar en silencio.
+      logger.warn("Like state mismatch, reconciling", { postId: post.id });
       setLikedPosts((prev) => {
-        const newSet = new Set(prev);
-        if (newLikedState) {
-          newSet.add(post.id);
+        const next = new Set(prev);
+        if (confirmed) {
+          next.add(post.id);
         } else {
-          newSet.delete(post.id);
+          next.delete(post.id);
         }
-        return newSet;
+        return next;
       });
-
-      // Actualizar el contador de likes en el post
       setPosts((prevPosts) =>
         prevPosts.map((p) =>
           p.id === post.id
-            ? { ...p, likes_count: p.likes_count + (newLikedState ? 1 : -1) }
+            ? { ...p, likes_count: p.likes_count + (confirmed ? 1 : -1) }
             : p,
         ),
       );
-    } catch (error) {
-      logger.error("Error toggling like", { error });
+    }
+  };
+
+  /** Crear publicación desde el compositor (demo: local, arriba del feed). */
+  const handleCreatePost = async () => {
+    const content = composerText.trim();
+    if (!content) {
+      toast({
+        title: "Escribe algo",
+        description: "Tu publicación no puede estar vacía.",
+      });
+      return;
+    }
+    setPublishing(true);
+    const post = await postsService.createPost({
+      content,
+      post_type: "text",
+    });
+    setPublishing(false);
+    if (!post) {
       toast({
         title: "Error",
-        description: "No se pudo procesar el like",
+        description: "No se pudo crear la publicación",
         variant: "destructive",
       });
+      return;
     }
+    setPosts((prev) => [post, ...prev]);
+    setComposerText("");
+    toast({
+      title: "Publicación creada",
+      description: "Tu publicación ya está en el feed.",
+    });
   };
 
   const handleLoadMore = () => {
@@ -108,15 +167,56 @@ const Feed = () => {
     });
   };
 
-  const handleShare = (post: Post) => {
-    // En modo demo, mostrar modal con opciones de compartir
-    toast({
-      title: "Compartir Publicación",
-      description: `Funcionalidad de compartir para "${post.content.substring(0, 30)}..."`,
-    });
+  /** Compartir real: Web Share API con fallback a copiar el enlace. */
+  const handleShare = async (post: Post) => {
+    const url = `${window.location.origin}/feed?post=${encodeURIComponent(post.id)}`;
+    const text = post.content.slice(0, 120);
+    const bumpShares = () =>
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === post.id
+            ? { ...p, shares_count: p.shares_count + 1 }
+            : p,
+        ),
+      );
 
-    // En producción, aquí iría la lógica de compartir
-    logger.info("Share button clicked", { postId: post.id });
+    try {
+      if (
+        typeof navigator !== "undefined" &&
+        typeof navigator.share === "function"
+      ) {
+        await navigator.share({
+          title: "ComplicesConecta",
+          text,
+          url,
+        });
+        bumpShares();
+        // Registrar el share en real (en demo no hace nada); sin toast de error.
+        void postsService.sharePost(post.id).catch(() => undefined);
+        return;
+      }
+      throw new Error("Web Share no disponible");
+    } catch (error) {
+      // El usuario canceló el diálogo nativo: no es un error.
+      if (error instanceof Error && error.name === "AbortError") return;
+      try {
+        await navigator.clipboard.writeText(url);
+        bumpShares();
+        toast({
+          title: "Enlace copiado",
+          description: "El enlace de la publicación está en el portapapeles.",
+        });
+        void postsService.sharePost(post.id).catch(() => undefined);
+      } catch {
+        logger.error("Share failed", { error });
+        toast({
+          title: "No se pudo compartir",
+          description:
+            "Copia el enlace manualmente desde la barra de direcciones.",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   // Comentarios demo para modo demo
@@ -174,6 +274,44 @@ const Feed = () => {
           </p>
         </div>
 
+        {/* Compositor de publicaciones */}
+        <Card className="bg-card/80 backdrop-blur-sm border-accent/20 overflow-hidden mb-6">
+          <CardContent className="p-4">
+            <textarea
+              ref={composerRef}
+              value={composerText}
+              onChange={(e) => setComposerText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                  void handleCreatePost();
+                }
+              }}
+              rows={3}
+              placeholder="Comparte tus experiencias con la comunidad..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none"
+            />
+            <div className="flex justify-end mt-3">
+              <Button
+                onClick={() => void handleCreatePost()}
+                disabled={publishing || composerText.trim().length === 0}
+                className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {publishing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Publicando...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Publicar
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-white" />
@@ -188,7 +326,10 @@ const Feed = () => {
               <p className="text-white/80 mb-4">
                 Comparte tus experiencias con la comunidad lifestyle
               </p>
-              <Button className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white">
+              <Button
+                onClick={() => composerRef.current?.focus()}
+                className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Crear publicacin
               </Button>

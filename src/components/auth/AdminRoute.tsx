@@ -3,17 +3,33 @@ import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { isProductionAdmin } from "@/lib/app-config";
+import { useAuth } from "@/features/auth/useAuth";
 
 interface AdminRouteProps {
   children: React.ReactNode;
 }
 
 const AdminRoute = ({ children }: AdminRouteProps) => {
+  const { isDemo } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
+  // En modo demo no hay sesión Supabase: la validación real siempre
+  // negaba el acceso y la cadena /admin → /auth → /dashboard sacaba al
+  // usuario del panel al hacer scroll (el chequeo async resolvía tarde).
+  // El panel admin en demo muestra datos demo/respaldo, como el resto de
+  // la app en demo; la validación real solo aplica fuera de demo.
+  const demoActive = typeof isDemo === "function" ? isDemo() : Boolean(isDemo);
+
   useEffect(() => {
     let isMounted = true;
+
+    // Demo: acceso directo al panel (datos demo/respaldo, sin sesión real).
+    if (demoActive) {
+      setIsAdmin(true);
+      setLoading(false);
+      return;
+    }
 
     const run = async () => {
       await checkAdminAccess(0);
@@ -32,7 +48,7 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [demoActive]);
 
   const checkAdminAccess = async (attempt: number) => {
     try {

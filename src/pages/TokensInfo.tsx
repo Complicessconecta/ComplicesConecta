@@ -329,7 +329,7 @@ export default function TokensInfo() {
       description: "Acceso exclusivo con todos los beneficios",
     },
     {
-      name: "Desbloquear Galera Privada",
+      name: "Desbloquear Galería Privada",
       icon: <Lock className="h-5 w-5" />,
       cost: 100,
       description: "Acceso temporal a contenido exclusivo",

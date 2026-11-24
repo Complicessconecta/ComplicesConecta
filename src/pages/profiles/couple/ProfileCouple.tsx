@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Unlock, Images, Flag, Coins, Wallet, Users, ShieldCheck, Eye, TrendingUp, Calendar, CheckCircle, MessageCircle } from "lucide-react";
+import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Unlock, Images, Flag, Coins, Wallet, Users, ShieldCheck, Eye, TrendingUp, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
@@ -16,7 +16,6 @@ import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
 import { WalletService, walletService } from "@/services/payments/WalletService";
 import { nftService, seedDemoNFTs } from "@/services/payments/NFTService";
-import { DemoWallet } from "@/components/wallet/DemoWallet";
 import { cn } from "@/shared/lib/cn";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +25,7 @@ import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
+import { DemoWallet } from "@/components/wallet/DemoWallet";
 import {
   PRIVATE_MEDIA_PLACEHOLDER,
   toPrivateStoragePath,
@@ -41,7 +41,7 @@ import { CoupleSubscriptionCard } from "@/components/profiles/couple/CoupleSubsc
 import { CouplePrivacySection } from "@/components/profiles/couple/CouplePrivacySection";
 // Espejo de Single: gestor de solicitudes de acceso, reporte y experiencias.
 import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
-import { ReportProfileDialog } from "@/components/profiles/shared/ReportProfileDialog";
+import { ReportDialog } from "@/components/dialogs/ReportDialog";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
 import { Modal, ModalBody, ModalContent, ModalFooter } from "@/components/modals/animated-modal";
@@ -142,6 +142,23 @@ function ProfileCouple() {
   // Espejo de Single: modal VIP de la sección "Próximas experiencias".
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
+  // PIN persistente (full test 2026-11-24): el desbloqueo de la galería
+  // privada con PIN 1234 (demo) se perdía al navegar porque el efecto de
+  // montaje forzaba locked=true siempre. Se guarda la expiración del
+  // desbloqueo (1 h, igual que las URLs firmadas de la galería): al montar
+  // solo se fuerza el bloqueo si ya expiró. El auto-bloqueo del
+  // ParentalControl (onToggle(true)) y el botón Bloquear limpian la clave.
+  const [unlockExpiresAt, setUnlockExpiresAt] = usePersistedState<number>(
+    "private_gallery_unlocked_until",
+    0,
+  );
+  const persistUnlock = useCallback(() => {
+    setUnlockExpiresAt(Date.now() + 60 * 60 * 1000);
+  }, [setUnlockExpiresAt]);
+  const clearUnlock = useCallback(() => {
+    setUnlockExpiresAt(0);
+  }, [setUnlockExpiresAt]);
+
   // La galería privada carga BLOQUEADA: el valor anterior (false) dejaba
   // las fotos privadas visibles sin PIN en la primera carga del perfil.
   const [isParentalLocked, _setIsParentalLocked] = usePersistedState(
@@ -151,11 +168,24 @@ function ProfileCouple() {
 
   const [showParentalUnlock, setShowParentalUnlock] = useState(false);
 
-  // Bloquear al montar el perfil: cubre instalaciones que ya tenían
-  // "parentalLock" = false persistido antes de este fix.
+  // Restaurar el desbloqueo vigente al montar; si expiró (o nunca hubo),
+  // bloquear: cubre instalaciones que ya tenían "parentalLock" = false
+  // persistido antes de este fix.
+  const unlockRestoredRef = useRef(false);
   useEffect(() => {
-    _setIsParentalLocked(true);
-    _setDemoPrivateUnlocked(false);
+    if (unlockRestoredRef.current) return;
+    unlockRestoredRef.current = true;
+    if (unlockExpiresAt > Date.now()) {
+      _setIsParentalLocked(false);
+      _setDemoPrivateUnlocked(true);
+    } else {
+      _setIsParentalLocked(true);
+      _setDemoPrivateUnlocked(false);
+      if (unlockExpiresAt !== 0) setUnlockExpiresAt(0);
+    }
+    // Solo al montar: el valor leído de localStorage en el primer render
+    // es la fuente; reaccionar a cambios posteriores lo re-bloquearía.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
@@ -166,6 +196,14 @@ function ProfileCouple() {
   // Estados para modal de imágenes
   const [showImageModal, _setShowImageModal] = useState(false);
   const [_selectedImageIndex, setSelectedImageIndex] = useState(0);
+  // Imágenes que muestra el ImageModal: la galería pública (espejo de
+  // Single) o la privada. Antes el modal siempre recibía las privadas.
+  const [modalImages, setModalImages] = useState<string[]>([]);
+  const openPublicImageModal = (index: number) => {
+    setModalImages(couplePublicImageUrls);
+    setSelectedImageIndex(index);
+    _setShowImageModal(true);
+  };
   const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>({});
   const [imageUserLikes, setImageUserLikes] = useState<{
     [key: string]: boolean;
@@ -177,6 +215,16 @@ function ProfileCouple() {
   const [_showCommentInputFor, _setShowCommentInputFor] = useState<
     number | null
   >(null);
+
+  // Galería pública de pareja (espejo de Single): las 3 fotos públicas
+  // demo de la pareja, assets locales /assets/people/couple/c1-c3.jpg.
+  // Single muestra 3 fotos públicas + Fotos Privadas; la pareja solo
+  // tenía las privadas (full test 2026-11-24).
+  const couplePublicImageUrls = [
+    "/assets/people/couple/c1.jpg",
+    "/assets/people/couple/c2.jpg",
+    "/assets/people/couple/c3.jpg",
+  ];
 
   // C6: rutas de Storage (bucket "media") de las 4 imágenes privadas.
   // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
@@ -268,6 +316,7 @@ function ProfileCouple() {
 
     // Si ya hay acceso, abrir galería
     if (isGalleryUnlocked) {
+      setModalImages(couplePrivateImageUrls);
       _setShowImageModal(true);
       return;
     }
@@ -277,6 +326,8 @@ function ProfileCouple() {
       const ok = await _requireSecureAccess();
       if (!ok) return;
       _setDemoPrivateUnlocked(true);
+      persistUnlock();
+      setModalImages(couplePrivateImageUrls);
       _setShowImageModal(true);
       return;
     }
@@ -373,11 +424,13 @@ function ProfileCouple() {
   const [_testnetInfo, setTestnetInfo] = useState<TestnetInfo | null>(null);
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleRequest[]>([]);
-  // Estadísticas espejo de ProfileSingle (0 en demo, igual que Single).
+  // Estadísticas espejo de ProfileSingle. Demo: sin API real, contadores
+  // coherentes con el contenido demo (12 posts, 2 matches) en vez de 0
+  // junto a contenido. Fuera de demo siguen en 0 hasta que exista la API.
   const [coupleStats] = useState({
-    totalViews: 0,
-    totalLikes: 0,
-    totalMatches: 0,
+    totalViews: isDemoMode ? 212 : 0,
+    totalLikes: isDemoMode ? 94 : 0,
+    totalMatches: isDemoMode ? 2 : 0,
     profileCompleteness: 0,
   });
 
@@ -1437,7 +1490,10 @@ function ProfileCouple() {
                       {/* Acceso aprobado */}
                       {privateImageAccess === "approved" && (
                         <Button
-                          onClick={() => _setShowImageModal(true)}
+                          onClick={() => {
+                            setModalImages(couplePrivateImageUrls);
+                            _setShowImageModal(true);
+                          }}
                           className="bg-green-600/80 hover:bg-green-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
                           <Images className="w-4 h-4" />
@@ -1449,6 +1505,40 @@ function ProfileCouple() {
                       )}
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Galería pública - espejo de Single (3 fotos públicas) */}
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Images className="w-5 h-5" />
+                  Galería de Fotos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 md:p-10">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
+                  {couplePublicImageUrls.map((src, idx) => (
+                    <div
+                      key={src}
+                      className="aspect-square rounded-lg overflow-hidden"
+                    >
+                      <button
+                        type="button"
+                        className="w-full h-full"
+                        onClick={() => openPublicImageModal(idx)}
+                        aria-label={`Foto pública ${idx + 1}`}
+                      >
+                        <img
+                          src={src}
+                          alt={`Foto pública ${idx + 1}`}
+                          loading="lazy"
+                          className="w-full h-full object-cover hover:scale-105 transition-transform"
+                        />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -1478,6 +1568,7 @@ function ProfileCouple() {
                           setShowParentalUnlock(false);
                           _setDemoPrivateUnlocked(false);
                           _setShowImageModal(false);
+                          clearUnlock();
                         }
                       }}
                       disabled={isParentalLocked}
@@ -1525,6 +1616,7 @@ function ProfileCouple() {
                           }
 
                           if (isGalleryUnlocked) {
+                            setModalImages(couplePrivateImageUrls);
                             setSelectedImageIndex(idx);
                             _setShowImageModal(true);
                             return;
@@ -1797,9 +1889,13 @@ function ProfileCouple() {
               </div>
             )}
 
-            {/* Demo Wallet - solo demo, tras la información del perfil */}
+            {/* Demo Wallet (pareja): valores canónicos 2000/1500/2 NFTs
+            vía accountType="couple" — espejo del de single. */}
             {isDemoMode && (
-              <DemoWallet userId={user?.id || profile?.profile_id || ""} />
+              <DemoWallet
+                userId={user?.id || profile?.id || ""}
+                accountType="couple"
+              />
             )}
 
             {/* Publicaciones - después de la información del perfil */}
@@ -1894,14 +1990,17 @@ function ProfileCouple() {
           if (!locked) {
             _setDemoPrivateUnlocked(true);
             setShowParentalUnlock(false);
+            persistUnlock();
           } else {
             _setDemoPrivateUnlocked(false);
             setShowParentalUnlock(false);
+            clearUnlock();
           }
         }}
         onUnlock={() => {
           _setDemoPrivateUnlocked(true);
           setShowParentalUnlock(false);
+          persistUnlock();
         }}
       />
 
@@ -1920,7 +2019,9 @@ function ProfileCouple() {
       <ImageModal
         isOpen={showImageModal}
         onClose={() => _setShowImageModal(false)}
-        images={couplePrivateImageUrls}
+        images={
+          modalImages.length > 0 ? modalImages : couplePrivateImageUrls
+        }
         currentIndex={_selectedImageIndex}
         onNavigate={navigateCarousel}
         onLike={_handleImageLike}
@@ -1932,11 +2033,14 @@ function ProfileCouple() {
       />
 
       {/* Modal de reporte - espejo de Single (el botón Reportar lo abría pero no existía el modal) */}
-      <ReportProfileDialog
+      <ReportDialog
         isOpen={showReportDialog}
-        onClose={() => setShowReportDialog(false)}
-        reportedUserId={profile?.id || ""}
-        reportedUserName={profile.couple_name || "Perfil de Pareja"}
+        onOpenChange={setShowReportDialog}
+        profileId={profile?.id || ""}
+        profileName={profile.couple_name || "Perfil de Pareja"}
+        onReport={(reason) => {
+          logger.info("Reporte enviado desde perfil de pareja", { reason });
+        }}
       />
     </div>
   );

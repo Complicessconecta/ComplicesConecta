@@ -138,13 +138,18 @@ export const ReportDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      {/* Contraste explícito (no tokens): los tokens primary/muted/
+      background son canales HSL sin hsl() y en Tailwind v4 no resuelven
+      a color válido, por eso título y motivos se veían en blanco sobre
+      blanco aunque existían en el DOM. Fondo claro fijo + texto oscuro
+      (y variantes dark:) para que el modal sea legible en ambos temas. */}
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto text-slate-900 dark:text-slate-100">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
             <Flag className="h-5 w-5 text-destructive" />
             Reportar a {profileName}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-slate-600 dark:text-slate-300">
             Tu reporte nos ayuda a mantener la comunidad segura. Toda la
             información será confidencial.
           </DialogDescription>
@@ -153,29 +158,29 @@ export const ReportDialog = ({
         <div className="space-y-6">
           {/* Motivos del reporte */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">
+            <Label className="text-base font-medium text-slate-900 dark:text-slate-100">
               ¿Cuál es el motivo del reporte?
             </Label>
             <RadioGroup value={reportType} onValueChange={setReportType}>
               {reportReasons.map((reason) => (
                 <div
                   key={reason.id}
-                  className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                  className="flex items-start space-x-3 p-3 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   <RadioGroupItem
                     value={reason.id}
                     id={reason.id}
-                    className="mt-1"
+                    className="mt-1 border-slate-400 dark:border-slate-500 text-slate-900 dark:text-slate-100"
                   />
                   <div className="flex-1 space-y-1">
                     <Label
                       htmlFor={reason.id}
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex items-center gap-2 cursor-pointer text-slate-900 dark:text-slate-100"
                     >
                       {reason.icon}
                       {reason.label}
                     </Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       {reason.description}
                     </p>
                   </div>
@@ -187,7 +192,10 @@ export const ReportDialog = ({
           {/* Descripción adicional */}
           {reportType && (
             <div className="space-y-3">
-              <Label htmlFor="description">
+              <Label
+                htmlFor="description"
+                className="text-slate-900 dark:text-slate-100"
+              >
                 Detalles adicionales (opcional)
               </Label>
               <Textarea
@@ -195,9 +203,9 @@ export const ReportDialog = ({
                 placeholder="Proporciona más detalles sobre el problema..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[100px]"
+                className="min-h-[100px] bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Incluye cualquier información específica que pueda ayudarnos a
                 investigar.
               </p>
@@ -205,18 +213,22 @@ export const ReportDialog = ({
           )}
 
           {/* Opciones adicionales */}
-          <div className="space-y-4 p-4 bg-muted/30 rounded-lg">
+          <div className="space-y-4 p-4 bg-slate-100 dark:bg-slate-800/60 rounded-lg">
             <div className="flex items-start space-x-3">
               <Checkbox
                 id="block-user"
                 checked={blockUser}
                 onCheckedChange={(checked) => setBlockUser(!!checked)}
+                className="border-slate-400 dark:border-slate-500"
               />
               <div className="space-y-1">
-                <Label htmlFor="block-user" className="cursor-pointer">
+                <Label
+                  htmlFor="block-user"
+                  className="cursor-pointer text-slate-900 dark:text-slate-100"
+                >
                   Bloquear a {profileName}
                 </Label>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   No podrás ver su perfil ni recibir mensajes de esta persona.
                 </p>
               </div>
@@ -246,6 +258,7 @@ export const ReportDialog = ({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isSubmitting}
+            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             Cancelar
           </Button>

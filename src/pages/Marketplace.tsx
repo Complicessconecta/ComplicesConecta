@@ -32,7 +32,7 @@ const Marketplace = () => {
         "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&crop=center",
       rating: 4.9,
       reviews: 1247,
-      badge: "Ms Popular",
+      badge: "Más Popular",
       features: [
         "Matches ilimitados",
         "Mensajes prioritarios",
@@ -140,7 +140,7 @@ const Marketplace = () => {
 
   const getBadgeColor = (badge: string) => {
     switch (badge) {
-      case "Ms Popular":
+      case "Más Popular":
         return "bg-green-500/80";
       case "Recomendado":
         return "bg-blue-500/80";

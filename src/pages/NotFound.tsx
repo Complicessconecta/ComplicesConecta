@@ -130,7 +130,7 @@ const NotFound = () => {
           <div className="space-y-6">
             <div className="animate-fade-in-delay">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Pgina no encontrada
+                Página no encontrada
               </h2>
               <p className="text-white/80 text-lg leading-relaxed max-w-prose mx-auto">
                 Parece que este enlace se fue a una fiesta privada. No te

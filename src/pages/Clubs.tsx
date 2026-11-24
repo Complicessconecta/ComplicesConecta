@@ -103,6 +103,21 @@ function mapPublicClubToClub(c: PublicClub): Club {
   };
 }
 
+/**
+ * Sin duplicados por nombre normalizado: el catálogo público trae "Club
+ * Demo" y la tabla clubs de BD puede traer el mismo club, y la lista
+ * mostraba Club Demo dos veces.
+ */
+function dedupeClubs(list: Club[]): Club[] {
+  const seen = new Set<string>();
+  return list.filter((club) => {
+    const key = club.name.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 const toClubEntity = (club: Club): ClubEntity => {
   return {
     id: club.id,
@@ -418,11 +433,11 @@ export const Clubs = () => {
       // en vez de una página vacía.
       if (!data || data.length === 0) {
         logger.warn("No clubs in Supabase, using public catalog fallback");
-        setClubs(PUBLIC_CLUBS.map(mapPublicClubToClub));
+        setClubs(dedupeClubs(PUBLIC_CLUBS.map(mapPublicClubToClub)));
         return;
       }
 
-      setClubs((data || []) as Club[]);
+      setClubs(dedupeClubs((data || []) as Club[]));
       logger.info("Clubs loaded successfully", { count: data?.length });
     } catch (error) {
       logger.error("Error loading clubs, using public catalog fallback:", {
@@ -431,7 +446,7 @@ export const Clubs = () => {
       });
       // Fallback al catálogo público: la página sigue mostrando clubs y no
       // se muestra un toast de error destructivo por un fallo de red/RLS.
-      setClubs(PUBLIC_CLUBS.map(mapPublicClubToClub));
+      setClubs(dedupeClubs(PUBLIC_CLUBS.map(mapPublicClubToClub)));
     } finally {
       setLoading(false);
     }
@@ -459,18 +474,20 @@ export const Clubs = () => {
   const filterClubs = () => {
     let filtered = clubs;
 
+    // La búsqueda compara nombre y ciudad (no descripción ni dirección):
+    // buscar "Eden" no debe dejar a "Club Demo" solo porque su descripción
+    // o dirección comparta una palabra.
     if (searchQuery) {
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (club) =>
-          club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (club.address && club.address.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (club.description &&
-            club.description.toLowerCase().includes(searchQuery.toLowerCase())),
+          club.name.toLowerCase().includes(q) ||
+          (club.city && club.city.toLowerCase().includes(q)),
       );
     }
 
     if (selectedCity !== "all") {
-      filtered = filtered.filter((club) => club.address === selectedCity);
+      filtered = filtered.filter((club) => club.city === selectedCity);
     }
 
     setFilteredClubs(filtered);
@@ -522,7 +539,9 @@ export const Clubs = () => {
     }
   };
 
-  const cities = [...new Set(clubs.map((club) => club.address).filter((loc): loc is string => Boolean(loc)))];
+  // El filtro "Ciudad" ofrece ciudades (club.city), no direcciones
+  // completas: antes listaba "Av. Insurgentes Sur 123" y similares.
+  const cities = [...new Set(clubs.map((club) => club.city).filter((c): c is string => Boolean(c)))];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;

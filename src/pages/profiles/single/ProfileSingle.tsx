@@ -250,13 +250,22 @@ const ProfileSingle: FC = () => {
 
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
-  // Estado para control parental: no auto-bloquear al cargar el perfil
+  // Estado para control parental: la galería privada carga BLOQUEADA.
+  // (Antes: false, y las fotos privadías quedaban visibles sin PIN en la
+  // primera carga del perfil.)
   const [isParentalLocked, setIsParentalLocked] = usePersistedState<boolean>(
     "parentalControlLocked",
-    false,
+    true,
   );
 
   const [showParentalUnlock, setShowParentalUnlock] = useState(false);
+
+  // Bloquear al montar el perfil: cubre instalaciones que ya tenían
+  // "parentalControlLocked" = false persistido antes de este fix.
+  useEffect(() => {
+    setIsParentalLocked(true);
+    setDemoPrivateUnlocked(false);
+  }, []);
 
   const [isPostCommentModalOpen, setIsPostCommentModalOpen] = useState(false);
   const [commentPostId, setCommentPostId] = useState<string | null>(null);
@@ -1866,8 +1875,15 @@ const ProfileSingle: FC = () => {
                               <div
                                 className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
                                 onClick={() => {
-                                  // Si el control parental está bloqueado, activarlo para pedir PIN
+                                  // Si el control parental está bloqueado, abrir
+                                  // la pantalla del PIN (perfil propio) o el
+                                  // flujo de solicitud (visitante).
                                   if (isParentalLocked) {
+                                    if (isOwnProfile) {
+                                      setShowParentalUnlock(true);
+                                    } else {
+                                      setShowPrivateImageRequest(true);
+                                    }
                                     return;
                                   }
 
@@ -1886,6 +1902,7 @@ const ProfileSingle: FC = () => {
                                   // Al hacer click, activar el control parental para pedir PIN
                                   if (isOwnProfile) {
                                     setIsParentalLocked(true);
+                                    setShowParentalUnlock(true);
                                     return;
                                   }
 

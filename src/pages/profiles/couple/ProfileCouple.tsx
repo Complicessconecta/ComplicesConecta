@@ -64,12 +64,21 @@ function ProfileCouple() {
   const [_showReportDialog, _setShowReportDialog] = useState(false);
   const setShowReportDialog = _setShowReportDialog;
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
+  // La galería privada carga BLOQUEADA: el valor anterior (false) dejaba
+  // las fotos privadías visibles sin PIN en la primera carga del perfil.
   const [isParentalLocked, _setIsParentalLocked] = usePersistedState(
     "parentalLock",
-    false,
+    true,
   );
 
   const [showParentalUnlock, setShowParentalUnlock] = useState(false);
+
+  // Bloquear al montar el perfil: cubre instalaciones que ya tenían
+  // "parentalLock" = false persistido antes de este fix.
+  useEffect(() => {
+    _setIsParentalLocked(true);
+    _setDemoPrivateUnlocked(false);
+  }, []);
 
   const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
 
@@ -169,7 +178,15 @@ function ProfileCouple() {
 
   // Función para hacer funcional el botón "Ver Fotos Privadías"
   const handleViewPrivatePhotos = async () => {
-    if (isParentalLocked) return;
+    // Bloqueado: el perfil propio abre la pantalla del PIN; un visitante
+    // sigue al flujo de solicitud de acceso (no se le puede pedir el PIN
+    // del dueño). Antes este `return` hacía que el botón no hiciera nada.
+    if (isParentalLocked) {
+      if (isOwnProfile) {
+        setShowParentalUnlock(true);
+        return;
+      }
+    }
 
     // Si ya hay acceso, abrir galería
     if (isGalleryUnlocked) {
@@ -1250,7 +1267,13 @@ function ProfileCouple() {
                         key={storagePath}
                         className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
                         onClick={() => {
-                          if (isParentalLocked) return;
+                          // Bloqueado: abrir la pantalla del PIN (perfil
+                          // propio) o el flujo de solicitud (visitante),
+                          // en vez de no hacer nada.
+                          if (isParentalLocked) {
+                            void handleViewPrivatePhotos();
+                            return;
+                          }
 
                           if (isGalleryUnlocked) {
                             setSelectedImageIndex(idx);

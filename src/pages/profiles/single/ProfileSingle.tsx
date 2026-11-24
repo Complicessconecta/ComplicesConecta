@@ -2,9 +2,35 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FC } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Unlock, Users, Calendar, CheckCircle, Sparkles, Camera, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
+import {
+  Heart,
+  Share2,
+  MapPin,
+  Lock,
+  Unlock,
+  Users,
+  Calendar,
+  CheckCircle,
+  Sparkles,
+  Camera,
+  Flag,
+  Edit,
+  Images,
+  Eye,
+  TrendingUp,
+  Wallet,
+  Coins,
+  Zap,
+  Gift,
+  Info,
+} from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -17,7 +43,12 @@ import { useToast } from "@/hooks/useToast";
 import { Input } from "@/components/ui/forms/Input";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ReportDialog } from "@/components/dialogs/ReportDialog";
 import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
@@ -33,21 +64,46 @@ import {
 } from "@/lib/storage/private-media";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel/carousel";
-import { Modal, ModalBody, ModalContent, ModalFooter } from "@/components/modals/animated-modal";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel/carousel";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+} from "@/components/modals/animated-modal";
 import { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
 import { FileUpload } from "@/components/ui/forms/file-upload";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { cn } from "@/shared/lib/cn";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { DemoWallet } from "@/components/wallet/DemoWallet";
 import { SingleAboutSection } from "@/components/profiles/single/SingleAboutSection";
 import { SinglePreferencesSection } from "@/components/profiles/single/SinglePreferencesSection";
 import { SingleLookingForSection } from "@/components/profiles/single/SingleLookingForSection";
 import { SingleSubscriptionCard } from "@/components/profiles/single/SingleSubscriptionCard";
 import { SinglePrivacySection } from "@/components/profiles/single/SinglePrivacySection";
-
-
+import {
+  ProtectedMedia,
+  noDownloadProps,
+} from "@/components/profiles/shared/ProtectedMedia";
+import { formatZodiacSign } from "@/lib/zodiac";
+import {
+  getProfileZodiacSign,
+  getVisibilityBadge,
+  usePrivacySettings,
+} from "@/lib/visibility";
 
 // --- Secciones modelo del video, espejo de pareja (1 usuario) ---
 // Campos físicos que NO existen en el modelo de perfil: en demo se muestran
@@ -95,10 +151,8 @@ const deriveSingleOrientation = (
   const target = wantsMale ? "male" : wantsFemale ? "female" : null;
   if (!target) return null;
   const g = (gender ?? "").toLowerCase();
-  if (g === "male")
-    return target === "female" ? "Heterosexual" : "Homosexual";
-  if (g === "female")
-    return target === "male" ? "Heterosexual" : "Homosexual";
+  if (g === "male") return target === "female" ? "Heterosexual" : "Homosexual";
+  if (g === "female") return target === "male" ? "Heterosexual" : "Homosexual";
   return null;
 };
 
@@ -126,8 +180,7 @@ const mapSingleRelationshipStatus = (
     return g === "female" ? "Soltera" : g === "male" ? "Soltero" : "Soltero/a";
   if (t === "married")
     return g === "female" ? "Casada" : g === "male" ? "Casado" : "Casado/a";
-  if (t === "in_relationship" || t === "relationship")
-    return "En una relación";
+  if (t === "in_relationship" || t === "relationship") return "En una relación";
   if (t === "divorced")
     return g === "female"
       ? "Divorciada"
@@ -159,6 +212,20 @@ const ProfileSingle: FC = () => {
     hasPin,
   } = useBiometricAuth();
   const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
+
+  // Ajustes de privacidad del perfil que se está viendo (indicador de
+  // visibilidad, signo zodiacal y marca de agua). Misma clave que usa
+  // SinglePrivacySection (`user.id ?? profile.id`); se actualiza en
+  // vivo cuando esa sección guarda un cambio.
+  const profilePrivacy = usePrivacySettings(
+    user?.id ?? profile?.id ?? "",
+    "single",
+  );
+  const profileZodiac = getProfileZodiacSign(profilePrivacy);
+  const visibilityBadge = getVisibilityBadge(
+    profilePrivacy,
+    profile?.is_online ?? false,
+  );
 
   // Funcin helper para verificar autenticacin
   const checkAuth = () => {
@@ -251,7 +318,8 @@ const ProfileSingle: FC = () => {
     "none" | "pending" | "approved" | "denied"
   >("private_image_access", "none");
 
-  const [showPrivateDecisionModal, setShowPrivateDecisionModal] = useState(false);
+  const [showPrivateDecisionModal, setShowPrivateDecisionModal] =
+    useState(false);
   const [privateDecisionRequesterName, setPrivateDecisionRequesterName] =
     useState<string>("");
 
@@ -290,7 +358,10 @@ const ProfileSingle: FC = () => {
         window.localStorage.getItem(getPrivateGalleryAttemptKey()) || "0",
       );
       const nextAttempts = currentAttempts + 1;
-      window.localStorage.setItem(getPrivateGalleryAttemptKey(), String(nextAttempts));
+      window.localStorage.setItem(
+        getPrivateGalleryAttemptKey(),
+        String(nextAttempts),
+      );
 
       if (nextAttempts < 3) {
         return { blocked: false, durationMs: 0 };
@@ -300,11 +371,20 @@ const ProfileSingle: FC = () => {
         window.localStorage.getItem(getPrivateGalleryBlockDurationKey()) || "0",
       );
       const base = 2 * 60 * 60 * 1000;
-      const nextDuration = Math.min(prevDuration > 0 ? prevDuration * 2 : base, 24 * 60 * 60 * 1000);
+      const nextDuration = Math.min(
+        prevDuration > 0 ? prevDuration * 2 : base,
+        24 * 60 * 60 * 1000,
+      );
       const blockedUntil = Date.now() + nextDuration;
 
-      window.localStorage.setItem(getPrivateGalleryBlockDurationKey(), String(nextDuration));
-      window.localStorage.setItem(getPrivateGalleryBlockKey(), String(blockedUntil));
+      window.localStorage.setItem(
+        getPrivateGalleryBlockDurationKey(),
+        String(nextDuration),
+      );
+      window.localStorage.setItem(
+        getPrivateGalleryBlockKey(),
+        String(blockedUntil),
+      );
       window.localStorage.setItem(getPrivateGalleryAttemptKey(), "0");
 
       return { blocked: true, durationMs: nextDuration };
@@ -337,7 +417,7 @@ const ProfileSingle: FC = () => {
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
-  
+
   const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
 
@@ -407,11 +487,13 @@ const ProfileSingle: FC = () => {
     setSelectedImageIndex(index);
     setShowImageModal(true);
   };
-  const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>(() => ({
-    "1": 12,
-    "2": 8,
-    "3": 15,
-  }));
+  const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>(
+    () => ({
+      "1": 12,
+      "2": 8,
+      "3": 15,
+    }),
+  );
   const [imageUserLikes, setImageUserLikes] = useState<{
     [key: string]: boolean;
   }>(() => ({}));
@@ -508,8 +590,7 @@ const ProfileSingle: FC = () => {
   );
 
   const profilePrivateImagesRaw = profile?.privateImages as
-    | (PrivateImageItem | string)[]
-    | undefined;
+    (PrivateImageItem | string)[] | undefined;
 
   const profilePrivateImages = useMemo(
     () =>
@@ -640,7 +721,9 @@ const ProfileSingle: FC = () => {
     try {
       // Intentar cargar estadísticas reales, no mock
       // TODO: Implementar carga real de estadísticas desde API
-      logger.info("Cargando estadísticas reales del perfil", { userId: currentProfile.id });
+      logger.info("Cargando estadísticas reales del perfil", {
+        userId: currentProfile.id,
+      });
 
       // Por ahora, usar valores por defecto hasta implementar API real
       const defaultStats = {
@@ -707,7 +790,9 @@ const ProfileSingle: FC = () => {
         setShowPrivatePolicyModal(true);
       }
     } catch (error) {
-      logger.error("Error handling private photo request", { error: String(error) });
+      logger.error("Error handling private photo request", {
+        error: String(error),
+      });
     }
   };
 
@@ -861,7 +946,10 @@ const ProfileSingle: FC = () => {
         // Actualizar estado local para demo con datos mock
         setTestnetInfo((prev: any) => {
           const newDailyClaimed = (prev?.dailyClaimed || 0) + 50000;
-          const newDailyRemaining = Math.max(0, (prev?.dailyRemaining || 2500000) - 50000);
+          const newDailyRemaining = Math.max(
+            0,
+            (prev?.dailyRemaining || 2500000) - 50000,
+          );
           const newClaimed = (prev?.claimed || 0) + 50000;
           const newRemaining = Math.max(0, (prev?.remaining || 1000) - 500);
 
@@ -946,7 +1034,9 @@ const ProfileSingle: FC = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500 mx-auto"></div>
           <p className="mt-4 text-white font-medium">Cargando perfil...</p>
-          <p className="mt-2 text-white/70 text-sm">Obteniendo datos reales del perfil</p>
+          <p className="mt-2 text-white/70 text-sm">
+            Obteniendo datos reales del perfil
+          </p>
         </div>
       </div>
     );
@@ -957,9 +1047,12 @@ const ProfileSingle: FC = () => {
       <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-800 flex items-center justify-center">
         <Card className="w-full max-w-md mx-4">
           <CardContent className="p-6 text-center">
-            <h2 className="text-xl font-semibold mb-2 text-white">Perfil no encontrado</h2>
+            <h2 className="text-xl font-semibold mb-2 text-white">
+              Perfil no encontrado
+            </h2>
             <p className="text-white/80 mb-4">
-              No se pudo cargar la información del perfil. Los datos pueden no existir o estar inaccesibles.
+              No se pudo cargar la información del perfil. Los datos pueden no
+              existir o estar inaccesibles.
             </p>
             <Button
               onClick={() => navigate("/discover")}
@@ -987,9 +1080,8 @@ const ProfileSingle: FC = () => {
     currentProfile.display_name ??
       asOptionalString(currentProfile["name"]) ??
       asOptionalString(currentProfile.first_name),
-    "Usuario" // Fallback genérico, no nombre específico
+    "Usuario", // Fallback genérico, no nombre específico
   );
-
 
   const avatarUrl = asString(
     currentProfile.avatar_url,
@@ -1000,19 +1092,19 @@ const ProfileSingle: FC = () => {
 
   const displayGenderLabel = (() => {
     const g = currentProfile.gender?.toLowerCase();
-    if (g === 'male') return 'Hombre';
-    if (g === 'female') return 'Mujer';
-    if (g === 'couple') return 'Pareja';
-    return g || 'No especificado'; // Fallback genérico
+    if (g === "male") return "Hombre";
+    if (g === "female") return "Mujer";
+    if (g === "couple") return "Pareja";
+    return g || "No especificado"; // Fallback genérico
   })();
 
   const displayOrientationLabel = (() => {
     const i = currentProfile.interested_in?.toLowerCase();
-    if (i === 'male') return 'Hombres';
-    if (i === 'female') return 'Mujeres';
-    if (i === 'couple') return 'Parejas';
-    if (i === 'all' || i === 'everyone') return 'Todos';
-    return i || 'No especificado'; // Fallback genérico
+    if (i === "male") return "Hombres";
+    if (i === "female") return "Mujeres";
+    if (i === "couple") return "Parejas";
+    if (i === "all" || i === "everyone") return "Todos";
+    return i || "No especificado"; // Fallback genérico
   })();
 
   const canShowBlockchainSection = isOwnProfile || isDemoProfile;
@@ -1022,9 +1114,8 @@ const ProfileSingle: FC = () => {
   // (activities_interested, looking_for, preferences, age_range_min/max,
   // relationship_type, interested_in); los campos físicos no existen en
   // la tabla y solo se muestran en demo.
-  const singleActivities = (currentProfile[
-    "activities_interested"
-  ] as string[] | null) ?? [];
+  const singleActivities =
+    (currentProfile["activities_interested"] as string[] | null) ?? [];
   const singleAgeMin = currentProfile["age_range_min"] as number | null;
   const singleAgeMax = currentProfile["age_range_max"] as number | null;
   const singleAbout = {
@@ -1056,9 +1147,7 @@ const ProfileSingle: FC = () => {
     : singleActivities;
   const singleLookingFor = singleIsDemo
     ? ["Parejas"]
-    : splitLookingFor(
-        (currentProfile["looking_for"] as string | null) ?? null,
-      );
+    : splitLookingFor((currentProfile["looking_for"] as string | null) ?? null);
   const singleAgeRange = singleIsDemo
     ? "25 a 45 años"
     : singleAgeMin != null && singleAgeMax != null
@@ -1133,6 +1222,32 @@ const ProfileSingle: FC = () => {
                         {String(currentProfile.id).slice(0, 8)}
                       </span>
                     </Badge>
+                    {/* Insignia de verificado + visibilidad + signo: el
+                        toggle "Signo zodiacal" de Privacidad controla si
+                        el signo se muestra; el modo invisible se ve con
+                        el fantasma 👻. */}
+                    {currentProfile.is_verified && (
+                      <Badge
+                        className="rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-blue-500/20 backdrop-blur-md"
+                        title="Perfil verificado"
+                      >
+                        ✓ Verificado
+                      </Badge>
+                    )}
+                    <Badge
+                      className="rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md"
+                      title={visibilityBadge.title}
+                    >
+                      {visibilityBadge.label}
+                    </Badge>
+                    {profilePrivacy.zodiacVisible && profileZodiac && (
+                      <Badge
+                        className="rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md"
+                        title="Signo zodiacal"
+                      >
+                        {formatZodiacSign(profileZodiac)}
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
                     <Badge className="profile-badge badge-age">
@@ -1169,11 +1284,12 @@ const ProfileSingle: FC = () => {
                   </div>
 
                   {/* Biografa */}
-                  {SHOW_BIO_SECTION && asOptionalString(currentProfile["name"]) && (
-                    <p className="text-white/90 mb-4 leading-relaxed">
-                      {asString(currentProfile["name"], "")}
-                    </p>
-                  )}
+                  {SHOW_BIO_SECTION &&
+                    asOptionalString(currentProfile["name"]) && (
+                      <p className="text-white/90 mb-4 leading-relaxed">
+                        {asString(currentProfile["name"], "")}
+                      </p>
+                    )}
 
                   {/* Botones de accion */}
                   <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">
@@ -1209,7 +1325,6 @@ const ProfileSingle: FC = () => {
                       size="default"
                     />
 
-
                     <Button
                       onClick={() => setShowReportDialog(true)}
                       className="bg-white/10 hover:bg-white/20 text-red-200 border border-red-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
@@ -1237,11 +1352,16 @@ const ProfileSingle: FC = () => {
                             </span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="min-w-[180px]">
+                        <DropdownMenuContent
+                          align="end"
+                          className="min-w-[180px]"
+                        >
                           <DropdownMenuLabel>
                             {isDemoProfile ? "DEMO" : "Sesión Activa"}
                           </DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => navigate("/profile")}>
+                          <DropdownMenuItem
+                            onClick={() => navigate("/profile")}
+                          >
                             Ver Mi Perfil
                           </DropdownMenuItem>
                           <DropdownMenuItem
@@ -1254,7 +1374,9 @@ const ProfileSingle: FC = () => {
                                 try {
                                   await signOut();
                                 } catch (error) {
-                                  logger.error("Error during sign out:", { error });
+                                  logger.error("Error during sign out:", {
+                                    error,
+                                  });
                                 }
                                 navigate("/");
                               }
@@ -1484,7 +1606,8 @@ const ProfileSingle: FC = () => {
                           Generar NFT de Perfil
                         </h4>
                         <p className="text-neutral-300 text-sm text-center mb-4">
-                          En modo demo puedes mintear hasta 4 NFTs para probar el flujo.
+                          En modo demo puedes mintear hasta 4 NFTs para probar
+                          el flujo.
                           <br />
                           <span className="text-purple-300 font-semibold">
                             NFTs creados: {userNFTs.length}/4
@@ -1522,7 +1645,10 @@ const ProfileSingle: FC = () => {
                             <NFTMintButton
                               userId={
                                 user?.id ||
-                                asString(currentProfile["user_id"], currentProfile.id)
+                                asString(
+                                  currentProfile["user_id"],
+                                  currentProfile.id,
+                                )
                               }
                               type="single"
                               nftName={`Profile NFT #${userNFTs.length + 1}`}
@@ -1531,7 +1657,9 @@ const ProfileSingle: FC = () => {
                               buttonText="Confirmar Mint"
                               onMintSuccess={async () => {
                                 const uid =
-                                  user?.id || asOptionalString(currentProfile["user_id"]) || currentProfile.id;
+                                  user?.id ||
+                                  asOptionalString(currentProfile["user_id"]) ||
+                                  currentProfile.id;
                                 if (!uid) return;
                                 const updated = await nftService
                                   .getUserNFTs(uid)
@@ -1542,7 +1670,10 @@ const ProfileSingle: FC = () => {
                                   description: `Colección: ${Math.min(updated.length, 4)}/4`,
                                 });
                                 if (updated.length >= 4) {
-                                  setTimeout(() => setIsMintModalOpen(false), 1500);
+                                  setTimeout(
+                                    () => setIsMintModalOpen(false),
+                                    1500,
+                                  );
                                 }
                               }}
                               className="w-full"
@@ -1559,37 +1690,40 @@ const ProfileSingle: FC = () => {
                     </ModalBody>
                   </Modal>
 
-      <Modal
-        isOpen={showPrivateBlockedModal}
-        onClose={() => setShowPrivateBlockedModal(false)}
-      >
-        <ModalBody>
-          <ModalContent>
-            <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-6">
-              Acceso bloqueado por intentos
-            </h4>
-            <div className="py-2 max-w-xl mx-auto text-center text-white/85 space-y-2">
-              <p className="text-sm">
-                Detectamos múltiples solicitudes consecutivas. Para prevenir hostigamiento,
-                se bloqueó temporalmente el envío de solicitudes.
-              </p>
-              <p className="text-xs opacity-70">
-                Bloqueo actual: {Math.round(blockedDurationMs / (60 * 60 * 1000))}h.
-                Reincidencia duplica hasta 24h (suspensión preventiva).
-              </p>
-            </div>
-          </ModalContent>
-          <ModalFooter className="gap-4">
-            <button
-              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-              onClick={() => setShowPrivateBlockedModal(false)}
-              type="button"
-            >
-              Entendido
-            </button>
-          </ModalFooter>
-        </ModalBody>
-      </Modal>
+                  <Modal
+                    isOpen={showPrivateBlockedModal}
+                    onClose={() => setShowPrivateBlockedModal(false)}
+                  >
+                    <ModalBody>
+                      <ModalContent>
+                        <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-6">
+                          Acceso bloqueado por intentos
+                        </h4>
+                        <div className="py-2 max-w-xl mx-auto text-center text-white/85 space-y-2">
+                          <p className="text-sm">
+                            Detectamos múltiples solicitudes consecutivas. Para
+                            prevenir hostigamiento, se bloqueó temporalmente el
+                            envío de solicitudes.
+                          </p>
+                          <p className="text-xs opacity-70">
+                            Bloqueo actual:{" "}
+                            {Math.round(blockedDurationMs / (60 * 60 * 1000))}h.
+                            Reincidencia duplica hasta 24h (suspensión
+                            preventiva).
+                          </p>
+                        </div>
+                      </ModalContent>
+                      <ModalFooter className="gap-4">
+                        <button
+                          className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                          onClick={() => setShowPrivateBlockedModal(false)}
+                          type="button"
+                        >
+                          Entendido
+                        </button>
+                      </ModalFooter>
+                    </ModalBody>
+                  </Modal>
 
                   <button
                     className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border rounded-md"
@@ -1697,7 +1831,7 @@ const ProfileSingle: FC = () => {
                               #{nft.token_id}
                             </div>
                             <div className="absolute top-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">
-                              {nft.value ? `${nft.value} CMPX` : ''}
+                              {nft.value ? `${nft.value} CMPX` : ""}
                             </div>
                           </div>
                           <div className="text-xs">
@@ -1705,13 +1839,18 @@ const ProfileSingle: FC = () => {
                               {nft.name || `NFT #${nft.token_id}`}
                             </div>
                             <div className="flex items-center justify-between mt-1">
-                              <span className={`text-[10px] capitalize ${
-                                nft.rarity === 'legendary' ? 'text-yellow-400' :
-                                nft.rarity === 'epic' ? 'text-purple-400' :
-                                nft.rarity === 'rare' ? 'text-blue-400' :
-                                'text-gray-400'
-                              }`}>
-                                {nft.rarity || 'Común'}
+                              <span
+                                className={`text-[10px] capitalize ${
+                                  nft.rarity === "legendary"
+                                    ? "text-yellow-400"
+                                    : nft.rarity === "epic"
+                                      ? "text-purple-400"
+                                      : nft.rarity === "rare"
+                                        ? "text-blue-400"
+                                        : "text-gray-400"
+                                }`}
+                              >
+                                {nft.rarity || "Común"}
                               </span>
                               {nft.chain && (
                                 <span className="text-white/50 text-[9px]">
@@ -1724,7 +1863,10 @@ const ProfileSingle: FC = () => {
                       ))}
                     </div>
                     <div className="flex items-center justify-between mt-2 text-xs text-white/60">
-                      <span>Colección: {userNFTs[0]?.collection || 'CómplicesConecta'}</span>
+                      <span>
+                        Colección:{" "}
+                        {userNFTs[0]?.collection || "CómplicesConecta"}
+                      </span>
                       <span>{userNFTs.length}/4 NFTs creados</span>
                     </div>
                     {userNFTs.length > 4 && (
@@ -1801,10 +1943,7 @@ const ProfileSingle: FC = () => {
           </Card>
 
           {/* Sobre mí - modelo del video (espejo de pareja, 1 usuario) */}
-          <SingleAboutSection
-            member={singleAbout}
-            isDemoMode={singleIsDemo}
-          />
+          <SingleAboutSection member={singleAbout} isDemoMode={singleIsDemo} />
 
           {/* Preferencias */}
           <SinglePreferencesSection
@@ -1939,94 +2078,110 @@ const ProfileSingle: FC = () => {
                 </div>
               )}
 
-              {/* Galería pública siempre visible */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 mb-6">
-                <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <button
-                    type="button"
-                    className="w-full h-full"
-                    onClick={() =>
-                      openImageModal(
-                        [
-                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
-                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=900&fit=crop&crop=face",
-                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
-                        ],
-                        0,
-                      )
-                    }
-                  >
-                    <SafeImage
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
-                      alt="Foto pública 1"
+              {/* Galería pública siempre visible. Sin botón de descarga
+                  para visitantes (menú contextual y arrastre bloqueados);
+                  la marca de agua se aplica si el dueño la tiene activa
+                  en Privacidad. El dueño sí puede gestionar sus fotos. */}
+              <ProtectedMedia
+                isOwner={isOwnProfile}
+                watermark={profilePrivacy.watermark}
+                watermarkText={displayName}
+                className="mb-6"
+              >
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
+                  <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
+                    <button
+                      type="button"
                       className="w-full h-full"
-                    />
-                  </button>
-                </div>
-                <div className="aspect-square bg-linear-to-br from-pink-400 to-red-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <button
-                    type="button"
-                    className="w-full h-full"
-                    onClick={() =>
-                      openImageModal(
-                        [
-                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
-                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=900&fit=crop&crop=face",
-                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
-                        ],
-                        1,
-                      )
-                    }
-                  >
-                    <SafeImage
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
-                      alt="Foto pública 2"
+                      onClick={() =>
+                        openImageModal(
+                          [
+                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+                            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&h=900&fit=crop&crop=face",
+                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+                          ],
+                          0,
+                        )
+                      }
+                    >
+                      <SafeImage
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
+                        alt="Foto pública 1"
+                        className="w-full h-full"
+                      />
+                    </button>
+                  </div>
+                  <div className="aspect-square bg-linear-to-br from-pink-400 to-red-600 rounded-lg flex items-center justify-center overflow-hidden">
+                    <button
+                      type="button"
                       className="w-full h-full"
-                    />
-                  </button>
-                </div>
-                <div className="aspect-square bg-linear-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <button
-                    type="button"
-                    className="w-full h-full"
-                    onClick={() =>
-                      openImageModal(
-                        [
-                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
-                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=900&fit=crop&crop=face",
-                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
-                        ],
-                        2,
-                      )
-                    }
-                  >
-                    <SafeImage
-                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face"
-                      alt="Foto pública 3"
+                      onClick={() =>
+                        openImageModal(
+                          [
+                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+                            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&h=900&fit=crop&crop=face",
+                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+                          ],
+                          1,
+                        )
+                      }
+                    >
+                      <SafeImage
+                        src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face"
+                        alt="Foto pública 2"
+                        className="w-full h-full"
+                      />
+                    </button>
+                  </div>
+                  <div className="aspect-square bg-linear-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
+                    <button
+                      type="button"
                       className="w-full h-full"
-                    />
-                  </button>
+                      onClick={() =>
+                        openImageModal(
+                          [
+                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+                            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&h=900&fit=crop&crop=face",
+                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+                          ],
+                          2,
+                        )
+                      }
+                    >
+                      <SafeImage
+                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face"
+                        alt="Foto pública 3"
+                        className="w-full h-full"
+                      />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </ProtectedMedia>
 
               {/* Galería privada mejorada con carrusel */}
-              <div className="mb-6" ref={privateGalleryRef} id="private-gallery">
+              <div
+                className="mb-6"
+                ref={privateGalleryRef}
+                id="private-gallery"
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <Lock className="w-4 h-4" />
                     Fotos Privadas ({galleryImages.length})
                   </h4>
                   <div className="flex items-center gap-2">
-                    {import.meta.env.PROD && isOwnProfile && !isGalleryUnlocked && (
-                      <Button
-                        onClick={handleBiometricUnlock}
-                        disabled={isBiometricUnlocking}
-                        className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[110px] justify-center"
-                      >
-                        <Unlock className="w-3 h-3" />
-                        {isBiometricUnlocking ? "Validando..." : "Biométrico"}
-                      </Button>
-                    )}
+                    {import.meta.env.PROD &&
+                      isOwnProfile &&
+                      !isGalleryUnlocked && (
+                        <Button
+                          onClick={handleBiometricUnlock}
+                          disabled={isBiometricUnlocking}
+                          className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[110px] justify-center"
+                        >
+                          <Unlock className="w-3 h-3" />
+                          {isBiometricUnlocking ? "Validando..." : "Biométrico"}
+                        </Button>
+                      )}
                     <Button
                       onClick={() => {
                         if (isGalleryUnlocked) {
@@ -2103,9 +2258,14 @@ const ProfileSingle: FC = () => {
                                   if (isGalleryUnlocked) {
                                     const resolved = galleryImages
                                       .map((g) =>
-                                        typeof g === "string" ? g : (g.url ?? g.src ?? ""),
+                                        typeof g === "string"
+                                          ? g
+                                          : (g.url ?? g.src ?? ""),
                                       )
-                                      .filter((u): u is string => typeof u === "string" && u.length > 0);
+                                      .filter(
+                                        (u): u is string =>
+                                          typeof u === "string" && u.length > 0,
+                                      );
                                     openImageModal(resolved, idx);
                                     return;
                                   }
@@ -2126,6 +2286,7 @@ const ProfileSingle: FC = () => {
                                 <img
                                   src={imageSource}
                                   alt="Private content"
+                                  {...noDownloadProps(isOwnProfile)}
                                   onError={(e) => {
                                     // C6: sin fallback a la imagen privada
                                     // pública; solo al placeholder genérico,
@@ -2148,18 +2309,22 @@ const ProfileSingle: FC = () => {
                                   )}
                                 />
 
-                                {isGalleryUnlocked && (
-                                  <div className="absolute inset-0 pointer-events-none select-none">
-                                    <div className="absolute bottom-2 right-2 rounded-md bg-black/50 px-2 py-1 text-[10px] font-semibold text-white border border-white/20">
-                                      ComplicesConecta
-                                    </div>
-                                    <div className="absolute inset-0 flex items-center justify-center opacity-15">
-                                      <div className="text-white text-3xl font-bold -rotate-45">
-                                        CÓMPLICES
+                                {/* Marca de agua de la galería privada:
+                                    solo si el dueño la tiene activa en
+                                    Privacidad (antes salía siempre). */}
+                                {isGalleryUnlocked &&
+                                  profilePrivacy.watermark && (
+                                    <div className="absolute inset-0 pointer-events-none select-none">
+                                      <div className="absolute bottom-2 right-2 rounded-md bg-black/50 px-2 py-1 text-[10px] font-semibold text-white border border-white/20">
+                                        ComplicesConecta
+                                      </div>
+                                      <div className="absolute inset-0 flex items-center justify-center opacity-15">
+                                        <div className="text-white text-3xl font-bold -rotate-45">
+                                          CÓMPLICES
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
 
                                 {!isGalleryUnlocked && (
                                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
@@ -2196,10 +2361,14 @@ const ProfileSingle: FC = () => {
                 profileId={profile?.id || ""}
                 profileName={asString(profile?.["name"], displayName)}
                 onAccessGranted={(requesterId) => {
-                  logger.info("Acceso Concedido a Galería Privada", { requesterId });
+                  logger.info("Acceso Concedido a Galería Privada", {
+                    requesterId,
+                  });
                 }}
                 onAccessDenied={(requesterId) => {
-                  logger.info("Acceso Denegado a Galería Privada", { requesterId });
+                  logger.info("Acceso Denegado a Galería Privada", {
+                    requesterId,
+                  });
                 }}
               />
             </div>
@@ -2260,9 +2429,12 @@ const ProfileSingle: FC = () => {
         />
       )}
 
-      {/* Botón discreto para abrir desbloqueo cuando está bloqueado */}
+      {/* Botón discreto para abrir desbloqueo cuando está bloqueado.
+          Antes era `fixed bottom-24 right-4` y tapaba contenido y
+          estadísticas al hacer scroll; ahora va arriba a la derecha,
+          bajo el encabezado, donde no cubre el contenido. */}
       {isOwnProfile && isParentalLocked && !showParentalUnlock && (
-        <div className="fixed bottom-24 right-4 z-50">
+        <div className="fixed top-20 right-4 z-50">
           <button
             type="button"
             onClick={() => setShowParentalUnlock(true)}
@@ -2283,9 +2455,13 @@ const ProfileSingle: FC = () => {
             setPrivateImageAccess("none");
           }
         }}
-        images={modalImages.length > 0 ? modalImages : galleryImages.map((img) =>
-          typeof img === "string" ? img : (img.url ?? img.src ?? ""),
-        )}
+        images={
+          modalImages.length > 0
+            ? modalImages
+            : galleryImages.map((img) =>
+                typeof img === "string" ? img : (img.url ?? img.src ?? ""),
+              )
+        }
         currentIndex={selectedImageIndex}
         onNavigate={navigateCarousel}
         onLike={handleImageLike}
@@ -2334,8 +2510,12 @@ const ProfileSingle: FC = () => {
                 setShowPrivateDecisionModal(false);
                 setTimeout(() => {
                   const resolved = galleryImages
-                    .map((g) => (typeof g === "string" ? g : (g.url ?? g.src ?? "")))
-                    .filter((u): u is string => typeof u === "string" && u.length > 0);
+                    .map((g) =>
+                      typeof g === "string" ? g : (g.url ?? g.src ?? ""),
+                    )
+                    .filter(
+                      (u): u is string => typeof u === "string" && u.length > 0,
+                    );
                   openImageModal(resolved, 0);
                 }, 50);
               }}
@@ -2361,11 +2541,12 @@ const ProfileSingle: FC = () => {
                 Para acceder a contenido privado debes enviar una solicitud.
               </p>
               <p className="text-xs opacity-70">
-                Si envías 3+ solicitudes seguidas, el botón se bloqueará 2 horas.
-                Si reincides, el bloqueo se duplica hasta 24 horas.
+                Si envías 3+ solicitudes seguidas, el botón se bloqueará 2
+                horas. Si reincides, el bloqueo se duplica hasta 24 horas.
               </p>
               <p className="text-xs opacity-70">
-                Al aprobarse, el acceso es temporal: al cerrar la galería deberás solicitar de nuevo.
+                Al aprobarse, el acceso es temporal: al cerrar la galería
+                deberás solicitar de nuevo.
               </p>
             </div>
           </ModalContent>
@@ -2402,10 +2583,12 @@ const ProfileSingle: FC = () => {
             </h4>
             <div className="py-2 max-w-xl mx-auto text-center text-white/85 space-y-2">
               <p className="text-sm">
-                El dueño del perfil denegó tu solicitud. No se mostrará la galería privada.
+                El dueño del perfil denegó tu solicitud. No se mostrará la
+                galería privada.
               </p>
               <p className="text-xs opacity-70">
-                Respeta la decisión. Solicitudes insistentes pueden bloquear tu acceso temporalmente.
+                Respeta la decisión. Solicitudes insistentes pueden bloquear tu
+                acceso temporalmente.
               </p>
             </div>
           </ModalContent>
@@ -2491,6 +2674,3 @@ const ProfileSingle: FC = () => {
 };
 
 export default ProfileSingle;
-
-
-

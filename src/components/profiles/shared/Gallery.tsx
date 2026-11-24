@@ -1,13 +1,25 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Eye, Heart, MessageCircle, X, Plus, Globe, EyeOff, UserPlus } from "lucide-react";
+import {
+  Lock,
+  Eye,
+  Heart,
+  MessageCircle,
+  X,
+  Plus,
+  Globe,
+  EyeOff,
+  UserPlus,
+} from "lucide-react";
 import { invitationService } from "@/lib/invitations";
 import { useAuth } from "@/features/auth/useAuth";
 import { InvitationDialog } from "@/components/invitations/InvitationDialog";
 import { logger } from "@/lib/logger";
+import { noDownloadProps } from "@/components/profiles/shared/ProtectedMedia";
+import { readWatermarkForProfile } from "@/lib/visibility";
 
 interface GalleryImage {
   id: number;
@@ -25,6 +37,8 @@ interface GalleryProps {
   isOwner?: boolean;
   canViewPrivate?: boolean;
   profileName?: string;
+  /** Marca de agua forzada; si no se pasa, se lee del ajuste del dueño. */
+  watermark?: boolean;
 }
 
 // Mock data
@@ -56,8 +70,15 @@ const Gallery = ({
   isOwner = false,
   canViewPrivate = false,
   profileName = "Usuario",
+  watermark,
 }: GalleryProps) => {
   const { user } = useAuth();
+  // Marca de agua del dueño (toggle de Privacidad): si no se pasa por
+  // prop, se lee del ajuste guardado del perfil.
+  const watermarkOn = useMemo(
+    () => watermark ?? readWatermarkForProfile(userId),
+    [watermark, userId],
+  );
   const [images, setImages] = useState<GalleryImage[]>(mockGalleryImages);
   const [activeTab, setActiveTab] = useState<"public" | "private">("public");
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
@@ -124,7 +145,14 @@ const Gallery = ({
   };
 
   return (
-    <div className="space-y-6">
+    // Sin botón de descarga en contenido ajeno: menú contextual y
+    // arrastre bloqueados cuando no eres el dueño (ver ProtectedMedia).
+    // Esto disuade la descarga casual; no impide capturas de pantalla.
+    <div
+      className="space-y-6"
+      onContextMenu={!isOwner ? (e) => e.preventDefault() : undefined}
+      onDragStart={!isOwner ? (e) => e.preventDefault() : undefined}
+    >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -207,8 +235,19 @@ const Gallery = ({
                     <img
                       src={image.url}
                       alt={image.caption || "Foto"}
+                      {...noDownloadProps(isOwner)}
                       className="w-full h-full object-cover"
                     />
+                    {watermarkOn && (
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
+                      >
+                        <span className="rotate-[-24deg] whitespace-nowrap text-[11px] font-bold text-white/35 select-none">
+                          {profileName} • {profileName} • {profileName}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Overlay */}
@@ -300,8 +339,19 @@ const Gallery = ({
                     <img
                       src={image.url}
                       alt={image.caption || "Foto"}
+                      {...noDownloadProps(isOwner)}
                       className="w-full h-full object-cover"
                     />
+                    {watermarkOn && (
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
+                      >
+                        <span className="rotate-[-24deg] whitespace-nowrap text-[11px] font-bold text-white/35 select-none">
+                          {profileName} • {profileName} • {profileName}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Overlay */}
@@ -415,6 +465,7 @@ const Gallery = ({
                 <img
                   src={selectedImage.url}
                   alt={selectedImage.caption || "Foto"}
+                  {...noDownloadProps(isOwner)}
                   className="w-full h-full object-cover rounded-lg"
                 />
               </div>
@@ -444,4 +495,3 @@ const Gallery = ({
 };
 
 export default memo(Gallery);
-

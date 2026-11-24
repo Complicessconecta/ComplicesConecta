@@ -78,19 +78,23 @@ const IMAGE_POOLS = {
     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
   ],
+  // Pool de parejas: SOLO fotos de pareja verificadas (las 3 de
+  // DEMO_COUPLE_IMAGES en src/demo/demoData.ts, en varios recortes).
+  // Antes 9 de 12 eran fotos individuales, de bebés, grupos o grafiti
+  // y las tarjetas de pareja salían con foto de un solo hombre.
   couple: [
     "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400&h=400&fit=crop",
     "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=400&fit=crop",
     "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop&crop=entropy",
+    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop&crop=top",
+    "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop&crop=faces",
+    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=600&h=400&fit=crop",
+    "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&h=400&fit=crop",
   ],
 };
 
@@ -186,4 +190,3 @@ export function getImageUsageStats() {
     },
   };
 }
-

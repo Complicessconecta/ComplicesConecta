@@ -1,11 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Switch } from "@/components/ui/switch";
 import { ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { logger } from "@/lib/logger";
+import { notifyPrivacySettingsChanged } from "@/lib/visibility";
+import {
+  ZODIAC_SIGNS,
+  formatZodiacSign,
+  resolveZodiacSign,
+} from "@/lib/zodiac";
+
+/** Claves extra (no toggles) que viajan en el mismo privacy_settings. */
+interface PrivacyExtras {
+  birthDate: string;
+  zodiacSign: string;
+}
+
+const EMPTY_EXTRAS: PrivacyExtras = { birthDate: "", zodiacSign: "" };
+
+const WATERMARK_OFF_WARNING =
+  "⚠️ Vas a quitar la marca de agua de tus fotos. Sin ella, tus imágenes no llevan protección y cualquiera puede reutilizarlas más fácil. Es bajo tu responsabilidad.";
 
 export interface SinglePrivacySettings {
   invisible: boolean;
@@ -106,19 +128,62 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
 }) => {
   const [settings, setSettings] =
     useState<SinglePrivacySettings>(DEFAULT_PRIVACY);
+  // Fecha de nacimiento y signo manual (claves extra del mismo JSON).
+  const [extras, setExtras] = useState<PrivacyExtras>(EMPTY_EXTRAS);
+  const derivedZodiac = resolveZodiacSign({
+    birthDate: extras.birthDate || null,
+    manualSign: extras.zodiacSign || null,
+  });
   // Claves del JSON que no gestiona esta sección (p. ej. media_public):
   // se conservan al guardar para no borrarlas.
   const storedExtras = useRef<Record<string, Json>>({});
 
-  const saveToLocalStorage = (next: SinglePrivacySettings) => {
+  const saveToLocalStorage = (
+    next: SinglePrivacySettings,
+    nextExtras: PrivacyExtras = extras,
+  ) => {
     try {
       window.localStorage.setItem(
         `single_privacy:${userId}`,
-        JSON.stringify(next),
+        JSON.stringify({ ...next, ...nextExtras }),
       );
     } catch {
       // Sin almacenamiento: el cambio solo vive en esta sesión.
     }
+  };
+
+  /** Guarda toggles + extras juntos (local y, en real, Supabase). */
+  const saveAll = (next: SinglePrivacySettings, nextExtras: PrivacyExtras) => {
+    if (isDemoMode || !supabase) {
+      saveToLocalStorage(next, nextExtras);
+      return;
+    }
+    const merged: Record<string, Json> = {
+      ...storedExtras.current,
+      ...next,
+      ...nextExtras,
+    };
+    void supabase
+      .from("profiles")
+      .update({ privacy_settings: merged })
+      .eq("id", userId)
+      .then(({ error }) => {
+        if (error) {
+          logger.error("Error guardando privacy_settings:", {
+            error: error.message,
+          });
+          saveToLocalStorage(next, nextExtras);
+        } else {
+          storedExtras.current = merged;
+        }
+      });
+  };
+
+  const saveExtras = (nextExtras: PrivacyExtras) => {
+    setExtras(nextExtras);
+    saveAll(settings, nextExtras);
+    notifyPrivacySettingsChanged(userId);
+    toast.success("Signo zodiacal actualizado");
   };
 
   useEffect(() => {
@@ -127,8 +192,15 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
       try {
         const raw = window.localStorage.getItem(`single_privacy:${userId}`);
         if (!raw) return;
-        const parsed = JSON.parse(raw) as Partial<SinglePrivacySettings>;
+        const parsed = JSON.parse(raw) as Partial<SinglePrivacySettings> &
+          Partial<PrivacyExtras>;
         setSettings({ ...DEFAULT_PRIVACY, ...parsed });
+        setExtras({
+          birthDate:
+            typeof parsed.birthDate === "string" ? parsed.birthDate : "",
+          zodiacSign:
+            typeof parsed.zodiacSign === "string" ? parsed.zodiacSign : "",
+        });
       } catch {
         // localStorage corrupto o no disponible: se queda el default.
       }
@@ -160,18 +232,22 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
         const extras: Record<string, Json> = {};
         const managed: Partial<SinglePrivacySettings> = {};
         Object.keys(record).forEach((key) => {
-          if (
-            key in DEFAULT_PRIVACY &&
-            typeof record[key] === "boolean"
-          ) {
-            managed[key as keyof SinglePrivacySettings] =
-              record[key] as boolean;
+          if (key in DEFAULT_PRIVACY && typeof record[key] === "boolean") {
+            managed[key as keyof SinglePrivacySettings] = record[
+              key
+            ] as boolean;
           } else {
-            extras[key] = record[key];
+            extras[key] = record[key] ?? null;
           }
         });
         storedExtras.current = extras;
         setSettings({ ...DEFAULT_PRIVACY, ...managed });
+        setExtras({
+          birthDate:
+            typeof record.birthDate === "string" ? record.birthDate : "",
+          zodiacSign:
+            typeof record.zodiacSign === "string" ? record.zodiacSign : "",
+        });
       } catch (err) {
         logger.error("Error cargando privacy_settings:", {
           error: err instanceof Error ? err.message : String(err),
@@ -189,35 +265,28 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
   const toggle = (key: keyof SinglePrivacySettings) => {
     const nextValue = !settings[key];
     const label = ROWS.find((row) => row.key === key)?.label ?? key;
-    setSettings((prev) => {
-      const next = { ...prev, [key]: !prev[key] };
-      if (isDemoMode || !supabase) {
-        saveToLocalStorage(next);
-        return next;
+    // Quitar la marca de agua es bajo responsabilidad del usuario: la
+    // marca protege su privacidad en las fotos. Confirmar antes.
+    if (key === "watermark" && settings.watermark && nextValue === false) {
+      if (
+        typeof window !== "undefined" &&
+        !window.confirm(
+          `${WATERMARK_OFF_WARNING}\n\n¿Quitar la marca de agua de todos modos?`,
+        )
+      ) {
+        return;
       }
-      const merged: Record<string, Json> = {
-        ...storedExtras.current,
-        ...next,
-      };
-      void supabase
-        .from("profiles")
-        .update({ privacy_settings: merged })
-        .eq("id", userId)
-        .then(({ error }) => {
-          if (error) {
-            logger.error("Error guardando privacy_settings:", {
-              error: error.message,
-            });
-            saveToLocalStorage(next);
-          } else {
-            storedExtras.current = merged;
-          }
-        });
-      return next;
-    });
+    }
+    const next = { ...settings, [key]: nextValue };
+    setSettings(next);
+    saveAll(next, extras);
+    notifyPrivacySettingsChanged(userId);
     // Feedback inmediato: antes el cambio persistía pero sin ninguna
     // confirmación visible (full test 2026-11-24).
     toast.success(`${label}: ${nextValue ? "activado" : "desactivado"}`);
+    if (key === "watermark" && nextValue === false) {
+      toast.warning(WATERMARK_OFF_WARNING);
+    }
   };
 
   return (
@@ -266,6 +335,84 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
             </div>
           </div>
         ))}
+        {/* Aviso persistente mientras la marca de agua está apagada. */}
+        {!settings.watermark && (
+          <p className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+            ⚠️ Marca de agua desactivada: tus fotos no llevan protección.
+            Activarla ayuda a que nadie las reutilice como propias; si la dejas
+            apagada es bajo tu responsabilidad.
+          </p>
+        )}
+        {/* Signo zodiacal: se deriva de la fecha de nacimiento; el
+            usuario puede elegirlo a mano sin compartir su fecha exacta.
+            El interruptor "Signo zodiacal" de arriba controla si se
+            muestra en el perfil público. */}
+        <div className="border-t border-white/10 pt-4 space-y-3">
+          <p className="text-sm font-medium text-white">
+            Signo zodiacal (tu fecha)
+          </p>
+          <p className="text-xs text-white/60">
+            El registro solo pedía tu edad, por eso tu fecha de nacimiento no
+            estaba guardada. Agrégala aquí para que tu signo se calcule solo, o
+            elige el signo a mano.
+          </p>
+          <div>
+            <label
+              htmlFor="single-privacy-birthDate"
+              className="mb-1 block text-xs text-white/70"
+            >
+              Fecha de nacimiento
+            </label>
+            <input
+              id="single-privacy-birthDate"
+              type="date"
+              value={extras.birthDate}
+              max={new Date().toISOString().slice(0, 10)}
+              onChange={(e) =>
+                saveExtras({ ...extras, birthDate: e.target.value })
+              }
+              className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white [color-scheme:dark]"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="single-privacy-zodiacSign"
+              className="mb-1 block text-xs text-white/70"
+            >
+              Signo (manual, opcional)
+            </label>
+            <select
+              id="single-privacy-zodiacSign"
+              value={extras.zodiacSign}
+              onChange={(e) =>
+                saveExtras({ ...extras, zodiacSign: e.target.value })
+              }
+              className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white [color-scheme:dark]"
+            >
+              <option value="">Automático (según fecha de nacimiento)</option>
+              {ZODIAC_SIGNS.map((sign) => (
+                <option key={sign.id} value={sign.id}>
+                  {sign.symbol} {sign.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          {derivedZodiac.sign ? (
+            <p className="text-xs text-emerald-300">
+              Tu signo: {formatZodiacSign(derivedZodiac.sign)}{" "}
+              {derivedZodiac.source === "birthdate"
+                ? "(calculado de tu fecha de nacimiento)"
+                : "(elegido a mano)"}
+              {settings.zodiacVisible
+                ? " — se muestra en tu perfil."
+                : " — oculto en tu perfil (interruptor apagado)."}
+            </p>
+          ) : (
+            <p className="text-xs text-white/50">
+              Sin fecha ni signo manual no se puede mostrar tu signo.
+            </p>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

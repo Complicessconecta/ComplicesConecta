@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -8,12 +8,27 @@ import {
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
-import { Eye, Lock, Trash2, Heart, MessageCircle, Globe, UserPlus } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
+import {
+  Eye,
+  Lock,
+  Trash2,
+  Heart,
+  MessageCircle,
+  Globe,
+  UserPlus,
+} from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { safeGetItem } from "@/lib/safe-storage";
+import { noDownloadProps } from "@/components/profiles/shared/ProtectedMedia";
+import { readWatermarkForProfile } from "@/lib/visibility";
 
 interface GalleryImage {
   id: string;
@@ -125,6 +140,11 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
   );
   const [imagesPerPage] = useState(12); // Mostrar 12 imágenes por página
   const [showAll, setShowAll] = useState(false);
+
+  // Marca de agua del dueño (toggle de Privacidad). Sin botón de
+  // descarga en contenido ajeno: menú contextual y arrastre bloqueados
+  // cuando no eres el dueño (no impide capturas de pantalla).
+  const watermarkOn = useMemo(() => readWatermarkForProfile(userId), [userId]);
 
   useEffect(() => {
     checkModeAndLoadImages();
@@ -384,6 +404,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                       "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM5MzZFNkYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGNDMzOTYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+8J+TniBJbWFnZW48L3RleHQ+PC9zdmc+"
                     }
                     alt={image.caption || "Imagen"}
+                    {...noDownloadProps(isOwner)}
                     className="w-full h-48 object-cover rounded-lg cursor-pointer"
                     onClick={() => setSelectedImage(image)}
                     onError={(e) => {
@@ -393,6 +414,16 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                       target.onerror = null;
                     }}
                   />
+                  {watermarkOn && (
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
+                    >
+                      <span className="rotate-[-24deg] whitespace-nowrap text-[11px] font-bold text-white/35 select-none">
+                        {profileName} • {profileName} • {profileName}
+                      </span>
+                    </div>
+                  )}
                   {isOwner && (
                     <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
@@ -466,6 +497,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                             "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM5MzZFNkYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGNDMzOTYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+8J+TniBJbWFnZW48L3RleHQ+PC9zdmc+"
                           }
                           alt={image.caption || "Imagen"}
+                          {...noDownloadProps(isOwner)}
                           className="w-full h-48 object-cover rounded-lg cursor-pointer blur-sm group-hover:blur-none transition-all duration-300"
                           onClick={() => setSelectedImage(image)}
                           onError={(e) => {
@@ -475,6 +507,16 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                             target.onerror = null;
                           }}
                         />
+                        {watermarkOn && (
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
+                          >
+                            <span className="rotate-[-24deg] whitespace-nowrap text-[11px] font-bold text-white/35 select-none">
+                              {profileName} • {profileName} • {profileName}
+                            </span>
+                          </div>
+                        )}
                         {/* Candado icono para privadas - siempre visible */}
                         <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm rounded-full p-2 z-20">
                           <Lock
@@ -570,6 +612,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                 <img
                   src={selectedImage.url}
                   alt={selectedImage.caption}
+                  {...noDownloadProps(isOwner)}
                   className="w-full h-96 object-contain rounded-lg"
                 />
                 <div className="absolute bottom-4 left-4 flex space-x-2">
@@ -598,4 +641,3 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
 };
 
 export default EnhancedGallery;
-

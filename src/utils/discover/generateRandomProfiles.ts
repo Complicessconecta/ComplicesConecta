@@ -6,6 +6,14 @@ import { ubicaciones } from "@/constants/discover/ubicaciones";
 import { bios } from "@/constants/discover/bios";
 import type { Profile } from "@/types/discover.types";
 
+// Nombres que @/lib/medianames no resuelve y quedaban en género
+// "unknown" (con lo que pickProfileImage elegía pool hombre/mujer al
+// azar y las fotos salían con género incorrecto).
+const GENDER_OVERRIDES: Record<string, Gender> = {
+  luca: "male",
+  manuela: "female",
+};
+
 export const generateRandomProfiles = (): Profile[] => {
   resetImageCounters();
 
@@ -14,7 +22,8 @@ export const generateRandomProfiles = (): Profile[] => {
     const name = nombres[Math.floor(Math.random() * nombres.length)] ?? "Usuario";
     const profileKind = inferProfileKind({ name });
     const profileType: ProfileType = profileKind.kind === "couple" ? "couple" : "single";
-    const gender: Gender = profileKind.gender;
+    const firstName = name.split(" ")[0]?.toLowerCase() ?? "";
+    const gender: Gender = GENDER_OVERRIDES[firstName] ?? profileKind.gender;
     const id = uuidv4();
 
     return {

@@ -1,5 +1,25 @@
-import { useState, useEffect, type ChangeEvent, type KeyboardEvent } from "react";
-import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus, Smile, Paperclip, Mic } from "lucide-react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from "react";
+import {
+  MessageCircle,
+  Video,
+  MoreVertical,
+  ArrowLeft,
+  Heart,
+  Send,
+  Lock,
+  Globe,
+  UserPlus,
+  Smile,
+  Paperclip,
+  Mic,
+  X,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -7,7 +27,11 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
-import { mockPrivacySettings } from "@/lib/data";
+import {
+  canSendMessageTo,
+  canStartVideoCall,
+  loadRecipientPrivacy,
+} from "@/lib/chatLimits";
 import { invitationService } from "@/lib/invitations";
 // Tipos reemplazados con tipos locales para compatibilidad
 export interface SimpleChatRoom {
@@ -236,7 +260,7 @@ const getSeedMessages = (chatId: string): SimpleChatMessage[] => [
   },
 ];
 
-const Chat = () => {
+const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { features } = useFeatures();
@@ -289,6 +313,13 @@ const Chat = () => {
   const [showFileUpload, setShowFileUpload] = useState(false);
   const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
 
+  // Galería privada del hilo: colapsada por defecto — antes se renderizaba
+  // siempre entre el header y los mensajes y comía ~250 px del hilo (en la
+  // captura se veía solapada con el primer mensaje). Los botones Galería /
+  // Privada la abren; el panel tiene su propio cierre.
+  const [showPrivateGallery, setShowPrivateGallery] = useState(false);
+  const galleryRef = useRef<HTMLDivElement>(null);
+
   const getGalleryOwnerId = (): string | null => {
     // Producción: el dueño del contenido privado del chat 1:1 es el partner
     if (isProduction && chatPartnerId) return chatPartnerId;
@@ -314,7 +345,9 @@ const Chat = () => {
         throw error;
       }
 
-      const ids = Array.isArray(data) ? data.map((r: any) => String(r.profile_id)) : [];
+      const ids = Array.isArray(data)
+        ? data.map((r: any) => String(r.profile_id))
+        : [];
       setUnlockedGalleries(new Set(ids));
 
       // Mantener un espejo en estado legacy (compatibilidad/telemetría)
@@ -327,7 +360,30 @@ const Chat = () => {
   };
 
   const handleUnlockGalleryItem = async (itemId: string): Promise<void> => {
-    if (!user || !selectedChat) return;
+    if (!selectedChat) return;
+
+    // Demo: sin usuario real ni backend, el desbloqueo se simula — antes
+    // el botón "Desbloquear (100 CMPX)" no hacía nada en demo (retorno
+    // silencioso por falta de user).
+    if (!isProduction) {
+      setGalleryProcessing(true);
+      try {
+        setUnlockedGalleries((prev) => {
+          const next = new Set(prev);
+          next.add(itemId);
+          return next;
+        });
+        toast({
+          title: "Galería desbloqueada (demo)",
+          description: "Desbloqueo simulado: 100 CMPX (demo, sin cargo real).",
+        });
+      } finally {
+        setGalleryProcessing(false);
+      }
+      return;
+    }
+
+    if (!user) return;
     try {
       setGalleryProcessing(true);
       const ownerId = getGalleryOwnerId();
@@ -422,7 +478,7 @@ const Chat = () => {
           if (matchId) {
              setActiveRoomId(matchId);
           } else {
-             logger.warn("No match found for chat", { partnerId: selectedChat.id });
+            logger.warn("No match found for chat", { partnerId: selectedChat.id });
              setActiveRoomId(null);
           }
         } catch (err) {
@@ -485,78 +541,6 @@ const Chat = () => {
       );
     }
     return realtimeMessages.length > 0 || _realMessages.length > 0;
-  };
-
-  const handleUnlockGallery = async () => {
-    if (!user || !selectedChat) return;
-    try {
-      setGalleryProcessing(true);
-      const ownerId = getGalleryOwnerId();
-      if (!ownerId) {
-        throw new Error("No se pudo determinar el dueño de la galería.");
-      }
-
-      const balance = await tokenService.getBalance(user.id);
-      if (!balance || balance.cmpx < galleryPrice) {
-        toast({
-          title: "CMPX insuficientes",
-          description: "Compra tokens en el Shop.",
-          variant: "destructive",
-        });
-        return;
-      }
-      const metadata: Record<string, string | number | boolean> = {
-        gallery_owner_id: ownerId,
-      };
-      if (chatPartnerId) {
-        metadata.chat_partner_id = chatPartnerId;
-      }
-      const spent = await tokenService.spendTokens(
-        user.id,
-        "cmpx",
-        galleryPrice,
-        "Desbloqueo galería privada",
-        metadata,
-      );
-      if (!spent) throw new Error("No se pudo realizar el cobro");
-
-      // Persistir desbloqueo para este usuario y el perfil dueño
-      if (supabase) {
-        const { error } = await (supabase as any)
-          .from("gallery_unlocks")
-          .insert({ user_id: user.id, profile_id: ownerId });
-        if (error && error.code !== "23505") {
-          throw error;
-        }
-      }
-
-      await recordGalleryCommission({
-        galleryId: `profile-${ownerId}`,
-        creatorId: ownerId,
-        transactionType: "purchase",
-        amountCMPX: galleryPrice,
-      });
-      setUnlockedGalleries((prev) => {
-        const next = new Set(prev);
-        next.add(ownerId);
-        return next;
-      });
-      toast({
-        title: "Galería desbloqueada",
-        description: "Disfruta el contenido privado.",
-      });
-    } catch (error) {
-      logger.error("Error desbloqueando galería", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      toast({
-        title: "Error",
-        description: "No se pudo desbloquear la galería.",
-        variant: "destructive",
-      });
-    } finally {
-      setGalleryProcessing(false);
-    }
   };
 
   // Cargar desbloqueos persistidos (producción)
@@ -844,7 +828,7 @@ const Chat = () => {
     };
   }, [selectedChat, user?.id, isProduction, activeRoomId, startMonitoring, stopMonitoring]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!selectedChat || !newMessage.trim()) return;
 
     // Bloquear envio si el chat est pausado por bajo consenso
@@ -857,6 +841,32 @@ const Chat = () => {
           "El chat est pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.",
       });
       return;
+    }
+
+    // Enforcement del toggle "Limitar el envío de mensajes" del
+    // destinatario (antes: mockPrivacySettings, siempre "everyone").
+    // Solo aplica a hilos privados; las salas públicas siempre permiten.
+    // Sin datos de privacidad del destinatario se permite (sin falsos
+    // bloqueos). El remitente se considera verificado solo si su perfil
+    // lo indica (el usuario demo es verificado).
+    if (features.messagingPrivacy && selectedChat.roomType === "private") {
+      const recipientPrivacy = await loadRecipientPrivacy(
+        selectedChat.id.toString(),
+        selectedChat.name.includes("&") ? "couple" : "single",
+      );
+      const limit = canSendMessageTo({
+        recipientPrivacy,
+        senderIsVerified: Boolean(
+          (user as { is_verified?: boolean } | null | undefined)?.is_verified,
+        ),
+      });
+      if (!limit.allowed) {
+        toast({
+          title: "Sin permisos",
+          description: limit.reason,
+        });
+        return;
+      }
     }
 
     // Usar datos reales en produccin, mock en demo
@@ -880,17 +890,6 @@ const Chat = () => {
         title: "Acceso Denegado",
         description:
           "No tienes acceso a este chat privado. Necesitas una invitación aceptada.",
-      });
-      return;
-    }
-
-    // Verificar permisos de mensajera segn configuracin de privacidad
-    const canSendMessage = checkMessagePermissions(selectedChat);
-    if (!canSendMessage) {
-      toast({
-        title: "Sin Permisos",
-        description:
-          "No puedes enviar mensajes a este usuario según su configuración de privacidad.",
       });
       return;
     }
@@ -924,30 +923,30 @@ const Chat = () => {
     setShowVoiceRecorder(false);
   };
 
-  const checkMessagePermissions = (chat: ChatUser) => {
-    if (!features.messagingPrivacy) return true;
-
-    // Para chats pblicos, siempre permitir
-    if (chat.roomType === "public") return true;
-
-    // Para chats privados, verificar configuracin
-    const userPrivacySettings = mockPrivacySettings; // En produccin, obtener del usuario especfico
-
-    switch (userPrivacySettings.allowMessages) {
-      case "everyone":
-        return true;
-      case "connections_only":
-        // Verificar si hay conexin aceptada (simulado)
-        return true; // Por ahora siempre true para demo
-      case "none":
-        return false;
-      default:
-        return true;
+  // Galería privada del hilo: la abre/cierra de verdad. Antes el botón
+  // "Galería" disparaba un desbloqueo silencioso (sin efecto en demo) y un
+  // toast que afirmaba mostrar la galería sin mostrar nada; el botón
+  // "Privada" solo mostraba ese mismo toast. En salas públicas no hay
+  // galería privada: respuesta honesta en vez de no hacer nada.
+  const togglePrivateGallery = () => {
+    if (!selectedChat) return;
+    if (selectedChat.roomType !== "private") {
+      toast({
+        title: "Sin galería privada",
+        description:
+          "Las salas públicas no tienen galería privada. Usa el chat privado de un match.",
+      });
+      return;
     }
+    setShowPrivateGallery((v) => !v);
   };
 
   return (
-    <div className="flex flex-col h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    // embedded: dentro del dock flotante (ChatFab) el alto es el del dock
+    // (420px); con h-screen el hilo se desbordaba y se solapaba/recortaba.
+    <div
+      className={`flex flex-col ${embedded ? "h-full" : "h-screen"} bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden`}
+    >
       <DecorativeHearts />
 
       {/* Background decorativo uniforme */}
@@ -956,7 +955,7 @@ const Chat = () => {
       </div>
 
       <div
-        className={`relative z-10 flex h-screen ${hasActiveSession ? "pt-4" : "pt-16"} ${hasActiveSession ? "pb-4" : "pb-20"}`}
+        className={`relative z-10 flex ${embedded ? "h-full" : "h-screen"} ${hasActiveSession ? "pt-4" : "pt-16"} ${hasActiveSession ? "pb-4" : "pb-20"}`}
       >
         {/* Chat List Sidebar: en móvil es UN solo panel — lista O hilo,
             nunca los dos partidos. Con hilo abierto la lista se oculta. */}
@@ -968,7 +967,11 @@ const Chat = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-white/20 p-2 sm:hidden"
+                // Visible siempre (antes sm:hidden): sin hilo es la salida
+                // de la lista hacia el feed; en el hilo manda el botón del
+                // header del hilo.
+                className="text-white hover:bg-white/20 p-2"
+                aria-label="Volver"
                 onClick={() => {
                   // Dentro de un hilo: volver a la LISTA de conversaciones,
                   // no a /feed. Solo sin hilo abierto se sale al feed.
@@ -987,6 +990,36 @@ const Chat = () => {
                     variant="ghost"
                     size="sm"
                     className="text-white hover:bg-white/10"
+                    aria-label="Videollamada"
+                    title="Videollamada"
+                    onClick={async () => {
+                      // Gate del toggle "Chat de video" del destinatario:
+                      // si hay un hilo privado seleccionado, la llamada es
+                      // con ese perfil. Estar dentro del hilo ya implica
+                      // match (en producción verifyMatch lo exige; en demo
+                      // el acceso está concedido), por eso hasMatch: true.
+                      // Sin hilo seleccionado se abre el lobby de video.
+                      // El flujo real de videollamada (WebRTC) no existe
+                      // aún: el gate queda listo para cuando exista.
+                      if (selectedChat?.roomType === "private") {
+                        const recipientPrivacy = await loadRecipientPrivacy(
+                          selectedChat.id.toString(),
+                          selectedChat.name.includes("&") ? "couple" : "single",
+                        );
+                        const call = canStartVideoCall({
+                          recipientPrivacy,
+                          hasMatch: true,
+                        });
+                        if (!call.allowed) {
+                          toast({
+                            title: "Videollamada no disponible",
+                            description: call.reason,
+                          });
+                          return;
+                        }
+                      }
+                      navigate("/video-chat");
+                    }}
                   >
                     <Video className="h-4 w-4" />
                   </Button>
@@ -994,6 +1027,15 @@ const Chat = () => {
                     variant="ghost"
                     size="sm"
                     className="text-white hover:bg-white/10"
+                    aria-label="Más opciones"
+                    title="Más opciones"
+                    onClick={() =>
+                      toast({
+                        title: "Opciones del chat",
+                        description:
+                          "Más opciones (silenciar, archivar, bloquear) próximamente.",
+                      })
+                    }
                   >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
@@ -1214,7 +1256,10 @@ const Chat = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="md:hidden text-white hover:bg-white/10 mr-2"
+                    // Visible siempre (antes md:hidden): en el hilo vuelve
+                    // a la LISTA de conversaciones, también en escritorio.
+                    className="text-white hover:bg-white/10 mr-2"
+                    aria-label="Volver a la lista de chats"
                     onClick={() => setSelectedChat(null)}
                   >
                     <ArrowLeft className="h-4 w-4" />
@@ -1271,7 +1316,30 @@ const Chat = () => {
                 </div>
               )}
 
-              {selectedChat?.roomType === "private" && (
+              {/* Galería privada: colapsada por defecto; la abren los
+                  botones Galería / Privada del compositor. Acotada
+                  (max-h + scroll interno) para que nunca empuje ni tape
+                  los mensajes del hilo. */}
+              {selectedChat?.roomType === "private" && showPrivateGallery && (
+                <div
+                  ref={galleryRef}
+                  className="shrink-0 max-h-[38%] overflow-y-auto px-4 py-3 border-b border-white/10 bg-purple-950/40"
+                >
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-sm font-semibold text-white truncate">
+                      Galería privada de {selectedChat.name}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-white/70 hover:text-white hover:bg-white/10 h-7 px-2 shrink-0"
+                      aria-label="Cerrar galería"
+                      onClick={() => setShowPrivateGallery(false)}
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cerrar
+                    </Button>
+                  </div>
                 <PrivateGallery
                   galleryItems={[
                     {
@@ -1287,6 +1355,7 @@ const Chat = () => {
                   unlockingItemId={galleryProcessing ? "1" : null}
                   onUnlock={handleUnlockGalleryItem}
                 />
+                </div>
               )}
 
               {/* Messages */}
@@ -1483,24 +1552,8 @@ const Chat = () => {
                     {/* Botones de galería y solicitudes */}
                     <div className="flex flex-wrap gap-2 justify-center">
                       <Button
-                        onClick={() => {
-                          if (selectedChat?.roomType === "private") {
-                            handleUnlockGallery().catch((err) => {
-                              logger.error("Error en handleUnlockGallery", {
-                                error: err,
-                              });
-                            });
-                            toast({
-                              title: "Galería Privada",
-                              description: `Ver galería privada de ${selectedChat.name}`,
-                            });
-                          } else {
-                            toast({
-                              title: "Galería Pública",
-                              description: "Ver galería pública de la sala",
-                            });
-                          }
-                        }}
+                        onClick={togglePrivateGallery}
+                        aria-expanded={showPrivateGallery}
                         variant="outline"
                         className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
@@ -1516,22 +1569,8 @@ const Chat = () => {
                         <span className="truncate">Solicitudes</span>
                       </Button>
                       <Button
-                        onClick={() => {
-                          if (selectedChat?.roomType === "private") {
-                            toast({
-                              title: "Galería Privada",
-                              description:
-                                "Accediendo a galería privada con " +
-                                selectedChat.name,
-                            });
-                          } else {
-                            toast({
-                              title: "Galería Pública",
-                              description:
-                                "Accediendo a galería pública de la sala",
-                            });
-                          }
-                        }}
+                        onClick={togglePrivateGallery}
+                        aria-expanded={showPrivateGallery}
                         variant="outline"
                         className="flex-1 border-green-400/50 text-green-300 hover:bg-green-500/20 text-xs py-2"
                       >

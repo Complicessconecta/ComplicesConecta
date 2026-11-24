@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/useToast";
@@ -13,6 +24,8 @@ import { NicknameValidator } from "@/components/auth/NicknameValidator";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
+import { savePrivacySettingsExtra } from "@/lib/visibility";
+import { getZodiacSignFromDate } from "@/lib/zodiac";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -23,6 +36,8 @@ interface SingleRegistrationData {
   firstName: string;
   lastName: string;
   age: string;
+  /** Fecha de nacimiento ISO (opcional): de aquí se deriva el signo. */
+  birthDate: string;
   nickname: string;
   useRealName: boolean;
 
@@ -94,6 +109,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
     firstName: "",
     lastName: "",
     age: "",
+    birthDate: "",
     nickname: "",
     useRealName: false,
     gender: "",
@@ -267,6 +283,15 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           userId: authData.user.id,
         });
 
+        if (formData.birthDate) {
+          // La tabla `profiles` NO tiene columna `birth_date` ni
+          // `privacy_settings`: la fecha (y de ahí el signo) vive en
+          // local hasta que exista la migración. En demo es la fuente.
+          savePrivacySettingsExtra(authData.user.id, "single", {
+            birthDate: formData.birthDate,
+          });
+        }
+
         toast({
           title: "¡Registro exitoso!",
           description: "Se ha enviado un código de verificación a tu email.",
@@ -277,7 +302,8 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         setShowEmailVerification(true);
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Error desconocido";
+      const message =
+        error instanceof Error ? error.message : "Error desconocido";
       toast({
         variant: "destructive",
         title: "Error al registrarse",
@@ -374,6 +400,28 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         {formData.age && parseInt(formData.age) < 18 && (
           <p className="text-red-400 text-sm mt-1">
             Debes ser mayor de 18 años
+          </p>
+        )}
+      </div>
+
+      <div>
+        <Label className="text-white">
+          Fecha de nacimiento (opcional, para tu signo zodiacal)
+        </Label>
+        <Input
+          type="date"
+          value={formData.birthDate}
+          onChange={(e) => handleInputChange("birthDate", e.target.value)}
+          className="bg-white/10 text-white placeholder:text-white/80 border-white/20 [color-scheme:dark]"
+          max={new Date().toISOString().slice(0, 10)}
+        />
+        {formData.birthDate && (
+          <p className="text-white/70 text-sm mt-1">
+            Tu signo:{" "}
+            {getZodiacSignFromDate(formData.birthDate)
+              ? `${getZodiacSignFromDate(formData.birthDate)?.symbol} ${getZodiacSignFromDate(formData.birthDate)?.name}`
+              : "fecha no válida"}
+            . Puedes ocultarlo en Privacidad.
           </p>
         )}
       </div>

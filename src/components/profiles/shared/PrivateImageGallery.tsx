@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Lock, Unlock, Check, X } from "lucide-react";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { ImageWithFallback } from "@/components/ui";
+import { ProtectedMedia } from "@/components/profiles/shared/ProtectedMedia";
+import { readWatermarkForProfile } from "@/lib/visibility";
 
 interface PrivateImage {
   id: string;
@@ -52,6 +54,12 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
 }) => {
   const [showRequestDialog, setShowRequestDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // Marca de agua del dueño (toggle de Privacidad).
+  const watermarkOn = useMemo(
+    () => readWatermarkForProfile(profileId),
+    [profileId],
+  );
 
   const pendingRequests = accessRequests.filter(
     (req) => req.status === "pending",
@@ -173,26 +181,32 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
         ) : (
           <>
             {hasAccess || isOwner ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {images.map((image) => (
-                  <div
-                    key={image.id}
-                    className="relative aspect-square cursor-pointer group"
-                    onClick={() => handleImageClick(image.id)}
-                  >
-                    <ImageWithFallback
-                      src={image.thumbnail || image.url}
-                      alt="Imagen privada"
-                      fallbackType="private"
-                      fallbackText="Imagen no disponible"
-                      className="w-full h-full rounded-lg overflow-hidden"
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-                      <Eye className="h-6 w-6 text-white" />
+              <ProtectedMedia
+                isOwner={isOwner}
+                watermark={watermarkOn}
+                watermarkText={profileName}
+              >
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.map((image) => (
+                    <div
+                      key={image.id}
+                      className="relative aspect-square cursor-pointer group"
+                      onClick={() => handleImageClick(image.id)}
+                    >
+                      <ImageWithFallback
+                        src={image.thumbnail || image.url}
+                        alt="Imagen privada"
+                        fallbackType="private"
+                        fallbackText="Imagen no disponible"
+                        className="w-full h-full rounded-lg overflow-hidden"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+                        <Eye className="h-6 w-6 text-white" />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </ProtectedMedia>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {images.map((image) => (
@@ -235,11 +249,13 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
           </>
         )}
 
-        {/* Modal de imagen ampliada */}
+        {/* Modal de imagen ampliada (sin descarga para visitantes) */}
         {selectedImage && (
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-xl z-50 flex items-center justify-center p-4"
             onClick={() => setSelectedImage(null)}
+            onContextMenu={!isOwner ? (e) => e.preventDefault() : undefined}
+            onDragStart={!isOwner ? (e) => e.preventDefault() : undefined}
           >
             <div
               className="relative max-w-4xl max-h-full w-full"
@@ -273,4 +289,3 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
 };
 
 export default PrivateImageGallery;
-

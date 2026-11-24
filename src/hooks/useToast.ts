@@ -149,10 +149,21 @@ function toast({ ...props }: Toast) {
     });
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id });
 
+  // Auto-descarte garantizado (3.5 s; 5 s los destructivos, que hay que
+  // alcanzar a leer). El temporizador propio de Radix se pausa con
+  // hover/focus y en móvil el hover táctil se queda pegado tras el tap,
+  // así que el toast no desaparecía nunca y tapaba el contenido (el toggle
+  // de tema, las zonas de foto del editor, el hilo de chat y el texto del
+  // banner "¡100 CMPX reclamados!"). La duración queda guardada en el
+  // toast para que el <Toast> de Radix use el mismo valor.
+  const duration =
+    props.duration ?? (props.variant === "destructive" ? 5000 : 3500);
+
   dispatch({
     type: "ADD_TOAST",
     toast: {
       ...props,
+      duration,
       id,
       open: true,
       onOpenChange: (open) => {
@@ -160,6 +171,11 @@ function toast({ ...props }: Toast) {
       },
     },
   });
+
+  // Temporizador propio (no lo pausa el hover/focus): descarta el toast
+  // aunque Radix pause el suyo. DISMISS_TOAST es idempotente, así que si
+  // el usuario ya lo cerró a mano este segundo dismiss no hace nada.
+  setTimeout(() => dismiss(), duration);
 
   return {
     id: id,

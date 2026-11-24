@@ -19,6 +19,7 @@ interface ProfileCardProps {
   interests?: string[];
   isOnline?: boolean;
   isPremium?: boolean;
+  isVerified?: boolean;
   isPrivate?: boolean;
   lastSeen?: string;
   onLike?: (id: number | string) => void;
@@ -41,6 +42,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     interests = [],
     isOnline = false,
     isPremium = false,
+    isVerified = false,
     isPrivate = false,
     lastSeen,
     onLike,
@@ -251,14 +253,25 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
           <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
             {/* Name and Age */}
             <div className="flex items-center justify-between">
-              <motion.h3
-                className="text-base sm:text-lg font-bold text-white truncate cursor-pointer hover:underline"
-                layoutId={`name-${id}`}
-                onClick={() => onViewProfile?.(profileId ?? id)}
-                title={`Ver perfil de ${name}`}
-              >
-                {name}, {age}
-              </motion.h3>
+              <div className="flex min-w-0 items-center gap-2">
+                <motion.h3
+                  className="text-base sm:text-lg font-bold text-white truncate cursor-pointer hover:underline"
+                  layoutId={`name-${id}`}
+                  onClick={() => onViewProfile?.(profileId ?? id)}
+                  title={`Ver perfil de ${name}`}
+                >
+                  {name}, {age}
+                </motion.h3>
+                {/* Insignia de perfil verificado */}
+                {isVerified && (
+                  <Badge
+                    className="shrink-0 bg-blue-500 text-white border-0 text-[10px] sm:text-xs"
+                    title="Perfil verificado"
+                  >
+                    ✓ Verificado
+                  </Badge>
+                )}
+              </div>
               {!isOnline && lastSeen && (
                 <span className="text-xs text-white/60 hidden sm:inline">
                   {lastSeen}

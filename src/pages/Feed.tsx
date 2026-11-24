@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Heart, MessageCircle, Share2, MoreHorizontal, MapPin, Clock, CheckCircle, Loader2, Plus } from "lucide-react";
-import { Navigation } from "@/components/Navigation";
 import { postsService, type Post } from "@/services/social";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
@@ -160,8 +159,7 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-background via-muted/30 to-secondary/20 pb-20">
-      <Navigation />
+    <div className="min-h-screen bg-linear-to-br from-background via-muted/30 to-secondary/20">
 
       <main className="container mx-auto px-4 py-6 max-w-2xl">
         <div className="text-center mb-6">
@@ -449,8 +447,6 @@ const Feed = () => {
           </div>
         )}
       </main>
-
-      <Navigation />
     </div>
   );
 };

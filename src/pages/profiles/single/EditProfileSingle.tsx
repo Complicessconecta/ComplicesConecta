@@ -10,7 +10,6 @@ import { generateMockSingle } from "@/lib/data";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppConfig } from "@/lib/app-config";
-import { Navigation } from "@/components/Navigation";
 import type { Database } from "@/types/supabase-generated";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
@@ -64,69 +63,22 @@ const EditProfileSingle = () => {
 
       if (demoAuth === "true" && demoUser) {
         const user = JSON.parse(demoUser);
+        let profileData;
 
         if (user.accountType === "single" || user.type === "single") {
-          // Demo: el editor muestra al usuario demo real, no un mock
-          // aleatorio. generateMockSingle() elige nombre, profesión,
-          // ubicación e intereses al azar en cada llamada, así que el editor
-          // mostraba otra persona en cada carga y su selección de intereses
-          // nunca coincidía con la guardada en demo_user (que es la que lee
-          // el perfil). Por eso la sección de intereses mostraba otra info.
-          const asString = (value: unknown): string =>
-            typeof value === "string" ? value : "";
-          const asStringArray = (value: unknown): string[] =>
-            Array.isArray(value) &&
-            value.every((item) => typeof item === "string")
-              ? (value as string[])
-              : [];
-          // Identidad del login demo (p. ej. "Sofía" para single@outlook.es).
-          const identityName = [
-            asString(user.first_name),
-            asString(user.last_name),
-          ]
-            .filter(Boolean)
-            .join(" ");
-          const storedName = asString(user.name);
-
-          if (storedName || identityName) {
-            setFormData({
-              name: storedName || identityName,
-              age:
-                typeof user.age === "number" || typeof user.age === "string"
-                  ? String(user.age)
-                  : "",
-              bio: asString(user.bio),
-              location: asString(user.location),
-              profession: asString(user.profession),
-              interests: asStringArray(user.interests),
-              explicitInterests: asStringArray(user.explicitInterests),
-              avatar: asString(user.avatar),
-            });
-            setUserId(user.id);
-            setProfile(user);
-            setProfileLoaded(true);
-            setIsLoading(false);
-            return;
-          }
-
-          // Fallback: demo_user sin identidad usable. El mock solo rellena
-          // la estructura; el nombre sigue siendo el de la identidad demo
-          // si existe.
-          const mockProfile = generateMockSingle();
+          profileData = generateMockSingle(user.id);
           setFormData({
-            name:
-              identityName ||
-              `${mockProfile.first_name} ${mockProfile.last_name}`,
-            age: mockProfile.age.toString(),
-            bio: mockProfile.bio,
-            location: mockProfile.location,
-            profession: mockProfile.profession || "",
-            interests: mockProfile.interests || [],
+            name: profileData.first_name + " " + profileData.last_name,
+            age: profileData.age.toString(),
+            bio: profileData.bio,
+            location: profileData.location,
+            profession: profileData.profession || "",
+            interests: profileData.interests || [],
             explicitInterests: [],
-            avatar: mockProfile.avatar || "",
+            avatar: profileData.avatar || "",
           });
           setUserId(user.id);
-          setProfile(mockProfile);
+          setProfile(profileData);
           setProfileLoaded(true);
           setIsLoading(false);
           return;
@@ -652,8 +604,6 @@ const EditProfileSingle = () => {
           </CardContent>
         </Card>
       </div>
-
-      <Navigation />
 
       {/* Custom Styles */}
       <style>{`

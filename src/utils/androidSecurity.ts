@@ -409,4 +409,3 @@ export class AndroidSecurityManager {
 
 // Instancia singleton
 export const androidSecurity = AndroidSecurityManager.getInstance();
-

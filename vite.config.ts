@@ -39,7 +39,10 @@ export default defineConfig(({ mode }) => {
             const wantsHtml = acceptHeader.includes("text/html");
             if (wantsHtml) return next();
 
-            const indexHtmlPath = path.resolve(server.config.root, "index.html");
+            const indexHtmlPath = path.resolve(
+              server.config.root,
+              "index.html",
+            );
             const rawHtml = fs.readFileSync(indexHtmlPath, "utf-8");
 
             const html = await server.transformIndexHtml(url, rawHtml);

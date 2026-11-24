@@ -440,10 +440,7 @@
       {
         "name": "AI Help / AI Control Center",
         "description": "Pantallas y servicios de ayuda/IA integrados (centro de control).",
-        "files": [
-          "src/pages/AIControlCenter.tsx",
-          "src/services"
-        ],
+        "files": ["src/pages/AIControlCenter.tsx", "src/services"],
         "api_doc": {
           "openapi": "3.0.0",
           "info": {

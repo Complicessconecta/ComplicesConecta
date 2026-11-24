@@ -128,9 +128,7 @@ class ConsoleErrorCapture {
           target.tagName === "IMG")
       ) {
         const element = target as
-          | HTMLLinkElement
-          | HTMLScriptElement
-          | HTMLImageElement;
+          HTMLLinkElement | HTMLScriptElement | HTMLImageElement;
         const url =
           (element as HTMLLinkElement).href ||
           (element as HTMLScriptElement).src ||
@@ -899,4 +897,3 @@ if (typeof window !== "undefined") {
     // Si import.meta no está disponible, no hacer nada.
   }
 }
-

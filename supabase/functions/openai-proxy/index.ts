@@ -26,8 +26,9 @@ const openai = new OpenAI({ apiKey: Deno.env.get("OPENAI_API_KEY") || "" });
 // scope for this patch — still open, needs an owner decision on where the
 // counters live. Any authenticated user can still call the allowlisted
 // models without a cap.
-const ALLOWED_OPENAI_MODELS = (Deno.env.get("ALLOWED_OPENAI_MODELS") ||
-  "gpt-4o-mini, gpt-4-turbo-preview")
+const ALLOWED_OPENAI_MODELS = (
+  Deno.env.get("ALLOWED_OPENAI_MODELS") || "gpt-4o-mini, gpt-4-turbo-preview"
+)
   .split(",")
   .map((m) => m.trim())
   .filter(Boolean);
@@ -59,7 +60,10 @@ function parseOptionalParams(body: Record<string, unknown>): {
       body.max_tokens < 1 ||
       body.max_tokens > 4096
     ) {
-      return { params, error: "max_tokens must be an integer between 1 and 4096" };
+      return {
+        params,
+        error: "max_tokens must be an integer between 1 and 4096",
+      };
     }
     params.max_tokens = body.max_tokens;
   }
@@ -73,7 +77,8 @@ function parseOptionalParams(body: Record<string, unknown>): {
     ) {
       return {
         params,
-        error: 'response_format must be { type: "json_object" } or { type: "text" }',
+        error:
+          'response_format must be { type: "json_object" } or { type: "text" }',
       };
     }
     params.response_format = { type: rf.type };
@@ -101,7 +106,10 @@ serve(async (req: Request) => {
         JSON.stringify({ error: "model and messages are required" }),
         {
           status: 400,
-          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+          headers: {
+            ...getCorsHeaders(req),
+            "Content-Type": "application/json",
+          },
         },
       );
     }
@@ -113,7 +121,10 @@ serve(async (req: Request) => {
         }),
         {
           status: 400,
-          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+          headers: {
+            ...getCorsHeaders(req),
+            "Content-Type": "application/json",
+          },
         },
       );
     }
@@ -136,9 +147,14 @@ serve(async (req: Request) => {
       headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
-      status: 500,
-      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        error: error instanceof Error ? error.message : String(error),
+      }),
+      {
+        status: 500,
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+      },
+    );
   }
 });

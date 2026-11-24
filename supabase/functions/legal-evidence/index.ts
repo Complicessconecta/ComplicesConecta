@@ -45,9 +45,8 @@ serve(async (req: Request) => {
       auth: { persistSession: false },
     });
 
-    const { data: userData, error: userError } = await supabase.auth.getUser(
-      token,
-    );
+    const { data: userData, error: userError } =
+      await supabase.auth.getUser(token);
     if (userError || !userData?.user) {
       return new Response(JSON.stringify({ error: "Invalid token" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -81,7 +80,10 @@ serve(async (req: Request) => {
     const targetUserId = url.searchParams.get("user_id");
     const documentSlug = url.searchParams.get("document_slug");
     const limitParam = url.searchParams.get("limit");
-    const limit = Math.min(Math.max(parseInt(limitParam || "50", 10) || 50, 1), 200);
+    const limit = Math.min(
+      Math.max(parseInt(limitParam || "50", 10) || 50, 1),
+      200,
+    );
 
     let query = supabase
       .from("legal_consents")
@@ -124,14 +126,22 @@ serve(async (req: Request) => {
       });
     }
 
-    return new Response(JSON.stringify({ data: consents, audit_exempt: isAuditExempt }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({ data: consents, audit_exempt: isAuditExempt }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      },
+    );
   } catch (error) {
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    return new Response(
+      JSON.stringify({
+        error: error instanceof Error ? error.message : String(error),
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      },
+    );
   }
 });

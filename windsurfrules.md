@@ -9,10 +9,8 @@ Stack principal: React (Vite), TypeScript estricto, Tailwind v4, Supabase (Postg
 Arquitectura: Monorepo modular (src/profiles/, src/features/, src/shared/, src/entities/)
 Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compliant, Production Ready
 
-
 1. REGLAS INQUEBRANTABLES DEL PROYECTO
-1.1 Lógica de Negocio y Flujos Críticos
-
+   1.1 Lógica de Negocio y Flujos Críticos
 
 - Leer y analizar los comentarios dentro de los archivos para toma de deciciones correctas
 - NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, moderación con IA)
@@ -26,15 +24,16 @@ Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compli
 - No eliminar variables que no estan declaradas, agregar el compomnete o funcion de la variable no declarada justificando el cambio realizado
 
 **Marca de progreso:**
-* **[Completo/Verificado✅]**
-* **[EnProceso🚧]**
-* **[ADVERTENCIA⚠️]**
-* **[Incompleto❌]**
+
+- **[Completo/Verificado✅]**
+- **[EnProceso🚧]**
+- **[ADVERTENCIA⚠️]**
+- **[Incompleto❌]**
 
 1.2 Gestión de Ramas y Commits
 
 Rama master = PRODUCCIÓN (desplegada en Vercel)
-Trabajo activo en   refact-inteligente-Tra-2025-12-26 (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA CAMBIAR DE RAMA  o TRABAJR EN LA ACTUAL
+Trabajo activo en refact-inteligente-Tra-2025-12-26 (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA CAMBIAR DE RAMA o TRABAJR EN LA ACTUAL
 
 Commits en español MX con fecha y hora:
 feat: agrega check-in clubs - 16 Dic 2025 14:30
@@ -54,19 +53,17 @@ Project-Structure-Tree-files.md
 
 1.4 Supabase, Docker y Base de Datos
 
-- Verificar Docker en línea  de lo contrario indicarle al usuario iniciar para hacer
-y login a Supabase antes de cambios
+- Verificar Docker en línea de lo contrario indicarle al usuario iniciar para hacer
+  y login a Supabase antes de cambios
 - Alinear tablas locales/remotas antes de modificar
 - Notificar tablas faltantes antes de crearlas
-al finalizar el uso de Doker-Desktop verificar que todo esta en orden
-y hacer kill para sair
+  al finalizar el uso de Doker-Desktop verificar que todo esta en orden
+  y hacer kill para sair
 
- - Archivos que dependan de la base de datos; el uso de "as any","any","null,"unknown" esta Prohibido , "verificar en el directorio src/types/" que exista primero la "tabla ,columna, RLS, etc.."
- - De No existir; Crear la T"abla,Columna, etc.. correspondiente"
- - Migrar con docker-compose up -d , o docker-desktop, recrear la base de datos y "agregar la tabla columna faltante"
- - Verificar la  estructura de las tablas sea la correcta de no ser asi actualizarla
-
-
+- Archivos que dependan de la base de datos; el uso de "as any","any","null,"unknown" esta Prohibido , "verificar en el directorio src/types/" que exista primero la "tabla ,columna, RLS, etc.."
+- De No existir; Crear la T"abla,Columna, etc.. correspondiente"
+- Migrar con docker-compose up -d , o docker-desktop, recrear la base de datos y "agregar la tabla columna faltante"
+- Verificar la estructura de las tablas sea la correcta de no ser asi actualizarla
 
 1.5 Cambios Grandes
 
@@ -90,16 +87,17 @@ Este archivo contiene el barrido completo del directorio `src/` con todos los ar
 **Formato del archivo:**
 
 ```markdown
-src/                          # Directorio raíz del frontend
-├── archivo.tsx               # Descripción del archivo
-├── directorio/               # Descripción del directorio
-│   ├── archivo.tsx          # Descripción del archivo
-│   └── subdirectorio/       # Descripción del subdirectorio
+src/ # Directorio raíz del frontend
+├── archivo.tsx # Descripción del archivo
+├── directorio/ # Descripción del directorio
+│ ├── archivo.tsx # Descripción del archivo
+│ └── subdirectorio/ # Descripción del subdirectorio
 ```
 
 **Actualización de documentación obligatoria:**
 
 Al finalizar cualquier sesión de desarrollo que involucre cambios en la estructura de archivos (creación, eliminación, renombrado, reorganización), actualizar:
+
 1. `Project-Structure-Tree-files.md` con los cambios realizados
 2. `project-structure-tree.md` (si existe) con la estructura actualizada
 3. `README.md` si la estructura afecta la documentación general
@@ -107,7 +105,7 @@ Al finalizar cualquier sesión de desarrollo que involucre cambios en la estruct
 5. `COMPLICESCONECTA_PRESENTACION_PUBLICA.md` si la estructura afecta la presentación pública
 6. `CHANGELOG.md` si la estructura afecta los cambios
 7. `CONTRIBUTING.md` si la estructura afecta la contribución
-8.  `RELEASE_NOTES_v4.0.0.md` si la estructura afecta las notas de lanzamiento
+8. `RELEASE_NOTES_v4.0.0.md` si la estructura afecta las notas de lanzamiento
 
 **Verificación:**
 
@@ -126,40 +124,38 @@ Antes de crear un commit, verificar que `Project-Structure-Tree-files.md` esté 
 - Cualquier alta/edición/eliminación de flujos del sistema debe registrarse en `DIAGRAMAS_FLUJOS_CONSOLIDADO.md`.
 - El registro debe incluir: nombre del flujo, ruta(s) afectada(s), resumen breve y justificación.
 
-
 1.7 Política de NO borrado (Cuarentena de archivos)
 
 Regla obligatoria para auditorías/refactors (seguridad y estabilidad):
 
 - NO eliminar archivos si existe cualquier riesgo de dependencia implícita.
 - En lugar de eliminar:
-  1) Mover el archivo a `duplicates_quarantine/` (manteniendo su ruta original bajo esa carpeta).
-  2) Justificar la acción en `duplicates_quarantine/DUPLICATES_QUARANTINE.md`.
-  3) Asegurar que `duplicates_quarantine/` esté en `.gitignore`.
-  4) Asegurar que `duplicates_quarantine/**` esté excluido en `tsconfig.json` para evitar falsos positivos.
-  5) Comentar el archivo completo dentro de `duplicates_quarantine/` (prefijo `// , */ ,**/` línea) para evitar falsos positivos al abrirlo en el IDE.
+  1. Mover el archivo a `duplicates_quarantine/` (manteniendo su ruta original bajo esa carpeta).
+  2. Justificar la acción en `duplicates_quarantine/DUPLICATES_QUARANTINE.md`.
+  3. Asegurar que `duplicates_quarantine/` esté en `.gitignore`.
+  4. Asegurar que `duplicates_quarantine/**` esté excluido en `tsconfig.json` para evitar falsos positivos.
+  5. Comentar el archivo completo dentro de `duplicates_quarantine/` (prefijo `// , */ ,**/` línea) para evitar falsos positivos al abrirlo en el IDE.
 
 Ejemplo (mejor práctica) para mover + comentar:
 
-1) Crear carpetas destino:
+1. Crear carpetas destino:
    - `duplicates_quarantine/src/...`
 
-2) Mover archivo:
+2. Mover archivo:
    - `src/components/ai/Foo.tsx` -> `duplicates_quarantine/src/components/ai/Foo.tsx`
 
-3) Comentar todo el contenido del archivo en cuarentena (PowerShell):
+3. Comentar todo el contenido del archivo en cuarentena (PowerShell):
    - `$p="c:\\ruta\\al\\repo\\duplicates_quarantine\\src\\components\\ai\\Foo.tsx"; (Get-Content -LiteralPath $p) | ForEach-Object { "// " + $_ } | Set-Content -LiteralPath $p -Encoding UTF8 `,` */ import React, { useState, useEffect } from "react";`
      `//import { Button } from "@/components/ui/buttons/Button";`
      ` //import { Badge } from "@/components/ui/badge";`
      `//import { Heart, Users, Lock, Clock, CheckCircle, XCircle, AlertTriangle, Info,     ` `Loader2 }  from "lucide-react";`
      `//import { nftService } from "@/services";`
-     ` //import { logger } from "@/lib/logger"; /** `
+     `//import { logger } from "@/lib/logger"; /**`
 
-4) Documentar en `duplicates_quarantine/DUPLICATES_QUARANTINE.md`:
+4. Documentar en `duplicates_quarantine/DUPLICATES_QUARANTINE.md`:
    - motivo, evidencia de imports (grep), y ruta canónica equivalente.
 
-
-2. REGLAS DE IA PARA DESARROLLO
+2) REGLAS DE IA PARA DESARROLLO
 
 Eficiencia y Comunicación
 
@@ -168,30 +164,31 @@ NO reescribir archivos completos → usar bloques modificados o "Search & Replac
 Respuestas cortas → listas con bullet points
 Leer los archivos completos antes de modificarlos
 
-
 TypeScript y Código Limpio
 
 1. TypeScript estricto → tipos explícitos, sin any
 2. Interfaces para todos los tipos de datos
 3. async/await preferido sobre Promises
-3. logger para todos los logs (nunca console.log en producción)
-4. Validar inputs y manejar errores con try-catch
-5. Early returns para reducir anidación
-6. Event handlers tipados
-7. Si se corrompe el archivo restaurar y volver a corregir
-8.  No simplifiques
-9.  No ignores contexto
-10. No introduzcas regresiones
-11. Nunca propongas “soluciones cosméticas”.
-12. No elimines código si no estás seguro; propone alternativas seguras.
-13. Si un archivo parece obsoleto, explica por qué y qué impacto tiene eliminarlo.
-14. Si detectas dependencias implícitas entre archivos, respétalas.
-15. Prioriza primero:
-   - Seguridad
-   - Flujos rotos
-   - Errores de lógica
-   - Tipado débil (any, as any, null)
-   - Arquitectura y deuda técnica
+4. logger para todos los logs (nunca console.log en producción)
+5. Validar inputs y manejar errores con try-catch
+6. Early returns para reducir anidación
+7. Event handlers tipados
+8. Si se corrompe el archivo restaurar y volver a corregir
+9. No simplifiques
+10. No ignores contexto
+11. No introduzcas regresiones
+12. Nunca propongas “soluciones cosméticas”.
+13. No elimines código si no estás seguro; propone alternativas seguras.
+14. Si un archivo parece obsoleto, explica por qué y qué impacto tiene eliminarlo.
+15. Si detectas dependencias implícitas entre archivos, respétalas.
+16. Prioriza primero:
+
+- Seguridad
+- Flujos rotos
+- Errores de lógica
+- Tipado débil (any, as any, null)
+- Arquitectura y deuda técnica
+
 16. Nunca propongas “soluciones cosméticas”.
 17. No elimines código si no estás seguro; propone alternativas seguras.
 18. Si un archivo parece obsoleto, explica por qué y qué impacto tiene eliminarlo.
@@ -202,13 +199,13 @@ TypeScript y Código Limpio
 23. Mantén compatibilidad con el resto del proyecto.
 24. Si algo no puede resolverse sin más contexto, dilo explícitamente.
 25. tu objetivo no es “hacer que compile”, sino dejar el proyecto:
+
 - Más seguro
 - Más mantenible
 - Más coherente
 - Con menos deuda técnica
-26. No Realizar Cambios minimos, siempre son completos, sin inventar tood a base del proyecto y lo  que se requiera
 
-
+26. No Realizar Cambios minimos, siempre son completos, sin inventar tood a base del proyecto y lo que se requiera
 
 Optimización
 
@@ -237,33 +234,28 @@ Colores permitidos: ✅ Gradientes from-purple-600 to-blue-600 o neón cyan-mage
 Contenido private → requiere verificación de NFT o suscripción premium
 No mofificar la animacion de particulas salvo que se te solicite, no rompas la logica
 
-
-
 4. CONFIGURACIÓN DE HERRAMIENTAS
-Herramientas de Desarrollo
+   Herramientas de Desarrollo
 
 Consola: PowerShell (Windows) – nunca Linux
 Idioma: Español MX UTF-8
 Dudas → PREGUNTAR ANTES de proceder
-Proteger  los archivos con caractes " ` " para que no se corrompan
+Proteger los archivos con caractes " ` " para que no se corrompan
 protejer archivos con ´ en las vocales "á,é,í,ó,ú,ñ" , si hay archivos que fallte vocales por
 caracter corrupto o no se leen correctamente Ejemplo: "copíloto" correcto , incorrecto "coplot", país "país" correcto, incorrecto "pais o pas", "mañanero" correcto, incorrecto "manero", etc...
 Durante el analisis o crrecion de archivos si hay palabras sin vocales agregalas o preseten los sintomas antes mencionados correjir si no asbes que vocal o palabra es notificar primero antes de hacer cambio
 
+Comentarios y su uso
 
-
-
- Comentarios y su uso
-
- Ageragr comentarios a los archivos que no cuenten con ellos
- y en donde se requiera y sea importante para justificacr que accion se realiza por ejemplo "
-    for (const [sessionId, _serverId] of this.sessionMap.entries())
-      // Simple cleanup based on session timeout
-      // In a real implementation, you'd track session creation time
-      if (Math.random() < 0.1)
-        // 10% chance to clean up (simulate expired sessions)
-        this.sessionMap.delete(sessionId);
-        cleanedCount++;"
+Ageragr comentarios a los archivos que no cuenten con ellos
+y en donde se requiera y sea importante para justificacr que accion se realiza por ejemplo "
+for (const [sessionId, _serverId] of this.sessionMap.entries())
+// Simple cleanup based on session timeout
+// In a real implementation, you'd track session creation time
+if (Math.random() < 0.1)
+// 10% chance to clean up (simulate expired sessions)
+this.sessionMap.delete(sessionId);
+cleanedCount++;"
 
     Si se detecta comentarios en el archivos en ingles cambialos a español ES-MX UTF-8
     Al crear archivos verificar que no existan, si existen preguntar al usuario si desea sobreescribirlos, si no desea sobreescribirlos preguntar al usuario si desea crear un nuevo archivo con un nombre diferente justificando la necesidad de crear un nuevo archivo , se agrega comentario general del archivo y su uso por ejemplo:
@@ -290,14 +282,11 @@ Durante el analisis o crrecion de archivos si hay palabras sin vocales agregalas
     // 5. Manejo de tecla ESC y click en overlay para cerrar
     // 6. Animaciones suaves de entrada/salida (fade + scale)"
 
-
-
 API y Scripts Privados
 
 Solo existen localmente → protegidos en .gitignore
 API keys en .env → nunca en código
 No documentar en documentación pública
-
 
 5. TESTING Y CALIDAD
 
@@ -324,8 +313,5 @@ Patrones de Diseño
 Singleton para servicios Core: Exportar una instancia por defecto (export const serviceName = new ServiceName();) además de la clase.
 Componentes por dominio: Admin en src/components/admin/, UI en src/components/ui/, etc.
 
-
 ¡ESTAS REGLAS SON INQUEBRANTABLES!
 Cualquier desviación debe justificarse y aprobarse explícitamente.
-
-

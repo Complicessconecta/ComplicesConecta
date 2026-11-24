@@ -43,7 +43,7 @@ export default {
     extend: {
       // Habilitar prefijos automáticos para propiedades modernas
       backdropBlur: {
-        xs: '2px',
+        xs: "2px",
       },
       spacing: {
         "18": "4.5rem",

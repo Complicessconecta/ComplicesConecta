@@ -58,11 +58,13 @@ serve(async (req: Request) => {
 
     // Combinar moderadores y admins
     const allModerators = [
-      ...(moderators || []).map((m: { user_id: string; level: string | null }) => ({
-        user_id: m.user_id,
-        level: m.level,
-        is_admin: false,
-      })),
+      ...(moderators || []).map(
+        (m: { user_id: string; level: string | null }) => ({
+          user_id: m.user_id,
+          level: m.level,
+          is_admin: false,
+        }),
+      ),
 
       ...(admins || []).map((a: { id: string }) => ({
         user_id: a.id,
@@ -124,19 +126,22 @@ serve(async (req: Request) => {
 
         const totalMinutes =
           sessions?.reduce(
-            (sum: number, s: { total_minutes?: number }) => sum + (s.total_minutes || 0),
+            (sum: number, s: { total_minutes?: number }) =>
+              sum + (s.total_minutes || 0),
             0,
           ) || 0;
 
         const reportsReviewed =
           sessions?.reduce(
-            (sum: number, s: { reports_reviewed?: number }) => sum + (s.reports_reviewed || 0),
+            (sum: number, s: { reports_reviewed?: number }) =>
+              sum + (s.reports_reviewed || 0),
             0,
           ) || 0;
 
         const actionsTaken =
           sessions?.reduce(
-            (sum: number, s: { actions_taken?: number }) => sum + (s.actions_taken || 0),
+            (sum: number, s: { actions_taken?: number }) =>
+              sum + (s.actions_taken || 0),
             0,
           ) || 0;
 
@@ -155,7 +160,8 @@ serve(async (req: Request) => {
 
         const totalRevenue =
           investments?.reduce(
-            (sum: number, inv: { amount_mxn?: string | number }) => sum + parseFloat(String(inv.amount_mxn || "0")),
+            (sum: number, inv: { amount_mxn?: string | number }) =>
+              sum + parseFloat(String(inv.amount_mxn || "0")),
             0,
           ) || 0;
 

@@ -219,7 +219,7 @@ const Info = () => {
                     variant="outline"
                     className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
                   >
-                    Ms Informacin
+                    Más Información
                   </Button>
                 </div>
               </CardContent>

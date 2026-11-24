@@ -29,6 +29,18 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
   const { mode, setMode } = useBgMode();
   const { preferences, setParticlesEnabled } = useBackgroundPreferences();
 
+  // Escape cierra el modal (el overlay y el botón Cerrar ya lo hacían).
+  // Un solo overlay a la vez: el modal vive en un portal a document.body
+  // con z-50, centrado y fondo oscurecido (ver `modal` abajo).
+  React.useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
+
   // Si no hay provider, mostrar mensaje o retornar null
   if (!context) {
     if (!isOpen) return null;

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useTokens } from "@/hooks/useTokens";
 import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
 import { resolveDemoAccountType } from "@/lib/app-config";
 import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from "lucide-react";
 import { TokenAiChat } from "@/components/tokens/TokenAiChat";
@@ -132,6 +133,10 @@ export function TokenDashboard({
   } = useTokens();
 
   const { user } = useAuth();
+  const { toast } = useToast();
+
+  // Reclamar 100 CMPX: el hook ya acredita el saldo; aquí se confirma
+  // con toast (antes el botón no daba ninguna señal).
 
   // En demo el balance debe ser el canónico por tipo de cuenta (useTokens:
   // single 1250/850, pareja 2000/1500), no el MOCK estático 5000/2500, para
@@ -143,6 +148,8 @@ export function TokenDashboard({
           ...MOCK_DEMO_DATA.balance,
           cmpxBalance: hookBalance.cmpxBalance,
           gtkBalance: hookBalance.gtkBalance,
+          cmpxStaked: hookBalance.cmpxStaked,
+          gtkStaked: hookBalance.gtkStaked,
         }
       : MOCK_DEMO_DATA.balance;
   // Use props if provided (demo mode), otherwise use hook data
@@ -229,6 +236,9 @@ export function TokenDashboard({
             <div>
               <p className="text-white/80">CMPX Total</p>
               <p className="text-3xl font-bold text-white">{totalCMPX}</p>
+              <p className="text-xs text-white/60">
+                {balance.cmpxBalance} disponibles + {balance.cmpxStaked} en staking
+              </p>
             </div>
             <div>
               <p className="text-white/80">GTK</p>
@@ -381,7 +391,16 @@ export function TokenDashboard({
                   </p>
                 </div>
                 <Button
-                  onClick={claimWorldIdReward}
+                  onClick={async () => {
+                    const ok = await claimWorldIdReward();
+                    toast({
+                      title: ok ? "¡100 CMPX reclamados!" : "No se pudo reclamar",
+                      description: ok
+                        ? "La recompensa de World ID se acreditó a tu balance"
+                        : "Inténtalo de nuevo más tarde",
+                      variant: ok ? "default" : "destructive",
+                    });
+                  }}
                   className="bg-green-600 hover:bg-green-700 text-white ml-2 shrink-0"
                 >
                   Reclamar 100 CMPX

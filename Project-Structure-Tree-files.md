@@ -443,6 +443,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       NotificationSettings.tsx
 |   |       PinSettings.tsx
 |   |       PrivacySettings.tsx
+|   |       settingsStorage.ts
 |   |       
 |   +---sharing
 |   |       TikTokShareButton.tsx
@@ -927,6 +928,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   ProjectInfo.tsx
 |   |   Requests.tsx
 |   |   Security.tsx
+|   |   Settings.tsx
 |   |   Shop.tsx
 |   |   Stories.tsx
 |   |   StoriesInfo.tsx
@@ -1041,6 +1043,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   +---chat
 |   |       ChatRoomService.ts
 |   |       index.ts
+|   |       
+|   +---clubs
+|   |       clubContentService.ts
 |   |       
 |   +---core
 |   |   |   AdvancedCacheService.ts

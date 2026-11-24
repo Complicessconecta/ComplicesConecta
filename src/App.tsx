@@ -64,6 +64,7 @@ const ChatInfo = lazyWithDefault(() => import("@/pages/ChatInfo"));
 const Matches = lazyWithDefault(() => import("@/pages/Matches"));
 const Requests = lazyWithDefault(() => import("@/pages/Requests"));
 const SwingerDashboard = lazyWithDefault(() => import("@/pages/SwingerDashboard"));
+const Settings = lazyWithDefault(() => import("@/pages/Settings"));
 const Premium = lazyWithDefault(() => import("@/pages/Premium"));
 const Dashboard = lazyWithDefault(() => import("@/pages/Dashboard"));
 
@@ -283,7 +284,11 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
-                            <Route path="/settings" element={<SwingerDashboard />} />
+                            <Route path="/settings" element={<Settings />} />
+                            <Route
+                              path="/swinger-dashboard"
+                              element={<SwingerDashboard />}
+                            />
                             <Route path="/premium" element={<Premium />} />
                             <Route
                               path="/dashboard"

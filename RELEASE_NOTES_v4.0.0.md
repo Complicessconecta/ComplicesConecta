@@ -1,5 +1,38 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 24 Nov 2026 - 11:49 (Fix Editor Demo + Dock Config + Chat + Legibilidad)
+
+- **🎭 Editor Demo — identidad real:**
+  - Causa raíz: `useAuth.signIn` (rama demo) sobrescribía `demo_user` sin `accountType` ni `type`; el gate del editor siempre era falso y caía en `generateMockSingle/Couple` (persona aleatoria en cada carga)
+  - `resolveDemoAccountType()` en `app-config.ts` resuelve el tipo desde accountType/type/profile_type/relationship_type/email
+  - El editor muestra la identidad demo real: Sofía (28) / Carmen & Roberto; redirección cruzada single↔couple; sin sesión → /auth
+  - Llamadas a `generateMockSingle/Couple` eliminadas del editor
+  - `getProfileType()` corregido: el engrane ya no abre el editor de single en sesión de pareja
+  - Balance demo pareja 2000/1500; edad demo 28 (canónica)
+
+- **🧭 Dock Config:**
+  - El icono Config ahora abre el modal de Animaciones estando en el editor
+
+- **💬 Chat:**
+  - Horas en HH:MM (antes ISO crudo)
+  - Hilo `min-w-0` + dock más ancho; panel contenido en el viewport
+  - Botón Desbloquear nítido (blur solo en la foto)
+
+- **🎨 Legibilidad / Contraste:**
+  - Modal Animaciones sin duplicado "Movimiento Reducido" ni "Desde useBgMode"; botones Cerrar/Lenta/Rápida/Fijo/Vídeo legibles
+  - Contraste en Requests, modal de /profile-single, badge "Solo Dueño" e ID demo real
+  - La foto del editor ya no tapa el aviso "Sube una foto clara..."
+  - Encabezado single 28 años en demo
+
+- **✅ Verificaciones:**
+  - `tsc --noEmit` (TS 5.7.2): 28 errores en la rama, 0 nuevos respecto a master 11d857b (los 4 en archivos tocados son preexistentes; el conteo de 10 del reporte previo era solo el subconjunto WorldIDButton v4 + `privacy_settings`)
+  - `vitest`: profiles.test.ts 24/24
+  - `prettier --check`: mismos 13 archivos fallan en master y en la rama (preexistente)
+  - ⚠️ Banner "NO DISPONIBLE" en /clubs/demo: no existe como texto en el repo — falta re-verificación en vivo tras el merge
+  - ⚠️ Sin verificación en vivo en producción — probar en teléfono tras merge + deploy
+
+---
+
 ## 📅 Bitácora 4 Feb 2026 - 01:30 (Fix Críticos: Demos + Invalid Hook Call + Security + OOM)
 
 - **🎭 Modo Demo Estabilizado:**

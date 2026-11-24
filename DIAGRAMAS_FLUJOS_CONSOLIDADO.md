@@ -2,6 +2,13 @@
 
 # 📊 DIAGRAMAS DE FLUJOS v3.9.2 - COMPLICESCONECTA v3.9.2
 
+#> Actualización 24 Nov 2026 11:49
+#> - **Acción**: Edita
+#> - **Nombre del flujo**: Demo — Resolución de identidad demo y redirección de editores (single ↔ couple)
+#> - **Ruta(s) afectada(s)**: `src/lib/app-config.ts`, `src/features/auth/useAuth.ts`, `src/pages/profiles/single/EditProfileSingle.tsx`, `src/pages/profiles/couple/EditProfileCouple.tsx`
+#> - **Resumen breve**: `useAuth.signIn` (rama demo) sobrescribía `demo_user` con un objeto forma-Profile sin `accountType` ni `type`; el gate del editor pedía `accountType === "single" || type === "single"` y siempre era falso, así que el editor caía en `generateMockSingle/Couple` (persona aleatoria en cada carga). Ahora `resolveDemoAccountType()` resuelve el tipo desde accountType/type/profile_type/relationship_type/email; el editor muestra la identidad demo real (Sofía, 28 / Carmen & Roberto), con redirección cruzada single↔couple y sin sesión → /auth. `getProfileType()` corregido (el engrane abría el editor de single en sesión de pareja). Llamadas a `generateMockSingle/Couple` eliminadas del editor.
+#> - **Justificación**: La identidad demo debe ser única y consistente entre perfil y editor (regla de espejo single/pareja y demo/producción). Sin este fix, el editor demo mostraba otra persona en cada carga y la edición demo era inutilizable.
+
 #> Actualización 26 Ene 2026 20:05
 #> - **Acción**: Agrega
 #> - **Nombre del flujo**: Demo Club (vista completa + acceso desde perfiles demo)

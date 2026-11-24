@@ -1,3 +1,42 @@
+# Reporte de Cambios - CómplicesConecta v3.9.7
+
+**Fecha:** 24 de Noviembre, 2026 - 11:49
+**Versión:** v3.9.7 (Fix Editor Demo + Dock Config + Chat + Legibilidad)
+**Responsable:** Lead Architect & Tech Lead
+
+## Resumen Ejecutivo
+
+Corrección del editor demo (mostraba una persona aleatoria distinta en cada carga), del icono Config del dock (no hacía nada), de las horas del chat (ISO crudo), del botón Desbloquear (borroso) y de varios textos con bajo contraste. Causa raíz del editor: `useAuth.signIn` (rama demo) sobrescribía `demo_user` con un objeto forma-Profile sin `accountType` ni `type`, así que el gate del editor siempre era falso y caía en el mock aleatorio.
+
+## Registro de Cambios Detallados
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **app-config.ts** | `src/lib/app-config.ts` | El tipo demo no se resolvía desde `profile_type`/`relationship_type` | **Agregado**. `resolveDemoAccountType()` resuelve el tipo desde accountType/type/profile_type/relationship_type/email | El editor y `getProfileType()` necesitan el tipo demo real |
+| **useAuth.ts** | `src/features/auth/useAuth.ts` | `signIn` (rama demo) sobrescribía `demo_user` sin `accountType` ni `type` | **Corregido**. Se conserva el tipo demo en `demo_user` | El gate del editor pedía accountType/type y siempre era falso → mock aleatorio |
+| **EditProfileSingle.tsx** | `src/pages/profiles/single/EditProfileSingle.tsx` | Mostraba una persona aleatoria distinta en cada carga | **Corregido**. Muestra la identidad demo real (Sofía, 28); redirección cruzada single↔couple; sin sesión → /auth | La identidad demo debe coincidir con el perfil |
+| **EditProfileCouple.tsx** | `src/pages/profiles/couple/EditProfileCouple.tsx` | Mismo bug: persona aleatoria en cada carga | **Corregido**. Muestra Carmen & Roberto; redirección cruzada; sin sesión → /auth | Espejo single/pareja |
+| **useTokens.ts** | `src/hooks/useTokens.ts` | Balance demo pareja incorrecto (1250/850); edad demo 25 | **Corregido**. Balance pareja 2000/1500; edad demo 28 (canónica) | Datos demo consistentes |
+| **Navigation.tsx** | `src/components/Navigation.tsx` | Icono Config no hacía nada | **Corregido**. Abre el modal de Animaciones estando en el editor | Los 10 iconos del dock deben tener acción |
+| **AnimationSettings.tsx** | `src/components/animations/AnimationSettings.tsx` | "Movimiento Reducido" duplicado; "Desde useBgMode" visible; botones ilegibles | **Corregido**. Sin duplicado ni texto dev; botones Cerrar/Lenta/Rápida/Fijo/Vídeo legibles | Contraste y limpieza |
+| **Chat.tsx** | `src/pages/Chat.tsx` | Horas como ISO crudo; hilo sin `min-w-0` | **Corregido**. Horas HH:MM; hilo `min-w-0` + dock más ancho | Legibilidad |
+| **PrivateGallery.tsx** | `src/components/chat/PrivateGallery.tsx` | Botón Desbloquear borroso/ilegible sobre foto con blur | **Corregido**. Botón nítido; blur solo en la foto | Legibilidad |
+| **Requests.tsx** | `src/pages/Requests.tsx` | Mensaje de invitación gris claro sobre morado claro, sin contraste | **Corregido**. Contraste | Legibilidad |
+| **ProfileSingle.tsx** | `src/pages/profiles/single/ProfileSingle.tsx` | Encabezado "18 años" vs "Tengo 28 años"; modal con bajo contraste; ID demo enmascarado | **Corregido**. Encabezado 28 años en demo; contraste del modal; ID demo real | Consistencia demo |
+| **ImageUpload.tsx** | `src/components/profiles/shared/ImageUpload.tsx` | La foto tapaba el aviso "Sube una foto clara..." | **Corregido**. La foto ya no tapa el aviso | Legibilidad |
+| **ClubProfileAdmin.tsx** | `src/components/clubs/ClubProfileAdmin.tsx` | Badge "Solo Dueño" morado oscuro sobre magenta, casi invisible | **Corregido**. Contraste | Legibilidad |
+| **MainLayout.tsx / ProfileLayout.tsx** | `src/components/layout/` | Panel de chat flotante desbordaba el borde derecho en escritorio | **Corregido**. Panel contenido en el viewport | Legibilidad/layout |
+
+## Verificaciones Post-Fix
+
+- ✅ `tsc --noEmit` (TS 5.7.2): 28 errores en la rama, 0 nuevos respecto a master 11d857b (los 4 en archivos tocados — useAuth.ts, ProfileSingle.tsx — son preexistentes en master; el conteo de 10 del reporte previo era solo el subconjunto WorldIDButton v4 ×6 + `privacy_settings` ×4)
+- ✅ `vitest`: profiles.test.ts 24/24 (ProfileSingle 2/3 y ProfileCouple 1 fallo preexistentes, idénticos en baseline)
+- ✅ `prettier --check`: mismos 13 archivos fallan en master y en la rama (preexistente)
+- ⚠️ Banner "NO DISPONIBLE" en /clubs/demo: no existe como texto en el repo (búsqueda exhaustiva) — no se pudo arreglar estáticamente; falta re-verificación en vivo tras el merge
+- ⚠️ Sin verificación en vivo en producción — Wacko debe probarlo en su teléfono tras merge + deploy
+
+---
+
 # Reporte de Cambios - CómplicesConecta v3.9.6
 
 **Fecha:** 4 de Febrero, 2026

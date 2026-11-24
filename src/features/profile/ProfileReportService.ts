@@ -79,7 +79,6 @@ export class ProfileReportService {
         return { success: false, error: "No puedes reportarte a ti mismo" };
       }
 
-      // Ajustado según esquema real: todos los campos obligatorios incluidos
       const insertData = {
         reporter_user_id: user.id,
         reported_user_id: params.reportedUserId,
@@ -340,11 +339,10 @@ export class ProfileReportService {
         .from("reports")
         .update({
           status: resolution,
-          resolved_at: new Date().toISOString(),
-          resolved_by: user.id,
-          description: notes
-            ? `${notes} (Resolution: ${resolution})`
-            : `Resolution: ${resolution}`, // Usar description para almacenar notas
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: user.id,
+          resolution_notes: notes ?? `Resolution: ${resolution}`,
+          updated_at: new Date().toISOString(),
         })
         .eq("id", reportId)
         .eq("report_type", "profile")

@@ -477,7 +477,7 @@ Responde SOLO con un JSON válido en este formato exacto:
     const { data, error } = await supabase
       .from("messages")
       .select("content, sender_id, created_at")
-      .eq("chat_room_id", chatId)
+      .eq("room_id", chatId)
       .order("created_at", { ascending: false })
       .limit(limit);
 

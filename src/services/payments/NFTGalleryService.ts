@@ -222,10 +222,21 @@ export class NFTGalleryService {
         throw new Error("Supabase no está disponible");
       }
 
+      const { data: gallery, error: galleryError } = await supabase
+        .from("nft_galleries")
+        .select("id")
+        .eq("id", galleryId)
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (galleryError) throw galleryError;
+      if (!gallery) {
+        throw new Error("La galería no existe o no pertenece al usuario");
+      }
+
       const { data: image, error } = await supabase
         .from("nft_gallery_images")
         .insert({
-          user_id: userId,
           gallery_id: galleryId,
           image_url: imageUrl,
           nft_network: "pending", // Aún no mintado

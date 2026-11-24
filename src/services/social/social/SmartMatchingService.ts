@@ -13,6 +13,9 @@ import { logger } from "@/lib/logger";
 import { neo4jService } from "@/services/core/graph/Neo4jService";
 import { AdvancedFeaturesService, type ConversationStarter } from "@/lib/advancedFeatures";
 
+const MATCH_PROFILE_FIELDS =
+  "id,user_id,account_type,age,age_range_min,age_range_max,avatar_url,bio,city,display_name,first_name,gender,interested_in,interests,is_active,is_blocked,is_demo,is_verified,last_active,latitude,location,longitude,max_distance,personality_traits,photo_verified,phone_verified_at,profile_theme,sexual_orientation,suspended,updated_at";
+
 export interface MatchFilters {
   ageRange?: { min: number; max: number };
   gender?: string[];
@@ -207,9 +210,10 @@ class SmartMatchingService {
 
       const { data: profile, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select(MATCH_PROFILE_FIELDS)
         .eq("user_id", userId)
-        .eq("is_public", true)
+        .eq("is_active", true)
+        .eq("is_blocked", false)
         .single();
 
       if (error || !profile) {
@@ -248,8 +252,10 @@ class SmartMatchingService {
 
       let query = supabase
         .from("profiles")
-        .select("*")
-        .eq("is_public", true)
+        .select(MATCH_PROFILE_FIELDS)
+        .eq("is_active", true)
+        .eq("is_blocked", false)
+        .or("suspended.is.null,suspended.eq.false")
         .neq("user_id", userId);
 
       // SEGURIDAD: Filtrar por tipo de usuario (demo vs real)
@@ -423,7 +429,7 @@ class SmartMatchingService {
       const verification = {
         isVerified: profile.is_verified || false,
         photoVerified: profile.photo_verified || false,
-        phoneVerified: profile.phone_verified || false,
+        phoneVerified: Boolean(profile.phone_verified_at),
         idVerified: profile.id_verified || false,
         coupleVerified: profile.couple_verified || false,
       };
@@ -432,7 +438,7 @@ class SmartMatchingService {
         id: profile.user_id || profile.id,
         name: profile.first_name || profile.name || "Usuario",
         age: profile.age || 25,
-        gender: profile.profile_type === "couple" ? "pareja" : "single",
+        gender: profile.account_type === "couple" ? "pareja" : "single",
         location: {
           city: profile.city || profile.location || "Ciudad",
           ...(profile.latitude && profile.longitude
@@ -612,9 +618,11 @@ class SmartMatchingService {
       const fofUserIds = fofRecommendations.map((f) => f.userId);
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select(MATCH_PROFILE_FIELDS)
         .in("user_id", fofUserIds)
-        .eq("is_public", true);
+        .eq("is_active", true)
+        .eq("is_blocked", false)
+        .or("suspended.is.null,suspended.eq.false");
 
       if (error || !profiles || profiles.length === 0) {
         logger.warn("No se encontraron perfiles para recomendaciones FOF");
@@ -783,9 +791,11 @@ class SmartMatchingService {
         const userIds = compatibleUserIds.map((c) => c.userId);
         const { data, error } = await supabase
           .from("profiles")
-          .select("*")
-          .in("id", userIds)
-          .eq("is_public", true)
+          .select(MATCH_PROFILE_FIELDS)
+          .in("user_id", userIds)
+          .eq("is_active", true)
+          .eq("is_blocked", false)
+          .or("suspended.is.null,suspended.eq.false")
           .limit(options.limit || 10);
 
         if (error) throw error;
@@ -795,11 +805,11 @@ class SmartMatchingService {
       // PASO 4: Fusión en memoria
       const mergedResults = candidates.map((candidate) => {
         const neo4jData = compatibleUserIds.find(
-          (c) => c.userId === candidate.id
+          (c) => c.userId === candidate.user_id
         );
         return {
           ...candidate,
-          userId: candidate.id,
+          userId: candidate.user_id,
           socialScore: neo4jData?.socialScore || 0,
           totalScore:
             (candidate.compatibility_score || 0) +

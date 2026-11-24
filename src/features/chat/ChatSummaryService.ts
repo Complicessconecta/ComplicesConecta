@@ -195,8 +195,7 @@ export class ChatSummaryService {
         summary_id: summaryId,
         user_id: userId,
         is_helpful: isHelpful,
-        rating: isHelpful ? 5 : 1,
-        feedback:
+        feedback_text:
           feedbackText || (isHelpful ? "Resumen útil" : "Resumen no útil"),
       });
 
@@ -551,8 +550,8 @@ ${messagesText}`;
 
     const { data, error } = await supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, sender:profiles(name)")
-      .eq("conversation_id", chatId)
+      .select("id, content, sender_id, created_at")
+      .eq("room_id", chatId)
       .order("created_at", { ascending: true })
       .limit(this.config.maxMessagesPerSummary);
 
@@ -561,16 +560,40 @@ ${messagesText}`;
       throw error;
     }
 
-    return (data || []).map((msg) => {
-      // Tipar correctamente el resultado de Supabase con relación sender:profiles(name)
-      const sender = msg.sender as { name?: string } | null | undefined;
-      return {
-        id: msg.id,
-        sender: sender?.name || "Usuario",
-        content: msg.content,
-        created_at: msg.created_at || "",
-      };
-    });
+    const senderIds = [
+      ...new Set(
+        (data || [])
+          .map((message) => message.sender_id)
+          .filter((senderId): senderId is string => senderId !== null),
+      ),
+    ];
+    const senderNames = new Map<string, string>();
+
+    if (senderIds.length > 0) {
+      const { data: profiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select("user_id, name")
+        .in("user_id", senderIds);
+
+      if (profilesError) {
+        logger.error("Error fetching message sender profiles", {
+          error: profilesError,
+          chatId,
+        });
+        throw profilesError;
+      }
+
+      for (const profile of profiles || []) {
+        senderNames.set(profile.user_id, profile.name);
+      }
+    }
+
+    return (data || []).map((msg) => ({
+      id: msg.id,
+      sender: (msg.sender_id && senderNames.get(msg.sender_id)) || "Usuario",
+      content: msg.content,
+      created_at: msg.created_at || "",
+    }));
   }
 
   /**

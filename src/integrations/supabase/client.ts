@@ -23,8 +23,18 @@ const safeLogger = logger || {
   error: (...args: SafeLogArg[]) => console.error("[ERROR]", ...args),
 };
 
+// Supabase clients need the project root, not the REST endpoint.
+const normalizeSupabaseUrl = (url: string) => {
+  const trimmedUrl = url.replace(/\/+$/, "");
+  return trimmedUrl.endsWith("/rest/v1")
+    ? trimmedUrl.slice(0, -"/rest/v1".length)
+    : trimmedUrl;
+};
+
 // Obtener las credenciales de Supabase desde variables de entorno con fallback a AppConfig
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || AppConfig.supabase.url;
+const supabaseUrl = normalizeSupabaseUrl(
+  import.meta.env.VITE_SUPABASE_URL || AppConfig.supabase.url,
+);
 const supabaseAnonKey =
   import.meta.env.VITE_SUPABASE_ANON_KEY || AppConfig.supabase.anonKey;
 

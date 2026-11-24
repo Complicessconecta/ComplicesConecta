@@ -493,7 +493,7 @@ export class NFTService {
     try {
       const { error } = await this.blockchainClient
         .from("couple_nft_requests" as const)
-        .update({ status: "approved", updated_at: new Date().toISOString() })
+        .update({ status: "approved" })
         .eq("id", requestId);
 
       if (error) throw error;

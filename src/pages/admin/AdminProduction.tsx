@@ -489,7 +489,8 @@ const AdminProduction = () => {
         type: inv.type || "profile",
         status: inv.status || "pending",
         created_at: inv.created_at,
-        decided_at: inv.decided_at || null,
+        decided_at:
+          inv.status && inv.status !== "pending" ? inv.updated_at || null : null,
       }));
 
       setInvitations(mappedInvitations);

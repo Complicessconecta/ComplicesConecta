@@ -15,6 +15,7 @@ import { logger } from "@/lib/logger";
 import { faceRecognitionService } from "@/services/verification/FaceRecognitionService";
 import { ocrService } from "@/services/verification/OCRService";
 import { smsService } from "@/services/verification/SMSService";
+import type { Database } from "@/types/supabase-generated";
 
 export interface VerificationResult {
   success: boolean;
@@ -523,7 +524,7 @@ export class UserVerificationService {
     },
   ): Promise<void> {
     try {
-      const updateData: Record<string, unknown> = {};
+      const updateData: Database["public"]["Tables"]["profiles"]["Update"] = {};
 
       switch (method) {
         case "world_id":

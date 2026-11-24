@@ -164,10 +164,10 @@ export const useAuth = () => {
 
       // Usar la vista unificada vw_profiles_unified para consultar ambas tablas según account_type
       const result = await supabase
-        .from("vw_profiles_unified")
+        .from("profiles")
         .select("*")
-        .eq("id", userId)
-        .single();
+        .eq("user_id", userId)
+        .maybeSingle();
 
       const { data, error } = result;
 
@@ -183,11 +183,8 @@ export const useAuth = () => {
       }
 
       if (data) {
-        // Manejar tanto array como objeto único
-        const profileData = Array.isArray(data) ? data[0] : data;
-
-        // CORRECCIÓN: Validar campos requeridos
-        if (!profileData || (Array.isArray(data) && data.length === 0)) {
+        const profileData = data;
+        if (!profileData) {
           logger.info("🔍 Perfil no encontrado o vacío", { userId });
           setProfile(null);
           return;
@@ -208,7 +205,7 @@ export const useAuth = () => {
           firstName: profileData?.first_name,
           email: profileData?.email,
         });
-        let resolvedRole = profileData?.role;
+        let resolvedRole = profileData.role || "user";
         try {
           const { data: isAdminRpc, error: adminError } = await supabase.rpc("is_admin");
           if (adminError) {
@@ -224,8 +221,11 @@ export const useAuth = () => {
           });
         }
 
-        const resolvedProfile = {
+        const resolvedProfile: Profile = {
           ...profileData,
+          created_at: profileData.created_at ?? undefined,
+          interested_in: profileData.interested_in?.join(", ") ?? null,
+          updated_at: profileData.updated_at ?? undefined,
           role: resolvedRole,
         };
 
@@ -240,9 +240,10 @@ export const useAuth = () => {
         try {
           setDatadogUser(
             resolvedProfile?.id || userId,
-            resolvedProfile?.email,
-            resolvedProfile?.display_name ||
-              resolvedProfile?.first_name,
+            resolvedProfile?.email ?? undefined,
+            resolvedProfile?.display_name ??
+              resolvedProfile?.first_name ??
+              undefined,
           );
         } catch (error) {
           logger.error("❌ Error actualizando usuario en Datadog RUM:", {

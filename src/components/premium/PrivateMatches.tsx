@@ -293,7 +293,7 @@ export const PrivateMatches: React.FC = () => {
         // Actualizar estado del match en tabla invitations
         const updatePayload = {
           status: action === "accept" ? "accepted" : "declined",
-          decided_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         };
 
         const { error } = await supabase

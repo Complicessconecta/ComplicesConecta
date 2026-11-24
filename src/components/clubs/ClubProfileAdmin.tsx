@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { AdminTabsContent } from "@/components/clubs/AdminTabsContent";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
+import type { Database } from "@/types/supabase-generated";
 
 interface ClubAnalytics {
   totalVisits: number;
@@ -70,12 +71,13 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
   }) => {
     if (!canPersist || !clubId) return;
 
-    const payload: Record<string, unknown> = {};
+    const payload: Database["public"]["Tables"]["clubs"]["Update"] = {};
     if (typeof partial.membership_tier !== "undefined") {
       payload.membership_tier = partial.membership_tier;
     }
     if (typeof partial.live_status !== "undefined") {
-      payload.live_status = partial.live_status;
+      payload.vibe_status = partial.live_status;
+      payload.vibe_status_updated_at = new Date().toISOString();
     }
     if (Object.keys(payload).length === 0) return;
 

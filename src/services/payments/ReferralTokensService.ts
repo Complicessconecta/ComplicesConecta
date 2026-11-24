@@ -272,7 +272,6 @@ export class ReferralTokensService {
         .from("referral_transactions")
         .insert({
           user_id: rewardData.referee_id,
-          referrer_id: rewardData.referrer_id,
           transaction_type: "earn",
           amount: rewardData.amount,
           balance_before: balanceBefore,

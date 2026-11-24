@@ -58,7 +58,7 @@ export const RealProvider: FC<RealProviderProps> = ({ children }) => {
       }
 
       if (filters?.profileType) {
-        query = query.eq("profile_type", filters.profileType);
+        query = query.eq("account_type", filters.profileType);
       }
 
       if (filters?.location) {

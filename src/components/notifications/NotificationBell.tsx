@@ -13,11 +13,11 @@ import { logger } from "@/lib/logger";
 
 interface NotificationItem {
   id: string;
-  type: "email" | "request" | "alert" | "system";
+  type: string;
   title: string;
   message: string;
   read: boolean;
-  created_at: string;
+  created_at: string | null;
   action_url?: string;
   sender_id?: string;
   sender_name?: string;
@@ -132,17 +132,34 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
       if (error) throw error;
 
       const formattedNotifications: NotificationItem[] =
-        data?.map((item: any) => ({
-          id: item.id,
-          type: item.type || "system",
-          title: item.title || "Notificación",
-          message: item.message || "",
-          read: item.read || false,
-          created_at: item.created_at,
-          action_url: item.action_url,
-          sender_id: item.sender_id,
-          sender_name: item.sender_name,
-        })) || [];
+        data?.map((item) => {
+          const payload =
+            item.data &&
+            typeof item.data === "object" &&
+            !Array.isArray(item.data)
+              ? item.data
+              : {};
+          return {
+            id: String(item.id),
+            type: item.type || "system",
+            title: item.title || "Notificación",
+            message: item.message || "",
+            read: item.read || false,
+            created_at: item.created_at,
+            action_url:
+              typeof payload.action_url === "string"
+                ? payload.action_url
+                : undefined,
+            sender_id:
+              typeof payload.sender_id === "string"
+                ? payload.sender_id
+                : undefined,
+            sender_name:
+              typeof payload.sender_name === "string"
+                ? payload.sender_name
+                : undefined,
+          };
+        }) || [];
 
       setNotifications(formattedNotifications);
       setUnreadCount(formattedNotifications.filter((n) => !n.read).length);
@@ -260,8 +277,12 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
     }
   };
 
-  const formatTimeAgo = (dateString: string) => {
+  const formatTimeAgo = (dateString: string | null) => {
+    if (!dateString) return "Sin fecha";
+
     const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return "Fecha desconocida";
+
     const now = new Date();
     const diffInMinutes = Math.floor(
       (now.getTime() - date.getTime()) / (1000 * 60),
@@ -423,7 +444,7 @@ interface NotificationItemProps {
   notification: NotificationItem;
   onMarkAsRead: (id: string) => void;
   onDelete: (id: string) => void;
-  formatTimeAgo: (date: string) => string;
+  formatTimeAgo: (date: string | null) => string;
   getNotificationIcon: (type: string) => React.ReactNode;
 }
 

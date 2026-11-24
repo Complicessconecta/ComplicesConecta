@@ -240,7 +240,6 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           first_name: formData.firstName,
           last_name: formData.lastName,
           display_name: formData.nickname,
-          nickname: formData.nickname,
           email: formData.email,
           phone: formData.phone,
           account_type: "single",

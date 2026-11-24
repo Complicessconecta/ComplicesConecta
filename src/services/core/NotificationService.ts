@@ -183,6 +183,14 @@ export class NotificationService {
    * Manejar nueva notificación
    */
   private handleNewNotification(data: any): void {
+    const payload =
+      data.data &&
+      typeof data.data === "object" &&
+      !Array.isArray(data.data)
+        ? data.data
+        : {};
+    const priority =
+      typeof payload.priority === "string" ? payload.priority : "medium";
     const notification: Notification = {
       id: data.id,
       userId: data.user_id,
@@ -192,8 +200,12 @@ export class NotificationService {
       data: data.data,
       read: data.read || false,
       createdAt: new Date(data.created_at),
-      actionUrl: data.action_url,
-      priority: data.priority || "medium",
+      actionUrl:
+        typeof payload.action_url === "string"
+          ? payload.action_url
+          : undefined,
+      priority:
+        priority === "low" || priority === "high" ? priority : "medium",
       icon: data.icon,
       imageUrl: data.image_url,
     };

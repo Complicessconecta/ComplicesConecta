@@ -222,7 +222,6 @@ export const saveDigitalFingerprint = async (
 
     const { error } = await supabase.from("digital_fingerprints").upsert(
       {
-        fingerprint_hash: fingerprint.combinedHash,
         user_id: userId,
         canvas_hash: fingerprint.canvasHash,
         canvas_data: fingerprint.canvasData,

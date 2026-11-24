@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import type { Tables } from "@/types/supabase-generated";
 
 export interface Invitation {
   id: string;
@@ -12,6 +13,18 @@ export interface Invitation {
   decided_at?: string | null;
   updated_at?: string | null;
 }
+
+const mapInvitation = (row: Tables<"invitations">): Invitation => ({
+  id: row.id,
+  from_profile: row.from_profile,
+  to_profile: row.to_profile,
+  message: row.message || "Sin mensaje",
+  type: row.type,
+  status: row.status,
+  created_at: row.created_at,
+  updated_at: row.updated_at,
+  decided_at: row.status && row.status !== "pending" ? row.updated_at : null,
+});
 
 export interface GalleryPermission {
   id: string;
@@ -58,7 +71,7 @@ export const invitationService = {
         throw new Error("Supabase no está disponible");
       }
 
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("invitations")
         .insert({
           from_profile: from_profile,
@@ -78,7 +91,7 @@ export const invitationService = {
       }
 
       logger.info("✅ Invitación enviada exitosamente");
-      return data as Invitation;
+      return mapInvitation(data);
     } catch (error) {
       logger.error("❌ Error en sendInvitation:", {
         error: error instanceof Error ? error.message : String(error),
@@ -126,11 +139,7 @@ export const invitationService = {
       if (error) throw error;
 
       // Mapear datos de Supabase al formato esperado
-      const mappedData = {
-        ...data,
-      };
-
-      return mappedData;
+      return mapInvitation(data);
     } catch {
       // Fallback to mock data
       const invitation = mockInvitations.find((inv) => inv.id === invitationId);
@@ -148,11 +157,11 @@ export const invitationService = {
         throw new Error("Supabase no está disponible");
       }
 
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("invitations")
         .update({
           status: "accepted",
-          decided_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         })
         .eq("id", invitationId);
 
@@ -182,11 +191,11 @@ export const invitationService = {
         throw new Error("Supabase no está disponible");
       }
 
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("invitations")
         .update({
           status: "declined",
-          decided_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         })
         .eq("id", invitationId);
 
@@ -241,15 +250,8 @@ export const invitationService = {
         throw receivedError || sentError;
       }
 
-      const received = ((receivedData as any) || []).map((inv: any) => ({
-        ...inv,
-        message: inv.message || "Sin mensaje",
-      })) as Invitation[];
-
-      const sent = ((sentData as any) || []).map((inv: any) => ({
-        ...inv,
-        message: inv.message || "Sin mensaje",
-      })) as Invitation[];
+      const received = (receivedData || []).map(mapInvitation);
+      const sent = (sentData || []).map(mapInvitation);
 
       return { received, sent };
     } catch (error) {

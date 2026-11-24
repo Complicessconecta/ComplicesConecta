@@ -760,8 +760,8 @@ export default function TokensInfo() {
                                 borderRadius: "8px",
                                 color: "#fff",
                               }}
-                              formatter={(value?: number) => [
-                                `${(value ?? 0).toLocaleString()} CMPX`,
+                              formatter={(value) => [
+                                `${Number(value ?? 0).toLocaleString()} CMPX`,
                                 "CMPX",
                               ]}
                             />

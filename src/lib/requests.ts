@@ -143,7 +143,7 @@ export const RequestsService = {
         .from("invitations")
         .update({
           status: response as InvitationStatus,
-          decided_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         })
         .eq("id", requestId);
 
@@ -202,6 +202,10 @@ export const RequestsService = {
       // Transformar datos para que coincidan con ConnectionRequestWithProfile
       const transformedData = (data ?? []).map((item: any) => ({
         ...item,
+        decided_at:
+          item.status && item.status !== "pending"
+            ? item.updated_at || null
+            : null,
         profile: (item as any).sender_profile, // Para solicitudes recibidías, el perfil es el remitente
       }));
 
@@ -255,6 +259,10 @@ export const RequestsService = {
       // Transformar datos para que coincidan con ConnectionRequestWithProfile
       const transformedData = (data ?? []).map((item: any) => ({
         ...item,
+        decided_at:
+          item.status && item.status !== "pending"
+            ? item.updated_at || null
+            : null,
         profile: (item as any).receiver_profile, // Para solicitudes enviadías, el perfil es el destinatario
       }));
 

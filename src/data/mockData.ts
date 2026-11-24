@@ -27,6 +27,7 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
   email: "sofia.demo@complicesconecta.app",
   phone: "+525500000001",
   profile_theme: "Clásico",
+  privacy_settings: null,
   sexual_orientation: ["Heterosexual"],
   age: 28,
   account_type: "single",
@@ -121,6 +122,7 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   email: "pareja.demo@complicesconecta.app",
   phone: "+525500000002",
   profile_theme: "Clásico",
+  privacy_settings: null,
   sexual_orientation: ["Heterosexual"],
   age: 32,
   account_type: "couple",
@@ -205,4 +207,3 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   nftImages: [nftImage1, nftImage2, nftImage3],
   nft_images: [nftImage1, nftImage2, nftImage3],
 };
-

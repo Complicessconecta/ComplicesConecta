@@ -54,14 +54,16 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       if (fetchError) throw fetchError;
 
       const photosWithUrls = data?.avatar_url
-        ? [{
-            id: `${data.id}-0`,
-            url: data.avatar_url,
-            partner: "el" as "el" | "ella",
-            isMain: true,
-            profileId: data.id,
-            uploadedAt: new Date(data.created_at || new Date()),
-          }]
+        ? [
+            {
+              id: `${data.id}-0`,
+              url: data.avatar_url,
+              partner: "el" as "el" | "ella",
+              isMain: true,
+              profileId: data.id,
+              uploadedAt: new Date(data.created_at || new Date()),
+            },
+          ]
         : [];
 
       setPhotos(photosWithUrls);
@@ -142,7 +144,7 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       logger.error("Error uploading photo:", {
         error: err instanceof Error ? err.message : String(err),
       });
-      throw new Error("Error al subir la foto");
+      throw new Error("Error al subir la foto", { cause: err });
     }
   };
 
@@ -196,7 +198,7 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       logger.error("Error deleting photo:", {
         error: err instanceof Error ? err.message : String(err),
       });
-      throw new Error("Error al eliminar la foto");
+      throw new Error("Error al eliminar la foto", { cause: err });
     }
   };
 
@@ -233,7 +235,7 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       logger.error("Error setting main photo:", {
         error: err instanceof Error ? err.message : String(err),
       });
-      throw new Error("Error al establecer foto principal");
+      throw new Error("Error al establecer foto principal", { cause: err });
     }
   };
 

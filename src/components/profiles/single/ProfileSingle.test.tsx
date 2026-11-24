@@ -5,9 +5,20 @@ import ProfileSingle from "@/pages/profiles/single/ProfileSingle";
 import EditProfileSingle from "@/pages/profiles/single/EditProfileSingle";
 import React from "react";
 
-// Objetos estables para el mock
+// Objetos estables para el mock (identidad del perfil demo canónico:
+// MOCK_PROFILE_SINGLE en src/data/mockData.ts — display_name "Sofía Demo").
+// El componente muestra profile.display_name ?? profile.name ?? first_name,
+// así que el mock debe traer el nombre: sin él cae al fallback "Usuario"
+// y el test no puede encontrar a Sofía.
 const mockUser = { id: "test-user-1", email: "test@example.com" };
-const mockProfile = { id: "test-profile-1", is_demo: true };
+const mockProfile = {
+  id: "test-profile-1",
+  is_demo: true,
+  display_name: "Sofía Demo",
+  name: "Sofía Demo",
+  age: 28,
+  location: "Ciudad de México, México",
+};
 
 // Mock de hooks y servicios
 vi.mock("@/features/auth/useAuth", () => ({
@@ -62,8 +73,7 @@ vi.mock("@/features/profile/useProfileTheme", () => ({
     setNavbarStyle: vi.fn(),
   }),
   useProfileTheme: () => ({
-    backgroundClass:
-      "bg-linear-to-br from-purple-900 via-pink-900 to-red-900",
+    backgroundClass: "bg-linear-to-br from-purple-900 via-pink-900 to-red-900",
     textClass: "text-white",
   }),
   getNavbarStyles: () => ({}),
@@ -107,8 +117,9 @@ describe("ProfileSingle", () => {
       () => {
         expect(screen.queryByText("Cargando perfil...")).toBeNull();
         // Validar que se renderiza el perfil demo (nombre y ubicación visibles)
-        expect(screen.getByText("Sofía López")).toBeTruthy();
-        expect(screen.getByText(/CDMX, México/i)).toBeTruthy();
+        // El nombre aparece varias veces (header + secciones): getAllByText.
+        expect(screen.getAllByText("Sofía Demo").length).toBeGreaterThan(0);
+        expect(screen.getByText(/Ciudad de México/i)).toBeTruthy();
       },
       { timeout: 4000 },
     );
@@ -127,7 +138,7 @@ describe("ProfileSingle", () => {
     await waitFor(() => {
       expect(screen.queryByText("Cargando perfil...")).toBeNull();
       // Verificar que se renderiza algún contenedor con el nombre visible
-      const nameEl = screen.getByText("Sofía López");
+      const nameEl = screen.getAllByText("Sofía Demo")[0];
       const container = nameEl.closest("div");
       expect(container).toBeTruthy();
     });

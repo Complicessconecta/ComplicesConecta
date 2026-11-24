@@ -54,7 +54,7 @@ export const safeWaitFor = async (
   const timeout = options?.timeout || MAX_WAIT_FOR_TIMEOUT;
   const maxRetries = options?.maxRetries || MAX_RETRIES;
   let retries = 0;
-  let lastError: Error | null = null;
+  let lastError: Error | null;
 
   while (retries < maxRetries) {
     try {
@@ -66,6 +66,7 @@ export const safeWaitFor = async (
       if (retries >= maxRetries) {
         throw new Error(
           `waitFor falló después de ${maxRetries} intentos: ${lastError?.message || "Error desconocido"}`,
+          { cause: error },
         );
       }
       // Esperar un poco antes de reintentar

@@ -13,6 +13,15 @@ export default defineConfig({
     globals: true,
     environment: "happy-dom",
     setupFiles: ["./src/tests/setup.ts"],
+    // Variables de entorno mínimas para los tests. Sin .env en CI,
+    // import.meta.env.VITE_SUPABASE_* es undefined y los suites que
+    // importan el cliente de Supabase rompen en el import; además
+    // emailService.test.ts exige que estén definidas. Son valores
+    // ficticios: ningún test hace llamadas reales a Supabase.
+    env: {
+      VITE_SUPABASE_URL: "https://test.supabase.co",
+      VITE_SUPABASE_ANON_KEY: "test-anon-key",
+    },
     include: [
       "src/tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
       "src/components/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",

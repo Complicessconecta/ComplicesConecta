@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Switch } from "@/components/ui/switch";
 import { ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,9 +96,11 @@ interface CouplePrivacySectionProps {
  * Ajustes de privacidad del perfil de pareja (modelo del video).
  * SOLO perfil propio: el padre no la renderiza para visitantes.
  *
- * En producción los ajustes viven en profiles.privacy_settings (Json):
- * se leen al montar y se guardan en la cuenta con cada cambio, mezclados
- * con las demás claves del JSON (p. ej. media_public) para no borrarlas.
+ * En producción los ajustes viven en couple_profiles.privacy_settings
+ * (Json), clave por user_id (la fila de pareja se crea en el registro con
+ * user_id = id del usuario): se leen al montar y se guardan en la cuenta
+ * con cada cambio, mezclados con las demás claves del JSON (p. ej.
+ * media_public) para no borrarlas. La columna NO existe en profiles.
  * En demo (o sin cliente Supabase) se usa localStorage por dispositivo
  * (clave `couple_privacy:<userId>`), igual que el PIN. Si la escritura
  * en la BD falla, el cambio se guarda en local como respaldo.
@@ -139,10 +146,10 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
     void (async () => {
       try {
         const { data, error } = await supabase
-          .from("profiles")
+          .from("couple_profiles")
           .select("privacy_settings")
-          .eq("id", userId)
-          .single();
+          .eq("user_id", userId)
+          .maybeSingle();
         if (cancelled) return;
         const stored = data?.privacy_settings;
         if (
@@ -158,12 +165,10 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
         const extras: Record<string, Json> = {};
         const managed: Partial<CouplePrivacySettings> = {};
         Object.keys(record).forEach((key) => {
-          if (
-            key in DEFAULT_PRIVACY &&
-            typeof record[key] === "boolean"
-          ) {
-            managed[key as keyof CouplePrivacySettings] =
-              record[key] as boolean;
+          if (key in DEFAULT_PRIVACY && typeof record[key] === "boolean") {
+            managed[key as keyof CouplePrivacySettings] = record[
+              key
+            ] as boolean;
           } else {
             extras[key] = record[key];
           }
@@ -196,13 +201,15 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
         ...next,
       };
       void supabase
-        .from("profiles")
+        .from("couple_profiles")
         .update({ privacy_settings: merged })
-        .eq("id", userId)
-        .then(({ error }) => {
-          if (error) {
+        .eq("user_id", userId)
+        .select("id")
+        .then(({ data, error }) => {
+          if (error || !data?.length) {
             logger.error("Error guardando privacy_settings:", {
-              error: error.message,
+              error:
+                error?.message ?? "sin fila couple_profiles para este usuario",
             });
             saveToLocalStorage(next);
           } else {

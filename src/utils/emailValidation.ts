@@ -43,7 +43,9 @@ export const checkEmailUniqueness = async (email: string): Promise<boolean> => {
     return !profiles || profiles.length === 0;
   } catch (error) {
     logger.error("Error in checkEmailUniqueness:", { error });
-    throw new Error("Error verificando disponibilidad del email");
+    throw new Error("Error verificando disponibilidad del email", {
+      cause: error,
+    });
   }
 };
 
@@ -114,4 +116,3 @@ export const validateEmailRealtime = async (
 
   return () => clearTimeout(timeoutId);
 };
-

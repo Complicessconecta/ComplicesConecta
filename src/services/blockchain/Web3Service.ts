@@ -9,11 +9,7 @@ import { logger } from "@/lib/logger";
  * Tipos de eventos de Web3
  */
 export type Web3EventType =
-  | "accountChanged"
-  | "chainChanged"
-  | "connect"
-  | "disconnect"
-  | "message";
+  "accountChanged" | "chainChanged" | "connect" | "disconnect" | "message";
 
 /**
  * Interfaz para evento de Web3
@@ -123,7 +119,10 @@ export class Web3Service {
   private isConnected: boolean = false;
   private currentAccount: string | null = null;
   private currentChainId: number | null = null;
-  private eventListeners: Map<Web3EventType, Set<(...args: unknown[]) => void>> = new Map();
+  private eventListeners: Map<
+    Web3EventType,
+    Set<(...args: unknown[]) => void>
+  > = new Map();
 
   private constructor() {
     this.initializeEventListeners();
@@ -188,17 +187,17 @@ export class Web3Service {
       const ethereum = (window as WindowWithEthereum).ethereum;
       if (!ethereum) throw new Error("Ethereum provider not available");
 
-      const balance = await ethereum.request({
+      const balance = (await ethereum.request({
         method: "eth_getBalance",
         params: [this.currentAccount, "latest"],
-      }) as string;
+      })) as string;
 
       // Convertir de Wei a Ether/MATIC
       const balanceInEther = parseInt(balance, 16) / 10 ** 18;
       return balanceInEther.toFixed(6);
     } catch (error) {
       logger.error("Error obteniendo balance:", { error });
-      throw new Error("Error al obtener el balance");
+      throw new Error("Error al obtener el balance", { cause: error });
     }
   }
 
@@ -233,9 +232,9 @@ export class Web3Service {
       const ethereum = (window as WindowWithEthereum).ethereum;
       if (!ethereum) throw new Error("Ethereum provider not available");
 
-      const accounts = await ethereum.request({
+      const accounts = (await ethereum.request({
         method: "eth_requestAccounts",
-      }) as string[];
+      })) as string[];
 
       if (accounts.length === 0) {
         throw new Error("No se seleccionó ninguna cuenta");
@@ -245,9 +244,9 @@ export class Web3Service {
       this.isConnected = true;
 
       // Obtener chain ID
-      const chainId = await ethereum.request({
+      const chainId = (await ethereum.request({
         method: "eth_chainId",
-      }) as string;
+      })) as string;
       this.currentChainId = parseInt(chainId, 16);
 
       logger.info("Web3 conectado exitosamente", {
@@ -260,7 +259,7 @@ export class Web3Service {
       return this.currentAccount ?? "";
     } catch (error) {
       logger.error("Error conectando a Web3:", { error });
-      throw new Error("Error al conectar a MetaMask");
+      throw new Error("Error al conectar a MetaMask", { cause: error });
     }
   }
 
@@ -302,7 +301,7 @@ export class Web3Service {
         await this.addNetwork(chainId);
       } else {
         logger.error("Error cambiando de red:", { error });
-        throw new Error("Error al cambiar de red");
+        throw new Error("Error al cambiar de red", { cause: error });
       }
     }
   }
@@ -333,10 +332,13 @@ export class Web3Service {
         ],
       });
 
-      logger.info("Red agregada exitosamente", { chainId, networkName: network.name });
+      logger.info("Red agregada exitosamente", {
+        chainId,
+        networkName: network.name,
+      });
     } catch (error) {
       logger.error("Error agregando red:", { error });
-      throw new Error("Error al agregar la red");
+      throw new Error("Error al agregar la red", { cause: error });
     }
   }
 
@@ -352,23 +354,25 @@ export class Web3Service {
       const ethereum = (window as WindowWithEthereum).ethereum;
       if (!ethereum) throw new Error("Ethereum provider not available");
 
-      const signature = await ethereum.request({
+      const signature = (await ethereum.request({
         method: "personal_sign",
         params: [message, this.currentAccount],
-      }) as string;
+      })) as string;
 
       logger.info("Mensaje firmado exitosamente", { message });
       return signature;
     } catch (error) {
       logger.error("Error firmando mensaje:", { error });
-      throw new Error("Error al firmar el mensaje");
+      throw new Error("Error al firmar el mensaje", { cause: error });
     }
   }
 
   /**
    * Envía una transacción
    */
-  public async sendTransaction(transaction: Record<string, unknown>): Promise<string> {
+  public async sendTransaction(
+    transaction: Record<string, unknown>,
+  ): Promise<string> {
     if (!this.currentAccount) {
       throw new Error("No hay cuenta conectada");
     }
@@ -377,23 +381,26 @@ export class Web3Service {
       const ethereum = (window as WindowWithEthereum).ethereum;
       if (!ethereum) throw new Error("Ethereum provider not available");
 
-      const txHash = await ethereum.request({
+      const txHash = (await ethereum.request({
         method: "eth_sendTransaction",
         params: [transaction],
-      }) as string;
+      })) as string;
 
       logger.info("Transacción enviada exitosamente", { txHash });
       return txHash;
     } catch (error) {
       logger.error("Error enviando transacción:", { error });
-      throw new Error("Error al enviar la transacción");
+      throw new Error("Error al enviar la transacción", { cause: error });
     }
   }
 
   /**
    * Añade un listener de eventos
    */
-  public addEventListener(type: Web3EventType, callback: (...args: unknown[]) => void): void {
+  public addEventListener(
+    type: Web3EventType,
+    callback: (...args: unknown[]) => void,
+  ): void {
     if (!this.eventListeners.has(type)) {
       this.eventListeners.set(type, new Set());
     }
@@ -403,7 +410,10 @@ export class Web3Service {
   /**
    * Remueve un listener de eventos
    */
-  public removeEventListener(type: Web3EventType, callback: (...args: unknown[]) => void): void {
+  public removeEventListener(
+    type: Web3EventType,
+    callback: (...args: unknown[]) => void,
+  ): void {
     const listeners = this.eventListeners.get(type);
     if (listeners) {
       listeners.delete(callback);
@@ -493,4 +503,3 @@ export class Web3Service {
 
 // Exportar instancia singleton
 export const web3Service = Web3Service.getInstance();
-

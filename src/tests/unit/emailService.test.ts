@@ -4,11 +4,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { EmailService } from "@/utils/emailService";
 
-// Mock import.meta.env
-vi.mock("import.meta.env", () => ({
-  VITE_SUPABASE_URL: "https://test.supabase.co",
-  VITE_SUPABASE_ANON_KEY: "test-anon-key",
-}));
+// Variables VITE_SUPABASE_* para tests: se definen en vitest.config.ts
+// (test.env). No se pueden mockear con vi.mock("import.meta.env").
 
 // Mock supabase client (usar vi.hoisted porque vi.mock se hoistea)
 const { mockSupabaseClient } = vi.hoisted(() => {

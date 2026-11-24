@@ -149,7 +149,7 @@ export function getAutoInterests(
     interestCategories.intermedio;
 
   // Agregar intereses seguros según el tipo de usuario y género
-  let additionalInterests: string[] = [];
+  let additionalInterests: string[];
 
   if (userType === "couple") {
     // Intereses para parejas (ambos géneros)
@@ -188,4 +188,3 @@ export function getAutoInterests(
   const combined = [...new Set([...baseInterests, ...additionalInterests])];
   return combined.slice(0, 8);
 }
-

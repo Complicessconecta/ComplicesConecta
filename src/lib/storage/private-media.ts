@@ -255,7 +255,6 @@ export function usePrivateMediaUrls(
 
   const placeholders = useMemo(
     () => storagePaths.map(() => PRIVATE_MEDIA_PLACEHOLDER),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [pathsKey],
   );
 

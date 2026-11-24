@@ -1785,6 +1785,7 @@ function ProfileCouple() {
             {isOwnProfile && (
               <CouplePrivacySection
                 userId={user?.id ?? profile?.profile_id ?? ""}
+                isDemoMode={isDemoMode}
               />
             )}
 

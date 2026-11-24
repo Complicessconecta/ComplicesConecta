@@ -12,6 +12,52 @@ import { supabase } from "@/lib/supabase";
 import { logger } from "@/lib/logger";
 import { performanceMonitoring } from "@/services/core/PerformanceMonitoringService";
 import { generateDemoUUID } from "@/lib/demo-uuid";
+import { safeGetItem } from "@/lib/safe-storage";
+
+/** Clave de localStorage con los ids de posts con like en modo demo. */
+export const DEMO_LIKED_POSTS_KEY = "demo_liked_posts";
+
+/** Modo demo: sesión local sin Supabase Auth (single@ / pareja@). */
+export function isDemoMode(): boolean {
+  try {
+    return (
+      safeGetItem<string>("demo_authenticated", {
+        validate: true,
+        defaultValue: "false",
+      }) === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+/** Lee los ids de posts con like guardados en modo demo. */
+export function getDemoLikedPostIds(): string[] {
+  try {
+    const raw = localStorage.getItem(DEMO_LIKED_POSTS_KEY) || "[]";
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed)
+      ? parsed.filter((id): id is string => typeof id === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Invierte el like demo de un post en localStorage y devuelve el nuevo estado. */
+export function toggleDemoLikedPost(postId: string): boolean {
+  const liked = getDemoLikedPostIds();
+  const isLiked = liked.includes(postId);
+  const next = isLiked
+    ? liked.filter((id) => id !== postId)
+    : [...liked, postId];
+  try {
+    localStorage.setItem(DEMO_LIKED_POSTS_KEY, JSON.stringify(next));
+  } catch {
+    // localStorage no disponible: el estado solo vive en memoria de la vista.
+  }
+  return !isLiked;
+}
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return typeof value === "object" && value !== null;
@@ -122,7 +168,10 @@ export class PostsService {
   }
 
   /**
-   * Generar datos mock para posts
+   * Generar datos mock para posts.
+   * DETERMINISTA: ids, contadores y orden son fijos entre cargas (sin
+   * Math.random ni Date.now en los ids), para que los likes guardados en
+   * localStorage y el orden del feed no cambien al recargar.
    */
   generateMockPosts(count: number = 20): Post[] {
     const mockPosts: Post[] = [];
@@ -141,10 +190,20 @@ export class PostsService {
       "Celebrando la diversidad en nuestras relaciones 💕",
       "La confianza es la base de todo 💪",
     ];
+    const authors = [
+      "Ana García",
+      "Carlos López",
+      "María & Juan",
+      "Laura Martínez",
+      "Roberto Silva",
+      "Sofía & David",
+      "Elena Ruiz",
+      "Diego Torres",
+    ];
 
     for (let i = 0; i < count; i++) {
-      const postType = postTypes[Math.floor(Math.random() * postTypes.length)]!;
-      const content = contents[Math.floor(Math.random() * contents.length)];
+      const postType = postTypes[i % postTypes.length]!;
+      const content = contents[i % contents.length];
 
       // Fotos demo con Unsplash (picsum fallaba en el teléfono y el Feed
       // mostraba el degradado "✨ Image" del onError). URLs del mismo pool
@@ -173,37 +232,28 @@ export class PostsService {
         "https://i.pravatar.cc/150?img=32",
       ];
 
+      // Contadores fijos por posición: el mismo post siempre muestra el
+      // mismo número de likes/comentarios/compartidos.
+      const authorIndex = i % authors.length;
+      const authorId = (i % 10) + 1;
+
       mockPosts.push({
-        id: generateDemoUUID(`post-${i + 1}-${Date.now()}`),
-        user_id: generateDemoUUID(`user-${Math.floor(Math.random() * 10) + 1}`),
-        profile_id: generateDemoUUID(
-          `profile-${Math.floor(Math.random() * 10) + 1}`,
-        ),
+        id: generateDemoUUID(`demo-post-${i + 1}`),
+        user_id: generateDemoUUID(`demo-post-user-${authorId}`),
+        profile_id: generateDemoUUID(`demo-post-profile-${authorId}`),
         content: content ?? "",
         post_type: postType,
         ...(postType === "photo" ? { image_url: photoUrl } : {}),
-        likes_count: Math.floor(Math.random() * 50) + 1,
-        comments_count: Math.floor(Math.random() * 20) + 1,
-        shares_count: Math.floor(Math.random() * 10) + 1,
-        created_at: new Date(
-          Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
-        ).toISOString(),
+        likes_count: ((i * 7) % 50) + 1,
+        comments_count: ((i * 3) % 20) + 1,
+        shares_count: ((i * 2) % 10) + 1,
+        created_at: new Date(Date.now() - i * 3 * 60 * 60 * 1000).toISOString(),
         updated_at: new Date().toISOString(),
         profile: {
-          id: `profile-${Math.floor(Math.random() * 10) + 1}`,
-          name:
-            [
-              "Ana García",
-              "Carlos López",
-              "María & Juan",
-              "Laura Martínez",
-              "Roberto Silva",
-              "Sofía & David",
-              "Elena Ruiz",
-              "Diego Torres",
-            ][i % 8] || `Usuario ${i + 1}`,
+          id: `demo-post-profile-${authorId}`,
+          name: authors[authorIndex] || `Usuario ${i + 1}`,
           avatar_url: avatarUrls[i % avatarUrls.length]!,
-          is_verified: Math.random() > 0.7,
+          is_verified: i % 3 === 0,
         },
       });
     }
@@ -215,7 +265,7 @@ export class PostsService {
   }
 
   /**
-   * Generar comentarios mock
+   * Generar comentarios mock (deterministas: mismo post, mismos comentarios).
    */
   generateMockComments(postId: string, count: number = 5): Comment[] {
     const mockComments: Comment[] = [];
@@ -233,16 +283,15 @@ export class PostsService {
     for (let i = 0; i < count; i++) {
       mockComments.push({
         id: `comment-${postId}-${i + 1}`,
-        user_id: `user-${Math.floor(Math.random() * 10) + 1}`,
-        profile_id: `profile-${Math.floor(Math.random() * 10) + 1}`,
+        user_id: `demo-comment-user-${(i % 10) + 1}`,
+        profile_id: `demo-comment-profile-${(i % 10) + 1}`,
         content:
-          commentContents[Math.floor(Math.random() * commentContents.length)] ??
-          "Comentario",
-        likes_count: Math.floor(Math.random() * 10) + 1,
+          commentContents[i % commentContents.length] ?? "Comentario",
+        likes_count: ((i * 2) % 10) + 1,
         created_at: new Date(
-          Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000,
+          Date.now() - (i + 1) * 60 * 60 * 1000,
         ).toISOString(),
-        user_liked: Math.random() > 0.5,
+        user_liked: i % 2 === 0,
         profile_name: `Usuario ${i + 1}`,
         profile_avatar: `https://i.pravatar.cc/150?img=${(i % 70) + 1}`,
       });
@@ -256,7 +305,10 @@ export class PostsService {
    */
 
   /**
-   * Obtener feed de posts del usuario usando datos reales de Supabase con optimización completa
+   * Obtener feed de posts del usuario usando datos reales de Supabase con optimización completa.
+   * En modo demo los posts demo se devuelven DE INMEDIATO, sin esperar a
+   * la query a Supabase (el feed tardaba 4-10 s en "Cargando
+   * publicaciones..." porque esperaba al timeout de 8 s).
    */
   async getFeed(page = 0, limit = 20): Promise<Post[]> {
     try {
@@ -276,6 +328,16 @@ export class PostsService {
         return cached.data;
       }
 
+      // MODO DEMO: posts demo inmediatos, sin query a Supabase.
+      if (isDemoMode()) {
+        const demoPosts = this.generateMockPosts(10);
+        this.feedCache.set(cacheKey, {
+          data: demoPosts,
+          timestamp: Date.now(),
+        });
+        return demoPosts;
+      }
+
       logger.info("Fetching feed posts from Supabase with optimized queries", {
         page,
         limit,
@@ -293,10 +355,9 @@ export class PostsService {
 
       const startTime = performance.now();
 
-      // Timeout: si Supabase no responde en 8 s, caer a posts demo en vez de
-      // dejar el Feed en "Cargando publicaciones..." para siempre (el video
-      // muestra el spinner atascado al re-entrar al Feed).
-      const FEED_QUERY_TIMEOUT_MS = 8000;
+      // Timeout corto: si Supabase no responde en 3 s, caer a posts demo
+      // en vez de dejar el Feed en "Cargando publicaciones...".
+      const FEED_QUERY_TIMEOUT_MS = 3000;
       const timeoutResult = new Promise<{ data: null; error: Error }>(
         (resolve) =>
           setTimeout(
@@ -407,11 +468,76 @@ export class PostsService {
   }
 
   /**
-   * Crear un nuevo post
+   * Autor del post en modo demo: el usuario demo guardado en localStorage
+   * (Sofía para single@outlook.es, Carmen & Roberto para pareja@outlook.es).
+   */
+  private getDemoAuthor(): { id: string; name: string } {
+    try {
+      const raw = localStorage.getItem("demo_user");
+      if (raw) {
+        const parsed: unknown = JSON.parse(raw);
+        if (typeof parsed === "object" && parsed !== null) {
+          const record = parsed as Record<string, unknown>;
+          const name =
+            typeof record["first_name"] === "string" &&
+            record["first_name"].length > 0
+              ? record["first_name"]
+              : typeof record["display_name"] === "string"
+                ? record["display_name"]
+                : "Tú";
+          const id =
+            typeof record["id"] === "string"
+              ? record["id"]
+              : "demo-user-id";
+          return { id, name };
+        }
+      }
+    } catch {
+      // Ignorar: usar autor genérico.
+    }
+    return { id: "demo-user-id", name: "Tú" };
+  }
+
+  /**
+   * Crear un nuevo post. En modo demo se crea local (sin Supabase) y el
+   * Feed lo añade arriba de la lista; en real se inserta en stories.
    */
   async createPost(postData: CreatePostData): Promise<Post | null> {
     try {
       logger.info("Creating new post in Supabase", { postData });
+
+      if (isDemoMode()) {
+        const author = this.getDemoAuthor();
+        const now = new Date().toISOString();
+        const post: Post = {
+          id: generateDemoUUID(`demo-post-user-${Date.now()}`),
+          user_id: author.id,
+          profile_id: author.id,
+          content: postData.content,
+          post_type: postData.post_type,
+          likes_count: 0,
+          comments_count: 0,
+          shares_count: 0,
+          created_at: now,
+          updated_at: now,
+          profile: {
+            id: author.id,
+            name: author.name,
+            is_verified: false,
+          },
+        };
+        if (postData.image_url) {
+          post.image_url = postData.image_url;
+        }
+        if (postData.video_url) {
+          post.video_url = postData.video_url;
+        }
+        if (postData.location) {
+          post.location = postData.location;
+        }
+        logger.info("✅ Demo post created locally", { postId: post.id });
+        return post;
+      }
 
       if (!supabase) {
         logger.error("Supabase no está disponible");
@@ -498,35 +624,25 @@ export class PostsService {
   }
 
   /**
-   * Dar like a un post usando datos reales de Supabase
+   * Dar like a un post.
+   * MODO DEMO: like 100% local en localStorage (demo_liked_posts). Nunca
+   * toca story_likes — ese era el bug: con el cliente Supabase presente
+   * intentaba el insert y fallaba — y nunca lanza: en demo el like
+   * siempre funciona (corazón rojo +1 al darlo, −1 al quitarlo).
    */
   async toggleLike(postId: string): Promise<boolean> {
+    // MODO DEMO (o sin cliente Supabase): toggle local, sin red.
+    if (isDemoMode() || !supabase) {
+      const newState = toggleDemoLikedPost(postId);
+      logger.info(
+        newState ? "✅ Demo: Like added" : "✅ Demo: Like removed",
+        { postId },
+      );
+      return newState;
+    }
+
     try {
       logger.info("Toggling like for post in Supabase:", { postId });
-
-      if (!supabase) {
-        // MODO DEMO: Simular comportamiento de like con localStorage
-        logger.warn("Modo demo: Simulando toggle like");
-        const likedPostsKey = "demo_liked_posts";
-        const likedPostsStr = localStorage.getItem(likedPostsKey) || "[]";
-        const likedPosts: string[] = JSON.parse(likedPostsStr);
-
-        const isLiked = likedPosts.includes(postId);
-
-        if (isLiked) {
-          // Quitar like
-          const newLikedPosts = likedPosts.filter((id) => id !== postId);
-          localStorage.setItem(likedPostsKey, JSON.stringify(newLikedPosts));
-          logger.info("✅ Demo: Like removed", { postId });
-          return false; // Ya NO está liked
-        } else {
-          // Agregar like
-          likedPosts.push(postId);
-          localStorage.setItem(likedPostsKey, JSON.stringify(likedPosts));
-          logger.info("✅ Demo: Like added", { postId });
-          return true; // Ahora SÍ está liked
-        }
-      }
 
       const userId = this.getCurrentUserId();
 
@@ -580,7 +696,10 @@ export class PostsService {
       logger.error("Error in toggleLike:", {
         error: error instanceof Error ? error.message : String(error),
       });
-      return false;
+      // Sin usuario autenticado (getCurrentUserId lanzó) u otro fallo:
+      // caer al like local en vez de devolver un estado falso que
+      // descuadraría el contador del corazón.
+      return toggleDemoLikedPost(postId);
     }
   }
 
@@ -591,13 +710,19 @@ export class PostsService {
     try {
       logger.info("💔 Removing like from post", { postId });
 
-      if (!supabase) {
-        // MODO DEMO: Simular comportamiento
-        const likedPostsKey = "demo_liked_posts";
-        const likedPostsStr = localStorage.getItem(likedPostsKey) || "[]";
-        let likedPosts: string[] = JSON.parse(likedPostsStr);
-        likedPosts = likedPosts.filter((id) => id !== postId);
-        localStorage.setItem(likedPostsKey, JSON.stringify(likedPosts));
+      if (!supabase || isDemoMode()) {
+        // MODO DEMO: quitar el like solo en localStorage.
+        const likedPosts = getDemoLikedPostIds().filter(
+          (id) => id !== postId,
+        );
+        try {
+          localStorage.setItem(
+            DEMO_LIKED_POSTS_KEY,
+            JSON.stringify(likedPosts),
+          );
+        } catch {
+          // localStorage no disponible: nada que persistir.
+        }
         logger.info("✅ Demo: Like removed", { postId });
         return;
       }
@@ -730,9 +855,14 @@ export class PostsService {
     try {
       logger.info("🔄 Sharing post", { postId, shareType });
 
-      if (!supabase) {
-        logger.error("Supabase no está disponible");
-        throw new Error("Supabase no está disponible");
+      if (!supabase || isDemoMode()) {
+        // MODO DEMO: el compartir es local (Web Share / portapapeles en la
+        // vista); no hay nada que registrar en Supabase.
+        logger.info("✅ Demo: Share registrado localmente", {
+          postId,
+          shareType,
+        });
+        return;
       }
 
       const userId = this.getCurrentUserId();

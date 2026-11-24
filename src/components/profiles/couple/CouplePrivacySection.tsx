@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Switch } from "@/components/ui/switch";
 import { ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { logger } from "@/lib/logger";
@@ -185,6 +186,8 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
   if (!userId) return null;
 
   const toggle = (key: keyof CouplePrivacySettings) => {
+    const nextValue = !settings[key];
+    const label = ROWS.find((row) => row.key === key)?.label ?? key;
     setSettings((prev) => {
       const next = { ...prev, [key]: !prev[key] };
       if (isDemoMode || !supabase) {
@@ -211,6 +214,9 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
         });
       return next;
     });
+    // Feedback inmediato: antes el cambio persistía pero sin ninguna
+    // confirmación visible (full test 2026-11-24).
+    toast.success(`${label}: ${nextValue ? "activado" : "desactivado"}`);
   };
 
   return (
@@ -237,11 +243,26 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
               <p className="text-sm font-medium text-white">{row.label}</p>
               <p className="text-xs text-white/60">{row.description}</p>
             </div>
-            <Switch
-              id={`couple-privacy-${row.key}`}
-              checked={settings[row.key]}
-              onCheckedChange={() => toggle(row.key)}
-            />
+            <div className="flex shrink-0 items-center gap-2">
+              <span
+                className={`text-xs font-medium ${
+                  settings[row.key] ? "text-emerald-300" : "text-white/50"
+                }`}
+              >
+                {settings[row.key] ? "Activado" : "Desactivado"}
+              </span>
+              <Switch
+                id={`couple-privacy-${row.key}`}
+                checked={settings[row.key]}
+                onCheckedChange={() => toggle(row.key)}
+                // Colores explícitos: el Switch compartido usa los tokens
+                // primary/input/background, que en Tailwind v4 no resuelven
+                // (canales HSL sin hsl()) y la perilla quedaba invisible y
+                // sin moverse visualmente. Verde = on, gris = off, perilla
+                // siempre blanca.
+                className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
+              />
+            </div>
           </div>
         ))}
       </CardContent>

@@ -21,7 +21,7 @@ export const HomeProfilesSection = ({
   const fallbackFemaleImage =
     femaleImages[0] ??
     femaleImages[1] ??
-    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=500&h=700&fit=crop&crop=face&auto=format&q=80";
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=700&fit=crop&crop=face&auto=format&q=80";
   const fallbackMaleImage =
     maleImages[0] ??
     maleImages[1] ??

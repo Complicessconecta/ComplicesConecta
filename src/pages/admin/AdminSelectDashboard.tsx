@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Shield, Building, ArrowRight, LogOut } from "lucide-react";
+import { Shield, Building, ArrowRight, LogOut, BarChart3, Users } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,16 @@ export const AdminSelectDashboard = () => {
   const handleClubsDemo = () => {
     logger.info("Admin seleccionó demo de clubs");
     navigate("/clubs/demo");
+  };
+
+  const handleAnalytics = () => {
+    logger.info("Admin seleccionó analytics");
+    navigate("/admin/analytics");
+  };
+
+  const handleModerators = () => {
+    logger.info("Admin seleccionó moderadores");
+    navigate("/admin/moderators");
   };
 
   const handleLogout = async () => {
@@ -107,13 +117,14 @@ export const AdminSelectDashboard = () => {
             </Card>
           </motion.div>
 
-          {/* Clubs Demo */}
-          {!import.meta.env.PROD && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
+          {/* Clubs Demo — visible también en PROD: antes solo existía en
+            dev (!import.meta.env.PROD) y en producción quedaba un gran
+            hueco vacío con una sola tarjeta */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
               <Card
                 className="bg-linear-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-fuchsia-400/50 transition-all duration-300 cursor-pointer h-full group"
                 onClick={handleClubsDemo}
@@ -150,7 +161,60 @@ export const AdminSelectDashboard = () => {
                 </CardContent>
               </Card>
             </motion.div>
-          )}
+
+          {/* Analytics */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+          >
+            <Card
+              className="bg-linear-to-br from-blue-900/40 to-cyan-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-blue-400/50 transition-all duration-300 cursor-pointer h-full group"
+              onClick={handleAnalytics}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-linear-to-r from-blue-500 to-cyan-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <BarChart3 className="h-8 w-8 text-white" />
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                </div>
+                <CardTitle className="text-2xl font-bold text-white">
+                  Analytics
+                </CardTitle>
+                <CardDescription className="text-white/70 text-base">
+                  Estadísticas, visitas y métricas de la plataforma
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
+
+          {/* Moderadores */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card
+              className="bg-linear-to-br from-emerald-900/40 to-teal-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-emerald-400/50 transition-all duration-300 cursor-pointer h-full group"
+              onClick={handleModerators}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-linear-to-r from-emerald-500 to-teal-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <Users className="h-8 w-8 text-white" />
+                  </div>
+                  <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                </div>
+                <CardTitle className="text-2xl font-bold text-white">
+                  Moderadores
+                </CardTitle>
+                <CardDescription className="text-white/70 text-base">
+                  Gestiona moderadores, solicitudes y reportes
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </motion.div>
         </div>
 
         {/* Logout Button */}

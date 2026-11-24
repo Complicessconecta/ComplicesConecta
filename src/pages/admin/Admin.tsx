@@ -594,7 +594,7 @@ export const Admin = () => {
                       }
                     />
                     <Input
-                      placeholder="Categora"
+                      placeholder="Categoría"
                       value={newFaq.category}
                       onChange={(e) =>
                         setNewFaq({ ...newFaq, category: e.target.value })

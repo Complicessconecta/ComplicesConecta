@@ -311,7 +311,7 @@ export default function TokensPrivacy() {
           </CardContent>
         </Card>
 
-        {/* Botones de accin */}
+        {/* Botones de acción */}
         <div className="text-center space-y-4">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button

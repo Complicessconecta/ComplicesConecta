@@ -45,10 +45,19 @@ const EventsModal: React.FC<EventsModalProps> = ({
     },
   ];
 
+  // Fechas relativas a hoy: las fechas fijas de 2024 ya eran pasado y el
+  // modal anunciaba "próximos eventos" en 2024.
+  const formatEventDate = (daysAhead: number) =>
+    new Date(Date.now() + daysAhead * 86400000).toLocaleDateString("es-MX", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
   const upcomingEvents = [
     {
       title: "Noche de Parejas Premium",
-      date: "15 Sep 2024",
+      date: formatEventDate(11),
       time: "21:00",
       location: "Club Privado CDMX",
       attendees: 24,
@@ -56,7 +65,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
     },
     {
       title: "Encuentro Lifestyle Guadalajara",
-      date: "22 Sep 2024",
+      date: formatEventDate(18),
       time: "20:30",
       location: "Hotel Boutique",
       attendees: 18,
@@ -64,7 +73,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
     },
     {
       title: "Fiesta Temática Monterrey",
-      date: "29 Sep 2024",
+      date: formatEventDate(25),
       time: "22:00",
       location: "Espacio Privado",
       attendees: 12,

@@ -645,6 +645,14 @@ export const useAuth = () => {
   };
 
   const getProfileType = () => {
+    // Sesión real tiene prioridad sobre flags demo obsoletos: si hay una
+    // sesión de Supabase, el tipo de perfil es el real, no el del
+    // `demo_user` guardado en localStorage. Sin esto, un usuario real que
+    // antes probó el demo seguía resolviendo como demo y el botón Perfil
+    // del dock lo lanzaba a los perfiles demo.
+    if (session?.user) {
+      return profile?.profile_type || "single";
+    }
     // Misma lectura fresca que isDemo(): el estado `demoUser` de esta
     // instancia puede estar obsoleto si el demo se activó por SPA después
     // de montar (MainLayout/Navigation). Sin esto, un demo de pareja
@@ -696,6 +704,9 @@ export const useAuth = () => {
   };
 
   const isDemo = () => {
+    // Sesión real tiene prioridad: con sesión de Supabase activa no hay
+    // modo demo, aunque queden flags demo obsoletos en localStorage.
+    if (session?.user) return false;
     const sessionFlags = StorageManager.getSessionFlags();
     // Leer demo_user directo de localStorage en cada llamada: useAuth es
     // un hook por componente (sin estado compartido) y cada instancia lee
@@ -744,6 +755,9 @@ export const useAuth = () => {
   };
 
   const isDemoMode = () => {
+    // Sesión real tiene prioridad: con sesión de Supabase activa no hay
+    // modo demo, aunque queden flags demo obsoletos en localStorage.
+    if (session?.user) return false;
     const sessionFlags = StorageManager.getSessionFlags();
     return sessionFlags.demo_authenticated;
   };

@@ -13,6 +13,7 @@ import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfileTheme";
 import { motion } from "framer-motion";
 
@@ -276,8 +277,56 @@ const EditProfileCouple = () => {
     logger.error("Error subiendo imagen", { error });
   };
 
-  const handleSave = () => {
-    logger.info("Guardando perfil de pareja:", formData);
+  const handleSave = async () => {
+    // Antes solo registraba y navegaba: la selección de intereses se perdía
+    // y el perfil seguía mostrando los títulos demo. Ahora persiste en la
+    // misma fuente que lee el perfil.
+    const demoAuth =
+      typeof window !== "undefined" &&
+      window.localStorage.getItem("demo_authenticated") === "true";
+    if (demoAuth) {
+      try {
+        const demoUser = JSON.parse(
+          window.localStorage.getItem("demo_user") || "{}",
+        );
+        const updatedUser = {
+          ...demoUser,
+          interests: formData.interests ?? [],
+          partner1: {
+            ...(demoUser.partner1 ?? {}),
+            interests: formData.partner1?.interests ?? [],
+          },
+          partner2: {
+            ...(demoUser.partner2 ?? {}),
+            interests: formData.partner2?.interests ?? [],
+          },
+        };
+        window.localStorage.setItem("demo_user", JSON.stringify(updatedUser));
+        logger.info("Intereses de pareja guardados (demo)");
+      } catch (error) {
+        logger.error("Error guardando intereses en demo", {
+          error: String(error),
+        });
+      }
+      navigate("/profile-couple");
+      return;
+    }
+    // Producción: mismas columnas que lee el perfil (couple_profiles).
+    if (profile?.id && supabase) {
+      const { error } = await supabase
+        .from("couple_profiles")
+        .update({
+          his_interests: formData.partner1?.interests ?? [],
+          her_interests: formData.partner2?.interests ?? [],
+          couple_interests: formData.interests ?? [],
+        })
+        .eq("id", profile.id);
+      if (error) {
+        logger.error("Error guardando intereses de pareja", {
+          error: error.message,
+        });
+      }
+    }
     navigate("/profile-couple");
   };
 

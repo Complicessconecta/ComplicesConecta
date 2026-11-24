@@ -963,10 +963,11 @@ function ProfileCouple() {
       avatarGradient: "from-fuchsia-400 to-purple-600",
       details: {
         ...(isDemoMode ? DEMO_MEMBER_DETAILS[0] : {}),
-        orientation: deriveOrientation(
-          profile.partner1_gender,
-          profile.partner1_interested_in,
-        ),
+        orientation:
+          deriveOrientation(
+            profile.partner1_gender,
+            profile.partner1_interested_in,
+          ) ?? (isDemoMode ? "Heterosexual" : null),
       },
     },
     {
@@ -977,10 +978,11 @@ function ProfileCouple() {
       avatarGradient: "from-purple-400 to-fuchsia-600",
       details: {
         ...(isDemoMode ? DEMO_MEMBER_DETAILS[1] : {}),
-        orientation: deriveOrientation(
-          profile.partner2_gender,
-          profile.partner2_interested_in,
-        ),
+        orientation:
+          deriveOrientation(
+            profile.partner2_gender,
+            profile.partner2_interested_in,
+          ) ?? (isDemoMode ? "Heterosexual" : null),
       },
     },
   ];
@@ -1033,14 +1035,6 @@ function ProfileCouple() {
   return (
     <div className="min-h-screen relative overflow-hidden profile-page">
       <div className="relative z-10 flex flex-col min-h-screen">
-        <div className="px-4 pt-4">
-          <ProfileContent
-            isOwnProfile={isOwnProfile}
-            onUploadImage={_handleUploadImage}
-            onDeletePost={_handleDeletePost}
-            onCommentPost={_handleCommentPost}
-          />
-        </div>
         {/* Header centrado */}
         <div className="profile-header-container">
           <div className="max-w-36rem mx-auto text-center space-y-4">
@@ -1793,6 +1787,16 @@ function ProfileCouple() {
                 userId={user?.id ?? profile?.profile_id ?? ""}
               />
             )}
+
+            {/* Publicaciones - después de la información del perfil */}
+            <div className="pt-4">
+              <ProfileContent
+                isOwnProfile={isOwnProfile}
+                onUploadImage={_handleUploadImage}
+                onDeletePost={_handleDeletePost}
+                onCommentPost={_handleCommentPost}
+              />
+            </div>
           </div>
         </div>
       </div>

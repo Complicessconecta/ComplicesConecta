@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Unlock, Images, Flag, Coins, Wallet, Users, ShieldCheck } from "lucide-react";
+import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Unlock, Images, Flag, Coins, Wallet, Users, ShieldCheck, Eye, TrendingUp, Calendar, CheckCircle, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
@@ -14,7 +14,9 @@ import { usePersistedState } from "@/hooks/usePersistedState";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
 import { WalletService, walletService } from "@/services/payments/WalletService";
-import { nftService } from "@/services/payments/NFTService";
+import { nftService, seedDemoNFTs } from "@/services/payments/NFTService";
+import { DemoWallet } from "@/components/wallet/DemoWallet";
+import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { cn } from "@/shared/lib/cn";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,7 +67,7 @@ function ProfileCouple() {
   const setShowReportDialog = _setShowReportDialog;
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   // La galería privada carga BLOQUEADA: el valor anterior (false) dejaba
-  // las fotos privadas visibles sin PIN en la primera carga del perfil.
+  // las fotos privadías visibles sin PIN en la primera carga del perfil.
   const [isParentalLocked, _setIsParentalLocked] = usePersistedState(
     "parentalLock",
     true,
@@ -100,7 +102,7 @@ function ProfileCouple() {
     number | null
   >(null);
 
-  // C6: rutas de Storage (bucket "media") de las 4 imágenes privadas.
+  // C6: rutas de Storage (bucket "media") de las 4 imágenes privadías.
   // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
   // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
   // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
@@ -176,7 +178,7 @@ function ProfileCouple() {
     },
   );
 
-  // Función para hacer funcional el botón "Ver Fotos Privadas"
+  // Función para hacer funcional el botón "Ver Fotos Privadías"
   const handleViewPrivatePhotos = async () => {
     // Bloqueado: el perfil propio abre la pantalla del PIN; un visitante
     // sigue al flujo de solicitud de acceso (no se le puede pedir el PIN
@@ -295,6 +297,13 @@ function ProfileCouple() {
   const [_testnetInfo, setTestnetInfo] = useState<TestnetInfo | null>(null);
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleRequest[]>([]);
+  // Estadísticas espejo de ProfileSingle (0 en demo, igual que Single).
+  const [coupleStats] = useState({
+    totalViews: 0,
+    totalLikes: 0,
+    totalMatches: 0,
+    profileCompleteness: 0,
+  });
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
   const displayAccountLabel =
     profile?.username || profile?.couple_name || "Cuenta";
@@ -517,6 +526,10 @@ function ProfileCouple() {
 
     try {
       if (isDemoMode) {
+        // Espejo de Single: sembrar los NFTs demo para ESTE usuario pareja.
+        // Sin esto `demo_nfts:<uid>` está vacío, getUserNFTs devuelve [] y la
+        // sección "Blockchain & NFTs de Pareja" nunca se renderiza.
+        seedDemoNFTs(user.id);
         const [nfts] = await Promise.all([
           nftService.getUserNFTs(user.id).catch(() => []),
         ]);
@@ -1157,7 +1170,7 @@ function ProfileCouple() {
                         </Button>
                       )}
 
-                      {/* Botón para solicitar acceso a fotos privadas */}
+                      {/* Botón para solicitar acceso a fotos privadías */}
                       {privateImageAccess === "none" && (
                         <Button
                           onClick={handleViewPrivatePhotos}
@@ -1165,9 +1178,9 @@ function ProfileCouple() {
                         >
                           <Lock className="w-4 h-4" />
                           <span className="hidden sm:inline">
-                            Ver Fotos Privadas
+                            Ver Fotos Privadías
                           </span>
-                          <span className="sm:hidden">Privadas</span>
+                          <span className="sm:hidden">Privadías</span>
                         </Button>
                       )}
 
@@ -1193,9 +1206,9 @@ function ProfileCouple() {
                         >
                           <Images className="w-4 h-4" />
                           <span className="hidden sm:inline">
-                            Fotos Privadas
+                            Fotos Privadías
                           </span>
-                          <span className="sm:hidden">Privadas</span>
+                          <span className="sm:hidden">Privadías</span>
                         </Button>
                       )}
                     </div>
@@ -1249,7 +1262,7 @@ function ProfileCouple() {
                 {privateImageAccess === "denied" && (
                   <div className="text-center py-6">
                     <p className="text-white/70 text-sm">
-                      Tu solicitud para ver las fotos privadas fue denegada.
+                      Tu solicitud para ver las fotos privadías fue denegada.
                     </p>
                   </div>
                 )}
@@ -1325,6 +1338,52 @@ function ProfileCouple() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Estadísticas - espejo de ProfileSingle */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
+                  <Eye className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-blue-400" />
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {coupleStats.totalViews}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70">
+                    Visitas
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
+                  <Heart className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {coupleStats.totalLikes}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70">Likes</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
+                  <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {coupleStats.totalMatches}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70">
+                    Matches
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
+                  <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-green-400" />
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {coupleStats.profileCompleteness}%
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70">
+                    Completo
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Resumen rápido de Wallet & NFTs de Pareja */}
             <Card
@@ -1446,6 +1505,67 @@ function ProfileCouple() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Demo Wallet - espejo de ProfileSingle (solo demo) */}
+            {isDemoMode && (
+              <DemoWallet userId={user?.id || profile?.profile_id || ""} />
+            )}
+
+            {/* Intereses - espejo de ProfileSingle (grid demo con efecto hover) */}
+            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+              <CardHeader>
+                <CardTitle className="text-white">Nuestros Intereses</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <HoverEffect
+                  items={[
+                    {
+                      title: "Lifestyle Exclusivo",
+                      description:
+                        "Conexiones seleccionadas para un círculo íntimo y sofisticado.",
+                      link: "#",
+                      icon: <TrendingUp className="w-5 h-5" />,
+                    },
+                    {
+                      title: "Eventos VIP",
+                      description:
+                        "Acceso prioritario a fiestas privadas y experiencias lifestyle.",
+                      link: "#",
+                      icon: <Calendar className="w-5 h-5" />,
+                    },
+                    {
+                      title: "Privacidad Total",
+                      description:
+                        "Perfiles protegidos, control parental y contenido sensible blindado.",
+                      link: "#",
+                      icon: <Lock className="w-5 h-5" />,
+                    },
+                    {
+                      title: "Verificación Real",
+                      description:
+                        "Perfiles verificados para minimizar cuentas falsas y riesgos.",
+                      link: "#",
+                      icon: <CheckCircle className="w-5 h-5" />,
+                    },
+                    {
+                      title: "Chat Encriptado",
+                      description:
+                        "Mensajes diseñados para máxima discreción y seguridad.",
+                      link: "#",
+                      icon: <MessageCircle className="w-5 h-5" />,
+                    },
+                    {
+                      title: "Match Inteligente",
+                      description:
+                        "Recomendaciones basadas en intereses y compatibilidad real.",
+                      link: "#",
+                      icon: <Users className="w-5 h-5" />,
+                    },
+                  ]}
+                  className="pt-2"
+                />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -1467,7 +1587,6 @@ function ProfileCouple() {
       <ParentalControl
         isLocked={isParentalLocked}
         showLockScreen={showParentalUnlock}
-        onClose={() => setShowParentalUnlock(false)}
         onToggle={(locked) => {
           _setIsParentalLocked(locked);
           if (!locked) {

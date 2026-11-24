@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Wallet, Coins, Image as ImageIcon, Crown, Sparkles, TrendingUp, Lock, ExternalLink, X } from "lucide-react";
+import { DEFAULT_DEMO_NFTS } from "@/services/payments/NFTService";
 
 /**
  * Interfaz para NFT mock
@@ -63,41 +64,18 @@ export function DemoWallet({ userId }: DemoWalletProps) {
     }
   };
 
+  // Única fuente de verdad en NFTService (DEFAULT_DEMO_NFTS); aquí solo se
+  // adapta is_couple -> isCouple para el estado local del componente.
   const defaultDemoNFTs: DemoNFT[] = useMemo(
-    () => [
-      {
-        id: "nft-1",
-        name: "Cómplice Legendario",
-        rarity: "legendary",
-        image: "/assets/nfts/imagen4.gif",
-        value: 5000,
-        isCouple: false,
-      },
-      {
-        id: "nft-2",
-        name: "Cómplice Épico",
-        rarity: "epic",
-        image: "/assets/nfts/imagen3.jpg",
-        value: 2000,
-        isCouple: true,
-      },
-      {
-        id: "nft-3",
-        name: "Cómplice Raro",
-        rarity: "rare",
-        image: "/assets/nfts/imagen1.jpg",
-        value: 750,
-        isCouple: false,
-      },
-      {
-        id: "nft-4",
-        name: "Cómplice Común",
-        rarity: "common",
-        image: "/assets/nfts/imagen2.jpg",
-        value: 100,
-        isCouple: true,
-      },
-    ],
+    () =>
+      DEFAULT_DEMO_NFTS.map((nft) => ({
+        id: nft.id,
+        name: nft.name,
+        rarity: nft.rarity,
+        image: nft.image,
+        value: nft.value,
+        isCouple: nft.is_couple,
+      })),
     [],
   );
 

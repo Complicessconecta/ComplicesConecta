@@ -66,22 +66,69 @@ const EditProfileSingle = () => {
 
       if (demoAuth === "true" && demoUser) {
         const user = JSON.parse(demoUser);
-        let profileData;
 
         if (user.accountType === "single" || user.type === "single") {
-          profileData = generateMockSingle(user.id);
+          // Demo: el editor muestra al usuario demo real, no un mock
+          // aleatorio. generateMockSingle() elige nombre, profesión,
+          // ubicación e intereses al azar en cada llamada, así que el editor
+          // mostraba otra persona en cada carga y su selección de intereses
+          // nunca coincidía con la guardada en demo_user (que es la que lee
+          // el perfil). Por eso la sección de intereses mostraba otra info.
+          const asString = (value: unknown): string =>
+            typeof value === "string" ? value : "";
+          const asStringArray = (value: unknown): string[] =>
+            Array.isArray(value) &&
+            value.every((item) => typeof item === "string")
+              ? (value as string[])
+              : [];
+          // Identidad del login demo (p. ej. "Sofía" para single@outlook.es).
+          const identityName = [
+            asString(user.first_name),
+            asString(user.last_name),
+          ]
+            .filter(Boolean)
+            .join(" ");
+          const storedName = asString(user.name);
+
+          if (storedName || identityName) {
+            setFormData({
+              name: storedName || identityName,
+              age:
+                typeof user.age === "number" || typeof user.age === "string"
+                  ? String(user.age)
+                  : "",
+              bio: asString(user.bio),
+              location: asString(user.location),
+              profession: asString(user.profession),
+              interests: asStringArray(user.interests),
+              explicitInterests: asStringArray(user.explicitInterests),
+              avatar: asString(user.avatar),
+            });
+            setUserId(user.id);
+            setProfile(user);
+            setProfileLoaded(true);
+            setIsLoading(false);
+            return;
+          }
+
+          // Fallback: demo_user sin identidad usable. El mock solo rellena
+          // la estructura; el nombre sigue siendo el de la identidad demo
+          // si existe.
+          const mockProfile = generateMockSingle();
           setFormData({
-            name: profileData.first_name + " " + profileData.last_name,
-            age: profileData.age.toString(),
-            bio: profileData.bio,
-            location: profileData.location,
-            profession: profileData.profession || "",
-            interests: profileData.interests || [],
+            name:
+              identityName ||
+              `${mockProfile.first_name} ${mockProfile.last_name}`,
+            age: mockProfile.age.toString(),
+            bio: mockProfile.bio,
+            location: mockProfile.location,
+            profession: mockProfile.profession || "",
+            interests: mockProfile.interests || [],
             explicitInterests: [],
-            avatar: profileData.avatar || "",
+            avatar: mockProfile.avatar || "",
           });
           setUserId(user.id);
-          setProfile(profileData);
+          setProfile(mockProfile);
           setProfileLoaded(true);
           setIsLoading(false);
           return;

@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles, Building2 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
 import { useFeatures } from "@/hooks/useFeatures";
 import { cn } from "@/shared/lib/cn";
 import { useAuth } from "@/features/auth/useAuth";
@@ -74,6 +75,15 @@ export const Navigation = ({ className }: NavigationProps) => {
     if (path === "/logout") {
       await signOut();
       navigate("/auth", { replace: true });
+      return;
+    }
+
+    // El botón "Config" apunta a la ruta del editor. Estando ya en esa
+    // ruta, navegar al mismo path no hace nada (la URL no cambia y no hay
+    // re-render): en ese caso abrir el modal de configuración de
+    // animaciones, el mismo que abre el engranaje flotante.
+    if (path === getSettingsPath() && location.pathname === path) {
+      window.dispatchEvent(new Event(OPEN_ANIMATION_SETTINGS_EVENT));
       return;
     }
 

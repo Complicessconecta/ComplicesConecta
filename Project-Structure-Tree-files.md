@@ -1,5 +1,5 @@
 Listado de rutas de carpetas para el volumen WACKO
-El n�mero de serie del volumen es D8CF-CDD4
+El número de serie del volumen es D8CF-CDD4
 C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   App.tsx
 |   debug.tsx
@@ -253,6 +253,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       InvitationDialog.tsx
 |   |       
 |   +---layout
+|   |       BottomNavigation.tsx
 |   |       index.ts
 |   |       MainLayout.tsx
 |   |       
@@ -285,6 +286,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       ImageModal.tsx
 |   |       index.ts
 |   |       InstallAppModal.tsx
+|   |       LogoutModal.tsx
 |   |       PremiumModal.tsx
 |   |       SharedTermsModal.tsx
 |   |       SmartMatchingModal.tsx
@@ -336,16 +338,21 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |   ProfileNavTabs.tsx
 |   |   |   
 |   |   +---couple
+|   |   |       CoupleAboutSection.tsx
 |   |   |       CoupleCard.tsx
 |   |   |       CoupleDashboard.tsx
 |   |   |       CoupleDisputeManager.tsx
 |   |   |       CoupleImageGallery.tsx
 |   |   |       CoupleImageUpload.tsx
+|   |   |       CoupleLookingForSection.tsx
 |   |   |       CouplePhotoSection.tsx
+|   |   |       CouplePreferencesSection.tsx
 |   |   |       CouplePreNuptialAgreement.tsx
+|   |   |       CouplePrivacySection.tsx
 |   |   |       CoupleProfileCard.tsx
 |   |   |       CoupleProfileHeader.tsx
 |   |   |       CoupleRegistrationForm.tsx
+|   |   |       CoupleSubscriptionCard.tsx
 |   |   |       index.ts
 |   |   |       NicknameValidator.tsx
 |   |   |       PasswordValidator.tsx
@@ -395,8 +402,19 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |           NicknameValidator.tsx
 |   |           PasswordValidator.tsx
 |   |           ProfileSingle.test.tsx
+|   |           SingleAboutSection.tsx
 |   |           SingleCard.tsx
+|   |           SingleDashboard.tsx
+|   |           SingleImageGallery.tsx
+|   |           SingleImageUpload.tsx
+|   |           SingleLookingForSection.tsx
+|   |           SinglePhotoSection.tsx
+|   |           SinglePreferencesSection.tsx
+|   |           SinglePrivacySection.tsx
+|   |           SingleProfileCard.tsx
+|   |           SingleProfileHeader.tsx
 |   |           SingleRegistrationForm.tsx
+|   |           SingleSubscriptionCard.tsx
 |   |           
 |   +---reservations
 |   |       QRCodeGenerator.tsx
@@ -735,6 +753,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 +---integrations
 |   +---supabase
 |   |       client.ts
+|   |       security-helpers.ts
 |   |       types.ts
 |   |       
 |   \---wallet
@@ -831,7 +850,6 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       
 |   +---security
 |   |   |   androidSecurity.ts
-|   |   |   dataEncryption.ts
 |   |   |   encryptionConfig.ts
 |   |   |   fileValidator.ts
 |   |   |   index.ts
@@ -843,6 +861,8 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |           
 |   +---storage
 |   |       index.ts
+|   |       private-media.ts
+|   |       secure-storage.ts
 |   |       
 |   +---supabase
 |   |       index.ts
@@ -874,9 +894,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   ChatAuthenticated.tsx
 |   |   ChatInfo.tsx
 |   |   Clubs.tsx
-|   |   ClubsPublic.tsx
 |   |   ClubsComingSoon.tsx
 |   |   ClubsDemo.tsx
+|   |   ClubsPublic.tsx
 |   |   Construction.tsx
 |   |   Dashboard.tsx
 |   |   Demo.tsx
@@ -950,13 +970,16 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |               ProfileSingle.tsx
 |               
 +---security
+|       certificate-pinning.ts
+|       console-cleanup.ts
+|       csp-config.ts
 |       owasp-checklist.ts
+|       session-pinning.ts
 |       
 +---services
 |   |   index.ts
 |   |   moderatorTimer.ts
 |   |   
-|   +---admin
 |   +---ai
 |   |       AIIntegrationService.ts
 |   |       ConsentVerificationService.ts
@@ -992,13 +1015,16 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |   permanentBan.ts
 |   |   |   
 |   |   +---auth
-|   |   |       ContentProtectionService.ts
-|   |   |       MFAService.ts
-|   |   |       SecurityAuditService.ts
-|   |   |       SecurityService.ts
-|   |   |       UserIdentificationService.ts
-|   |   |       UserVerificationService.ts
-|   |   |       
+|   |   |   |   ContentProtectionService.ts
+|   |   |   |   MFAService.ts
+|   |   |   |   SecurityAuditService.ts
+|   |   |   |   SecurityService.ts
+|   |   |   |   UserIdentificationService.ts
+|   |   |   |   UserVerificationService.ts
+|   |   |   |   
+|   |   |   \---__tests__
+|   |   |           SecurityService.test.ts
+|   |   |           
 |   |   +---mfa
 |   |   |       MFAService.ts
 |   |   |       
@@ -1144,12 +1170,11 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |           WalletService.ts
 |           
 +---shared
-|   +---lib
-|   |       cn.ts
-|   |       format.ts
-|   |       validation.ts
-|   |       
-|   \---ui
+|   \---lib
+|           cn.ts
+|           format.ts
+|           validation.ts
+|           
 +---styles
 |       AccessibilityAudit.css
 |       AnalyticsDashboard.css
@@ -1243,6 +1268,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       biometric-auth.test.ts
 |   |       media-access.test.ts
 |   |       
+|   +---services
+|   |       seedDemoNFTs.test.ts
+|   |       
 |   +---setup
 |   |       playwright-setup.ts
 |   |       test-utils.tsx
@@ -1263,6 +1291,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |   Neo4jService.test.ts
 |   |   |   performance.test.ts
 |   |   |   PerformanceMonitoringService.test.ts
+|   |   |   pin-validation.test.ts
 |   |   |   postsService.test.ts
 |   |   |   ProfileReportService.test.ts
 |   |   |   PushNotificationService.test.ts
@@ -1296,6 +1325,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       chat-limits.ts
 |       chat-summary.types.ts
 |       content-moderation.types.ts
+|       datadog.d.ts
 |       discover.types.ts
 |       global.d.ts
 |       google.types.ts
@@ -1304,6 +1334,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       react.types.ts
 |       security.types.ts
 |       storybook.d.ts
+|       supabase-auth.d.ts
 |       supabase-custom.ts
 |       supabase-extended.ts
 |       supabase-extensions.ts
@@ -1345,4 +1376,3 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
     \---discover
             generateRandomProfiles.ts
             
-

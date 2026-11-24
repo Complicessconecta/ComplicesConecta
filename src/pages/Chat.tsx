@@ -1065,7 +1065,10 @@ const Chat = () => {
 
         {/* rea de chat */}
         <div
-          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 flex flex-col bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 backdrop-blur-sm`}
+          // min-w-0: sin él, el panel no encoge por debajo del ancho de su
+          // contenido y dentro del dock flotante (28-42rem) el texto de la
+          // derecha ("Selecciona una conversación") quedaba recortado.
+          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 min-w-0 flex flex-col bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 backdrop-blur-sm`}
         >
           {selectedChat ? (
             <>
@@ -1215,7 +1218,12 @@ const Chat = () => {
                                 : "text-white/90 drop-shadow-sm"
                             }`}
                           >
-                            {message.created_at}
+                            {/* Igual que la rama de mensajes reales: hora
+                              local HH:MM, no el ISO crudo. */}
+                            {new Date(message.created_at).toLocaleTimeString(
+                              "es-ES",
+                              { hour: "2-digit", minute: "2-digit" },
+                            )}
                           </p>
                         </div>
                       </div>

@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Camera, X, Users, MapPin, AlertCircle, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
-import { generateMockCouple } from "@/lib/data";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from "@/lib/logger";
+import { resolveDemoAccountType } from "@/lib/app-config";
 import { supabase } from "@/integrations/supabase/client";
 import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfileTheme";
 import { motion } from "framer-motion";
@@ -93,6 +93,61 @@ const EditProfileCouple = () => {
 
   const availableInterests = SAFE_INTERESTS;
 
+  // Poblar el formulario con la identidad demo guardada en `demo_user`.
+  // Los campos que el demo no trae usan los valores canónicos del perfil
+  // demo (Carmen 25 / Roberto 28, CDMX, México), los mismos que muestra
+  // ProfileCouple. Nunca se inventa una pareja: sin identidad usable no
+  // se genera ningún mock.
+  const applyCoupleDemoIdentity = (user: any) => {
+    const asString = (value: unknown): string =>
+      typeof value === "string" ? value : "";
+    const asStringArray = (value: unknown): string[] =>
+      Array.isArray(value) &&
+      value.every((item) => typeof item === "string")
+        ? (value as string[])
+        : [];
+    const partner = (stored: any, firstName: string, age: string) => {
+      const nameParts = asString(stored?.name).split(" ");
+      return {
+        firstName:
+          asString(stored?.firstName) ||
+          asString(stored?.first_name) ||
+          nameParts[0] ||
+          firstName,
+        lastName:
+          asString(stored?.lastName) ||
+          asString(stored?.last_name) ||
+          nameParts.slice(1).join(" "),
+        nickname: asString(stored?.nickname),
+        age:
+          stored?.age !== undefined && stored?.age !== null
+            ? String(stored.age)
+            : age,
+        profession: asString(stored?.profession),
+        bio: asString(stored?.bio),
+        avatar: asString(stored?.avatar) || asString(stored?.avatar_url),
+        interests: asStringArray(stored?.interests),
+        publicImages: asStringArray(stored?.publicImages),
+        privateImages: asStringArray(stored?.privateImages),
+      };
+    };
+
+    setProfile(user);
+    setFormData({
+      coupleName:
+        asString(user.name) ||
+        asString(user.coupleName) ||
+        asString(user.couple_name) ||
+        "Carmen & Roberto",
+      location: asString(user.location) || "CDMX, México",
+      bio: asString(user.bio) || asString(user.couple_bio),
+      interests: asStringArray(user.interests),
+      explicitInterests: asStringArray(user.explicitInterests),
+      partner1: partner(user.partner1, "Carmen", "25"),
+      partner2: partner(user.partner2, "Roberto", "28"),
+    });
+  };
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -106,86 +161,58 @@ const EditProfileCouple = () => {
         }
 
         const user = JSON.parse(demoUser);
-        let profileData;
 
-        // Si es perfil pareja, usar datos del usuario demo
-        if (user.accountType === "couple") {
-          profileData = user;
-        } else {
-          // Para otros tipos, generar perfil mock
-          profileData = generateMockCouple();
+        // El demo_user guardado cambia de forma según quién lo escribió
+        // (ver EditProfileSingle): resolver el tipo con todas las
+        // variantes o el editor cae en el mock aleatorio.
+        const demoType =
+          resolveDemoAccountType(user) ??
+          (localStorage.getItem("userType") === "couple"
+            ? "couple"
+            : localStorage.getItem("userType") === "single"
+              ? "single"
+              : null);
+
+        // Sesión de single en el editor de pareja: ir al editor de single,
+        // nunca mostrar un mock aleatorio.
+        if (demoType === "single") {
+          navigate("/edit-profile-single");
+          return;
         }
 
-        setProfile(profileData);
-        setFormData({
-          coupleName: profileData.name || profileData.coupleName || "",
-          location: profileData.location || "",
-          bio: profileData.bio || "",
-          interests: profileData.interests || [],
-          explicitInterests: [],
-          partner1: {
-            firstName: profileData.partner1?.name?.split(" ")[0] || "",
-            lastName: profileData.partner1?.name?.split(" ")[1] || "",
-            nickname: profileData.partner1?.nickname || "",
-            age: profileData.partner1?.age?.toString() || "",
-            profession: profileData.partner1?.profession || "",
-            bio: profileData.partner1?.bio || "",
-            avatar: profileData.partner1?.avatar || "",
-            interests: profileData.partner1?.interests || [],
-            publicImages: profileData.partner1?.publicImages || [],
-            privateImages: profileData.partner1?.privateImages || [],
-          },
-          partner2: {
-            firstName: profileData.partner2?.name?.split(" ")[0] || "",
-            lastName: profileData.partner2?.name?.split(" ")[1] || "",
-            nickname: profileData.partner2?.nickname || "",
-            age: profileData.partner2?.age?.toString() || "",
-            profession: profileData.partner2?.profession || "",
-            bio: profileData.partner2?.bio || "",
-            avatar: profileData.partner2?.avatar || "",
-            interests: profileData.partner2?.interests || [],
-            publicImages: profileData.partner2?.publicImages || [],
-            privateImages: profileData.partner2?.privateImages || [],
-          },
-        });
+        if (demoType === "couple") {
+          applyCoupleDemoIdentity(user);
+          return;
+        }
+
+        // Sesión demo sin tipo resoluble: ir a /auth, no inventar persona.
+        navigate("/auth");
       } catch (error) {
         logger.error("Error cargando perfil de pareja:", {
           error: String(error),
         });
-        // Fallback con perfil demo
-        const fallbackProfile = generateMockCouple();
-        setProfile(fallbackProfile);
-        setFormData({
-          coupleName: fallbackProfile.coupleName || "",
-          location: fallbackProfile.location || "",
-          bio: fallbackProfile.bio || "",
-          interests: fallbackProfile.interests || [],
-          explicitInterests: [],
-          partner1: {
-            firstName: fallbackProfile.partner1?.name?.split(" ")[0] || "",
-            lastName: fallbackProfile.partner1?.name?.split(" ")[1] || "",
-            nickname: "",
-            age: fallbackProfile.partner1?.age?.toString() || "",
-            profession: fallbackProfile.partner1?.profession || "",
-            bio: fallbackProfile.partner1?.bio || "",
-            avatar: fallbackProfile.partner1?.avatar || "",
-            interests: fallbackProfile.partner1?.interests || [],
-            publicImages: [],
-            privateImages: [],
-          },
-          partner2: {
-            firstName: fallbackProfile.partner2?.name?.split(" ")[0] || "",
-            lastName: fallbackProfile.partner2?.name?.split(" ")[1] || "",
-            nickname: "",
-            age: fallbackProfile.partner2?.age?.toString() || "",
-            profession: fallbackProfile.partner2?.profession || "",
-            bio: fallbackProfile.partner2?.bio || "",
-            avatar: fallbackProfile.partner2?.avatar || "",
-            interests: fallbackProfile.partner2?.interests || [],
-            publicImages: [],
-            privateImages: [],
-          },
-        });
+        // En caso de error, si hay sesión demo intentar con la identidad
+        // guardada; si no, ir a /auth. Nunca un mock aleatorio.
+        try {
+          const demoUser = localStorage.getItem("demo_user");
+          if (
+            localStorage.getItem("demo_authenticated") === "true" &&
+            demoUser
+          ) {
+            const user = JSON.parse(demoUser);
+            if (resolveDemoAccountType(user) === "couple") {
+              applyCoupleDemoIdentity(user);
+              return;
+            }
+            if (resolveDemoAccountType(user) === "single") {
+              navigate("/edit-profile-single");
+              return;
+            }
+          }
+        } catch {
+          // demo_user corrupto: caer a /auth
+        }
+        navigate("/auth");
       }
     };
 

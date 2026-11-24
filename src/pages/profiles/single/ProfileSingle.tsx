@@ -962,7 +962,7 @@ const ProfileSingle: FC = () => {
     "/assets/avatar-placeholder.png", // Placeholder genérico, no imagen específica
   );
 
-  const displayAge = currentProfile.age || 18; // Edad mínima legal, no valor específico
+  const displayAge = currentProfile.age || (singleIsDemo ? 28 : 18); // En demo, la edad canónica de Sofía es 28 (la misma que usa singleAbout); fuera de demo, 18 es la mínima legal, no un valor específico
 
   const displayGenderLabel = (() => {
     const g = currentProfile.gender?.toLowerCase();
@@ -1518,10 +1518,10 @@ const ProfileSingle: FC = () => {
       >
         <ModalBody>
           <ModalContent>
-            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+            <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-6">
               Acceso bloqueado por intentos
             </h4>
-            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200 space-y-2">
+            <div className="py-2 max-w-xl mx-auto text-center text-white/85 space-y-2">
               <p className="text-sm">
                 Detectamos múltiples solicitudes consecutivas. Para prevenir hostigamiento,
                 se bloqueó temporalmente el envío de solicitudes.
@@ -1829,7 +1829,7 @@ const ProfileSingle: FC = () => {
                   >
                     <ModalBody>
                       <ModalContent>
-                        <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
+                        <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-8">
                           Reserva tu Experiencia VIP
                         </h4>
                         <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
@@ -2246,10 +2246,10 @@ const ProfileSingle: FC = () => {
       >
         <ModalBody>
           <ModalContent>
-            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+            <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-6">
               Solicitud de acceso a galería privada
             </h4>
-            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200">
+            <div className="py-2 max-w-xl mx-auto text-center text-white/85">
               <p className="text-sm">
                 {privateDecisionRequesterName} solicita acceso a tu galería.
               </p>
@@ -2299,10 +2299,10 @@ const ProfileSingle: FC = () => {
       >
         <ModalBody>
           <ModalContent>
-            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+            <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-6">
               Solicitud de galería privada
             </h4>
-            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200 space-y-2">
+            <div className="py-2 max-w-xl mx-auto text-center text-white/85 space-y-2">
               <p className="text-sm">
                 Para acceder a contenido privado debes enviar una solicitud.
               </p>
@@ -2343,10 +2343,10 @@ const ProfileSingle: FC = () => {
       >
         <ModalBody>
           <ModalContent>
-            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+            <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-6">
               Solicitud denegada
             </h4>
-            <div className="py-2 max-w-xl mx-auto text-center text-neutral-600 dark:text-neutral-200 space-y-2">
+            <div className="py-2 max-w-xl mx-auto text-center text-white/85 space-y-2">
               <p className="text-sm">
                 El dueño del perfil denegó tu solicitud. No se mostrará la galería privada.
               </p>
@@ -2373,7 +2373,7 @@ const ProfileSingle: FC = () => {
       >
         <ModalBody>
           <ModalContent>
-            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+            <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-6">
               Comentar post
             </h4>
             <div className="py-2 max-w-xl mx-auto space-y-4">

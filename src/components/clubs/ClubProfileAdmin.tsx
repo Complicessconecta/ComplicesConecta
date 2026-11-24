@@ -201,7 +201,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             </div>
           </div>
 
-          <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+          <Badge className="bg-purple-600 text-white border-purple-400/50">
             Solo Dueño
           </Badge>
         </div>

@@ -10,6 +10,46 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
 📆 Festimada para completar limpieza de código muerto y comentarios legacy. así como actualización de la documentación en la raíz
 
+                  📅  Noviembre del 2026
+
+## 📅 Actualización 24 de Noviembre, 2026 - 11:34
+
+**Fixes Editor Demo + Dock Config + Contraste + Chat:**
+- ✅ Editor single muestra la identidad demo real (Sofía, 28, CDMX) en vez de una persona aleatoria en cada carga
+- ✅ Editor couple con el mismo arreglo (Carmen & Roberto); si se abre el editor de single en sesión de pareja, redirige al editor de pareja y viceversa
+- ✅ Causa raíz: `useAuth.signIn` sobrescribía `demo_user` con forma de Profile sin `accountType`, así que el gate de `loadProfile` fallaba y caía en `generateMockSingle()` — nuevo `resolveDemoAccountType()` en `app-config.ts` (lee accountType/type/profile_type/relationship_type/email)
+- ✅ `getProfileType()` ya no resuelve la pareja demo como single (el engranaje abría el editor de single en sesión de pareja); balance demo de pareja corregido en `useTokens` (2000/1500 en vez de 1250/850); edad demo 25 → 28
+- ✅ Dock Config: estando ya en el editor abre el modal de Animaciones (mismo que el engranaje flotante); antes no hacía nada
+- ✅ Modal Animaciones: sin el duplicado "Movimiento Reducido" ni el texto interno "Desde useBgMode"; botones Cerrar, Lenta, Rápida, Fijo y Vídeo legibles
+- ✅ Chat: hora local HH:MM en mensajes (antes ISO crudo `2026-11-24T16:57:05.682Z`); hilo con `min-w-0` y dock más ancho, sin recorte a la derecha
+- ✅ Galería privada: el blur queda solo en la foto; el botón "Desbloquear (100 CMPX)" ya se lee
+- ✅ Editor: la foto ya no desborda su caja ni tapa el texto "Sube una foto clara de tu rostro para aumentar tus conexiones"
+- ✅ Contraste: invitaciones en /requests, textos del modal en /profile-single, badge "Solo Dueño" en /clubs/demo, ID demo real en el perfil (antes `demo-use • xxxx-xxx-xx`)
+- ✅ Perfil single: encabezado 28 años en demo (antes 18), igual que "Sobre mí"
+- ✅ Árbol del proyecto regenerado desde src/ actual en ambos archivos (`project-structure-tree.md` y `Project-Structure-Tree-files.md`, ahora idénticos)
+
+**Eliminado:**
+- ✅ Llamadas a `generateMockSingle()` y `generateMockCouple()` en los editores (sin sesión demo ni usuario real, el editor va a /auth, nunca a un mock aleatorio)
+- ✅ Sección duplicada "Movimiento Reducido" y texto interno "Desde useBgMode" del modal de Animaciones
+- 📌 El árbol actualizado refleja además altas/bajas de src/ desde el snapshot de enero (no son cambios de este PR): eliminados `AdminDashboard.tsx` y `dataEncryption.ts`; servicios de seguridad reubicados; nuevos `CoupleAboutSection`, `SingleAboutSection`, secciones de intereses/privacidad/suscripción, `ClubsPublic.tsx`, `BottomNavigation.tsx`, `LogoutModal.tsx` y tests
+
+**Pendiente / Falló (se registra, no se oculta):**
+- ⚠️ `tsc`: quedan 10 errores preexistentes en master (WorldIDButton v4 ×6, `privacy_settings` ×4) — no se tocan en este PR
+- ⚠️ `vitest`: 2 fallos preexistentes (ProfileSingle "debe cargar el perfil demo correctamente", ProfileCouple "renders loading state initially") — iguales en master limpio
+- ⚠️ `prettier`: 13 archivos fallan --check en master y en esta rama (preexistente); las líneas nuevas de este PR están limpias
+- ⚠️ Banner "NO DISPONIBLE" en /clubs/demo: no se encontró en el código (sin coincidencia literal en el repo) — no se pudo arreglar de forma estática; falta re-verificar en vivo tras el merge
+- ⚠️ Error "Error inicializando modelo local" (IA Ayuda): excluido de este PR, queda en su rama pendiente
+- ⚠️ Sin verificación en vivo en producción todavía — falta probarlo en el teléfono tras merge + deploy
+
+**Verificación:**
+- ✅ `tsc --noEmit` (TS 5.7.2): 10 errores en master limpio, 10 en esta rama, 0 en archivos tocados
+- ✅ `vitest` con `VITE_SUPABASE_*` dummy: profiles.test.ts 24/24; ProfileSingle 2/3 y ProfileCouple con 1 fallo preexistente (iguales en baseline)
+- ✅ `prettier --check` en archivos cambiados: mismos 13 fallan en master y en la rama; líneas nuevas limpias
+
+Rama: `fix/editor-demo-chat-dock-legibilidad-2026-11-24` (base master 11d857b), 18 archivos — Wacko fusiona desde su teléfono.
+
+---
+
                   📅  Febrero del 2026
 
 ## 📅 Actualización 4 de Febrero, 2026 - 01:30

@@ -164,7 +164,10 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
       {currentImage ? (
         // Mostrar imagen actual
-        <div className="relative group">
+        // El grupo lleva w-full h-full: sin altura propia, el `h-full` de
+        // la img no se resolvía y la imagen se mostraba a su tamaño natural,
+        // desbordando la caja y tapando el texto de ayuda de abajo.
+        <div className="relative group w-full h-full">
           <img
             src={currentImage}
             alt={
@@ -217,7 +220,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           className={`
-            border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
+            border-2 border-dashed rounded-lg p-3 text-center cursor-pointer transition-all duration-200 h-full w-full flex flex-col items-center justify-center
             ${
               dragActive
                 ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
@@ -228,14 +231,14 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         >
           {isUploading ? (
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
+              <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Subiendo imagen...
               </p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3">
-              <ImageIcon className="w-12 h-12 text-gray-400" />
+              <ImageIcon className="w-8 h-8 text-gray-400" />
               <div>
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Haz clic o arrastra una imagen aquí

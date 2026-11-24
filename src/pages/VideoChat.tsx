@@ -1,8 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Video, VideoOff, Mic, MicOff, Phone, PhoneOff, Users, Settings, ArrowLeft } from "lucide-react";
+import {
+  Video,
+  VideoOff,
+  Mic,
+  MicOff,
+  Phone,
+  PhoneOff,
+  Users,
+  Settings,
+  ArrowLeft,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 
 const VideoChat = () => {
@@ -53,14 +68,18 @@ const VideoChat = () => {
   const startCall = () => {
     setIsCallActive(true);
     // Agregar nuevo participante al iniciar la llamada
-    setParticipants([...participants, {
-      id: participants.length + 1,
-      name: "Nuevo Participante",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
-      isVideoOn: true,
-      isMicOn: true,
-      isHost: false,
-    }]);
+    setParticipants([
+      ...participants,
+      {
+        id: participants.length + 1,
+        name: "Nuevo Participante",
+        avatar:
+          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
+        isVideoOn: true,
+        isMicOn: true,
+        isHost: false,
+      },
+    ]);
     // En produccin aqu se iniciara la llamada WebRTC
   };
 
@@ -405,4 +424,3 @@ const VideoChat = () => {
 };
 
 export default VideoChat;
-

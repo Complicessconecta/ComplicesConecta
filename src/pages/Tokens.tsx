@@ -6,9 +6,30 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Home, Coins, Info, DollarSign, TrendingUp, Rocket, Shield, Star, BarChart3, Wallet, Gift, Sparkles, Camera, Crown } from "lucide-react";
+import {
+  ArrowLeft,
+  Home,
+  Coins,
+  Info,
+  DollarSign,
+  TrendingUp,
+  Rocket,
+  Shield,
+  Star,
+  BarChart3,
+  Wallet,
+  Gift,
+  Sparkles,
+  Camera,
+  Crown,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { TokenDashboard } from "@/components/tokens/TokenDashboard";
 import { StakingModal } from "@/components/tokens/StakingModal";
@@ -1117,4 +1138,3 @@ export default function Tokens() {
     </div>
   );
 }
-

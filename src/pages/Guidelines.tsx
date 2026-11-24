@@ -1,5 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
-import { Users, Heart, Shield, AlertCircle, CheckCircle, XCircle, Flag, ArrowLeft } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import {
+  Users,
+  Heart,
+  Shield,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  Flag,
+  ArrowLeft,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { useNavigate } from "react-router-dom";
 
@@ -308,7 +322,8 @@ const GuidelinesPage = () => {
                       Suspensión Temporal
                     </h3>
                     <p className="text-orange-700 text-sm">
-                      Restricción de acceso por un período determinado (1-30 días).
+                      Restricción de acceso por un período determinado (1-30
+                      días).
                     </p>
                   </div>
                   <div className="bg-red-50 p-6 rounded-lg border border-red-200">
@@ -385,4 +400,3 @@ const GuidelinesPage = () => {
 };
 
 export default GuidelinesPage;
-

@@ -1,12 +1,34 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, BarChart3, MessageSquare, Shield, Trash2, Plus, Eye, CheckCircle, XCircle, Crown, HelpCircle, ArrowLeft, FileText, AlertTriangle, Zap, UserCheck } from "lucide-react";
+import {
+  Users,
+  BarChart3,
+  MessageSquare,
+  Shield,
+  Trash2,
+  Plus,
+  Eye,
+  CheckCircle,
+  XCircle,
+  Crown,
+  HelpCircle,
+  ArrowLeft,
+  FileText,
+  AlertTriangle,
+  Zap,
+  UserCheck,
+} from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
@@ -120,18 +142,14 @@ const AdminProduction = () => {
   const [faqItems, setFaqItems] = useState<FAQItem[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
-  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(
-    null,
-  );
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
   const [newFaq, setNewFaq] = useState({
     question: "",
     answer: "",
     category: "general",
   });
   const [auditReport, setAuditReport] = useState<any>(null);
-  const [notifications, setNotifications] = useState<NotificationStats[]>(
-    [],
-  );
+  const [notifications, setNotifications] = useState<NotificationStats[]>([]);
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([]);
   const [dateFilter, setDateFilter] = useState("today");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -208,13 +226,18 @@ const AdminProduction = () => {
       ]);
       toast({
         title: "Datos cargados",
-        description: "Los datos del panel de administración se han cargado correctamente",
+        description:
+          "Los datos del panel de administración se han cargado correctamente",
       });
     } catch (error) {
-      logger.error("Error al cargar datos del panel de administración de producción", { error });
+      logger.error(
+        "Error al cargar datos del panel de administración de producción",
+        { error },
+      );
       toast({
         title: "Error",
-        description: "Error al cargar datos del panel de administración de producción",
+        description:
+          "Error al cargar datos del panel de administración de producción",
         variant: "destructive",
       });
     } finally {
@@ -238,16 +261,18 @@ const AdminProduction = () => {
       }
 
       // Mapear los datos de Supabase al tipo NotificationStats
-      const mappedNotifications: NotificationStats[] = (data || []).map((notif: any) => ({
-        id: notif.id,
-        type: notif.type || "info",
-        title: notif.title || "Notificación",
-        message: notif.message || "",
-        user_id: notif.user_id || "",
-        read: notif.read || false,
-        created_at: notif.created_at || new Date().toISOString(),
-        user_email: notif.user_email,
-      }));
+      const mappedNotifications: NotificationStats[] = (data || []).map(
+        (notif: any) => ({
+          id: notif.id,
+          type: notif.type || "info",
+          title: notif.title || "Notificación",
+          message: notif.message || "",
+          user_id: notif.user_id || "",
+          read: notif.read || false,
+          created_at: notif.created_at || new Date().toISOString(),
+          user_email: notif.user_email,
+        }),
+      );
 
       setNotifications(mappedNotifications);
     } catch (_error) {
@@ -490,7 +515,9 @@ const AdminProduction = () => {
         status: inv.status || "pending",
         created_at: inv.created_at,
         decided_at:
-          inv.status && inv.status !== "pending" ? inv.updated_at || null : null,
+          inv.status && inv.status !== "pending"
+            ? inv.updated_at || null
+            : null,
       }));
 
       setInvitations(mappedInvitations);
@@ -631,11 +658,17 @@ const AdminProduction = () => {
 
         {/* Toggle Estadísticas en Tiempo Real */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-xl font-bold text-white">Estadísticas en Tiempo Real</h2>
+          <h2 className="text-xl font-bold text-white">
+            Estadísticas en Tiempo Real
+          </h2>
           <Button
             onClick={() => setRealTimeStats(!realTimeStats)}
             variant={realTimeStats ? "default" : "outline"}
-            className={realTimeStats ? "bg-green-600 hover:bg-green-700 text-white" : "border-green-500 text-green-400 hover:bg-green-500/10 border bg-transparent"}
+            className={
+              realTimeStats
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : "border-green-500 text-green-400 hover:bg-green-500/10 border bg-transparent"
+            }
           >
             <Zap className="w-4 h-4 mr-2" />
             {realTimeStats ? "Activado" : "Desactivado"}
@@ -654,24 +687,35 @@ const AdminProduction = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
-                  <h3 className="text-white font-semibold mb-2">Total Acciones</h3>
-                  <p className="text-2xl font-bold text-purple-400">{auditReport.totalActions}</p>
+                  <h3 className="text-white font-semibold mb-2">
+                    Total Acciones
+                  </h3>
+                  <p className="text-2xl font-bold text-purple-400">
+                    {auditReport.totalActions}
+                  </p>
                 </div>
                 <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Aprobadas</h3>
-                  <p className="text-2xl font-bold text-green-400">{auditReport.approvedActions}</p>
+                  <p className="text-2xl font-bold text-green-400">
+                    {auditReport.approvedActions}
+                  </p>
                 </div>
                 <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Rechazadas</h3>
-                  <p className="text-2xl font-bold text-red-400">{auditReport.rejectedActions}</p>
+                  <p className="text-2xl font-bold text-red-400">
+                    {auditReport.rejectedActions}
+                  </p>
                 </div>
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Pendientes</h3>
-                  <p className="text-2xl font-bold text-yellow-400">{auditReport.pendingActions}</p>
+                  <p className="text-2xl font-bold text-yellow-400">
+                    {auditReport.pendingActions}
+                  </p>
                 </div>
               </div>
               <p className="text-white/60 text-sm mt-4">
-                Última auditoría: {new Date(auditReport.lastAudit).toLocaleString()}
+                Última auditoría:{" "}
+                {new Date(auditReport.lastAudit).toLocaleString()}
               </p>
             </CardContent>
           </Card>
@@ -848,12 +892,16 @@ const AdminProduction = () => {
                   <Input
                     placeholder="Buscar usuario..."
                     value={searchTerm}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setSearchTerm(e.target.value)
+                    }
                     className="bg-white/10 border-white/20 text-white placeholder-white/50"
                   />
                   <select
                     value={dateFilter}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDateFilter(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      setDateFilter(e.target.value)
+                    }
                     className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
                     aria-label="Filtrar por fecha"
                     title="Filtrar por fecha"
@@ -865,7 +913,9 @@ const AdminProduction = () => {
                   </select>
                   <select
                     value={typeFilter}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTypeFilter(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      setTypeFilter(e.target.value)
+                    }
                     className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
                     aria-label="Filtrar por tipo"
                     title="Filtrar por tipo"
@@ -878,7 +928,9 @@ const AdminProduction = () => {
                   <Input
                     placeholder="Filtrar por email..."
                     value={userFilter}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserFilter(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setUserFilter(e.target.value)
+                    }
                     className="bg-white/10 border-white/20 text-white placeholder-white/50"
                   />
                 </div>
@@ -891,7 +943,10 @@ const AdminProduction = () => {
                       Notificaciones ({notifications.length})
                     </h4>
                     {notifications.map((notif) => (
-                      <div key={notif.id} className="text-white/80 text-sm mb-1">
+                      <div
+                        key={notif.id}
+                        className="text-white/80 text-sm mb-1"
+                      >
                         • {notif.title}: {notif.message}
                       </div>
                     ))}
@@ -906,7 +961,10 @@ const AdminProduction = () => {
                       Alertas del Sistema ({systemAlerts.length})
                     </h4>
                     {systemAlerts.map((alert) => (
-                      <div key={alert.id} className="text-white/80 text-sm mb-1">
+                      <div
+                        key={alert.id}
+                        className="text-white/80 text-sm mb-1"
+                      >
                         • {alert.message}
                       </div>
                     ))}
@@ -921,8 +979,14 @@ const AdminProduction = () => {
                       Perfil Seleccionado
                     </h4>
                     <div className="text-white/80 text-sm">
-                      <p><strong>Nombre:</strong> {selectedProfile.display_name || `${selectedProfile.first_name} ${selectedProfile.last_name}`}</p>
-                      <p><strong>Email:</strong> {selectedProfile.email}</p>
+                      <p>
+                        <strong>Nombre:</strong>{" "}
+                        {selectedProfile.display_name ||
+                          `${selectedProfile.first_name} ${selectedProfile.last_name}`}
+                      </p>
+                      <p>
+                        <strong>Email:</strong> {selectedProfile.email}
+                      </p>
                       <Button
                         onClick={() => setSelectedProfile(null)}
                         className="mt-2 bg-purple-600 hover:bg-purple-700 text-white text-sm"
@@ -936,84 +1000,98 @@ const AdminProduction = () => {
                 <div className="space-y-4">
                   {profiles
                     .filter((profile) => {
-                      if (searchTerm && !profile.email.toLowerCase().includes(searchTerm.toLowerCase())) return false;
-                      if (userFilter && !profile.email.toLowerCase().includes(userFilter.toLowerCase())) return false;
-                      if (typeFilter === 'premium' && !profile.is_premium) return false;
-                      if (typeFilter === 'verified' && !profile.is_verified) return false;
+                      if (
+                        searchTerm &&
+                        !profile.email
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      )
+                        return false;
+                      if (
+                        userFilter &&
+                        !profile.email
+                          .toLowerCase()
+                          .includes(userFilter.toLowerCase())
+                      )
+                        return false;
+                      if (typeFilter === "premium" && !profile.is_premium)
+                        return false;
+                      if (typeFilter === "verified" && !profile.is_verified)
+                        return false;
                       return true;
                     })
                     .slice(0, 10)
                     .map((profile) => (
-                    <div
-                      key={profile.id}
-                      className="flex items-center justify-between p-4 bg-white/5 rounded-lg"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 bg-linear-to-r from-purple-400 to-fuchsia-400 rounded-full flex items-center justify-center">
-                          <span className="text-white font-semibold">
-                            {profile.display_name?.charAt(0) ||
-                              profile.first_name?.charAt(0) ||
-                              "U"}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-white font-medium">
-                            {profile.display_name ||
-                              `${profile.first_name} ${profile.last_name}` ||
-                              "Usuario sin nombre"}
-                          </p>
-                          <p className="text-white/60 text-sm">
-                            {profile.email}
-                          </p>
-                          <div className="flex gap-2 mt-1">
-                            {profile.is_premium && (
-                              <Badge className="bg-gray-500 text-white">
-                                Premium
-                              </Badge>
-                            )}
-                            {profile.is_verified && (
-                              <Badge className="border border-white/30 bg-transparent text-white">
-                                Verificado
-                              </Badge>
-                            )}
+                      <div
+                        key={profile.id}
+                        className="flex items-center justify-between p-4 bg-white/5 rounded-lg"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="w-10 h-10 bg-linear-to-r from-purple-400 to-fuchsia-400 rounded-full flex items-center justify-center">
+                            <span className="text-white font-semibold">
+                              {profile.display_name?.charAt(0) ||
+                                profile.first_name?.charAt(0) ||
+                                "U"}
+                            </span>
                           </div>
-                          <p>
-                            <strong>Género:</strong>{" "}
-                            {(profile as any).gender || "No especificado"}
-                          </p>
-                          <p>
-                            <strong>Interesado en:</strong>{" "}
-                            {(profile as any).interested_in ||
-                              "No especificado"}
-                          </p>
+                          <div>
+                            <p className="text-white font-medium">
+                              {profile.display_name ||
+                                `${profile.first_name} ${profile.last_name}` ||
+                                "Usuario sin nombre"}
+                            </p>
+                            <p className="text-white/60 text-sm">
+                              {profile.email}
+                            </p>
+                            <div className="flex gap-2 mt-1">
+                              {profile.is_premium && (
+                                <Badge className="bg-gray-500 text-white">
+                                  Premium
+                                </Badge>
+                              )}
+                              {profile.is_verified && (
+                                <Badge className="border border-white/30 bg-transparent text-white">
+                                  Verificado
+                                </Badge>
+                              )}
+                            </div>
+                            <p>
+                              <strong>Género:</strong>{" "}
+                              {(profile as any).gender || "No especificado"}
+                            </p>
+                            <p>
+                              <strong>Interesado en:</strong>{" "}
+                              {(profile as any).interested_in ||
+                                "No especificado"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => setSelectedProfile(profile)}
+                            className="text-blue-400 border-blue-400/20 hover:bg-blue-500/10 border bg-transparent px-3 py-1 text-sm"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            onClick={() => handleTogglePremium(profile.id)}
+                            className="text-white border-white/20 hover:bg-white/10 border bg-transparent px-3 py-1 text-sm"
+                          >
+                            {profile.is_premium ? (
+                              <XCircle className="w-4 h-4" />
+                            ) : (
+                              <Crown className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            onClick={() => handleDeleteProfile(profile.id)}
+                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          onClick={() => setSelectedProfile(profile)}
-                          className="text-blue-400 border-blue-400/20 hover:bg-blue-500/10 border bg-transparent px-3 py-1 text-sm"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          onClick={() => handleTogglePremium(profile.id)}
-                          className="text-white border-white/20 hover:bg-white/10 border bg-transparent px-3 py-1 text-sm"
-                        >
-                          {profile.is_premium ? (
-                            <XCircle className="w-4 h-4" />
-                          ) : (
-                            <Crown className="w-4 h-4" />
-                          )}
-                        </Button>
-                        <Button
-                          onClick={() => handleDeleteProfile(profile.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </CardContent>
             </Card>
@@ -1204,4 +1282,3 @@ const AdminProduction = () => {
 };
 
 export default AdminProduction;
-

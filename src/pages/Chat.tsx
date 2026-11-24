@@ -1,5 +1,24 @@
-import { useState, useEffect, type ChangeEvent, type KeyboardEvent } from "react";
-import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus, Smile, Paperclip, Image, Mic } from "lucide-react";
+import {
+  useState,
+  useEffect,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from "react";
+import {
+  MessageCircle,
+  Video,
+  MoreVertical,
+  ArrowLeft,
+  Heart,
+  Send,
+  Lock,
+  Globe,
+  UserPlus,
+  Smile,
+  Paperclip,
+  Image,
+  Mic,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -124,7 +143,9 @@ const Chat = () => {
         throw error;
       }
 
-      const ids = Array.isArray(data) ? data.map((r: any) => String(r.profile_id)) : [];
+      const ids = Array.isArray(data)
+        ? data.map((r: any) => String(r.profile_id))
+        : [];
       setUnlockedGalleries(new Set(ids));
 
       // Mantener un espejo en estado legacy (compatibilidad/telemetría)
@@ -228,12 +249,17 @@ const Chat = () => {
       // En producción y chat privado: buscar Match ID real
       if (user?.id && selectedChat.id) {
         try {
-          const matchId = await matchService.getMatchId(user.id, selectedChat.id.toString());
+          const matchId = await matchService.getMatchId(
+            user.id,
+            selectedChat.id.toString(),
+          );
           if (matchId) {
-             setActiveRoomId(matchId);
+            setActiveRoomId(matchId);
           } else {
-             logger.warn("No match found for chat", { partnerId: selectedChat.id });
-             setActiveRoomId(null);
+            logger.warn("No match found for chat", {
+              partnerId: selectedChat.id,
+            });
+            setActiveRoomId(null);
           }
         } catch (err) {
           logger.error("Error resolving match ID", { error: err });
@@ -509,13 +535,15 @@ const Chat = () => {
       const chatUser: ChatUser = {
         id: String(profile.id),
         name: profile.name,
-        image: profile.image || "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
+        image:
+          profile.image ||
+          "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
         lastMessage: "Inicio de conversación",
         timestamp: "Ahora",
         isOnline: profile.isOnline || false,
         unreadCount: 0,
         isPrivate: true,
-        roomType: "private"
+        roomType: "private",
       };
       setSelectedChat(chatUser);
       // Ensure we are on the chats tab (if tabs exist)
@@ -735,7 +763,14 @@ const Chat = () => {
         });
       }
     };
-  }, [selectedChat, user?.id, isProduction, activeRoomId, startMonitoring, stopMonitoring]);
+  }, [
+    selectedChat,
+    user?.id,
+    isProduction,
+    activeRoomId,
+    startMonitoring,
+    stopMonitoring,
+  ]);
 
   const handleSendMessage = (content?: string) => {
     const text = (content ?? newMessage).trim();
@@ -1570,4 +1605,3 @@ const Chat = () => {
 };
 
 export default Chat;
-

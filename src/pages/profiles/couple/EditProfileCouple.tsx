@@ -4,7 +4,19 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, Camera, X, Users, MapPin, AlertCircle, Sun, Moon, Eye, EyeOff } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  Camera,
+  X,
+  Users,
+  MapPin,
+  AlertCircle,
+  Sun,
+  Moon,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
@@ -14,7 +26,10 @@ import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterests
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
-import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfileTheme";
+import {
+  useDemoThemeConfig,
+  useProfileTheme,
+} from "@/features/profile/useProfileTheme";
 import { motion } from "framer-motion";
 
 const EditProfileCouple = () => {
@@ -1032,4 +1047,3 @@ const EditProfileCouple = () => {
 };
 
 export default EditProfileCouple;
-

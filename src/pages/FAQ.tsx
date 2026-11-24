@@ -2,12 +2,44 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card,  CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/forms/Input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { HelpCircle, MessageSquare, Star, Send, Heart, Shield, Crown, Bug, AlertTriangle, UserCheck, Lock, GalleryHorizontal, MessageCircle, Gift, Zap } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  HelpCircle,
+  MessageSquare,
+  Star,
+  Send,
+  Heart,
+  Shield,
+  Crown,
+  Bug,
+  AlertTriangle,
+  UserCheck,
+  Lock,
+  GalleryHorizontal,
+  MessageCircle,
+  Gift,
+  Zap,
+} from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 
@@ -269,7 +301,9 @@ Fecha: ${new Date().toLocaleString()}
   };
 
   return (
-    <div className={`min-h-dvh relative overflow-x-hidden ${isActive ? "page-active" : ""}`}>
+    <div
+      className={`min-h-dvh relative overflow-x-hidden ${isActive ? "page-active" : ""}`}
+    >
       {/* Advanced Animated Background */}
       <div className="fixed inset-0 z-0">
         {/* Base Gradient */}
@@ -671,4 +705,3 @@ Fecha: ${new Date().toLocaleString()}
 };
 
 export default FAQ;
-

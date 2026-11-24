@@ -1,7 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Shield, Building, ArrowRight, LogOut } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth/useAuth";
@@ -53,7 +59,8 @@ export const AdminSelectDashboard = () => {
             </span>
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-2">
-            Selecciona el panel al que deseas acceder para gestionar la plataforma
+            Selecciona el panel al que deseas acceder para gestionar la
+            plataforma
           </p>
           <p className="text-sm text-white/70 max-w-3xl mx-auto">
             Acceso administrativo con datos reales (producción)
@@ -68,8 +75,10 @@ export const AdminSelectDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="bg-linear-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-purple-400/50 transition-all duration-300 cursor-pointer h-full group"
-                  onClick={handleAdminPanel}>
+            <Card
+              className="bg-linear-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-purple-400/50 transition-all duration-300 cursor-pointer h-full group"
+              onClick={handleAdminPanel}
+            >
               <CardHeader>
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-linear-to-r from-indigo-500 to-violet-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
@@ -81,7 +90,8 @@ export const AdminSelectDashboard = () => {
                   Panel de Administración
                 </CardTitle>
                 <CardDescription className="text-white/70 text-base">
-                  Gestiona usuarios, moderación, analytics y configuración general de la plataforma
+                  Gestiona usuarios, moderación, analytics y configuración
+                  general de la plataforma
                 </CardDescription>
               </CardHeader>
               <CardContent>

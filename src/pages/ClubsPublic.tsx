@@ -1,6 +1,13 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Building, CheckCircle, MapPin, Sparkles, Star } from "lucide-react";
+import {
+  ArrowLeft,
+  Building,
+  CheckCircle,
+  MapPin,
+  Sparkles,
+  Star,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
@@ -208,7 +215,9 @@ export const ClubsPublic = () => {
                 </div>
                 <CardContent className="p-5 space-y-3">
                   <div>
-                    <h3 className="text-xl font-bold text-white">{club.name}</h3>
+                    <h3 className="text-xl font-bold text-white">
+                      {club.name}
+                    </h3>
                     <div className="flex items-center gap-2 text-white/70 text-sm">
                       <MapPin className="h-4 w-4" />
                       {club.city}, {club.state}

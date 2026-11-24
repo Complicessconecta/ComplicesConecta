@@ -1,5 +1,5 @@
 import { useState, useEffect, type ChangeEvent, type KeyboardEvent } from "react";
-import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
+import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus, Smile, Paperclip, Image, Mic } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -8,6 +8,9 @@ import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { mockPrivacySettings } from "@/lib/data";
+import { EmojiPicker } from "@/components/chat/EmojiPicker";
+import { ChatFileUpload } from "@/components/chat/ChatFileUpload";
+import { VoiceRecorder } from "@/components/chat/VoiceRecorder";
 import { invitationService } from "@/lib/invitations";
 // Tipos reemplazados con tipos locales para compatibilidad
 export interface SimpleChatRoom {
@@ -71,6 +74,10 @@ const Chat = () => {
   );
   const [messages, setMessages] = useState<SimpleChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [showConversationsMenu, setShowConversationsMenu] = useState(false);
   const [_isLoading, _setIsLoading] = useState(false);
   const [_isConnected, _setIsConnected] = useState(true);
   const [_connectionStatus, _setConnectionStatus] = useState<
@@ -533,7 +540,7 @@ const Chat = () => {
     }
   }, [chatPartnerId, location.key, selectedChat]);
 
-  // Private chats - conexiones verificadas
+  // Private chats - conexiones verificadías
   const privateChats: ChatUser[] = [
     {
       id: "1",
@@ -730,8 +737,9 @@ const Chat = () => {
     };
   }, [selectedChat, user?.id, isProduction, activeRoomId, startMonitoring, stopMonitoring]);
 
-  const handleSendMessage = () => {
-    if (!selectedChat || !newMessage.trim()) return;
+  const handleSendMessage = (content?: string) => {
+    const text = (content ?? newMessage).trim();
+    if (!selectedChat || !text) return;
 
     // Bloquear envio si el chat est pausado por bajo consenso
     if (isPaused) {
@@ -747,7 +755,7 @@ const Chat = () => {
 
     // Usar datos reales en produccin, mock en demo
     if (isProduction) {
-      sendRealMessage(newMessage).catch((err) => {
+      sendRealMessage(text).catch((err) => {
         logger.error("Error en sendRealMessage:", { error: err });
       });
       return;
@@ -779,13 +787,25 @@ const Chat = () => {
       sender_id: "0",
       sender_name: "Tú",
       room_id: selectedChat.id.toString(),
-      content: newMessage,
+      content: text,
       created_at: new Date().toISOString(),
       message_type: "text",
     };
 
     setMessages((prev) => [...prev, message]);
     setNewMessage("");
+  };
+
+  // Adjuntos y voz (demo): se envían como mensaje con el nombre/duración.
+  // La subida real al bucket media queda pendiente.
+  const handleFilesSelected = (files: File[]) => {
+    setShowFileUpload(false);
+    files.forEach((file) => handleSendMessage(`📎 ${file.name}`));
+  };
+
+  const handleAudioReady = (_blob: Blob, duration: number) => {
+    setShowVoiceRecorder(false);
+    handleSendMessage(`🎤 Audio (${Math.round(duration)}s)`);
   };
 
   const checkMessagePermissions = (chat: ChatUser) => {
@@ -843,16 +863,49 @@ const Chat = () => {
                     variant="ghost"
                     size="sm"
                     className="text-white hover:bg-white/10"
+                    onClick={() => navigate("/video-chat")}
                   >
                     <Video className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-white hover:bg-white/10"
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
+                  <div className="relative">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-white hover:bg-white/10"
+                      onClick={() => setShowConversationsMenu((v) => !v)}
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                    {showConversationsMenu && (
+                      <>
+                        <button
+                          aria-label="Cerrar menú"
+                          className="fixed inset-0 z-20 cursor-default"
+                          onClick={() => setShowConversationsMenu(false)}
+                        />
+                        <div className="absolute right-0 top-full mt-1 z-30 w-44 rounded-lg border border-white/20 bg-purple-950/95 backdrop-blur-md shadow-xl py-1">
+                          <button
+                            className="w-full text-left px-3 py-2 text-sm text-white hover:bg-white/10"
+                            onClick={() => {
+                              setShowConversationsMenu(false);
+                              navigate("/requests");
+                            }}
+                          >
+                            Solicitudes
+                          </button>
+                          <button
+                            className="w-full text-left px-3 py-2 text-sm text-white hover:bg-white/10"
+                            onClick={() => {
+                              setShowConversationsMenu(false);
+                              navigate("/discover");
+                            }}
+                          >
+                            Descubrir
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -1334,30 +1387,110 @@ const Chat = () => {
                     </div>
 
                     {/* Input de mensaje */}
-                    <div className="flex gap-2">
-                      <Input
-                        type="text"
-                        placeholder="Escribe tu mensaje..."
-                        value={newMessage}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          setNewMessage(e.target.value)
-                        }
-                        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                          if (e.key === "Enter" && !isPaused) {
-                            handleSendMessage();
+                    <div className="relative">
+                      {showEmojiPicker && (
+                        <div className="absolute bottom-full left-0 mb-2 z-20">
+                          <EmojiPicker
+                            onEmojiSelect={(emoji) =>
+                              setNewMessage((prev) => prev + emoji)
+                            }
+                            onClose={() => setShowEmojiPicker(false)}
+                          />
+                        </div>
+                      )}
+                      {showFileUpload && (
+                        <div className="absolute bottom-full left-0 mb-2 z-20">
+                          <ChatFileUpload
+                            onFileSelect={handleFilesSelected}
+                            onCancel={() => setShowFileUpload(false)}
+                          />
+                        </div>
+                      )}
+                      {showVoiceRecorder && (
+                        <div className="absolute bottom-full left-0 mb-2 z-20">
+                          <VoiceRecorder
+                            onAudioReady={handleAudioReady}
+                            onCancel={() => setShowVoiceRecorder(false)}
+                          />
+                        </div>
+                      )}
+                      <div className="flex gap-1 sm:gap-2 items-center">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-white/70 hover:bg-white/10 px-2"
+                          disabled={isPaused}
+                          onClick={() => {
+                            setShowFileUpload(false);
+                            setShowVoiceRecorder(false);
+                            setShowEmojiPicker((v) => !v);
+                          }}
+                        >
+                          <Smile className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-white/70 hover:bg-white/10 px-2"
+                          disabled={isPaused}
+                          onClick={() => {
+                            setShowEmojiPicker(false);
+                            setShowVoiceRecorder(false);
+                            setShowFileUpload(true);
+                          }}
+                        >
+                          <Paperclip className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-white/70 hover:bg-white/10 px-2"
+                          disabled={isPaused}
+                          onClick={() => {
+                            setShowEmojiPicker(false);
+                            setShowVoiceRecorder(false);
+                            setShowFileUpload(true);
+                          }}
+                        >
+                          <Image className="h-4 w-4" />
+                        </Button>
+                        <Input
+                          type="text"
+                          placeholder="Escribe tu mensaje..."
+                          value={newMessage}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            setNewMessage(e.target.value)
                           }
-                        }}
-                        className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
-                        disabled={isPaused}
-                      />
-                      <Button
-                        onClick={handleSendMessage}
-                        disabled={!newMessage.trim() || isPaused}
-                        gradient={true}
-                        className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
-                      >
-                        <Send className="h-4 w-4" />
-                      </Button>
+                          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                            if (e.key === "Enter" && !isPaused) {
+                              handleSendMessage();
+                            }
+                          }}
+                          className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
+                          disabled={isPaused}
+                        />
+                        <Button
+                          onClick={() => handleSendMessage()}
+                          disabled={!newMessage.trim() || isPaused}
+                          gradient={true}
+                          className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
+                        >
+                          <Send className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-white/70 hover:bg-white/10 px-2"
+                          disabled={isPaused}
+                          onClick={() => {
+                            setShowEmojiPicker(false);
+                            setShowFileUpload(false);
+                            setShowVoiceRecorder((v) => !v);
+                          }}
+                        >
+                          <Mic className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     {isPaused && (
                       <p className="text-xs text-white/70 mt-2 text-center">
@@ -1397,7 +1530,7 @@ const Chat = () => {
                   <div className="flex items-center text-white/90">
                     <Globe className="h-4 w-4 mr-1 text-green-300" />
                     <span className="drop-shadow-md">
-                      Salas pblicas moderadas
+                      Salas pblicas moderadías
                     </span>
                   </div>
                 </div>

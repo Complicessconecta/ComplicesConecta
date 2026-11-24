@@ -84,8 +84,7 @@ export async function uploadImage(
     // Validar archivo
     const validation = validateImageFile(file);
     if (!validation.valid) {
-      const errorMessage =
-        validation.error ?? "Error de validación de imagen";
+      const errorMessage = validation.error ?? "Error de validación de imagen";
       return {
         success: false,
         error: errorMessage,

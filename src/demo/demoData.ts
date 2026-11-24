@@ -4,7 +4,12 @@
  */
 
 import { v4 as uuidv4 } from "uuid";
-import { pickProfileImage, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
+import {
+  pickProfileImage,
+  resetImageCounters,
+  type ProfileType,
+  type Gender,
+} from "@/lib/media";
 import { getAutoInterests } from "@/lib/lifestyle-interests";
 
 export interface DemoProfile {
@@ -114,7 +119,8 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
     const interests = getAutoInterests(profileType, experienceLevel, gender);
 
     const selectedName = nombres[Math.floor(Math.random() * nombres.length)];
-    const selectedLocation = ubicaciones[Math.floor(Math.random() * ubicaciones.length)];
+    const selectedLocation =
+      ubicaciones[Math.floor(Math.random() * ubicaciones.length)];
     const selectedBio = bios[Math.floor(Math.random() * bios.length)];
 
     const profile: any = {
@@ -451,4 +457,3 @@ export const demoMatches = [
     status: "pending",
   },
 ];
-

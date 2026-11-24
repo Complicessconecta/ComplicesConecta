@@ -19,14 +19,7 @@ interface TikTokShareButtonProps {
   className?: string;
   variant?: "default" | "outline" | "ghost";
   size?:
-    | "sm"
-    | "default"
-    | "lg"
-    | "xl"
-    | "action"
-    | "hero"
-    | "compact"
-    | "icon";
+    "sm" | "default" | "lg" | "xl" | "action" | "hero" | "compact" | "icon";
 }
 
 export const TikTokShareButton: React.FC<TikTokShareButtonProps> = ({

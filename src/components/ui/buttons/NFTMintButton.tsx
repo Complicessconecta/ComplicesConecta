@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Heart, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { walletService, WalletService } from "@/services/payments/WalletService";
+import {
+  walletService,
+  WalletService,
+} from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
 import { logger } from "@/lib/logger";
 
@@ -88,28 +91,31 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 
       // Verificar si ya se actualizaron las imágenes (usando un flag separado)
       const updateFlagKey = `demo_nfts_updated:${uid}`;
-      const alreadyUpdated = window.localStorage.getItem(updateFlagKey) === 'true';
+      const alreadyUpdated =
+        window.localStorage.getItem(updateFlagKey) === "true";
 
       // Actualizar imágenes de NFTs existentes con imágenes aleatorias de MOCK_NFT_IMAGES (solo una vez)
       if (!alreadyUpdated) {
-        const updated = (parsed as Array<Record<string, unknown>>).map((nft, index) => {
-          const image = nft.image as string;
-          // Si la imagen es antigua (de /assets/people/), reemplazarla
-          if (image && image.includes('/assets/people/')) {
-            const randomImageIndex = index % MOCK_NFT_IMAGES.length;
-            return {
-              ...nft,
-              image: MOCK_NFT_IMAGES[randomImageIndex],
-            };
-          }
-          return nft;
-        });
+        const updated = (parsed as Array<Record<string, unknown>>).map(
+          (nft, index) => {
+            const image = nft.image as string;
+            // Si la imagen es antigua (de /assets/people/), reemplazarla
+            if (image && image.includes("/assets/people/")) {
+              const randomImageIndex = index % MOCK_NFT_IMAGES.length;
+              return {
+                ...nft,
+                image: MOCK_NFT_IMAGES[randomImageIndex],
+              };
+            }
+            return nft;
+          },
+        );
 
         // Guardar los NFTs actualizados y marcar como actualizado
         if (JSON.stringify(updated) !== JSON.stringify(parsed)) {
           writeDemoNFTs(uid, updated);
         }
-        window.localStorage.setItem(updateFlagKey, 'true');
+        window.localStorage.setItem(updateFlagKey, "true");
         return updated;
       }
 
@@ -119,9 +125,15 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
     }
   };
 
-  const writeDemoNFTs = (uid: string, items: Array<Record<string, unknown>>) => {
+  const writeDemoNFTs = (
+    uid: string,
+    items: Array<Record<string, unknown>>,
+  ) => {
     if (typeof window === "undefined") return;
-    window.localStorage.setItem(getDemoNFTStorageKey(uid), JSON.stringify(items));
+    window.localStorage.setItem(
+      getDemoNFTStorageKey(uid),
+      JSON.stringify(items),
+    );
   };
 
   /**
@@ -216,12 +228,15 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
         const mockNFT = {
           id: `demo-nft-${Date.now()}`,
           token_id:
-            typeof result?.tokenId === "number" ? result.tokenId : existing.length + 1,
+            typeof result?.tokenId === "number"
+              ? result.tokenId
+              : existing.length + 1,
           metadata_uri: "ipfs://demo-metadata-hash",
           rarity,
           value, // Valor en CMPX
           is_couple: type === "couple",
-          partner_address: type === "couple" ? "demo-partner-address" : undefined,
+          partner_address:
+            type === "couple" ? "demo-partner-address" : undefined,
           name: nftName,
           description: nftDescription,
           image: imageUrl,
@@ -233,7 +248,10 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
           contract_address: "0x0000000000000000000000000000000000000000",
         };
 
-        const next = [mockNFT as Record<string, unknown>, ...existing].slice(0, 4);
+        const next = [mockNFT as Record<string, unknown>, ...existing].slice(
+          0,
+          4,
+        );
         writeDemoNFTs(userId, next);
 
         result = mockNFT;
@@ -410,4 +428,3 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 };
 
 export default NFTMintButton;
-

@@ -167,4 +167,3 @@ export function getRecommendedMatches(
   const sortedProfiles = filterAndSortByCompatibility(userInterests, profiles);
   return sortedProfiles.slice(0, limit);
 }
-

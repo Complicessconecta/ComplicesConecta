@@ -215,4 +215,3 @@ export const useSupabaseTheme = () => {
     refreshTheme: loadThemePreferences,
   };
 };
-

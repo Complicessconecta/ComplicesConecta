@@ -4,7 +4,12 @@
  */
 
 import React, { useState } from "react";
-import { Dialog, DialogContent,  DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
@@ -280,7 +285,9 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                 {/* Error message */}
                 {error && (
                   <div className="p-3 bg-red-500/20 backdrop-blur-sm border border-red-400/30 rounded-lg">
-                    <p className="text-white text-sm wrap-break-word">❌ {error}</p>
+                    <p className="text-white text-sm wrap-break-word">
+                      ❌ {error}
+                    </p>
                   </div>
                 )}
 
@@ -319,4 +326,3 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
     </AnimatePresence>
   );
 }
-

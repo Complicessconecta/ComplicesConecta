@@ -301,4 +301,3 @@ export const GlobalBackground: FC<{
 };
 
 export default GlobalBackground;
-

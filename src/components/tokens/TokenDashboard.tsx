@@ -4,11 +4,24 @@
  */
 
 import { useId } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useTokens } from "@/hooks/useTokens";
-import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from "lucide-react";
+import {
+  Coins,
+  TrendingUp,
+  Lock,
+  Gift,
+  Users,
+  Calendar,
+  Sparkles,
+} from "lucide-react";
 import { TokenAiChat } from "@/components/tokens/TokenAiChat";
 
 // Imágenes de NFTs mock para modo demo
@@ -32,10 +45,34 @@ const MOCK_DEMO_DATA = {
     totalReferrals: 5,
   },
   transactions: [
-    { id: 1, description: "Minteo NFT #1", amount: -1000, type: "nft_mint", date: new Date().toISOString() },
-    { id: 2, description: "Recompensa diaria", amount: 50, type: "reward", date: new Date().toISOString() },
-    { id: 3, description: "Staking CMPX", amount: -2000, type: "stake", date: new Date().toISOString() },
-    { id: 4, description: "Recompensa referido", amount: 100, type: "referral", date: new Date().toISOString() },
+    {
+      id: 1,
+      description: "Minteo NFT #1",
+      amount: -1000,
+      type: "nft_mint",
+      date: new Date().toISOString(),
+    },
+    {
+      id: 2,
+      description: "Recompensa diaria",
+      amount: 50,
+      type: "reward",
+      date: new Date().toISOString(),
+    },
+    {
+      id: 3,
+      description: "Staking CMPX",
+      amount: -2000,
+      type: "stake",
+      date: new Date().toISOString(),
+    },
+    {
+      id: 4,
+      description: "Recompensa referido",
+      amount: 100,
+      type: "referral",
+      date: new Date().toISOString(),
+    },
   ],
   nfts: [
     {
@@ -118,8 +155,12 @@ export function TokenDashboard({
   } = useTokens();
 
   // Use props if provided (demo mode), otherwise use hook data
-  const balance = isDemoMode ? MOCK_DEMO_DATA.balance : (initialBalance || hookBalance);
-  const transactions = isDemoMode ? MOCK_DEMO_DATA.transactions : (initialTransactions || hookTransactions);
+  const balance = isDemoMode
+    ? MOCK_DEMO_DATA.balance
+    : initialBalance || hookBalance;
+  const transactions = isDemoMode
+    ? MOCK_DEMO_DATA.transactions
+    : initialTransactions || hookTransactions;
   const displayNfts = isDemoMode ? MOCK_DEMO_DATA.nfts : nfts;
   const loading = !isDemoMode && !initialBalance && hookLoading;
 
@@ -329,11 +370,11 @@ export function TokenDashboard({
       {(isWorldIdEligible || hasPendingRewards) && (
         <Card className="bg-white/5 backdrop-blur-xl border border-green-400/40 shadow-xl rounded-2xl">
           <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
-            <Gift className="h-5 w-5" />
-            🎁 Recompensas Disponibles
-          </CardTitle>
-        </CardHeader>
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Gift className="h-5 w-5" />
+              🎁 Recompensas Disponibles
+            </CardTitle>
+          </CardHeader>
           <CardContent className="space-y-3 p-6 md:p-8">
             {isWorldIdEligible && (
               <div className="flex items-center justify-between p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
@@ -519,7 +560,9 @@ export function TokenDashboard({
           <div className="flex items-center justify-between mb-4 text-xs text-white/70">
             <span className="truncate">
               NFTs en esta wallet:{" "}
-              <span className="font-semibold text-white">{displayNfts.length}</span>
+              <span className="font-semibold text-white">
+                {displayNfts.length}
+              </span>
             </span>
             <span className="truncate text-right">
               Galerías NFT verificadas:{" "}
@@ -537,17 +580,22 @@ export function TokenDashboard({
                   className="group relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/20"
                 >
                   <img
-                    src={nft.image || nft.image_url || MOCK_NFT_IMAGES[index % MOCK_NFT_IMAGES.length] || MOCK_NFT_IMAGES[0]}
+                    src={
+                      nft.image ||
+                      nft.image_url ||
+                      MOCK_NFT_IMAGES[index % MOCK_NFT_IMAGES.length] ||
+                      MOCK_NFT_IMAGES[0]
+                    }
                     alt={nft.name || "NFT"}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {
-                      e.currentTarget.src = MOCK_NFT_IMAGES[0] || '';
+                      e.currentTarget.src = MOCK_NFT_IMAGES[0] || "";
                     }}
                   />
                   {/* Badges */}
                   <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md rounded px-2 py-0.5 border border-white/20">
                     <span className="text-[10px] text-white font-semibold">
-                      {nft.value ? `${nft.value} CMPX` : ''}
+                      {nft.value ? `${nft.value} CMPX` : ""}
                     </span>
                   </div>
                   <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md rounded-full px-2 py-0.5 border border-white/20">
@@ -561,16 +609,21 @@ export function TokenDashboard({
                       {nft.name || "NFT Item"}
                     </p>
                     <div className="flex items-center justify-between mt-1">
-                      <span className={`text-[10px] capitalize ${
-                        nft.rarity === 'legendary' ? 'text-yellow-400' :
-                        nft.rarity === 'epic' ? 'text-purple-400' :
-                        nft.rarity === 'rare' ? 'text-blue-400' :
-                        'text-gray-400'
-                      }`}>
-                        {nft.rarity || 'Common'}
+                      <span
+                        className={`text-[10px] capitalize ${
+                          nft.rarity === "legendary"
+                            ? "text-yellow-400"
+                            : nft.rarity === "epic"
+                              ? "text-purple-400"
+                              : nft.rarity === "rare"
+                                ? "text-blue-400"
+                                : "text-gray-400"
+                        }`}
+                      >
+                        {nft.rarity || "Common"}
                       </span>
                       <span className="text-[9px] text-white/60">
-                        {nft.collection || 'Cómplices'}
+                        {nft.collection || "Cómplices"}
                       </span>
                     </div>
                   </div>
@@ -703,4 +756,3 @@ export function TokenDashboard({
     </main>
   );
 }
-

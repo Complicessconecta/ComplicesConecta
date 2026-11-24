@@ -78,11 +78,7 @@ export const ChatListSkeleton: FC = () => (
   <div className="space-y-4">
     {Array.from({ length: 5 }).map((_, i) => (
       <div key={i} className="flex gap-3 p-3 border rounded-lg">
-        <Skeleton
-          width={50}
-          height={50}
-          className="rounded-full shrink-0"
-        />
+        <Skeleton width={50} height={50} className="rounded-full shrink-0" />
         <div className="flex-1 space-y-2">
           <Skeleton height={16} width="60%" />
           <Skeleton height={12} width="80%" />

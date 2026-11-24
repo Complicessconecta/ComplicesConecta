@@ -685,9 +685,7 @@ export class NotificationService {
             logger.info("🔔 Nueva notificación recibida:", {
               notification: payload.new,
             });
-            handler.onNewNotification(
-              normalizeNotificationData(payload.new),
-            );
+            handler.onNewNotification(normalizeNotificationData(payload.new));
             this.updateUnreadCount(userId, handler);
           },
         )
@@ -792,9 +790,7 @@ export class NotificationService {
         data: {
           url:
             notification.action_url ||
-            getJsonString(
-              getJsonRecord(notification.data).action_url,
-            ),
+            getJsonString(getJsonRecord(notification.data).action_url),
           notificationId: notification.id,
         },
         // actions: [
@@ -815,8 +811,7 @@ export class NotificationService {
           "urgent",
         silent:
           (notification.priority ||
-            getJsonString(getJsonRecord(notification.data).priority)) ===
-          "low",
+            getJsonString(getJsonRecord(notification.data).priority)) === "low",
       });
 
       logger.info("📱 Push notification sent:", {
@@ -1179,4 +1174,3 @@ export class NotificationService {
 }
 
 export default NotificationService;
-

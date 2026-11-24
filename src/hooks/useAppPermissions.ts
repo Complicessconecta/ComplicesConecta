@@ -174,7 +174,4 @@ export const useAppPermissions = () => {
 
 // Tipo helper para los estados de permisos de Capacitor
 export type PermissionState =
-  | "granted"
-  | "denied"
-  | "prompt"
-  | "prompt-with-rationale";
+  "granted" | "denied" | "prompt" | "prompt-with-rationale";

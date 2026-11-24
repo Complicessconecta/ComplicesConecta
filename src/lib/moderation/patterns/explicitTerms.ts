@@ -14,7 +14,7 @@ export const EXPLICIT_TERMS = [
   "oral",
   "anal",
   "masturbación",
-  
+
   // Términos adicionales para mayor robustez
   "fetiche",
   "fetichismo",

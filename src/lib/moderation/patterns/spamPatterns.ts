@@ -22,7 +22,7 @@ export const SPAM_PATTERNS = [
   /kik\s*[@:]?\s*\w+/i,
   /line\s*[@:]?\s*\w+/i,
   /messenger\s*[@:]?\s*\w+/i,
-  
+
   // URLs y links
   /www\.\w+\.\w+/i,
   /https?:\/\/\w+/i,
@@ -58,7 +58,7 @@ export const SPAM_PATTERNS = [
   /\.cu\b/i,
   /\.do\b/i,
   /\.pr\b/i,
-  
+
   // Dinero y pagos
   /\$\d+|\d+\s*pesos|\d+\s*dólares/i,
   /\$\s*\d+,\d{2}/i,
@@ -537,30 +537,30 @@ export const SPAM_PATTERNS = [
   /convenido\s*\d+/i,
   /pactado\s*\d+/i,
   /tratado\s*\d+/i,
-  
+
   // Patrones de repetición excesiva
   /(.{10,})\1{3,}/i,
   /(.{5,})\1{5,}/i,
   /(.{3,})\1{7,}/i,
   /(.{2,})\1{9,}/i,
   /(.{1,})\1{11,}/i,
-  
+
   // Patrones de mayúsculas excesivas
   /[A-Z]{10,}/,
   /[A-Z\s]{15,}/,
-  
+
   // Patrones de números de teléfono
   /\d{10}/,
   /\d{11}/,
   /\d{12}/,
   /\d{13}/,
-  
+
   // Patrones de emails
   /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/,
-  
+
   // Patrones de caracteres especiales excesivos
   /[!@#$%^&*()_+=[\]{};:"\\|,.<>/?]{5,}/,
-  
+
   // Patrones de emojis excesivos
   /[\u{1F600}-\u{1F64F}]{3,}/u,
   /[\u{1F300}-\u{1F5FF}]{3,}/u,
@@ -568,7 +568,7 @@ export const SPAM_PATTERNS = [
   /[\u{1F1E0}-\u{1F1FF}]{3,}/u,
   /[\u{2600}-\u{26FF}]{3,}/u,
   /[\u{2700}-\u{27BF}]{3,}/u,
-  
+
   // Patrones de contenido comercial
   /compra\s+ahora\s*\d+/i,
   /comprar\s+ahora\s*\d+/i,
@@ -1093,6 +1093,3 @@ export const SPAM_PATTERNS = [
   /pactado\s*\d+/i,
   /tratado\s*\d+/i,
 ];
-
-
-

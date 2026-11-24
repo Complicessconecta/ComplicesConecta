@@ -100,9 +100,7 @@ ${vars}
     })
     .join("\n");
 
-  return (
-    <style>{cssText}</style>
-  );
+  return <style>{cssText}</style>;
 };
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
@@ -229,7 +227,9 @@ const ChartTooltipContent = React.forwardRef<
                           className={cn(
                             "shrink-0 rounded-[2px]",
                             indicator === "line" ? "h-2.5 w-1" : "h-2.5 w-2.5",
-                            indicator === "dashed" && nestLabel ? "my-0.5" : null,
+                            indicator === "dashed" && nestLabel
+                              ? "my-0.5"
+                              : null,
                           )}
                           viewBox="0 0 10 10"
                           aria-hidden="true"
@@ -347,7 +347,14 @@ const ChartLegendContent = React.forwardRef<
                   viewBox="0 0 10 10"
                   aria-hidden="true"
                 >
-                  <rect x="0" y="0" width="10" height="10" rx="1" fill={item.color} />
+                  <rect
+                    x="0"
+                    y="0"
+                    width="10"
+                    height="10"
+                    rx="1"
+                    fill={item.color}
+                  />
                 </svg>
               )}
               {itemConfig?.label}

@@ -30,8 +30,7 @@ export const getAppConfig = (): AppConfig => {
   }
 
   const mode = (import.meta.env.VITE_APP_MODE || "production") as
-    | "demo"
-    | "production";
+    "demo" | "production";
 
   // Usar modo configurado directamente
   const realMode = mode;
@@ -68,10 +67,7 @@ export const getAppConfig = (): AppConfig => {
 };
 
 // Credenciales demo permitidas (SOLO para demo)
-export const DEMO_CREDENTIALS = [
-  "single@outlook.es",
-  "pareja@outlook.es",
-];
+export const DEMO_CREDENTIALS = ["single@outlook.es", "pareja@outlook.es"];
 
 // C4/C5 (2026-11-19): las contraseñas demo/admin/producción se eliminaron del
 // bundle. No existe ninguna función que lea VITE_*_PASSWORD en el cliente.
@@ -89,7 +85,9 @@ export const getProductionAdminEmails = (): string[] => {
   const primary = (import.meta.env.VITE_ADMIN_EMAIL as string | undefined)
     ?.trim()
     .toLowerCase();
-  const secondary = (import.meta.env.VITE_PROD_ADMIN_EMAIL_2 as string | undefined)
+  const secondary = (
+    import.meta.env.VITE_PROD_ADMIN_EMAIL_2 as string | undefined
+  )
     ?.trim()
     .toLowerCase();
 
@@ -102,7 +100,7 @@ export const isDemoCredential = (email: string): boolean => {
     // Validar formato de email con Zod
     const emailSchema = z.string().email();
     emailSchema.parse(email);
-    
+
     const normalizedEmail = email.toLowerCase().trim();
     return DEMO_CREDENTIALS.includes(normalizedEmail);
   } catch (error) {
@@ -154,10 +152,10 @@ export const handleDemoAuth = (
     accountType: finalAccountType,
     first_name:
       email === "single@outlook.es"
-          ? "Sofía"
-          : email === "pareja@outlook.es"
-            ? "Carmen & Roberto"
-              : email.split("@")[0],
+        ? "Sofía"
+        : email === "pareja@outlook.es"
+          ? "Carmen & Roberto"
+          : email.split("@")[0],
     is_demo: true,
     created_at: new Date().toISOString(),
   };
@@ -245,4 +243,3 @@ if (appConfig.mode === "demo") {
 } else {
   logger.info("🔐 Modo producción activo - autenticación real requerida");
 }
-

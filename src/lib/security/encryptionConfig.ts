@@ -1,11 +1,11 @@
 /**
  * Configuración de encriptación para datos sensibles
- * 
+ *
  * NOTA DE SEGURIDAD CRÍTICA:
  * - Client-side encryption NO protege contra XSS, malware o acceso físico al dispositivo
  * - Solo mitiga exposición en reposo si el atacante no tiene la sesión activa
  * - Para protección real, usar encriptación del lado del servidor + TLS
- * 
+ *
  * Mejoras de seguridad 2025-2026:
  * - Iteraciones PBKDF2 aumentadas a 600000 (recomendado NIST 2025+ para resistencia a GPU/ASIC brute-force)
  * - Password base mejorado con constante de aplicación + userId
@@ -14,7 +14,7 @@
 
 /**
  * Configuración de encriptación usando AES-GCM + PBKDF2
- * 
+ *
  * Por qué 600000+ iteraciones:
  * - NIST SP 800-132 recomienda mínimo 10000 para 2011, pero para 2025+ se recomienda 600000+
  * - GPU/ASIC modernos pueden hacer ~1M hashes/segundo, por lo que 100k es insuficiente
@@ -31,7 +31,7 @@ export const ENCRYPTION_CONFIG = {
 
 /**
  * Tipos de datos que requieren encriptación
- * 
+ *
  * Clasificación por sensibilidad:
  * - PROFILE_PRIVATE: Datos personales no públicos
  * - CONTACT_INFO: Información de contacto (email, teléfono)
@@ -76,7 +76,7 @@ export const SENSITIVE_DATA_TYPES = {
 
 /**
  * Versión del algoritmo de encriptación
- * 
+ *
  * Se usa para detectar cambios en el algoritmo y manejar migraciones
  */
 export const ENCRYPTION_VERSION = "1.0" as const;
@@ -85,4 +85,3 @@ export const ENCRYPTION_VERSION = "1.0" as const;
  * Versión fallback para navegadores sin Web Crypto API
  */
 export const ENCRYPTION_FALLBACK_VERSION = "fallback" as const;
-

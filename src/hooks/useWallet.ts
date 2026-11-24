@@ -1,9 +1,13 @@
 // Hook personalizado para gestión de billetera de tokens
 // Fase 2: Módulo de Billetera y Tokens CMPX
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/features/auth/useAuth';
-import { walletService, WalletBalance, TokenTransaction } from '@/services/wallet/WalletService';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/features/auth/useAuth";
+import {
+  walletService,
+  WalletBalance,
+  TokenTransaction,
+} from "@/services/wallet/WalletService";
 
 export function useWallet() {
   const { user } = useAuth();
@@ -35,9 +39,10 @@ export function useWallet() {
       const walletData = await walletService.getOrCreateWallet(user.id);
       setWallet(walletData);
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error al cargar billetera';
+      const errorMsg =
+        err instanceof Error ? err.message : "Error al cargar billetera";
       setError(errorMsg);
-      console.error('Error loading wallet:', err);
+      console.error("Error loading wallet:", err);
     } finally {
       setLoading(false);
     }
@@ -51,23 +56,26 @@ export function useWallet() {
         return;
       }
 
-      const txHistory = await walletService.getTransactionHistory(user.id, limit);
+      const txHistory = await walletService.getTransactionHistory(
+        user.id,
+        limit,
+      );
       setTransactions(txHistory);
     } catch (err) {
-      console.error('Error loading transactions:', err);
+      console.error("Error loading transactions:", err);
     }
   };
 
   // Agregar tokens
   const addTokens = async (
     amount: number,
-    tokenType: 'cmpx' | 'gtk',
+    tokenType: "cmpx" | "gtk",
     description?: string,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ) => {
     try {
       if (!user?.id) {
-        throw new Error('Usuario no autenticado');
+        throw new Error("Usuario no autenticado");
       }
 
       const updatedWallet = await walletService.addTokens(
@@ -75,7 +83,7 @@ export function useWallet() {
         amount,
         tokenType,
         description,
-        metadata
+        metadata,
       );
 
       setWallet(updatedWallet);
@@ -83,7 +91,8 @@ export function useWallet() {
 
       return updatedWallet;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error al agregar tokens';
+      const errorMsg =
+        err instanceof Error ? err.message : "Error al agregar tokens";
       setError(errorMsg);
       throw err;
     }
@@ -92,13 +101,13 @@ export function useWallet() {
   // Deducir tokens
   const deductTokens = async (
     amount: number,
-    tokenType: 'cmpx' | 'gtk',
+    tokenType: "cmpx" | "gtk",
     description?: string,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ) => {
     try {
       if (!user?.id) {
-        throw new Error('Usuario no autenticado');
+        throw new Error("Usuario no autenticado");
       }
 
       const updatedWallet = await walletService.deductTokens(
@@ -106,7 +115,7 @@ export function useWallet() {
         amount,
         tokenType,
         description,
-        metadata
+        metadata,
       );
 
       setWallet(updatedWallet);
@@ -114,7 +123,8 @@ export function useWallet() {
 
       return updatedWallet;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error al deducir tokens';
+      const errorMsg =
+        err instanceof Error ? err.message : "Error al deducir tokens";
       setError(errorMsg);
       throw err;
     }
@@ -123,16 +133,20 @@ export function useWallet() {
   // Verificar saldo suficiente
   const hasSufficientBalance = async (
     amount: number,
-    tokenType: 'cmpx' | 'gtk'
+    tokenType: "cmpx" | "gtk",
   ): Promise<boolean> => {
     try {
       if (!user?.id) {
         return false;
       }
 
-      return await walletService.hasSufficientBalance(user.id, amount, tokenType);
+      return await walletService.hasSufficientBalance(
+        user.id,
+        amount,
+        tokenType,
+      );
     } catch (err) {
-      console.error('Error checking balance:', err);
+      console.error("Error checking balance:", err);
       return false;
     }
   };

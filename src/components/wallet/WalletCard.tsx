@@ -1,9 +1,9 @@
 // Componente de tarjeta de billetera para mostrar balance de tokens
 // Fase 4: Componente de Billetera UI
 
-import { Wallet, Coins, ArrowUpRight, ShieldCheck } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/cards/Card';
+import { Wallet, Coins, ArrowUpRight, ShieldCheck } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/cards/Card";
 
 interface WalletCardProps {
   cmpxBalance: number;
@@ -51,11 +51,15 @@ export function WalletCard({
         {/* Token Interno CMPX */}
         <div className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 p-4 rounded-xl border border-white/10">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-white/60 text-xs font-medium">SALDO INTERNO</span>
+            <span className="text-white/60 text-xs font-medium">
+              SALDO INTERNO
+            </span>
             <Coins className="h-4 w-4 text-yellow-500" />
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-white">{cmpxBalance.toFixed(2)}</span>
+            <span className="text-2xl font-black text-white">
+              {cmpxBalance.toFixed(2)}
+            </span>
             <span className="text-purple-400 text-xs font-bold">CMPX</span>
           </div>
           {cmpxLocked > 0 && (
@@ -68,11 +72,15 @@ export function WalletCard({
         {/* Token Web3 GTK */}
         <div className="bg-gradient-to-br from-fuchsia-600/20 to-orange-600/20 p-4 rounded-xl border border-white/10">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-white/60 text-xs font-medium">BLOCKCHAIN WALLET</span>
+            <span className="text-white/60 text-xs font-medium">
+              BLOCKCHAIN WALLET
+            </span>
             <ArrowUpRight className="h-4 w-4 text-orange-500" />
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-white">{gtkBalance.toFixed(2)}</span>
+            <span className="text-2xl font-black text-white">
+              {gtkBalance.toFixed(2)}
+            </span>
             <span className="text-orange-400 text-xs font-bold">GTK</span>
           </div>
           {gtkLocked > 0 && (

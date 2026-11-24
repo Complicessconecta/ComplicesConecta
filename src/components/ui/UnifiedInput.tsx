@@ -86,7 +86,8 @@ export const UnifiedInput = forwardRef<HTMLInputElement, UnifiedInputProps>(
                   "bg-white/80 backdrop-blur-sm border-white/30",
                   "focus:bg-white/90 focus:border-white/50",
                 ],
-                error && "border-red-300 focus:border-red-500 focus:ring-red-200",
+                error &&
+                  "border-red-300 focus:border-red-500 focus:ring-red-200",
                 success &&
                   "border-green-300 focus:border-green-500 focus:ring-green-200",
                 isFocused && "shadow-md",
@@ -107,7 +108,11 @@ export const UnifiedInput = forwardRef<HTMLInputElement, UnifiedInputProps>(
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
             )}
           </motion.div>
@@ -132,7 +137,8 @@ export const UnifiedInput = forwardRef<HTMLInputElement, UnifiedInputProps>(
                   "bg-white/80 backdrop-blur-sm border-white/30",
                   "focus:bg-white/90 focus:border-white/50",
                 ],
-                error && "border-red-300 focus:border-red-500 focus:ring-red-200",
+                error &&
+                  "border-red-300 focus:border-red-500 focus:ring-red-200",
                 success &&
                   "border-green-300 focus:border-green-500 focus:ring-green-200",
                 isFocused && "shadow-md",
@@ -153,7 +159,11 @@ export const UnifiedInput = forwardRef<HTMLInputElement, UnifiedInputProps>(
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
               </button>
             )}
           </div>

@@ -92,8 +92,7 @@ export const useProfileTheme = (
 
     if (theme === "dark") {
       return {
-        backgroundClass:
-          "bg-linear-to-br from-gray-900 via-gray-800 to-black",
+        backgroundClass: "bg-linear-to-br from-gray-900 via-gray-800 to-black",
         textClass: "text-white",
         accentClass: "text-gray-300",
         borderClass: "border-gray-700",
@@ -113,8 +112,7 @@ export const useProfileTheme = (
 
     if (theme === "elegant") {
       return {
-        backgroundClass:
-          "bg-linear-to-br from-gray-900 via-gray-800 to-black",
+        backgroundClass: "bg-linear-to-br from-gray-900 via-gray-800 to-black",
         textClass: "text-white",
         accentClass: "text-gray-300",
         borderClass: "border-gray-700",

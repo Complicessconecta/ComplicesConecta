@@ -39,4 +39,3 @@ export const demoEvents: EventSlide[] = [
     meta: "Reservación previa · Confidencialidad total",
   },
 ];
-

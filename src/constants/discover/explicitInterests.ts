@@ -15,4 +15,3 @@ export const explicitInterests = [
   "Hotwife",
   "Lifestyle Swinger",
 ] as const;
-

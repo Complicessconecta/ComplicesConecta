@@ -1,5 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { NotificationService, RealtimeNotificationHandler } from "@/lib/notifications";
+import {
+  NotificationService,
+  RealtimeNotificationHandler,
+} from "@/lib/notifications";
 import { logger } from "@/lib/logger";
 
 export interface UseRealtimeNotificationsOptions {
@@ -142,65 +145,68 @@ export function useRealtimeNotifications({
   );
 
   // Realtime notification handler
-  const notificationHandler: RealtimeNotificationHandler = useMemo(() => ({
-    onNewNotification: useCallback(
-      async (notification: any) => {
-        logger.info("🔔 Nueva notificación recibida:", { notification });
+  const notificationHandler: RealtimeNotificationHandler = useMemo(
+    () => ({
+      onNewNotification: useCallback(
+        async (notification: any) => {
+          logger.info("🔔 Nueva notificación recibida:", { notification });
+
+          setState((prev) => ({
+            ...prev,
+            notifications: [notification, ...prev.notifications],
+            unreadCount: prev.unreadCount + 1,
+          }));
+
+          // Send push notification
+          await sendPushNotification(notification);
+
+          // Auto mark as read if enabled
+          if (autoMarkAsRead) {
+            setTimeout(() => markAsRead(notification.id), 1000);
+          }
+        },
+        [autoMarkAsRead, markAsRead, sendPushNotification],
+      ),
+
+      onNotificationRead: useCallback((notificationId: string) => {
+        logger.info("📖 Notificación marcada como leída:", { notificationId });
 
         setState((prev) => ({
           ...prev,
-          notifications: [notification, ...prev.notifications],
-          unreadCount: prev.unreadCount + 1,
-        }));
-
-        // Send push notification
-        await sendPushNotification(notification);
-
-        // Auto mark as read if enabled
-        if (autoMarkAsRead) {
-          setTimeout(() => markAsRead(notification.id), 1000);
-        }
-      },
-      [autoMarkAsRead, markAsRead, sendPushNotification],
-    ),
-
-    onNotificationRead: useCallback((notificationId: string) => {
-      logger.info("📖 Notificación marcada como leída:", { notificationId });
-
-      setState((prev) => ({
-        ...prev,
-        notifications: prev.notifications.map((n) =>
-          n.id === notificationId ? { ...n, is_read: true } : n,
-        ),
-        unreadCount: Math.max(0, prev.unreadCount - 1),
-      }));
-    }, []),
-
-    onNotificationDeleted: useCallback((notificationId: string) => {
-      logger.info("🗑️ Notificación eliminada:", { notificationId });
-
-      setState((prev) => {
-        const notification = prev.notifications.find(
-          (n) => n.id === notificationId,
-        );
-        const wasUnread = notification && !notification.is_read;
-
-        return {
-          ...prev,
-          notifications: prev.notifications.filter(
-            (n) => n.id !== notificationId,
+          notifications: prev.notifications.map((n) =>
+            n.id === notificationId ? { ...n, is_read: true } : n,
           ),
-          unreadCount: wasUnread
-            ? Math.max(0, prev.unreadCount - 1)
-            : prev.unreadCount,
-        };
-      });
-    }, []),
+          unreadCount: Math.max(0, prev.unreadCount - 1),
+        }));
+      }, []),
 
-    onUnreadCountChange: useCallback((count: number) => {
-      setState((prev) => ({ ...prev, unreadCount: count }));
-    }, []),
-  }), [autoMarkAsRead, markAsRead, sendPushNotification]);
+      onNotificationDeleted: useCallback((notificationId: string) => {
+        logger.info("🗑️ Notificación eliminada:", { notificationId });
+
+        setState((prev) => {
+          const notification = prev.notifications.find(
+            (n) => n.id === notificationId,
+          );
+          const wasUnread = notification && !notification.is_read;
+
+          return {
+            ...prev,
+            notifications: prev.notifications.filter(
+              (n) => n.id !== notificationId,
+            ),
+            unreadCount: wasUnread
+              ? Math.max(0, prev.unreadCount - 1)
+              : prev.unreadCount,
+          };
+        });
+      }, []),
+
+      onUnreadCountChange: useCallback((count: number) => {
+        setState((prev) => ({ ...prev, unreadCount: count }));
+      }, []),
+    }),
+    [autoMarkAsRead, markAsRead, sendPushNotification],
+  );
 
   // Subscribe to realtime notifications
   useEffect(() => {

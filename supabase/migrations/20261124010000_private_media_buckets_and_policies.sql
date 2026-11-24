@@ -168,25 +168,20 @@ CREATE POLICY "Usuarios pueden eliminar sus propios archivos multimedia"
 
 -- ----------------------------------------------------------------------------
 -- 5. Tabla public.gallery_unlocks (alineada al esquema REAL de producción)
---    Verificado 2026-11-24 en information_schema: YA EXISTE con (user_id,
---    profile_id, created_at, updated_at, is_active, expires_at,
---    unlock_reason, unlocked_by). El código (ImageGallery.tsx, Chat.tsx) lee
---    profile_id filtrando por user_id = UID de auth, e inserta
---    target_profile_id, columna que NO existe en producción: se agrega con
---    ADD COLUMN IF NOT EXISTS. unlock_reason / unlocked_by no los usa
---    ningún código; se conservan para que una base nueva sea idéntica.
+--    Verificado 2026-11-24 con string_agg (2 filas, sin scroll): YA EXISTE
+--    con SOLO 3 columnas (user_id, profile_id, created_at). NO tiene
+--    updated_at, is_active, expires_at, unlock_reason ni unlocked_by (la
+--    lectura anterior por rejilla inventó 5 filas fantasma). El código
+--    (ImageGallery.tsx, Chat.tsx) lee profile_id filtrando por user_id =
+--    UID de auth, e inserta target_profile_id, columna que NO existe en
+--    producción: se agrega con ADD COLUMN IF NOT EXISTS.
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.gallery_unlocks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
   profile_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
   target_profile_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  is_active BOOLEAN DEFAULT TRUE,
-  expires_at TIMESTAMP WITH TIME ZONE,
-  unlock_reason TEXT,
-  unlocked_by UUID
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- El código inserta target_profile_id; en producción falta: agregarla.
@@ -196,7 +191,6 @@ ALTER TABLE public.gallery_unlocks
 CREATE INDEX IF NOT EXISTS idx_gallery_unlocks_user_id ON public.gallery_unlocks(user_id);
 CREATE INDEX IF NOT EXISTS idx_gallery_unlocks_profile_id ON public.gallery_unlocks(profile_id);
 CREATE INDEX IF NOT EXISTS idx_gallery_unlocks_target_profile_id ON public.gallery_unlocks(target_profile_id);
-CREATE INDEX IF NOT EXISTS idx_gallery_unlocks_is_active ON public.gallery_unlocks(is_active);
 
 ALTER TABLE public.gallery_unlocks ENABLE ROW LEVEL SECURITY;
 

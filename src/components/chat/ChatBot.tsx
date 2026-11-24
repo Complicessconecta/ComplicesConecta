@@ -3,11 +3,14 @@
  * Componente de chatbot con IA nativa para CómplicesConecta
  */
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Send, Bot, User, Shield, AlertCircle } from 'lucide-react';
-import { aiIntegrationService, type ChatMessage } from '@/services/ai/AIIntegrationService';
-import { logger } from '@/lib/logger';
-import * as toxicity from '@tensorflow-models/toxicity';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Send, Bot, User, Shield, AlertCircle } from "lucide-react";
+import {
+  aiIntegrationService,
+  type ChatMessage,
+} from "@/services/ai/AIIntegrationService";
+import { logger } from "@/lib/logger";
+import * as toxicity from "@tensorflow-models/toxicity";
 
 interface ChatBotProps {
   userId: string;
@@ -26,33 +29,42 @@ interface ChatState {
 
 export const ChatBot: React.FC<ChatBotProps> = ({
   userId,
-  className = '',
+  className = "",
   maxMessages = 50,
   enableModeration = true,
-  placeholder = 'Escribe tu mensaje...'
+  placeholder = "Escribe tu mensaje...",
 }) => {
   const [state, setState] = useState<ChatState>({
     messages: [],
     isLoading: false,
     error: null,
-    isTyping: false
+    isTyping: false,
   });
 
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [toxicityModel, setToxicityModel] = useState<any>(null);
-  const [isModerationEnabled, setIsModerationEnabled] = useState(enableModeration);
-  
+  const [isModerationEnabled, setIsModerationEnabled] =
+    useState(enableModeration);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Inicializar modelo de toxicidad
   const initToxicityModel = async () => {
     try {
-      const model = await toxicity.load(0.9, ['toxicity', 'severe_toxicity', 'identity_attack', 'insult', 'profanity', 'threat']); // Corregir argumentos de toxicity
+      const model = await toxicity.load(0.9, [
+        "toxicity",
+        "severe_toxicity",
+        "identity_attack",
+        "insult",
+        "profanity",
+        "threat",
+      ]); // Corregir argumentos de toxicity
       setToxicityModel(model);
-      logger.info('✅ Modelo de toxicidad inicializado');
-    } catch (error: any) { // Corregir tipo de error
-      logger.error('❌ Error inicializando modelo de toxicidad:', error);
+      logger.info("✅ Modelo de toxicidad inicializado");
+    } catch (error: any) {
+      // Corregir tipo de error
+      logger.error("❌ Error inicializando modelo de toxicidad:", error);
       setIsModerationEnabled(false);
     }
   };
@@ -63,7 +75,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
 
   // Auto-scroll al final de los mensajes
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
   useEffect(() => {
@@ -71,17 +83,23 @@ export const ChatBot: React.FC<ChatBotProps> = ({
   }, [state.messages, scrollToBottom]);
 
   // Verificar toxicidad del mensaje
-  const checkToxicity = useCallback(async (text: string): Promise<boolean> => {
-    if (!isModerationEnabled || !toxicityModel) return false;
+  const checkToxicity = useCallback(
+    async (text: string): Promise<boolean> => {
+      if (!isModerationEnabled || !toxicityModel) return false;
 
-    try {
-      const predictions = await toxicityModel.classify(text);
-      return predictions.some((prediction: any) => prediction.results[0].match);
-    } catch (error: any) { // Corregir tipo de error
-      logger.error('Error verificando toxicidad:', error);
-      return false;
-    }
-  }, [isModerationEnabled, toxicityModel]);
+      try {
+        const predictions = await toxicityModel.classify(text);
+        return predictions.some(
+          (prediction: any) => prediction.results[0].match,
+        );
+      } catch (error: any) {
+        // Corregir tipo de error
+        logger.error("Error verificando toxicidad:", error);
+        return false;
+      }
+    },
+    [isModerationEnabled, toxicityModel],
+  );
 
   // Enviar mensaje
   const sendMessage = useCallback(async () => {
@@ -92,33 +110,39 @@ export const ChatBot: React.FC<ChatBotProps> = ({
     if (isModerationEnabled) {
       const isToxic = await checkToxicity(message);
       if (isToxic) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          error: 'Tu mensaje contiene contenido inapropiado. Por favor, sé respetuoso.'
+          error:
+            "Tu mensaje contiene contenido inapropiado. Por favor, sé respetuoso.",
         }));
         return;
       }
     }
 
     // Limpiar input y estado de error
-    setInputValue('');
-    setState(prev => ({ ...prev, error: null, isLoading: true, isTyping: true }));
+    setInputValue("");
+    setState((prev) => ({
+      ...prev,
+      error: null,
+      isLoading: true,
+      isTyping: true,
+    }));
 
     // Agregar mensaje del usuario
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
-      role: 'user',
+      role: "user",
       content: message,
       timestamp: new Date().toISOString(),
       metadata: {
         moderated: isModerationEnabled,
-        toxicityChecked: isModerationEnabled
-      }
+        toxicityChecked: isModerationEnabled,
+      },
     };
 
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
-      messages: [...prev.messages, userMessage].slice(-maxMessages)
+      messages: [...prev.messages, userMessage].slice(-maxMessages),
     }));
 
     try {
@@ -126,63 +150,75 @@ export const ChatBot: React.FC<ChatBotProps> = ({
       const aiResponse = await aiIntegrationService.processChatMessage(
         userId,
         message,
-        state.messages.slice(-10) // Últimos 10 mensajes para contexto
+        state.messages.slice(-10), // Últimos 10 mensajes para contexto
       );
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         messages: [...prev.messages, aiResponse].slice(-maxMessages),
         isLoading: false,
-        isTyping: false
+        isTyping: false,
       }));
 
       logger.info(`Mensaje procesado para usuario ${userId}`);
-    } catch (error: any) { // Corregir tipo de error
-      logger.error('Error procesando mensaje:', error);
-      setState(prev => ({
+    } catch (error: any) {
+      // Corregir tipo de error
+      logger.error("Error procesando mensaje:", error);
+      setState((prev) => ({
         ...prev,
-        error: 'Error al procesar tu mensaje. Inténtalo de nuevo.',
+        error: "Error al procesar tu mensaje. Inténtalo de nuevo.",
         isLoading: false,
-        isTyping: false
+        isTyping: false,
       }));
     }
-  }, [inputValue, state.isLoading, state.messages, userId, maxMessages, isModerationEnabled, checkToxicity]);
+  }, [
+    inputValue,
+    state.isLoading,
+    state.messages,
+    userId,
+    maxMessages,
+    isModerationEnabled,
+    checkToxicity,
+  ]);
 
   // Manejar envío con Enter
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }, [sendMessage]);
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    },
+    [sendMessage],
+  );
 
   // Limpiar chat
   const clearChat = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       messages: [],
-      error: null
+      error: null,
     }));
   }, []);
 
   // Formatear timestamp
   const formatTime = useCallback((timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(timestamp).toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }, []);
 
   return (
-    <div className={`flex flex-col h-full bg-white rounded-lg shadow-lg ${className}`}>
+    <div
+      className={`flex flex-col h-full bg-white rounded-lg shadow-lg ${className}`}
+    >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div className="flex items-center space-x-2">
           <Bot className="w-5 h-5 text-purple-600" />
           <h3 className="font-semibold text-gray-900">Asistente IA</h3>
-          {isModerationEnabled && (
-            <Shield className="w-4 h-4 text-green-600" />
-          )}
+          {isModerationEnabled && <Shield className="w-4 h-4 text-green-600" />}
         </div>
         <button
           onClick={clearChat}
@@ -199,41 +235,53 @@ export const ChatBot: React.FC<ChatBotProps> = ({
           <div className="text-center text-gray-500 py-8">
             <Bot className="w-12 h-12 mx-auto mb-4 text-gray-300" />
             <p>¡Hola! Soy tu asistente de IA en CómplicesConecta.</p>
-            <p className="text-sm mt-2">Puedo ayudarte con matching, tokens o responder preguntas.</p>
+            <p className="text-sm mt-2">
+              Puedo ayudarte con matching, tokens o responder preguntas.
+            </p>
           </div>
         ) : (
           state.messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
                 className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                  message.role === 'user'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 text-gray-900'
+                  message.role === "user"
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-100 text-gray-900"
                 }`}
               >
                 <div className="flex items-start space-x-2">
-                  {message.role === 'user' ? (
+                  {message.role === "user" ? (
                     <User className="w-4 h-4 mt-1 shrink-0" />
                   ) : (
                     <Bot className="w-4 h-4 mt-1 shrink-0" />
                   )}
                   <div className="flex-1">
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    <p className={`text-xs mt-1 ${
-                      message.role === 'user' ? 'text-purple-200' : 'text-gray-500'
-                    }`}>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {message.content}
+                    </p>
+                    <p
+                      className={`text-xs mt-1 ${
+                        message.role === "user"
+                          ? "text-purple-200"
+                          : "text-gray-500"
+                      }`}
+                    >
                       {formatTime(message.timestamp)}
                     </p>
                     {(() => {
                       const model = message.metadata?.model;
                       if (!model) return null;
                       return (
-                        <p className={`text-xs mt-1 ${
-                          message.role === 'user' ? 'text-purple-200' : 'text-gray-500'
-                        }`}>
+                        <p
+                          className={`text-xs mt-1 ${
+                            message.role === "user"
+                              ? "text-purple-200"
+                              : "text-gray-500"
+                          }`}
+                        >
                           Model: {String(model)}
                         </p>
                       );
@@ -291,7 +339,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
             aria-label="Enviar mensaje"
             title="Enviar mensaje"
           >
-            <span>{state.isLoading ? 'Enviando...' : 'Enviar'}</span>
+            <span>{state.isLoading ? "Enviando..." : "Enviar"}</span>
             <Send className="w-4 h-4" />
           </button>
         </div>

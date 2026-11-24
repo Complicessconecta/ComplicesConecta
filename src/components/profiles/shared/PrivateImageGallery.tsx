@@ -273,4 +273,3 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
 };
 
 export default PrivateImageGallery;
-

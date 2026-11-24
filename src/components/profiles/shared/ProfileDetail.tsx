@@ -1,5 +1,13 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  MessageCircle,
+  MapPin,
+  Star,
+  Shield,
+  Camera,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +18,12 @@ import { useAuth } from "@/features/auth/useAuth";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { toast } from "@/hooks/useToast";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { clsx } from "clsx";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 
@@ -316,8 +329,7 @@ const ProfileDetail = () => {
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>
-                                Score de confianza:{" "}
-                                {profileScore.score}/100
+                                Score de confianza: {profileScore.score}/100
                               </p>
                             </TooltipContent>
                           </Tooltip>

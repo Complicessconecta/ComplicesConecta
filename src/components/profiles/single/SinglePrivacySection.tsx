@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Switch } from "@/components/ui/switch";
 import { ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -159,12 +164,10 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
         const extras: Record<string, Json> = {};
         const managed: Partial<SinglePrivacySettings> = {};
         Object.keys(record).forEach((key) => {
-          if (
-            key in DEFAULT_PRIVACY &&
-            typeof record[key] === "boolean"
-          ) {
-            managed[key as keyof SinglePrivacySettings] =
-              record[key] as boolean;
+          if (key in DEFAULT_PRIVACY && typeof record[key] === "boolean") {
+            managed[key as keyof SinglePrivacySettings] = record[
+              key
+            ] as boolean;
           } else {
             extras[key] = record[key];
           }

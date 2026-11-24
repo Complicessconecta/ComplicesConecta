@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +13,21 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/useToast";
 import { advancedCoupleService } from "@/services/social/couple/AdvancedCoupleService";
 import { matchService } from "@/services/social/social/MatchService";
-import { User, Heart, Calendar, Star, TrendingUp, MessageCircle, Eye, Gift, Plus, Search, RefreshCw, AlertTriangle, CheckCircle } from "lucide-react";
+import {
+  User,
+  Heart,
+  Calendar,
+  Star,
+  TrendingUp,
+  MessageCircle,
+  Eye,
+  Gift,
+  Plus,
+  Search,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react";
 
 // Tipos espejo de CoupleProfile/CoupleEvent/CoupleMatch de
 // AdvancedCoupleService, adaptados a un solo perfil: sin partner1_id /
@@ -250,8 +269,7 @@ export const SingleDashboard: React.FC = () => {
           id: "event-1",
           profile_id: "single-1",
           title: "Cena Single en Madrid",
-          description:
-            "Cena elegante para singles en restaurante exclusivo",
+          description: "Cena elegante para singles en restaurante exclusivo",
           event_type: "dinner",
           location: "Madrid, España",
           date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -305,10 +323,7 @@ export const SingleDashboard: React.FC = () => {
 
       // Equivalente single de recordCoupleInteraction: MatchService.createLike
       // escribe en profile_likes y detecta match mutuo.
-      const result = await matchService.createLike(
-        singleProfile.id,
-        singleId,
-      );
+      const result = await matchService.createLike(singleProfile.id, singleId);
 
       if (!result.success) {
         throw new Error("No se pudo enviar el like");
@@ -466,7 +481,9 @@ export const SingleDashboard: React.FC = () => {
             <div className="text-2xl font-bold text-green-600">
               {singleProfile.statistics.total_matches}
             </div>
-            <p className="text-xs text-muted-foreground">Perfiles compatibles</p>
+            <p className="text-xs text-muted-foreground">
+              Perfiles compatibles
+            </p>
           </CardContent>
         </Card>
 

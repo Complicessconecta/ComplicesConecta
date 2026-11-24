@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +19,10 @@ interface PrivateRoomManagementProps {
   isPremium: boolean;
 }
 
-export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManagementProps) => {
+export const PrivateRoomManagement = ({
+  userId,
+  isPremium,
+}: PrivateRoomManagementProps) => {
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -61,13 +70,18 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
         formData.description,
         formData.tokenCost,
         formData.maxMembers,
-        userId
+        userId,
       );
 
       if (newRoom) {
         setRooms([...rooms, newRoom]);
         setShowCreateForm(false);
-        setFormData({ name: "", description: "", tokenCost: 1, maxMembers: 100 });
+        setFormData({
+          name: "",
+          description: "",
+          tokenCost: 1,
+          maxMembers: 100,
+        });
       }
     } catch (error) {
       logger.error("Error creando sala privada:", { error });
@@ -75,7 +89,11 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
   };
 
   const handleDeleteRoom = async (roomId: string) => {
-    if (!confirm("¿Estás seguro de eliminar esta sala? Esta acción no se puede deshacer.")) {
+    if (
+      !confirm(
+        "¿Estás seguro de eliminar esta sala? Esta acción no se puede deshacer.",
+      )
+    ) {
       return;
     }
 
@@ -156,7 +174,9 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                   <Label className="text-white">Nombre *</Label>
                   <Input
                     value={formData.name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     placeholder="Nombre de la sala"
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     required
@@ -166,7 +186,9 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                   <Label className="text-white">Descripción</Label>
                   <Textarea
                     value={formData.description}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
                     placeholder="Descripción de la sala"
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     rows={3}
@@ -179,7 +201,12 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                       type="number"
                       min="0"
                       value={formData.tokenCost}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, tokenCost: parseInt(e.target.value) || 0 })}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setFormData({
+                          ...formData,
+                          tokenCost: parseInt(e.target.value) || 0,
+                        })
+                      }
                       className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
@@ -190,13 +217,21 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                       min="2"
                       max="500"
                       value={formData.maxMembers}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, maxMembers: parseInt(e.target.value) || 100 })}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setFormData({
+                          ...formData,
+                          maxMembers: parseInt(e.target.value) || 100,
+                        })
+                      }
                       className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white">
+                  <Button
+                    type="submit"
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                  >
                     Crear Sala
                   </Button>
                   <Button
@@ -219,7 +254,9 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
             <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No tienes salas privadas</p>
             {isPremium && (
-              <p className="text-sm mt-2">Crea tu primera sala privada para empezar</p>
+              <p className="text-sm mt-2">
+                Crea tu primera sala privada para empezar
+              </p>
             )}
           </div>
         ) : (
@@ -229,9 +266,13 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="text-white font-semibold mb-1">{room.name}</h3>
+                      <h3 className="text-white font-semibold mb-1">
+                        {room.name}
+                      </h3>
                       {room.description && (
-                        <p className="text-white/70 text-sm mb-2">{room.description}</p>
+                        <p className="text-white/70 text-sm mb-2">
+                          {room.description}
+                        </p>
                       )}
                       <div className="flex items-center gap-4 text-xs text-white/60">
                         <span className="flex items-center gap-1">
@@ -240,7 +281,9 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
                         </span>
                         <span className="flex items-center gap-1">
                           <Lock className="h-3 w-3" />
-                          {(room.token_cost ?? 0) > 0 ? `${room.token_cost} tokens` : "Gratis"}
+                          {(room.token_cost ?? 0) > 0
+                            ? `${room.token_cost} tokens`
+                            : "Gratis"}
                         </span>
                       </div>
                     </div>
@@ -290,4 +333,3 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
     </Card>
   );
 };
-

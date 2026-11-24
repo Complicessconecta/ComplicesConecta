@@ -1,6 +1,10 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { IconBrandGithub, IconBrandTwitter, IconBrandChrome } from "@tabler/icons-react";
+import {
+  IconBrandGithub,
+  IconBrandTwitter,
+  IconBrandChrome,
+} from "@tabler/icons-react";
 import { cn } from "@/shared/lib/cn";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";

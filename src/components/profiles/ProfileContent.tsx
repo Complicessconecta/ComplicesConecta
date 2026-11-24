@@ -2,7 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import { Grid3X3, Play, Upload, Trash2, MessageCircle, Heart, Share, MoreHorizontal, Sparkles, Lock as LockIcon } from "lucide-react";
+import {
+  Grid3X3,
+  Play,
+  Upload,
+  Trash2,
+  MessageCircle,
+  Heart,
+  Share,
+  MoreHorizontal,
+  Sparkles,
+  Lock as LockIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import StoriesContainer from "@/components/stories/StoriesContainer";
 import { ComingSoonModal } from "@/components/modals/ComingSoonModal";
@@ -13,8 +24,18 @@ import CompatibilityModal from "@/components/modals/CompatibilityModal";
 import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
-import { useSmartMatching,  type UserProfile, type PersonalityTraits, type MatchingPreferences, type ActivityMetrics, type VerificationStatus } from "@/lib/ai/smartMatching";
-import { ProfileNavTabs, type TabType } from "@/components/profiles/ProfileNavTabs";
+import {
+  useSmartMatching,
+  type UserProfile,
+  type PersonalityTraits,
+  type MatchingPreferences,
+  type ActivityMetrics,
+  type VerificationStatus,
+} from "@/lib/ai/smartMatching";
+import {
+  ProfileNavTabs,
+  type TabType,
+} from "@/components/profiles/ProfileNavTabs";
 
 // Mock Data Generators for AI Matching
 const createMockPersonality = (): PersonalityTraits => ({
@@ -133,7 +154,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
   const currentUserId = user?.id ?? profile?.id ?? "current-user";
-  const isAuthFn = typeof isAuthenticated === "function" ? isAuthenticated() : !!isAuthenticated;
+  const isAuthFn =
+    typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : !!isAuthenticated;
   const loginLabel = "Configuración";
 
   const nftFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -172,8 +196,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         breakdown: match.breakdown,
         variant: "grid" as const,
         accountType: (candidate?.gender === "pareja" ? "couple" : "single") as
-          | "single"
-          | "couple",
+          "single" | "couple",
         verified: candidate?.verification.isVerified,
       };
     });
@@ -742,4 +765,3 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
     </div>
   );
 };
-

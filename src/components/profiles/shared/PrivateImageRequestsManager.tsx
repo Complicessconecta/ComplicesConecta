@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Eye, Shield, Clock } from "lucide-react";
@@ -47,7 +52,8 @@ export const PrivateImageRequestsManager: React.FC<
             requesterId: "user-123",
             requesterName: "María García",
             requesterAvatar: "/assets/people/single/1.jpg",
-            message: "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
+            message:
+              "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
             timestamp: Date.now() - 3600000, // Hace 1 hora
             status: "pending",
           },
@@ -64,7 +70,10 @@ export const PrivateImageRequestsManager: React.FC<
 
         setRequests(mockRequests);
       } catch (error) {
-        logger.error("Error cargando solicitudes de acceso", { error, profileId });
+        logger.error("Error cargando solicitudes de acceso", {
+          error,
+          profileId,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -80,8 +89,8 @@ export const PrivateImageRequestsManager: React.FC<
 
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === requestId ? { ...req, status: "approved" } : req
-        )
+          req.id === requestId ? { ...req, status: "approved" } : req,
+        ),
       );
 
       toast({
@@ -107,8 +116,8 @@ export const PrivateImageRequestsManager: React.FC<
 
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === requestId ? { ...req, status: "denied" } : req
-        )
+          req.id === requestId ? { ...req, status: "denied" } : req,
+        ),
       );
 
       toast({
@@ -142,9 +151,13 @@ export const PrivateImageRequestsManager: React.FC<
 
   if (isLoading) {
     return (
-      <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+      <Card
+        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      >
         <CardContent className="p-6">
-          <div className="text-center text-white/60">Cargando solicitudes...</div>
+          <div className="text-center text-white/60">
+            Cargando solicitudes...
+          </div>
         </CardContent>
       </Card>
     );
@@ -152,7 +165,9 @@ export const PrivateImageRequestsManager: React.FC<
 
   if (requests.length === 0) {
     return (
-      <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+      <Card
+        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      >
         <CardContent className="p-6">
           <div className="text-center text-white/60">
             <Eye className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -164,7 +179,9 @@ export const PrivateImageRequestsManager: React.FC<
   }
 
   return (
-    <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+    <Card
+      className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-white flex items-center gap-2">
@@ -197,7 +214,10 @@ export const PrivateImageRequestsManager: React.FC<
                         alt={request.requesterName}
                         className="w-full h-full object-cover"
                         onError={() =>
-                          setAvatarErrors((prev) => ({ ...prev, [request.id]: true }))
+                          setAvatarErrors((prev) => ({
+                            ...prev,
+                            [request.id]: true,
+                          }))
                         }
                         draggable={false}
                       />
@@ -224,7 +244,9 @@ export const PrivateImageRequestsManager: React.FC<
                     )}
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => handleApprove(request.id, request.requesterId)}
+                        onClick={() =>
+                          handleApprove(request.id, request.requesterId)
+                        }
                         size="sm"
                         className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs"
                       >
@@ -232,7 +254,9 @@ export const PrivateImageRequestsManager: React.FC<
                         Aprobar
                       </Button>
                       <Button
-                        onClick={() => handleDeny(request.id, request.requesterId)}
+                        onClick={() =>
+                          handleDeny(request.id, request.requesterId)
+                        }
                         size="sm"
                         variant="outline"
                         className="flex-1 border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs"
@@ -321,4 +345,3 @@ export const PrivateImageRequestsManager: React.FC<
 };
 
 export default PrivateImageRequestsManager;
-

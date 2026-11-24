@@ -1,5 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { Edit, Image as ImageIcon, Calendar, Tag, BarChart3, MessageSquare, Settings, Save, Users, TrendingUp, Eye, Zap, Wallet, Flame, Lock, QrCode } from "lucide-react";
+import {
+  Edit,
+  Image as ImageIcon,
+  Calendar,
+  Tag,
+  BarChart3,
+  MessageSquare,
+  Settings,
+  Save,
+  Users,
+  TrendingUp,
+  Eye,
+  Zap,
+  Wallet,
+  Flame,
+  Lock,
+  QrCode,
+} from "lucide-react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +56,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
   clubId,
 }) => {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('edit');
+  const [activeTab, setActiveTab] = useState("edit");
   const [saving, setSaving] = useState(false);
 
   const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -49,16 +66,17 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
   } | null>(null);
 
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    address: '',
-    city: '',
-    state: '',
-    phone: '',
-    email: '',
-    website: '',
-    hours: '',
-    membership_tier: (analytics.membership_tier ?? "free") as "free" | "premium",
+    name: "",
+    description: "",
+    address: "",
+    city: "",
+    state: "",
+    phone: "",
+    email: "",
+    website: "",
+    hours: "",
+    membership_tier: (analytics.membership_tier ?? "free") as
+      "free" | "premium",
     live_status: analytics.live_status ?? "❓ Desconocido",
     cmpx_balance: String(analytics.cmpx_balance ?? 0),
   });
@@ -116,7 +134,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
       toast({
         title: "No se pudo guardar",
         description:
-          error instanceof Error ? error.message : "Error al actualizar el club",
+          error instanceof Error
+            ? error.message
+            : "Error al actualizar el club",
         variant: "destructive",
       });
     }
@@ -143,11 +163,13 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
     };
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     if (name === "live_status") {
@@ -169,9 +191,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
     }
   };
 
-  const setFormDataWithPersist: React.Dispatch<React.SetStateAction<typeof formData>> = (
-    next,
-  ) => {
+  const setFormDataWithPersist: React.Dispatch<
+    React.SetStateAction<typeof formData>
+  > = (next) => {
     setFormData((prev) => {
       const resolved = typeof next === "function" ? (next as any)(prev) : next;
 
@@ -196,8 +218,12 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
               <Settings className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white">Panel de Administración</h3>
-              <p className="text-white/60 text-sm">Gestiona tu perfil de club</p>
+              <h3 className="text-xl font-bold text-white">
+                Panel de Administración
+              </h3>
+              <p className="text-white/60 text-sm">
+                Gestiona tu perfil de club
+              </p>
             </div>
           </div>
 
@@ -209,43 +235,73 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="bg-white/10 border border-white/20 w-full justify-start">
-            <TabsTrigger value="edit" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="edit"
+              className="data-[state=active]:bg-white/20"
+            >
               <Edit className="h-4 w-4 mr-2" />
               Editar Perfil
             </TabsTrigger>
-            <TabsTrigger value="images" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="images"
+              className="data-[state=active]:bg-white/20"
+            >
               <ImageIcon className="h-4 w-4 mr-2" />
               Imágenes
             </TabsTrigger>
-            <TabsTrigger value="events" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="events"
+              className="data-[state=active]:bg-white/20"
+            >
               <Calendar className="h-4 w-4 mr-2" />
               Eventos
             </TabsTrigger>
-            <TabsTrigger value="promotions" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="promotions"
+              className="data-[state=active]:bg-white/20"
+            >
               <Tag className="h-4 w-4 mr-2" />
               Promociones
             </TabsTrigger>
-            <TabsTrigger value="reviews" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="reviews"
+              className="data-[state=active]:bg-white/20"
+            >
               <MessageSquare className="h-4 w-4 mr-2" />
               Reseñas
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="analytics"
+              className="data-[state=active]:bg-white/20"
+            >
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="economy" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="economy"
+              className="data-[state=active]:bg-white/20"
+            >
               <Wallet className="h-4 w-4 mr-2" />
               Economía
             </TabsTrigger>
-            <TabsTrigger value="access_qr" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="access_qr"
+              className="data-[state=active]:bg-white/20"
+            >
               <QrCode className="h-4 w-4 mr-2" />
               Acceso QR
             </TabsTrigger>
-            <TabsTrigger value="demo" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="demo"
+              className="data-[state=active]:bg-white/20"
+            >
               <Zap className="h-4 w-4 mr-2" />
               Simulador Demo
             </TabsTrigger>
-            <TabsTrigger value="pro" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="pro"
+              className="data-[state=active]:bg-white/20"
+            >
               <Zap className="h-4 w-4 mr-2" />
               Gestión Pro
             </TabsTrigger>
@@ -256,7 +312,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-white">Nombre del Club</Label>
+                  <Label htmlFor="name" className="text-white">
+                    Nombre del Club
+                  </Label>
                   <Input
                     id="name"
                     name="name"
@@ -268,7 +326,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-white">Teléfono</Label>
+                  <Label htmlFor="phone" className="text-white">
+                    Teléfono
+                  </Label>
                   <Input
                     id="phone"
                     name="phone"
@@ -280,7 +340,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-white">Email</Label>
+                  <Label htmlFor="email" className="text-white">
+                    Email
+                  </Label>
                   <Input
                     id="email"
                     name="email"
@@ -293,7 +355,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="website" className="text-white">Sitio Web</Label>
+                  <Label htmlFor="website" className="text-white">
+                    Sitio Web
+                  </Label>
                   <Input
                     id="website"
                     name="website"
@@ -306,7 +370,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-white">Dirección</Label>
+                <Label htmlFor="address" className="text-white">
+                  Dirección
+                </Label>
                 <Input
                   id="address"
                   name="address"
@@ -319,7 +385,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="city" className="text-white">Ciudad</Label>
+                  <Label htmlFor="city" className="text-white">
+                    Ciudad
+                  </Label>
                   <Input
                     id="city"
                     name="city"
@@ -331,7 +399,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="state" className="text-white">Estado</Label>
+                  <Label htmlFor="state" className="text-white">
+                    Estado
+                  </Label>
                   <Input
                     id="state"
                     name="state"
@@ -344,7 +414,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="hours" className="text-white">Horarios</Label>
+                <Label htmlFor="hours" className="text-white">
+                  Horarios
+                </Label>
                 <Input
                   id="hours"
                   name="hours"
@@ -356,7 +428,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description" className="text-white">Descripción</Label>
+                <Label htmlFor="description" className="text-white">
+                  Descripción
+                </Label>
                 <Textarea
                   id="description"
                   name="description"
@@ -373,7 +447,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                 className="w-full bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
               >
                 <Save className="h-4 w-4 mr-2" />
-                {saving ? 'Guardando...' : 'Guardar Cambios'}
+                {saving ? "Guardando..." : "Guardar Cambios"}
               </Button>
             </div>
           </TabsContent>
@@ -395,14 +469,20 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
           </TabsContent>
 
           <TabsContent value="demo" className="mt-6">
-            <AdminTabsContent tab="demo" clubData={formData} setClubData={setFormDataWithPersist} />
+            <AdminTabsContent
+              tab="demo"
+              clubData={formData}
+              setClubData={setFormDataWithPersist}
+            />
           </TabsContent>
 
           {/* Images Tab */}
           <TabsContent value="images" className="mt-6">
             <div className="text-center py-12">
               <ImageIcon className="h-16 w-16 text-white/40 mx-auto mb-4" />
-              <p className="text-white/60 mb-4">Gestiona las imágenes de tu club</p>
+              <p className="text-white/60 mb-4">
+                Gestiona las imágenes de tu club
+              </p>
               <Button className="bg-linear-to-r from-purple-600 to-fuchsia-600">
                 Subir Imagen
               </Button>
@@ -424,7 +504,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
           <TabsContent value="promotions" className="mt-6">
             <div className="text-center py-12">
               <Tag className="h-16 w-16 text-white/40 mx-auto mb-4" />
-              <p className="text-white/60 mb-4">Configura promociones y descuentos</p>
+              <p className="text-white/60 mb-4">
+                Configura promociones y descuentos
+              </p>
               <Button className="bg-linear-to-r from-yellow-600 to-orange-600">
                 Crear Promoción
               </Button>
@@ -435,7 +517,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
           <TabsContent value="reviews" className="mt-6">
             <div className="text-center py-12">
               <MessageSquare className="h-16 w-16 text-white/40 mx-auto mb-4" />
-              <p className="text-white/60 mb-4">Responde a las reseñas de tus clientes</p>
+              <p className="text-white/60 mb-4">
+                Responde a las reseñas de tus clientes
+              </p>
               <Button className="bg-linear-to-r from-green-600 to-emerald-600">
                 Ver Reseñas
               </Button>
@@ -454,7 +538,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <Users className="h-5 w-5 text-blue-400" />
                   <span className="text-white/60 text-sm">Visitas Totales</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{analytics.totalVisits}</p>
+                <p className="text-2xl font-bold text-white">
+                  {analytics.totalVisits}
+                </p>
               </motion.div>
 
               <motion.div
@@ -467,7 +553,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <Eye className="h-5 w-5 text-green-400" />
                   <span className="text-white/60 text-sm">Check-ins</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{analytics.totalCheckIns}</p>
+                <p className="text-2xl font-bold text-white">
+                  {analytics.totalCheckIns}
+                </p>
               </motion.div>
 
               <motion.div
@@ -480,19 +568,29 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <TrendingUp className="h-5 w-5 text-purple-400" />
                   <span className="text-white/60 text-sm">Rating</span>
                 </div>
-                <p className="text-2xl font-bold text-white">{analytics.averageRating.toFixed(1)}</p>
+                <p className="text-2xl font-bold text-white">
+                  {analytics.averageRating.toFixed(1)}
+                </p>
               </motion.div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                <h4 className="text-lg font-semibold text-white mb-4">Visitas Semanales</h4>
-                <p className="text-3xl font-bold text-blue-400">{analytics.weeklyVisits}</p>
+                <h4 className="text-lg font-semibold text-white mb-4">
+                  Visitas Semanales
+                </h4>
+                <p className="text-3xl font-bold text-blue-400">
+                  {analytics.weeklyVisits}
+                </p>
               </div>
 
               <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-                <h4 className="text-lg font-semibold text-white mb-4">Visitas Mensuales</h4>
-                <p className="text-3xl font-bold text-purple-400">{analytics.monthlyVisits}</p>
+                <h4 className="text-lg font-semibold text-white mb-4">
+                  Visitas Mensuales
+                </h4>
+                <p className="text-3xl font-bold text-purple-400">
+                  {analytics.monthlyVisits}
+                </p>
               </div>
             </div>
           </TabsContent>
@@ -545,7 +643,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="live_status_pro" className="text-white">Visibilidad (Vibe)</Label>
+                    <Label htmlFor="live_status_pro" className="text-white">
+                      Visibilidad (Vibe)
+                    </Label>
                     <Input
                       id="live_status_pro"
                       name="live_status"
@@ -565,14 +665,18 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                 </h4>
 
                 <p className="text-white/60 text-sm mb-4">
-                  Actualiza el estado actual de tu club para que los usuarios sepan qué esperar.
+                  Actualiza el estado actual de tu club para que los usuarios
+                  sepan qué esperar.
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <Button
                     variant="outline"
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, live_status: "❓ Desconocido" }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        live_status: "❓ Desconocido",
+                      }))
                     }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-white/10 border-white/20 hover:bg-white/20 text-white"
                   >
@@ -583,7 +687,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <Button
                     variant="outline"
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, live_status: "🔥 On Fire" }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        live_status: "🔥 On Fire",
+                      }))
                     }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-red-600/20 border-red-500/30 hover:bg-red-600/30 text-white"
                   >
@@ -594,7 +701,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <Button
                     variant="outline"
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, live_status: "🍸 Chill" }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        live_status: "🍸 Chill",
+                      }))
                     }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-blue-600/20 border-blue-500/30 hover:bg-blue-600/30 text-white"
                   >
@@ -605,7 +715,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <Button
                     variant="outline"
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, live_status: "🎉 Packed" }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        live_status: "🎉 Packed",
+                      }))
                     }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-purple-600/20 border-purple-500/30 hover:bg-purple-600/30 text-white"
                   >
@@ -616,7 +729,10 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <Button
                     variant="outline"
                     onClick={() =>
-                      setFormData((prev) => ({ ...prev, live_status: "🤫 Tranquilo" }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        live_status: "🤫 Tranquilo",
+                      }))
                     }
                     className="flex flex-col items-center gap-2 h-auto py-4 bg-green-600/20 border-green-500/30 hover:bg-green-600/30 text-white"
                   >
@@ -627,7 +743,8 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
 
                 <div className="mt-4 p-4 bg-orange-500/20 rounded-lg border border-orange-500/30">
                   <p className="text-orange-300 text-xs">
-                    🎨 El color del perfil cambiará según el estado seleccionado (Rojo para 🔥, Azul para 🍸, etc.)
+                    🎨 El color del perfil cambiará según el estado seleccionado
+                    (Rojo para 🔥, Azul para 🍸, etc.)
                   </p>
                 </div>
 
@@ -635,7 +752,9 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <Badge className="bg-white/10 border-white/20 text-white/80">
                     live_status
                   </Badge>
-                  <span className="text-white/80 text-sm">{formData.live_status}</span>
+                  <span className="text-white/80 text-sm">
+                    {formData.live_status}
+                  </span>
                 </div>
               </div>
 
@@ -650,12 +769,16 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input type="checkbox" className="mt-1" defaultChecked />
                     <span className="text-white/80 text-xs">
-                      <strong>Cláusula de Responsabilidad Limitada:</strong> CómplicesConecta actúa exclusivamente como Tercero Facilitador. NO es responsable de incidentes, quejas o demandas dentro de las instalaciones del club.
+                      <strong>Cláusula de Responsabilidad Limitada:</strong>{" "}
+                      CómplicesConecta actúa exclusivamente como Tercero
+                      Facilitador. NO es responsable de incidentes, quejas o
+                      demandas dentro de las instalaciones del club.
                     </span>
                   </label>
 
                   <p className="text-red-400 text-xs">
-                    ⚠️ Al marcar esta casilla, el Club acepta que la App es solo un canal de gestión y marketing.
+                    ⚠️ Al marcar esta casilla, el Club acepta que la App es solo
+                    un canal de gestión y marketing.
                   </p>
                 </div>
               </div>

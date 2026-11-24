@@ -112,9 +112,7 @@ export const SinglePhotoSection: React.FC<SinglePhotoSectionProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-purple-500" />
-            <h3 className="text-lg font-semibold text-purple-600">
-              Mis Fotos
-            </h3>
+            <h3 className="text-lg font-semibold text-purple-600">Mis Fotos</h3>
             <Badge variant="outline" className="text-xs">
               {photos.length}/{maxPhotos}
             </Badge>
@@ -227,9 +225,7 @@ export const SinglePhotoSection: React.FC<SinglePhotoSectionProps> = ({
               >
                 <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-gray-600">
                   <Camera className="w-8 h-8 mb-2" />
-                  <span className="text-sm text-center px-2">
-                    Agregar foto
-                  </span>
+                  <span className="text-sm text-center px-2">Agregar foto</span>
                 </div>
               </Card>
             </motion.div>

@@ -4,7 +4,12 @@
  */
 
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

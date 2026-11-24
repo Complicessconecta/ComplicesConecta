@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Coins, Wallet } from "lucide-react";
@@ -23,9 +28,7 @@ interface SingleSubscriptionCardProps {
  * saldos reales que ya carga la página. El saldo solo se muestra al
  * perfil propio.
  */
-export const SingleSubscriptionCard: React.FC<
-  SingleSubscriptionCardProps
-> = ({
+export const SingleSubscriptionCard: React.FC<SingleSubscriptionCardProps> = ({
   isPremium,
   isDemoMode = false,
   validUntil,

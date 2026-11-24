@@ -2,7 +2,12 @@ import { useState } from "react";
 import { Share2, Copy, MessageCircle, QrCode } from "lucide-react";
 import { IconBrandFacebook, IconBrandInstagram } from "@tabler/icons-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
@@ -53,7 +58,9 @@ export const ShareProfile = ({
         );
         break;
       case "whatsapp":
-        safeOpenUrl(`https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`);
+        safeOpenUrl(
+          `https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`,
+        );
         break;
       case "instagram":
         // Instagram no permite compartir enlaces directamente, copiamos el link

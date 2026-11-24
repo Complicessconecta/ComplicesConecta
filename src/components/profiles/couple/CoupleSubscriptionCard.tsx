@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Coins, Wallet } from "lucide-react";
@@ -22,9 +27,7 @@ interface CoupleSubscriptionCardProps {
  * fuera de demo usa los saldos reales que ya carga la página. El saldo
  * solo se muestra al perfil propio.
  */
-export const CoupleSubscriptionCard: React.FC<
-  CoupleSubscriptionCardProps
-> = ({
+export const CoupleSubscriptionCard: React.FC<CoupleSubscriptionCardProps> = ({
   isPremium,
   isDemoMode = false,
   validUntil,

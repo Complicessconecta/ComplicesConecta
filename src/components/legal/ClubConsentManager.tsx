@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { CheckCircle, FileText, AlertTriangle, Eye } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import React, { useState, useEffect } from "react";
+import { CheckCircle, FileText, AlertTriangle, Eye } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 export interface ConsentDocument {
   id: string;
   title: string;
-  type: 'terms' | 'privacy' | 'disclaimer';
+  type: "terms" | "privacy" | "disclaimer";
   version: string;
   content: string;
   required: boolean;
@@ -35,21 +41,24 @@ const ClubConsentManager: React.FC<ClubConsentManagerProps> = ({
   clubId,
   userId,
   onConsentComplete,
-  onConsentError
+  onConsentError,
 }) => {
   const [documents, setDocuments] = useState<ConsentDocument[]>([]);
-  const [acceptedConsents, setAcceptedConsents] = useState<Set<string>>(new Set());
+  const [acceptedConsents, setAcceptedConsents] = useState<Set<string>>(
+    new Set(),
+  );
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [currentDocument, setCurrentDocument] = useState<ConsentDocument | null>(null);
+  const [currentDocument, setCurrentDocument] =
+    useState<ConsentDocument | null>(null);
 
   // Documentos de consentimiento para clubs
   const getClubDocuments = (): ConsentDocument[] => [
     {
-      id: 'club-terms',
-      title: 'Términos y Condiciones del Club',
-      type: 'terms',
-      version: '1.0.0',
+      id: "club-terms",
+      title: "Términos y Condiciones del Club",
+      type: "terms",
+      version: "1.0.0",
       content: `
 TÉRMINOS Y CONDICIONES DEL CLUB
 
@@ -92,13 +101,13 @@ Al registrarte como administrador de un club en CómplicesConecta, aceptas estos
 
 Al aceptar estos términos, confirmas entender y cumplir con todas las obligaciones establecidas.
       `.trim(),
-      required: true
+      required: true,
     },
     {
-      id: 'club-privacy',
-      title: 'Política de Privacidad del Club',
-      type: 'privacy',
-      version: '1.0.0',
+      id: "club-privacy",
+      title: "Política de Privacidad del Club",
+      type: "privacy",
+      version: "1.0.0",
       content: `
 POLÍTICA DE PRIVACIDAD DEL CLUB
 
@@ -157,13 +166,13 @@ Recopilamos información necesaria para la administración del club:
 
 Para preguntas sobre privacidad, contacta a privacy@complicesconecta.com
       `.trim(),
-      required: true
+      required: true,
     },
     {
-      id: 'club-disclaimer',
-      title: 'Aviso Legal y Descargo de Responsabilidad',
-      type: 'disclaimer',
-      version: '1.0.0',
+      id: "club-disclaimer",
+      title: "Aviso Legal y Descargo de Responsabilidad",
+      type: "disclaimer",
+      version: "1.0.0",
       content: `
 AVISO LEGAL Y DESCARGO DE RESPONSABILIDAD
 
@@ -224,8 +233,8 @@ Domicilio: Ciudad de México, México
 
 AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
       `.trim(),
-      required: true
-    }
+      required: true,
+    },
   ];
 
   // Cargar documentos
@@ -237,7 +246,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
 
   // Manejar aceptación de documento
   const handleDocumentAccept = (documentId: string) => {
-    setAcceptedConsents(prev => {
+    setAcceptedConsents((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(documentId)) {
         newSet.delete(documentId);
@@ -250,40 +259,42 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
 
   // Ver si todos los documentos requeridos están aceptados
   const allRequiredAccepted = documents
-    .filter(doc => doc.required)
-    .every(doc => acceptedConsents.has(doc.id));
+    .filter((doc) => doc.required)
+    .every((doc) => acceptedConsents.has(doc.id));
 
   // Enviar consentimientos
   const handleSubmitConsents = async () => {
     if (!allRequiredAccepted) {
-      onConsentError?.('Debes aceptar todos los documentos requeridos');
+      onConsentError?.("Debes aceptar todos los documentos requeridos");
       return;
     }
 
     setSubmitting(true);
     try {
       // Simular envío a backend
-      const consents: UserConsent[] = Array.from(acceptedConsents).map(consentId => {
-        const doc = documents.find(d => d.id === consentId);
-        return {
-          id: `consent-${Date.now()}-${Math.random()}`,
-          club_id: clubId,
-          user_id: userId,
-          consent_type: doc?.type || 'unknown',
-          consent_version: doc?.version || '1.0.0',
-          accepted_at: new Date().toISOString(),
-          ip_address: '127.0.0.1', // En producción, obtener IP real
-          user_agent: navigator.userAgent
-        };
-      });
+      const consents: UserConsent[] = Array.from(acceptedConsents).map(
+        (consentId) => {
+          const doc = documents.find((d) => d.id === consentId);
+          return {
+            id: `consent-${Date.now()}-${Math.random()}`,
+            club_id: clubId,
+            user_id: userId,
+            consent_type: doc?.type || "unknown",
+            consent_version: doc?.version || "1.0.0",
+            accepted_at: new Date().toISOString(),
+            ip_address: "127.0.0.1", // En producción, obtener IP real
+            user_agent: navigator.userAgent,
+          };
+        },
+      );
 
       // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       onConsentComplete?.(consents);
     } catch (error) {
-      console.error('Error submitting consents:', error);
-      onConsentError?.('Error al guardar consentimientos');
+      console.error("Error submitting consents:", error);
+      onConsentError?.("Error al guardar consentimientos");
     } finally {
       setSubmitting(false);
     }
@@ -306,7 +317,8 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
             Consentimientos Legales del Club
           </CardTitle>
           <CardDescription>
-            Debes revisar y aceptar los siguientes documentos para continuar con la creación del club.
+            Debes revisar y aceptar los siguientes documentos para continuar con
+            la creación del club.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -317,16 +329,20 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="font-semibold">{document.title}</h3>
-                      <Badge variant={document.required ? "default" : "secondary"}>
+                      <Badge
+                        variant={document.required ? "default" : "secondary"}
+                      >
                         {document.required ? "Requerido" : "Opcional"}
                       </Badge>
-                      <Badge variant="outline">
-                        v{document.version}
-                      </Badge>
+                      <Badge variant="outline">v{document.version}</Badge>
                     </div>
                     <p className="text-sm text-gray-600 mb-3">
-                      Tipo: {document.type === 'terms' ? 'Términos' : 
-                            document.type === 'privacy' ? 'Privacidad' : 'Aviso Legal'}
+                      Tipo:{" "}
+                      {document.type === "terms"
+                        ? "Términos"
+                        : document.type === "privacy"
+                          ? "Privacidad"
+                          : "Aviso Legal"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -407,9 +423,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
                 </pre>
               </div>
               <div className="mt-4 flex justify-end">
-                <Button onClick={() => setCurrentDocument(null)}>
-                  Cerrar
-                </Button>
+                <Button onClick={() => setCurrentDocument(null)}>Cerrar</Button>
               </div>
             </CardContent>
           </Card>

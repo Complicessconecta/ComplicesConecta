@@ -22,7 +22,7 @@ interface CoupleProfileCardProps {
   useThemeBackground?: boolean;
   onSuperLike?: (id: string) => void;
   onDislike?: (id: string) => void;
-};
+}
 
 const CoupleProfileCard = ({
   profile,

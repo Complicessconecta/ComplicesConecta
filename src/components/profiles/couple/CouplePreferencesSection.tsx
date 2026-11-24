@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 
@@ -50,9 +55,7 @@ export const CouplePreferencesSection: React.FC<
                   <div className="space-y-3">
                     {likes.length > 0 && (
                       <div>
-                        <p className="text-xs text-white/50 mb-1.5">
-                          Me gusta
-                        </p>
+                        <p className="text-xs text-white/50 mb-1.5">Me gusta</p>
                         <div className="flex flex-wrap gap-1.5">
                           {likes.map((tag) => (
                             <Badge

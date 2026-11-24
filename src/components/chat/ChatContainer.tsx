@@ -30,6 +30,8 @@ interface ChatContainerProps {
   chat: ChatUser;
   messages: Message[];
   onSendMessage: (content: string) => void;
+  onSendFiles?: (files: File[]) => void;
+  onSendAudio?: (blob: Blob, duration: number) => void;
   onBack?: () => void;
   isTyping?: boolean;
   className?: string;
@@ -40,6 +42,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   chat,
   messages,
   onSendMessage,
+  onSendFiles,
+  onSendAudio,
   onBack,
   isTyping = false,
   className,
@@ -184,6 +188,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       {/* Input de Chat */}
       <ChatInput
         onSendMessage={onSendMessage}
+        onSendFiles={onSendFiles}
+        onSendAudio={onSendAudio}
         placeholder={`Mensaje para ${chat.name}...`}
         enableAnimations={enableAnimations}
       />

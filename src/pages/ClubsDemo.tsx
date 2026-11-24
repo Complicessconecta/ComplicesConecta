@@ -448,6 +448,15 @@ export const ClubsDemo = () => {
                   Verificado
                 </Badge>
                 <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAdminPanel(true)}
+                  className="border-white/30 text-white hover:bg-white/10"
+                  title="Panel de administración del club"
+                >
+                  Panel Admin
+                </Button>
+                <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => void safeShare("Club Demo")}

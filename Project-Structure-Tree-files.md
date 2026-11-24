@@ -295,6 +295,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       SuperLikesModal.tsx
 |   |       TermsModalAuth.tsx
 |   |       TermsModalCouple.tsx
+|   |       TermsModalClub.tsx
 |   |       TermsModalSingle.tsx
 |   |       ThemeInfoModal.tsx
 |   |       UnifiedModal.tsx
@@ -795,6 +796,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   mobile.ts
 |   |   multimediaSecurity.ts
 |   |   notifications.ts
+|   |   profileCompleteness.ts
 |   |   redis-cache.ts
 |   |   report-export.ts
 |   |   requests.ts
@@ -914,7 +916,6 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   LeyOlimpia.tsx
 |   |   Marketplace.tsx
 |   |   Matches.tsx
-|   |   ModeratorDashboard.tsx
 |   |   ModeratorRequest.tsx
 |   |   Moderators.tsx
 |   |   News.tsx

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { logger } from "@/lib/logger";
-import { Shield, AlertTriangle, Users, Clock, CheckCircle, XCircle, Eye, Ban, MessageSquare, User, Fingerprint, Globe } from "lucide-react";
+import { Shield, AlertTriangle, Users, Clock, CheckCircle, XCircle, Eye, Ban, MessageSquare, User, Fingerprint, Globe, Building } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem,SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -34,6 +34,8 @@ type UserSuspensionRow =
   Database["public"]["Tables"]["user_suspensions"]["Row"];
 type PermanentBanRow = Database["public"]["Tables"]["permanent_bans"]["Row"];
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type ClubApplicationRow = Database["public"]["Tables"]["club_applications"]["Row"];
+type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
 
 type ProfileName = Pick<ProfileRow, "name">;
 
@@ -90,6 +92,8 @@ const ModeratorDashboard = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [moderationLogs, setModerationLogs] = useState<ModerationLog[]>([]);
   const [suspensions, setSuspensions] = useState<UserSuspension[]>([]);
+  const [clubApplications, setClubApplications] = useState<ClubApplicationRow[]>([]);
+  const [clubs, setClubs] = useState<ClubRow[]>([]);
   const [permanentBans, setPermanentBans] = useState<
     (PermanentBanRow & {
       user?: { name: string };
@@ -116,6 +120,8 @@ const ModeratorDashboard = () => {
         fetchModerationLogs(),
         fetchSuspensions(),
         fetchPermanentBans(),
+        fetchClubApplications(),
+        fetchClubs(),
       ]);
     } catch (error: unknown) {
       logger.error("Error fetching data", { error });
@@ -127,6 +133,88 @@ const ModeratorDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  /** Solicitudes de registro de club pendientes de revisión. */
+  const fetchClubApplications = async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase
+      .from("club_applications")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      logger.error("Error fetching club applications", { error });
+      return;
+    }
+    setClubApplications((data ?? []) as ClubApplicationRow[]);
+  };
+
+  /** Clubs registrados (para moderación: activar/desactivar). */
+  const fetchClubs = async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase
+      .from("clubs")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      logger.error("Error fetching clubs", { error });
+      return;
+    }
+    setClubs((data ?? []) as ClubRow[]);
+  };
+
+  /** Aprobar o rechazar una solicitud de club. */
+  const handleClubApplicationDecision = async (
+    applicationId: string,
+    decision: "approved" | "rejected",
+  ) => {
+    if (!supabase) return;
+    const { error } = await supabase
+      .from("club_applications")
+      .update({ status: decision, updated_at: new Date().toISOString() })
+      .eq("id", applicationId);
+    if (error) {
+      logger.error("Error updating club application", { error });
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar la solicitud del club",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: decision === "approved" ? "Solicitud aprobada" : "Solicitud rechazada",
+      description:
+        decision === "approved"
+          ? "El club quedó aprobado. El alta del club en la tabla clubs es un paso aparte."
+          : "La solicitud del club fue rechazada.",
+    });
+    await fetchClubApplications();
+  };
+
+  /** Activar o desactivar un club publicado. */
+  const handleClubToggleActive = async (clubId: string, isActive: boolean | null) => {
+    if (!supabase) return;
+    const { error } = await supabase
+      .from("clubs")
+      .update({ is_active: !isActive, updated_at: new Date().toISOString() })
+      .eq("id", clubId);
+    if (error) {
+      logger.error("Error toggling club active", { error });
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar el club",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: !isActive ? "Club activado" : "Club desactivado",
+      description: !isActive
+        ? "El club vuelve a aparecer en el listado público."
+        : "El club ya no aparece en el listado público.",
+    });
+    await fetchClubs();
   };
 
   const fetchPermanentBans = async () => {
@@ -630,6 +718,13 @@ const ModeratorDashboard = () => {
               Baneos Permanentes ({permanentBans.length})
             </TabsTrigger>
             <TabsTrigger
+              value="clubs"
+              className="data-[state=active]:bg-white/20"
+            >
+              <Building className="w-4 h-4 mr-2" />
+              Clubs ({clubApplications.filter((a) => a.status === "pending").length})
+            </TabsTrigger>
+            <TabsTrigger
               value="logs"
               className="data-[state=active]:bg-white/20"
             >
@@ -1038,6 +1133,127 @@ const ModeratorDashboard = () => {
                 </Card>
               ))
             )}
+          </TabsContent>
+
+          <TabsContent value="clubs" className="space-y-4">
+            {/* Solicitudes de registro de club pendientes */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Building className="h-5 w-5" />
+                  Solicitudes de registro de club
+                </CardTitle>
+                <CardDescription className="text-white/60">
+                  Revisa y aprueba o rechaza las solicitudes de registro. La
+                  aprobación cambia el estado a &quot;approved&quot;; el alta
+                  del club en la tabla clubs es un paso aparte.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {clubApplications.length === 0 ? (
+                  <p className="text-white/60 text-center py-4">
+                    No hay solicitudes de club.
+                  </p>
+                ) : (
+                  clubApplications.map((app) => (
+                    <div
+                      key={app.id}
+                      className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="text-white font-semibold">{app.club_name}</p>
+                        <p className="text-white/60 text-sm">
+                          {app.owner_name} · {app.location ?? ""}{" "}
+                          {app.state ?? ""} ·{" "}
+                          {new Date(app.created_at).toLocaleDateString("es-MX")}
+                        </p>
+                        <p className="text-white/60 text-sm">
+                          {app.email ?? app.rep_email ?? ""}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          className={
+                            app.status === "pending"
+                              ? "bg-yellow-500/80 text-white"
+                              : app.status === "approved"
+                                ? "bg-green-500/80 text-white"
+                                : "bg-red-500/80 text-white"
+                          }
+                        >
+                          {app.status}
+                        </Badge>
+                        {app.status === "pending" && (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => handleClubApplicationDecision(app.id, "approved")}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              <CheckCircle className="h-4 w-4 mr-1" />
+                              Aprobar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleClubApplicationDecision(app.id, "rejected")}
+                              className="border-red-400/40 text-red-200 hover:bg-red-500/20"
+                            >
+                              <XCircle className="h-4 w-4 mr-1" />
+                              Rechazar
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Clubs publicados: activar / desactivar */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Building className="h-5 w-5" />
+                  Clubs publicados
+                </CardTitle>
+                <CardDescription className="text-white/60">
+                  Desactivar un club lo quita del listado público sin
+                  borrarlo.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {clubs.length === 0 ? (
+                  <p className="text-white/60 text-center py-4">
+                    No hay clubs registrados.
+                  </p>
+                ) : (
+                  clubs.map((club) => (
+                    <div
+                      key={club.id}
+                      className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="text-white font-semibold">{club.name}</p>
+                        <p className="text-white/60 text-sm">
+                          {club.city}, {club.state ?? ""} ·{" "}
+                          {club.is_active ? "Activo" : "Inactivo"}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleClubToggleActive(club.id, club.is_active)}
+                        className="border-white/30 text-white hover:bg-white/10"
+                      >
+                        {club.is_active ? "Desactivar" : "Activar"}
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="logs" className="space-y-4">

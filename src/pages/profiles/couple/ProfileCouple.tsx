@@ -10,6 +10,7 @@ import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
+import { computeProfileCompleteness } from "@/lib/profileCompleteness";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
@@ -38,6 +39,13 @@ import type { CoupleMemberPreferences } from "@/components/profiles/couple/Coupl
 import { CoupleLookingForSection } from "@/components/profiles/couple/CoupleLookingForSection";
 import { CoupleSubscriptionCard } from "@/components/profiles/couple/CoupleSubscriptionCard";
 import { CouplePrivacySection } from "@/components/profiles/couple/CouplePrivacySection";
+// Espejo de Single: gestor de solicitudes de acceso, reporte y experiencias.
+import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
+import { ReportProfileDialog } from "@/components/profiles/shared/ReportProfileDialog";
+import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
+import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
+import { Modal, ModalBody, ModalContent, ModalFooter } from "@/components/modals/animated-modal";
+import { FileUpload } from "@/components/ui/forms/file-upload";
 
 // --- Secciones modelo del video (perfil de pareja) ---
 // Campos físicos que NO existen en el modelo de perfil: en demo se muestran
@@ -130,8 +138,9 @@ function ProfileCouple() {
   const [privateImageAccess, setPrivateImageAccess] = useState<
     "none" | "pending" | "approved" | "denied"
   >("none");
-  const [_showReportDialog, _setShowReportDialog] = useState(false);
-  const setShowReportDialog = _setShowReportDialog;
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  // Espejo de Single: modal VIP de la sección "Próximas experiencias".
+  const [isVipModalOpen, setIsVipModalOpen] = useState(false);
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   // La galería privada carga BLOQUEADA: el valor anterior (false) dejaba
   // las fotos privadas visibles sin PIN en la primera carga del perfil.
@@ -647,7 +656,8 @@ function ProfileCouple() {
         ]);
 
         setWalletInfo(null);
-        setTokenBalances({ cmpx: "500", gtk: "250", matic: "10" });
+        // Balance demo canónico de pareja (igual que useTokens): CMPX 2000 / GTK 1500.
+        setTokenBalances({ cmpx: "2000", gtk: "1500", matic: "10" });
         setCoupleNFTs(nfts.filter((nft) => Boolean(nft?.is_couple)));
         setCoupleRequests([]);
         setTestnetInfo({
@@ -1063,6 +1073,17 @@ function ProfileCouple() {
   const coupleDislikes = isDemoMode
     ? []
     : parseDislikes(coupleDetails?.preferences);
+
+  // % de perfil completo desde los datos reales (antes estaba hardcodeado a 0).
+  // Cálculo plano (no es hook) para no tocar el orden de hooks (#310).
+  const coupleCompleteness = computeProfileCompleteness([
+    Boolean(profile.couple_name),
+    coupleLikes.length > 0,
+    couplePrivateImageUrls.length > 0,
+    lookingForTags.length > 0,
+    Boolean(profile.is_verified),
+    Boolean((profile as { location?: string }).location),
+  ]);
 
   return (
     <div className="min-h-screen relative overflow-hidden profile-page">
@@ -1591,7 +1612,7 @@ function ProfileCouple() {
                 <CardContent className="p-6 md:p-10 text-center">
                   <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-green-400" />
                   <div className="text-lg sm:text-2xl font-bold">
-                    {coupleStats.profileCompleteness}%
+                    {coupleCompleteness}%
                   </div>
                   <div className="text-xs sm:text-sm text-white/70">
                     Completo
@@ -1745,8 +1766,8 @@ function ProfileCouple() {
             <CoupleSubscriptionCard
               isPremium={profile.is_premium ?? false}
               isDemoMode={isDemoMode}
-              cmpx={isDemoMode ? "1250" : tokenBalances.cmpx}
-              gtk={isDemoMode ? "500" : tokenBalances.gtk}
+              cmpx={isDemoMode ? "2000" : tokenBalances.cmpx}
+              gtk={isDemoMode ? "1500" : tokenBalances.gtk}
               nftCount={coupleNFTs.length}
               isOwnProfile={isOwnProfile}
               onManage={() => navigate("/tokens")}
@@ -1758,6 +1779,22 @@ function ProfileCouple() {
                 userId={user?.id ?? profile?.profile_id ?? ""}
                 isDemoMode={isDemoMode}
               />
+            )}
+
+            {/* Gestor de solicitudes de acceso a galería privada (solo para propietario) - espejo de Single */}
+            {isOwnProfile && (
+              <div className="mb-6">
+                <PrivateImageRequestsManager
+                  profileId={profile?.id || ""}
+                  profileName={profile.couple_name || "Perfil de Pareja"}
+                  onAccessGranted={(requesterId) => {
+                    logger.info("Acceso Concedido a Galería Privada", { requesterId });
+                  }}
+                  onAccessDenied={(requesterId) => {
+                    logger.info("Acceso Denegado a Galería Privada", { requesterId });
+                  }}
+                />
+              </div>
             )}
 
             {/* Demo Wallet - solo demo, tras la información del perfil */}
@@ -1774,6 +1811,63 @@ function ProfileCouple() {
                 onCommentPost={_handleCommentPost}
               />
             </div>
+
+            {/* Experiencias demo: eventos, registro rápido y verificación KYC - espejo de Single */}
+            <Card className="bg-black/60 backdrop-blur-xl border border-purple-500/30 text-white">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Próximas experiencias lifestyle
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <EventsCarousel />
+                <div className="grid gap-4 lg:grid-cols-2">
+                  <ComplianceSignupForm />
+                  <div className="space-y-4">
+                    <FileUpload />
+                    <Modal
+                      isOpen={isVipModalOpen}
+                      onClose={() => setIsVipModalOpen(false)}
+                    >
+                      <ModalBody>
+                        <ModalContent>
+                          <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-8">
+                            Reserva tu Experiencia VIP
+                          </h4>
+                          <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
+                            <p className="text-center">
+                              Accede a eventos exclusivos, fiestas privadas y
+                              matchmaking prioritario.
+                            </p>
+                          </div>
+                        </ModalContent>
+
+                        <ModalFooter className="gap-4">
+                          <button
+                            className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                            onClick={() => setIsVipModalOpen(false)}
+                          >
+                            Cancelar
+                          </button>
+                          <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
+                            Solicitar Acceso
+                          </button>
+                        </ModalFooter>
+                      </ModalBody>
+                    </Modal>
+
+                    <button
+                      className="w-full bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg hover:scale-[1.02] transition-all"
+                      onClick={() => setIsVipModalOpen(true)}
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Ver opciones VIP demo
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -1835,6 +1929,14 @@ function ProfileCouple() {
         userLikes={imageUserLikes}
         isPrivate
         isBlurred={!isGalleryUnlocked}
+      />
+
+      {/* Modal de reporte - espejo de Single (el botón Reportar lo abría pero no existía el modal) */}
+      <ReportProfileDialog
+        isOpen={showReportDialog}
+        onClose={() => setShowReportDialog(false)}
+        reportedUserId={profile?.id || ""}
+        reportedUserName={profile.couple_name || "Perfil de Pareja"}
       />
     </div>
   );

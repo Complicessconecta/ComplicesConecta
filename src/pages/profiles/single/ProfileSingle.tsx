@@ -11,6 +11,7 @@ import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { useAuth } from "@/features/auth/useAuth";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { logger } from "@/lib/logger";
+import { computeProfileCompleteness } from "@/lib/profileCompleteness";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useToast } from "@/hooks/useToast";
 import { Input } from "@/components/ui/forms/Input";
@@ -721,7 +722,7 @@ const ProfileSingle: FC = () => {
           ]);
 
           // Datos demo visibles
-          setTokenBalances({ cmpx: "500", gtk: "250", matic: "10" });
+          setTokenBalances({ cmpx: "1250", gtk: "850", matic: "10" }); // Balance demo canónico de single (igual que useTokens): CMPX 1250 / GTK 850.
           setUserNFTs(nfts);
           setTestnetInfo({
             remaining: 500,
@@ -757,7 +758,7 @@ const ProfileSingle: FC = () => {
 
       // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
       if (isDemoMode()) {
-        setTokenBalances({ cmpx: "500", gtk: "250", matic: "10" });
+        setTokenBalances({ cmpx: "1250", gtk: "850", matic: "10" }); // Balance demo canónico de single (igual que useTokens): CMPX 1250 / GTK 850.
         setUserNFTs([]);
         setTestnetInfo({
           remaining: 500,
@@ -1039,6 +1040,19 @@ const ProfileSingle: FC = () => {
   const singleDislikes = singleIsDemo
     ? []
     : parseDislikes(currentProfile["preferences"]);
+
+  // % de perfil completo desde los datos reales (antes estaba hardcodeado a 0).
+  // Cálculo plano (no es hook) para no tocar el orden de hooks (#310).
+  const profileCompleteness = computeProfileCompleteness([
+    Boolean(displayName),
+    Boolean(asOptionalString(currentProfile.bio)),
+    typeof currentProfile.age === "number",
+    Boolean(currentProfile.avatar_url),
+    Boolean(currentProfile.gender),
+    singleActivities.length > 0,
+    galleryImages.length > 0,
+    Boolean(currentProfile.is_verified),
+  ]);
 
   return (
     <div className="min-h-dvh bg-transparent text-white pb-20 md:pb-0 pt-20 overflow-x-hidden">
@@ -1325,7 +1339,7 @@ const ProfileSingle: FC = () => {
                 <CardContent className="p-6 md:p-10 text-center">
                   <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-green-400" />
                   <div className="text-lg sm:text-2xl font-bold">
-                    {profileStats.profileCompleteness}%
+                    {profileCompleteness}%
                   </div>
                   <div className="text-xs sm:text-sm text-white/70">
                     Completo
@@ -1780,7 +1794,7 @@ const ProfileSingle: FC = () => {
             isPremium={currentProfile.is_premium ?? false}
             isDemoMode={singleIsDemo}
             cmpx={singleIsDemo ? "1250" : tokenBalances.cmpx}
-            gtk={singleIsDemo ? "500" : tokenBalances.gtk}
+            gtk={singleIsDemo ? "850" : tokenBalances.gtk}
             nftCount={userNFTs.length}
             isOwnProfile={isOwnProfile}
             onManage={() => navigate("/tokens")}

@@ -2,6 +2,13 @@
 
 # 📊 DIAGRAMAS DE FLUJOS v3.9.2 - COMPLICESCONECTA v3.9.2
 
+#> Actualización 24 Nov 2026 12:48
+#> - **Acción**: Edita
+#> - **Nombre del flujo**: Registro de club — aceptación de términos de uso (TermsModalClub) + moderación de clubs + panel admin de club con datos reales
+#> - **Ruta(s) afectada(s)**: `src/pages/Clubs.tsx`, `src/components/modals/TermsModalClub.tsx`, `docs/legal/TERMINOS_USO_CLUBS.md`, `src/pages/moderators/ModeratorDashboard.tsx`, `src/components/admin/panels/ClubAdminPanel.tsx`, `src/pages/ClubsDemo.tsx`, `src/components/admin/AnalyticsDashboard.tsx`, `src/pages/admin/Admin.tsx`, `src/pages/ClubsPublic.tsx`, `src/components/legal/ClubConsentManager.tsx`, `supabase/migrations/20261124030000_create_club_events_discounts_members.sql`
+#> - **Resumen breve**: El registro de club ahora exige aceptar los Términos de Uso para Clubs (TermsModalClub) antes de enviar la solicitud a `club_applications`; sin aceptación, el botón Enviar abre el modal en vez de enviar. La contraseña temporal se genera con `crypto.getRandomValues` (antes `Math.random()`). Nuevas tablas `club_events`, `club_discounts`, `club_members` (+ `club_id` en `user_consents`) con RLS. `ClubAdminPanel` (antes código muerto en ClubsDemo, `showAdminPanel` nunca era true) ahora se abre con el botón "Panel Admin" y lee/escribe clubs reales de Supabase. ModeratorDashboard tiene pestaña "Clubs" (aprobar/rechazar solicitudes, activar/desactivar clubs). Admin.tsx y AnalyticsDashboard leen datos reales de Supabase (antes mock). ClubsPublic y Clubs.tsx cargan clubs reales con respaldo al catálogo público si Supabase falla o está vacío.
+#> - **Justificación**: Pre-lanzamiento, Clubs/Admin/Moderadores deben estar completos con datos reales (regla de Wacko 24 Nov 2026). Un club no puede registrarse sin aceptar sus términos (documento y modal no existían); el panel admin de club era inalcanzable y mock; la moderación de clubs no existía. La contraseña temporal con `Math.random()` estaba marcada como insegura en la auditoría forense.
+
 #> Actualización 24 Nov 2026 11:49
 #> - **Acción**: Edita
 #> - **Nombre del flujo**: Demo — Resolución de identidad demo y redirección de editores (single ↔ couple)
@@ -1610,7 +1617,10 @@ flowchart TD
     G --> H{Validación}
 
     H -->|Datos Incompletos| B
-    H -->|Datos Completos| I[Guardar en BD<br/>club_applications]
+    H -->|Datos Completos| H2{¿Términos de club<br/>aceptados?}
+    H2 -->|No| H3[Modal TermsModalClub<br/>Términos de Uso para Clubs]
+    H3 -->|Aceptar| I[Guardar en BD<br/>club_applications]
+    H2 -->|Sí| I[Guardar en BD<br/>club_applications]
     I --> J[Enviar Email<br/>complicesconectasw@outlook.es]
     J --> K[Estado: Pending]
 

@@ -3,8 +3,10 @@ import { Search, Plus, Edit, Trash2, Eye, Ban, CheckCircle, Loader2 } from 'luci
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
-// Datos mock simplificados
+// Datos de respaldo cuando Supabase no devuelve clubs (tabla vacía / RLS).
 const MOCK_CLUBS = [
   {
     id: "demo-1",
@@ -59,12 +61,41 @@ const ClubAdminPanelSimple: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  // Cargar datos mock
-  useEffect(() => {
-    setTimeout(() => {
+  // Cargar clubs reales de Supabase; sin datos se usa el respaldo demo.
+  const loadClubs = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("clubs")
+        .select("id, name, city, rating_average, check_in_count, is_active, verified_at, membership_tier, created_at")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      if (data && data.length > 0) {
+        const mapped: SimpleClub[] = data.map((row) => ({
+          id: row.id,
+          name: row.name,
+          city: row.city,
+          rating: row.rating_average ?? 0,
+          checkIns: row.check_in_count ?? 0,
+          isActive: row.is_active ?? false,
+          isVerified: Boolean(row.verified_at),
+          category: row.membership_tier ?? "standard",
+          createdAt: row.created_at,
+        }));
+        setClubs(mapped);
+      } else {
+        setClubs(MOCK_CLUBS);
+      }
+    } catch (error) {
+      logger.warn("ClubAdminPanel: usando respaldo demo", { error: String(error) });
       setClubs(MOCK_CLUBS);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    void loadClubs();
   }, []);
 
   // Filtrar clubs
@@ -81,21 +112,43 @@ const ClubAdminPanelSimple: React.FC = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Eliminar club (mock)
-  const handleDeleteClub = (clubId: string, clubName: string) => {
+  // Eliminar club (real en Supabase; el demo no se puede borrar).
+  const handleDeleteClub = async (clubId: string, clubName: string) => {
     if (!confirm(`¿Estás seguro de que deseas eliminar el club "${clubName}"?`)) {
       return;
     }
-    setClubs(clubs.filter(club => club.id !== clubId));
+    if (clubId.startsWith("demo-")) {
+      setClubs(clubs.filter(club => club.id !== clubId));
+      return;
+    }
+    const { error } = await supabase.from("clubs").delete().eq("id", clubId);
+    if (error) {
+      logger.error("Error deleting club", { error: String(error) });
+      alert(`No se pudo eliminar el club: ${error.message}`);
+      return;
+    }
+    await loadClubs();
   };
 
-  // Toggle estado del club (mock)
-  const handleToggleStatus = (clubId: string, clubName: string, currentStatus: boolean) => {
+  // Toggle estado del club (real en Supabase).
+  const handleToggleStatus = async (clubId: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
-    setClubs(clubs.map(club => 
-      club.id === clubId ? { ...club, isActive: newStatus } : club
-    ));
-    alert(`Club "${clubName}" ${newStatus ? 'activado' : 'suspendido'} (Demo)`);
+    if (clubId.startsWith("demo-")) {
+      setClubs(clubs.map(club =>
+        club.id === clubId ? { ...club, isActive: newStatus } : club
+      ));
+      return;
+    }
+    const { error } = await supabase
+      .from("clubs")
+      .update({ is_active: newStatus, updated_at: new Date().toISOString() })
+      .eq("id", clubId);
+    if (error) {
+      logger.error("Error toggling club", { error: String(error) });
+      alert(`No se pudo actualizar el club: ${error.message}`);
+      return;
+    }
+    await loadClubs();
   };
 
   const getStatusBadge = (club: SimpleClub) => {
@@ -279,7 +332,7 @@ const ClubAdminPanelSimple: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleToggleStatus(club.id, club.name, club.isActive)}
+                          onClick={() => handleToggleStatus(club.id, club.isActive)}
                         >
                           <Ban className="h-4 w-4" />
                         </Button>

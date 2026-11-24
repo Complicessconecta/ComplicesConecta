@@ -12,6 +12,49 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
                   📅  Noviembre del 2026
 
+## 📅 Actualización 24 de Noviembre, 2026 - 12:55
+
+**Fixes del video 7 (preview PR #69) + faltantes Clubs/Admin/Moderador (1 commit, 1 PR):**
+- ✅ Tokens: "Transacciones Recientes" ya no muestra "Invalid Date" — el mock usaba `date` pero el render leía `created_at`; ahora el mock trae `created_at` + `token_type` y el render usa `created_at ?? date` con "—" si es inválido; se quitó la línea engañosa "Balance: {tx.amount}"
+- ✅ Tokens: balance demo ahora es el de `useTokens` (canónico: single 1250/850, pareja 2000/1500) en vez del mock estático 5000/2500; NFTs demo filtrados por tipo de cuenta (pareja ve 2 con `is_couple`, single ve 4); `is_couple` agregado al mock
+- ✅ Perfil pareja: balances demo 2000/1500 (antes 500/250 en el perfil y "1250"/"500" en la tarjeta de suscripción); perfil single 1250/850 (antes 500/250 y GTK "500")
+- ✅ Perfil pareja (espejo): agregadas "Solicitudes de Acceso" (`PrivateImageRequestsManager`), sección "Experiencias demo" (eventos, registro rápido, verificación KYC) y el modal de reporte (`ReportProfileDialog` — el botón Reportar no hacía nada porque el modal no existía); el botón discreto "Desbloquear" y el `ImageModal` ya existían en pareja
+- ✅ Perfiles: "0% Completo" ya no es fijo — `computeProfileCompleteness()` (nuevo `src/lib/profileCompleteness.ts`) calcula el % desde campos llenos; single y pareja lo muestran
+- ✅ Feed: `getFeed` ahora tiene timeout de 8 s (antes se quedaba en "Cargando publicaciones..." si Supabase tardaba); posts demo usan Unsplash en vez de `picsum.photos` (la foto del post "Demo User" salía rota/placeholder)
+- ✅ Feed: campo de comentario y botón Enviar deshabilitados en demo (antes el campo seguía visible aunque el banner decía que los comentarios están deshabilitados)
+- ✅ Clubs: /clubs ya no muestra el toast "No se pudieron cargar los clubs" cuando Supabase falla o está vacío — usa el catálogo público como respaldo; /clubs-public carga clubs reales de Supabase
+- ✅ Discover: `AnimatedProfileCard` con `onError` — si la foto falla, muestra un degradado con la inicial en vez de imagen rota/borrosa
+- ✅ Clubs (registro): contraseña temporal con `crypto.getRandomValues` (antes `Math.random()`, inseguro, marcado en la auditoría forense); se quitaron los `as never` en `club_applications` (ya tipada)
+- ✅ Clubs (términos): nuevo documento `docs/legal/TERMINOS_USO_CLUBS.md` v1.0 y `TermsModalClub`; el registro exige aceptar los términos antes de enviar (sin aceptar, Enviar abre el modal)
+- ✅ Clubs (consentimiento): `ClubConsentManager` ahora inserta de verdad en `user_consents` (antes simulaba con `Math.random()` y nunca persistía) y se muestra en el detalle del club (usuarios autenticados)
+- ✅ Supabase: nueva migración `20261124030000_create_club_events_discounts_members.sql` — tablas `club_events`, `club_discounts`, `club_members` (+ `club_id` en `user_consents`) con RLS/políticas; tipos regenerados en `src/types/supabase-generated.ts` (incluye `club_applications`)
+- ✅ Admin: `Admin.tsx` lee datos reales de Supabase (perfiles, matches, clubs, solicitudes, World ID, wallet) en vez de mock; `AnalyticsDashboard` agrega sección "Métricas de negocio (Supabase)"
+- ✅ Moderador: pestaña "Clubs" en `ModeratorDashboard` (aprobar/rechazar solicitudes, activar/desactivar clubs); eliminado el duplicado sin uso `src/pages/ModeratorDashboard.tsx`
+- ✅ `ClubAdminPanel` (antes código muerto en ClubsDemo — `showAdminPanel` nunca era true): botón "Panel Admin" en el header del demo y panel conectado a Supabase real (listar, eliminar, activar/suspender clubs)
+- ✅ Legal: `Legal.tsx` incluye los 3 documentos de clubs y se corrigió el enlace roto `PRIVACY_POLICY.md` → `POLITICA_PRIVACIDAD.md`; carpeta `public/docs/legal/` con los 9 documentos para que `/docs/legal/<archivo>` deje de dar 404 en producción
+- ✅ Árbol del proyecto actualizado en ambos archivos (nuevos `TermsModalClub.tsx`, `profileCompleteness.ts`; eliminado `ModeratorDashboard.tsx` duplicado)
+
+**No reproducido (se registra, no se oculta):**
+- ⚠️ Chat: en el video la lista de Conversaciones carga bien (Privado 3 / Público 28); no se abrió ningún hilo en los fotogramas, así que el error persistente de chat no se confirmó visualmente; en código los fixes del PR #69 están (horas HH:MM, botón Desbloquear nítido, dock cierra al navegar) y `tabError` nunca se setea a un mensaje — falta el momento exacto/captura del error
+- ⚠️ Modal de Animaciones "aparece varias veces": solo se ve abierto una vez en el video; en código solo hay un disparador (`Navigation.tsx:86`) y una sola instancia renderizada; no se reprodujo
+- ⚠️ Banner "NO DISPONIBLE" en /clubs/demo: sigue sin existir como texto literal en el repo — no se pudo arreglar de forma estática; falta re-verificar en vivo tras el merge
+
+**Pendiente / Falló (se registra, no se oculta):**
+- ⚠️ Aplicar la migración `20261124030000_create_club_events_discounts_members.sql` en producción (Supabase) — está solo en el repo; paso aparte del dueño
+- ⚠️ `tsc`: 25 errores (antes 28 en master) — 0 nuevos; 3 preexistentes se corrigieron con los cambios (los `as never` y tipos); los 5 restantes en archivos tocados son preexistentes (imports sin uso, `storagePath`, `bio` en SingleAboutMember)
+- ⚠️ `vitest`: sin `VITE_SUPABASE_*` los 3 archivos fallan al importar (preexistente, el fix de checks no está en master); con dummy: TokenDashboard 6/6, ProfileSingle y ProfileCouple con 1 fallo preexistente cada uno (iguales en master limpio)
+- ⚠️ `prettier`: los archivos modificados ya fallaban --check en master (preexistente, 626 archivos); los 3 archivos nuevos están limpios
+- ⚠️ Sin verificación en vivo en producción todavía — falta probarlo en el teléfono tras merge + deploy
+
+**Verificación:**
+- ✅ `tsc --noEmit` (TS 5.7.2): 25 errores en la rama (28 en master), 0 nuevos en archivos tocados
+- ✅ `vitest` con `VITE_SUPABASE_*` dummy: TokenDashboard.test.tsx 6/6; ProfileSingle 2/3 y ProfileCouple 3/4 (1 fallo preexistente en cada uno, iguales en master limpio)
+- ✅ `prettier --check`: archivos nuevos limpios; modificados ya fallaban en master
+
+Rama: `fix/video-clubs-admin-moderador-2026-11-24` (base master 9eb4c11), 22 archivos — Wacko fusiona desde su teléfono.
+
+---
+
 ## 📅 Actualización 24 de Noviembre, 2026 - 11:34
 
 **Fixes Editor Demo + Dock Config + Contraste + Chat:**

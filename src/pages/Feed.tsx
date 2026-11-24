@@ -18,7 +18,7 @@ const Feed = () => {
     new Set(),
   );
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
-  const { isAuthenticated: _isAuthenticated } = useAuth();
+  const { isAuthenticated: _isAuthenticated, isDemoMode } = useAuth();
   const { toast } = useToast();
 
   // Cargar posts iniciales y estado de likes
@@ -388,12 +388,19 @@ const Feed = () => {
                             </div>
                           ))}
 
-                          {/* Campo para agregar comentario */}
+                          {/* Campo para agregar comentario: en demo los comentarios
+                              están deshabilitados, así que el campo se muestra
+                              deshabilitado (no se puede escribir en un campo muerto). */}
                           <div className="flex space-x-2 mt-4 pt-3 border-t border-border/30">
                             <input
                               type="text"
-                              placeholder="Escribe un comentario..."
-                              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                              disabled={isDemoMode()}
+                              placeholder={
+                                isDemoMode()
+                                  ? "Los comentarios están deshabilitados en modo demo"
+                                  : "Escribe un comentario..."
+                              }
+                              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
                               onKeyPress={(e) => {
                                 if (e.key === "Enter") {
                                   toast({
@@ -405,7 +412,8 @@ const Feed = () => {
                               }}
                             />
                             <Button
-                              className="bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white px-4"
+                              disabled={isDemoMode()}
+                              className="bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white px-4 disabled:opacity-50 disabled:cursor-not-allowed"
                               onClick={() => {
                                 toast({
                                   title: "Modo Demo",

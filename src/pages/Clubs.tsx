@@ -15,6 +15,9 @@ import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import type { Database } from "@/types/supabase-generated";
 import type { Club as ClubEntity } from "@/entities/club";
+import { PUBLIC_CLUBS, type PublicClub } from "./ClubsPublic";
+import { TermsModalClub } from "@/components/modals/TermsModalClub";
+import ClubConsentManager from "@/components/legal/ClubConsentManager";
 import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
 
 type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
@@ -48,6 +51,56 @@ interface Club extends Omit<
   review_count: number;
   check_in_count: number;
   check_in_radius_meters: number | null;
+}
+
+/**
+ * Fallback cuando Supabase no devuelve clubs (tabla vacía, RLS o error de
+ * red): muestra los clubs públicos del catálogo en vez de un toast de error
+ * y una página vacía (el video muestra "No se pudieron cargar los clubs").
+ * Los campos de BD que el catálogo no tiene se rellenan con valores demo.
+ */
+function mapPublicClubToClub(c: PublicClub): Club {
+  const now = new Date().toISOString();
+  return {
+    id: c.id,
+    slug: c.slug,
+    name: c.name,
+    description: c.description,
+    address: c.address,
+    city: c.city,
+    state: c.state,
+    country: "México",
+    email: null,
+    phone: null,
+    website: null,
+    logo_url: null,
+    cover_image_url: c.coverImage,
+    latitude: 19.4326,
+    longitude: -99.1332,
+    is_active: true,
+    is_featured: c.tier === "premium",
+    is_verified: true,
+    verified_at: now,
+    verified_by: null,
+    created_at: now,
+    updated_at: now,
+    created_by: null,
+    rating_average: c.rating,
+    rating_count: c.reviews,
+    review_count: c.reviews,
+    total_reviews: c.reviews,
+    check_in_count: c.checkIns,
+    check_in_radius_meters: 500,
+    average_rating: c.rating,
+    bayesian_score: c.rating,
+    membership_tier: c.tier,
+    metadata: null,
+    stripe_account_id: null,
+    total_revenue_cmpx: null,
+    total_revenue_usd: null,
+    vibe_status: c.vibe,
+    vibe_status_updated_at: now,
+  };
 }
 
 const toClubEntity = (club: Club): ClubEntity => {
@@ -153,6 +206,10 @@ export const Clubs = () => {
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // Términos de uso para clubs: el registro exige aceptar los términos y la
+  // política de privacidad para clubs (TermsModalClub).
+  const [showClubTermsModal, setShowClubTermsModal] = useState(false);
+  const [clubTermsAccepted, setClubTermsAccepted] = useState(false);
   const [selectedClub, setSelectedClub] = useState<ClubEntity | null>(null);
 
   // Formulario de registro de club
@@ -357,18 +414,24 @@ export const Clubs = () => {
 
       if (error) throw error;
 
+      // Sin clubs en BD (tabla vacía / RLS): mostrar el catálogo público
+      // en vez de una página vacía.
+      if (!data || data.length === 0) {
+        logger.warn("No clubs in Supabase, using public catalog fallback");
+        setClubs(PUBLIC_CLUBS.map(mapPublicClubToClub));
+        return;
+      }
+
       setClubs((data || []) as Club[]);
       logger.info("Clubs loaded successfully", { count: data?.length });
     } catch (error) {
-      logger.error("Error loading clubs:", {
+      logger.error("Error loading clubs, using public catalog fallback:", {
         error: error instanceof Error ? error.message : JSON.stringify(error),
         stack: error instanceof Error ? error.stack : undefined,
       });
-      toast({
-        title: "Error",
-        description: "No se pudieron cargar los clubs",
-        variant: "destructive",
-      });
+      // Fallback al catálogo público: la página sigue mostrando clubs y no
+      // se muestra un toast de error destructivo por un fallo de red/RLS.
+      setClubs(PUBLIC_CLUBS.map(mapPublicClubToClub));
     } finally {
       setLoading(false);
     }
@@ -471,15 +534,36 @@ export const Clubs = () => {
 
   const handleClubSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Sin aceptar los términos de club no se envía: abrir el modal.
+    if (!clubTermsAccepted) {
+      setShowClubTermsModal(true);
+      return;
+    }
+    await submitClubApplication();
+  };
+
+  const submitClubApplication = async () => {
     setSubmitting(true);
 
     try {
-      // Generar contraseña temporal aleatoria (12 caracteres)
+      // Generar contraseña temporal aleatoria (12 caracteres) con
+      // crypto.getRandomValues (CSPRNG). Math.random() NO es seguro para
+      // credenciales (auditoría forense). Muestreo por rechazo para evitar
+      // sesgo de módulo (2^32 % 70 = 46).
       const generateTempPassword = () => {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        const randomValues = new Uint32Array(12);
+        crypto.getRandomValues(randomValues);
+        const maxValid = Math.floor(0xffffffff / chars.length) * chars.length;
         let password = '';
-        for (let i = 0; i < 12; i++) {
-          password += chars.charAt(Math.floor(Math.random() * chars.length));
+        for (const value of randomValues) {
+          let v = value;
+          while (v >= maxValid) {
+            const refill = new Uint32Array(1);
+            crypto.getRandomValues(refill);
+            v = refill[0] as number;
+          }
+          password += chars.charAt(v % chars.length);
         }
         return password;
       };
@@ -489,7 +573,7 @@ export const Clubs = () => {
 
       // Guardar en base de datos usando cast para evitar error de tipos
       const { data, error } = await supabase!
-        .from("club_applications" as never)
+        .from("club_applications")
         .insert([
           {
             owner_name: clubForm.ownerName,
@@ -522,7 +606,7 @@ export const Clubs = () => {
             temp_password: tempPassword,
             temp_password_expires_at: tempPasswordExpiresAt.toISOString(),
             temp_password_used: false,
-          } as never,
+          },
         ])
         .select()
         .single();
@@ -626,6 +710,34 @@ export const Clubs = () => {
               averageRating={selectedClub.rating_average}
               totalReviews={selectedClub.rating_count}
             />
+
+            {/* Consentimiento del club: el usuario acepta los documentos del
+                club (términos, privacidad, descargo) y queda guardado en
+                public.user_consents con club_id. */}
+            {user?.id && (
+              <ClubConsentManager
+                clubId={selectedClub.id}
+                userId={user.id}
+                onConsentComplete={(consents) => {
+                  logger.info("Consentimientos del club aceptados", {
+                    clubId: selectedClub.id,
+                    count: consents.length,
+                  });
+                  toast({
+                    title: "Consentimiento guardado",
+                    description: "Tus consentimientos para este club quedaron registrados.",
+                    variant: "default",
+                  });
+                }}
+                onConsentError={(error) => {
+                  toast({
+                    title: "Error",
+                    description: error,
+                    variant: "destructive",
+                  });
+                }}
+              />
+            )}
             {selectedClub.id === "demo" && (
               <ClubProfileAdmin analytics={DEMO_ANALYTICS} clubId={selectedClub.id} />
             )}
@@ -1630,6 +1742,25 @@ export const Clubs = () => {
               </div>
             </div>
 
+            {/* Términos de uso para clubs (obligatorios para registrar) */}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setShowClubTermsModal(true)}
+                className="text-sm text-purple-300 hover:text-purple-200 underline underline-offset-2"
+              >
+                {clubTermsAccepted
+                  ? "✓ Términos de Uso para Clubs aceptados (ver)"
+                  : "Leer y aceptar los Términos de Uso para Clubs"}
+              </button>
+              {!clubTermsAccepted && (
+                <p className="text-xs text-white/60 mt-1">
+                  Debes aceptar los términos y la política de privacidad para
+                  clubs para enviar la solicitud.
+                </p>
+              )}
+            </div>
+
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"
@@ -1659,6 +1790,18 @@ export const Clubs = () => {
             </div>
           </form>
         </Modal>
+
+        {/* Modal de términos de uso para clubs */}
+        <TermsModalClub
+          isOpen={showClubTermsModal}
+          onClose={() => setShowClubTermsModal(false)}
+          onAccept={() => {
+            setClubTermsAccepted(true);
+            setShowClubTermsModal(false);
+            // Aceptados: enviar la solicitud de inmediato.
+            void submitClubApplication();
+          }}
+        />
           </>
         )}
       </div>

@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useTokens } from "@/hooks/useTokens";
+import { useAuth } from "@/features/auth/useAuth";
+import { resolveDemoAccountType } from "@/lib/app-config";
 import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from "lucide-react";
 import { TokenAiChat } from "@/components/tokens/TokenAiChat";
 
@@ -32,10 +34,10 @@ const MOCK_DEMO_DATA = {
     totalReferrals: 5,
   },
   transactions: [
-    { id: 1, description: "Minteo NFT #1", amount: -1000, type: "nft_mint", date: new Date().toISOString() },
-    { id: 2, description: "Recompensa diaria", amount: 50, type: "reward", date: new Date().toISOString() },
-    { id: 3, description: "Staking CMPX", amount: -2000, type: "stake", date: new Date().toISOString() },
-    { id: 4, description: "Recompensa referido", amount: 100, type: "referral", date: new Date().toISOString() },
+    { id: 1, description: "Minteo NFT #1", amount: -1000, type: "nft_mint", token_type: "cmpx", created_at: new Date().toISOString() },
+    { id: 2, description: "Recompensa diaria", amount: 50, type: "reward", token_type: "cmpx", created_at: new Date().toISOString() },
+    { id: 3, description: "Staking CMPX", amount: -2000, type: "stake", token_type: "cmpx", created_at: new Date().toISOString() },
+    { id: 4, description: "Recompensa referido", amount: 100, type: "referral", token_type: "cmpx", created_at: new Date().toISOString() },
   ],
   nfts: [
     {
@@ -45,6 +47,7 @@ const MOCK_DEMO_DATA = {
       image: MOCK_NFT_IMAGES[3],
       rarity: "legendary",
       value: 5000,
+      is_couple: false,
       collection: "CómplicesConecta Demo",
     },
     {
@@ -54,6 +57,7 @@ const MOCK_DEMO_DATA = {
       image: MOCK_NFT_IMAGES[1],
       rarity: "common",
       value: 100,
+      is_couple: true,
       collection: "CómplicesConecta Demo",
     },
     {
@@ -63,6 +67,7 @@ const MOCK_DEMO_DATA = {
       image: MOCK_NFT_IMAGES[2],
       rarity: "epic",
       value: 1500,
+      is_couple: true,
       collection: "CómplicesConecta Demo",
     },
     {
@@ -72,10 +77,19 @@ const MOCK_DEMO_DATA = {
       image: MOCK_NFT_IMAGES[0],
       rarity: "rare",
       value: 500,
+      is_couple: false,
       collection: "CómplicesConecta Demo",
     },
   ],
 };
+
+/** Fecha de una transacción: usa created_at (forma real) o date (mock viejo). Nunca muestra "Invalid Date". */
+function formatTxDate(tx: { created_at?: string; date?: string }): string {
+  const raw = tx.created_at ?? tx.date;
+  if (!raw) return "—";
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleDateString("es-ES");
+}
 
 export interface TokenDashboardProps {
   initialBalance?: {
@@ -117,10 +131,31 @@ export function TokenDashboard({
     isWorldIdEligible,
   } = useTokens();
 
+  const { user } = useAuth();
+
+  // En demo el balance debe ser el canónico por tipo de cuenta (useTokens:
+  // single 1250/850, pareja 2000/1500), no el MOCK estático 5000/2500, para
+  // que Tokens muestre lo mismo que el perfil. Si el hook aún no cargó
+  // (balance 0), se usa el MOCK para no parpadear en 0.
+  const demoBalance =
+    hookBalance && hookBalance.cmpxBalance > 0
+      ? {
+          ...MOCK_DEMO_DATA.balance,
+          cmpxBalance: hookBalance.cmpxBalance,
+          gtkBalance: hookBalance.gtkBalance,
+        }
+      : MOCK_DEMO_DATA.balance;
   // Use props if provided (demo mode), otherwise use hook data
-  const balance = isDemoMode ? MOCK_DEMO_DATA.balance : (initialBalance || hookBalance);
+  const balance = isDemoMode ? demoBalance : (initialBalance || hookBalance);
   const transactions = isDemoMode ? MOCK_DEMO_DATA.transactions : (initialTransactions || hookTransactions);
-  const displayNfts = isDemoMode ? MOCK_DEMO_DATA.nfts : nfts;
+  // En demo la pareja muestra solo sus NFTs de pareja (2, igual que su
+  // perfil: is_couple), el single muestra los 4 (igual que su perfil).
+  const demoAccountType = isDemoMode ? resolveDemoAccountType(user) : null;
+  const displayNfts = isDemoMode
+    ? demoAccountType === "couple"
+      ? MOCK_DEMO_DATA.nfts.filter((n) => n.is_couple)
+      : MOCK_DEMO_DATA.nfts
+    : nfts;
   const loading = !isDemoMode && !initialBalance && hookLoading;
 
   if (loading) {
@@ -666,7 +701,7 @@ export function TokenDashboard({
                       {tx.description}
                     </p>
                     <p className="text-sm text-white/70 truncate">
-                      {new Date(tx.created_at).toLocaleDateString("es-ES")}
+                      {formatTxDate(tx)}
                     </p>
                   </div>
                   <div className="text-right shrink-0 ml-2">
@@ -675,9 +710,6 @@ export function TokenDashboard({
                     >
                       {tx.amount > 0 ? "+" : ""}
                       {tx.amount} {tx.token_type}
-                    </p>
-                    <p className="text-xs text-white/60 truncate">
-                      Balance: {tx.amount}
                     </p>
                   </div>
                 </div>

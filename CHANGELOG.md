@@ -1,3 +1,54 @@
+# Reporte de Cambios - CómplicesConecta v3.9.8
+
+**Fecha:** 24 de Noviembre, 2026 - 12:55
+**Versión:** v3.9.8 (Fixes Video 7 + Clubs/Admin/Moderador completos)
+**Responsable:** Lead Architect & Tech Lead
+
+## Resumen Ejecutivo
+
+Corrección de los bugs del video 7 (preview PR #69) y construcción de los faltantes de Clubs/Admin/Moderador para el pre-lanzamiento, en un solo commit y un solo PR. Tokens: "Invalid Date" y balances demo inconsistentes. Perfiles: espejo de pareja completado (Solicitudes de Acceso, Experiencias, reporte) y "0% Completo" calculado. Feed: timeout y comentarios deshabilitados de verdad. Clubs/Admin/Moderador: datos reales de Supabase, términos de club obligatorios, moderación de clubs, panel admin alcanzable, migración de `club_events`/`club_discounts`/`club_members` (repo, sin aplicar en vivo).
+
+## Registro de Cambios Detallados
+
+| Nombre | Ruta | Síntoma/Problema | Acción Realizada | Justificación |
+| :--- | :--- | :--- | :--- | :--- |
+| **TokenDashboard.tsx** | `src/components/tokens/TokenDashboard.tsx` | "Invalid Date" en Transacciones Recientes; balance mock 5000/2500; NFTs sin filtro por tipo de cuenta; línea "Balance: {tx.amount}" engañosa | **Corregido**. Mock con `created_at` + `token_type`; render `created_at ?? date` con "—" si es inválido; balance demo desde `hookBalance` (canónico); NFTs filtrados por cuenta; línea engañosa eliminada | Una sola fuente de verdad para balances demo |
+| **ProfileCouple.tsx** | `src/pages/profiles/couple/ProfileCouple.tsx` | Faltaban Solicitudes de Acceso, Experiencias demo y modal de reporte; balances demo 500/250; "0% Completo" fijo | **Agregado/Corregido**. `PrivateImageRequestsManager`, sección Experiencias, `ReportProfileDialog`; balances 2000/1500; `coupleCompleteness` calculado | Regla espejo single/pareja; el botón Reportar no hacía nada |
+| **ProfileSingle.tsx** | `src/pages/profiles/single/ProfileSingle.tsx` | Balances demo 500/250 y GTK "500"; "0% Completo" fijo | **Corregido**. Balances 1250/850; `profileCompleteness` calculado | Consistencia demo canónica |
+| **profileCompleteness.ts** | `src/lib/profileCompleteness.ts` | No existía cálculo de completitud de perfil | **Agregado**. `computeProfileCompleteness(signals: boolean[])` | "0% Completo" era fijo en ambos perfiles |
+| **postsService.ts** | `src/services/social/social/postsService.ts` | Feed se quedaba en "Cargando publicaciones..."; fotos demo con `picsum.photos` rotas | **Corregido**. Timeout de 8 s con fallback a posts demo; fotos con Unsplash | El feed no debe colgarse en el spinner |
+| **Feed.tsx** | `src/pages/Feed.tsx` | Campo de comentario visible aunque los comentarios están deshabilitados en demo | **Corregido**. Campo y botón `disabled={isDemoMode()}` con placeholder explicativo | El campo muerto confundía al usuario |
+| **Clubs.tsx** | `src/pages/Clubs.tsx` | Toast "No se pudieron cargar los clubs" ante cualquier error; contraseña temporal con `Math.random()`; `as never` en `club_applications`; registro sin términos de club | **Corregido**. Respaldo al catálogo público; `crypto.getRandomValues`; tipos sin `as never`; `TermsModalClub` obligatorio antes de enviar; `ClubConsentManager` en el detalle | Pre-lanzamiento con datos reales; seguridad (auditoría forense) |
+| **ClubsPublic.tsx** | `src/pages/ClubsPublic.tsx` | Lista de clubs hardcodeada | **Corregido**. Carga clubs reales de Supabase con respaldo al catálogo | Datos reales en producción |
+| **AnimatedProfileCard.tsx** | `src/components/profiles/shared/AnimatedProfileCard.tsx` | Foto rota/borrosa en Discover sin fallback | **Corregido**. `onError` con degradado + inicial | Imagen rota en la tarjeta |
+| **TERMINOS_USO_CLUBS.md** | `docs/legal/TERMINOS_USO_CLUBS.md` | No existía documento de términos de uso como club | **Agregado**. v1.0, 24 Nov 2026, México (11 secciones) | Los términos generales no mencionan "club" |
+| **TermsModalClub.tsx** | `src/components/modals/TermsModalClub.tsx` | No existía modal de términos para clubs | **Agregado**. Modal con términos + privacidad, checkboxes, onAccept | Registro de club sin aceptación de términos |
+| **ClubConsentManager.tsx** | `src/components/legal/ClubConsentManager.tsx` | Consentimiento simulado con `Math.random()`, nunca persistía | **Corregido**. Inserción real en `user_consents` con hash SHA-256 | El consentimiento debe quedar registrado |
+| **Migración clubs** | `supabase/migrations/20261124030000_create_club_events_discounts_members.sql` | No existían `club_events`, `club_discounts`, `club_members`; `user_consents` sin `club_id` | **Agregado**. 3 tablas + `club_id` con RLS/políticas | Faltantes de clubs para pre-lanzamiento |
+| **supabase-generated.ts** | `src/types/supabase-generated.ts` | Sin `club_applications`, `club_events`, `club_discounts`, `club_members`; `user_consents` sin `club_id` | **Agregado**. Tipos de las 4 tablas + `club_id` | El registro usaba `.from("club_applications" as never)` |
+| **Admin.tsx** | `src/pages/admin/Admin.tsx` | Todo mock (usuarios, stats, FAQs, invitaciones) | **Corregido**. Consultas reales a Supabase (profiles, matches, clubs, worldid_verifications, wallet_balances, invitations) | Admin debe mostrar datos reales |
+| **AnalyticsDashboard.tsx** | `src/components/admin/AnalyticsDashboard.tsx` | Solo métricas de rendimiento del cliente | **Agregado**. Sección "Métricas de negocio (Supabase)" | AdminAnalytics con datos reales |
+| **ModeratorDashboard.tsx** | `src/pages/moderators/ModeratorDashboard.tsx` | Solo moderaba reportes de usuarios | **Agregado**. Pestaña "Clubs" (aprobar/rechazar solicitudes, activar/desactivar clubs) | Moderación de clubs faltante |
+| **ModeratorDashboard.tsx (duplicado)** | `src/pages/ModeratorDashboard.tsx` | Duplicado sin uso (la ruta usa `moderators/ModeratorDashboard.tsx`) | **Eliminado**. `git rm` | Limpieza de código muerto |
+| **ClubAdminPanel.tsx** | `src/components/admin/panels/ClubAdminPanel.tsx` | Mock de 3 clubs; eliminar/activar simulados | **Corregido**. Lectura/escritura real en Supabase con respaldo demo | Panel admin con datos reales |
+| **ClubsDemo.tsx** | `src/pages/ClubsDemo.tsx` | `ClubAdminPanel` inalcanzable (`showAdminPanel` nunca era true) | **Corregido**. Botón "Panel Admin" en el header | Código muerto hecho funcional |
+| **Legal.tsx** | `src/pages/Legal.tsx` | Sin documentos de clubs; enlace roto `PRIVACY_POLICY.md` | **Corregido**. 3 documentos de clubs; enlace → `POLITICA_PRIVACIDAD.md` | Documentos de clubs accesibles |
+| **public/docs/legal/** | `public/docs/legal/` | `/docs/legal/<archivo>` daba 404 en producción (`public/docs/` no existía) | **Agregado**. 9 documentos copiados del repo | Fin del 404 de documentos legales |
+| **DIAGRAMAS_FLUJOS_CONSOLIDADO.md** | `DIAGRAMAS_FLUJOS_CONSOLIDADO.md` | Flujo de registro de club sin paso de términos | **Actualizado**. Entrada 24 Nov 2026 12:48 + diagrama con `TermsModalClub` | El flujo cambió (términos obligatorios) |
+| **Árbol del proyecto** | `project-structure-tree.md`, `Project-Structure-Tree-files.md` | Nuevos `TermsModalClub.tsx`, `profileCompleteness.ts`; eliminado `ModeratorDashboard.tsx` duplicado | **Actualizado**. Ambos archivos, idénticos | Bitácora del proyecto |
+
+## Verificaciones Post-Fix
+
+- ✅ `tsc --noEmit` (TS 5.7.2): 25 errores en la rama (28 en master), 0 nuevos en archivos tocados (3 preexistentes corregidos por los cambios)
+- ✅ `vitest` con `VITE_SUPABASE_*` dummy: TokenDashboard.test.tsx 6/6; ProfileSingle 2/3 y ProfileCouple 3/4 (1 fallo preexistente en cada uno, iguales en master limpio)
+- ✅ `prettier --check`: archivos nuevos limpios; modificados ya fallaban en master (preexistente)
+- ⚠️ Migración `20261124030000` sin aplicar en vivo en Supabase — paso aparte del dueño
+- ⚠️ Chat y modal de Animaciones "varias veces": no reproducidos en video/código — falta el momento exacto
+- ⚠️ Banner "NO DISPONIBLE" en /clubs/demo: no existe como texto en el repo — falta re-verificación en vivo tras el merge
+- ⚠️ Sin verificación en vivo en producción — Wacko debe probarlo en su teléfono tras merge + deploy
+
+---
+
 # Reporte de Cambios - CómplicesConecta v3.9.7
 
 **Fecha:** 24 de Noviembre, 2026 - 11:49

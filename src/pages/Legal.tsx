@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info } from "lucide-react";
+import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info, Building } from "lucide-react";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 const Legal: FC = () => {
@@ -66,7 +66,7 @@ const Legal: FC = () => {
       description:
         "Cómo protegemos, Recopilamos y Manejamos tu información personal. Cumplimiento con GDPR y Normativas Mexicanas.",
       icon: <Lock className="h-6 w-6" />,
-      file: "PRIVACY_POLICY.md",
+      file: "POLITICA_PRIVACIDAD.md",
       lastUpdated: "2025-11-08",
       category: "Privacidad",
       details: [
@@ -75,6 +75,51 @@ const Legal: FC = () => {
         "Medidas de seguridad implementadas",
         "Compartición de datos con terceros",
         "Cumplimiento GDPR y Normativas Mexicanas",
+      ],
+    },
+    {
+      title: "Términos de Uso para Clubs",
+      description:
+        "Condiciones para registrar y operar un club en ComplicesConecta: registro y verificación, mayoría de edad (+18), seguridad y consentimiento, eventos y descuentos.",
+      icon: <Building className="h-6 w-6" />,
+      file: "TERMINOS_USO_CLUBS.md",
+      lastUpdated: "2026-11-24",
+      category: "Clubs",
+      details: [
+        "Registro y verificación del club",
+        "Mayoría de edad (+18) y acceso",
+        "Seguridad, consentimiento y conducta",
+        "Eventos, descuentos y miembros",
+        "Suspensión y terminación",
+      ],
+    },
+    {
+      title: "Política de Privacidad para Clubs",
+      description:
+        "Cómo se recopilan, usan y protegen los datos de los clubs, sus propietarios y representantes, y cómo se comparten de forma controlada con los usuarios.",
+      icon: <Shield className="h-6 w-6" />,
+      file: "CLUBS_PRIVACY_POLICY.md",
+      lastUpdated: "2026-01-26",
+      category: "Clubs",
+      details: [
+        "Datos de propietarios y del club",
+        "Compartición controlada con usuarios",
+        "Consentimiento para el perfil público del club",
+        "Derechos del club sobre sus datos",
+      ],
+    },
+    {
+      title: "Aviso Legal para Clubs",
+      description:
+        "Descargo de responsabilidad específico para clubs: la plataforma es de intermediación y el club es responsable de sus instalaciones, eventos y cumplimiento normativo.",
+      icon: <AlertTriangle className="h-6 w-6" />,
+      file: "CLUBS_LEGAL_DISCLAIMER.md",
+      lastUpdated: "2026-01-26",
+      category: "Clubs",
+      details: [
+        "La plataforma es de intermediación",
+        "Responsabilidad del club sobre sus eventos",
+        "Cumplimiento normativo local",
       ],
     },
     {

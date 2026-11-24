@@ -53,6 +53,12 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
     const [isLiked, setIsLiked] = React.useState(false);
     const [showViews, setShowViews] = React.useState(false);
+    // Si la foto (Unsplash) no carga, no dejar el degradado borroso: mostrar
+    // un avatar con la inicial. Se resetea al cambiar de foto/perfil.
+    const [imageError, setImageError] = React.useState(false);
+    React.useEffect(() => {
+      setImageError(false);
+    }, [currentImageIndex, image]);
     const viewCount = React.useMemo(() => ((id * 97) % 500) + 50, [id]);
 
     const allImages = [image, ...images];
@@ -103,16 +109,32 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
           {/* Image Container */}
           <div className="relative aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] overflow-hidden">
             <AnimatePresence mode="wait">
-              <motion.img
-                key={currentImageIndex}
-                src={allImages[currentImageIndex]}
-                alt={`${name} - ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-              />
+              {imageError ? (
+                <motion.div
+                  key={`fallback-${currentImageIndex}`}
+                  className="w-full h-full flex items-center justify-center bg-linear-to-br from-purple-500 to-fuchsia-500"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <span className="text-6xl font-bold text-white/90">
+                    {name.charAt(0).toUpperCase()}
+                  </span>
+                </motion.div>
+              ) : (
+                <motion.img
+                  key={currentImageIndex}
+                  src={allImages[currentImageIndex]}
+                  alt={`${name} - ${currentImageIndex + 1}`}
+                  className="w-full h-full object-cover"
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  onError={() => setImageError(true)}
+                />
+              )}
             </AnimatePresence>
 
             {/* Online Status */}

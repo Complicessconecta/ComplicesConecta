@@ -146,7 +146,20 @@ export class PostsService {
       const postType = postTypes[Math.floor(Math.random() * postTypes.length)]!;
       const content = contents[Math.floor(Math.random() * contents.length)];
 
-      const photoUrl = `https://picsum.photos/seed/cc-post-${i + 1}/900/700`;
+      // Fotos demo con Unsplash (picsum fallaba en el teléfono y el Feed
+      // mostraba el degradado "✨ Image" del onError). URLs del mismo pool
+      // que Discover, que sí carga.
+      const demoPhotoUrls = [
+        "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1522098543979-ffc7f79a56c4?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=900&h=700&fit=crop",
+      ];
+      const photoUrl = demoPhotoUrls[i % demoPhotoUrls.length]!;
 
       // Avatares reales usando pravatar.cc y UI Avatars
       const avatarUrls = [
@@ -280,13 +293,31 @@ export class PostsService {
 
       const startTime = performance.now();
 
+      // Timeout: si Supabase no responde en 8 s, caer a posts demo en vez de
+      // dejar el Feed en "Cargando publicaciones..." para siempre (el video
+      // muestra el spinner atascado al re-entrar al Feed).
+      const FEED_QUERY_TIMEOUT_MS = 8000;
+      const timeoutResult = new Promise<{ data: null; error: Error }>(
+        (resolve) =>
+          setTimeout(
+            () =>
+              resolve({
+                data: null,
+                error: new Error("Feed query timeout"),
+              }),
+            FEED_QUERY_TIMEOUT_MS,
+          ),
+      );
       // La tabla stories existe con las columnas necesarias
-      const { data: storiesData, error } = await supabase
-        .from("stories")
-        .select("*")
-        .eq("is_public", true)
-        .order("created_at", { ascending: false })
-        .range(page * limit, (page + 1) * limit - 1);
+      const { data: storiesData, error } = await Promise.race([
+        supabase
+          .from("stories")
+          .select("*")
+          .eq("is_public", true)
+          .order("created_at", { ascending: false })
+          .range(page * limit, (page + 1) * limit - 1),
+        timeoutResult,
+      ]);
 
       const queryDuration = performance.now() - startTime;
       performanceMonitoring.recordMetric({

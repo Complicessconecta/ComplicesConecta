@@ -1,11 +1,37 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Building, CheckCircle, MapPin, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import type { Database } from "@/types/supabase-generated";
 
-interface PublicClub {
+type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
+
+/** Fila de BD → club público. Sin clubs en BD se usa el catálogo PUBLIC_CLUBS. */
+function mapClubRowToPublicClub(row: ClubRow): PublicClub {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    description: row.description ?? "",
+    address: row.address,
+    city: row.city,
+    state: row.state ?? "",
+    rating: row.rating_average ?? 0,
+    reviews: row.review_count ?? row.rating_count ?? 0,
+    checkIns: row.check_in_count ?? 0,
+    coverImage:
+      row.cover_image_url ??
+      "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
+    vibe: row.vibe_status ?? "✨ Lifestyle",
+    tier: row.membership_tier === "premium" ? "premium" : "free",
+  };
+}
+
+export interface PublicClub {
   id: string;
   slug: string;
   name: string;
@@ -21,7 +47,7 @@ interface PublicClub {
   tier: "free" | "premium";
 }
 
-const PUBLIC_CLUBS: PublicClub[] = [
+export const PUBLIC_CLUBS: PublicClub[] = [
   {
     id: "demo",
     slug: "demo",
@@ -96,10 +122,40 @@ export const ClubsPublic = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug?: string }>();
 
+  // Clubs reales de Supabase; sin datos (tabla vacía / RLS / error) se usa
+  // el catálogo público. Antes la página solo mostraba el hardcode.
+  const [clubs, setClubs] = useState<PublicClub[]>(PUBLIC_CLUBS);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("clubs")
+          .select("*")
+          .eq("is_active", true)
+          .order("is_featured", { ascending: false })
+          .order("rating_average", { ascending: false });
+        if (error) throw error;
+        if (!cancelled && data && data.length > 0) {
+          setClubs(data.map(mapClubRowToPublicClub));
+          logger.info("ClubsPublic loaded from Supabase", { count: data.length });
+        }
+      } catch (error) {
+        logger.warn("ClubsPublic: Supabase no disponible, usando catálogo público", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selectedClub = useMemo(() => {
     if (!slug) return null;
-    return PUBLIC_CLUBS.find((club) => club.slug === slug) ?? null;
-  }, [slug]);
+    return clubs.find((club) => club.slug === slug) ?? null;
+  }, [slug, clubs]);
 
   return (
     <div className="min-h-screen bg-transparent p-4 sm:p-6">
@@ -185,7 +241,7 @@ export const ClubsPublic = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {PUBLIC_CLUBS.map((club) => (
+            {clubs.map((club) => (
               <Card
                 key={club.id}
                 className="bg-white/10 backdrop-blur-xl border-white/20 overflow-hidden"

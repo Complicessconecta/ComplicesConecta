@@ -3,6 +3,33 @@ import { CheckCircle, FileText, AlertTriangle, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
+
+/** SHA-256 en hex. Fallback a un hash simple si crypto.subtle no está disponible. */
+async function sha256Hex(input: string): Promise<string> {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.subtle) {
+      const data = new TextEncoder().encode(input);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+  } catch {
+    // Fallback abajo.
+  }
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
+}
 
 export interface ConsentDocument {
   id: string;
@@ -253,7 +280,9 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
     .filter(doc => doc.required)
     .every(doc => acceptedConsents.has(doc.id));
 
-  // Enviar consentimientos
+  // Enviar consentimientos: guardado real en public.user_consents (con
+  // club_id), no simulado. Antes solo llamaba onConsentComplete con objetos
+  // locales y nunca persistía nada.
   const handleSubmitConsents = async () => {
     if (!allRequiredAccepted) {
       onConsentError?.('Debes aceptar todos los documentos requeridos');
@@ -262,27 +291,58 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
 
     setSubmitting(true);
     try {
-      // Simular envío a backend
-      const consents: UserConsent[] = Array.from(acceptedConsents).map(consentId => {
-        const doc = documents.find(d => d.id === consentId);
-        return {
-          id: `consent-${Date.now()}-${Math.random()}`,
-          club_id: clubId,
-          user_id: userId,
-          consent_type: doc?.type || 'unknown',
-          consent_version: doc?.version || '1.0.0',
-          accepted_at: new Date().toISOString(),
-          ip_address: '127.0.0.1', // En producción, obtener IP real
-          user_agent: navigator.userAgent
-        };
-      });
+      const consentedAt = new Date().toISOString();
+      const rows = await Promise.all(
+        Array.from(acceptedConsents).map(async (consentId) => {
+          const doc = documents.find(d => d.id === consentId);
+          if (!doc) return null;
+          const consentHash = await sha256Hex(
+            `${userId}|${clubId}|${doc.id}|${doc.version}|${consentedAt}`,
+          );
+          const textHash = await sha256Hex(doc.content);
+          return {
+            user_id: userId,
+            club_id: clubId,
+            consent_type: doc.type,
+            version: doc.version,
+            consented_at: consentedAt,
+            consent_hash: consentHash,
+            consent_text_hash: textHash,
+            document_path: `clubs/${doc.id}-v${doc.version}`,
+            is_active: true,
+            user_agent: navigator.userAgent,
+            ip_address: null,
+          };
+        }),
+      );
+      const inserts = rows.filter((r): r is NonNullable<typeof r> => r !== null);
+      if (inserts.length === 0) {
+        onConsentError?.('No hay consentimientos para guardar');
+        return;
+      }
 
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { data, error } = await supabase
+        .from('user_consents')
+        .insert(inserts)
+        .select('id, club_id, user_id, consent_type, version, consented_at');
 
+      if (error) throw error;
+
+      const consents: UserConsent[] = (data ?? []).map((row) => ({
+        id: row.id,
+        club_id: row.club_id ?? clubId,
+        user_id: row.user_id,
+        consent_type: row.consent_type,
+        consent_version: row.version,
+        accepted_at: row.consented_at,
+        ip_address: '',
+        user_agent: navigator.userAgent,
+      }));
+
+      logger.info('Consentimientos de club guardados', { count: consents.length, clubId });
       onConsentComplete?.(consents);
     } catch (error) {
-      console.error('Error submitting consents:', error);
+      logger.error('Error submitting consents:', { error: String(error) });
       onConsentError?.('Error al guardar consentimientos');
     } finally {
       setSubmitting(false);

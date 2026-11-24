@@ -1471,6 +1471,111 @@ export type Database = {
         }
         Relationships: []
       }
+      club_applications: {
+        Row: {
+          address: string | null
+          capacity: number | null
+          club_name: string
+          club_type: string | null
+          company_rfc: string | null
+          created_at: string
+          description: string | null
+          documents_url: string | null
+          email: string | null
+          hours: string | null
+          id: string
+          license: string | null
+          location: string | null
+          owner_age: number | null
+          owner_gender: string | null
+          owner_name: string
+          owner_rfc: string | null
+          phone: string | null
+          rep_email: string | null
+          rep_name: string | null
+          rep_phone: string | null
+          rep_position: string | null
+          state: string | null
+          status: string
+          temp_password: string | null
+          temp_password_expires_at: string | null
+          temp_password_used: boolean
+          updated_at: string
+          use_app_as_website: boolean
+          website: string | null
+          whatsapp: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          capacity?: number | null
+          club_name: string
+          club_type?: string | null
+          company_rfc?: string | null
+          created_at?: string
+          description?: string | null
+          documents_url?: string | null
+          email?: string | null
+          hours?: string | null
+          id?: string
+          license?: string | null
+          location?: string | null
+          owner_age?: number | null
+          owner_gender?: string | null
+          owner_name: string
+          owner_rfc?: string | null
+          phone?: string | null
+          rep_email?: string | null
+          rep_name?: string | null
+          rep_phone?: string | null
+          rep_position?: string | null
+          state?: string | null
+          status?: string
+          temp_password?: string | null
+          temp_password_expires_at?: string | null
+          temp_password_used?: boolean
+          updated_at?: string
+          use_app_as_website?: boolean
+          website?: string | null
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          capacity?: number | null
+          club_name?: string
+          club_type?: string | null
+          company_rfc?: string | null
+          created_at?: string
+          description?: string | null
+          documents_url?: string | null
+          email?: string | null
+          hours?: string | null
+          id?: string
+          license?: string | null
+          location?: string | null
+          owner_age?: number | null
+          owner_gender?: string | null
+          owner_name?: string
+          owner_rfc?: string | null
+          phone?: string | null
+          rep_email?: string | null
+          rep_name?: string | null
+          rep_phone?: string | null
+          rep_position?: string | null
+          state?: string | null
+          status?: string
+          temp_password?: string | null
+          temp_password_expires_at?: string | null
+          temp_password_used?: boolean
+          updated_at?: string
+          use_app_as_website?: boolean
+          website?: string | null
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       club_checkins: {
         Row: {
           club_id: string
@@ -1521,6 +1626,127 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_discounts: {
+        Row: {
+          club_id: string
+          code: string
+          created_at: string
+          description: string | null
+          discount_amount: number | null
+          discount_percent: number | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          updated_at: string
+          uses_count: number
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          club_id: string
+          code: string
+          created_at?: string
+          description?: string | null
+          discount_amount?: number | null
+          discount_percent?: number | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          club_id?: string
+          code?: string
+          created_at?: string
+          description?: string | null
+          discount_amount?: number | null
+          discount_percent?: number | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_discounts_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_events: {
+        Row: {
+          capacity: number | null
+          club_id: string
+          created_at: string
+          currency: string
+          description: string | null
+          end_time: string | null
+          event_date: string
+          id: string
+          is_active: boolean
+          is_vip: boolean
+          location: string | null
+          price: number | null
+          registered_count: number
+          start_time: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number | null
+          club_id: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          end_time?: string | null
+          event_date: string
+          id?: string
+          is_active?: boolean
+          is_vip?: boolean
+          location?: string | null
+          price?: number | null
+          registered_count?: number
+          start_time?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number | null
+          club_id?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          end_time?: string | null
+          event_date?: string
+          id?: string
+          is_active?: boolean
+          is_vip?: boolean
+          location?: string | null
+          price?: number | null
+          registered_count?: number
+          start_time?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_events_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
             referencedColumns: ["id"]
           },
         ]
@@ -1597,6 +1823,54 @@ export type Database = {
           {
             foreignKeyName: "club_flyers_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_members: {
+        Row: {
+          club_id: string
+          created_at: string
+          id: string
+          joined_at: string
+          role: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          club_id: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          club_id?: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_members_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_members_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
             referencedColumns: ["id"]
@@ -9658,6 +9932,7 @@ export type Database = {
       }
       user_consents: {
         Row: {
+          club_id: string | null
           consent_hash: string
           consent_text_hash: string
           consent_type: string
@@ -9675,6 +9950,7 @@ export type Database = {
           version: string
         }
         Insert: {
+          club_id?: string | null
           consent_hash?: string
           consent_text_hash: string
           consent_type: string
@@ -9692,6 +9968,7 @@ export type Database = {
           version?: string
         }
         Update: {
+          club_id?: string | null
           consent_hash?: string
           consent_text_hash?: string
           consent_type?: string

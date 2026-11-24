@@ -1,5 +1,38 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 24 Nov 2026 - 12:55 (Fixes video 7 + Clubs/Admin/Moderador completos)
+
+- **🎟️ Tokens — "Invalid Date" corregido:**
+  - El mock usaba `date` pero el render leía `created_at` → "Invalid Date" en las 4 transacciones; ahora el mock trae `created_at` + `token_type` y el render usa `created_at ?? date` con "—" si es inválido
+  - Balance demo ahora es el de `useTokens` (canónico: single 1250/850, pareja 2000/1500) en vez del mock estático 5000/2500; NFTs demo filtrados por tipo de cuenta (pareja 2, single 4); se quitó la línea engañosa "Balance: {tx.amount}"
+
+- **👫 Perfil pareja — espejo completado:**
+  - Agregadas "Solicitudes de Acceso" (`PrivateImageRequestsManager`), sección "Experiencias demo" y modal de reporte (`ReportProfileDialog` — el botón Reportar no hacía nada)
+  - Balances demo pareja 2000/1500 (antes 500/250); single 1250/850 (antes 500/250, GTK "500")
+  - "0% Completo" ya no es fijo: `computeProfileCompleteness()` calcula el % desde campos llenos (single y pareja)
+
+- **📰 Feed:**
+  - Timeout de 8 s en `getFeed` (antes se quedaba en "Cargando publicaciones..."); posts demo con Unsplash (antes `picsum.photos`, foto rota)
+  - Comentarios deshabilitados en demo de verdad (campo + botón deshabilitados, no solo el banner)
+
+- **🏢 Clubs / Admin / Moderador — pre-lanzamiento completo:**
+  - /clubs con respaldo al catálogo público si Supabase falla o está vacío (sin toast de error); /clubs-public con clubs reales
+  - Registro de club: contraseña temporal con `crypto.getRandomValues` (antes `Math.random()`); términos de uso para clubs (`TERMINOS_USO_CLUBS.md` + `TermsModalClub`) obligatorios antes de enviar; `club_applications` tipada (sin `as never`)
+  - `ClubConsentManager` persiste de verdad en `user_consents` (antes simulado)
+  - Migración nueva: `club_events`, `club_discounts`, `club_members` (+ `club_id` en `user_consents`) con RLS; tipos regenerados
+  - Admin con datos reales de Supabase; AnalyticsDashboard con métricas de negocio; Moderador con pestaña "Clubs"; `ClubAdminPanel` alcanzable (botón "Panel Admin") y con datos reales; duplicado `ModeratorDashboard.tsx` eliminado
+  - Legal: documentos de clubs incluidos; `public/docs/legal/` con los 9 documentos (fin del 404 en `/docs/legal/`); enlace `PRIVACY_POLICY.md` → `POLITICA_PRIVACIDAD.md`
+
+- **✅ Verificaciones:**
+  - `tsc --noEmit` (TS 5.7.2): 25 errores en la rama (28 en master), 0 nuevos
+  - `vitest` con `VITE_SUPABASE_*` dummy: TokenDashboard 6/6; ProfileSingle y ProfileCouple con 1 fallo preexistente cada uno (iguales en master limpio)
+  - `prettier --check`: archivos nuevos limpios; modificados ya fallaban en master
+  - ⚠️ Aplicar la migración `20261124030000` en producción (Supabase) — paso aparte, no en este PR
+  - ⚠️ Chat y modal de Animaciones "varias veces": no reproducidos en video/código — falta el momento exacto
+  - ⚠️ Sin verificación en vivo en producción — probar en teléfono tras merge + deploy
+
+---
+
 ## 📅 Bitácora 24 Nov 2026 - 11:49 (Fix Editor Demo + Dock Config + Chat + Legibilidad)
 
 - **🎭 Editor Demo — identidad real:**

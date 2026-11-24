@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
@@ -57,8 +56,6 @@ const SwingerDashboard = () => {
   return (
     <div className="min-h-dvh relative overflow-x-hidden">
       <div className="relative z-10">
-        <Navigation />
-
         <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
           <div className="mb-6">

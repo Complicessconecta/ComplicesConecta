@@ -778,6 +778,38 @@ function ProfileCouple() {
   );
   const [demoUser, _setDemoUser] = usePersistedState<any>("demo_user", null); // TODO: Define specific user type
 
+  // Intereses guardados desde el editor (demo): el editor de pareja guarda
+  // la selección en `demo_user` (localStorage) y el perfil la refleja. Si
+  // aún no se ha editado nada, se usan los títulos demo. En producción se
+  // leen las columnas reales (his/her/couple_interests).
+  // ESTE useMemo VA AQUÍ ARRIBA, antes de los early returns de
+  // loading/perfil: si se declara después, en el primer render (cargando)
+  // no se ejecuta y en el segundo sí → React truena con el error #310
+  // ("Rendered more hooks than during the previous render") → /404.
+  const savedDemoInterests = useMemo(() => {
+    if (!isDemoMode || typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem("demo_user");
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as {
+        interests?: unknown;
+        partner1?: { interests?: unknown };
+        partner2?: { interests?: unknown };
+      };
+      const asStringArray = (v: unknown): string[] | null =>
+        Array.isArray(v) && v.every((x) => typeof x === "string")
+          ? (v as string[])
+          : null;
+      return {
+        couple: asStringArray(parsed.interests),
+        his: asStringArray(parsed.partner1?.interests),
+        her: asStringArray(parsed.partner2?.interests),
+      };
+    } catch {
+      return null;
+    }
+  }, [isDemoMode]);
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -986,34 +1018,6 @@ function ProfileCouple() {
       },
     },
   ];
-
-  // Intereses guardados desde el editor (demo): el editor de pareja guarda
-  // la selección en `demo_user` (localStorage) y el perfil la refleja. Si
-  // aún no se ha editado nada, se usan los títulos demo. En producción se
-  // leen las columnas reales (his/her/couple_interests).
-  const savedDemoInterests = useMemo(() => {
-    if (!isDemoMode || typeof window === "undefined") return null;
-    try {
-      const raw = window.localStorage.getItem("demo_user");
-      if (!raw) return null;
-      const parsed = JSON.parse(raw) as {
-        interests?: unknown;
-        partner1?: { interests?: unknown };
-        partner2?: { interests?: unknown };
-      };
-      const asStringArray = (v: unknown): string[] | null =>
-        Array.isArray(v) && v.every((x) => typeof x === "string")
-          ? (v as string[])
-          : null;
-      return {
-        couple: asStringArray(parsed.interests),
-        his: asStringArray(parsed.partner1?.interests),
-        her: asStringArray(parsed.partner2?.interests),
-      };
-    } catch {
-      return null;
-    }
-  }, [isDemoMode]);
 
   // En modo real, partner1 = "his" y partner2 = "her" (mapeo del RPC).
   const preferenceMembers: [

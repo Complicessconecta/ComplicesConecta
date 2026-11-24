@@ -60,6 +60,15 @@ export const MainLayout = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  // Cerrar el dock de chat al navegar: MainLayout se mantiene montado
+  // entre navegaciones SPA y el estado isChatOpen persistía, dejando el
+  // panel abierto sobre cualquier página hasta un reload completo. Esto
+  // también hace que el botón de regreso de la página de Chat (que navega
+  // a /feed) cierre el dock, sin tocar la página de Chat.
+  React.useEffect(() => {
+    setIsChatOpen(false);
+  }, [pathname]);
+
   const isClubDemoRoute = pathname === "/clubs/demo";
 
   const isHomeRoute = pathname === "/";
@@ -190,7 +199,7 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed bottom-24 right-4 z-50 w-full max-w-md px-4 sm:px-0">
       <div className="bg-black/60 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
+        <div className="relative z-10 flex items-center justify-between px-4 py-2 border-b border-white/10">
           <span className="text-sm font-semibold text-white">Chat Intimo</span>
           <button
             type="button"

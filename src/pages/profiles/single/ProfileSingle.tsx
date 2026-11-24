@@ -881,6 +881,31 @@ const ProfileSingle: FC = () => {
     }
   }, [profile?.id, loadProfileStats, loadBlockchainData]);
 
+  // singleIsDemo y savedDemoInterests VAN AQUÍ ARRIBA, antes de los early
+  // returns de loading/perfil: si se declaran después, en el primer render
+  // (cargando) el useMemo no se ejecuta y en el segundo sí → React truena
+  // con el error #310 ("Rendered more hooks than during the previous
+  // render") → /404.
+  const singleIsDemo = isDemoMode();
+  // Intereses guardados desde el editor (demo): el editor single guarda la
+  // selección en `demo_user` (localStorage) y el perfil la refleja. Si aún
+  // no se ha editado nada, se usan los títulos demo. En producción se leen
+  // las actividades reales (activities_interested).
+  const savedDemoInterests = useMemo(() => {
+    if (!singleIsDemo || typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem("demo_user");
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { interests?: unknown };
+      return Array.isArray(parsed.interests) &&
+        parsed.interests.every((x) => typeof x === "string")
+        ? (parsed.interests as string[])
+        : null;
+    } catch {
+      return null;
+    }
+  }, [singleIsDemo]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-800">
@@ -963,7 +988,6 @@ const ProfileSingle: FC = () => {
   // (activities_interested, looking_for, preferences, age_range_min/max,
   // relationship_type, interested_in); los campos físicos no existen en
   // la tabla y solo se muestran en demo.
-  const singleIsDemo = isDemoMode();
   const singleActivities = (currentProfile[
     "activities_interested"
   ] as string[] | null) ?? [];
@@ -989,25 +1013,6 @@ const ProfileSingle: FC = () => {
         ) ?? (singleIsDemo ? "Heterosexual" : null),
     },
   };
-  // Intereses guardados desde el editor (demo): el editor single guarda la
-  // selección en `demo_user` (localStorage) y el perfil la refleja. Si aún
-  // no se ha editado nada, se usan los títulos demo. En producción se leen
-  // las actividades reales (activities_interested).
-  const savedDemoInterests = useMemo(() => {
-    if (!singleIsDemo || typeof window === "undefined") return null;
-    try {
-      const raw = window.localStorage.getItem("demo_user");
-      if (!raw) return null;
-      const parsed = JSON.parse(raw) as { interests?: unknown };
-      return Array.isArray(parsed.interests) &&
-        parsed.interests.every((x) => typeof x === "string")
-        ? (parsed.interests as string[])
-        : null;
-    } catch {
-      return null;
-    }
-  }, [singleIsDemo]);
-
   const singleLikes = singleIsDemo
     ? (savedDemoInterests ?? [
         DEMO_SINGLE_INTEREST_TITLES[0],

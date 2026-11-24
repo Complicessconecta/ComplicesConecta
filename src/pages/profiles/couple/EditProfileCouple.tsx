@@ -6,7 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Camera, X, Users, MapPin, AlertCircle, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
 import { generateMockCouple } from "@/lib/data";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
@@ -1025,8 +1024,6 @@ const EditProfileCouple = () => {
           </CardContent>
         </Card>
       </div>
-
-      <Navigation />
     </div>
   );
 };

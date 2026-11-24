@@ -6,10 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, X, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { generateMockSingle } from "@/lib/data";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
 import { supabase } from "@/integrations/supabase/client";
-import { getAppConfig } from "@/lib/app-config";
+import { getAppConfig, resolveDemoAccountType } from "@/lib/app-config";
 import type { Database } from "@/types/supabase-generated";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
@@ -54,6 +53,47 @@ const EditProfileSingle = () => {
   // Usar intereses seguros desde la fuente única de verdad
   const availableInterests = SAFE_INTERESTS;
 
+  // Poblar el formulario con la identidad demo guardada en `demo_user`.
+  // Los campos que el demo no trae (o trae vacíos) usan los valores
+  // canónicos del perfil demo (Sofía, 28, CDMX, México), los mismos que
+  // muestra ProfileSingle. Nunca se inventa una persona: sin identidad
+  // usable no se genera ningún mock.
+  const applyDemoIdentity = useCallback((user: any) => {
+    const asString = (value: unknown): string =>
+      typeof value === "string" ? value : "";
+    const asStringArray = (value: unknown): string[] =>
+      Array.isArray(value) &&
+      value.every((item) => typeof item === "string")
+        ? (value as string[])
+        : [];
+    // Identidad del login demo (p. ej. "Sofía" para single@outlook.es).
+    const identityName = [
+      asString(user.first_name),
+      asString(user.last_name),
+    ]
+      .filter(Boolean)
+      .join(" ");
+    const storedName = asString(user.name) || asString(user.display_name);
+
+    setFormData({
+      name: storedName || identityName || "Sofía",
+      age:
+        typeof user.age === "number" || typeof user.age === "string"
+          ? String(user.age)
+          : "28",
+      bio: asString(user.bio),
+      location: asString(user.location) || "CDMX, México",
+      profession: asString(user.profession),
+      interests: asStringArray(user.interests),
+      explicitInterests: asStringArray(user.explicitInterests),
+      avatar: asString(user.avatar) || asString(user.avatar_url),
+    });
+    setUserId(user.id);
+    setProfile(user);
+    setProfileLoaded(true);
+    setIsLoading(false);
+  }, []);
+
   const loadProfile = useCallback(async () => {
     if (profileLoaded) return;
 
@@ -64,72 +104,38 @@ const EditProfileSingle = () => {
       if (demoAuth === "true" && demoUser) {
         const user = JSON.parse(demoUser);
 
-        if (user.accountType === "single" || user.type === "single") {
-          // Demo: el editor muestra al usuario demo real, no un mock
-          // aleatorio. generateMockSingle() elige nombre, profesión,
-          // ubicación e intereses al azar en cada llamada, así que el editor
-          // mostraba otra persona en cada carga y su selección de intereses
-          // nunca coincidía con la guardada en demo_user (que es la que lee
-          // el perfil). Por eso la sección de intereses mostraba otra info.
-          const asString = (value: unknown): string =>
-            typeof value === "string" ? value : "";
-          const asStringArray = (value: unknown): string[] =>
-            Array.isArray(value) &&
-            value.every((item) => typeof item === "string")
-              ? (value as string[])
-              : [];
-          // Identidad del login demo (p. ej. "Sofía" para single@outlook.es).
-          const identityName = [
-            asString(user.first_name),
-            asString(user.last_name),
-          ]
-            .filter(Boolean)
-            .join(" ");
-          const storedName = asString(user.name);
+        // El demo_user guardado cambia de forma según quién lo escribió:
+        // handleDemoAuth lo guarda con `accountType`, pero el signIn de
+        // useAuth lo reescribe con forma de Profile (`profile_type` /
+        // `relationship_type`, sin `accountType`). Leer solo `accountType`
+        // hacía que la condición nunca se cumpliera y el editor cayera en
+        // generateMockSingle(), mostrando otra persona en cada carga.
+        // `userType` es el respaldo que escribe DemoSelector al entrar.
+        const demoType =
+          resolveDemoAccountType(user) ??
+          (localStorage.getItem("userType") === "couple"
+            ? "couple"
+            : localStorage.getItem("userType") === "single"
+              ? "single"
+              : null);
 
-          if (storedName || identityName) {
-            setFormData({
-              name: storedName || identityName,
-              age:
-                typeof user.age === "number" || typeof user.age === "string"
-                  ? String(user.age)
-                  : "",
-              bio: asString(user.bio),
-              location: asString(user.location),
-              profession: asString(user.profession),
-              interests: asStringArray(user.interests),
-              explicitInterests: asStringArray(user.explicitInterests),
-              avatar: asString(user.avatar),
-            });
-            setUserId(user.id);
-            setProfile(user);
-            setProfileLoaded(true);
-            setIsLoading(false);
-            return;
-          }
-
-          // Fallback: demo_user sin identidad usable. El mock solo rellena
-          // la estructura; el nombre sigue siendo el de la identidad demo
-          // si existe.
-          const mockProfile = generateMockSingle();
-          setFormData({
-            name:
-              identityName ||
-              `${mockProfile.first_name} ${mockProfile.last_name}`,
-            age: mockProfile.age.toString(),
-            bio: mockProfile.bio,
-            location: mockProfile.location,
-            profession: mockProfile.profession || "",
-            interests: mockProfile.interests || [],
-            explicitInterests: [],
-            avatar: mockProfile.avatar || "",
-          });
-          setUserId(user.id);
-          setProfile(mockProfile);
-          setProfileLoaded(true);
-          setIsLoading(false);
+        // Sesión de pareja en el editor de single: ir al editor de pareja,
+        // nunca mostrar un mock aleatorio.
+        if (demoType === "couple") {
+          navigate("/edit-profile-couple");
           return;
         }
+
+        if (demoType === "single") {
+          // Demo: el editor muestra al usuario demo real, no un mock
+          // aleatorio. La selección de intereses guardada en demo_user es
+          // la que lee el perfil, así que editor y perfil coinciden.
+          applyDemoIdentity(user);
+          return;
+        }
+
+        // Sesión demo sin tipo resoluble: no inventar persona; seguir al
+        // flujo de Supabase de abajo (usuario real) o a /auth.
       }
 
       // Si no hay demo auth, intentar con Supabase
@@ -174,47 +180,39 @@ const EditProfileSingle = () => {
         }
       }
 
-      // Fallback: crear perfil demo
-      const newProfile = generateMockSingle();
-      setFormData({
-        name: `${newProfile.first_name} ${newProfile.last_name}`,
-        age: newProfile.age.toString(),
-        bio: newProfile.bio,
-        location: newProfile.location,
-        profession: newProfile.profession ?? "",
-        interests: newProfile.interests,
-        explicitInterests: [],
-        avatar: newProfile.avatar,
-      });
-
-      if (newProfile.id) {
-        setUserId(newProfile.id);
-        setProfile(newProfile);
-        setProfileLoaded(true);
-        setIsLoading(false);
-      }
+      // Sin sesión demo ni usuario real: ir a /auth (como el editor de
+      // pareja). Nunca mostrar una persona aleatoria inventada.
+      navigate("/auth");
+      return;
     } catch (error) {
       setError("Error inesperado al cargar perfil");
       logger.error("Error loading profile:", { error: String(error) });
 
-      // En caso de error, crear perfil demo como fallback
-      const fallbackProfile = generateMockSingle();
-      setFormData({
-        name: `${fallbackProfile.first_name} ${fallbackProfile.last_name}`,
-        age: fallbackProfile.age.toString(),
-        bio: fallbackProfile.bio,
-        location: fallbackProfile.location,
-        profession: fallbackProfile.profession ?? "",
-        interests: fallbackProfile.interests,
-        explicitInterests: [],
-        avatar: fallbackProfile.avatar,
-      });
-      setUserId(fallbackProfile.id);
-      setProfile(fallbackProfile);
-      setProfileLoaded(true);
+      // En caso de error, si hay sesión demo intentar con la identidad
+      // guardada; si no, ir a /auth. Nunca un mock aleatorio.
+      try {
+        const demoUser = localStorage.getItem("demo_user");
+        if (
+          localStorage.getItem("demo_authenticated") === "true" &&
+          demoUser
+        ) {
+          const user = JSON.parse(demoUser);
+          if (resolveDemoAccountType(user) === "single") {
+            applyDemoIdentity(user);
+            return;
+          }
+          if (resolveDemoAccountType(user) === "couple") {
+            navigate("/edit-profile-couple");
+            return;
+          }
+        }
+      } catch {
+        // demo_user corrupto: caer a /auth
+      }
       setIsLoading(false);
+      navigate("/auth");
     }
-  }, [profileLoaded]);
+  }, [profileLoaded, navigate, applyDemoIdentity]);
 
   useEffect(() => {
     loadProfile();

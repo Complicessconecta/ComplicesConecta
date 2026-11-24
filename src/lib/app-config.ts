@@ -180,6 +180,43 @@ export const handleDemoAuth = (
   return { user: demoUser, session: demoSession };
 };
 
+// Tipo de cuenta demo guardado en `demo_user` (localStorage).
+//
+// El objeto cambia de forma según quién lo escribió: handleDemoAuth lo
+// guarda con `accountType`, pero el signIn de useAuth lo reescribe con
+// forma de Profile (`profile_type` / `relationship_type`, sin
+// `accountType`). Leer solo `accountType` hacía que una sesión de pareja
+// resolviera como single (el editor single mostraba un mock aleatorio, el
+// engranaje abría el editor equivocado y el balance demo era el de single).
+// Resolver con todas las variantes conocidas; el email es el último
+// respaldo (la identidad demo siempre trae su email).
+export type DemoAccountType = "single" | "couple";
+
+export const resolveDemoAccountType = (
+  user: unknown,
+): DemoAccountType | null => {
+  if (!user || typeof user !== "object") return null;
+  const u = user as Record<string, unknown>;
+  for (const key of [
+    "accountType",
+    "type",
+    "profile_type",
+    "relationship_type",
+  ]) {
+    const value = u[key];
+    if (typeof value === "string") {
+      const normalized = value.trim().toLowerCase();
+      if (normalized === "couple") return "couple";
+      if (normalized === "single") return "single";
+    }
+  }
+  const email =
+    typeof u.email === "string" ? u.email.toLowerCase().trim() : "";
+  if (email === "pareja@outlook.es") return "couple";
+  if (email === "single@outlook.es") return "single";
+  return null;
+};
+
 // Función para limpiar sesión demo
 export const clearDemoAuth = () => {
   localStorage.removeItem("demo_authenticated");

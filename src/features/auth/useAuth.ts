@@ -5,7 +5,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { getAppConfig, DEMO_CREDENTIALS, handleDemoAuth, clearDemoAuth, isProductionAdmin } from "@/lib/app-config";
+import {
+  getAppConfig,
+  DEMO_CREDENTIALS,
+  handleDemoAuth,
+  clearDemoAuth,
+  isProductionAdmin,
+  resolveDemoAccountType,
+} from "@/lib/app-config";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -104,10 +111,13 @@ export const useAuth = () => {
           // C3: el perfil demo NUNCA es admin. role forzado a "user" y
           // profile_type limitado a "single"/"couple": un demo_user forjado
           // con role/accountType "admin" en localStorage no escala privilegios.
+          // El tipo se resuelve con resolveDemoAccountType: el demo_user
+          // guardado puede tener forma de Profile (profile_type /
+          // relationship_type) sin `accountType`; leer solo accountType
+          // hacía que una pareja resolviera como single.
           role: "user",
-          profile_type: (parsedDemoUser.accountType === "couple"
-            ? "couple"
-            : "single") as string,
+          profile_type: (resolveDemoAccountType(parsedDemoUser) ??
+            "single") as string,
           is_demo: true,
           is_verified: true,
           is_premium: false,
@@ -522,7 +532,10 @@ export const useAuth = () => {
             first_name: demoAuth.user.first_name || "Demo",
             last_name: "",
             name: demoAuth.user.first_name || "Demo",
-            age: 25,
+            // Edad demo canónica de Sofía (28): la misma que muestra el
+            // perfil (ProfileSingle usa 28 como fallback en demo). Antes
+            // era 25 y el editor la mostraba distinta al perfil.
+            age: 28,
             bio: null,
             gender: "female",
             interested_in: "men",
@@ -665,7 +678,12 @@ export const useAuth = () => {
     const activeDemoUser = storedDemoUser ?? demoUser;
     if (activeDemoUser) {
       const parsedDemoUser = safeParseDemoUser(activeDemoUser); // VALIDADO
-      return parsedDemoUser?.accountType || "single";
+      // Resolver con todas las variantes (accountType / profile_type /
+      // relationship_type / email): el demo_user guardado no siempre trae
+      // `accountType` y leer solo ese campo hacía que una pareja
+      // resolviera como "single" (el engranaje abría el editor de single
+      // estando en sesión de pareja).
+      return resolveDemoAccountType(parsedDemoUser) ?? "single";
     }
     return profile?.profile_type || "single";
   };

@@ -9,6 +9,21 @@ export const ProfileLayout: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, signOut, isDemoMode } = useAuth();
 
+  // ID real del usuario demo (primeros 8 caracteres del UUID guardado en
+  // demo_user). Antes era un placeholder fijo "demo-use • xxxx-xxx-xx"
+  // que parecía un dato enmascarado sin serlo; si no hay demo_user, la
+  // línea no se muestra.
+  const demoUserId = (() => {
+    try {
+      const raw = window.localStorage.getItem("demo_user");
+      if (!raw) return "";
+      const parsed = JSON.parse(raw) as { id?: unknown };
+      return typeof parsed.id === "string" ? parsed.id.slice(0, 8) : "";
+    } catch {
+      return "";
+    }
+  })();
+
   return (
     <>
       {isDemoMode() && (
@@ -20,9 +35,11 @@ export const ProfileLayout: React.FC = () => {
               >
                 <span className="flex flex-col items-center leading-tight">
                   <span className="text-sm font-bold">Demo User</span>
-                  <span className="text-[10px] text-white/90">
-                    ID: demo-use • xxxx-xxx-xx
-                  </span>
+                  {demoUserId && (
+                    <span className="text-[10px] text-white/90">
+                      ID: {demoUserId}
+                    </span>
+                  )}
                 </span>
               </Button>
             </DropdownMenuTrigger>

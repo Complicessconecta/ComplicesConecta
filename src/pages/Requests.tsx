@@ -383,11 +383,11 @@ const Requests = () => {
                             {getStatusBadge(inv.status)}
                           </div>
                           {inv.message && (
-                            <p className="text-sm text-white/70 bg-white/10 p-3 rounded-md mb-3">
+                            <p className="text-sm text-white bg-black/30 p-3 rounded-md mb-3">
                               "{inv.message}"
                             </p>
                           )}
-                          <p className="text-xs text-white/50">
+                          <p className="text-xs text-white/70">
                             Recibido:{" "}
                             {inv.created_at
                               ? new Date(inv.created_at).toLocaleString()
@@ -448,11 +448,11 @@ const Requests = () => {
                           {getStatusBadge(inv.status)}
                         </div>
                         {inv.message && (
-                          <p className="text-sm text-white/70 bg-white/10 p-3 rounded-md my-3">
+                          <p className="text-sm text-white bg-black/30 p-3 rounded-md my-3">
                             "{inv.message}"
                           </p>
                         )}
-                        <p className="text-xs text-white/50">
+                        <p className="text-xs text-white/70">
                           Enviado:{" "}
                           {inv.created_at
                             ? new Date(inv.created_at).toLocaleString()

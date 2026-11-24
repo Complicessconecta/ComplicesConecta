@@ -87,16 +87,17 @@ export function PrivateGallery({
           const isUnlocked = unlockedItems.has(item.id);
 
           return (
+            // El blur va solo en la img: antes estaba en el wrapper y
+            // desenfocaba también el overlay con el botón "Desbloquear",
+            // que quedaba ilegible. La foto sigue borrosa; el botón no.
             <div
               key={item.id}
-              className={`relative rounded-lg overflow-hidden ${
-                !isUnlocked ? 'blur-sm' : ''
-              }`}
+              className="relative rounded-lg overflow-hidden"
             >
               <img
                 src={item.thumbnail_url || item.url}
                 alt={item.caption || 'Foto privada'}
-                className="w-full h-48 object-cover"
+                className={`w-full h-48 object-cover ${!isUnlocked ? 'blur-sm' : ''}`}
               />
 
               {!isUnlocked && (

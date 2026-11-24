@@ -7,7 +7,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/features/auth/useAuth";
 import { validateStaking } from "@/lib/validation/zod/zod-schemas";
-import { shouldUseRealSupabase, getAppConfig } from "@/lib/app-config";
+import {
+  shouldUseRealSupabase,
+  getAppConfig,
+  resolveDemoAccountType,
+} from "@/lib/app-config";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services";
@@ -127,7 +131,10 @@ export const useTokens = () => {
         if (storedUser) {
           try {
             const parsedUser = JSON.parse(storedUser);
-            if (parsedUser.accountType === "couple") {
+            // Resolver con todas las variantes: el demo_user guardado
+            // puede tener forma de Profile (profile_type) sin `accountType`;
+            // leer solo accountType daba el balance de single a una pareja.
+            if (resolveDemoAccountType(parsedUser) === "couple") {
               demoBalance = { cmpx: 2000, gtk: 1500 };
             }
           } catch {

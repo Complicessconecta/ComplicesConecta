@@ -197,7 +197,10 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-24 right-4 z-50 w-full max-w-md px-4 sm:px-0">
+    // Ancho fijo al viewport con margen de 1rem a cada lado y tope de 42rem:
+    // dentro van la lista (20rem) y el hilo del chat, y con max-w-md el
+    // hilo no cabía y su texto quedaba recortado en el borde derecho.
+    <div className="fixed bottom-24 right-4 z-50 w-[calc(100vw-2rem)] max-w-2xl">
       <div className="bg-black/60 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
         <div className="relative z-10 flex items-center justify-between px-4 py-2 border-b border-white/10">
           <span className="text-sm font-semibold text-white">Chat Intimo</span>

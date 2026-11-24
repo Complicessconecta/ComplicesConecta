@@ -97,7 +97,8 @@ export class TokenAnalyticsService {
     string,
     { data: TokenMetrics; timestamp: number }
   > = new Map();
-  private intervalCache: Map<string, ReturnType<typeof setInterval>> = new Map();
+  private intervalCache: Map<string, ReturnType<typeof setInterval>> =
+    new Map();
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos
   private isGeneratingReports: boolean = false;
 
@@ -175,15 +176,19 @@ export class TokenAnalyticsService {
       // Log errors for any rejected promises
       results.forEach((result, index) => {
         if (result.status === "rejected") {
-          logger.error(`Promise at index ${index} rejected in generateCurrentMetrics:`, {
-            error: String(result.reason),
-          });
+          logger.error(
+            `Promise at index ${index} rejected in generateCurrentMetrics:`,
+            {
+              error: String(result.reason),
+            },
+          );
         }
       });
 
       // Extract data from fulfilled promises
       const userBalances =
-        userBalancesResult.status === "fulfilled" && userBalancesResult.value.data
+        userBalancesResult.status === "fulfilled" &&
+        userBalancesResult.value.data
           ? (userBalancesResult.value.data as unknown as UserBalance[])
           : [];
 
@@ -193,7 +198,8 @@ export class TokenAnalyticsService {
           : [];
 
       const transactions =
-        transactionsResult.status === "fulfilled" && transactionsResult.value.data
+        transactionsResult.status === "fulfilled" &&
+        transactionsResult.value.data
           ? (transactionsResult.value.data as unknown as TokenTransactionData[])
           : [];
 
@@ -207,13 +213,13 @@ export class TokenAnalyticsService {
         (sum, record) => sum + record.amount,
         0,
       );
-      
+
       const activeStakers = new Set(stakingRecords.map((r) => r.amount)).size; // Simplified
-      
+
       const transactionVolumeCmpx = transactions
         .filter((t) => t.token_type === "cmpx")
         .reduce((sum, t) => sum + t.amount, 0);
-        
+
       const transactionVolumeGtk = transactions
         .filter((t) => t.token_type === "gtk")
         .reduce((sum, t) => sum + t.amount, 0);
@@ -610,9 +616,7 @@ export class TokenAnalyticsService {
 
     // Supply insights
     if (cmpxSupplyChange > 0) {
-      insights.push(
-        `CMPX supply increased by ${cmpxSupplyChange.toFixed(1)}%`,
-      );
+      insights.push(`CMPX supply increased by ${cmpxSupplyChange.toFixed(1)}%`);
     }
 
     // Transaction insights
@@ -641,4 +645,3 @@ export class TokenAnalyticsService {
 }
 
 export const tokenAnalyticsService = TokenAnalyticsService.getInstance();
-

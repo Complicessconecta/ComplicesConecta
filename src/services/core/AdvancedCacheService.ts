@@ -398,31 +398,36 @@ export class AdvancedCacheService {
    */
   private async logCacheStatistics(stats: CacheStats): Promise<void> {
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
+      const { supabase } = await import("@/integrations/supabase/client");
       if (!supabase) return;
 
       // Usar 'any' para evitar errores de tipos cuando la tabla no existe
-      await (supabase as any)
-        .from('cache_statistics')
-        .insert({
-          hit_rate: stats.hitRate,
-          miss_rate: stats.missRate,
-          total_hits: stats.totalHits,
-          total_misses: stats.totalMisses,
-          average_access_time_ms: stats.averageAccessTime,
-          memory_entries: stats.memoryEntries,
-          memory_size_bytes: stats.memorySize,
-          compression_ratio: stats.compressionRatio,
-          performance_score: stats.performanceScore,
-          timestamp: new Date().toISOString(),
-        });
+      await (supabase as any).from("cache_statistics").insert({
+        hit_rate: stats.hitRate,
+        miss_rate: stats.missRate,
+        total_hits: stats.totalHits,
+        total_misses: stats.totalMisses,
+        average_access_time_ms: stats.averageAccessTime,
+        memory_entries: stats.memoryEntries,
+        memory_size_bytes: stats.memorySize,
+        compression_ratio: stats.compressionRatio,
+        performance_score: stats.performanceScore,
+        timestamp: new Date().toISOString(),
+      });
     } catch (error) {
       // Si la tabla no existe, simplemente continuar
-      if (error && typeof error === 'object' && 'code' in error && error.code === 'PGRST205') {
-        logger.debug('Tabla cache_statistics no existe, omitiendo logging de estadísticas');
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        error.code === "PGRST205"
+      ) {
+        logger.debug(
+          "Tabla cache_statistics no existe, omitiendo logging de estadísticas",
+        );
         return;
       }
-      logger.debug('Failed to log cache statistics:', { error: String(error) });
+      logger.debug("Failed to log cache statistics:", { error: String(error) });
     }
   }
 
@@ -973,7 +978,8 @@ export class AdvancedCacheService {
     }
 
     // Ajustar TTL basado en tiempo desde último acceso
-    if (timeSinceLastAccess > 3600000) { // Más de 1 hora sin acceso
+    if (timeSinceLastAccess > 3600000) {
+      // Más de 1 hora sin acceso
       newTTL = Math.max(newTTL * 0.8, 60); // Reducir TTL
     }
 
@@ -1235,4 +1241,3 @@ export class AdvancedCacheService {
 }
 
 export const advancedCacheService = new AdvancedCacheService();
-

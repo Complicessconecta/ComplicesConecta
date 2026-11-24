@@ -19,9 +19,10 @@ export interface WalletBalance {
 export interface TokenTransaction {
   id: string;
   userId: string;
-  transactionType: 'earn' | 'spend' | 'transfer' | 'stake' | 'unstake' | 'reward';
+  transactionType:
+    "earn" | "spend" | "transfer" | "stake" | "unstake" | "reward";
   amount: number;
-  tokenType: 'cmpx' | 'gtk';
+  tokenType: "cmpx" | "gtk";
   balanceAfter: number;
   description?: string;
   metadata?: Record<string, unknown>;
@@ -30,8 +31,9 @@ export interface TokenTransaction {
   createdAt: string;
 }
 
-type WalletBalancesRow = Database['public']['Tables']['wallet_balances']['Row'];
-type TokenTransactionsRow = Database['public']['Tables']['token_transactions']['Row'];
+type WalletBalancesRow = Database["public"]["Tables"]["wallet_balances"]["Row"];
+type TokenTransactionsRow =
+  Database["public"]["Tables"]["token_transactions"]["Row"];
 
 export class WalletService {
   private static instance: WalletService;
@@ -51,9 +53,9 @@ export class WalletService {
   async getWalletBalance(userId: string): Promise<WalletBalance | null> {
     try {
       const { data, error } = await supabase
-        .from('wallet_balances')
-        .select('*')
-        .eq('user_id', userId)
+        .from("wallet_balances")
+        .select("*")
+        .eq("user_id", userId)
         .single();
 
       if (error) throw error;
@@ -70,7 +72,7 @@ export class WalletService {
         updatedAt: row.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error obteniendo balance de billetera:', {
+      logger.error("Error obteniendo balance de billetera:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -84,7 +86,7 @@ export class WalletService {
   async createWallet(userId: string): Promise<WalletBalance> {
     try {
       const { data, error } = await supabase
-        .from('wallet_balances')
+        .from("wallet_balances")
         .insert({
           user_id: userId,
           cmpx_balance: 0,
@@ -97,7 +99,7 @@ export class WalletService {
 
       if (error) throw error;
 
-      logger.info('Billetera creada exitosamente:', { userId });
+      logger.info("Billetera creada exitosamente:", { userId });
 
       const row = data as WalletBalancesRow;
       return {
@@ -111,7 +113,7 @@ export class WalletService {
         updatedAt: row.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error creando billetera:', {
+      logger.error("Error creando billetera:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -132,7 +134,7 @@ export class WalletService {
 
       return await this.createWallet(userId);
     } catch (error) {
-      logger.error('Error obteniendo o creando billetera:', {
+      logger.error("Error obteniendo o creando billetera:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -146,14 +148,15 @@ export class WalletService {
   async addTokens(
     userId: string,
     amount: number,
-    tokenType: 'cmpx' | 'gtk',
+    tokenType: "cmpx" | "gtk",
     description?: string,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ): Promise<WalletBalance> {
     try {
       const wallet = await this.getOrCreateWallet(userId);
 
-      const currentBalance = tokenType === 'cmpx' ? wallet.cmpxBalance : wallet.gtkBalance;
+      const currentBalance =
+        tokenType === "cmpx" ? wallet.cmpxBalance : wallet.gtkBalance;
       const newBalance = currentBalance + amount;
       const balanceUpdate =
         tokenType === "cmpx"
@@ -162,18 +165,26 @@ export class WalletService {
 
       // Actualizar balance
       const { data: updatedWallet, error: updateError } = await supabase
-        .from('wallet_balances')
+        .from("wallet_balances")
         .update(balanceUpdate)
-        .eq('user_id', userId)
+        .eq("user_id", userId)
         .select()
         .single();
 
       if (updateError) throw updateError;
 
       // Registrar transacción
-      await this.recordTransaction(userId, 'earn', amount, tokenType, newBalance, description, metadata);
+      await this.recordTransaction(
+        userId,
+        "earn",
+        amount,
+        tokenType,
+        newBalance,
+        description,
+        metadata,
+      );
 
-      logger.info('Tokens agregados exitosamente:', {
+      logger.info("Tokens agregados exitosamente:", {
         userId,
         amount,
         tokenType,
@@ -192,7 +203,7 @@ export class WalletService {
         updatedAt: row.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error agregando tokens:', {
+      logger.error("Error agregando tokens:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
         amount,
@@ -208,21 +219,22 @@ export class WalletService {
   async deductTokens(
     userId: string,
     amount: number,
-    tokenType: 'cmpx' | 'gtk',
+    tokenType: "cmpx" | "gtk",
     description?: string,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ): Promise<WalletBalance> {
     try {
       const wallet = await this.getWalletBalance(userId);
 
       if (!wallet) {
-        throw new Error('Wallet not found');
+        throw new Error("Wallet not found");
       }
 
-      const currentBalance = tokenType === 'cmpx' ? wallet.cmpxBalance : wallet.gtkBalance;
+      const currentBalance =
+        tokenType === "cmpx" ? wallet.cmpxBalance : wallet.gtkBalance;
 
       if (currentBalance < amount) {
-        throw new Error('Insufficient balance');
+        throw new Error("Insufficient balance");
       }
 
       const newBalance = currentBalance - amount;
@@ -233,18 +245,26 @@ export class WalletService {
 
       // Actualizar balance
       const { data: updatedWallet, error: updateError } = await supabase
-        .from('wallet_balances')
+        .from("wallet_balances")
         .update(balanceUpdate)
-        .eq('user_id', userId)
+        .eq("user_id", userId)
         .select()
         .single();
 
       if (updateError) throw updateError;
 
       // Registrar transacción
-      await this.recordTransaction(userId, 'spend', amount, tokenType, newBalance, description, metadata);
+      await this.recordTransaction(
+        userId,
+        "spend",
+        amount,
+        tokenType,
+        newBalance,
+        description,
+        metadata,
+      );
 
-      logger.info('Tokens deducidos exitosamente:', {
+      logger.info("Tokens deducidos exitosamente:", {
         userId,
         amount,
         tokenType,
@@ -263,7 +283,7 @@ export class WalletService {
         updatedAt: row.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error deduciendo tokens:', {
+      logger.error("Error deduciendo tokens:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
         amount,
@@ -278,14 +298,15 @@ export class WalletService {
    */
   async recordTransaction(
     userId: string,
-    transactionType: 'earn' | 'spend' | 'transfer' | 'stake' | 'unstake' | 'reward',
+    transactionType:
+      "earn" | "spend" | "transfer" | "stake" | "unstake" | "reward",
     amount: number,
-    tokenType: 'cmpx' | 'gtk',
+    tokenType: "cmpx" | "gtk",
     balanceAfter: number,
     description?: string,
     metadata?: Record<string, unknown>,
     relatedEntityType?: string,
-    relatedEntityId?: string
+    relatedEntityId?: string,
   ): Promise<void> {
     try {
       const meta: Json = {
@@ -296,27 +317,25 @@ export class WalletService {
         ...(metadata ?? {}),
       };
 
-      const { error } = await supabase
-        .from('token_transactions')
-        .insert({
-          user_id: userId,
-          transaction_type: transactionType,
-          amount,
-          token_type: tokenType,
-          metadata: meta,
-          status: 'completed',
-        });
+      const { error } = await supabase.from("token_transactions").insert({
+        user_id: userId,
+        transaction_type: transactionType,
+        amount,
+        token_type: tokenType,
+        metadata: meta,
+        status: "completed",
+      });
 
       if (error) throw error;
 
-      logger.debug('Transacción registrada:', {
+      logger.debug("Transacción registrada:", {
         userId,
         transactionType,
         amount,
         tokenType,
       });
     } catch (error) {
-      logger.error('Error registrando transacción:', {
+      logger.error("Error registrando transacción:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
         transactionType,
@@ -330,14 +349,14 @@ export class WalletService {
    */
   async getTransactionHistory(
     userId: string,
-    limit: number = 50
+    limit: number = 50,
   ): Promise<TokenTransaction[]> {
     try {
       const { data, error } = await supabase
-        .from('token_transactions')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
+        .from("token_transactions")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error) throw error;
@@ -347,28 +366,31 @@ export class WalletService {
         const meta = (row.metadata ?? {}) as Record<string, unknown>;
 
         const balanceAfter =
-          typeof meta.balanceAfter === 'number' ? meta.balanceAfter : 0;
+          typeof meta.balanceAfter === "number" ? meta.balanceAfter : 0;
 
         return {
           id: row.id,
           userId: row.user_id,
-          transactionType: row.transaction_type as TokenTransaction['transactionType'],
+          transactionType:
+            row.transaction_type as TokenTransaction["transactionType"],
           amount: row.amount,
-          tokenType: row.token_type as TokenTransaction['tokenType'],
+          tokenType: row.token_type as TokenTransaction["tokenType"],
           balanceAfter,
-          ...(typeof meta.description === 'string' ? { description: meta.description } : {}),
+          ...(typeof meta.description === "string"
+            ? { description: meta.description }
+            : {}),
           metadata: meta,
-          ...(typeof meta.relatedEntityType === 'string'
+          ...(typeof meta.relatedEntityType === "string"
             ? { relatedEntityType: meta.relatedEntityType }
             : {}),
-          ...(typeof meta.relatedEntityId === 'string'
+          ...(typeof meta.relatedEntityId === "string"
             ? { relatedEntityId: meta.relatedEntityId }
             : {}),
           createdAt: row.created_at ?? new Date().toISOString(),
         };
       });
     } catch (error) {
-      logger.error('Error obteniendo historial de transacciones:', {
+      logger.error("Error obteniendo historial de transacciones:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -382,7 +404,7 @@ export class WalletService {
   async hasSufficientBalance(
     userId: string,
     amount: number,
-    tokenType: 'cmpx' | 'gtk'
+    tokenType: "cmpx" | "gtk",
   ): Promise<boolean> {
     try {
       const wallet = await this.getWalletBalance(userId);
@@ -391,10 +413,11 @@ export class WalletService {
         return false;
       }
 
-      const balance = tokenType === 'cmpx' ? wallet.cmpxBalance : wallet.gtkBalance;
+      const balance =
+        tokenType === "cmpx" ? wallet.cmpxBalance : wallet.gtkBalance;
       return balance >= amount;
     } catch (error) {
-      logger.error('Error verificando saldo suficiente:', {
+      logger.error("Error verificando saldo suficiente:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
         amount,

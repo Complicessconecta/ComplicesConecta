@@ -7,7 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { rateLimiter } from "@/lib/security/rateLimiter";
 import * as QRCode from "qrcode";
-import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails, MappedAuditLog } from "@/types/security.types";
+import type {
+  ActivityPattern,
+  UserActivity,
+  ActivityMetadata,
+  AuditEventDetails,
+  MappedAuditLog,
+} from "@/types/security.types";
 import type { Json } from "@/types/supabase-generated";
 
 // Tipo para logs de auditoría desde la base de datos
@@ -24,150 +30,169 @@ interface DatabaseAuditLog {
   user_agent: string | null;
 }
 
- const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
- const base32Encode = (bytes: Uint8Array): string => {
-   let bits = 0;
-   let value = 0;
-   let output = "";
+const base32Encode = (bytes: Uint8Array): string => {
+  let bits = 0;
+  let value = 0;
+  let output = "";
 
-   for (const byte of bytes) {
-     value = (value << 8) | byte;
-     bits += 8;
-     while (bits >= 5) {
-       output += BASE32_ALPHABET[(value >>> (bits - 5)) & 31] ?? "";
-       bits -= 5;
-     }
-   }
+  for (const byte of bytes) {
+    value = (value << 8) | byte;
+    bits += 8;
+    while (bits >= 5) {
+      output += BASE32_ALPHABET[(value >>> (bits - 5)) & 31] ?? "";
+      bits -= 5;
+    }
+  }
 
-   if (bits > 0) {
-     output += BASE32_ALPHABET[(value << (5 - bits)) & 31] ?? "";
-   }
+  if (bits > 0) {
+    output += BASE32_ALPHABET[(value << (5 - bits)) & 31] ?? "";
+  }
 
-   return output;
- };
+  return output;
+};
 
- const base32Decode = (input: string): Uint8Array => {
-   const normalized = input.replace(/=+$/g, "").replace(/\s+/g, "").toUpperCase();
-   let bits = 0;
-   let value = 0;
-   const out: number[] = [];
+const base32Decode = (input: string): Uint8Array => {
+  const normalized = input
+    .replace(/=+$/g, "")
+    .replace(/\s+/g, "")
+    .toUpperCase();
+  let bits = 0;
+  let value = 0;
+  const out: number[] = [];
 
-   for (const ch of normalized) {
-     const idx = BASE32_ALPHABET.indexOf(ch);
-     if (idx === -1) continue;
-     value = (value << 5) | idx;
-     bits += 5;
-     if (bits >= 8) {
-       out.push((value >>> (bits - 8)) & 255);
-       bits -= 8;
-     }
-   }
+  for (const ch of normalized) {
+    const idx = BASE32_ALPHABET.indexOf(ch);
+    if (idx === -1) continue;
+    value = (value << 5) | idx;
+    bits += 5;
+    if (bits >= 8) {
+      out.push((value >>> (bits - 8)) & 255);
+      bits -= 8;
+    }
+  }
 
-   return new Uint8Array(out);
- };
+  return new Uint8Array(out);
+};
 
- const generateBase32Secret = async (lengthBytes: number = 20): Promise<string> => {
-   const cryptoObj = globalThis.crypto;
-   const bytes = new Uint8Array(lengthBytes);
-   cryptoObj.getRandomValues(bytes);
-   return base32Encode(bytes);
- };
+const generateBase32Secret = async (
+  lengthBytes: number = 20,
+): Promise<string> => {
+  const cryptoObj = globalThis.crypto;
+  const bytes = new Uint8Array(lengthBytes);
+  cryptoObj.getRandomValues(bytes);
+  return base32Encode(bytes);
+};
 
- const buildOtpAuthUrl = (issuer: string, accountName: string, secret: string): string => {
-   const issuerEnc = encodeURIComponent(issuer);
-   const accountEnc = encodeURIComponent(accountName);
-   return `otpauth://totp/${issuerEnc}:${accountEnc}?secret=${secret}&issuer=${issuerEnc}`;
- };
+const buildOtpAuthUrl = (
+  issuer: string,
+  accountName: string,
+  secret: string,
+): string => {
+  const issuerEnc = encodeURIComponent(issuer);
+  const accountEnc = encodeURIComponent(accountName);
+  return `otpauth://totp/${issuerEnc}:${accountEnc}?secret=${secret}&issuer=${issuerEnc}`;
+};
 
- const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer => {
-   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
- };
+const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer => {
+  return bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  ) as ArrayBuffer;
+};
 
- const toHex = (bytes: Uint8Array): string => {
-   return Array.from(bytes)
-     .map((value) => value.toString(16).padStart(2, "0"))
-     .join("");
- };
+const toHex = (bytes: Uint8Array): string => {
+  return Array.from(bytes)
+    .map((value) => value.toString(16).padStart(2, "0"))
+    .join("");
+};
 
- const constantTimeEqual = (a: string, b: string): boolean => {
-   const maxLength = Math.max(a.length, b.length);
-   let result = 0;
+const constantTimeEqual = (a: string, b: string): boolean => {
+  const maxLength = Math.max(a.length, b.length);
+  let result = 0;
 
-   for (let i = 0; i < maxLength; i++) {
-     const aCode = a.charCodeAt(i) || 0;
-     const bCode = b.charCodeAt(i) || 0;
-     result |= aCode ^ bCode;
-   }
+  for (let i = 0; i < maxLength; i++) {
+    const aCode = a.charCodeAt(i) || 0;
+    const bCode = b.charCodeAt(i) || 0;
+    result |= aCode ^ bCode;
+  }
 
-   return result === 0 && a.length === b.length;
- };
+  return result === 0 && a.length === b.length;
+};
 
- const compareDigest = (a: string, b: string): boolean => {
+const compareDigest = (a: string, b: string): boolean => {
   return constantTimeEqual(a, b);
- };
+};
 
- const digestToken = async (token: string): Promise<string> => {
-   const encoder = new TextEncoder();
-   const data = encoder.encode(token);
-   const hash = await globalThis.crypto.subtle.digest("SHA-256", data);
-   return toHex(new Uint8Array(hash));
- };
+const digestToken = async (token: string): Promise<string> => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(token);
+  const hash = await globalThis.crypto.subtle.digest("SHA-256", data);
+  return toHex(new Uint8Array(hash));
+};
 
- const waitUntil = async (startTime: number, durationMs: number): Promise<void> => {
-   const elapsed = Date.now() - startTime;
-   const remaining = Math.max(0, durationMs - elapsed);
-   if (remaining > 0) {
-     await new Promise((resolve) => setTimeout(resolve, remaining));
-   }
- };
+const waitUntil = async (
+  startTime: number,
+  durationMs: number,
+): Promise<void> => {
+  const elapsed = Date.now() - startTime;
+  const remaining = Math.max(0, durationMs - elapsed);
+  if (remaining > 0) {
+    await new Promise((resolve) => setTimeout(resolve, remaining));
+  }
+};
 
- const totpToken = async (secretBase32: string, timeStep: number, digits: number = 6): Promise<string> => {
-   const cryptoObj = globalThis.crypto;
-   const keyBytes = base32Decode(secretBase32);
+const totpToken = async (
+  secretBase32: string,
+  timeStep: number,
+  digits: number = 6,
+): Promise<string> => {
+  const cryptoObj = globalThis.crypto;
+  const keyBytes = base32Decode(secretBase32);
 
-   const counter = new ArrayBuffer(8);
-   const view = new DataView(counter);
-   view.setUint32(4, timeStep, false);
+  const counter = new ArrayBuffer(8);
+  const view = new DataView(counter);
+  view.setUint32(4, timeStep, false);
 
-   const key = await cryptoObj.subtle.importKey(
-     "raw",
-     toArrayBuffer(keyBytes),
-     { name: "HMAC", hash: "SHA-1" },
-     false,
-     ["sign"],
-   );
+  const key = await cryptoObj.subtle.importKey(
+    "raw",
+    toArrayBuffer(keyBytes),
+    { name: "HMAC", hash: "SHA-1" },
+    false,
+    ["sign"],
+  );
 
-   const sig = new Uint8Array(await cryptoObj.subtle.sign("HMAC", key, counter));
-   const offset = sig[sig.length - 1]! & 0x0f;
-   const binCode =
-     ((sig[offset]! & 0x7f) << 24) |
-     ((sig[offset + 1]! & 0xff) << 16) |
-     ((sig[offset + 2]! & 0xff) << 8) |
-     (sig[offset + 3]! & 0xff);
+  const sig = new Uint8Array(await cryptoObj.subtle.sign("HMAC", key, counter));
+  const offset = sig[sig.length - 1]! & 0x0f;
+  const binCode =
+    ((sig[offset]! & 0x7f) << 24) |
+    ((sig[offset + 1]! & 0xff) << 16) |
+    ((sig[offset + 2]! & 0xff) << 8) |
+    (sig[offset + 3]! & 0xff);
 
-   const mod = 10 ** digits;
-   const token = (binCode % mod).toString().padStart(digits, "0");
-   return token;
- };
+  const mod = 10 ** digits;
+  const token = (binCode % mod).toString().padStart(digits, "0");
+  return token;
+};
 
- const verifyTotp = async (
-   secretBase32: string,
-   token: string,
-   window: number = 2,
-   stepSeconds: number = 30,
-   digits: number = 6,
- ): Promise<boolean> => {
-   const now = Math.floor(Date.now() / 1000);
-   const timeStep = Math.floor(now / stepSeconds);
+const verifyTotp = async (
+  secretBase32: string,
+  token: string,
+  window: number = 2,
+  stepSeconds: number = 30,
+  digits: number = 6,
+): Promise<boolean> => {
+  const now = Math.floor(Date.now() / 1000);
+  const timeStep = Math.floor(now / stepSeconds);
 
-   for (let w = -window; w <= window; w++) {
-     const expected = await totpToken(secretBase32, timeStep + w, digits);
-     if (expected === token) return true;
-   }
+  for (let w = -window; w <= window; w++) {
+    const expected = await totpToken(secretBase32, timeStep + w, digits);
+    if (expected === token) return true;
+  }
 
-   return false;
- };
+  return false;
+};
 
 export interface SecurityAnalysis {
   riskScore: number;
@@ -345,9 +370,11 @@ export class SecurityService {
     }
 
     // Verificar si hay metadatos sospechosos (ej. intentos fallidos)
-    const failedAttempts = activity.metadata && typeof activity.metadata === 'object'
-      ? (activity.metadata as Record<string, unknown>).failedAttempts as number ?? 0
-      : 0;
+    const failedAttempts =
+      activity.metadata && typeof activity.metadata === "object"
+        ? (((activity.metadata as Record<string, unknown>)
+            .failedAttempts as number) ?? 0)
+        : 0;
     if (failedAttempts > 3) {
       return {
         isSuspicious: true,
@@ -462,18 +489,16 @@ export class SecurityService {
         return { success: false, error: "Supabase no está disponible" };
       }
 
-      const { error } = await supabase
-        .from("two_factor_auth")
-        .upsert({
-          user_id: userId,
-          method,
-          secret: setup.secret || null,
-          backup_codes: backupCodes,
-          is_enabled: false,
-          verified_at: null,
-          updated_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-        });
+      const { error } = await supabase.from("two_factor_auth").upsert({
+        user_id: userId,
+        method,
+        secret: setup.secret || null,
+        backup_codes: backupCodes,
+        is_enabled: false,
+        verified_at: null,
+        updated_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+      });
 
       if (error) {
         logger.error("Error setting up 2FA:", { error: error.message });
@@ -484,7 +509,11 @@ export class SecurityService {
       let qrCode: string | undefined;
       if (method === "2fa_app") {
         try {
-          const otpauthUrl = buildOtpAuthUrl("ComplicesConecta", userId, secretBase32);
+          const otpauthUrl = buildOtpAuthUrl(
+            "ComplicesConecta",
+            userId,
+            secretBase32,
+          );
           qrCode = await QRCode.toDataURL(otpauthUrl);
         } catch (qrError) {
           logger.error("Error generating QR code:", { error: qrError });
@@ -514,18 +543,29 @@ export class SecurityService {
     storedTokenHash: string | null;
     tokenExpiry: string | null;
     minDurationMs?: number;
-  }): Promise<{ isValid: boolean; isExpired: boolean; isRateLimited: boolean; retryAfter?: number }> {
+  }): Promise<{
+    isValid: boolean;
+    isExpired: boolean;
+    isRateLimited: boolean;
+    retryAfter?: number;
+  }> {
     const startTime = Date.now();
     const minDurationMs = params.minDurationMs ?? 350;
 
-    const rateLimit = rateLimiter.checkLimit("/auth/reset-password", params.identifier, false);
+    const rateLimit = rateLimiter.checkLimit(
+      "/auth/reset-password",
+      params.identifier,
+      false,
+    );
 
     const tokenDigest = await digestToken(params.token);
     const fallbackDigest = await digestToken("invalid");
     const storedHash = params.storedTokenHash ?? fallbackDigest;
     const isMatch = compareDigest(tokenDigest, storedHash);
 
-    const expiryMs = params.tokenExpiry ? new Date(params.tokenExpiry).getTime() : 0;
+    const expiryMs = params.tokenExpiry
+      ? new Date(params.tokenExpiry).getTime()
+      : 0;
     const isExpired = !expiryMs || expiryMs <= Date.now();
 
     const isValid = rateLimit.allowed && isMatch && !isExpired;
@@ -571,7 +611,9 @@ export class SecurityService {
       }
 
       // Verificación real con TOTP usando speakeasy
-      const isValidCode = settings.secret ? await verifyTotp(settings.secret, code, 2, 30, 6) : false;
+      const isValidCode = settings.secret
+        ? await verifyTotp(settings.secret, code, 2, 30, 6)
+        : false;
 
       // Verificar si es un código de respaldo
       const isBackupCode = settings.backup_codes
@@ -595,7 +637,9 @@ export class SecurityService {
           return { success: false, error: "Supabase no está disponible" };
         }
 
-        const updatedCodes = settings.backup_codes.filter((c: string) => c !== code);
+        const updatedCodes = settings.backup_codes.filter(
+          (c: string) => c !== code,
+        );
         await supabase
           .from("two_factor_auth")
           .update({ backup_codes: updatedCodes })
@@ -793,21 +837,24 @@ export class SecurityService {
       }
 
       // Mapear los datos de la base de datos al formato esperado
-      const mappedLogs: MappedAuditLog[] = (data || []).map((log: DatabaseAuditLog) => {
-        return {
-          id: log.id,
-          userId: log.user_id,
-          action: log.action,
-          resource: log.resource,
-          details: (log.details as AuditEventDetails) || {
+      const mappedLogs: MappedAuditLog[] = (data || []).map(
+        (log: DatabaseAuditLog) => {
+          return {
+            id: log.id,
+            userId: log.user_id,
             action: log.action,
-          },
-          ipAddress: String(log.ip_address || ""),
-          userAgent: String(log.user_agent || ""),
-          timestamp: log.created_at || new Date().toISOString(),
-          riskScore: typeof log.risk_score === "number" ? log.risk_score : 0.3,
-        };
-      });
+            resource: log.resource,
+            details: (log.details as AuditEventDetails) || {
+              action: log.action,
+            },
+            ipAddress: String(log.ip_address || ""),
+            userAgent: String(log.user_agent || ""),
+            timestamp: log.created_at || new Date().toISOString(),
+            riskScore:
+              typeof log.risk_score === "number" ? log.risk_score : 0.3,
+          };
+        },
+      );
 
       return {
         success: true,
@@ -988,4 +1035,3 @@ export class SecurityService {
 }
 
 export const securityService = new SecurityService();
-

@@ -170,13 +170,18 @@ class MatchService {
     if (!user1Id || !user2Id) return null;
 
     // Validar que ambos IDs sean UUID válidos (evitar error con demo-user-1)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(user1Id)) {
-      logger.warn("getMatchId: user1Id no es un UUID válido, retornando null", { user1Id });
+      logger.warn("getMatchId: user1Id no es un UUID válido, retornando null", {
+        user1Id,
+      });
       return null;
     }
     if (!uuidRegex.test(user2Id)) {
-      logger.warn("getMatchId: user2Id no es un UUID válido, retornando null", { user2Id });
+      logger.warn("getMatchId: user2Id no es un UUID válido, retornando null", {
+        user2Id,
+      });
       return null;
     }
 
@@ -206,9 +211,13 @@ class MatchService {
     if (!userId) return [];
 
     // Validar que userId sea un UUID válido (evitar error con demo-user-1)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(userId)) {
-      logger.warn("getMatchedUserIds: userId no es un UUID válido, retornando array vacío", { userId });
+      logger.warn(
+        "getMatchedUserIds: userId no es un UUID válido, retornando array vacío",
+        { userId },
+      );
       return [];
     }
 

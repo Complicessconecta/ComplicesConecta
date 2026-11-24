@@ -4,4 +4,4 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from '@/services/core/graph/Neo4jService';
+export * from "@/services/core/graph/Neo4jService";

@@ -279,4 +279,3 @@ export const s2Service = new S2Service();
 
 // Export types
 export type { S2Config, S2Cell };
-

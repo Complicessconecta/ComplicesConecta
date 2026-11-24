@@ -28,11 +28,7 @@ export interface ConsentRecord {
   userId: string;
   documentPath: string;
   consentType:
-    | "TERMS"
-    | "PRIVACY"
-    | "LEY_OLIMPIA"
-    | "WALLET_RISK"
-    | "COUPLE_AGREEMENT";
+    "TERMS" | "PRIVACY" | "LEY_OLIMPIA" | "WALLET_RISK" | "COUPLE_AGREEMENT";
   ipAddress: string;
   userAgent: string;
   consentTextHash: string;

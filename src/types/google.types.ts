@@ -81,4 +81,3 @@ declare global {
     ) => void;
   }
 }
-

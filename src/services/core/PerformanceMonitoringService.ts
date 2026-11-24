@@ -610,4 +610,3 @@ export class PerformanceMonitoringService {
 // =====================================================
 
 export const performanceMonitoring = PerformanceMonitoringService.getInstance();
-

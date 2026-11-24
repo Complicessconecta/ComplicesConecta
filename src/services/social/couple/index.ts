@@ -4,5 +4,5 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from '@/services/social/couple/AdvancedCoupleService';
-export * from '@/services/social/couple/CoupleProfilesService';
+export * from "@/services/social/couple/AdvancedCoupleService";
+export * from "@/services/social/couple/CoupleProfilesService";

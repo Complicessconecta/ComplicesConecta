@@ -18,7 +18,11 @@
 
 import { logger } from "@/lib/logger";
 import { neo4jService } from "@/services/core/graph/Neo4jService";
-import { smartMatchingEngine, type UserProfile, type MatchScore } from "@/lib/ai/smartMatching";
+import {
+  smartMatchingEngine,
+  type UserProfile,
+  type MatchScore,
+} from "@/lib/ai/smartMatching";
 import { supabase } from "@/lib/supabase/supabase";
 
 export interface EmotionalConnection {
@@ -457,13 +461,19 @@ class PredictiveMatchingService {
         id: profile.user_id || profile.id || "",
         name: (profile as any).name || "Usuario",
         age: (profile as any).age || 0,
-        gender: ((profile as any).gender === "male" || (profile as any).gender === "female"
+        gender: ((profile as any).gender === "male" ||
+        (profile as any).gender === "female"
           ? "single"
           : "pareja") as "single" | "pareja",
         location: {
           city: (profile as any).location || "",
           ...((profile as any).latitude && (profile as any).longitude
-            ? { coordinates: { lat: (profile as any).latitude, lng: (profile as any).longitude } }
+            ? {
+                coordinates: {
+                  lat: (profile as any).latitude,
+                  lng: (profile as any).longitude,
+                },
+              }
             : {}),
         },
         interests: [], // TODO: Obtener intereses
@@ -514,4 +524,3 @@ class PredictiveMatchingService {
 
 export const predictiveMatchingService =
   PredictiveMatchingService.getInstance();
-

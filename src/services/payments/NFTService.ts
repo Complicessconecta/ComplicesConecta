@@ -24,8 +24,8 @@ import type { BlockchainSupabaseClient } from "@/types/blockchain";
 import { safeBlockchainCast } from "@/types/blockchain";
 import type { Database } from "@/types/supabase-generated";
 
- type CoupleNFTRequestRow =
-   Database["public"]["Tables"]["couple_nft_requests"]["Row"];
+type CoupleNFTRequestRow =
+  Database["public"]["Tables"]["couple_nft_requests"]["Row"];
 
 const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
 
@@ -120,20 +120,29 @@ const readDemoNFTs = (uid: string): NFTInfo[] => {
     return (parsed as Array<Record<string, unknown>>)
       .slice(0, 4)
       .map((item, index) => {
-        const id = typeof item.id === "string" ? item.id : `demo-nft-${uid}-${index}`;
+        const id =
+          typeof item.id === "string" ? item.id : `demo-nft-${uid}-${index}`;
         const tokenIdRaw = item.token_id;
-        const token_id = typeof tokenIdRaw === "number" ? tokenIdRaw : index + 1;
+        const token_id =
+          typeof tokenIdRaw === "number" ? tokenIdRaw : index + 1;
         const metadata_uri =
-          typeof item.metadata_uri === "string" ? item.metadata_uri : "ipfs://demo-metadata-hash";
+          typeof item.metadata_uri === "string"
+            ? item.metadata_uri
+            : "ipfs://demo-metadata-hash";
         const rarity = typeof item.rarity === "string" ? item.rarity : "common";
         const isCoupleRaw = item.is_couple;
-        const is_couple = typeof isCoupleRaw === "boolean" ? isCoupleRaw : false;
-        const partner_address = typeof item.partner_address === "string" ? item.partner_address : "";
+        const is_couple =
+          typeof isCoupleRaw === "boolean" ? isCoupleRaw : false;
+        const partner_address =
+          typeof item.partner_address === "string" ? item.partner_address : "";
         const name = typeof item.name === "string" ? item.name : "";
-        const description = typeof item.description === "string" ? item.description : "";
+        const description =
+          typeof item.description === "string" ? item.description : "";
         const image = typeof item.image === "string" ? item.image : "";
         const created_at =
-          typeof item.created_at === "string" ? item.created_at : new Date().toISOString();
+          typeof item.created_at === "string"
+            ? item.created_at
+            : new Date().toISOString();
 
         const base: NFTInfo = {
           id,
@@ -186,7 +195,6 @@ interface NFTInfo {
   image?: string;
   created_at: string;
 }
-
 
 export class NFTService {
   private static instance: NFTService;
@@ -288,15 +296,12 @@ export class NFTService {
       formData.append("path", "/pinning/pinFileToIPFS");
       formData.append("apiBase", NFTService.PINATA_API_URL);
 
-      const { data, error } = await supabase.functions.invoke(
-        "pinata-proxy",
-        {
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
+      const { data, error } = await supabase.functions.invoke("pinata-proxy", {
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
         },
-      );
+      });
 
       if (error) {
         throw new Error(`Error en Pinata: ${error.message}`);
@@ -370,7 +375,11 @@ export class NFTService {
         typeof window !== "undefined" &&
         window.localStorage.getItem(getDemoNFTStorageKey(userId)) !== null;
 
-      if (WalletService.isDemoMode() || isDemoAuthActive || hasDemoNftsForUser) {
+      if (
+        WalletService.isDemoMode() ||
+        isDemoAuthActive ||
+        hasDemoNftsForUser
+      ) {
         return readDemoNFTs(userId);
       }
 
@@ -380,7 +389,10 @@ export class NFTService {
       if (!wallet) return [];
 
       const ownerAddress =
-        wallet && typeof wallet === "object" && "address" in wallet && typeof wallet.address === "string"
+        wallet &&
+        typeof wallet === "object" &&
+        "address" in wallet &&
+        typeof wallet.address === "string"
           ? wallet.address
           : undefined;
       if (!ownerAddress) {
@@ -410,18 +422,25 @@ export class NFTService {
           id: String(nftObj.id || ""),
           token_id: typeof nftObj.token_id === "number" ? nftObj.token_id : 0,
           owner_address:
-            typeof nftObj.contract_address === "string" ? nftObj.contract_address : "",
-          metadata_uri: typeof nftObj.metadata_uri === "string" ? nftObj.metadata_uri : "",
+            typeof nftObj.contract_address === "string"
+              ? nftObj.contract_address
+              : "",
+          metadata_uri:
+            typeof nftObj.metadata_uri === "string" ? nftObj.metadata_uri : "",
           rarity: "common",
           is_couple: Boolean(nftObj.is_couple),
           created_at:
-            typeof nftObj.minted_at === "string" ? nftObj.minted_at : new Date().toISOString(),
+            typeof nftObj.minted_at === "string"
+              ? nftObj.minted_at
+              : new Date().toISOString(),
         };
 
-        if (typeof nftObj.name === "string" && nftObj.name) base.name = nftObj.name;
+        if (typeof nftObj.name === "string" && nftObj.name)
+          base.name = nftObj.name;
         if (typeof nftObj.description === "string" && nftObj.description)
           base.description = nftObj.description;
-        if (typeof nftObj.image_url === "string" && nftObj.image_url) base.image = nftObj.image_url;
+        if (typeof nftObj.image_url === "string" && nftObj.image_url)
+          base.image = nftObj.image_url;
 
         return base;
       });
@@ -442,7 +461,10 @@ export class NFTService {
         .getOrCreateWallet(userId)
         .catch(() => null);
       const ownerAddress =
-        wallet && typeof wallet === "object" && "address" in wallet && typeof wallet.address === "string"
+        wallet &&
+        typeof wallet === "object" &&
+        "address" in wallet &&
+        typeof wallet.address === "string"
           ? wallet.address
           : undefined;
       if (!ownerAddress) return [];
@@ -450,7 +472,9 @@ export class NFTService {
       const { data, error } = await this.blockchainClient
         .from("couple_nft_requests" as const)
         .select("*")
-        .or(`partner1_address.eq.${ownerAddress},partner2_address.eq.${ownerAddress}`)
+        .or(
+          `partner1_address.eq.${ownerAddress},partner2_address.eq.${ownerAddress}`,
+        )
         .eq("status", "pending");
 
       if (error) throw error;
@@ -530,7 +554,10 @@ export class NFTService {
         .getOrCreateWallet(userId)
         .catch(() => null);
       const ownerAddress =
-        wallet && typeof wallet === "object" && "address" in wallet && typeof wallet.address === "string"
+        wallet &&
+        typeof wallet === "object" &&
+        "address" in wallet &&
+        typeof wallet.address === "string"
           ? wallet.address
           : "";
 
@@ -631,11 +658,17 @@ export class NFTService {
         .catch(() => null);
 
       const requesterAddress =
-        requesterWallet && typeof requesterWallet === "object" && "address" in requesterWallet && typeof requesterWallet.address === "string"
+        requesterWallet &&
+        typeof requesterWallet === "object" &&
+        "address" in requesterWallet &&
+        typeof requesterWallet.address === "string"
           ? requesterWallet.address
           : undefined;
       const partnerAddress =
-        partnerWallet && typeof partnerWallet === "object" && "address" in partnerWallet && typeof partnerWallet.address === "string"
+        partnerWallet &&
+        typeof partnerWallet === "object" &&
+        "address" in partnerWallet &&
+        typeof partnerWallet.address === "string"
           ? partnerWallet.address
           : undefined;
 
@@ -652,7 +685,9 @@ export class NFTService {
       };
 
       const metadataUri = `ipfs://${imageHash}`;
-      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      const expiresAt = new Date(
+        Date.now() + 7 * 24 * 60 * 60 * 1000,
+      ).toISOString();
 
       const { error } = await this.blockchainClient
         .from("couple_nft_requests" as const)

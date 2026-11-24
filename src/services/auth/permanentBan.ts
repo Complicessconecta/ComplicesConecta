@@ -1,7 +1,11 @@
 // Servicio de Baneo Permanente con Huella Digital
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from "@/services/auth/digitalFingerprint";
+import {
+  generateDigitalFingerprint,
+  DigitalFingerprint,
+  checkFingerprintBanned,
+} from "@/services/auth/digitalFingerprint";
 
 export interface PermanentBanData {
   userId: string;
@@ -50,7 +54,7 @@ export const createPermanentBan = async (
         banned_by: _bannedBy,
         canvas_hash: fingerprint.canvasHash,
         worldid_nullifier_hash: banData.worldIdNullifierHash || null,
-        evidence: banData.evidence || {} as any,
+        evidence: banData.evidence || ({} as any),
       })
       .select("id")
       .single();
@@ -109,7 +113,10 @@ export const checkUserBanned = async (
       .single();
 
     if (error && error.code !== "PGRST116") {
-      logger.error("Error obteniendo detalles de baneo:", { error: error.message, details: error.details });
+      logger.error("Error obteniendo detalles de baneo:", {
+        error: error.message,
+        details: error.details,
+      });
     }
 
     const result: BanCheckResult = {

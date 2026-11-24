@@ -157,12 +157,10 @@ export class FaceRecognitionService {
         const b2 = data2[i + 2] ?? 0;
 
         mse +=
-          Math.pow(r1 - r2, 2) +
-          Math.pow(g1 - g2, 2) +
-          Math.pow(b1 - b2, 2);
+          Math.pow(r1 - r2, 2) + Math.pow(g1 - g2, 2) + Math.pow(b1 - b2, 2);
       }
 
-      mse /= (size * size * 3);
+      mse /= size * size * 3;
 
       // Convertir MSE a similitud (0-100)
       const maxMse = 255 * 255 * 3;

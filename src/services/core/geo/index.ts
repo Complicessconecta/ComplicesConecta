@@ -4,4 +4,4 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from '@/services/core/geo/S2Service';
+export * from "@/services/core/geo/S2Service";

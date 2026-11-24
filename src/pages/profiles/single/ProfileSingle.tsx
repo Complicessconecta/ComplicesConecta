@@ -30,7 +30,6 @@ import {
   toPrivateStoragePath,
   usePrivateMediaUrls,
 } from "@/lib/storage/private-media";
-import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel/carousel";
@@ -61,8 +60,9 @@ const DEMO_SINGLE_DETAILS = {
   eyes: "Café",
 } as const;
 
-// Títulos de "Mis Intereses" (HoverEffect), repartidos como preferencias
-// en demo, igual que en el perfil de pareja.
+// Títulos demo de intereses (respaldo cuando aún no se ha editado nada en
+// el editor): la selección real del editor (demo_user) tiene prioridad;
+// ver savedDemoInterests.
 const DEMO_SINGLE_INTEREST_TITLES = [
   "Lifestyle Exclusivo",
   "Eventos VIP",
@@ -331,7 +331,7 @@ const ProfileSingle: FC = () => {
     }
   };
 
-  // Demo: controlar desbloqueo visual de fotos privadías en el propio perfil
+  // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
@@ -345,7 +345,7 @@ const ProfileSingle: FC = () => {
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
   // Estado para control parental: la galería privada carga BLOQUEADA.
-  // (Antes: false, y las fotos privadías quedaban visibles sin PIN en la
+  // (Antes: false, y las fotos privadas quedaban visibles sin PIN en la
   // primera carga del perfil.)
   const [isParentalLocked, setIsParentalLocked] = usePersistedState<boolean>(
     "parentalControlLocked",
@@ -448,7 +448,7 @@ const ProfileSingle: FC = () => {
   const demoTheme = isDemoProfile ? "demo_premium" : undefined;
   useProfileTheme("single", ["male"], demoTheme);
 
-  // Datos de imágenes privadías para el carrusel
+  // Datos de imágenes privadas para el carrusel
   type PrivateImageItem = {
     id?: string;
     url?: string;
@@ -458,7 +458,7 @@ const ProfileSingle: FC = () => {
     userLiked?: boolean;
   };
 
-  // C6: rutas de Storage (bucket "media") de las 58 imágenes privadías.
+  // C6: rutas de Storage (bucket "media") de las 58 imágenes privadas.
   // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
   // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
   // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
@@ -681,7 +681,7 @@ const ProfileSingle: FC = () => {
     if (!privateGalleryRef.current) {
       toast({
         title: "Galería privada",
-        description: "No se pudo ubicar la sección de fotos privadías.",
+        description: "No se pudo ubicar la sección de fotos privadas.",
         variant: "destructive",
       });
       return;
@@ -694,7 +694,7 @@ const ProfileSingle: FC = () => {
 
     toast({
       title: "Galería privada",
-      description: "Desplazándote a tus fotos privadías.",
+      description: "Desplazándote a tus fotos privadas.",
     });
   };
 
@@ -989,12 +989,31 @@ const ProfileSingle: FC = () => {
         ) ?? (singleIsDemo ? "Heterosexual" : null),
     },
   };
+  // Intereses guardados desde el editor (demo): el editor single guarda la
+  // selección en `demo_user` (localStorage) y el perfil la refleja. Si aún
+  // no se ha editado nada, se usan los títulos demo. En producción se leen
+  // las actividades reales (activities_interested).
+  const savedDemoInterests = useMemo(() => {
+    if (!singleIsDemo || typeof window === "undefined") return null;
+    try {
+      const raw = window.localStorage.getItem("demo_user");
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { interests?: unknown };
+      return Array.isArray(parsed.interests) &&
+        parsed.interests.every((x) => typeof x === "string")
+        ? (parsed.interests as string[])
+        : null;
+    } catch {
+      return null;
+    }
+  }, [singleIsDemo]);
+
   const singleLikes = singleIsDemo
-    ? [
+    ? (savedDemoInterests ?? [
         DEMO_SINGLE_INTEREST_TITLES[0],
         DEMO_SINGLE_INTEREST_TITLES[2],
         DEMO_SINGLE_INTEREST_TITLES[4],
-      ]
+      ])
     : singleActivities;
   const singleLookingFor = singleIsDemo
     ? ["Parejas"]
@@ -1195,7 +1214,7 @@ const ProfileSingle: FC = () => {
                       </DropdownMenu>
                     )}
 
-                    {/* Botón para solicitar acceso a fotos privadías */}
+                    {/* Botón para solicitar acceso a fotos privadas */}
                     {privateImageAccess === "none" && (
                       <Button
                         onClick={handleViewPrivatePhotos}
@@ -1729,69 +1748,6 @@ const ProfileSingle: FC = () => {
             </CardContent>
           </Card>
 
-          {/* Demo Wallet - Solo para perfiles demo */}
-          {isDemoProfile && (
-            <DemoWallet userId={user?.id || profile?.id || ""} />
-          )}
-
-          {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
-
-          {/* Intereses - grid demo con efecto hover */}
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader>
-              <CardTitle className="text-white">Mis Intereses</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <HoverEffect
-                items={[
-                  {
-                    title: "Lifestyle Exclusivo",
-                    description:
-                      "Conexiones seleccionadías para un círculo íntimo y sofisticado.",
-                    link: "#",
-                    icon: <TrendingUp className="w-5 h-5" />,
-                  },
-                  {
-                    title: "Eventos VIP",
-                    description:
-                      "Acceso prioritario a fiestas privadías y experiencias lifestyle.",
-                    link: "#",
-                    icon: <Calendar className="w-5 h-5" />,
-                  },
-                  {
-                    title: "Privacidad Total",
-                    description:
-                      "Perfiles protegidos, control parental y contenido sensible blindado.",
-                    link: "#",
-                    icon: <Lock className="w-5 h-5" />,
-                  },
-                  {
-                    title: "Verificación Real",
-                    description:
-                      "Perfiles verificados para minimizar cuentas falsas y riesgos.",
-                    link: "#",
-                    icon: <CheckCircle className="w-5 h-5" />,
-                  },
-                  {
-                    title: "Chat Encriptado",
-                    description:
-                      "Mensajes diseñados para máxima discreción y seguridad.",
-                    link: "#",
-                    icon: <MessageCircle className="w-5 h-5" />,
-                  },
-                  {
-                    title: "Match Inteligente",
-                    description:
-                      "Recomendaciones basadías en intereses y compatibilidad real.",
-                    link: "#",
-                    icon: <Users className="w-5 h-5" />,
-                  },
-                ]}
-                className="pt-2"
-              />
-            </CardContent>
-          </Card>
-
           {/* Sobre mí - modelo del video (espejo de pareja, 1 usuario) */}
           <SingleAboutSection
             member={singleAbout}
@@ -1825,12 +1781,17 @@ const ProfileSingle: FC = () => {
             onManage={() => navigate("/tokens")}
           />
 
-          {/* Privacidad - solo perfil propio */}
-          {isOwnProfile && (
+          {/* Privacidad - solo perfil propio (en demo el perfil demo es propio) */}
+          {(isOwnProfile || singleIsDemo) && (
             <SinglePrivacySection
               userId={user?.id ?? profile?.id ?? ""}
               isDemoMode={singleIsDemo}
             />
+          )}
+
+          {/* Demo Wallet - solo demo, tras la información del perfil */}
+          {isDemoProfile && (
+            <DemoWallet userId={user?.id || profile?.id || ""} />
           )}
 
           {/* Publicaciones - después de la información del perfil */}
@@ -1868,7 +1829,7 @@ const ProfileSingle: FC = () => {
                         </h4>
                         <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
                           <p className="text-center">
-                            Accede a eventos exclusivos, fiestas privadías y
+                            Accede a eventos exclusivos, fiestas privadas y
                             matchmaking prioritario.
                           </p>
                           {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
@@ -2190,7 +2151,7 @@ const ProfileSingle: FC = () => {
         </div>
       </div>
 
-      {/* Modal de solicitud de acceso a fotos privadías */}
+      {/* Modal de solicitud de acceso a fotos privadas */}
       {showPrivateImageRequest && (
         <PrivateImageRequest
           isOpen={showPrivateImageRequest}
@@ -2222,12 +2183,12 @@ const ProfileSingle: FC = () => {
           showLockScreen={showParentalUnlock}
           onToggle={(locked) => {
             setIsParentalLocked(locked);
-            // Si se desbloquea, permitir acceso a imágenes privadías
+            // Si se desbloquea, permitir acceso a imágenes privadas
             if (!locked) {
               setDemoPrivateUnlocked(true);
               setShowParentalUnlock(false);
             } else {
-              // Si se bloquea, ocultar imágenes privadías
+              // Si se bloquea, ocultar imágenes privadas
               setDemoPrivateUnlocked(false);
               setShowParentalUnlock(false);
             }

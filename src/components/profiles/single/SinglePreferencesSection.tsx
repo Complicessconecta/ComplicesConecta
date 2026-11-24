@@ -9,7 +9,7 @@ interface SinglePreferencesSectionProps {
 }
 
 /**
- * Preferencias de 1 usuario con etiquetas (espejo de
+ * Mis Intereses de 1 usuario con etiquetas (espejo de
  * CouplePreferencesSection, modelo del video). "Me gusta" son los
  * intereses del perfil; "Depende de la situación" solo se muestra cuando
  * hay datos. Sin datos, estado vacío honesto.
@@ -24,7 +24,7 @@ export const SinglePreferencesSection: React.FC<
       <CardHeader>
         <CardTitle className="text-white flex items-center gap-2">
           <Heart className="w-5 h-5 text-fuchsia-400" />
-          Preferencias
+          Mis Intereses
         </CardTitle>
       </CardHeader>
       <CardContent>

@@ -218,6 +218,10 @@ const EditProfileSingle = () => {
             last_name: nameParts.slice(1).join(" ") || "",
             age: parseInt(formData.age) || 25,
             bio: formData.bio,
+            // La selección de intereses se persistía solo en demo; en
+            // producción se perdía y el perfil seguía mostrando los títulos
+            // demo. Misma fuente que lee el perfil (activities_interested).
+            activities_interested: formData.interests ?? [],
             updated_at: new Date().toISOString(),
           })
           .eq("id", userId);

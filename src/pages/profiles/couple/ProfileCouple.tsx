@@ -1,8 +1,31 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MapPin, Verified, Crown, Settings, Share2, Lock, Unlock, Images, Flag, Coins, Wallet, Users, ShieldCheck, Eye, TrendingUp, Calendar } from "lucide-react";
+import {
+  Heart,
+  MapPin,
+  Verified,
+  Crown,
+  Settings,
+  Share2,
+  Lock,
+  Unlock,
+  Images,
+  Flag,
+  Coins,
+  Wallet,
+  Users,
+  ShieldCheck,
+  Eye,
+  TrendingUp,
+  Calendar,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
@@ -14,10 +37,18 @@ import { computeProfileCompleteness } from "@/lib/profileCompleteness";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
-import { WalletService, walletService } from "@/services/payments/WalletService";
+import {
+  WalletService,
+  walletService,
+} from "@/services/payments/WalletService";
 import { nftService, seedDemoNFTs } from "@/services/payments/NFTService";
 import { cn } from "@/shared/lib/cn";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { supabase } from "@/integrations/supabase/client";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import type { Database } from "@/types/supabase-generated";
@@ -31,7 +62,13 @@ import {
   toPrivateStoragePath,
   usePrivateMediaUrls,
 } from "@/lib/storage/private-media";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { CoupleAboutSection } from "@/components/profiles/couple/CoupleAboutSection";
 import type { CoupleAboutMember } from "@/components/profiles/couple/CoupleAboutSection";
 import { CouplePreferencesSection } from "@/components/profiles/couple/CouplePreferencesSection";
@@ -39,12 +76,27 @@ import type { CoupleMemberPreferences } from "@/components/profiles/couple/Coupl
 import { CoupleLookingForSection } from "@/components/profiles/couple/CoupleLookingForSection";
 import { CoupleSubscriptionCard } from "@/components/profiles/couple/CoupleSubscriptionCard";
 import { CouplePrivacySection } from "@/components/profiles/couple/CouplePrivacySection";
+import {
+  ProtectedMedia,
+  noDownloadProps,
+} from "@/components/profiles/shared/ProtectedMedia";
+import { formatZodiacSign } from "@/lib/zodiac";
+import {
+  getProfileZodiacSign,
+  getVisibilityBadge,
+  usePrivacySettings,
+} from "@/lib/visibility";
 // Espejo de Single: gestor de solicitudes de acceso, reporte y experiencias.
 import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
 import { ReportDialog } from "@/components/dialogs/ReportDialog";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
-import { Modal, ModalBody, ModalContent, ModalFooter } from "@/components/modals/animated-modal";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+} from "@/components/modals/animated-modal";
 import { FileUpload } from "@/components/ui/forms/file-upload";
 
 // --- Secciones modelo del video (perfil de pareja) ---
@@ -133,6 +185,21 @@ function ProfileCouple() {
   // ("Rendered more hooks than during the previous render") → /404.
   const profileScore = useProfileScore(profile);
   const [loading, setLoading] = useState(true);
+
+  // Ajustes de privacidad de la pareja que se está viendo (indicador de
+  // visibilidad, signos y marca de agua). Misma clave que usa
+  // CouplePrivacySection (`user.id ?? profile.profile_id`); se actualiza
+  // en vivo cuando esa sección guarda un cambio.
+  const profilePrivacy = usePrivacySettings(
+    user?.id ?? profile?.profile_id ?? "",
+    "couple",
+  );
+  const profileZodiac1 = getProfileZodiacSign(profilePrivacy, 0);
+  const profileZodiac2 = getProfileZodiacSign(profilePrivacy, 1);
+  const visibilityBadge = getVisibilityBadge(
+    profilePrivacy,
+    profile?.isOnline ?? false,
+  );
   const [showPrivateImageRequest, _setShowPrivateImageRequest] =
     useState(false);
   const [privateImageAccess, setPrivateImageAccess] = useState<
@@ -408,8 +475,10 @@ function ProfileCouple() {
   type CoupleRequest = Awaited<
     ReturnType<typeof nftService.getCoupleNFTRequests>
   >[number];
-  type CoupleAgreementRow = Database["public"]["Tables"]["couple_agreements"]["Row"];
-  type CoupleDisputeRow = Database["public"]["Tables"]["couple_disputes"]["Row"];
+  type CoupleAgreementRow =
+    Database["public"]["Tables"]["couple_agreements"]["Row"];
+  type CoupleDisputeRow =
+    Database["public"]["Tables"]["couple_disputes"]["Row"];
   type TestnetInfo = Awaited<
     ReturnType<typeof walletService.getTestnetTokensInfo>
   >;
@@ -449,8 +518,9 @@ function ProfileCouple() {
     age_range_min: number | null;
     age_range_max: number | null;
   };
-  const [coupleDetails, setCoupleDetails] =
-    useState<CoupleDetailsRow | null>(null);
+  const [coupleDetails, setCoupleDetails] = useState<CoupleDetailsRow | null>(
+    null,
+  );
 
   useEffect(() => {
     const loadCoupleDetails = async () => {
@@ -535,12 +605,8 @@ function ProfileCouple() {
   }, [accountChipHovered]);
   const [_showDisputeWarning, _setShowDisputeWarning] = useState(false);
 
-  const {
-    authenticate,
-    isBiometricAvailable,
-    isBiometricEnabled,
-    hasPin,
-  } = useBiometricAuth();
+  const { authenticate, isBiometricAvailable, isBiometricEnabled, hasPin } =
+    useBiometricAuth();
 
   // Verificar estado del acuerdo de pareja para hard-lock legal
   useEffect(() => {
@@ -583,12 +649,16 @@ function ProfileCouple() {
         if (row && row.status === "ACTIVE") {
           let signerIp: string | null = null;
           if (user?.id && row.partner_1_id === user.id) {
-            signerIp = typeof row.partner_1_ip === "string" ? row.partner_1_ip : null;
+            signerIp =
+              typeof row.partner_1_ip === "string" ? row.partner_1_ip : null;
           } else if (user?.id && row.partner_2_id === user.id) {
-            signerIp = typeof row.partner_2_ip === "string" ? row.partner_2_ip : null;
+            signerIp =
+              typeof row.partner_2_ip === "string" ? row.partner_2_ip : null;
           } else {
-            const ip1 = typeof row.partner_1_ip === "string" ? row.partner_1_ip : null;
-            const ip2 = typeof row.partner_2_ip === "string" ? row.partner_2_ip : null;
+            const ip1 =
+              typeof row.partner_1_ip === "string" ? row.partner_1_ip : null;
+            const ip2 =
+              typeof row.partner_2_ip === "string" ? row.partner_2_ip : null;
             signerIp = ip1 ?? ip2 ?? null;
           }
 
@@ -900,7 +970,8 @@ function ProfileCouple() {
             couple_name: "Carmen & Roberto",
             username: "@pareja_demo",
             location: "Ciudad Demo",
-            couple_bio: "Perfil de demostración. Regístrate para crear tu perfil real.",
+            couple_bio:
+              "Perfil de demostración. Regístrate para crear tu perfil real.",
             is_verified: false,
             is_premium: false,
             relationship_type: "Otro" as any,
@@ -933,37 +1004,49 @@ function ProfileCouple() {
 
           try {
             // Usar RPC para obtener datos reales de la vista unificada
-            const { data: profileData, error } = await (supabase.rpc as any)('get_profile_by_user_id', {
-              p_user_id: user.id
-            });
+            const { data: profileData, error } = await (supabase.rpc as any)(
+              "get_profile_by_user_id",
+              {
+                p_user_id: user.id,
+              },
+            );
 
             if (error) {
-              logger.error("❌ Error cargando perfil de pareja:", { error: error.message });
+              logger.error("❌ Error cargando perfil de pareja:", {
+                error: error.message,
+              });
               throw error;
             }
 
-            if (profileData && profileData.account_type === 'couple') {
+            if (profileData && profileData.account_type === "couple") {
               // Convertir datos de la vista unificada al formato CoupleProfileWithPartners
               const realCoupleProfile: CoupleProfileWithPartners = {
                 id: profileData.couple_id || profileData.profile_id,
                 profile_id: profileData.profile_id,
                 couple_name: profileData.name,
-                username: profileData.nickname ? `@${profileData.nickname}` : `@${profileData.name?.toLowerCase().replace(/\s+/g, '_') || 'pareja'}`,
+                username: profileData.nickname
+                  ? `@${profileData.nickname}`
+                  : `@${profileData.name?.toLowerCase().replace(/\s+/g, "_") || "pareja"}`,
                 location: profileData.location || "Ubicación no especificada",
                 couple_bio: profileData.bio || "Información no disponible",
                 is_verified: profileData.is_verified || false,
                 is_premium: false, // TODO: Implementar lógica de premium
-                relationship_type: (profileData.relationship_type || "Otro") as any,
+                relationship_type: (profileData.relationship_type ||
+                  "Otro") as any,
                 couple_images: [], // TODO: Implementar carga de imágenes
                 partner1_id: profileData.user_id,
-                partner1_first_name: profileData.his_name?.split(' ')[0] || "Miembro 1",
-                partner1_last_name: profileData.his_name?.split(' ').slice(1).join(' ') || "",
+                partner1_first_name:
+                  profileData.his_name?.split(" ")[0] || "Miembro 1",
+                partner1_last_name:
+                  profileData.his_name?.split(" ").slice(1).join(" ") || "",
                 partner1_age: profileData.his_age || 18,
                 partner1_gender: profileData.his_gender || "not_specified",
                 partner1_bio: profileData.bio || "Información personal",
                 partner2_id: `${profileData.user_id}-partner2`,
-                partner2_first_name: profileData.her_name?.split(' ')[0] || "Miembro 2",
-                partner2_last_name: profileData.her_name?.split(' ').slice(1).join(' ') || "",
+                partner2_first_name:
+                  profileData.her_name?.split(" ")[0] || "Miembro 2",
+                partner2_last_name:
+                  profileData.her_name?.split(" ").slice(1).join(" ") || "",
                 partner2_age: profileData.her_age || 18,
                 partner2_gender: profileData.her_gender || "not_specified",
                 partner2_interested_in: profileData.interested_in?.[0] || "all",
@@ -977,16 +1060,21 @@ function ProfileCouple() {
               loadCoupleBlockchainData();
               return;
             } else {
-              logger.warn("⚠️ Usuario no tiene perfil de pareja, redirigiendo...");
+              logger.warn(
+                "⚠️ Usuario no tiene perfil de pareja, redirigiendo...",
+              );
               navigate("/profile-single");
               return;
             }
           } catch (dbError) {
-            logger.error("❌ Error de base de datos:", { error: String(dbError) });
+            logger.error("❌ Error de base de datos:", {
+              error: String(dbError),
+            });
             // En error de DB, mostrar mensaje pero no fallback a mock
             shadcnToast({
               title: "Error al cargar perfil",
-              description: "No se pudieron cargar los datos del perfil. Intente nuevamente.",
+              description:
+                "No se pudieron cargar los datos del perfil. Intente nuevamente.",
               variant: "destructive",
             });
             setLoading(false);
@@ -1040,9 +1128,7 @@ function ProfileCouple() {
           <p className="text-white/70 text-sm mb-4">
             Inténtalo de nuevo o vuelve a tu perfil single.
           </p>
-          <Button onClick={() => window.location.reload()}>
-            Reintentar
-          </Button>
+          <Button onClick={() => window.location.reload()}>Reintentar</Button>
         </div>
       </div>
     );
@@ -1083,33 +1169,31 @@ function ProfileCouple() {
   ];
 
   // En modo real, partner1 = "his" y partner2 = "her" (mapeo del RPC).
-  const preferenceMembers: [
-    CoupleMemberPreferences,
-    CoupleMemberPreferences,
-  ] = [
-    {
-      name: profile.partner1_first_name,
-      likes: isDemoMode
-        ? (savedDemoInterests?.his ?? [
-            DEMO_INTEREST_TITLES[0],
-            DEMO_INTEREST_TITLES[2],
-            DEMO_INTEREST_TITLES[4],
-          ])
-        : (coupleDetails?.his_interests ?? []),
-      dependsOn: [],
-    },
-    {
-      name: profile.partner2_first_name,
-      likes: isDemoMode
-        ? (savedDemoInterests?.her ?? [
-            DEMO_INTEREST_TITLES[1],
-            DEMO_INTEREST_TITLES[3],
-            DEMO_INTEREST_TITLES[5],
-          ])
-        : (coupleDetails?.her_interests ?? []),
-      dependsOn: [],
-    },
-  ];
+  const preferenceMembers: [CoupleMemberPreferences, CoupleMemberPreferences] =
+    [
+      {
+        name: profile.partner1_first_name,
+        likes: isDemoMode
+          ? (savedDemoInterests?.his ?? [
+              DEMO_INTEREST_TITLES[0],
+              DEMO_INTEREST_TITLES[2],
+              DEMO_INTEREST_TITLES[4],
+            ])
+          : (coupleDetails?.his_interests ?? []),
+        dependsOn: [],
+      },
+      {
+        name: profile.partner2_first_name,
+        likes: isDemoMode
+          ? (savedDemoInterests?.her ?? [
+              DEMO_INTEREST_TITLES[1],
+              DEMO_INTEREST_TITLES[3],
+              DEMO_INTEREST_TITLES[5],
+            ])
+          : (coupleDetails?.her_interests ?? []),
+        dependsOn: [],
+      },
+    ];
 
   const lookingForTags = isDemoMode
     ? ["Parejas"]
@@ -1172,6 +1256,40 @@ function ProfileCouple() {
                     </Tooltip>
                   </TooltipProvider>
                 )}
+                {/* Insignia de verificado + visibilidad + signos: el
+                    toggle "Signo zodiacal" de Privacidad controla si los
+                    signos se muestran; el modo invisible se ve con el
+                    fantasma 👻. (El check azul ya existe en los avatares;
+                    este texto lo hace explícito.) */}
+                {profile?.is_verified && (
+                  <Badge className="flex items-center gap-1 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-blue-500/50 backdrop-blur-md">
+                    <span>✓ Verificado</span>
+                  </Badge>
+                )}
+                <Badge
+                  className="flex items-center gap-1 rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
+                  title={visibilityBadge.title}
+                >
+                  <span>{visibilityBadge.label}</span>
+                </Badge>
+                {profilePrivacy.zodiacVisible && profileZodiac1 && (
+                  <Badge
+                    className="flex items-center gap-1 rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
+                    title="Signo zodiacal"
+                  >
+                    <span>{formatZodiacSign(profileZodiac1)}</span>
+                  </Badge>
+                )}
+                {profilePrivacy.zodiacVisible &&
+                  profileZodiac2 &&
+                  profileZodiac2.id !== profileZodiac1?.id && (
+                    <Badge
+                      className="flex items-center gap-1 rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
+                      title="Signo zodiacal"
+                    >
+                      <span>{formatZodiacSign(profileZodiac2)}</span>
+                    </Badge>
+                  )}
                 {isOwnProfile && hasWalletActive && (
                   <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-emerald-500/50 backdrop-blur-md">
                     <Wallet className="w-3 h-3" />
@@ -1402,11 +1520,16 @@ function ProfileCouple() {
                               </span>
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="min-w-[180px]">
+                          <DropdownMenuContent
+                            align="end"
+                            className="min-w-[180px]"
+                          >
                             <DropdownMenuLabel>
                               {isDemoMode ? "DEMO" : "Sesión Activa"}
                             </DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => navigate("/profile")}>
+                            <DropdownMenuItem
+                              onClick={() => navigate("/profile")}
+                            >
                               Ver Mi Perfil
                             </DropdownMenuItem>
                             <DropdownMenuItem
@@ -1419,7 +1542,9 @@ function ProfileCouple() {
                                   try {
                                     await signOut();
                                   } catch (error) {
-                                    logger.error("Error during sign out:", { error });
+                                    logger.error("Error during sign out:", {
+                                      error,
+                                    });
                                   }
                                   navigate("/");
                                 }
@@ -1518,28 +1643,38 @@ function ProfileCouple() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 md:p-10">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
-                  {couplePublicImageUrls.map((src, idx) => (
-                    <div
-                      key={src}
-                      className="aspect-square rounded-lg overflow-hidden"
-                    >
-                      <button
-                        type="button"
-                        className="w-full h-full"
-                        onClick={() => openPublicImageModal(idx)}
-                        aria-label={`Foto pública ${idx + 1}`}
+                {/* Sin botón de descarga para visitantes (menú contextual
+                    y arrastre bloqueados); la marca de agua se aplica si
+                    la pareja la tiene activa en Privacidad. */}
+                <ProtectedMedia
+                  isOwner={isOwnProfile}
+                  watermark={profilePrivacy.watermark}
+                  watermarkText={profile.couple_name || "ComplicesConecta"}
+                >
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
+                    {couplePublicImageUrls.map((src, idx) => (
+                      <div
+                        key={src}
+                        className="aspect-square rounded-lg overflow-hidden"
                       >
-                        <img
-                          src={src}
-                          alt={`Foto pública ${idx + 1}`}
-                          loading="lazy"
-                          className="w-full h-full object-cover hover:scale-105 transition-transform"
-                        />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                        <button
+                          type="button"
+                          className="w-full h-full"
+                          onClick={() => openPublicImageModal(idx)}
+                          aria-label={`Foto pública ${idx + 1}`}
+                        >
+                          <img
+                            src={src}
+                            alt={`Foto pública ${idx + 1}`}
+                            loading="lazy"
+                            {...noDownloadProps(isOwnProfile)}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform"
+                          />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </ProtectedMedia>
               </CardContent>
             </Card>
 
@@ -1551,16 +1686,18 @@ function ProfileCouple() {
                     <span className="font-semibold">Fotos Privadas</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {import.meta.env.PROD && isOwnProfile && !isGalleryUnlocked && (
-                      <Button
-                        onClick={handleViewPrivatePhotos}
-                        disabled={isBiometricUnlocking}
-                        className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[120px] justify-center"
-                      >
-                        <Unlock className="w-3 h-3" />
-                        {isBiometricUnlocking ? "Validando..." : "Biométrico"}
-                      </Button>
-                    )}
+                    {import.meta.env.PROD &&
+                      isOwnProfile &&
+                      !isGalleryUnlocked && (
+                        <Button
+                          onClick={handleViewPrivatePhotos}
+                          disabled={isBiometricUnlocking}
+                          className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[120px] justify-center"
+                        >
+                          <Unlock className="w-3 h-3" />
+                          {isBiometricUnlocking ? "Validando..." : "Biométrico"}
+                        </Button>
+                      )}
                     <Button
                       onClick={() => {
                         if (!isParentalLocked) {
@@ -1600,8 +1737,7 @@ function ProfileCouple() {
                     // la galería está bloqueada / sin sesión / sin permiso).
                     // `storagePath` solo se usa como key estable, nunca como src.
                     const imageSource =
-                      couplePrivateImageUrls[idx] ??
-                      PRIVATE_MEDIA_PLACEHOLDER;
+                      couplePrivateImageUrls[idx] ?? PRIVATE_MEDIA_PLACEHOLDER;
                     return (
                       <div
                         key={storagePath}
@@ -1628,15 +1764,13 @@ function ProfileCouple() {
                         <img
                           src={imageSource}
                           alt="Private content"
+                          {...noDownloadProps(isOwnProfile)}
                           onError={(e) => {
                             // C6: sin fallback a la imagen privada pública;
                             // solo al placeholder genérico, y sin reintentar
                             // si ya es el placeholder.
-                            const img =
-                              e.currentTarget as HTMLImageElement;
-                            if (
-                              !img.src.endsWith(PRIVATE_MEDIA_PLACEHOLDER)
-                            ) {
+                            const img = e.currentTarget as HTMLImageElement;
+                            if (!img.src.endsWith(PRIVATE_MEDIA_PLACEHOLDER)) {
                               img.src = PRIVATE_MEDIA_PLACEHOLDER;
                             }
                           }}
@@ -1742,9 +1876,10 @@ function ProfileCouple() {
                   onClick={() => {
                     if (typeof window !== "undefined") {
                       window.location.hash = "wallet";
-                      document
-                        .getElementById("wallet")
-                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      document.getElementById("wallet")?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
                     }
                   }}
                   className="bg-linear-to-r from-fuchsia-600 to-blue-600 hover:from-fuchsia-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-fuchsia-500/40 flex items-center gap-2"
@@ -1880,10 +2015,14 @@ function ProfileCouple() {
                   profileId={profile?.id || ""}
                   profileName={profile.couple_name || "Perfil de Pareja"}
                   onAccessGranted={(requesterId) => {
-                    logger.info("Acceso Concedido a Galería Privada", { requesterId });
+                    logger.info("Acceso Concedido a Galería Privada", {
+                      requesterId,
+                    });
                   }}
                   onAccessDenied={(requesterId) => {
-                    logger.info("Acceso Denegado a Galería Privada", { requesterId });
+                    logger.info("Acceso Denegado a Galería Privada", {
+                      requesterId,
+                    });
                   }}
                 />
               </div>
@@ -2005,7 +2144,7 @@ function ProfileCouple() {
       />
 
       {isParentalLocked && !showParentalUnlock && (
-        <div className="fixed bottom-24 right-4 z-50">
+        <div className="fixed top-20 right-4 z-50">
           <button
             type="button"
             onClick={() => setShowParentalUnlock(true)}
@@ -2019,9 +2158,7 @@ function ProfileCouple() {
       <ImageModal
         isOpen={showImageModal}
         onClose={() => _setShowImageModal(false)}
-        images={
-          modalImages.length > 0 ? modalImages : couplePrivateImageUrls
-        }
+        images={modalImages.length > 0 ? modalImages : couplePrivateImageUrls}
         currentIndex={_selectedImageIndex}
         onNavigate={navigateCarousel}
         onLike={_handleImageLike}
@@ -2047,6 +2184,3 @@ function ProfileCouple() {
 }
 
 export default ProfileCouple;
-
-
-

@@ -14,7 +14,13 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-md",
+      // Abajo, por encima del dock (4.75rem ≈ alto del dock + safe-area):
+      // antes estaba arriba (top-0) a todo lo ancho y tapaba el contenido
+      // central — el toggle de tema, las zonas de foto del editor, el hilo
+      // de chat y el texto del banner "¡100 CMPX reclamados!". El viewport
+      // es pointer-events-none para que solo el toast (pointer-events-auto)
+      // intercepte toques; el área vacía no bloquea botones debajo.
+      "pointer-events-none fixed bottom-[calc(env(safe-area-inset-bottom)+4.75rem)] left-0 z-100 flex max-h-screen w-full flex-col p-4 sm:left-auto sm:right-4 sm:max-w-md",
       className,
     )}
     {...props}

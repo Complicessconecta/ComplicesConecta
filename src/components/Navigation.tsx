@@ -118,10 +118,14 @@ export const Navigation = ({ className }: NavigationProps) => {
 
   return (
     <>
-      {/* Botón flotante de cambio de tema */}
-      <div className="fixed top-20 right-4 z-40">
-        <ThemeToggle />
-      </div>
+      {/* Botón flotante de cambio de tema. No se muestra en los editores
+          de perfil: ahí tapaba las zonas de foto (captura 16:26, editor
+          de pareja). El tema se puede cambiar desde cualquier otra ruta. */}
+      {!location.pathname.startsWith("/edit-profile") && (
+        <div className="fixed top-20 right-4 z-40">
+          <ThemeToggle />
+        </div>
+      )}
 
       {/* Navegación inferior */}
       <nav

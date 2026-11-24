@@ -33,15 +33,6 @@ export const MainLayout = () => {
       : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
 
-  const hasDemoSession = (() => {
-    if (typeof window === "undefined") return false;
-    try {
-      return window.localStorage.getItem("demo_authenticated") === "true";
-    } catch {
-      return false;
-    }
-  })();
-
   const pathname = location.pathname;
 
   // Lista explícita de rutas donde NO debe aparecer HeaderNav
@@ -81,14 +72,11 @@ export const MainLayout = () => {
         : "pt-[calc(env(safe-area-inset-top)+4rem)]"
       : "pt-[env(safe-area-inset-top)]";
 
-  // Bottom Navigation solo para usuarios logueados (incluye sesiones demo)
-  const showBottomNavigation = hasSession || hasDemoSession;
-
-  // El dock de 5 botones (BottomNavigation) se muestra solo en demo y en
-  // rutas de perfil (misma condición que en BottomNavigation.tsx). Cuando el
-  // dock está visible, la barra de 10 botones (Navigation, z-50) no debe
-  // renderizarse: la pintaba encima del dock (z-40) y no se podía tocar.
-  // Exclusión mutua: una sola barra inferior a la vez.
+  // La barra de 10 botones (Navigation) es el dock DEL PERFIL: solo se
+  // muestra en rutas de perfil (demo o producción). En el index y en el
+  // resto de páginas va oculta: aparecía en cualquier selección y su botón
+  // Perfil lanzaba a los perfiles demo. En rutas de perfil demo, el dock de
+  // 5 botones (BottomNavigation) la sustituye (exclusión mutua).
   const showDock =
     isDemo() &&
     (pathname === "/profile" ||
@@ -179,8 +167,8 @@ export const MainLayout = () => {
           </div>
         </main>
 
-        {/* Bottom Navigation (perfil/app) — solo cuando el dock no está visible */}
-        {showBottomNavigation && !showDock && <Navigation />}
+        {/* Bottom Navigation (perfil) — solo en rutas de perfil y cuando el dock de 5 botones no está visible */}
+        {isProfileRoute && !showDock && <Navigation />}
         
         {/* Bottom Navigation for Demo Profiles */}
         <BottomNavigation />

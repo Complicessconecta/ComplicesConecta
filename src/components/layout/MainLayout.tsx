@@ -1,12 +1,12 @@
 import React, { Suspense, useState, lazy } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Navigation } from "@/components/Navigation";
-import { BottomNavigation } from "@/components/layout/BottomNavigation";
 import { Toaster } from "@/components/ui/toaster";
 const ChatLazy = lazy(() => import("@/pages/Chat"));
 
@@ -21,7 +21,7 @@ const PageLoader = () => (
 );
 
 export const MainLayout = () => {
-  const { profile: _profile, isAuthenticated, user, signOut, isDemo } = useAuth();
+  const { profile: _profile, isAuthenticated, user, signOut } = useAuth();
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -81,18 +81,6 @@ export const MainLayout = () => {
         : "pt-[calc(env(safe-area-inset-top)+4rem)]"
       : "pt-[env(safe-area-inset-top)]";
 
-  // La barra de 10 botones (Navigation) es el dock DEL PERFIL: solo se
-  // muestra en rutas de perfil (demo o producción). En el index y en el
-  // resto de páginas va oculta: aparecía en cualquier selección y su botón
-  // Perfil lanzaba a los perfiles demo. En rutas de perfil demo, el dock de
-  // 5 botones (BottomNavigation) la sustituye (exclusión mutua).
-  const showDock =
-    isDemo() &&
-    (pathname === "/profile" ||
-      pathname === "/profile-single" ||
-      pathname === "/profile-couple" ||
-      pathname.startsWith("/profile-"));
-
   // Chat FAB no se muestra en rutas de perfil
   const isProfileRoute =
     pathname === "/profile" ||
@@ -100,6 +88,14 @@ export const MainLayout = () => {
     pathname === "/profile-couple" ||
     pathname.startsWith("/profile/") ||
     pathname.startsWith("/edit-profile-");
+
+  // La barra de 10 botones (Navigation) es el dock DEL PERFIL: solo se
+  // muestra en rutas de perfil (demo o producción). Antes dependía de
+  // isDemo() y se alternaba con el dock de 5 botones (BottomNavigation)
+  // en el mismo perfil (10 iconos a las 13:07, 5 a las 13:19): el dock
+  // debe ser ESTABLE. Ahora Navigation es el único dock de perfil, con
+  // o sin demo; BottomNavigation ya no se renderiza.
+  const showDock = isProfileRoute;
 
   const showChatFab = !isProfileRoute;
 
@@ -167,24 +163,78 @@ export const MainLayout = () => {
               (la URL cambiaba a /matches o /discover pero la pantalla se
               quedaba en el chat, en los dos modos: "wait" y por defecto).
               La transición entre páginas es cosmética; la navegación no
-              debe depender de ella. El Outlet se renderiza directo. */}
+              debe depender de ella. El Outlet se renderiza directo.
+              key={pathname} fuerza el remontaje de la página en cada
+              navegación SPA: sin él, Ley Olimpia y Moderadores cambiaban
+              la URL pero conservaban el contenido anterior hasta recargar. */}
             <PageBackground>
               <Suspense fallback={<PageLoader />}>
-                <Outlet />
+                <Outlet key={pathname} />
               </Suspense>
             </PageBackground>
           </div>
         </main>
 
-        {/* Bottom Navigation (perfil) — solo en rutas de perfil y cuando el dock de 5 botones no está visible */}
-        {isProfileRoute && !showDock && <Navigation />}
-        
-        {/* Bottom Navigation for Demo Profiles */}
-        <BottomNavigation />
+        {/* Botón de regreso en páginas sin dock ni header: sin él no había
+          forma de volver atrás (Wacko, full test 24 Nov 2026). */}
+        {hasSession && !isProfileRoute && <BackButton />}
+
+        {/* Bottom Navigation (perfil) — el dock de 10 botones, estable en
+          rutas de perfil con o sin demo */}
+        {showDock && <Navigation />}
 
         <Toaster />
       </div>
     </div>
+  );
+};
+
+// Botón flotante "Volver" para rutas autenticadas sin dock (feed, chat,
+// tokens, clubs, ajustes...): vuelve a la página anterior o al perfil.
+const BackButton: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isDemo, getProfileType } = useAuth();
+  const pathname = location.pathname;
+
+  // Rutas que ya tienen su propio regreso o navegación: landing, auth,
+  // club demo (botón Volver propio) y tokens (TokensSubnav).
+  if (
+    pathname === "/" ||
+    pathname === "/auth" ||
+    pathname === "/clubs/demo" ||
+    pathname === "/tokens" ||
+    pathname.startsWith("/tokens/")
+  ) {
+    return null;
+  }
+
+  const handleBack = () => {
+    const idx = (window.history.state as { idx?: number } | null)?.idx;
+    if (typeof idx === "number" && idx > 0) {
+      navigate(-1);
+      return;
+    }
+    // Sin historial previo: al perfil en demo, al inicio en real.
+    if (typeof isDemo === "function" ? isDemo() : Boolean(isDemo)) {
+      navigate(
+        getProfileType() === "couple" ? "/profile-couple" : "/profile-single",
+      );
+      return;
+    }
+    navigate("/");
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleBack}
+      aria-label="Volver a la página anterior"
+      className="fixed left-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-40 flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 px-3 py-2 text-sm font-semibold text-white shadow-lg hover:bg-black/80"
+    >
+      <ArrowLeft className="h-4 w-4" />
+      Volver
+    </button>
   );
 };
 

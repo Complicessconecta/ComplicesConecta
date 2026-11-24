@@ -7,6 +7,19 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import type { Database } from "@/types/supabase-generated";
+import {
+  loadClubDiscounts,
+  loadClubEvents,
+  type ClubDiscountItem,
+  type ClubEventItem,
+} from "@/services/clubs/clubContentService";
+
+/** Fotos de galería del club (la portada + 3 verificadas en Unsplash). */
+const CLUB_GALLERY_PHOTOS = [
+  "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800",
+  "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=800",
+  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800",
+];
 
 type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
 
@@ -25,7 +38,7 @@ function mapClubRowToPublicClub(row: ClubRow): PublicClub {
     checkIns: row.check_in_count ?? 0,
     coverImage:
       row.cover_image_url ??
-      "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200",
     vibe: row.vibe_status ?? "✨ Lifestyle",
     tier: row.membership_tier === "premium" ? "premium" : "free",
   };
@@ -61,7 +74,7 @@ export const PUBLIC_CLUBS: PublicClub[] = [
     reviews: 128,
     checkIns: 420,
     coverImage:
-      "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200",
     vibe: "🔥 On Fire",
     tier: "free",
   },
@@ -78,7 +91,7 @@ export const PUBLIC_CLUBS: PublicClub[] = [
     reviews: 186,
     checkIns: 980,
     coverImage:
-      "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200",
     vibe: "🔥 On Fire",
     tier: "premium",
   },
@@ -156,6 +169,25 @@ export const ClubsPublic = () => {
     if (!slug) return null;
     return clubs.find((club) => club.slug === slug) ?? null;
   }, [slug, clubs]);
+
+  // Contenido del club seleccionado: eventos y descuentos reales
+  // (club_events / club_discounts) con respaldo demo. Antes el detalle
+  // solo mostraba la cabecera y quedaba vacío debajo.
+  const [detailEvents, setDetailEvents] = useState<ClubEventItem[]>([]);
+  const [detailDiscounts, setDetailDiscounts] = useState<ClubDiscountItem[]>([]);
+  useEffect(() => {
+    if (!selectedClub) return;
+    let cancelled = false;
+    void loadClubEvents(selectedClub.id).then(({ items }) => {
+      if (!cancelled) setDetailEvents(items);
+    });
+    void loadClubDiscounts(selectedClub.id).then(({ items }) => {
+      if (!cancelled) setDetailDiscounts(items);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedClub]);
 
   return (
     <div className="min-h-screen bg-transparent p-4 sm:p-6">
@@ -238,6 +270,104 @@ export const ClubsPublic = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Galería */}
+            <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-white mb-4">Galería</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[selectedClub.coverImage, ...CLUB_GALLERY_PHOTOS].map((url, i) => (
+                    <img
+                      key={i}
+                      src={url}
+                      alt={`${selectedClub.name} — foto ${i + 1}`}
+                      className="w-full h-40 object-cover rounded-xl"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Eventos */}
+            <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-white mb-4">Próximos eventos</h3>
+                {detailEvents.length === 0 ? (
+                  <p className="text-white/60">Sin eventos publicados por ahora.</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {detailEvents.map((ev) => (
+                      <li key={ev.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                        <div className="min-w-0">
+                          <p className="text-white font-semibold truncate">{ev.title}</p>
+                          <p className="text-white/60 text-sm">
+                            {new Date(ev.date).toLocaleDateString("es-MX")}
+                            {ev.startTime ? ` · ${ev.startTime}` : ""}
+                            {ev.location ? ` · ${ev.location}` : ""}
+                          </p>
+                        </div>
+                        <Badge className="bg-fuchsia-600 text-white shrink-0">
+                          {ev.isVip ? "VIP" : `$${ev.price}`}
+                        </Badge>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Descuentos + contacto */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Descuentos</h3>
+                  {detailDiscounts.length === 0 ? (
+                    <p className="text-white/60">Sin descuentos activos por ahora.</p>
+                  ) : (
+                    <ul className="space-y-3">
+                      {detailDiscounts.map((d) => (
+                        <li key={d.id} className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 px-4 py-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-white font-mono font-bold">{d.code}</span>
+                            <Badge className="bg-fuchsia-600 text-white">
+                              {d.discountPercent !== null
+                                ? `${d.discountPercent}% OFF`
+                                : d.discountAmount !== null
+                                  ? `$${d.discountAmount} OFF`
+                                  : "Promo"}
+                            </Badge>
+                          </div>
+                          {d.description && (
+                            <p className="text-white/70 text-sm mt-1">{d.description}</p>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </CardContent>
+              </Card>
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Contacto</h3>
+                  <p className="text-white/80 flex items-start gap-2">
+                    <MapPin className="h-4 w-4 mt-1 shrink-0" />
+                    <span>
+                      {selectedClub.address}, {selectedClub.city}, {selectedClub.state}
+                    </span>
+                  </p>
+                  <p className="text-white/60 text-sm mt-3">
+                    Nivel {selectedClub.tier === "premium" ? "Premium" : "Gratuito"} · {selectedClub.vibe}
+                  </p>
+                  <Button
+                    onClick={() => navigate("/clubs")}
+                    className="mt-4 w-full bg-linear-to-r from-purple-600 to-fuchsia-600 text-white"
+                  >
+                    Ver en el directorio de clubs
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -40,7 +40,7 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
           <>
             {/* Imagen de banner animada */}
             <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
-              backgroundImage: 'url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200&q=80)',
+              backgroundImage: 'url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&q=80)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }} />

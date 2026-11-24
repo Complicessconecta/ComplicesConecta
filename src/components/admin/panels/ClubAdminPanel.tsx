@@ -5,6 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import {
+  createClubEvent,
+  loadClubEvents,
+  loadClubMembers,
+  type ClubEventItem,
+  type ClubMemberItem,
+} from '@/services/clubs/clubContentService';
 
 // Datos de respaldo cuando Supabase no devuelve clubs (tabla vacía / RLS).
 const MOCK_CLUBS = [
@@ -61,14 +68,57 @@ const ClubAdminPanelSimple: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
+  // Eventos y miembros del club seleccionado: leen/escriben las tablas
+  // club_events y club_members (migración 20261124030000) con respaldo demo.
+  const [selectedClubId, setSelectedClubId] = useState<string>('');
+  const [events, setEvents] = useState<ClubEventItem[]>([]);
+  const [members, setMembers] = useState<ClubMemberItem[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(false);
+  const [newEventTitle, setNewEventTitle] = useState('');
+  const [newEventDate, setNewEventDate] = useState('');
+  const [newEventPrice, setNewEventPrice] = useState('');
+
+  useEffect(() => {
+    if (clubs.length > 0 && !selectedClubId) {
+      const first = clubs[0];
+      if (first) setSelectedClubId(first.id);
+    }
+  }, [clubs, selectedClubId]);
+
+  useEffect(() => {
+    if (!selectedClubId) return;
+    let cancelled = false;
+    setEventsLoading(true);
+    void Promise.all([
+      loadClubEvents(selectedClubId),
+      loadClubMembers(selectedClubId),
+    ]).then(([{ items: ev }, { items: mb }]) => {
+      if (cancelled) return;
+      setEvents(ev);
+      setMembers(mb);
+      setEventsLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedClubId]);
+
   // Cargar clubs reales de Supabase; sin datos se usa el respaldo demo.
+  // La consulta compite contra un timeout de 3 s: sin él, una BD lenta
+  // dejaba ~10 s en "Cargando clubs..." antes de mostrar el respaldo.
   const loadClubs = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const query = supabase
         .from("clubs")
         .select("id, name, city, rating_average, check_in_count, is_active, verified_at, membership_tier, created_at")
         .order("created_at", { ascending: false });
+      const { data, error } = await Promise.race([
+        query,
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("timeout cargando clubs")), 3000),
+        ),
+      ]);
       if (error) throw error;
       if (data && data.length > 0) {
         const mapped: SimpleClub[] = data.map((row) => ({
@@ -287,33 +337,33 @@ const ClubAdminPanelSimple: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-200">
+            <table className="w-full min-w-[720px] border-collapse border border-white/15 text-white">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="border border-gray-200 px-4 py-2 text-left">Nombre</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Ciudad</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Categoría</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Estado</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Rating</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Check-ins</th>
-                  <th className="border border-gray-200 px-4 py-2 text-left">Acciones</th>
+                <tr className="bg-purple-950/80">
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Nombre</th>
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Ciudad</th>
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Categoría</th>
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Estado</th>
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Rating</th>
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Check-ins</th>
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredClubs.map((club) => (
-                  <tr key={club.id} className="hover:bg-gray-50">
-                    <td className="border border-gray-200 px-4 py-2 font-medium">{club.name}</td>
-                    <td className="border border-gray-200 px-4 py-2">{club.city}</td>
-                    <td className="border border-gray-200 px-4 py-2">{getCategoryBadge(club.category)}</td>
-                    <td className="border border-gray-200 px-4 py-2">{getStatusBadge(club)}</td>
-                    <td className="border border-gray-200 px-4 py-2">
+                  <tr key={club.id} className="hover:bg-white/5">
+                    <td className="border border-white/15 px-4 py-2 font-medium text-white">{club.name}</td>
+                    <td className="border border-white/15 px-4 py-2 text-white/90">{club.city}</td>
+                    <td className="border border-white/15 px-4 py-2">{getCategoryBadge(club.category)}</td>
+                    <td className="border border-white/15 px-4 py-2">{getStatusBadge(club)}</td>
+                    <td className="border border-white/15 px-4 py-2">
                       <div className="flex items-center gap-1">
                         <span>{club.rating}</span>
-                        <span className="text-muted-foreground">({club.checkIns})</span>
+                        <span className="text-white/60">({club.checkIns})</span>
                       </div>
                     </td>
-                    <td className="border border-gray-200 px-4 py-2">{club.checkIns}</td>
-                    <td className="border border-gray-200 px-4 py-2">
+                    <td className="border border-white/15 px-4 py-2 text-white/90">{club.checkIns}</td>
+                    <td className="border border-white/15 px-4 py-2">
                       <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
@@ -351,6 +401,118 @@ const ClubAdminPanelSimple: React.FC = () => {
               </tbody>
             </table>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Eventos y miembros del club seleccionado */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Eventos y miembros</CardTitle>
+          <CardDescription>
+            Eventos (club_events) y miembros (club_members) del club seleccionado
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <select
+            value={selectedClubId}
+            onChange={(e) => setSelectedClubId(e.target.value)}
+            className="w-full rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white"
+          >
+            {clubs.map((c) => (
+              <option key={c.id} value={c.id} className="bg-purple-950 text-white">
+                {c.name} — {c.city}
+              </option>
+            ))}
+          </select>
+
+          {eventsLoading ? (
+            <p className="text-white/70 text-sm flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" /> Cargando eventos y miembros...
+            </p>
+          ) : (
+            <>
+              <div>
+                <h4 className="text-white font-semibold mb-2">Eventos ({events.length})</h4>
+                {events.length === 0 ? (
+                  <p className="text-white/60 text-sm">Sin eventos para este club.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {events.map((ev) => (
+                      <li key={ev.id} className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                        <div className="min-w-0">
+                          <p className="text-white font-medium truncate">{ev.title}</p>
+                          <p className="text-white/60 text-xs">
+                            {new Date(ev.date).toLocaleDateString("es-MX")} {ev.startTime ? `· ${ev.startTime}` : ""} · {ev.registeredCount}/{ev.capacity} registrados
+                          </p>
+                        </div>
+                        <Badge variant="secondary">{ev.isVip ? "VIP" : `$${ev.price}`}</Badge>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <form
+                className="flex flex-wrap gap-2"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!newEventTitle.trim() || !newEventDate || !selectedClubId) return;
+                  const created = await createClubEvent({
+                    clubId: selectedClubId,
+                    title: newEventTitle.trim(),
+                    eventDate: newEventDate,
+                    price: Number(newEventPrice) || 0,
+                  });
+                  setEvents((prev) => [created, ...prev]);
+                  setNewEventTitle("");
+                  setNewEventDate("");
+                  setNewEventPrice("");
+                }}
+              >
+                <input
+                  value={newEventTitle}
+                  onChange={(e) => setNewEventTitle(e.target.value)}
+                  placeholder="Título del evento"
+                  className="flex-1 min-w-[160px] rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white placeholder:text-white/40"
+                />
+                <input
+                  type="date"
+                  value={newEventDate}
+                  onChange={(e) => setNewEventDate(e.target.value)}
+                  className="rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white"
+                />
+                <input
+                  type="number"
+                  min={0}
+                  value={newEventPrice}
+                  onChange={(e) => setNewEventPrice(e.target.value)}
+                  placeholder="Precio $"
+                  className="w-28 rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white placeholder:text-white/40"
+                />
+                <Button type="submit" variant="love">
+                  <Plus className="h-4 w-4 mr-1" /> Crear evento
+                </Button>
+              </form>
+
+              <div>
+                <h4 className="text-white font-semibold mb-2">Miembros ({members.length})</h4>
+                {members.length === 0 ? (
+                  <p className="text-white/60 text-sm">Sin miembros registrados.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {members.map((m) => (
+                      <li key={m.id} className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                        <span className="text-white truncate">{m.displayName}</span>
+                        <Badge variant="secondary">
+                          {m.role} · {m.status}
+                        </Badge>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

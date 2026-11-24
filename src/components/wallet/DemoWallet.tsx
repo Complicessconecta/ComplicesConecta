@@ -25,7 +25,19 @@ interface DemoNFT {
 
 interface DemoWalletProps {
   userId: string;
+  /** Tipo de cuenta demo: define los balances canónicos (useTokens).
+   * Antes los valores eran fijos de single (CMPX 1250 / GTK 500) y la
+   * pareja mostraba esos mismos números. */
+  accountType?: "single" | "couple";
 }
+
+/**
+ * Balances demo canónicos (misma fuente que useTokens()).
+ */
+const DEMO_BALANCES = {
+  single: { cmpx: 1250, gtk: 850, nfts: 4 },
+  couple: { cmpx: 2000, gtk: 1500, nfts: 2 },
+} as const;
 
 /**
  * Interfaz para Token mock
@@ -41,7 +53,7 @@ interface DemoToken {
 /**
  * Componente de Wallet para perfiles demo
  */
-export function DemoWallet({ userId }: DemoWalletProps) {
+export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("0x1234...5678");
   const [balance, setBalance] = useState("0.00");
@@ -66,17 +78,22 @@ export function DemoWallet({ userId }: DemoWalletProps) {
 
   // Única fuente de verdad en NFTService (DEFAULT_DEMO_NFTS); aquí solo se
   // adapta is_couple -> isCouple para el estado local del componente.
+  // En pareja solo se muestran sus 2 NFTs (is_couple); en single los 4.
   const defaultDemoNFTs: DemoNFT[] = useMemo(
     () =>
-      DEFAULT_DEMO_NFTS.map((nft) => ({
-        id: nft.id,
-        name: nft.name,
-        rarity: nft.rarity,
-        image: nft.image,
-        value: nft.value,
-        isCouple: nft.is_couple,
-      })),
-    [],
+      DEFAULT_DEMO_NFTS.filter((nft) =>
+        accountType === "couple" ? nft.is_couple : true,
+      )
+        .slice(0, DEMO_BALANCES[accountType].nfts)
+        .map((nft) => ({
+          id: nft.id,
+          name: nft.name,
+          rarity: nft.rarity,
+          image: nft.image,
+          value: nft.value,
+          isCouple: nft.is_couple,
+        })),
+    [accountType],
   );
 
   const [demoNFTs, setDemoNFTs] = useState<DemoNFT[]>(defaultDemoNFTs);
@@ -91,7 +108,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
       if (!Array.isArray(parsed)) return;
       const normalized = parsed
         .filter((item): item is Record<string, unknown> => Boolean(item))
-        .slice(0, 4)
+        .slice(0, DEMO_BALANCES[accountType].nfts)
         .map((item, idx): DemoNFT => {
           const rarityRaw = item.rarity;
           const rarity: DemoNFT["rarity"] =
@@ -168,29 +185,35 @@ export function DemoWallet({ userId }: DemoWalletProps) {
         isCouple: false,
       },
       ...demoNFTs,
-    ].slice(0, 4);
+    ].slice(0, DEMO_BALANCES[accountType].nfts);
 
     setDemoNFTs(next);
     writeDemoNFTs(next);
   };
 
-  // Tokens mock para demo
+  // Tokens demo canónicos según el tipo de cuenta (useTokens()).
+  const canonical = DEMO_BALANCES[accountType];
   const demoTokens: DemoToken[] = [
     {
       symbol: "CMPX",
-      balance: 1250,
+      balance: canonical.cmpx,
       value: 250,
       type: "cmpx",
       isPremium: false,
     },
     {
       symbol: "GTK",
-      balance: 500,
+      balance: canonical.gtk,
       value: 5000,
       type: "gtk",
       isPremium: true,
     },
   ];
+  // Staking derivado del GTK canónico (20% bloqueado, como en useTokens;
+  // rewards al 35% APY sobre lo bloqueado). Antes eran fijos 500/175 GTK
+  // aunque el balance fuera otro.
+  const gtkStaked = Math.round(canonical.gtk * 0.2);
+  const gtkRewards = Math.round(gtkStaked * 0.35);
 
   const rarityColors = {
     common: "from-gray-500 to-gray-600",
@@ -404,7 +427,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Tokens bloqueados</span>
-                <span className="font-semibold text-white">500 GTK</span>
+                <span className="font-semibold text-white">{gtkStaked} GTK</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Duración</span>
@@ -412,7 +435,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Rewards acumulados</span>
-                <span className="font-semibold text-green-400">175 GTK</span>
+                <span className="font-semibold text-green-400">{gtkRewards} GTK</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Fecha de liberación</span>

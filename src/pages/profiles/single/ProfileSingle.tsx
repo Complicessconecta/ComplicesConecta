@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Unlock, Users, MessageCircle, Calendar, CheckCircle, Sparkles, Camera, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Unlock, Users, Calendar, CheckCircle, Sparkles, Camera, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/forms/Input";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ReportProfileDialog } from "@/components/profiles/shared/ReportProfileDialog";
+import { ReportDialog } from "@/components/dialogs/ReportDialog";
 import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { useProfileScore } from "@/features/profile/useProfileScore";
@@ -190,6 +190,7 @@ const ProfileSingle: FC = () => {
         setIsParentalLocked(false);
         setShowParentalUnlock(false);
         setDemoPrivateUnlocked(true);
+        persistUnlock();
         return;
       }
 
@@ -345,6 +346,23 @@ const ProfileSingle: FC = () => {
 
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
+  // PIN persistente (full test 2026-11-24): el desbloqueo de la galería
+  // privada con PIN 1234 (demo) se perdía al navegar porque el efecto de
+  // montaje forzaba locked=true siempre. Se guarda la expiración del
+  // desbloqueo (1 h, igual que las URLs firmadas de la galería): al montar
+  // solo se fuerza el bloqueo si ya expiró. El auto-bloqueo del
+  // ParentalControl (onToggle(true)) y el botón Bloquear limpian la clave.
+  const [unlockExpiresAt, setUnlockExpiresAt] = usePersistedState<number>(
+    "private_gallery_unlocked_until",
+    0,
+  );
+  const persistUnlock = useCallback(() => {
+    setUnlockExpiresAt(Date.now() + 60 * 60 * 1000);
+  }, [setUnlockExpiresAt]);
+  const clearUnlock = useCallback(() => {
+    setUnlockExpiresAt(0);
+  }, [setUnlockExpiresAt]);
+
   // Estado para control parental: la galería privada carga BLOQUEADA.
   // (Antes: false, y las fotos privadas quedaban visibles sin PIN en la
   // primera carga del perfil.)
@@ -355,11 +373,24 @@ const ProfileSingle: FC = () => {
 
   const [showParentalUnlock, setShowParentalUnlock] = useState(false);
 
-  // Bloquear al montar el perfil: cubre instalaciones que ya tenían
+  // Restaurar el desbloqueo vigente al montar; si expiró (o nunca hubo),
+  // bloquear: cubre instalaciones que ya tenían
   // "parentalControlLocked" = false persistido antes de este fix.
+  const unlockRestoredRef = useRef(false);
   useEffect(() => {
-    setIsParentalLocked(true);
-    setDemoPrivateUnlocked(false);
+    if (unlockRestoredRef.current) return;
+    unlockRestoredRef.current = true;
+    if (unlockExpiresAt > Date.now()) {
+      setIsParentalLocked(false);
+      setDemoPrivateUnlocked(true);
+    } else {
+      setIsParentalLocked(true);
+      setDemoPrivateUnlocked(false);
+      if (unlockExpiresAt !== 0) setUnlockExpiresAt(0);
+    }
+    // Solo al montar: el valor leído de localStorage en el primer render
+    // es la fuente; reaccionar a cambios posteriores lo re-bloquearía.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isPostCommentModalOpen, setIsPostCommentModalOpen] = useState(false);
@@ -518,7 +549,7 @@ const ProfileSingle: FC = () => {
     ) {
       return profilePrivateImages;
     }
-    return privateImageStoragePaths.map((storagePath, idx) => ({
+    return privateImageStoragePaths.map((_storagePath, idx) => ({
       id: String(idx + 1),
       url: privateImageUrls[idx] ?? PRIVATE_MEDIA_PLACEHOLDER,
       title: "Contenido privado",
@@ -600,6 +631,12 @@ const ProfileSingle: FC = () => {
 
   // Funciones para cargar datos adicionales
   const loadProfileStats = useCallback(async () => {
+    // Demo: no hay API real de estadísticas; contadores coherentes con el
+    // contenido demo (12 posts, 2 matches) en vez de 0 junto a contenido.
+    // Fuera de demo siguen en 0 hasta que exista la API real.
+    const demoStats = isDemoMode()
+      ? { totalViews: 148, totalLikes: 56, totalMatches: 2 }
+      : { totalViews: 0, totalLikes: 0, totalMatches: 0 };
     try {
       // Intentar cargar estadísticas reales, no mock
       // TODO: Implementar carga real de estadísticas desde API
@@ -607,9 +644,7 @@ const ProfileSingle: FC = () => {
 
       // Por ahora, usar valores por defecto hasta implementar API real
       const defaultStats = {
-        totalViews: 0,
-        totalLikes: 0,
-        totalMatches: 0,
+        ...demoStats,
         profileCompleteness: 0,
         lastActive: new Date(currentProfile.created_at || new Date()),
         joinDate: new Date(currentProfile.created_at || new Date()),
@@ -620,9 +655,7 @@ const ProfileSingle: FC = () => {
       logger.error("Error loading profile stats:", { error: String(error) });
       // En error, usar valores por defecto
       setProfileStats({
-        totalViews: 0,
-        totalLikes: 0,
-        totalMatches: 0,
+        ...demoStats,
         profileCompleteness: 0,
         lastActive: new Date(),
         joinDate: new Date(),
@@ -1810,7 +1843,10 @@ const ProfileSingle: FC = () => {
 
           {/* Demo Wallet - solo demo, tras la información del perfil */}
           {isDemoProfile && (
-            <DemoWallet userId={user?.id || profile?.id || ""} />
+            <DemoWallet
+              userId={user?.id || profile?.id || ""}
+              accountType="single"
+            />
           )}
 
           {/* Publicaciones - después de la información del perfil */}
@@ -1881,7 +1917,7 @@ const ProfileSingle: FC = () => {
             </CardContent>
           </Card>
 
-          {/* Galera */}
+          {/* Galería */}
           <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
@@ -1903,7 +1939,7 @@ const ProfileSingle: FC = () => {
                 </div>
               )}
 
-              {/* Galera pblica siempre visible */}
+              {/* Galería pública siempre visible */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 mb-6">
                 <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <button
@@ -1999,6 +2035,7 @@ const ProfileSingle: FC = () => {
                           setShowParentalUnlock(false);
                           setDemoPrivateUnlocked(false);
                           setShowImageModal(false);
+                          clearUnlock();
                         } else {
                           // DESBLOQUEAR: activar ParentalControl para ingresar PIN
                           setIsParentalLocked(true);
@@ -2206,16 +2243,19 @@ const ProfileSingle: FC = () => {
             if (!locked) {
               setDemoPrivateUnlocked(true);
               setShowParentalUnlock(false);
+              persistUnlock();
             } else {
               // Si se bloquea, ocultar imágenes privadas
               setDemoPrivateUnlocked(false);
               setShowParentalUnlock(false);
+              clearUnlock();
             }
           }}
           onUnlock={() => {
             // Callback cuando se desbloquea exitosamente con PIN
             setDemoPrivateUnlocked(true);
             setShowParentalUnlock(false);
+            persistUnlock();
           }}
         />
       )}
@@ -2437,11 +2477,14 @@ const ProfileSingle: FC = () => {
       </Modal>
 
       {/* Modal de reporte */}
-      <ReportProfileDialog
+      <ReportDialog
         isOpen={showReportDialog}
-        onClose={() => setShowReportDialog(false)}
-        reportedUserId={profile?.id || ""}
-        reportedUserName={asString(profile?.["name"], displayName)}
+        onOpenChange={setShowReportDialog}
+        profileId={profile?.id || ""}
+        profileName={asString(profile?.["name"], displayName)}
+        onReport={(reason) => {
+          logger.info("Reporte enviado desde perfil single", { reason });
+        }}
       />
     </div>
   );

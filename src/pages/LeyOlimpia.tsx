@@ -189,7 +189,7 @@ const LeyOlimpia: React.FC = () => {
                     }
                   >
                     <Phone className="w-4 h-4 mr-2" />
-                    WhatsApp Urgente "PROXIMANENTE Q2O26"
+                    WhatsApp Urgente "PRÓXIMAMENTE Q2 2026"
                   </Button>
                 </div>
                 <p className="text-xs text-center text-white/70">

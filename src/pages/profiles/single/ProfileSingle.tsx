@@ -41,8 +41,102 @@ import { SafeImage } from "@/components/ui/SafeImage";
 import { cn } from "@/shared/lib/cn";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { DemoWallet } from "@/components/wallet/DemoWallet";
+import { SingleAboutSection } from "@/components/profiles/single/SingleAboutSection";
+import { SinglePreferencesSection } from "@/components/profiles/single/SinglePreferencesSection";
+import { SingleLookingForSection } from "@/components/profiles/single/SingleLookingForSection";
+import { SingleSubscriptionCard } from "@/components/profiles/single/SingleSubscriptionCard";
+import { SinglePrivacySection } from "@/components/profiles/single/SinglePrivacySection";
 
 
+
+// --- Secciones modelo del video, espejo de pareja (1 usuario) ---
+// Campos físicos que NO existen en el modelo de perfil: en demo se muestran
+// estos valores de demostración, coherentes con Sofía (28, CDMX). NO son
+// datos personales del video del usuario. Fuera de demo el campo vacío se
+// oculta.
+const DEMO_SINGLE_DETAILS = {
+  height: "168 cm",
+  weight: "60 kg",
+  hair: "Castaño",
+  eyes: "Café",
+} as const;
+
+// Títulos de "Mis Intereses" (HoverEffect), repartidos como preferencias
+// en demo, igual que en el perfil de pareja.
+const DEMO_SINGLE_INTEREST_TITLES = [
+  "Lifestyle Exclusivo",
+  "Eventos VIP",
+  "Privacidad Total",
+  "Verificación Real",
+  "Chat Encriptado",
+  "Match Inteligente",
+] as const;
+
+const deriveSingleOrientation = (
+  gender?: string | null,
+  interestedIn?: string | null,
+): string | null => {
+  if (!interestedIn) return null;
+  // useAuth une interested_in (string[]) con ", " al cargar el perfil.
+  const parts = interestedIn
+    .toLowerCase()
+    .split(/[,\s]+/)
+    .filter((p) => p.length > 0);
+  if (
+    parts.includes("both") ||
+    parts.includes("all") ||
+    parts.includes("everyone")
+  )
+    return "Bisexual";
+  const wantsMale = parts.includes("male");
+  const wantsFemale = parts.includes("female");
+  if (wantsMale && wantsFemale) return "Bisexual";
+  const target = wantsMale ? "male" : wantsFemale ? "female" : null;
+  if (!target) return null;
+  const g = (gender ?? "").toLowerCase();
+  if (g === "male")
+    return target === "female" ? "Heterosexual" : "Homosexual";
+  if (g === "female")
+    return target === "male" ? "Heterosexual" : "Homosexual";
+  return null;
+};
+
+const splitLookingFor = (lookingFor: string | null): string[] =>
+  (lookingFor ?? "")
+    .split(/[,;]/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+
+const parseDislikes = (preferences: unknown): string[] => {
+  if (!preferences || typeof preferences !== "object") return [];
+  const dislikes = (preferences as { dislikes?: unknown }).dislikes;
+  if (!Array.isArray(dislikes)) return [];
+  return dislikes.filter((d): d is string => typeof d === "string");
+};
+
+const mapSingleRelationshipStatus = (
+  relationshipType?: string | null,
+  gender?: string | null,
+): string => {
+  if (!relationshipType) return "Sin definir";
+  const t = relationshipType.toLowerCase();
+  const g = (gender ?? "").toLowerCase();
+  if (t === "single")
+    return g === "female" ? "Soltera" : g === "male" ? "Soltero" : "Soltero/a";
+  if (t === "married")
+    return g === "female" ? "Casada" : g === "male" ? "Casado" : "Casado/a";
+  if (t === "in_relationship" || t === "relationship")
+    return "En una relación";
+  if (t === "divorced")
+    return g === "female"
+      ? "Divorciada"
+      : g === "male"
+        ? "Divorciado"
+        : "Divorciado/a";
+  if (t === "widowed")
+    return g === "female" ? "Viuda" : g === "male" ? "Viudo" : "Viudo/a";
+  return relationshipType;
+};
 
 const ProfileSingle: FC = () => {
   const navigate = useNavigate();
@@ -237,7 +331,7 @@ const ProfileSingle: FC = () => {
     }
   };
 
-  // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
+  // Demo: controlar desbloqueo visual de fotos privadías en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
@@ -251,7 +345,7 @@ const ProfileSingle: FC = () => {
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
   // Estado para control parental: la galería privada carga BLOQUEADA.
-  // (Antes: false, y las fotos privadas quedaban visibles sin PIN en la
+  // (Antes: false, y las fotos privadías quedaban visibles sin PIN en la
   // primera carga del perfil.)
   const [isParentalLocked, setIsParentalLocked] = usePersistedState<boolean>(
     "parentalControlLocked",
@@ -354,7 +448,7 @@ const ProfileSingle: FC = () => {
   const demoTheme = isDemoProfile ? "demo_premium" : undefined;
   useProfileTheme("single", ["male"], demoTheme);
 
-  // Datos de imágenes privadas para el carrusel
+  // Datos de imágenes privadías para el carrusel
   type PrivateImageItem = {
     id?: string;
     url?: string;
@@ -364,7 +458,7 @@ const ProfileSingle: FC = () => {
     userLiked?: boolean;
   };
 
-  // C6: rutas de Storage (bucket "media") de las 58 imágenes privadas.
+  // C6: rutas de Storage (bucket "media") de las 58 imágenes privadías.
   // Ya NO son URLs públicas: la ruta legacy `/assets/people/...` se mapea a
   // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
   // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
@@ -398,21 +492,6 @@ const ProfileSingle: FC = () => {
     isOwnProfile &&
     !isParentalLocked &&
     (demoPrivateUnlocked || privateImageAccess === "approved");
-
-  // Una cuenta de pareja no tiene perfil single: redirigir a su perfil de
-  // pareja. Sin esta guardia, /profile-single mostraba los datos de la
-  // pareja (Carmen & Roberto) en demo. Simétrico al redirect de
-  // ProfileCouple cuando el usuario no tiene perfil de pareja.
-  useEffect(() => {
-    if (isLoading) return;
-    const accountType =
-      (profile as unknown as Record<string, unknown>)?.account_type ??
-      (profile as unknown as Record<string, unknown>)?.accountType ??
-      (user as unknown as Record<string, unknown>)?.accountType;
-    if (accountType === "couple") {
-      navigate("/profile-couple", { replace: true });
-    }
-  }, [isLoading, profile, user, navigate]);
 
   // C6: resuelve las 58 rutas de Storage a URLs firmadas (1 h) solo cuando
   // la galería está desbloqueada y hay usuario autenticado. Llamada
@@ -602,7 +681,7 @@ const ProfileSingle: FC = () => {
     if (!privateGalleryRef.current) {
       toast({
         title: "Galería privada",
-        description: "No se pudo ubicar la sección de fotos privadas.",
+        description: "No se pudo ubicar la sección de fotos privadías.",
         variant: "destructive",
       });
       return;
@@ -615,7 +694,7 @@ const ProfileSingle: FC = () => {
 
     toast({
       title: "Galería privada",
-      description: "Desplazándote a tus fotos privadas.",
+      description: "Desplazándote a tus fotos privadías.",
     });
   };
 
@@ -879,6 +958,64 @@ const ProfileSingle: FC = () => {
 
   const canShowBlockchainSection = isOwnProfile || isDemoProfile;
 
+  // Secciones espejo de pareja para 1 usuario (modelo del video).
+  // En producción se leen las columnas reales de profiles
+  // (activities_interested, looking_for, preferences, age_range_min/max,
+  // relationship_type, interested_in); los campos físicos no existen en
+  // la tabla y solo se muestran en demo.
+  const singleIsDemo = isDemoMode();
+  const singleActivities = (currentProfile[
+    "activities_interested"
+  ] as string[] | null) ?? [];
+  const singleAgeMin = currentProfile["age_range_min"] as number | null;
+  const singleAgeMax = currentProfile["age_range_max"] as number | null;
+  const singleAbout = {
+    name: displayName,
+    age:
+      typeof currentProfile.age === "number"
+        ? currentProfile.age
+        : singleIsDemo
+          ? 28
+          : null,
+    gender: currentProfile.gender ?? "",
+    bio: asOptionalString(currentProfile.bio),
+    avatarGradient: "from-fuchsia-400 to-purple-600",
+    details: {
+      ...(singleIsDemo ? DEMO_SINGLE_DETAILS : {}),
+      orientation:
+        deriveSingleOrientation(
+          currentProfile.gender,
+          currentProfile.interested_in,
+        ) ?? (singleIsDemo ? "Heterosexual" : null),
+    },
+  };
+  const singleLikes = singleIsDemo
+    ? [
+        DEMO_SINGLE_INTEREST_TITLES[0],
+        DEMO_SINGLE_INTEREST_TITLES[2],
+        DEMO_SINGLE_INTEREST_TITLES[4],
+      ]
+    : singleActivities;
+  const singleLookingFor = singleIsDemo
+    ? ["Parejas"]
+    : splitLookingFor(
+        (currentProfile["looking_for"] as string | null) ?? null,
+      );
+  const singleAgeRange = singleIsDemo
+    ? "25 a 45 años"
+    : singleAgeMin != null && singleAgeMax != null
+      ? `${singleAgeMin} a ${singleAgeMax} años`
+      : null;
+  const singleRelationshipStatus = singleIsDemo
+    ? "Soltera"
+    : mapSingleRelationshipStatus(
+        currentProfile["relationship_type"] as string | null,
+        currentProfile.gender,
+      );
+  const singleDislikes = singleIsDemo
+    ? []
+    : parseDislikes(currentProfile["preferences"]);
+
   return (
     <div className="min-h-dvh bg-transparent text-white pb-20 md:pb-0 pt-20 overflow-x-hidden">
       <div className="container mx-auto px-4 pb-24 w-full max-w-full">
@@ -1058,7 +1195,7 @@ const ProfileSingle: FC = () => {
                       </DropdownMenu>
                     )}
 
-                    {/* Botón para solicitar acceso a fotos privadas */}
+                    {/* Botón para solicitar acceso a fotos privadías */}
                     {privateImageAccess === "none" && (
                       <Button
                         onClick={handleViewPrivatePhotos}
@@ -1104,7 +1241,7 @@ const ProfileSingle: FC = () => {
             </CardContent>
           </Card>
 
-          {/* Estadísticas mejoradas */}
+          {/* Estadísticas mejoradías */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -1599,14 +1736,6 @@ const ProfileSingle: FC = () => {
 
           {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
 
-          {/* Contenido del resumen - ProfileContent existente */}
-          <ProfileContent
-            isOwnProfile={isOwnProfile}
-            onUploadImage={handleUploadImage}
-            onDeletePost={handleDeletePost}
-            onCommentPost={handleCommentPost}
-          />
-
           {/* Intereses - grid demo con efecto hover */}
           <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
             <CardHeader>
@@ -1618,14 +1747,14 @@ const ProfileSingle: FC = () => {
                   {
                     title: "Lifestyle Exclusivo",
                     description:
-                      "Conexiones seleccionadas para un círculo íntimo y sofisticado.",
+                      "Conexiones seleccionadías para un círculo íntimo y sofisticado.",
                     link: "#",
                     icon: <TrendingUp className="w-5 h-5" />,
                   },
                   {
                     title: "Eventos VIP",
                     description:
-                      "Acceso prioritario a fiestas privadas y experiencias lifestyle.",
+                      "Acceso prioritario a fiestas privadías y experiencias lifestyle.",
                     link: "#",
                     icon: <Calendar className="w-5 h-5" />,
                   },
@@ -1653,7 +1782,7 @@ const ProfileSingle: FC = () => {
                   {
                     title: "Match Inteligente",
                     description:
-                      "Recomendaciones basadas en intereses y compatibilidad real.",
+                      "Recomendaciones basadías en intereses y compatibilidad real.",
                     link: "#",
                     icon: <Users className="w-5 h-5" />,
                   },
@@ -1662,6 +1791,56 @@ const ProfileSingle: FC = () => {
               />
             </CardContent>
           </Card>
+
+          {/* Sobre mí - modelo del video (espejo de pareja, 1 usuario) */}
+          <SingleAboutSection
+            member={singleAbout}
+            isDemoMode={singleIsDemo}
+          />
+
+          {/* Preferencias */}
+          <SinglePreferencesSection
+            name={singleAbout.name}
+            likes={singleLikes}
+            dependsOn={[]}
+          />
+
+          {/* Buscamos + Situación sentimental + Me gusta / No me gusta */}
+          <SingleLookingForSection
+            lookingFor={singleLookingFor}
+            ageRange={singleAgeRange}
+            relationshipStatus={singleRelationshipStatus}
+            likes={singleLikes}
+            dislikes={singleDislikes}
+          />
+
+          {/* Suscripción y saldo */}
+          <SingleSubscriptionCard
+            isPremium={currentProfile.is_premium ?? false}
+            isDemoMode={singleIsDemo}
+            cmpx={singleIsDemo ? "1250" : tokenBalances.cmpx}
+            gtk={singleIsDemo ? "500" : tokenBalances.gtk}
+            nftCount={userNFTs.length}
+            isOwnProfile={isOwnProfile}
+            onManage={() => navigate("/tokens")}
+          />
+
+          {/* Privacidad - solo perfil propio */}
+          {isOwnProfile && (
+            <SinglePrivacySection
+              userId={user?.id ?? profile?.id ?? ""}
+            />
+          )}
+
+          {/* Publicaciones - después de la información del perfil */}
+          <div className="pt-4">
+            <ProfileContent
+              isOwnProfile={isOwnProfile}
+              onUploadImage={handleUploadImage}
+              onDeletePost={handleDeletePost}
+              onCommentPost={handleCommentPost}
+            />
+          </div>
 
           {/* Experiencias demo: eventos, registro rápido y verificación KYC */}
           <Card className="bg-black/60 backdrop-blur-xl border border-purple-500/30 text-white">
@@ -1688,7 +1867,7 @@ const ProfileSingle: FC = () => {
                         </h4>
                         <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
                           <p className="text-center">
-                            Accede a eventos exclusivos, fiestas privadas y
+                            Accede a eventos exclusivos, fiestas privadías y
                             matchmaking prioritario.
                           </p>
                           {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
@@ -1869,9 +2048,7 @@ const ProfileSingle: FC = () => {
                 {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}
                 <div className="mb-4">
                   <p className="text-white/60 text-xs mb-2">
-                    {isGalleryUnlocked
-                      ? "🔒 Galería Privada (desbloqueada)"
-                      : "🔒 Galería Privada (requiere desbloqueo con PIN)"}
+                    🔒 Galería Privada (requiere desbloqueo con PIN)
                   </p>
                   <Carousel
                     className="mt-4"
@@ -2012,7 +2189,7 @@ const ProfileSingle: FC = () => {
         </div>
       </div>
 
-      {/* Modal de solicitud de acceso a fotos privadas */}
+      {/* Modal de solicitud de acceso a fotos privadías */}
       {showPrivateImageRequest && (
         <PrivateImageRequest
           isOpen={showPrivateImageRequest}
@@ -2042,15 +2219,14 @@ const ProfileSingle: FC = () => {
         <ParentalControl
           isLocked={isParentalLocked}
           showLockScreen={showParentalUnlock}
-          onClose={() => setShowParentalUnlock(false)}
           onToggle={(locked) => {
             setIsParentalLocked(locked);
-            // Si se desbloquea, permitir acceso a imágenes privadas
+            // Si se desbloquea, permitir acceso a imágenes privadías
             if (!locked) {
               setDemoPrivateUnlocked(true);
               setShowParentalUnlock(false);
             } else {
-              // Si se bloquea, ocultar imágenes privadas
+              // Si se bloquea, ocultar imágenes privadías
               setDemoPrivateUnlocked(false);
               setShowParentalUnlock(false);
             }

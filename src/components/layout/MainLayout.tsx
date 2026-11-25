@@ -1,17 +1,18 @@
 import React, { Suspense, useState, useEffect, lazy } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, Settings } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
-import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
-import { OPEN_INTIMATE_CHAT_EVENT } from "@/lib/intimateChat";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { OPEN_INTIMATE_CHAT_EVENT, loadChatModule } from "@/lib/intimateChat";
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Navigation } from "@/components/Navigation";
 import { Toaster } from "@/components/ui/toaster";
-const ChatLazy = lazy(() => import("@/pages/Chat"));
+// El lazy del Chat NO vive a nivel de módulo (ver ChatDock abajo):
+// React.lazy cachea el rechazo del `import()` y remontar el boundary
+// no reintenta el chunk; el reintento recrea el lazy desde el estado.
+import { NotificationContainer } from "@/components/animations/NotificationSystem";
 
 // Loading component
 const PageLoader = () => (
@@ -33,10 +34,16 @@ export const MainLayout = () => {
   // ya está en caché y no aparece el "Cargando…". Sin esto, la primera
   // apertura esperaba la descarga del chunk con el fallback tapando
   // todo (punto 10).
+  // RONDA 7 (punto 6): `requestIdleCallback` sin timeout puede no
+  // disparar nunca en una página ocupada (móvil) y la primera apertura
+  // del dock pagaba la descarga entera del chunk ("Cargando chat…"
+  // más de 8 s en el test). El temporizador acota la precarga a 2 s
+  // como máximo; importar dos veces es inocuo (mismo módulo en caché).
   useEffect(() => {
     const preload = () => {
-      void import("@/pages/Chat");
+      void loadChatModule();
     };
+    const timer = globalThis.setTimeout(preload, 2000);
     if ("requestIdleCallback" in window) {
       const idleId = (
         window as Window & {
@@ -44,6 +51,7 @@ export const MainLayout = () => {
         }
       ).requestIdleCallback(preload);
       return () => {
+        globalThis.clearTimeout(timer);
         if ("cancelIdleCallback" in window) {
           (
             window as Window & { cancelIdleCallback: (id: number) => void }
@@ -53,7 +61,6 @@ export const MainLayout = () => {
     }
     // globalThis (no `window`): el `in` de arriba estrecha `window` a
     // `never` en esta rama y `window.setTimeout` deja de existir para tsc.
-    const timer = globalThis.setTimeout(preload, 800);
     return () => globalThis.clearTimeout(timer);
   }, []);
 
@@ -116,7 +123,14 @@ export const MainLayout = () => {
   // (RONDA 5: el engranaje que tapaba el compositor en /chat y los
   // controles en /video-chat ya no existe como flotante; el host del
   // modal se monta siempre y no tapa nada.)
-  const isChatRoute = pathname === "/chat" || pathname.startsWith("/chat/");
+  // RONDA 7 (punto 6): /chat-intimo ES una ruta de chat (el Chat a
+  // pantalla completa): sin esto MainLayout le ponía encima su fila
+  // superior (← Volver + ajustes + tema) y la píldora ChatFab al final,
+  // y el dock podía abrirse sobre la página.
+  const isChatRoute =
+    pathname === "/chat" ||
+    pathname.startsWith("/chat/") ||
+    pathname === "/chat-intimo";
 
   // RONDA 6 (punto 2): HeaderNav y la cabecera de /clubs/demo ya son EN
   // FLUJO (relative) y ocupan su propio sitio: el <main> ya no necesita
@@ -149,10 +163,17 @@ export const MainLayout = () => {
     pathname === "/profile-couple";
   const showDock = isOwnProfileRoute;
 
-  // Fila superior en flujo (Volver + tema + engranaje) para rutas
-  // logueadas sin dock ni header: misma lista de exclusiones que el
-  // BackButton (esas rutas ya tienen su propio regreso o navegación).
+  // Fila superior en flujo (solo Volver) para rutas logueadas sin dock
+  // ni header: misma lista de exclusiones que el BackButton (esas rutas
+  // ya tienen su propio regreso o navegación).
   // Es EN FLUJO (dentro de <main>), nunca `fixed`: no tapa contenido.
+  // RONDA 7 (punto 2): el engranaje de animaciones y el botón de tema
+  // YA NO viven en esta fila: aparecían arriba a la derecha en TODAS
+  // las páginas logueadas sin dock (/matches, /requests, /faq, /terms,
+  // /tokens-legal, /edit-profile-*, 404...) y se leían como botones
+  // flotantes fijos. Tema y animaciones ya tienen su sitio: el dock
+  // (perfil propio: luna 11.ª + botón "Config") y el HeaderNav
+  // (páginas públicas). Esta fila queda solo con Volver.
   const isTopRowExcludedRoute =
     pathname === "/" ||
     pathname === "/auth" ||
@@ -161,6 +182,10 @@ export const MainLayout = () => {
     pathname.startsWith("/tokens/") ||
     pathname === "/chat" ||
     pathname.startsWith("/chat/") ||
+    // RONDA 7 (punto 6): /chat-intimo ya tiene su propio encabezado
+    // ("Chat Íntimo" / "Cerrar"); la fila superior de MainLayout
+    // duplicaba el regreso encima de él.
+    pathname === "/chat-intimo" ||
     pathname === "/settings" ||
     pathname === "/video-chat" ||
     pathname === "/clubs-public" ||
@@ -241,32 +266,26 @@ export const MainLayout = () => {
 
         {/* Main Content */}
         <main className={headerOffsetClass}>
-          {/* RONDA 5 — Fila superior EN FLUJO (nunca `fixed`): Volver a la
-              izquierda y, a la derecha, el engranaje de animaciones y el
-              botón de tema. Es la única vía de tema/ajustes en rutas
-              logueadas sin dock ni header (Discover, /matches, /requests,
-              /faq, /profile/<id>, /edit-profile-*...). En perfil propio
-              esos controles viven en el dock; en páginas públicas, en el
-              HeaderNav. */}
+          {/* RONDA 7 (punto 10): zona de avisos EN FLUJO al inicio de
+              <main>: los toasts Radix (Toaster) y las notificaciones
+              (NotificationContainer) ya NO son overlays `fixed` — un
+              overlay tapa siempre algo (el toast de tema tapaba el
+              nombre/foto del perfil, "Perfiles actualizados" la barra
+              superior, "Like enviado!" la foto de Ana...). Aquí empujan
+              el contenido hacia abajo mientras están visibles y no
+              ocupan nada cuando están vacíos (viewport/contenedor con
+              `empty:hidden`). Fondo sólido según tema (ver ui/toast.tsx
+              y NotificationSystem). */}
+          <Toaster />
+          <NotificationContainer />
+          {/* RONDA 5 — Fila superior EN FLUJO (nunca `fixed`): solo
+              Volver. (RONDA 7, punto 2: el engranaje y el botón de tema
+              se quitaron de aquí: vivían arriba a la derecha en todas
+              las páginas logueadas sin dock. Ahora solo están en el
+              dock del perfil propio y en el HeaderNav público.) */}
           {showTopRow && (
             <div className="flex items-center justify-between gap-2 px-4 pt-2">
               <BackButton />
-              <div className="flex items-center gap-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={() =>
-                    window.dispatchEvent(
-                      new Event(OPEN_ANIMATION_SETTINGS_EVENT),
-                    )
-                  }
-                  aria-label="Ajustes de animación y fondo"
-                  title="Ajustes de animación y fondo"
-                  className="p-2.5 rounded-lg bg-white/80 border border-slate-300 text-slate-700 hover:bg-white dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-white/20 transition-colors"
-                >
-                  <Settings className="w-5 h-5" />
-                </button>
-                <ThemeToggle tone="auto" />
-              </div>
             </div>
           )}
           <div className={showHeaderNav ? "-mt-px" : ""}>
@@ -304,10 +323,8 @@ export const MainLayout = () => {
           rutas de perfil con o sin demo */}
         {showDock && <Navigation />}
 
-        {/* RONDA 6 (punto 17): los toasts ya no van abajo (el viewport
-            vive arriba con margen, ver ui/toast.tsx), así que el offset
-            del dock ya no aplica. */}
-        <Toaster />
+        {/* RONDA 7 (punto 10): el <Toaster /> ya no va aquí abajo: el
+            viewport vive EN FLUJO al inicio de <main>, ver arriba. */}
       </div>
     </div>
   );
@@ -339,6 +356,8 @@ const BackButton: React.FC = () => {
     pathname.startsWith("/tokens/") ||
     pathname === "/chat" ||
     pathname.startsWith("/chat/") ||
+    // RONDA 7 (punto 6): /chat-intimo tiene su propio "Cerrar".
+    pathname === "/chat-intimo" ||
     pathname === "/settings" ||
     pathname === "/video-chat" ||
     pathname === "/clubs-public" ||
@@ -444,9 +463,17 @@ interface ChatDockProps {
 }
 
 const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
-  // `key` del boundary: al reintentar se remonta y React.lazy vuelve a
-  // intentar cargar el chunk (el lazy anterior cachea el fallo).
+  // `key` del boundary: al reintentar se remonta y limpia `hasError`.
   const [errorKey, setErrorKey] = useState(0);
+  // El lazy vive en ESTADO: React.lazy guarda el rechazo del `import()`
+  // en el payload del componente y remontar el boundary con otra `key`
+  // NO reintenta el chunk (vuelve a lanzar el mismo error y
+  // "Reintentar" era un botón muerto). Recrearlo sí vuelve a descargar.
+  const [ChatLazy, setChatLazy] = useState(() => lazy(loadChatModule));
+  const handleRetry = () => {
+    setChatLazy(() => lazy(loadChatModule));
+    setErrorKey((prev) => prev + 1);
+  };
 
   if (!isOpen) return null;
 
@@ -462,7 +489,7 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
       <div className="bg-white dark:bg-black/60 backdrop-blur-2xl border border-slate-200 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden">
         <div className="relative z-10 flex items-center justify-between px-4 py-2 border-b border-slate-200 dark:border-white/10">
           <span className="text-sm font-semibold text-slate-900 dark:text-white">
-            Chat Intimo
+            Chat Íntimo
           </span>
           <button
             type="button"
@@ -476,10 +503,7 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
           <Suspense fallback={<ChatDockLoader />}>
             {/* embedded: el Chat a pantalla completa (h-screen) se
                 desbordaba dentro del dock de 420px y se solapaba. */}
-            <ChatDockErrorBoundary
-              key={errorKey}
-              onRetry={() => setErrorKey((prev) => prev + 1)}
-            >
+            <ChatDockErrorBoundary key={errorKey} onRetry={handleRetry}>
               <ChatLazy embedded />
             </ChatDockErrorBoundary>
           </Suspense>

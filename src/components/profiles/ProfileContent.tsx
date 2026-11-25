@@ -736,6 +736,16 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         activeTab={activeTab}
         onTabChange={setActiveTab}
         isOwnProfile={isOwnProfile}
+        // Punto 14d (ronda 7): el badge es la suma de lo que la pestaña
+        // "posts" realmente renderiza: el post de ejemplo de Ana (solo
+        // cuando showExamplePost) + el post demo creado con "Crear Post".
+        // Antes el badge era un 12 fijo y en el perfil propio decía 12
+        // mientras el contenido decía "No hay posts aún". Ahora: /profile/3
+        // (Ana) muestra 1 con su post; perfil propio/pareja muestra 0 con
+        // el vacío y el botón Crear Post, sin contradicción. El vacío sigue
+        // condicionado a `!demoPost && !showExamplePost`, que es exactamente
+        // lo mismo que este conteo (0).
+        postsCount={(showExamplePost ? 1 : 0) + (demoPost ? 1 : 0)}
       />
 
       {/* Tab Content */}

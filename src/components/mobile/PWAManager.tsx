@@ -256,6 +256,10 @@ export const PWAManager: React.FC = () => {
 };
 
 // Componente para banner de instalación
+// RONDA 7 (punto 2): el banner YA NO es `fixed bottom-4 ... z-50`:
+// flotaba sobre el contenido inferior de cualquier página donde se
+// montara. Ahora es EN FLUJO (ocupa su sitio en la página que lo
+// renderice). Sigue sin montarse en ningún sitio hoy (sin importadores).
 export const InstallBanner: React.FC = () => {
   const { status, installPWA } = usePWA();
   const [dismissed, setDismissed] = useState(false);
@@ -266,7 +270,7 @@ export const InstallBanner: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:w-80">
+    <div className="relative w-full md:ml-auto md:w-80">
       <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">

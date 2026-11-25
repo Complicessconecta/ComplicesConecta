@@ -129,7 +129,19 @@ export const Navigation = ({ className }: NavigationProps) => {
             `whitespace-nowrap` que rebasaban el botón dejaban la luna
             cortada en el borde derecho. Ahora 48 px, etiquetas solo
             desde `lg` (a 886 px el dock es solo iconos) y `justify-center`
-            sin scroll lateral: todo cabe sin cortar nada. */}
+            sin scroll lateral: todo cabe sin cortar nada.
+          RONDA 7 (punto 4): medida REAL a 886 px con 11 huecos
+          (demo + requests: 10 botones + luna): 11×48 + 10×4 (gap)
+          + 32 (px-4) = 600 px < 886 px, así que el código de la ronda 6
+          ya cabía en teoría — el corte del test solo se explica con un
+          preview anterior a la ronda 6 (55 px + etiquetas). Para que el
+          desborde sea imposible por construcción y no por aritmética,
+          los huecos ya no son de ancho fijo (`sm:w-[48px] flex-none`):
+          ahora son `flex-1 min-w-0` con tope `max-w-[56px]`: reparten
+          el ancho disponible y se encogen antes que desbordar; a 886 px
+          la fila mide 11×56 + 10×4 + 32 = 688 px (99 px de margen por
+          lado) y a 360 px cada hueco baja a ~30 px sin cortar nada.
+          Las etiquetas siguen ocultas por debajo de `lg`. */}
       <nav
         className={cn(
           "fixed bottom-0 left-0 right-0 z-50",
@@ -156,7 +168,7 @@ export const Navigation = ({ className }: NavigationProps) => {
                 onClick={() => handleNavigation(item.path)}
                 className={cn(
                   "flex flex-col items-center justify-center p-1 sm:p-1 rounded-xl sm:rounded-2xl",
-                  "flex-1 min-w-0 sm:flex-none sm:min-w-[48px] sm:w-[48px] lg:min-w-[56px] lg:w-[56px] min-h-[44px] sm:min-h-[52px] group",
+                  "flex-1 min-w-0 max-w-[56px] min-h-[44px] sm:min-h-[52px] group",
                   "transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95",
                   "relative overflow-visible backdrop-blur-sm cursor-pointer",
                   isActive
@@ -195,7 +207,7 @@ export const Navigation = ({ className }: NavigationProps) => {
               RONDA 6: `tone="auto"` para que el botón sea legible sobre el
               dock claro (el tono "onDark" era blanco sobre blanco). */}
           <div
-            className="flex flex-col items-center justify-center p-1 sm:p-1 rounded-xl sm:rounded-2xl flex-1 min-w-0 sm:flex-none sm:min-w-[48px] sm:w-[48px] lg:min-w-[56px] lg:w-[56px] min-h-[44px] sm:min-h-[52px] text-slate-600 hover:text-slate-900 hover:bg-slate-900/5 dark:text-white/85 dark:hover:text-white dark:hover:bg-white/10"
+            className="flex flex-col items-center justify-center p-1 sm:p-1 rounded-xl sm:rounded-2xl flex-1 min-w-0 max-w-[56px] min-h-[44px] sm:min-h-[52px] text-slate-600 hover:text-slate-900 hover:bg-slate-900/5 dark:text-white/85 dark:hover:text-white dark:hover:bg-white/10"
             title="Cambiar tema"
           >
             <ThemeToggle tone="auto" />

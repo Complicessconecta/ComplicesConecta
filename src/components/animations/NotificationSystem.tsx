@@ -108,7 +108,6 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-      <NotificationContainer />
     </NotificationContext.Provider>
   );
 };
@@ -275,7 +274,17 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
 };
 
 // Notification container
-const NotificationContainer: React.FC = () => {
+// RONDA 7 (punto 10): este contenedor YA NO se renderiza dentro del
+// provider como overlay `fixed` abajo a la derecha (tapaba el contenido
+// inferior de cada página): MainLayout lo monta EN FLUJO al inicio de
+// <main>, junto al Toaster Radix, en la misma zona de avisos. Sin
+// notificaciones no ocupa nada (`empty:hidden`); con notificaciones
+// empuja el contenido hacia abajo en vez de cubrirlo. El fondo sólido
+// según tema ya lo tiene NotificationItem.
+// (Hoy ningún código llama a addNotification — ver informe ronda 7 —
+// así que el contenedor vive vacío; el cambio es para que tampoco tape
+// nada cuando un productor empiece a usarlo.)
+export const NotificationContainer: React.FC = () => {
   // CRÍTICO: Los hooks deben llamarse siempre, no condicionalmente
   // Usar useContext directamente y manejar el caso undefined después
   const context = React.useContext(NotificationContext);
@@ -288,14 +297,7 @@ const NotificationContainer: React.FC = () => {
   const { notifications } = context;
 
   return (
-    // RONDA 6 (punto 17): las notificaciones YA NO van arriba a la
-    // derecha (top-4): ahí tapaban el texto y los botones superiores de
-    // cada página. Ahora van ABAJO A LA DERECHA con margen sobre el dock
-    // (5.5rem ≈ altura del dock + respiro): en perfil quedan justo
-    // encima del dock sin taparlo, y en el resto de rutas flotan sobre
-    // la banda inferior reservada (pb-24 de MainLayout). Más angostas
-    // (max-w-xs) para tapar menos contenido.
-    <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] right-4 z-50 pointer-events-none w-[calc(100vw-2rem)] max-w-xs">
+    <div className="flex w-full max-w-xs ml-auto flex-col gap-2 px-4 pt-2 empty:hidden">
       <AnimatePresence mode="popLayout">
         {notifications.map((notification) => (
           <div key={notification.id} className="pointer-events-auto">

@@ -30,6 +30,10 @@ export const ChatFab: React.FC<ChatFabProps> = ({ onOpen }) => {
   // contenido de la página, donde nunca se solapa con nada. El panel
   // ChatDock que abre sigue siendo un overlay bajo demanda (lo abre el
   // usuario y tiene su botón Cerrar), eso no es un flotante pasivo.
+  // RONDA 6 (punto 2): además ya NO es una burbuja redonda abajo a la
+  // derecha: en páginas cortas (404, /matches) esa burbuja se seguía
+  // leyendo como flotante fijo. Ahora es una píldora centrada con texto
+  // "Abrir Chat", imposible de confundir con un FAB.
   return (
     <Button
       onClick={() => {
@@ -39,13 +43,13 @@ export const ChatFab: React.FC<ChatFabProps> = ({ onOpen }) => {
           navigate("/chat");
         }
       }}
-      className="relative rounded-full w-14 h-14 shadow-lg bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-0 flex items-center justify-center transition-transform hover:scale-110"
+      className="relative rounded-full h-11 px-5 shadow-lg bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white flex items-center justify-center gap-2 transition-transform hover:scale-105"
       aria-label="Abrir Chat"
     >
-      <MessageCircle className="w-8 h-8" />
-      <span className="sr-only">Chat</span>
+      <MessageCircle className="w-5 h-5" />
+      <span className="text-sm font-semibold">Abrir Chat</span>
       {/* Indicador de estado (opcional, por ahora estático) */}
-      <span className="absolute top-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
+      <span className="w-2.5 h-2.5 bg-green-400 border border-white rounded-full"></span>
     </Button>
   );
 };

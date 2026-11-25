@@ -53,6 +53,16 @@ const isPlaceholderKey =
   supabaseAnonKey.includes("your_supabase_anon_key_here") ||
   supabaseAnonKey.includes("placeholder-key");
 
+// ¿Hay credenciales reales de Supabase? En los previews de Vercel las
+// variables VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY no están
+// configuradas y el cliente es un stub cuya fetch siempre rechaza con
+// "Supabase not configured - using stub client". Los flujos de registro
+// y login deben consultar esto ANTES de llamar a supabase.auth y, si no
+// hay backend, crear la cuenta demo local en vez de fallar con ese
+// mensaje. Sin variables en Vercel, el registro real no puede funcionar:
+// hace falta que Wacko las ponga en su panel de Vercel (ver reporte).
+export const isSupabaseConfigured = !isPlaceholderUrl && !isPlaceholderKey;
+
 if (isPlaceholderUrl || isPlaceholderKey) {
   safeLogger.warn(
     "⚠️ Variables de Supabase usando valores placeholder - activando modo demo",

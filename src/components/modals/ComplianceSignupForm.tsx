@@ -5,7 +5,8 @@ import { cn } from "@/shared/lib/cn";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/buttons/Button";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import { createLocalDemoAccount } from "@/lib/demo-registration";
 import { useToast } from "@/hooks/useToast";
 
 interface ComplianceSignupFormProps {
@@ -46,6 +47,27 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({
 
     setLoading(true);
     try {
+      // Ronda 6: sin Supabase configurado (preview sin variables en
+      // Vercel), el cliente es un stub y signUp siempre falla con
+      // "Supabase not configured - using stub client". El registro demo
+      // no depende de Supabase: se crea la cuenta local con el alias y
+      // se entra directo al perfil. La recarga completa es necesaria
+      // para que useAuth relea el `demo_user` nuevo de localStorage.
+      if (!isSupabaseConfigured) {
+        createLocalDemoAccount({
+          email: trimmedEmail,
+          nickname: alias.trim(),
+          accountType: "single",
+        });
+        toast({
+          title: "¡Cuenta demo creada!",
+          description:
+            "Sin conexión a Supabase en este preview: tu cuenta se creó en este navegador para probar el flujo.",
+        });
+        window.location.href = "/profile-single";
+        return;
+      }
+
       const { error } = await supabase.auth.signUp({
         email: trimmedEmail,
         password: trimmedPassword,

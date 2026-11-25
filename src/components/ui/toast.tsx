@@ -14,16 +14,14 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      // Abajo, por encima del dock solo donde hay dock (MainLayout pasa
-      // dockOffset; el valor por defecto es el de rutas sin dock):
-      // antes estaba arriba (top-0) a todo lo ancho y tapaba el contenido
-      // central — el toggle de tema, las zonas de foto del editor, el hilo
-      // de chat y el texto del banner "¡100 CMPX reclamados!". En móvil ya
-      // no ocupa todo el ancho (left-4 right-4 en vez de left-0 w-full)
-      // para tapar menos contenido. El viewport es pointer-events-none
-      // para que solo el toast (pointer-events-auto) intercepte toques;
-      // el área vacía no bloquea botones debajo.
-      "pointer-events-none fixed bottom-[calc(env(safe-area-inset-bottom)+1rem)] left-4 right-4 z-100 flex max-h-screen flex-col p-4 sm:left-auto sm:right-4 sm:max-w-md",
+      // RONDA 6 (punto 17): los toasts YA NO van abajo: fijos abajo
+      // tapaban el texto y los botones del final de cada página (y en
+      // perfil se pegaban al dock). Ahora van ARRIBA A LA DERECHA con
+      // margen bajo la cabecera / fila superior en flujo (4.5rem), a
+      // ancho contenido (max-w-md) para tapar lo menos posible. Siguen
+      // siendo transitorios (auto-cierre) y pointer-events-none fuera
+      // del toast, así que el área vacía no bloquea botones debajo.
+      "pointer-events-none fixed top-[calc(env(safe-area-inset-top)+4.5rem)] left-4 right-4 z-100 flex max-h-screen flex-col p-4 sm:left-auto sm:right-4 sm:max-w-md",
       className,
     )}
     {...props}
@@ -32,7 +30,7 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full",
   {
     variants: {
       variant: {

@@ -78,23 +78,33 @@ const IMAGE_POOLS = {
     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
   ],
-  // Pool de parejas: SOLO fotos de pareja verificadas (las 3 de
-  // DEMO_COUPLE_IMAGES en src/demo/demoData.ts, en varios recortes).
-  // Antes 9 de 12 eran fotos individuales, de bebés, grupos o grafiti
-  // y las tarjetas de pareja salían con foto de un solo hombre.
+  // Pool de parejas: SOLO fotos de pareja juntas, verificadas una a
+  // una por vista (no por el comentario que traían). De las 3 anteriores,
+  // solo 1606216794074 era una pareja junta: 1516589178581 son dos manos
+  // formando un corazón y 1518568814500 son luces en forma de corazón en
+  // la playa SIN personas — por eso el perfil de Carmen & Roberto
+  // mostraba "un corazón de luces en la playa" y la galería fotos
+  // sueltas. Cada URL es una foto distinta (antes eran 3 fotos en 12
+  // variantes de recorte, así que la misma foto se repetía entre
+  // perfiles con distinto crop). 8 fotos distintas para 6 parejas demo
+  // + perfiles aleatorios, sin reutilizar hasta agotar el pool.
   couple: [
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop",
+    // Pareja de boda caminando de la mano
     "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop&crop=entropy",
-    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop&crop=top",
-    "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop&crop=faces",
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&h=400&fit=crop",
+    // Pareja en silueta al atardecer
+    "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
+    // Pareja en bicicleta tomados de la mano al atardecer
+    "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&h=400&fit=crop",
+    // Dos hombres en la playa al atardecer
+    "https://images.unsplash.com/photo-1522098543979-ffc7f79a56c4?w=400&h=400&fit=crop",
+    // Dos manos formando un corazón al atardecer
+    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
+    // Manos de boda con anillos y ramo
+    "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&h=400&fit=crop",
+    // Novios soltando globos en boda
+    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=400&fit=crop",
+    // Novios besándose en boda
+    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop",
   ],
 };
 
@@ -142,8 +152,13 @@ export function pickProfileImage(
     attempts++;
   }
 
-  // Fallback: usar cualquier imagen del pool si todas están usadas
-  for (const img of pool) {
+  // Fallback: pool agotado (más perfiles que fotos). Antes devolvía
+  // siempre pool[0], así que TODOS los perfiles extra compartían la
+  // misma foto; ahora se reparte en rotación para no concentrar la
+  // reutilización en una sola imagen.
+  for (let i = 0; i < pool.length; i++) {
+    const img = pool[poolCounters[poolKey] % pool.length];
+    poolCounters[poolKey]++;
     if (img) {
       selectedImage = img;
       used.add(selectedImage);

@@ -56,7 +56,7 @@ const getDemoStories = (): Story[] => {
       },
       content: {
         type: "image",
-        url: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop",
+        url: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=600&fit=crop",
       },
       createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrás
       expiresAt: new Date(Date.now() + 22 * 60 * 60 * 1000).toISOString(), // 22 horas restantes

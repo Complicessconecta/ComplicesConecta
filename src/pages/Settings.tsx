@@ -34,7 +34,16 @@ const Settings = () => {
         <main className="container mx-auto px-4 py-8 max-w-4xl">
           <Button
             variant="outline"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              // Único "Volver" de la página (la píldora fija global ya no
+              // se renderiza en /settings): navigate(-1) no hace nada si
+              // se entró directo (sin historial); en ese caso ir al
+              // inicio, que es lo que promete el botón.
+              const idx = (window.history.state as { idx?: number } | null)
+                ?.idx;
+              if (typeof idx === "number" && idx > 0) navigate(-1);
+              else navigate("/");
+            }}
             className="border-white/30 text-white hover:bg-white/10 mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

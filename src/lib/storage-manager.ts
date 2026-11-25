@@ -63,10 +63,35 @@ export class StorageManager {
     });
   }
 
-  // Limpiar solo sesión demo
+  // Limpiar solo sesión demo. Antes dejaba demo_user (y todo lo
+  // demás: chats, privacidad, NFTs demo), así que los datos demo
+  // persistían tras cerrar sesión aunque /demo dice que no se guardan.
+  // Usa el mismo barrido que clearDemoAuth en app-config.
   static clearDemoSession() {
     localStorage.removeItem("demo_authenticated");
     localStorage.removeItem("userType");
+    localStorage.removeItem("demo_user");
+    localStorage.removeItem("demo-user");
+    localStorage.removeItem("demo_stories");
+    localStorage.removeItem("wallet_demo_created");
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) keys.push(key);
+    }
+    keys.forEach((key) => {
+      if (
+        key.startsWith("demo_") ||
+        key.startsWith("demo-") ||
+        key.startsWith("chat_messages:") ||
+        key.startsWith("single_privacy:") ||
+        key.startsWith("couple_privacy:") ||
+        key.startsWith("demo_nfts:") ||
+        key.startsWith("demo_nfts_updated:")
+      ) {
+        localStorage.removeItem(key);
+      }
+    });
   }
 
   // Limpiar solo sesión real

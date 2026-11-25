@@ -59,7 +59,7 @@ export const MatchCard: FC<MatchCardProps> = ({
   const [showSuperLikeModal, setShowSuperLikeModal] = useState(false);
 
   const defaultImageSingle =
-    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
+    "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=600&fit=crop&crop=face";
   const defaultImageCouple =
     "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=600&fit=crop";
   const defaultImage = accountType === "couple" ? defaultImageCouple : defaultImageSingle;

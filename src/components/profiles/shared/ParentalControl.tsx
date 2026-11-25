@@ -538,7 +538,9 @@ export const ParentalControl = ({
             {savedPin
               ? "••••"
               : isDemoMode()
-                ? "PIN demo activo (1234)"
+                ? // Sin los dígitos: el PIN demo (1234) no debe mostrarse
+                  // en pantalla; el usuario lo sabe por /demo.
+                  "PIN demo activo"
                 : "Sin configurar"}
           </span>
           <br />

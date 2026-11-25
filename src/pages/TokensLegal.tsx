@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
-import { ArrowLeft, Scale, Sparkles } from "lucide-react";
+import { ArrowLeft, Scale, Sparkles, AlertTriangle } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { TokensSubnav } from "@/components/TokensSubnav";
@@ -11,11 +10,61 @@ import { TokensSubnav } from "@/components/TokensSubnav";
 export default function TokensLegal() {
   const navigate = useNavigate();
   const [markdown, setMarkdown] = useState("");
+  // Antes el fetch no checaba response.ok: como TOKENS_LEGAL.md no
+  // existía en public/docs/legal/, el SPA devolvía index.html con 200 y
+  // el componente renderizaba ese HTML como texto visible. Ahora el doc
+  // sí está sincronizado, pero si vuelve a faltar (o el servidor devuelve
+  // el fallback HTML) se muestra un error legible en vez del código.
+  // Sin rehypeRaw a propósito: el .md no trae HTML y así un fallback
+  // HTML nunca se renderiza como marcado ni ejecuta scripts.
+  const [loadError, setLoadError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+    setIsLoading(true);
+    setLoadError("");
     fetch("/docs/legal/TOKENS_LEGAL.md")
-      .then((response) => response.text())
-      .then((text) => setMarkdown(text));
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Documento no disponible (HTTP ${response.status})`,
+          );
+        }
+        const contentType = response.headers.get("content-type") ?? "";
+        const text = await response.text();
+        // El fallback del SPA devuelve index.html con 200: detectarlo
+        // por content-type y por contenido, no solo por el status.
+        if (
+          contentType.includes("text/html") ||
+          text.trimStart().startsWith("<!DOCTYPE") ||
+          text.trimStart().startsWith("<html")
+        ) {
+          throw new Error(
+            "Documento no disponible: el servidor devolvió la página principal en lugar del documento legal.",
+          );
+        }
+        return text;
+      })
+      .then((text) => {
+        if (!cancelled) {
+          setMarkdown(text);
+          setIsLoading(false);
+        }
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setLoadError(
+            error instanceof Error
+              ? error.message
+              : "No se pudo cargar el documento legal.",
+          );
+          setIsLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -27,17 +76,17 @@ export default function TokensLegal() {
           <div className="flex items-center justify-between">
             <Button
               onClick={() => navigate("/tokens")}
-              className="text-white hover:bg-white/10 btn-accessible bg-transparent border-none"
+              className="shrink-0 whitespace-nowrap text-white hover:bg-white/10 btn-accessible bg-transparent border-none"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               <span className="truncate">Regresar</span>
             </Button>
 
-            <h1 className="text-xl font-bold text-white">
+            <h1 className="min-w-0 flex-1 text-center text-base sm:text-xl font-bold text-white truncate">
               Responsabilidad Legal - Tokens
             </h1>
 
-            <div className="w-20"></div>
+            <div className="w-20 shrink-0"></div>
           </div>
         </div>
       </div>
@@ -64,12 +113,30 @@ export default function TokensLegal() {
             </CardTitle>
           </CardHeader>
           <CardContent className="prose prose-invert max-w-none p-6">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw]}
-            >
-              {markdown}
-            </ReactMarkdown>
+            {isLoading ? (
+              <p className="text-white/80">Cargando documento legal…</p>
+            ) : loadError ? (
+              <div className="flex items-start gap-3 rounded-lg border border-amber-400/40 bg-amber-500/10 p-4 not-prose">
+                <AlertTriangle className="h-5 w-5 shrink-0 text-amber-300" />
+                <div>
+                  <p className="font-semibold text-amber-200">
+                    No se pudo cargar el documento legal
+                  </p>
+                  <p className="text-sm text-white/80">{loadError}</p>
+                  <p className="mt-2 text-sm text-white/80">
+                    Puedes consultar los términos generales en la{" "}
+                    <Link to="/terms" className="underline text-white">
+                      página de Términos
+                    </Link>{" "}
+                    o escribir a tokens@complicesconecta.com.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {markdown}
+              </ReactMarkdown>
+            )}
           </CardContent>
         </Card>
 

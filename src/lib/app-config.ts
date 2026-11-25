@@ -217,11 +217,49 @@ export const resolveDemoAccountType = (
   return null;
 };
 
+// Claves demo conocidas (exactas) y prefijos de datos demo por
+// conversación/usuario. /demo promete que los datos demo no se guardan
+// tras cerrar sesión; antes solo se borraban 3 claves y todo lo demás
+// (chats, ajustes de privacidad, NFTs demo, wallet demo, historias)
+// persistía tras el logout.
+const DEMO_STORAGE_KEYS = [
+  "demo_authenticated",
+  "demo_user",
+  "demo-user",
+  "demo_stories",
+  "userType",
+  "wallet_demo_created",
+] as const;
+
+const DEMO_STORAGE_PREFIXES = [
+  "demo_",
+  "demo-",
+  "chat_messages:",
+  "single_privacy:",
+  "couple_privacy:",
+  "demo_nfts:",
+  "demo_nfts_updated:",
+] as const;
+
 // Función para limpiar sesión demo
 export const clearDemoAuth = () => {
-  localStorage.removeItem("demo_authenticated");
-  localStorage.removeItem("userType");
-  localStorage.removeItem("demo_user");
+  try {
+    DEMO_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+    // Barrido por prefijo (claves por chat/usuario, p. ej.
+    // chat_messages:<id>, single_privacy:<userId>, demo_nfts:<uid>).
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) keys.push(key);
+    }
+    keys.forEach((key) => {
+      if (DEMO_STORAGE_PREFIXES.some((prefix) => key.startsWith(prefix))) {
+        localStorage.removeItem(key);
+      }
+    });
+  } catch {
+    // Sin almacenamiento: nada que limpiar.
+  }
   logger.info("🧹 Sesión demo limpiada");
 };
 

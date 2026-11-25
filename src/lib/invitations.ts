@@ -12,6 +12,13 @@ export interface Invitation {
   created_at: string | null;
   decided_at?: string | null;
   updated_at?: string | null;
+  /**
+   * Ronda 10 (stream A, punto A2): el remitente es una cuenta
+   * anónima (solo lo saben las invitaciones locales, que resuelven
+   * el remitente en el registro demo). /requests muestra la
+   * insignia "Anónimo" junto a su nombre.
+   */
+  fromIsAnonymous?: boolean;
 }
 
 const mapInvitation = (row: Tables<"invitations">): Invitation => ({

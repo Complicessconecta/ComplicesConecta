@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  User,
   UserPlus,
   UserCheck,
   UserX,
@@ -13,6 +14,7 @@ import {
   MailQuestion,
   Send,
 } from "lucide-react";
+import { getAvatarInitials } from "@/lib/avatarFallback";
 import { useFeatures } from "@/hooks/useFeatures";
 import { invitationService, type Invitation } from "@/lib/invitations";
 import { useAuth } from "@/features/auth/useAuth";
@@ -27,6 +29,7 @@ import {
   respondFriendRequest,
   resolveDemoProfileName,
 } from "@/lib/friends";
+import { findLocalDemoAccountById } from "@/lib/demo-registration";
 import { generateDemoProfiles, demoProfiles } from "@/demo/demoData";
 import { getSocialDemoData } from "@/demo/socialDemoData";
 
@@ -66,6 +69,39 @@ function resolveRequestTargetName(toId: string): string {
   // Cuentas demo locales (TestR7, anonr8test, …) y canónicas: el
   // roster y los datos sociales no las conocen (ronda 9, stream D).
   return resolveDemoProfileName(toId);
+}
+
+/**
+ * Avatar de una tarjeta de solicitud (ronda 10, stream D).
+ *
+ * El nombre visible puede ser un id crudo sin resolver (UUID o id
+ * numérico legacy: `resolveDemoProfileName` lo devuelve tal cual por
+ * diseño). Ese texto NUNCA va dentro del círculo: si no hay iniciales
+ * de un nombre de persona, el avatar es el icono de persona (antes el
+ * test de verificación de la ronda 9 vio un glifo "101" en una tarjeta
+ * de /requests en vez del icono).
+ */
+function RequestAvatar({
+  displayName,
+}: {
+  displayName: string | null | undefined;
+}) {
+  const initials = getAvatarInitials(displayName);
+  return (
+    <div
+      data-testid="request-avatar"
+      aria-hidden="true"
+      className="w-10 h-10 rounded-full bg-purple-500/20 dark:bg-purple-500/30 border border-purple-400/30 flex items-center justify-center shrink-0"
+    >
+      {initials ? (
+        <span className="text-sm font-semibold text-purple-800 dark:text-purple-100">
+          {initials}
+        </span>
+      ) : (
+        <User className="h-5 w-5 text-purple-800 dark:text-purple-100" />
+      )}
+    </div>
+  );
 }
 
 const Requests = () => {
@@ -251,11 +287,23 @@ const Requests = () => {
     // solicitud enviada a esta cuenta —p. ej. la del perfil anónimo a
     // la pareja— nunca llegaba a la bandeja: no se podía aceptar y el
     // gate de perfil privado no se levantaba (test ronda 8).
-    const localReceived: Invitation[] = listIncomingRequestsSync(
-      currentUserId ?? "",
-    ).map((req) => ({
+    // Ronda 10, stream D: `listIncomingRequestsSync` filtra por
+    // defecto solo `kind="friendship"`, así que una solicitud de
+    // acceso a fotos nunca llegaba a Recibidas aunque el mapeo de
+    // abajo ya la contemplaba (`type: "gallery"`). Se suman ambos
+    // kinds (el lado Enviadas ya los traía todos: `listSentRequestsSync`
+    // sin kind no filtra). Sin esto, la solicitud de ver fotos solo
+    // existía en el gestor del perfil y no se podía responder aquí.
+    const localReceived: Invitation[] = [
+      ...listIncomingRequestsSync(currentUserId ?? ""),
+      ...listIncomingRequestsSync(currentUserId ?? "", "photo_access"),
+    ].map((req) => ({
       id: req.id,
       from_profile: resolveDemoProfileName(req.fromId),
+      // Ronda 10 (stream A, punto A2): insignia "Anónimo" al
+      // remitente anónimo (el registro local sabe si lo es).
+      fromIsAnonymous:
+        findLocalDemoAccountById(req.fromId)?.isAnonymous === true,
       to_profile: senderName,
       type: req.kind === "photo_access" ? "gallery" : "profile",
       status: req.status,
@@ -580,7 +628,13 @@ const Requests = () => {
               }
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-2 bg-slate-900/5 dark:bg-white/10 backdrop-blur-sm rounded-lg mb-6">
+              {/* RONDA 10 (stream B, B2): la lista era translúcida
+                  (`bg-slate-900/5 dark:bg-white/10` + blur) y la imagen
+                  de fondo se transparentaba por ella: pestañas blancas
+                  sobre lavanda en oscuro. Lista SÓLIDA opaca en ambos
+                  temas; la activa, blanca sólida en claro y blanca/25
+                  sobre pizarra sólida en oscuro. */}
+              <TabsList className="grid w-full grid-cols-2 bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-white/15 rounded-lg mb-6">
                 {/* Punto 11 (ronda 7): el disparador es `whitespace-nowrap`
                     (tabs.tsx) y llevaba icono + 2 badges en una sola línea:
                     si el contenido superaba el 50% del grid, el badge de
@@ -589,7 +643,7 @@ const Requests = () => {
                     una segunda línea en vez de invadir la otra pestaña. */}
                 <TabsTrigger
                   value="received"
-                  className="data-[state=active]:bg-slate-900/10 data-[state=active]:text-slate-900 dark:data-[state=active]:bg-white/20 dark:data-[state=active]:text-white text-slate-600 hover:text-slate-900 dark:text-white/80 dark:hover:text-white flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 px-2 sm:px-3"
+                  className="data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-white/25 dark:data-[state=active]:text-white text-slate-600 hover:text-slate-900 dark:text-white/75 dark:hover:text-white flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 px-2 sm:px-3"
                 >
                   <MailQuestion className="h-4 w-4 shrink-0" />
                   Recibidas
@@ -607,7 +661,7 @@ const Requests = () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="sent"
-                  className="data-[state=active]:bg-slate-900/10 data-[state=active]:text-slate-900 dark:data-[state=active]:bg-white/20 dark:data-[state=active]:text-white text-slate-600 hover:text-slate-900 dark:text-white/80 dark:hover:text-white flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 px-2 sm:px-3"
+                  className="data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:data-[state=active]:bg-white/25 dark:data-[state=active]:text-white text-slate-600 hover:text-slate-900 dark:text-white/75 dark:hover:text-white flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 px-2 sm:px-3"
                 >
                   <Send className="h-4 w-4 shrink-0" />
                   Enviadas
@@ -637,6 +691,7 @@ const Requests = () => {
                         key={inv.id}
                         className="p-4 bg-white dark:bg-purple-950 dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start gap-4 card-accessible"
                       >
+                        <RequestAvatar displayName={inv.from_profile} />
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center text-sm text-slate-700 dark:text-white/80">
@@ -644,6 +699,11 @@ const Requests = () => {
                               <span>
                                 Invitación de{" "}
                                 <strong>{inv.from_profile}</strong>
+                                {inv.fromIsAnonymous && (
+                                  <Badge className="ml-2 bg-slate-500/25 text-slate-100 border-slate-400/40 align-middle">
+                                    Anónimo
+                                  </Badge>
+                                )}
                               </span>
                             </div>
                             {getStatusBadge(inv.status)}
@@ -702,28 +762,32 @@ const Requests = () => {
                     sentInvitations.map((inv) => (
                       <Card
                         key={inv.id}
-                        className="p-4 bg-white dark:bg-purple-950 dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 card-accessible"
+                        className="p-4 bg-white dark:bg-purple-950 dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 card-accessible flex items-start gap-4"
                       >
-                        <div className="flex justify-between items-start">
-                          <div className="flex items-center text-sm text-slate-700 dark:text-white/80">
-                            {getInvitationTypeIcon(inv.type)}
-                            <span>
-                              Invitación para <strong>{inv.to_profile}</strong>
-                            </span>
+                        <RequestAvatar displayName={inv.to_profile} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start">
+                            <div className="flex items-center text-sm text-slate-700 dark:text-white/80">
+                              {getInvitationTypeIcon(inv.type)}
+                              <span>
+                                Invitación para{" "}
+                                <strong>{inv.to_profile}</strong>
+                              </span>
+                            </div>
+                            {getStatusBadge(inv.status)}
                           </div>
-                          {getStatusBadge(inv.status)}
-                        </div>
-                        {inv.message && (
-                          <p className="text-sm text-slate-900 dark:text-white bg-slate-900/5 dark:bg-black/30 p-3 rounded-md my-3">
-                            {inv.message}
+                          {inv.message && (
+                            <p className="text-sm text-slate-900 dark:text-white bg-slate-900/5 dark:bg-black/30 p-3 rounded-md my-3">
+                              {inv.message}
+                            </p>
+                          )}
+                          <p className="text-xs text-slate-500 dark:text-white/70">
+                            Enviado:{" "}
+                            {inv.created_at
+                              ? new Date(inv.created_at).toLocaleString()
+                              : "Fecha no disponible"}
                           </p>
-                        )}
-                        <p className="text-xs text-slate-500 dark:text-white/70">
-                          Enviado:{" "}
-                          {inv.created_at
-                            ? new Date(inv.created_at).toLocaleString()
-                            : "Fecha no disponible"}
-                        </p>
+                        </div>
                       </Card>
                     ))
                   )}

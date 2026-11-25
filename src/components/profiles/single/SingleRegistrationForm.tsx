@@ -26,6 +26,12 @@ import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { savePrivacySettingsExtra } from "@/lib/visibility";
 import { getZodiacSignFromDate } from "@/lib/zodiac";
+import {
+  COUNTRIES,
+  DEFAULT_COUNTRY_CODE,
+  getCountryByCode,
+  writeCountryCodeLocal,
+} from "@/lib/countries";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -38,6 +44,8 @@ interface SingleRegistrationData {
   age: string;
   /** Fecha de nacimiento ISO (opcional): de aquí se deriva el signo. */
   birthDate: string;
+  /** País de origen (código ISO): la nacionalidad se muestra en el perfil. */
+  countryCode: string;
   nickname: string;
   useRealName: boolean;
 
@@ -110,6 +118,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
     lastName: "",
     age: "",
     birthDate: "",
+    countryCode: DEFAULT_COUNTRY_CODE,
     nickname: "",
     useRealName: false,
     gender: "",
@@ -283,6 +292,15 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           userId: authData.user.id,
         });
 
+        // El apodo también va en la columna `nickname` (la usa la RPC
+        // `check_nickname_available` para detectar duplicados). Best-effort:
+        // si la columna aún no existe (migración 20261124050001 sin
+        // aplicar), el registro ya quedó creado y no se rompe.
+        await supabase
+          .from("profiles")
+          .update({ nickname: formData.nickname })
+          .eq("user_id", authData.user.id);
+
         if (formData.birthDate) {
           // La tabla `profiles` NO tiene columna `birth_date` ni
           // `privacy_settings`: la fecha (y de ahí el signo) vive en
@@ -290,6 +308,20 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           savePrivacySettingsExtra(authData.user.id, "single", {
             birthDate: formData.birthDate,
           });
+        }
+
+        // País de origen: la columna `country_code` es de la migración
+        // 20261124050000 (aún sin aplicar en producción). Se guarda en
+        // local siempre y se intenta en BD sin romper el registro si
+        // la columna aún no existe.
+        writeCountryCodeLocal(authData.user.id, formData.countryCode);
+        try {
+          await supabase
+            .from("profiles")
+            .update({ country_code: formData.countryCode } as never)
+            .eq("user_id", authData.user.id);
+        } catch {
+          // Columna aún sin aplicar: el país queda en local.
         }
 
         toast({
@@ -424,6 +456,32 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
             . Puedes ocultarlo en Privacidad.
           </p>
         )}
+      </div>
+
+      <div>
+        <Label className="text-white">País de origen *</Label>
+        <Select
+          value={formData.countryCode}
+          onValueChange={(value: string) =>
+            handleInputChange("countryCode", value)
+          }
+        >
+          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectValue placeholder="Selecciona tu país" />
+          </SelectTrigger>
+          <SelectContent>
+            {COUNTRIES.map((country) => (
+              <SelectItem key={country.code} value={country.code}>
+                {country.flag} {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-white/70 text-sm mt-1">
+          Tu nacionalidad aparecerá en tu perfil como{" "}
+          {getCountryByCode(formData.countryCode)?.flag}{" "}
+          {getCountryByCode(formData.countryCode)?.name}.
+        </p>
       </div>
 
       <NicknameValidator

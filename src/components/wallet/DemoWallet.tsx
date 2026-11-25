@@ -266,8 +266,13 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                   <Wallet className="h-4 w-4 text-green-400" />
                   <span className="text-sm text-white/80">Conectado</span>
                 </div>
-                <Badge className="bg-green-500/20 text-green-200 border-green-400/40">
-                  {walletAddress}
+                <Badge
+                  className="bg-green-500/20 text-green-200 border-green-400/40 max-w-[150px] truncate"
+                  title={walletAddress}
+                >
+                  {walletAddress.length > 14
+                    ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`
+                    : walletAddress}
                 </Badge>
               </div>
               <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg border border-white/20">

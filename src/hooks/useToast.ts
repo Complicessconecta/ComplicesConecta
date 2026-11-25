@@ -2,7 +2,10 @@ import * as React from "react";
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
 const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 5000;
+// Duración visible del toast: 3.5 s (antes 5 s). Los toasts tapaban
+// contenido en casi todas las páginas; con 3.5 s + viewport abajo y
+// más estrecho, el aviso se lee y se va sin estorbar.
+const TOAST_REMOVE_DELAY = 3500;
 
 type ToasterToast = ToastProps & {
   id: string;

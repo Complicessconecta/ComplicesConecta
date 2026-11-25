@@ -195,7 +195,15 @@ export const ClubsPublic = () => {
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => navigate("/clubs-public")}
+            // Único "Volver" de la página (la píldora fija global ya no
+            // se renderiza en /clubs-public). Antes navegaba SIEMPRE a
+            // "/clubs-public": en el detalle era correcto, pero en la
+            // lista era un no-op a la misma ruta ("Volver no navega").
+            // Ahora: en el detalle vuelve a la lista; en la lista
+            // vuelve a /clubs.
+            onClick={() =>
+              slug ? navigate("/clubs-public") : navigate("/clubs")
+            }
             className="border-white/30 text-white hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

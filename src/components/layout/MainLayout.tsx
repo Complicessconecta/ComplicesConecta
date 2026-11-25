@@ -71,6 +71,14 @@ export const MainLayout = () => {
 
   const isClubDemoRoute = pathname === "/clubs/demo";
 
+  // Rutas a pantalla completa donde los flotantes fijos tapan controles:
+  // en /chat el engranaje (bottom-4 left-4) cae sobre el compositor
+  // ("Escribe tu mensaje…") y la burbuja de chat es redundante (ya
+  // estás en el chat); en /video-chat el engranaje tapa los controles
+  // de llamada. En esas rutas no se renderizan.
+  const isChatRoute = pathname === "/chat" || pathname.startsWith("/chat/");
+  const isVideoChatRoute = pathname === "/video-chat";
+
   const isHomeRoute = pathname === "/";
 
   const headerOffsetClass = isClubDemoRoute
@@ -97,13 +105,15 @@ export const MainLayout = () => {
   // o sin demo; BottomNavigation ya no se renderiza.
   const showDock = isProfileRoute;
 
-  const showChatFab = !isProfileRoute;
+  const showChatFab = !isProfileRoute && !isChatRoute;
 
   return (
     <div className="min-h-dvh w-full text-white pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] overflow-x-hidden">
       <div className="min-h-full relative pb-24 flex flex-col">
         {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
-        <AnimationSettingsButton />
+        {/* Engranaje de ajustes: no se renderiza en /chat ni /video-chat,
+            donde su posición fija tapaba el compositor y los controles. */}
+        {!isChatRoute && !isVideoChatRoute && <AnimationSettingsButton />}
 
         {showHeaderNav && <HeaderNav />}
 
@@ -185,7 +195,7 @@ export const MainLayout = () => {
           rutas de perfil con o sin demo */}
         {showDock && <Navigation />}
 
-        <Toaster />
+        <Toaster dockOffset={showDock} />
       </div>
     </div>
   );
@@ -203,6 +213,9 @@ const BackButton: React.FC = () => {
   // club demo (botón Volver propio), tokens (TokensSubnav) y chat (su
   // propio "Volver": en el hilo vuelve a la lista y en la lista al feed).
   // La píldora fija de aquí flotaba sobre el hilo y la galería del chat.
+  // También /settings, /video-chat y /clubs-public: tienen su propio
+  // Volver en el flujo de la página; la píldora fija se solapaba con él
+  // (misma esquina superior izquierda) y dejaba dos "Volver" por pantalla.
   if (
     pathname === "/" ||
     pathname === "/auth" ||
@@ -210,7 +223,11 @@ const BackButton: React.FC = () => {
     pathname === "/tokens" ||
     pathname.startsWith("/tokens/") ||
     pathname === "/chat" ||
-    pathname.startsWith("/chat/")
+    pathname.startsWith("/chat/") ||
+    pathname === "/settings" ||
+    pathname === "/video-chat" ||
+    pathname === "/clubs-public" ||
+    pathname.startsWith("/clubs-public/")
   ) {
     return null;
   }

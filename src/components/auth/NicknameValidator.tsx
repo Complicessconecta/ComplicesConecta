@@ -121,28 +121,49 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
       setValidation((prev) => ({ ...prev, isChecking: true }));
 
       try {
-        // Verificar en tabla profiles
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("nickname")
-          .ilike("nickname", nickname.trim())
-          .limit(1);
+        // Disponibilidad vía RPC pública check_nickname_available
+        // (migración 20261124050001). La consulta directa a profiles
+        // fallaba en registro: RLS exige sesión (auth.uid()) y la
+        // columna nickname ni siquiera existe en producción si la
+        // migración no se aplicó — por eso CUALQUIER apodo daba
+        // "Error al verificar disponibilidad". La RPC es SECURITY
+        // DEFINER (salta RLS) y solo devuelve un booleano.
+        // Sin tipos generados aún para la RPC: cast a any hasta que el
+        // coordinador agregue su firma a supabase-generated.ts.
+        const { data: rpcAvailable, error: rpcError } = await (
+          supabase as any
+        ).rpc("check_nickname_available", {
+          p_nickname: nickname.trim(),
+        });
 
-        if (error) {
-          console.error("Error checking nickname availability:", error);
-          setValidation((prev) => ({
-            ...prev,
-            isChecking: false,
-            isValid: true,
-            isAvailable: false,
-            message: "Error al verificar disponibilidad",
-            suggestions: [],
-          }));
-          onValidationChange(true, false);
-          return;
+        let isAvailable: boolean | null = null;
+        if (!rpcError && typeof rpcAvailable === "boolean") {
+          isAvailable = rpcAvailable;
+        } else {
+          // Migración aún sin aplicar (función inexistente): respaldo
+          // a la consulta directa, que funciona donde RLS lo permite
+          // (local/dev). Si también falla, se muestra el error.
+          const isMissingFunction =
+            rpcError &&
+            (rpcError.code === "PGRST202" ||
+              rpcError.code === "42883" ||
+              /check_nickname_available/i.test(rpcError.message ?? ""));
+          if (!isMissingFunction) {
+            throw (
+              rpcError ??
+              new Error(
+                "La verificación de apodo no devolvió un resultado válido",
+              )
+            );
+          }
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("nickname")
+            .ilike("nickname", nickname.trim())
+            .limit(1);
+          if (error) throw error;
+          isAvailable = !data || data.length === 0;
         }
-
-        const isAvailable = !data || data.length === 0;
 
         if (isAvailable) {
           setValidation((prev) => ({
@@ -173,7 +194,7 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
           isChecking: false,
           isValid: true,
           isAvailable: false,
-          message: "Error al verificar disponibilidad",
+          message: "No se pudo verificar la disponibilidad, inténtalo de nuevo",
           suggestions: [],
         }));
         onValidationChange(true, false);

@@ -45,12 +45,12 @@ export const ChatAuthenticated = () => {
     null,
   );
 
-  // Mock data - en produccin vendra de la API
+  // Mock data - en producción vendría de la API
   const [publicMessages, setPublicMessages] = useState<ChatMessage[]>([
     {
       id: "1",
       senderId: "user1",
-      senderName: "Mara & Carlos",
+      senderName: "María & Carlos",
       senderAvatar: "/placeholder.svg",
       message: "Hola a todos! Alguien sabe de eventos este fin de semana?",
       timestamp: new Date(Date.now() - 300000),
@@ -61,7 +61,7 @@ export const ChatAuthenticated = () => {
       senderId: "user2",
       senderName: "Ana",
       senderAvatar: "/placeholder.svg",
-      message: "Nosotros organizamos una reunion privada el sábado ??",
+      message: "Nosotros organizamos una reunión privada el sábado",
       timestamp: new Date(Date.now() - 180000),
       isPrivate: false,
     },
@@ -74,9 +74,9 @@ export const ChatAuthenticated = () => {
       {
         id: "p1",
         senderId: "user1",
-        senderName: "Maria & Carlos",
+        senderName: "María & Carlos",
         senderAvatar: "/placeholder.svg",
-        message: "Hola, nos gust mucho su perfil. Les interesa conocernos?",
+        message: "Hola, nos gustó mucho su perfil. ¿Les interesa conocernos?",
         timestamp: new Date(Date.now() - 3600000),
         isPrivate: true,
       },
@@ -90,17 +90,17 @@ export const ChatAuthenticated = () => {
       fromUserName: "Roberto & Lisa",
       fromUserAvatar: "/placeholder.svg",
       message:
-        "Nos encantara chatear con ustedes. Somos una pareja experimentada.",
+        "Nos encantaría chatear con ustedes. Somos una pareja experimentada.",
       timestamp: new Date(Date.now() - 7200000),
       status: "pending",
     },
     {
       id: "req2",
       fromUserId: "user4",
-      fromUserName: "Sofa",
+      fromUserName: "Sofía",
       fromUserAvatar: "/placeholder.svg",
       message:
-        "Hola! Soy nueva en esto, me gustara conocer gente como ustedes.",
+        "¡Hola! Soy nueva en esto, me gustaría conocer gente como ustedes.",
       timestamp: new Date(Date.now() - 1800000),
       status: "pending",
     },
@@ -109,7 +109,7 @@ export const ChatAuthenticated = () => {
   const [onlineUsers, _setOnlineUsers] = useState<User[]>([
     {
       id: "user1",
-      name: "Maria & Carlos",
+      name: "María & Carlos",
       avatar: "/placeholder.svg",
       isOnline: true,
     },
@@ -128,7 +128,7 @@ export const ChatAuthenticated = () => {
   ]);
 
   useEffect(() => {
-    // Verificar autenticacin
+    // Verificar autenticación
     const demoAuth = safeGetItem<string>("demo_authenticated", {
       validate: true,
       defaultValue: "false",

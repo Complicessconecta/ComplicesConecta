@@ -331,7 +331,7 @@ export const ClubsDemo = () => {
                   <Button
                     variant="outline"
                     onClick={() => setShowAdminPanel(false)}
-                    className="shrink-0 border-white/30 text-white hover:bg-white/10"
+                    className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                   >
                     <Eye className="h-4 w-4 mr-2 shrink-0" />
                     Ver perfil público
@@ -344,10 +344,10 @@ export const ClubsDemo = () => {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
+                  <Badge className="shrink-0 whitespace-nowrap bg-purple-500/90 text-white border border-purple-300/40">
                     Admin
                   </Badge>
-                  <Badge className="bg-green-500/90 text-white">
+                  <Badge className="shrink-0 whitespace-nowrap bg-green-500/90 text-white">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Verificado
                   </Badge>
@@ -390,7 +390,7 @@ export const ClubsDemo = () => {
                 <Button
                   variant="outline"
                   onClick={() => navigate("/clubs-public")}
-                  className="shrink-0 border-white/30 text-white hover:bg-white/10"
+                  className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2 shrink-0" />
                   Volver
@@ -404,10 +404,10 @@ export const ClubsDemo = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
+                <Badge className="shrink-0 whitespace-nowrap bg-purple-500/90 text-white border border-purple-300/40">
                   Admin
                 </Badge>
-                <Badge className="bg-green-500/90 text-white">
+                <Badge className="shrink-0 whitespace-nowrap bg-green-500/90 text-white">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   Verificado
                 </Badge>
@@ -415,7 +415,7 @@ export const ClubsDemo = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowAdminPanel(true)}
-                  className="shrink-0 border-white/30 text-white hover:bg-white/10"
+                  className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                   title="Panel de administración del club"
                 >
                   Panel Admin

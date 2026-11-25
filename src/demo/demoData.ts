@@ -67,17 +67,24 @@ const DEMO_ROSTER: Array<{
 ];
 
 /**
- * Fotos de pareja VERIFICADAS (revisadas una a una): el pool "couple" de
- * @/lib/media mezcla retratos de una sola persona — hombre en escritorio,
- * mujer haciendo ejercicio, retrato de mujer, un bebé, grafiti, un grupo
- * familiar — así que las tarjetas de pareja del demo salían con foto de
- * un solo hombre. Hasta que ese pool se limpie, el demo usa solo estas
- * tres fotos de pareja; al agotarse se reutilizan en rotación.
+ * Fotos de pareja VERIFICADAS por vista, una a una: cada URL es una
+ * foto distinta de una pareja junta (no símbolos ni fotos sueltas).
+ * De las 3 anteriores, solo 1606216794074 era una pareja junta:
+ * 1516589178581 son dos manos formando un corazón y 1518568814500 son
+ * luces en forma de corazón en la playa SIN personas — por eso Carmen &
+ * Roberto salía con "un corazón de luces en la playa" y sin foto propia.
+ * Mismo pool que el "couple" de @/lib/media (8 fotos para 6 parejas
+ * demo, sin repetir hasta agotar la lista).
  */
 const DEMO_COUPLE_IMAGES = [
-  "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop",
   "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1522098543979-ffc7f79a56c4?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop",
 ];
 
 /** Foto de pareja verificada, sin repetir hasta agotar la lista. */

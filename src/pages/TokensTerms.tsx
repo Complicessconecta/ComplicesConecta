@@ -457,7 +457,7 @@ export default function TokensTerms() {
           </CardContent>
         </Card>
 
-        {/* Aceptacin */}
+        {/* Aceptación */}
         <Card className="bg-linear-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-purple-400/30">
           <CardContent className="p-6 text-center">
             <h3 className="text-xl font-bold text-white mb-4">

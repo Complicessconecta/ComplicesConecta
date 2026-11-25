@@ -44,12 +44,12 @@ const Matches = () => {
     },
     {
       id: 2,
-      name: "Sofia",
+      name: "Sofía",
       age: 29,
       image:
         "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=600&fit=crop&crop=face&v=2",
       compatibility: 94,
-      mutualInterests: ["Unicornio", "Experiencias Nuevas", "Discrecin"],
+      mutualInterests: ["Unicornio", "Experiencias Nuevas", "Discreción"],
       distance: 3.5,
       matchedAt: "Ayer",
       hasUnreadMessage: true,
@@ -74,7 +74,7 @@ const Matches = () => {
     },
     {
       id: 4,
-      name: "Raul",
+      name: "Raúl",
       age: 26,
       image:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face",
@@ -90,9 +90,9 @@ const Matches = () => {
       name: "Valentina",
       age: 27,
       image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=600&fit=crop&crop=face",
       compatibility: 96,
-      mutualInterests: ["Lifestyle", "Aventuras", "Discrecin Total"],
+      mutualInterests: ["Lifestyle", "Aventuras", "Discreción Total"],
       distance: 4.2,
       matchedAt: "Hace 5 horas",
       hasUnreadMessage: true,
@@ -121,7 +121,7 @@ const Matches = () => {
     "all",
   );
 
-  // Detectar modo de operacin (demo vs produccin)
+  // Detectar modo de operación (demo vs producción)
   useEffect(() => {
     const demoAuth = safeGetItem<string>("demo_authenticated", {
       validate: true,
@@ -129,18 +129,18 @@ const Matches = () => {
     });
     const isDemo = demoAuth === "true";
 
-    // SIEMPRE usar datos demo para respetar la lgica de negocio
-    // No cargar datos reales hasta que el sistema est completamente implementado
+    // SIEMPRE usar datos demo para respetar la lógica de negocio
+    // No cargar datos reales hasta que el sistema esté completamente implementado
     if (matches.length === 0) {
       setMatches(demoMatches);
-      logger.info("?? Matches demo cargados (respetando lgica de negocio):", {
+      logger.info("✅ Matches demo cargados (respetando lógica de negocio):", {
         count: demoMatches.length,
         isDemo,
       });
     }
   }, [matches.length]);
 
-  const currentMatches = matches; // Siempre usar datos demo para respetar lgica de negocio
+  const currentMatches = matches; // Siempre usar datos demo para respetar lógica de negocio
   const filteredMatches = currentMatches.filter((match) => {
     switch (filter) {
       case "new":
@@ -392,7 +392,7 @@ const MatchCard = ({
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             const fallback =
-              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
+              "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=400&h=600&fit=crop&crop=face";
             if (target.src !== fallback) target.src = fallback;
           }}
         />

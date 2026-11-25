@@ -134,6 +134,8 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
 }) => {
   const [settings, setSettings] =
     useState<CouplePrivacySettings>(DEFAULT_PRIVACY);
+  // Confirmación en línea para quitar la marca de agua (ver toggle()).
+  const [confirmWatermarkOff, setConfirmWatermarkOff] = useState(false);
   // Fechas de nacimiento y signos manuales (claves extra del mismo JSON).
   const [extras, setExtras] = useState<PrivacyExtras>(EMPTY_EXTRAS);
   const derivedZodiac1 = resolveZodiacSign({
@@ -287,21 +289,12 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
 
   if (!userId) return null;
 
-  const toggle = (key: keyof CouplePrivacySettings) => {
-    const nextValue = !settings[key];
+  /** Aplica el cambio de un toggle (estado + persistencia + aviso). */
+  const applyToggle = (
+    key: keyof CouplePrivacySettings,
+    nextValue: boolean,
+  ) => {
     const label = ROWS.find((row) => row.key === key)?.label ?? key;
-    // Quitar la marca de agua es bajo responsabilidad del usuario: la
-    // marca protege su privacidad en las fotos. Confirmar antes.
-    if (key === "watermark" && settings.watermark && nextValue === false) {
-      if (
-        typeof window !== "undefined" &&
-        !window.confirm(
-          `${WATERMARK_OFF_WARNING}\n\n¿Quitar la marca de agua de todos modos?`,
-        )
-      ) {
-        return;
-      }
-    }
     const next = { ...settings, [key]: nextValue };
     setSettings(next);
     saveAll(next, extras);
@@ -312,6 +305,23 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
     if (key === "watermark" && nextValue === false) {
       toast.warning(WATERMARK_OFF_WARNING);
     }
+  };
+
+  const toggle = (key: keyof CouplePrivacySettings) => {
+    const nextValue = !settings[key];
+    // Quitar la marca de agua es bajo responsabilidad del usuario: la
+    // marca protege su privacidad en las fotos. Antes se pedía con
+    // window.confirm(), que en navegadores automatizados y en varias
+    // webviews móviles se descarta solo (o no se muestra) y el toggle
+    // parecía no apagarse nunca. Ahora la confirmación es en línea:
+    // el primer toque abre el aviso y solo el botón "Sí, quitar"
+    // apaga la marca (mismo bug que en SinglePrivacySection).
+    if (key === "watermark" && settings.watermark && nextValue === false) {
+      setConfirmWatermarkOff(true);
+      return;
+    }
+    setConfirmWatermarkOff(false);
+    applyToggle(key, nextValue);
   };
 
   return (
@@ -360,6 +370,35 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
             </div>
           </div>
         ))}
+        {/* Confirmación en línea para quitar la marca de agua (ver
+            toggle()): sin window.confirm, que se descartaba solo. */}
+        {confirmWatermarkOff && (
+          <div className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-3 space-y-2">
+            <p className="text-xs text-amber-200">{WATERMARK_OFF_WARNING}</p>
+            <p className="text-xs text-amber-200 font-medium">
+              ¿Quitar la marca de agua de todos modos?
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmWatermarkOff(false);
+                  applyToggle("watermark", false);
+                }}
+                className="rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-black"
+              >
+                Sí, quitar la marca de agua
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmWatermarkOff(false)}
+                className="rounded-lg border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-medium text-white"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
         {/* Aviso persistente mientras la marca de agua está apagada. */}
         {!settings.watermark && (
           <p className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">

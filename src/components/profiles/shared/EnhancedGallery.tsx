@@ -52,7 +52,7 @@ const getDemoImages = (profileType: "single" | "couple"): GalleryImage[] => {
   const baseImages = [
     {
       id: "demo-1",
-      url: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
+      url: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face",
       caption: "Disfrutando el día",
       isPublic: true,
       uploadedAt: "2024-01-15T10:30:00Z",

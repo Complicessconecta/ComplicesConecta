@@ -414,8 +414,8 @@ const neonOptions = useMemo(
       <div
         className={`fixed inset-0 -z-30 bg-linear-to-br ${
           preferences.particlesEnabled
-            ? "from-slate-900 via-purple-950 to-slate-900"
-            : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
+            ? "from-slate-100 via-purple-100 to-slate-200 dark:from-slate-900 dark:via-purple-950 dark:to-slate-900"
+            : "from-[#f3f1f5] via-[#e9e7ee] to-[#dcd9e2] dark:from-[#0a0a0a] dark:via-[#111111] dark:to-[#1a1a1a]"
         } ${variant === "solid" ? "bg-(--cc-solid-bg)" : ""}`}
       >
         {/* Imagen de fondo con fade-in sólo cuando está cargada */}
@@ -424,12 +424,12 @@ const neonOptions = useMemo(
             src={resolvedBackground}
             alt=""
             aria-hidden="true"
-            className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-1200 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+            className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-1200 ${imageLoaded ? "dark:opacity-100 opacity-30" : "opacity-0"}`}
           />
         )}
 
-        {/* Overlay gradiente oscuro para legibilidad */}
-        <div className="fixed inset-0 -z-10 bg-linear-to-br from-black/40 via-black/30 to-black/40" />
+        {/* Overlay gradiente oscuro para legibilidad (claro en modo claro) */}
+        <div className="fixed inset-0 -z-10 bg-linear-to-br from-white/40 via-white/30 to-white/40 dark:from-black/40 dark:via-black/30 dark:to-black/40" />
 
         {/* Partículas neón globales (modo Lifestyle Swinger) */}
         {showNeonParticles && (

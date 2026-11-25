@@ -68,7 +68,7 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
             id: "contact-1",
             name: "Ana & Carlos",
             avatar:
-              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150",
+              "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150",
             status: "online",
             unreadCount: 2,
           },

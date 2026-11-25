@@ -12,6 +12,11 @@ import {
   getAppConfig,
   resolveDemoAccountType,
 } from "@/lib/app-config";
+import {
+  getDemoWalletBalance,
+  deriveDemoWalletView,
+  type DemoAccountType,
+} from "@/lib/demo-wallet";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services";
@@ -116,15 +121,16 @@ export const useTokens = () => {
       if (isDemo()) {
         logger.info(" Cargando datos de tokens demo", { user: user.email });
 
-        // Balance demo basado en el tipo de usuario
-        let demoBalance: TokenBalance = { cmpx: 1250, gtk: 850 };
-
-        // Ajustar balance según el usuario demo
-        if (user.email?.includes("couple")) {
-          demoBalance = { cmpx: 2000, gtk: 1500 };
-        } else if (user.email?.includes("premium")) {
-          demoBalance = { cmpx: 5000, gtk: 3000 };
-        }
+        // Balance demo canónico por tipo de cuenta (ÚNICA fuente:
+        // @/lib/demo-wallet — single 1250/850, pareja 2000/1500).
+        // Antes los literales vivían aquí duplicados y cada superficie
+        // tenía los suyos (TokenDashboard: MOCK 5000/2500).
+        let demoAccountType: DemoAccountType = user.email?.includes("couple")
+          ? "couple"
+          : "single";
+        // Cuenta demo premium legacy (sin usuario demo canónico con ese
+        // correo): conserva su balance histórico 5000/3000.
+        const isPremiumDemo = user.email?.includes("premium") ?? false;
 
         // Intentar obtener balance personalizado del localStorage
         const storedUser = localStorage.getItem("demo_user");
@@ -135,12 +141,17 @@ export const useTokens = () => {
             // puede tener forma de Profile (profile_type) sin `accountType`;
             // leer solo accountType daba el balance de single a una pareja.
             if (resolveDemoAccountType(parsedUser) === "couple") {
-              demoBalance = { cmpx: 2000, gtk: 1500 };
+              demoAccountType = "couple";
             }
           } catch {
             logger.warn("Error parsing demo user for balance");
           }
         }
+
+        const canonical = getDemoWalletBalance(demoAccountType);
+        const demoBalance: TokenBalance = isPremiumDemo
+          ? { cmpx: 5000, gtk: 3000 }
+          : { cmpx: canonical.cmpx, gtk: canonical.gtk };
 
         setBalance(demoBalance);
         setLoading(false);
@@ -613,18 +624,16 @@ export const useTokens = () => {
   const isWorldIdEligible = true; // Mock for demo
   const error = null; // Mock for demo
 
-  // Balance con propiedades específicas
+  // Balance con propiedades específicas. La vista se deriva del total
+  // con deriveDemoWalletView (ÚNICA fuente: @/lib/demo-wallet): el
+  // staking es una PARTE del total, no un extra — antes TokenDashboard
+  // sumaba disponible + staking y el "total" se inflaba (1250 + 375).
+  const walletView = deriveDemoWalletView(balance.cmpx, balance.gtk);
   const enhancedBalance = {
     balance: {
-      cmpxBalance: balance.cmpx,
-      cmpxStaked: balance.cmpx * 0.3, // 30% staked demo
-      gtkBalance: balance.gtk,
-      gtkStaked: balance.gtk * 0.2, // 20% staked demo
+      ...walletView,
       cmpx: balance.cmpx,
       gtk: balance.gtk,
-      monthlyEarned: balance.cmpx * 0.05, // 5% monthly earnings demo
-      monthlyRemaining: 1000 - balance.cmpx * 0.05, // Monthly limit demo
-      monthlyLimit: 1000,
       totalReferrals: 3, // Demo referrals
       referralCode: `REF${user?.id || "DEMO"}`,
     },

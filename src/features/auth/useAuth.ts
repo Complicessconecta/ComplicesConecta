@@ -108,6 +108,54 @@ export const useAuth = () => {
             parsedDemoUser.first_name ||
             "Demo User") as string,
           email: (parsedDemoUser.email || "") as string | null,
+          // Ronda 6 (registro demo local): una cuenta demo recién creada
+          // trae sus propios datos en `demo_user` (edad, bio, intereses,
+          // género, apodo, nombre de pareja). Sin esto, loadProfile los
+          // tiraba y el perfil mostraba los fallbacks de Sofía (28 años,
+          // su foto y su bio) aunque el apodo fuera otro.
+          age:
+            typeof parsedDemoUser.age === "number" ? parsedDemoUser.age : null,
+          bio:
+            typeof parsedDemoUser.bio === "string" ? parsedDemoUser.bio : null,
+          avatar_url:
+            typeof parsedDemoUser.avatar_url === "string"
+              ? parsedDemoUser.avatar_url
+              : null,
+          gender:
+            typeof parsedDemoUser.gender === "string"
+              ? parsedDemoUser.gender
+              : null,
+          interested_in:
+            typeof parsedDemoUser.interested_in === "string"
+              ? parsedDemoUser.interested_in
+              : null,
+          interests: Array.isArray(parsedDemoUser.interests)
+            ? (parsedDemoUser.interests as string[])
+            : null,
+          nickname:
+            typeof parsedDemoUser.nickname === "string"
+              ? parsedDemoUser.nickname
+              : null,
+          couple_name:
+            typeof parsedDemoUser.couple_name === "string"
+              ? parsedDemoUser.couple_name
+              : null,
+          his_name:
+            typeof parsedDemoUser.his_name === "string"
+              ? parsedDemoUser.his_name
+              : null,
+          his_age:
+            typeof parsedDemoUser.his_age === "number"
+              ? parsedDemoUser.his_age
+              : null,
+          her_name:
+            typeof parsedDemoUser.her_name === "string"
+              ? parsedDemoUser.her_name
+              : null,
+          her_age:
+            typeof parsedDemoUser.her_age === "number"
+              ? parsedDemoUser.her_age
+              : null,
           // C3: el perfil demo NUNCA es admin. role forzado a "user" y
           // profile_type limitado a "single"/"couple": un demo_user forjado
           // con role/accountType "admin" en localStorage no escala privilegios.

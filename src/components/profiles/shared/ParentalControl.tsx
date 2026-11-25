@@ -259,6 +259,12 @@ export const ParentalControl = ({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
+          // Clic en el fondo cierra el modal sin desbloquear (solo con
+          // onClose: sin él no hay a dónde cerrar). El clic dentro de la
+          // tarjeta no cierra.
+          onClick={(e) => {
+            if (onClose && e.target === e.currentTarget) handleClose();
+          }}
           className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
           <Card className="relative w-full max-w-sm bg-linear-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">

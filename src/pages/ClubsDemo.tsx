@@ -337,7 +337,11 @@ export const ClubsDemo = () => {
                     Ver perfil público
                   </Button>
                   <div className="min-w-0">
-                    <div className="text-white font-bold truncate">Panel Administración</div>
+                    {/* Título corto y sin truncate: "Panel
+                        Administración" se cortaba a "Panel Admi…" en
+                        /clubs/demo porque el botón "Ver perfil público"
+                        se comía el ancho. */}
+                    <div className="text-white font-bold">Panel Admin</div>
                     <div className="text-white/70 text-xs truncate">
                       Vista de creador — Modo Demo
                     </div>

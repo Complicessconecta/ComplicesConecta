@@ -11,6 +11,11 @@ import { useTokens } from "@/hooks/useTokens";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { resolveDemoAccountType } from "@/lib/app-config";
+import {
+  getDemoWalletBalance,
+  deriveDemoWalletView,
+} from "@/lib/demo-wallet";
+import { DEFAULT_DEMO_NFTS } from "@/services/payments/NFTService";
 import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from "lucide-react";
 import { TokenAiChat } from "@/components/tokens/TokenAiChat";
 
@@ -22,67 +27,31 @@ const MOCK_NFT_IMAGES = [
   "/assets/nfts/imagen4.gif",
 ];
 
-// Datos mock para modo demo
-const MOCK_DEMO_DATA = {
-  balance: {
-    cmpxBalance: 5000,
-    gtkBalance: 2500,
-    cmpxStaked: 2000,
-    monthlyEarned: 800,
-    monthlyLimit: 1000,
-    monthlyRemaining: 200,
-    referralCode: "DEMO2026",
-    totalReferrals: 5,
-  },
-  transactions: [
-    { id: 1, description: "Minteo NFT #1", amount: -1000, type: "nft_mint", token_type: "cmpx", created_at: new Date().toISOString() },
-    { id: 2, description: "Recompensa diaria", amount: 50, type: "reward", token_type: "cmpx", created_at: new Date().toISOString() },
-    { id: 3, description: "Staking CMPX", amount: -2000, type: "stake", token_type: "cmpx", created_at: new Date().toISOString() },
-    { id: 4, description: "Recompensa referido", amount: 100, type: "referral", token_type: "cmpx", created_at: new Date().toISOString() },
-  ],
-  nfts: [
-    {
-      id: "demo-nft-1",
-      token_id: 8238,
-      name: "Cómplice #8238",
-      image: MOCK_NFT_IMAGES[3],
-      rarity: "legendary",
-      value: 5000,
-      is_couple: false,
-      collection: "CómplicesConecta Demo",
-    },
-    {
-      id: "demo-nft-2",
-      token_id: 167,
-      name: "Cómplice #167",
-      image: MOCK_NFT_IMAGES[1],
-      rarity: "common",
-      value: 100,
-      is_couple: true,
-      collection: "CómplicesConecta Demo",
-    },
-    {
-      id: "demo-nft-3",
-      token_id: 3013,
-      name: "Cómplice #3013",
-      image: MOCK_NFT_IMAGES[2],
-      rarity: "epic",
-      value: 1500,
-      is_couple: true,
-      collection: "CómplicesConecta Demo",
-    },
-    {
-      id: "demo-nft-4",
-      token_id: 4521,
-      name: "Cómplice #4521",
-      image: MOCK_NFT_IMAGES[0],
-      rarity: "rare",
-      value: 500,
-      is_couple: false,
-      collection: "CómplicesConecta Demo",
-    },
-  ],
-};
+// Datos mock para modo demo: SOLO transacciones (historial de ejemplo).
+// El BALANCE ya no vive aquí: el MOCK 5000/2500 con 2000 en staking era
+// el que mostraba el hero "7000 CMPX" cuando el hook aún no cargaba.
+// Ahora el balance sale del hook (useTokens, fuente @/lib/demo-wallet)
+// y el fallback es el canónico por tipo de cuenta (ver demoBalance).
+// Los NFTs demo tampoco viven aquí: son DEFAULT_DEMO_NFTS (la misma
+// fuente que NFTService.getUserNFTs y DemoWallet, punto 12).
+const MOCK_DEMO_TRANSACTIONS = [
+  { id: 1, description: "Minteo NFT #1", amount: -1000, type: "nft_mint", token_type: "cmpx", created_at: new Date().toISOString() },
+  { id: 2, description: "Recompensa diaria", amount: 50, type: "reward", token_type: "cmpx", created_at: new Date().toISOString() },
+  { id: 3, description: "Staking CMPX", amount: -2000, type: "stake", token_type: "cmpx", created_at: new Date().toISOString() },
+  { id: 4, description: "Recompensa referido", amount: 100, type: "referral", token_type: "cmpx", created_at: new Date().toISOString() },
+];
+
+/** NFTs demo canónicos (DEFAULT_DEMO_NFTS) en la forma de esta vista. */
+const DEMO_NFTS = DEFAULT_DEMO_NFTS.map((nft, index) => ({
+  id: nft.id,
+  token_id: index + 1,
+  name: nft.name,
+  image: nft.image,
+  rarity: nft.rarity,
+  value: nft.value,
+  is_couple: nft.is_couple,
+  collection: "CómplicesConecta Demo",
+}));
 
 /** Fecha de una transacción: usa created_at (forma real) o date (mock viejo). Nunca muestra "Invalid Date". */
 function formatTxDate(tx: { created_at?: string; date?: string }): string {
@@ -97,6 +66,10 @@ export interface TokenDashboardProps {
     cmpxBalance: number;
     gtkBalance: number;
     cmpxStaked: number;
+    /** Disponibles = total − staking (si no viene, se deriva). */
+    cmpxAvailable?: number;
+    gtkStaked?: number;
+    gtkAvailable?: number;
     monthlyEarned: number;
     monthlyLimit: number;
     monthlyRemaining: number;
@@ -141,27 +114,49 @@ export function TokenDashboard({
   // En demo el balance debe ser el canónico por tipo de cuenta (useTokens:
   // single 1250/850, pareja 2000/1500), no el MOCK estático 5000/2500, para
   // que Tokens muestre lo mismo que el perfil. Si el hook aún no cargó
-  // (balance 0), se usa el MOCK para no parpadear en 0.
+  // (balance 0), el fallback es el canónico derivado de la cuenta demo
+  // (@/lib/demo-wallet) — nunca el MOCK, que era el hero "7000 CMPX".
+  const demoAccountType = resolveDemoAccountType(user);
+  const canonicalFallback = (() => {
+    const canonical = getDemoWalletBalance(demoAccountType);
+    const view = deriveDemoWalletView(canonical.cmpx, canonical.gtk);
+    return {
+      ...view,
+      referralCode: "DEMO2026",
+      totalReferrals: 5,
+    };
+  })();
   const demoBalance =
     hookBalance && hookBalance.cmpxBalance > 0
       ? {
-          ...MOCK_DEMO_DATA.balance,
+          ...canonicalFallback,
           cmpxBalance: hookBalance.cmpxBalance,
           gtkBalance: hookBalance.gtkBalance,
           cmpxStaked: hookBalance.cmpxStaked,
           gtkStaked: hookBalance.gtkStaked,
+          cmpxAvailable: hookBalance.cmpxAvailable,
+          gtkAvailable: hookBalance.gtkAvailable,
+          monthlyEarned: hookBalance.monthlyEarned,
+          monthlyRemaining: hookBalance.monthlyRemaining,
+          monthlyLimit: hookBalance.monthlyLimit,
+          referralCode: hookBalance.referralCode,
+          totalReferrals: hookBalance.totalReferrals,
         }
-      : MOCK_DEMO_DATA.balance;
+      : canonicalFallback;
   // Use props if provided (demo mode), otherwise use hook data
   const balance = isDemoMode ? demoBalance : (initialBalance || hookBalance);
-  const transactions = isDemoMode ? MOCK_DEMO_DATA.transactions : (initialTransactions || hookTransactions);
+  const transactions = isDemoMode ? MOCK_DEMO_TRANSACTIONS : (initialTransactions || hookTransactions);
   // En demo la pareja muestra solo sus NFTs de pareja (2, igual que su
   // perfil: is_couple), el single muestra los 4 (igual que su perfil).
-  const demoAccountType = isDemoMode ? resolveDemoAccountType(user) : null;
+  // Si la página ya cargó la colección real del usuario (prop `nfts`,
+  // misma fuente getUserNFTs que el perfil), esa manda: tras mintear,
+  // /tokens muestra la colección minteada, no los 4 de ejemplo.
+  const demoNftsFromProp =
+    nfts.length > 0 ? nfts : DEMO_NFTS;
   const displayNfts = isDemoMode
     ? demoAccountType === "couple"
-      ? MOCK_DEMO_DATA.nfts.filter((n) => n.is_couple)
-      : MOCK_DEMO_DATA.nfts
+      ? demoNftsFromProp.filter((n) => n.is_couple)
+      : demoNftsFromProp
     : nfts;
   const loading = !isDemoMode && !initialBalance && hookLoading;
 
@@ -205,9 +200,15 @@ export function TokenDashboard({
     );
   }
 
-  const totalCMPX = balance.cmpxBalance + balance.cmpxStaked;
+  // El total poseído ES cmpxBalance; el staking es una parte de él, no
+  // un sumando (antes: total = disponible + staking → 1250 + 375 = 1625,
+  // y tras reclamar 100 CMPX: 1350 + 405 = 1755). "Disponibles" es
+  // total − staking.
+  const totalCMPX = balance.cmpxBalance;
+  const availableCMPX =
+    balance.cmpxAvailable ?? balance.cmpxBalance - balance.cmpxStaked;
   const availablePercentage =
-    totalCMPX > 0 ? (balance.cmpxBalance / totalCMPX) * 100 : 0;
+    totalCMPX > 0 ? (availableCMPX / totalCMPX) * 100 : 0;
   const stakedPercentage =
     totalCMPX > 0 ? (balance.cmpxStaked / totalCMPX) * 100 : 0;
   const monthlyProgress =
@@ -237,7 +238,7 @@ export function TokenDashboard({
               <p className="text-white/80">CMPX Total</p>
               <p className="text-3xl font-bold text-white">{totalCMPX}</p>
               <p className="text-xs text-white/60">
-                {balance.cmpxBalance} disponibles + {balance.cmpxStaked} en staking
+                {availableCMPX} disponibles + {balance.cmpxStaked} en staking
               </p>
             </div>
             <div>
@@ -296,7 +297,7 @@ export function TokenDashboard({
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-green-500 rounded"></div>
                 <span className="text-white/90 truncate">
-                  Disponibles: {balance.cmpxBalance} CMPX
+                  Disponibles: {availableCMPX} CMPX
                 </span>
               </div>
               <div className="flex items-center gap-2">

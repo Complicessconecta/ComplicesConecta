@@ -122,6 +122,13 @@ interface ProfileContentProps {
   onUploadImage?: () => void;
   onDeletePost?: (postId: string) => void;
   onCommentPost?: (postId: string) => void;
+  /**
+   * Muestra el post de ejemplo de Ana. Solo es de Ana: /profile/3 lo
+   * deja en true (default) y los perfiles propio/de pareja lo pasan en
+   * false — antes el post de Ana salía en TODOS los perfiles y además
+   * el vacío "No hay posts aún" se mostraba debajo de él (punto 13).
+   */
+  showExamplePost?: boolean;
 }
 
 export const ProfileContent: React.FC<ProfileContentProps> = ({
@@ -129,6 +136,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   onUploadImage,
   onDeletePost,
   onCommentPost,
+  showExamplePost = true,
 }) => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
@@ -206,7 +214,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
           <div className="space-y-4">
             {/* Posts Grid */}
             <div className="grid grid-cols-1 gap-4">
-              {/* Post Example - Perfil Single (Ana) */}
+              {/* Post Example - Perfil Single (Ana). Solo se renderiza
+                  cuando showExamplePost (es el post DE Ana: en /profile/3
+                  sí, en el perfil propio o de pareja no). */}
+              {showExamplePost && (
               <Card className="bg-white/10 backdrop-blur-md border-white/20">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3 mb-3">
@@ -321,6 +332,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   </div>
                 </CardContent>
               </Card>
+              )}
 
               {/* Post Demo Creado */}
               {demoPost && (
@@ -408,8 +420,11 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 </Card>
               )}
 
-              {/* Empty State */}
-              {!demoPost && (
+              {/* Empty State: solo cuando NO hay ningún post visible.
+                  Antes solo miraba `demoPost` y el post de ejemplo de Ana
+                  se renderizaba siempre: en /profile/3 salía el post de
+                  Ana seguido de "No hay posts aún" (punto 13). */}
+              {!demoPost && !showExamplePost && (
                 <div className="text-center py-12">
                   <Grid3X3 className="w-12 h-12 mx-auto mb-4 text-white/40" />
                   <p className="text-white/60 mb-4">No hay posts aún</p>

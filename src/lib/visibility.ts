@@ -421,10 +421,30 @@ export interface DiscoverProfileLike {
   /** Campo real (`is_verified`) o demo (`isVerified`). */
   isVerified?: boolean;
   is_verified?: boolean;
+  /**
+   * Ronda 9 (stream A, punto 3): perfil anónimo (campo real
+   * `is_anonymous` o demo `isAnonymous`). Solo aparece en Discover
+   * para espectadores verificados, con insignia "Anónimo".
+   * El `| undefined` es obligatorio: con
+   * `exactOptionalPropertyTypes` un `?: boolean` rechaza un
+   * `undefined` explícito (lo que pasa Discover al leer la columna).
+   */
+  is_anonymous?: boolean | undefined;
+  isAnonymous?: boolean | undefined;
   /** Ajustes del perfil listado, cuando la fuente los trae. */
   privacySettings?: PrivacySettings | null | undefined;
   /** Atajo plano cuando la fuente trae el flag suelto. */
   invisible?: boolean;
+}
+
+/** Insignia que llevan los perfiles anónimos en Discover/búsquedas. */
+export const ANONYMOUS_BADGE_LABEL = "Anónimo";
+
+/** ¿Es este perfil listado un perfil anónimo? */
+export function isAnonymousDiscoverProfile(
+  profile: DiscoverProfileLike,
+): boolean {
+  return profile.is_anonymous === true || profile.isAnonymous === true;
 }
 
 function profileIsVerified(profile: DiscoverProfileLike): boolean {
@@ -444,12 +464,25 @@ function profileIsInvisible(profile: DiscoverProfileLike): boolean {
  * - Espectador con `allowUnverified === false` → solo ve verificados
  *   (el filtro "Mostrar perfiles sin verificar" de Discover arranca
  *   de este ajuste; desactivado = solo verificados).
+ * - Ronda 9 (stream A, punto 3): perfil ANÓNIMO → solo para
+ *   espectadores VERIFICADOS (`opts.viewerIsVerified`), aunque el
+ *   filtro de verificados esté apagado. Sin saber si el espectador
+ *   es verificado (`viewerIsVerified` undefined) no se muestra: un
+ *   anónimo nunca es visible por defecto.
+ * - Ronda 9 (stream A, punto 2): el anónimo es privado por defecto:
+ *   en Discover solo se ve su tarjeta mínima (la tarjeta en sí es la
+ *   tarjeta mínima: sin bio extendida ni galería) y el perfil
+ *   completo exige solicitud + aceptación (ver profileVisibility.ts).
  */
 export function shouldShowInDiscover(
   profile: DiscoverProfileLike,
   viewerPrivacy?: PrivacySettings | null,
+  opts?: { viewerIsVerified?: boolean },
 ): boolean {
   if (profileIsInvisible(profile)) return false;
+  if (isAnonymousDiscoverProfile(profile)) {
+    return opts?.viewerIsVerified === true;
+  }
   if (viewerPrivacy && viewerPrivacy.allowUnverified === false) {
     return profileIsVerified(profile);
   }
@@ -459,6 +492,8 @@ export function shouldShowInDiscover(
 /**
  * ¿Este perfil puede aparecer en la lista de visitas recientes de
  * otro usuario? Misma regla que Discover: invisible = no aparece.
+ * Ronda 9 (stream A, punto 2): el anónimo es privado por defecto y
+ * TAMPOCO aparece en visitas recientes (no deja rastro de visita).
  * NOTA: hoy no existe en la app ninguna lista de "visitas recientes"
  * (solo el contador de Visitas en ProfileStats); esta función es el
  * punto de filtrado para cuando esa lista exista.
@@ -466,6 +501,7 @@ export function shouldShowInDiscover(
 export function shouldShowInRecentVisits(
   profile: DiscoverProfileLike,
 ): boolean {
+  if (isAnonymousDiscoverProfile(profile)) return false;
   return !profileIsInvisible(profile);
 }
 

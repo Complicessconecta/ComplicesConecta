@@ -230,21 +230,21 @@ const DashboardCore = () => {
           <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-1 sm:p-2 max-w-2xl mx-auto text-xs sm:text-sm">
             <TabsTrigger
               value="gamification"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <Trophy className="h-4 w-4 mr-2" />
               Logros
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <Bell className="h-4 w-4 mr-2" />
               Notificaciones
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <TrendingUp className="h-4 w-4 mr-2" />
               Analytics

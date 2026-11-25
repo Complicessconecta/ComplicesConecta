@@ -24,7 +24,15 @@ const safeLogger = logger || {
 };
 
 // Supabase clients need the project root, not the REST endpoint.
-const normalizeSupabaseUrl = (url: string) => {
+// Ronda 9, stream E: sin variables (build local sin .env / preview sin
+// vars en Vercel) la URL es `undefined` y `.replace` truena en el
+// top-level del módulo. Este módulo lo evalúa al arrancar el chunk
+// pages-chat, importado estáticamente por el bundle principal, así que
+// el fallo deja la app en blanco en TODAS las rutas (ni /demo carga).
+// Devolver "" deja que `isPlaceholderUrl` (que ya contempla !url) lo
+// trate como stub, que es el comportamiento documentado para ese caso.
+const normalizeSupabaseUrl = (url: string | undefined): string => {
+  if (!url) return "";
   const trimmedUrl = url.replace(/\/+$/, "");
   return trimmedUrl.endsWith("/rest/v1")
     ? trimmedUrl.slice(0, -"/rest/v1".length)

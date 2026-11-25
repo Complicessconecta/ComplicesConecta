@@ -142,65 +142,93 @@ export function useRealtimeNotifications({
   );
 
   // Realtime notification handler
-  const notificationHandler: RealtimeNotificationHandler = useMemo(() => ({
-    onNewNotification: useCallback(
-      async (notification: any) => {
-        logger.info("🔔 Nueva notificación recibida:", { notification });
-
-        setState((prev) => ({
-          ...prev,
-          notifications: [notification, ...prev.notifications],
-          unreadCount: prev.unreadCount + 1,
-        }));
-
-        // Send push notification
-        await sendPushNotification(notification);
-
-        // Auto mark as read if enabled
-        if (autoMarkAsRead) {
-          setTimeout(() => markAsRead(notification.id), 1000);
-        }
-      },
-      [autoMarkAsRead, markAsRead, sendPushNotification],
-    ),
-
-    onNotificationRead: useCallback((notificationId: string) => {
-      logger.info("📖 Notificación marcada como leída:", { notificationId });
+  // RONDA 9 (stream C, punto 10): los 4 callbacks vivían DENTRO del
+  // `useMemo` (useCallback dentro de useMemo). En el primer render se
+  // registraban como hooks y en el siguiente no — el useMemo devolvía
+  // el valor cacheado sin ejecutar la factoría — así que el orden de
+  // hooks cambiaba y React lanzaba `TypeError: Cannot read properties
+  // of undefined (reading 'length')` en el primer setState (al cargar
+  // las notificaciones). El ErrorBoundary de producción lo convertía
+  // en `window.location.href = "/404"`: por eso la pestaña
+  // "Notificaciones" del Dashboard aterrizaba en 404 aunque el Tabs
+  // en sí no navega a ningún lado. Los callbacks ahora viven a nivel
+  // del hook y el useMemo solo los agrupa (misma identidad estable).
+  const onNewNotification = useCallback(
+    async (notification: any) => {
+      logger.info("🔔 Nueva notificación recibida:", { notification });
 
       setState((prev) => ({
         ...prev,
-        notifications: prev.notifications.map((n) =>
-          n.id === notificationId ? { ...n, is_read: true } : n,
-        ),
-        unreadCount: Math.max(0, prev.unreadCount - 1),
+        notifications: [notification, ...prev.notifications],
+        unreadCount: prev.unreadCount + 1,
       }));
-    }, []),
 
-    onNotificationDeleted: useCallback((notificationId: string) => {
-      logger.info("🗑️ Notificación eliminada:", { notificationId });
+      // Send push notification
+      await sendPushNotification(notification);
 
-      setState((prev) => {
-        const notification = prev.notifications.find(
-          (n) => n.id === notificationId,
-        );
-        const wasUnread = notification && !notification.is_read;
+      // Auto mark as read if enabled
+      if (autoMarkAsRead) {
+        setTimeout(() => markAsRead(notification.id), 1000);
+      }
+    },
+    [autoMarkAsRead, markAsRead, sendPushNotification],
+  );
 
-        return {
-          ...prev,
-          notifications: prev.notifications.filter(
-            (n) => n.id !== notificationId,
-          ),
-          unreadCount: wasUnread
-            ? Math.max(0, prev.unreadCount - 1)
-            : prev.unreadCount,
-        };
-      });
-    }, []),
+  const onNotificationRead = useCallback((notificationId: string) => {
+    logger.info("📖 Notificación marcada como leída:", {
+      notificationId,
+    });
 
-    onUnreadCountChange: useCallback((count: number) => {
-      setState((prev) => ({ ...prev, unreadCount: count }));
-    }, []),
-  }), [autoMarkAsRead, markAsRead, sendPushNotification]);
+    setState((prev) => ({
+      ...prev,
+      notifications: prev.notifications.map((n) =>
+        n.id === notificationId ? { ...n, is_read: true } : n,
+      ),
+      unreadCount: Math.max(0, prev.unreadCount - 1),
+    }));
+  }, []);
+
+  const onNotificationDeleted = useCallback((notificationId: string) => {
+    logger.info("🗑️ Notificación eliminada:", {
+      notificationId,
+    });
+
+    setState((prev) => {
+      const notification = prev.notifications.find(
+        (n) => n.id === notificationId,
+      );
+      const wasUnread = notification && !notification.is_read;
+
+      return {
+        ...prev,
+        notifications: prev.notifications.filter(
+          (n) => n.id !== notificationId,
+        ),
+        unreadCount: wasUnread
+          ? Math.max(0, prev.unreadCount - 1)
+          : prev.unreadCount,
+      };
+    });
+  }, []);
+
+  const onUnreadCountChange = useCallback((count: number) => {
+    setState((prev) => ({ ...prev, unreadCount: count }));
+  }, []);
+
+  const notificationHandler: RealtimeNotificationHandler = useMemo(
+    () => ({
+      onNewNotification,
+      onNotificationRead,
+      onNotificationDeleted,
+      onUnreadCountChange,
+    }),
+    [
+      onNewNotification,
+      onNotificationRead,
+      onNotificationDeleted,
+      onUnreadCountChange,
+    ],
+  );
 
   // Subscribe to realtime notifications
   useEffect(() => {

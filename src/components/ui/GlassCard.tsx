@@ -13,11 +13,11 @@ interface GlassCardProps extends HTMLMotionProps<"div"> {
 }
 
 const variantStyles = {
-  default: "bg-white/10 border-white/20",
-  frosted: "bg-white/20 border-white/30",
-  minimal: "bg-white/5 border-white/10",
+  default: "bg-white border-slate-200 dark:bg-white/10 dark:border-white/20",
+  frosted: "bg-white/80 border-slate-200 dark:bg-white/20 dark:border-white/30",
+  minimal: "bg-white/70 border-slate-200 dark:bg-white/5 dark:border-white/10",
   colored:
-    "bg-linear-to-br from-purple-500/20 to-fuchsia-500/20 border-white/20",
+    "bg-linear-to-br from-purple-100 to-fuchsia-100 border-purple-200 dark:from-purple-500/20 dark:to-fuchsia-500/20 dark:border-white/20",
 };
 
 const blurStyles = {
@@ -65,7 +65,7 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
           shadowStyles[shadow],
           border && "border",
           gradient
-            ? "bg-linear-to-br from-white/10 to-white/5"
+            ? "bg-linear-to-br from-white to-slate-50 dark:from-white/10 dark:to-white/5"
             : variantStyles[variant],
           className,
         )}

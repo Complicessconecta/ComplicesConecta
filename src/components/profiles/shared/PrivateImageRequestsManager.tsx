@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Eye, Shield, Clock } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
+import {
+  listIncomingRequestsSync,
+  respondFriendRequest,
+  resolveDemoProfileName,
+} from "@/lib/friends";
 
 interface AccessRequest {
   id: string;
@@ -14,6 +24,13 @@ interface AccessRequest {
   message: string;
   timestamp: number;
   status: "pending" | "approved" | "denied";
+  /**
+   * Ronda 9, stream D: solicitud real del almacén local
+   * (`friend_requests_demo`, kind `photo_access`). Aprobar/denegar
+   * responde en ese almacén; sin la marca se simularía y el acceso
+   * nunca se concedería de verdad.
+   */
+  isLocal?: boolean;
 }
 
 interface PrivateImageRequestsManagerProps {
@@ -47,7 +64,8 @@ export const PrivateImageRequestsManager: React.FC<
             requesterId: "user-123",
             requesterName: "María García",
             requesterAvatar: "/assets/people/single/1.jpg",
-            message: "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
+            message:
+              "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
             timestamp: Date.now() - 3600000, // Hace 1 hora
             status: "pending",
           },
@@ -63,8 +81,39 @@ export const PrivateImageRequestsManager: React.FC<
         ];
 
         setRequests(mockRequests);
+
+        // Ronda 9, stream D: solicitudes REALES de ver fotos enviadas
+        // a este perfil (almacén local `friend_requests_demo`, kind
+        // `photo_access`). Antes solo se veían las 2 mock (María García
+        // y Carlos López) y una solicitud enviada de verdad —p. ej. la
+        // del perfil anónimo a la pareja— nunca aparecía aquí ni se
+        // podía conceder (test ronda 8).
+        const localRequests: AccessRequest[] = listIncomingRequestsSync(
+          profileId,
+          "photo_access",
+        ).map((req) => ({
+          id: req.id,
+          requesterId: req.fromId,
+          requesterName: resolveDemoProfileName(req.fromId),
+          message: req.message ?? "Solicitud para ver la galería privada.",
+          timestamp: Date.parse(req.createdAt) || Date.now(),
+          status:
+            req.status === "accepted"
+              ? "approved"
+              : req.status === "declined"
+                ? "denied"
+                : "pending",
+          isLocal: true,
+        }));
+        setRequests((prev) => {
+          const seen = new Set(prev.map((r) => r.id));
+          return [...prev, ...localRequests.filter((r) => !seen.has(r.id))];
+        });
       } catch (error) {
-        logger.error("Error cargando solicitudes de acceso", { error, profileId });
+        logger.error("Error cargando solicitudes de acceso", {
+          error,
+          profileId,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -74,14 +123,45 @@ export const PrivateImageRequestsManager: React.FC<
   }, [profileId]);
 
   const handleApprove = async (requestId: string, requesterId: string) => {
+    // Ronda 9, stream D: solicitud local real — se responde en el
+    // almacén (`friend_requests_demo`): aceptar concede el acceso a
+    // la galería en serio (lo lee `hasPhotoAccess` / el gate).
+    const localRequest = requests.find((r) => r.id === requestId && r.isLocal);
+    if (localRequest) {
+      const result = await respondFriendRequest(requestId, "accepted", true);
+      if (!result.ok) {
+        logger.error("Error aprobando solicitud local de acceso", {
+          error: result.error,
+          requestId,
+        });
+        toast({
+          title: "Error",
+          description: result.error ?? "No se pudo aprobar la solicitud.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === requestId ? { ...req, status: "approved" } : req,
+        ),
+      );
+      toast({
+        title: "Solicitud aprobada",
+        description: "El usuario ahora puede ver tus imágenes privadas.",
+      });
+      onAccessGranted?.(requesterId);
+      return;
+    }
+
     try {
       // Simular aprobación (en producción sería una llamada a la API)
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === requestId ? { ...req, status: "approved" } : req
-        )
+          req.id === requestId ? { ...req, status: "approved" } : req,
+        ),
       );
 
       toast({
@@ -101,14 +181,43 @@ export const PrivateImageRequestsManager: React.FC<
   };
 
   const handleDeny = async (requestId: string, requesterId: string) => {
+    // Ronda 9, stream D: mismo camino real que en handleApprove.
+    const localRequest = requests.find((r) => r.id === requestId && r.isLocal);
+    if (localRequest) {
+      const result = await respondFriendRequest(requestId, "declined", true);
+      if (!result.ok) {
+        logger.error("Error denegando solicitud local de acceso", {
+          error: result.error,
+          requestId,
+        });
+        toast({
+          title: "Error",
+          description: result.error ?? "No se pudo denegar la solicitud.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === requestId ? { ...req, status: "denied" } : req,
+        ),
+      );
+      toast({
+        title: "Solicitud denegada",
+        description: "El usuario no podrá ver tus imágenes privadas.",
+      });
+      onAccessDenied?.(requesterId);
+      return;
+    }
+
     try {
       // Simular denegación (en producción sería una llamada a la API)
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === requestId ? { ...req, status: "denied" } : req
-        )
+          req.id === requestId ? { ...req, status: "denied" } : req,
+        ),
       );
 
       toast({
@@ -142,9 +251,13 @@ export const PrivateImageRequestsManager: React.FC<
 
   if (isLoading) {
     return (
-      <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+      <Card
+        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      >
         <CardContent className="p-6">
-          <div className="text-center text-white/60">Cargando solicitudes...</div>
+          <div className="text-center text-white/60">
+            Cargando solicitudes...
+          </div>
         </CardContent>
       </Card>
     );
@@ -152,7 +265,9 @@ export const PrivateImageRequestsManager: React.FC<
 
   if (requests.length === 0) {
     return (
-      <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+      <Card
+        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      >
         <CardContent className="p-6">
           <div className="text-center text-white/60">
             <Eye className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -164,7 +279,9 @@ export const PrivateImageRequestsManager: React.FC<
   }
 
   return (
-    <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+    <Card
+      className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-white flex items-center gap-2">
@@ -197,7 +314,10 @@ export const PrivateImageRequestsManager: React.FC<
                         alt={request.requesterName}
                         className="w-full h-full object-cover"
                         onError={() =>
-                          setAvatarErrors((prev) => ({ ...prev, [request.id]: true }))
+                          setAvatarErrors((prev) => ({
+                            ...prev,
+                            [request.id]: true,
+                          }))
                         }
                         draggable={false}
                       />
@@ -224,7 +344,9 @@ export const PrivateImageRequestsManager: React.FC<
                     )}
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => handleApprove(request.id, request.requesterId)}
+                        onClick={() =>
+                          handleApprove(request.id, request.requesterId)
+                        }
                         size="sm"
                         className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs"
                       >
@@ -232,7 +354,9 @@ export const PrivateImageRequestsManager: React.FC<
                         Aprobar
                       </Button>
                       <Button
-                        onClick={() => handleDeny(request.id, request.requesterId)}
+                        onClick={() =>
+                          handleDeny(request.id, request.requesterId)
+                        }
                         size="sm"
                         variant="outline"
                         className="flex-1 border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs"
@@ -321,4 +445,3 @@ export const PrivateImageRequestsManager: React.FC<
 };
 
 export default PrivateImageRequestsManager;
-

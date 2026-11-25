@@ -80,7 +80,16 @@ export function resolveProfileVisibility(input: {
   dbVisibility?: unknown;
   storedVisibility?: ProfileVisibility | null;
   seedVisibility?: ProfileVisibility;
+  /**
+   * Ronda 9 (stream A, punto 2): el perfil ANÓNIMO es privado por
+   * defecto — siempre "private", por encima de BD/local/semilla.
+   * Solo la tarjeta pública mínima es visible; el resto exige
+   * solicitud + aceptación (el gate lo aplica `canViewFullProfile`:
+   * dueño y amigos aceptados ven el perfil completo).
+   */
+  isAnonymous?: boolean;
 }): ProfileVisibility {
+  if (input.isAnonymous === true) return "private";
   if (input.dbVisibility === "private" || input.dbVisibility === "public") {
     return input.dbVisibility;
   }

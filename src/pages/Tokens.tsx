@@ -14,6 +14,8 @@ import { TokenDashboard } from "@/components/tokens/TokenDashboard";
 import { StakingModal } from "@/components/tokens/StakingModal";
 import { TokenChatBot } from "@/components/tokens/TokenChatBot";
 import { useAuth } from "@/features/auth/useAuth";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
+import { isViewerAnonymous } from "@/lib/anonymous";
 import { clearDemoAuth } from "@/lib/app-config";
 import { nftService } from "@/services/payments/NFTService";
 import { walletService } from "@/services/payments/WalletService";
@@ -63,6 +65,17 @@ export default function Tokens() {
   useEffect(() => {
     const loadUserNFTs = async () => {
       if (!hasActiveSession || !user?.id) {
+        setWalletNFTs([]);
+        return;
+      }
+      // Ronda 10 (stream A, punto A3): el anónimo no tiene NFTs (y
+      // `getUserNFTs` en demo devuelve la colección canónica de
+      // Sofía, 4 NFTs). Sin saldos ni NFTs ajenos en /tokens. La
+      // heurística no se aplica al `user` pelado (ver TokenDashboard).
+      if (
+        isAnonymousDemoProfile(profile) ||
+        (user?.id ? isViewerAnonymous(user.id) : false)
+      ) {
         setWalletNFTs([]);
         return;
       }

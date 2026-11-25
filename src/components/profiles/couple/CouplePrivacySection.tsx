@@ -325,13 +325,13 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
   };
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+    <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 text-slate-900 dark:text-white">
       <CardHeader>
-        <CardTitle className="text-white flex items-center gap-2">
+        <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-emerald-400" />
           Privacidad
         </CardTitle>
-        <p className="text-xs text-white/60 mt-1">
+        <p className="text-xs text-slate-500 dark:text-white/60 mt-1">
           Solo tú ves estos ajustes.{" "}
           {isDemoMode
             ? "En demo se guardan en este dispositivo."
@@ -345,13 +345,19 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
             className="flex items-center justify-between gap-4"
           >
             <div className="min-w-0">
-              <p className="text-sm font-medium text-white">{row.label}</p>
-              <p className="text-xs text-white/60">{row.description}</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">
+                {row.label}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-white/60">
+                {row.description}
+              </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <span
                 className={`text-xs font-medium ${
-                  settings[row.key] ? "text-emerald-300" : "text-white/50"
+                  settings[row.key]
+                    ? "text-emerald-600 dark:text-emerald-300"
+                    : "text-slate-400 dark:text-white/50"
                 }`}
               >
                 {settings[row.key] ? "Activado" : "Desactivado"}
@@ -365,7 +371,7 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
                 // (canales HSL sin hsl()) y la perilla quedaba invisible y
                 // sin moverse visualmente. Verde = on, gris = off, perilla
                 // siempre blanca.
-                className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
+                className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
               />
             </div>
           </div>
@@ -374,8 +380,10 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
             toggle()): sin window.confirm, que se descartaba solo. */}
         {confirmWatermarkOff && (
           <div className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-3 space-y-2">
-            <p className="text-xs text-amber-200">{WATERMARK_OFF_WARNING}</p>
-            <p className="text-xs text-amber-200 font-medium">
+            <p className="text-xs text-amber-800 dark:text-amber-200">
+              {WATERMARK_OFF_WARNING}
+            </p>
+            <p className="text-xs text-amber-800 dark:text-amber-200 font-medium">
               ¿Quitar la marca de agua de todos modos?
             </p>
             <div className="flex flex-wrap gap-2">
@@ -392,7 +400,7 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
               <button
                 type="button"
                 onClick={() => setConfirmWatermarkOff(false)}
-                className="rounded-lg border border-white/30 bg-white/10 px-3 py-1.5 text-xs font-medium text-white"
+                className="rounded-lg border border-slate-300 bg-slate-900/5 px-3 py-1.5 text-xs font-medium text-slate-800 dark:border-white/30 dark:bg-white/10 dark:text-white"
               >
                 Cancelar
               </button>
@@ -401,7 +409,7 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
         )}
         {/* Aviso persistente mientras la marca de agua está apagada. */}
         {!settings.watermark && (
-          <p className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+          <p className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
             ⚠️ Marca de agua desactivada: sus fotos no llevan protección.
             Activarla ayuda a que nadie las reutilice como propias; si la dejan
             apagada es bajo su responsabilidad.
@@ -411,11 +419,11 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
             nacimiento; se puede elegir a mano sin compartir la fecha
             exacta. El interruptor "Signo zodiacal" de arriba controla si
             se muestra en el perfil público. */}
-        <div className="border-t border-white/10 pt-4 space-y-3">
-          <p className="text-sm font-medium text-white">
+        <div className="border-t border-slate-200 dark:border-white/10 pt-4 space-y-3">
+          <p className="text-sm font-medium text-slate-900 dark:text-white">
             Signo zodiacal (fechas de nacimiento)
           </p>
-          <p className="text-xs text-white/60">
+          <p className="text-xs text-slate-500 dark:text-white/60">
             El registro solo pedía la edad, por eso las fechas de nacimiento no
             estaban guardadas. Agréguenlas aquí para que cada signo se calcule
             solo, o elijan el signo a mano.
@@ -437,13 +445,13 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
             ] as const
           ).map((person) => (
             <div key={person.birthKey} className="space-y-2">
-              <p className="text-xs font-medium text-white/80">
+              <p className="text-xs font-medium text-slate-700 dark:text-white/80">
                 {person.label}
               </p>
               <div>
                 <label
                   htmlFor={`couple-privacy-${person.birthKey}`}
-                  className="mb-1 block text-xs text-white/70"
+                  className="mb-1 block text-xs text-slate-600 dark:text-white/70"
                 >
                   Fecha de nacimiento
                 </label>
@@ -455,13 +463,13 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
                   onChange={(e) =>
                     saveExtras({ ...extras, [person.birthKey]: e.target.value })
                   }
-                  className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white [color-scheme:dark]"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 [color-scheme:light] dark:border-white/20 dark:bg-white/10 dark:text-white dark:[color-scheme:dark]"
                 />
               </div>
               <div>
                 <label
                   htmlFor={`couple-privacy-${person.signKey}`}
-                  className="mb-1 block text-xs text-white/70"
+                  className="mb-1 block text-xs text-slate-600 dark:text-white/70"
                 >
                   Signo (manual, opcional)
                 </label>
@@ -471,7 +479,7 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
                   onChange={(e) =>
                     saveExtras({ ...extras, [person.signKey]: e.target.value })
                   }
-                  className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white [color-scheme:dark]"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 [color-scheme:light] dark:border-white/20 dark:bg-white/10 dark:text-white dark:[color-scheme:dark]"
                 >
                   <option value="">
                     Automático (según fecha de nacimiento)
@@ -484,7 +492,7 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
                 </select>
               </div>
               {person.derived.sign ? (
-                <p className="text-xs text-emerald-300">
+                <p className="text-xs text-emerald-600 dark:text-emerald-300">
                   Signo: {formatZodiacSign(person.derived.sign)}{" "}
                   {person.derived.source === "birthdate"
                     ? "(calculado de la fecha de nacimiento)"
@@ -494,7 +502,7 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
                     : " — oculto en el perfil (interruptor apagado)."}
                 </p>
               ) : (
-                <p className="text-xs text-white/50">
+                <p className="text-xs text-slate-400 dark:text-white/50">
                   Sin fecha ni signo manual no se puede mostrar el signo.
                 </p>
               )}

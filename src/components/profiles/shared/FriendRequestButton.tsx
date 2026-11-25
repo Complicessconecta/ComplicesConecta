@@ -16,6 +16,7 @@ import {
   respondFriendRequest,
   sendFriendRequest,
   listIncomingRequestsSync,
+  canonicalDemoOwnerId,
   type FriendStatus,
 } from "@/lib/friends";
 import { isViewerAnonymous } from "@/lib/anonymous";
@@ -63,8 +64,11 @@ export function FriendRequestButton({
       if (cancelled) return;
       setStatus(value);
       if (value === "pending_received") {
+        // Ronda 10, stream C (C1): la solicitud puede venir de la
+        // ficha/tarjeta del remitente, no de su id de sesión.
         const incoming = listIncomingRequestsSync(viewerId).find(
-          (r) => r.fromId === profileId,
+          (r) =>
+            canonicalDemoOwnerId(r.fromId) === canonicalDemoOwnerId(profileId),
         );
         setIncomingId(incoming?.id ?? null);
       }

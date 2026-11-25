@@ -141,6 +141,14 @@ interface ProfileContentProps {
    * Default true (resto de perfiles).
    */
   allowNft?: boolean;
+  /**
+   * Ronda 9 (stream A, punto 1): perfil ANÓNIMO. Su galería es
+   * LIMITADA y propia: sin las fotos demo genéricas (2 públicas +
+   * 3 privadas borrosas "Click para solicitar" que no eran de nadie)
+   * y sin sección "Fotos Privadas" genérica. El resto de la galería
+   * exige solicitud de acceso (1 acceso, expira en 24 h).
+   */
+  isAnonymous?: boolean;
 }
 
 export const ProfileContent: React.FC<ProfileContentProps> = ({
@@ -151,6 +159,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   showExamplePost = true,
   allowCreatePost = true,
   allowNft = true,
+  isAnonymous = false,
 }) => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
@@ -569,40 +578,90 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               </div>
             )}
 
-            {/* Gallery Grid Pública */}
-            <div>
-              <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
-                <Upload className="w-4 h-4" />
-                Fotos Públicas
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="aspect-square bg-linear-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
-                    alt="Galería 1"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
-                    }}
-                  />
-                </div>
-                <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
-                    alt="Galería 2"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
-                    }}
-                  />
+            {/* Gallery Grid Pública.
+                Ronda 9 (stream A, punto 1): el perfil anónimo NO
+                muestra las 2 fotos demo genéricas (no son suyas): su
+                galería pública es limitada y propia; sin fotos subidas
+                aún, vacío explícito en vez de contenido ajeno. */}
+            {isAnonymous ? (
+              <div>
+                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Fotos Públicas
+                </h4>
+                <p className="text-center text-sm text-white/60 py-8">
+                  {isOwnProfile
+                    ? "Tu galería anónima aún no tiene fotos públicas. Sube tu primera foto con el botón de arriba."
+                    : "Este perfil anónimo aún no tiene fotos públicas."}
+                </p>
+              </div>
+            ) : (
+              <div>
+                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Fotos Públicas
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  <div className="aspect-square bg-linear-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
+                      alt="Galería 1"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
+                      }}
+                    />
+                  </div>
+                  <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
+                      alt="Galería 2"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Gallery Privada con Lock */}
-            <div>
+            {/* Gallery Privada con Lock.
+                Ronda 9 (stream A, punto 1): en el perfil anónimo NO
+                existe la sección genérica "Fotos Privadas" con 3 fotos
+                demo borrosas ("Click para solicitar") que no eran de
+                nadie (hallazgo del test ronda 8). En su lugar, la
+                superficie de galería LIMITADA: el resto de fotos exige
+                solicitud de acceso — 1 acceso que expira a las 24 h y
+                se vuelve a pedir al expirar (TTL en friends.ts). El
+                botón de solicitud vive en el perfil
+                (PhotoAccessRequestButton); aquí va el aviso, no fotos
+                ajenas. */}
+            {isAnonymous ? (
+              <div>
+                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  <span className="inline-flex items-center gap-2">
+                    <span>Galería limitada</span>
+                    <LockIcon className="w-4 h-4" />
+                  </span>
+                </h4>
+                <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+                  <p>
+                    Esta galería es limitada: solo se ven algunas fotos
+                    públicas. Para ver el resto, pide acceso al dueño
+                    del perfil.
+                  </p>
+                  <p className="mt-2">
+                    1 acceso concedido expira a las 24 h; al expirar
+                    tienes que volver a pedirlo.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div>
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Upload className="w-4 h-4" />
                 <span className="inline-flex items-center gap-2">
@@ -669,7 +728,8 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
+            )}
 
             {/* Upload Button for Own Profile */}
             {isOwnProfile && (

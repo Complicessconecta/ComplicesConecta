@@ -41,6 +41,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { computeProfileCompleteness } from "@/lib/profileCompleteness";
+import { deriveOrientationLabel } from "@/lib/profileLabels";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
@@ -146,18 +147,13 @@ const DEMO_INTEREST_TITLES = [
   "Match Inteligente",
 ] as const;
 
+// Ronda 9 (stream B): delega en `deriveOrientationLabel`, que acepta
+// "men" / "women" además de "male" / "female" (el mapeo anterior solo
+// comparaba igualdad exacta con "male"/"female" y devolvía null).
 const deriveOrientation = (
   gender: string,
   interestedIn?: string | null,
-): string | null => {
-  if (!interestedIn) return null;
-  if (interestedIn === "both" || interestedIn === "all") return "Bisexual";
-  if (gender === "male")
-    return interestedIn === "female" ? "Heterosexual" : "Homosexual";
-  if (gender === "female")
-    return interestedIn === "male" ? "Heterosexual" : "Homosexual";
-  return null;
-};
+): string | null => deriveOrientationLabel(gender, interestedIn);
 
 const mapRelationshipType = (relationshipType: string): string => {
   switch (relationshipType) {
@@ -286,8 +282,6 @@ function ProfileCouple() {
   }, []);
 
   const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
-
-  const [accountChipHovered, setAccountChipHovered] = useState(false);
 
   // Estados para modal de imágenes
   const [showImageModal, _setShowImageModal] = useState(false);
@@ -588,6 +582,14 @@ function ProfileCouple() {
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
   const displayAccountLabel =
     profile?.username || profile?.couple_name || "Cuenta";
+
+  // Ronda 9 (stream A, Cuenta/DEMO): la etiqueta del chip es
+  // CONSTANTE — "DEMO" en demo o el nombre de la cuenta en sesión
+  // real. Antes dependía del hover (`accountChipHovered`: "Cuenta"
+  // al pasar el cursor) y en táctil el hover se quedaba pegado al
+  // abrir el menú, así que la etiqueta cambiaba según el estado del
+  // menú y la ruta (mismo defecto que en el perfil single).
+  const accountChipLabel = isDemoMode ? "DEMO" : displayAccountLabel;
 
   // Nacionalidad: `country_code` (migración 20261124050000) → columna
   // `country` (texto, ya existe) → local del registro → datos demo.
@@ -1250,7 +1252,9 @@ function ProfileCouple() {
           <div className="bg-black/80 backdrop-blur-md border-b border-white/30 p-3 sm:p-4 shadow-lg shrink-0">
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-              <span className="ml-3 text-white">Cargando perfil...</span>
+              <span className="ml-3 text-slate-700 dark:text-white">
+                Cargando perfil...
+              </span>
             </div>
           </div>
         </div>
@@ -1262,10 +1266,10 @@ function ProfileCouple() {
     return (
       <div className="min-h-screen relative overflow-hidden">
         <div className="relative z-10 flex flex-col min-h-screen items-center justify-center p-6 text-center">
-          <p className="text-white font-medium mb-2">
+          <p className="text-slate-900 dark:text-white font-medium mb-2">
             No se pudo cargar el perfil de pareja.
           </p>
-          <p className="text-white/70 text-sm mb-4">
+          <p className="text-slate-500 dark:text-white/70 text-sm mb-4">
             Inténtalo de nuevo o vuelve a tu perfil single.
           </p>
           <Button onClick={() => window.location.reload()}>Reintentar</Button>
@@ -1488,14 +1492,14 @@ function ProfileCouple() {
                   Facebook, WhatsApp, X y "Más opciones" (compartir
                   nativo / copiar enlace). Antes copiaba el enlace directo. */}
               <Button
-                className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
+                className="bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setIsShareOpen(true);
                 }}
               >
-                <Share2 className="h-4 w-4 text-white opacity-90" />
+                <Share2 className="h-4 w-4 text-slate-700 dark:text-white opacity-90" />
               </Button>
               <Button
                 onClick={(e) => {
@@ -1503,9 +1507,9 @@ function ProfileCouple() {
                   e.stopPropagation();
                   setShowReportDialog(true);
                 }}
-                className="bg-white/10 hover:bg-red-500/20 p-2 transition-all duration-300 hover:scale-105 group"
+                className="bg-slate-900/5 hover:bg-red-500/20 dark:bg-white/10 dark:hover:bg-red-500/20 p-2 transition-all duration-300 hover:scale-105 group"
               >
-                <Flag className="h-4 w-4 text-white group-hover:text-red-400 transition-colors" />
+                <Flag className="h-4 w-4 text-slate-700 group-hover:text-red-500 dark:text-white dark:group-hover:text-red-400 transition-colors" />
               </Button>
               <Button
                 onClick={(e) => {
@@ -1513,9 +1517,9 @@ function ProfileCouple() {
                   e.stopPropagation();
                   navigate("/edit-profile-couple");
                 }}
-                className="hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
+                className="hover:bg-slate-900/10 dark:hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
               >
-                <Settings className="h-4 w-4 text-white" />
+                <Settings className="h-4 w-4 text-slate-700 dark:text-white" />
               </Button>
               <Button
                 onClick={(e) => {
@@ -1523,9 +1527,9 @@ function ProfileCouple() {
                   e.stopPropagation();
                   navigate("/tokens");
                 }}
-                className="hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
+                className="hover:bg-slate-900/10 dark:hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
               >
-                <Crown className="h-4 w-4 text-white" />
+                <Crown className="h-4 w-4 text-slate-700 dark:text-white" />
               </Button>
             </div>
           </div>
@@ -1534,7 +1538,7 @@ function ProfileCouple() {
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto p-2 sm:p-4 space-y-4 sm:space-y-6">
             {/* Información principal de la pareja */}
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+            <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 text-slate-900 dark:text-white">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                   {/* Avatar de la pareja: foto verificada de la pareja
@@ -1573,7 +1577,7 @@ function ProfileCouple() {
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mt-4">
                       <div>
-                        <p className="font-semibold text-white">
+                        <p className="font-semibold text-slate-900 dark:text-white">
                           {profile.partner1_first_name}
                         </p>
                         <div className="flex flex-wrap gap-1 mt-1">
@@ -1591,7 +1595,7 @@ function ProfileCouple() {
                         </div>
                       </div>
                       <div>
-                        <p className="font-semibold text-white">
+                        <p className="font-semibold text-slate-900 dark:text-white">
                           {profile.partner2_first_name}
                         </p>
                         <div className="flex flex-wrap gap-1 mt-1">
@@ -1611,7 +1615,7 @@ function ProfileCouple() {
                     </div>
 
                     {/* Biografía */}
-                    <p className="text-sm text-white/90 mt-4">
+                    <p className="text-sm text-slate-600 dark:text-white/90 mt-4">
                       Una pareja aventurera que busca nuevas experiencias y
                       conexiones auténticas.
                     </p>
@@ -1621,17 +1625,9 @@ function ProfileCouple() {
                       {isOwnProfile && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              onMouseEnter={() => setAccountChipHovered(true)}
-                              onMouseLeave={() => setAccountChipHovered(false)}
-                              className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
-                            >
+                            <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30">
                               <span className="flex items-center gap-2">
-                                {accountChipHovered
-                                  ? "Cuenta"
-                                  : isDemoMode
-                                    ? "DEMO"
-                                    : displayAccountLabel}
+                                {accountChipLabel}
                               </span>
                             </Button>
                           </DropdownMenuTrigger>
@@ -1645,7 +1641,7 @@ function ProfileCouple() {
                             className="min-w-[180px]"
                           >
                             <DropdownMenuLabel>
-                              {isDemoMode ? "DEMO" : "Sesión Activa"}
+                              {accountChipLabel}
                             </DropdownMenuLabel>
                             <DropdownMenuItem
                               onClick={() => navigate("/profile")}
@@ -1683,7 +1679,7 @@ function ProfileCouple() {
                             e.stopPropagation();
                             navigate("/edit-profile-couple");
                           }}
-                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                          className="bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300 dark:bg-white/20 dark:hover:bg-white/30 dark:text-white dark:border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
                           <Settings className="w-4 h-4" />
                           <span className="hidden sm:inline">
@@ -1696,7 +1692,7 @@ function ProfileCouple() {
                       {!isOwnProfile && (
                         <Button
                           onClick={() => setShowReportDialog(true)}
-                          className="bg-red-500/20 hover:bg-red-600/30 text-red-200 border-red-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                          className="bg-red-500/20 hover:bg-red-600/30 text-red-700 dark:text-red-200 border-red-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
                           <Flag className="w-4 h-4" />
                           <span className="hidden sm:inline">Reportar</span>
@@ -1783,9 +1779,9 @@ function ProfileCouple() {
             </Card>
 
             {/* Galería pública - espejo de Single (3 fotos públicas) */}
-            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+            <Card className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-2xl shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                   <Images className="w-5 h-5" />
                   Galería de Fotos
                 </CardTitle>
@@ -1826,7 +1822,7 @@ function ProfileCouple() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+            <Card className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-2xl shadow-xl">
               <CardContent className="p-6 md:p-10">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2">
@@ -1852,7 +1848,7 @@ function ProfileCouple() {
                     <Button
                       onClick={() => setPrivateGalleryOpen((prev) => !prev)}
                       aria-expanded={privateGalleryOpen}
-                      className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-all"
+                      className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white dark:border-white/25 transition-all"
                     >
                       {privateGalleryOpen ? (
                         <>
@@ -1908,7 +1904,7 @@ function ProfileCouple() {
 
                 {privateImageAccess === "denied" && (
                   <div className="text-center py-6">
-                    <p className="text-white/70 text-sm">
+                    <p className="text-slate-500 dark:text-white/70 text-sm">
                       Tu solicitud para ver las fotos privadas fue denegada.
                     </p>
                   </div>
@@ -1917,7 +1913,7 @@ function ProfileCouple() {
                 {/* Colapsada por defecto (punto 14): antes la rejilla
                     privada renderizaba expandida al cargar el perfil. */}
                 {!privateGalleryOpen ? (
-                  <p className="text-white/50 text-xs">
+                  <p className="text-slate-400 dark:text-white/50 text-xs">
                     {_shuffledCouplePrivateImages.length} fotos privadas
                     colapsadas. Toca "Ver fotos" para expandir la galería.
                   </p>
@@ -2047,7 +2043,7 @@ function ProfileCouple() {
             {/* Resumen rápido de Wallet & NFTs de Pareja */}
             <Card
               id="wallet"
-              className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl mt-4"
+              className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-2xl shadow-xl mt-4"
             >
               <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -2055,15 +2051,17 @@ function ProfileCouple() {
                     <Wallet className="w-5 h-5 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs sm:text-sm text-white/70">
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                       Estado de cuenta NFT de pareja
                     </p>
-                    <p className="text-xs sm:text-sm text-white">
+                    <p className="text-xs sm:text-sm text-slate-900 dark:text-white">
                       CMPX:{" "}
                       <span className="font-semibold">
                         {tokenBalances.cmpx}
                       </span>
-                      <span className="mx-2 text-white/40">·</span>
+                      <span className="mx-2 text-slate-400 dark:text-white/40">
+                        ·
+                      </span>
                       NFTs:{" "}
                       <span className="font-semibold">{coupleNFTs.length}</span>
                     </p>

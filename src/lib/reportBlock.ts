@@ -173,6 +173,17 @@ export async function submitProfileReport(input: {
   reasonId: string;
   description?: string;
   isDemo?: boolean;
+  /**
+   * Ronda 9 (stream A, punto 7): datos del reportado para retener su
+   * identidad en demo cuando es anónimo (correo + apodo). En real la
+   * retención la hace el administrador con `retainIdentityAfterBan`;
+   * en demo no hay administrador, así que el reporte de un anónimo
+   * retiene su identidad local para que no se re-registre con otro
+   * nombre en este dispositivo.
+   */
+  reportedEmail?: string;
+  reportedUsername?: string;
+  reportedIsAnonymous?: boolean;
 }): Promise<{ ok: boolean; error?: string }> {
   const reason = getReportReason(input.reasonId);
   if (!reason) return { ok: false, error: "Motivo de reporte no válido" };
@@ -198,6 +209,23 @@ export async function submitProfileReport(input: {
       window.localStorage.setItem(key, JSON.stringify(list));
     } catch {
       // Sin almacenamiento: el reporte demo no persiste.
+    }
+    // Ronda 9 (stream A, punto 7): en demo no hay administrador que
+    // dé de baja al reportado, así que el reporte de un perfil
+    // ANÓNIMO retiene su identidad local (correo + apodo) para que no
+    // pueda re-registrarse con otro nombre en este dispositivo
+    // (ver `isIdentityRetainedDemo`, consultado en el registro demo).
+    if (
+      input.reportedIsAnonymous &&
+      input.reportedEmail &&
+      input.reportedUsername
+    ) {
+      retainIdentityDemo({
+        email: input.reportedEmail,
+        username: input.reportedUsername,
+        userId: input.reportedId,
+        reason: reason.id,
+      });
     }
     return { ok: true };
   }
@@ -488,4 +516,92 @@ export async function retainIdentityAfterBan(input: {
       error: err instanceof Error ? err.message : "Error desconocido",
     };
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Retención de identidad en demo (ronda 9, stream A, punto 7)        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Espejo local de `retained_identities` para demo: en demo no hay
+ * administrador que dé de baja al reportado, así que el reporte de
+ * un perfil anónimo retiene su identidad AQUÍ (correo + apodo +
+ * motivo) y el registro demo la consulta (`isIdentityRetainedDemo`)
+ * para que esa persona no se re-registre con otro nombre en este
+ * dispositivo. Como la tabla real, este almacén NUNCA se borra desde
+ * la app: no hay función de borrado.
+ */
+export const RETAINED_IDENTITIES_DEMO_KEY = "retained_identities_demo";
+
+export interface RetainedIdentityDemo {
+  email: string;
+  username: string;
+  userId: string;
+  reason: string;
+  createdAt: string;
+}
+
+function readRetainedIdentitiesDemo(): RetainedIdentityDemo[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(RETAINED_IDENTITIES_DEMO_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (r): r is RetainedIdentityDemo =>
+        !!r &&
+        typeof r === "object" &&
+        typeof (r as RetainedIdentityDemo).email === "string" &&
+        typeof (r as RetainedIdentityDemo).username === "string",
+    );
+  } catch {
+    return [];
+  }
+}
+
+/** Guarda una identidad retenida en demo (sin duplicar por correo). */
+export function retainIdentityDemo(input: {
+  email: string;
+  username: string;
+  userId: string;
+  reason: string;
+}): void {
+  if (typeof window === "undefined") return;
+  const email = input.email.toLowerCase().trim();
+  if (!email || !input.username) return;
+  try {
+    const list = readRetainedIdentitiesDemo().filter((r) => r.email !== email);
+    list.push({
+      email,
+      username: input.username,
+      userId: input.userId,
+      reason: input.reason,
+      createdAt: new Date().toISOString(),
+    });
+    window.localStorage.setItem(
+      RETAINED_IDENTITIES_DEMO_KEY,
+      JSON.stringify(list),
+    );
+  } catch {
+    // Sin almacenamiento: la retención solo vive en esta sesión.
+  }
+}
+
+/**
+ * ¿Está retenida esta identidad (correo o apodo)? Lo consulta el
+ * registro demo antes de crear una cuenta anónima.
+ */
+export function isIdentityRetainedDemo(
+  email: string,
+  username?: string,
+): boolean {
+  const needleEmail = email.trim().toLowerCase();
+  const needleUsername = username?.trim().toLowerCase() ?? "";
+  if (!needleEmail && !needleUsername) return false;
+  return readRetainedIdentitiesDemo().some(
+    (r) =>
+      (needleEmail !== "" && r.email === needleEmail) ||
+      (needleUsername !== "" &&
+        r.username.trim().toLowerCase() === needleUsername),
+  );
 }

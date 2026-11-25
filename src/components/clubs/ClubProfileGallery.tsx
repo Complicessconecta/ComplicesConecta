@@ -30,7 +30,7 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
   const [selectedImage, setSelectedImage] = useState<ClubImage | null>(null);
 
   return (
-    <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+    <Card className="bg-slate-900/85 dark:bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
       <div className="p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

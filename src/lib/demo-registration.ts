@@ -20,6 +20,7 @@
 import { generateDemoUserUUID } from "@/lib/demo-uuid";
 import { writeCountryCodeLocal } from "@/lib/countries";
 import { savePrivacySettingsExtra } from "@/lib/visibility";
+import { isIdentityRetainedDemo } from "@/lib/reportBlock";
 import type { Profile } from "@/types/supabase-custom";
 
 /**
@@ -115,6 +116,48 @@ export function findLocalDemoAccount(
 }
 
 /**
+ * Ronda 9 (stream A, punto 6): la cuenta anónima registrada en este
+ * dispositivo/navegador, si existe. Solo se permite UNA por
+ * dispositivo: crear otra debe fallar (ver `createLocalDemoAccount`).
+ */
+export function findLocalAnonymousAccount(): LocalDemoAccountRecord | null {
+  return readLocalDemoAccounts().find((a) => a.isAnonymous === true) ?? null;
+}
+
+/** ¿Ya hay una cuenta anónima en este dispositivo/navegador? */
+export function hasLocalAnonymousAccount(): boolean {
+  return findLocalAnonymousAccount() !== null;
+}
+
+/**
+ * Ronda 9, stream D: todas las cuentas demo locales registradas en
+ * este navegador, ordenadas por apodo. Es lo que lista el selector
+ * de cuentas de /demo tras cerrar sesión: sin esto, tras el primer
+ * login demo /demo solo ofrecía "Explorar como Single/Pareja" y las
+ * cuentas creadas por registro (TestR7, anonr8test, …) no se podían
+ * volver a abrir (test ronda 8: lista rica de cuentas ya no aparece).
+ */
+export function listLocalDemoAccounts(): LocalDemoAccountRecord[] {
+  return readLocalDemoAccounts().sort((a, b) =>
+    a.nickname.localeCompare(b.nickname, "es"),
+  );
+}
+
+/**
+ * Ronda 9, stream D: cuenta demo local por id de usuario (el `id`
+ * que viaja en `demo_user` y en las solicitudes de amistad). Sirve
+ * para resolver el nombre visible del remitente de una solicitud
+ * local en /requests.
+ */
+export function findLocalDemoAccountById(
+  userId: string,
+): LocalDemoAccountRecord | null {
+  const needle = userId.trim();
+  if (!needle) return null;
+  return readLocalDemoAccounts().find((a) => a.userId === needle) ?? null;
+}
+
+/**
  * Restaura la sesión demo de un perfil local (las mismas tres claves
  * que escribe el registro y `handleDemoAuth`).
  */
@@ -162,6 +205,28 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
   profile: Profile;
 } {
   const email = input.email.trim().toLowerCase();
+  // Ronda 9 (stream A, puntos 6-7): una sola cuenta anónima por
+  // dispositivo, y una identidad retenida tras baja por reporte no
+  // puede re-registrarse con otro nombre. Ambas fallan ANTES de crear
+  // la sesión: si no, la cuenta quedaba creada aunque el registro la
+  // rechazara después.
+  if (input.isAnonymous) {
+    const existingAnonymous = findLocalAnonymousAccount();
+    if (
+      existingAnonymous &&
+      existingAnonymous.email !== email &&
+      existingAnonymous.userId !== generateDemoUserUUID(email)
+    ) {
+      throw new Error(
+        "Ya existe una cuenta anónima en este dispositivo. Solo se permite una por navegador.",
+      );
+    }
+    if (isIdentityRetainedDemo(email, input.nickname)) {
+      throw new Error(
+        "Esta identidad fue dada de baja por un reporte y no puede registrarse de nuevo.",
+      );
+    }
+  }
   const userId = generateDemoUserUUID(email);
   const displayName =
     input.accountType === "couple" && input.partnerFirstName

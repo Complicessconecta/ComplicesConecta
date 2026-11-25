@@ -9,7 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Wallet, Coins, Image as ImageIcon, Crown, Sparkles, TrendingUp, Lock, ExternalLink, X } from "lucide-react";
-import { DEFAULT_DEMO_NFTS } from "@/services/payments/NFTService";
+import {
+  DEFAULT_DEMO_NFTS,
+  nftService,
+  DEMO_NFTS_CHANGED_EVENT,
+  notifyDemoNFTsChanged,
+} from "@/services/payments/NFTService";
+import { DEMO_WALLET_BALANCES } from "@/lib/demo-wallet";
 
 /**
  * Interfaz para NFT mock
@@ -32,12 +38,11 @@ interface DemoWalletProps {
 }
 
 /**
- * Balances demo canónicos (misma fuente que useTokens()).
+ * Balances demo canónicos (ÚNICA fuente: @/lib/demo-wallet — la misma
+ * que useTokens, TokenDashboard y los perfiles). Antes vivían duplicados
+ * aquí y cada superficie podía decir otro número.
  */
-const DEMO_BALANCES = {
-  single: { cmpx: 1250, gtk: 850, nfts: 4 },
-  couple: { cmpx: 2000, gtk: 1500, nfts: 2 },
-} as const;
+const DEMO_BALANCES = DEMO_WALLET_BALANCES;
 
 /**
  * Interfaz para Token mock
@@ -98,49 +103,54 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
 
   const [demoNFTs, setDemoNFTs] = useState<DemoNFT[]>(defaultDemoNFTs);
 
+  // Colección demo: ÚNICA fuente `nftService.getUserNFTs` (punto 12) —
+  // la misma que leen el perfil y /tokens. Antes este componente leía
+  // localStorage por su cuenta y partía de los 4 defaults, así que su
+  // contador podía decir 1 mientras la estadística del perfil decía 0.
+  // También se recarga cuando otro sitio mintea en la misma página
+  // (evento `demo-nfts-changed`): sin esto el badge quedaba obsoleto
+  // tras mintear en el modal del perfil.
   useEffect(() => {
     if (!userId) return;
-    if (typeof window === "undefined") return;
-    try {
-      const raw = window.localStorage.getItem(getDemoNFTStorageKey(userId));
-      if (!raw) return;
-      const parsed: unknown = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return;
-      const normalized = parsed
-        .filter((item): item is Record<string, unknown> => Boolean(item))
-        .slice(0, DEMO_BALANCES[accountType].nfts)
-        .map((item, idx): DemoNFT => {
-          const rarityRaw = item.rarity;
-          const rarity: DemoNFT["rarity"] =
-            rarityRaw === "legendary" ||
-            rarityRaw === "epic" ||
-            rarityRaw === "rare" ||
-            rarityRaw === "common"
-              ? rarityRaw
-              : "common";
-
-          return {
-            id: typeof item.id === "string" ? item.id : `demo-nft-${userId}-${idx}`,
-            name:
-              typeof item.name === "string" && item.name
-                ? item.name
-                : "Cómplice Demo",
-            rarity,
-            image:
-              typeof item.image === "string" && item.image
-                ? item.image
-                : getImageForRarity(rarity),
-            value: typeof item.value === "number" ? item.value : 100,
-            isCouple: Boolean(item.is_couple ?? item.isCouple),
-          };
-        });
-      if (normalized.length > 0) {
-        setDemoNFTs(normalized);
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const owned = await nftService.getUserNFTs(userId);
+        if (cancelled) return;
+        const normalized = owned
+          .filter((nft) => (accountType === "couple" ? nft.is_couple : true))
+          .slice(0, DEMO_BALANCES[accountType].nfts)
+          .map((nft, idx): DemoNFT => {
+            const rarityRaw = nft.rarity;
+            const rarity: DemoNFT["rarity"] =
+              rarityRaw === "legendary" ||
+              rarityRaw === "epic" ||
+              rarityRaw === "rare" ||
+              rarityRaw === "common"
+                ? rarityRaw
+                : "common";
+            return {
+              id: nft.id || `demo-nft-${userId}-${idx}`,
+              name: nft.name || "Cómplice Demo",
+              rarity,
+              image: nft.image || getImageForRarity(rarity),
+              value: typeof nft.value === "number" ? nft.value : 100,
+              isCouple: nft.is_couple,
+            };
+          });
+        if (normalized.length > 0) setDemoNFTs(normalized);
+      } catch {
+        // no-op: se quedan los defaults
       }
-    } catch {
-      // no-op
-    }
-  }, [userId]);
+    };
+    void load();
+    const onChanged = () => void load();
+    window.addEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    };
+  }, [userId, accountType]);
 
   const writeDemoNFTs = (items: DemoNFT[]) => {
     if (!userId) return;
@@ -189,6 +199,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
 
     setDemoNFTs(next);
     writeDemoNFTs(next);
+    // Avisar al resto de la página (perfil, /tokens) para que sus
+    // contadores se recarguen de la misma fuente (punto 12).
+    notifyDemoNFTsChanged();
   };
 
   // Tokens demo canónicos según el tipo de cuenta (useTokens()).

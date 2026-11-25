@@ -113,6 +113,27 @@ export const PUBLIC_CLUBS: PublicClub[] = [
     tier: "premium",
   },
   {
+    // Ronda 6: "Noche VIP Lounge" solo existía en el mock del panel de
+    // admin (sin foto) y no en el catálogo público, así que no aparecía
+    // en /clubs ni en /clubs-public ni en la búsqueda. Foto distinta a
+    // las de Club Demo, Eden Noir, Luna Roja y Mystic Garden.
+    id: "public-4",
+    slug: "noche-vip-lounge",
+    name: "Noche VIP Lounge",
+    description:
+      "Lounge nocturno con pista VIP, barra de autor y noches temáticas para parejas y singles.",
+    address: "Av. Chapultepec 210",
+    city: "Guadalajara",
+    state: "JAL",
+    rating: 4.5,
+    reviews: 134,
+    checkIns: 234,
+    coverImage:
+      "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200",
+    vibe: "🍸 Noche VIP",
+    tier: "free",
+  },
+  {
     id: "public-3",
     slug: "mystic-garden",
     name: "Mystic Garden",
@@ -151,8 +172,20 @@ export const ClubsPublic = () => {
           .order("rating_average", { ascending: false });
         if (error) throw error;
         if (!cancelled && data && data.length > 0) {
-          setClubs(data.map(mapClubRowToPublicClub));
-          logger.info("ClubsPublic loaded from Supabase", { count: data.length });
+          // El catálogo público se MEZCLA con las filas de BD (la BD
+          // manda por slug): antes, si la tabla traía filas, el catálogo
+          // se descartaba entero y "Eden Noir" (que solo vive en el
+          // catálogo) no aparecía en /clubs-public ni en la búsqueda.
+          const dbClubs = data.map(mapClubRowToPublicClub);
+          const dbSlugs = new Set(dbClubs.map((c) => c.slug));
+          const merged = [
+            ...dbClubs,
+            ...PUBLIC_CLUBS.filter((c) => !dbSlugs.has(c.slug)),
+          ];
+          setClubs(merged);
+          logger.info("ClubsPublic loaded from Supabase + catálogo", {
+            count: merged.length,
+          });
         }
       } catch (error) {
         logger.warn("ClubsPublic: Supabase no disponible, usando catálogo público", {
@@ -284,7 +317,16 @@ export const ClubsPublic = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold text-white mb-4">Galería</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {[selectedClub.coverImage, ...CLUB_GALLERY_PHOTOS].map((url, i) => (
+                  {/* La portada no se repite en la galería: la foto de
+                      Eden Noir (1514525253161) también estaba en
+                      CLUB_GALLERY_PHOTOS y salía dos veces en su detalle.
+                      La comparación es por id de foto (sin el query ?w=),
+                      porque la portada usa ?w=1200 y la galería ?w=800. */}
+                  {[selectedClub.coverImage, ...CLUB_GALLERY_PHOTOS.filter((u) => {
+                    const idOf = (url: string) =>
+                      url.split("photo-")[1]?.split("?")[0] ?? url;
+                    return idOf(u) !== idOf(selectedClub.coverImage);
+                  })].slice(0, 4).map((url, i) => (
                     <img
                       key={i}
                       src={url}

@@ -30,6 +30,19 @@ import type { Database } from "@/types/supabase-generated";
 const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
 
 /**
+ * Evento que se dispara cuando la colección demo cambia (mint en
+ * cualquier sitio de la página). Los contadores (DemoWallet, perfil)
+ * lo escuchan para recargarse de la misma fuente en vez de quedarse
+ * con el valor del montaje (punto 12).
+ */
+export const DEMO_NFTS_CHANGED_EVENT = "demo-nfts-changed";
+
+export function notifyDemoNFTsChanged(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(DEMO_NFTS_CHANGED_EVENT));
+}
+
+/**
  * Los 4 NFTs demo por defecto (misma fuente que los defaults de
  * <DemoWallet>: Legendario y Raro son de single; Épico y Común son de
  * pareja, is_couple: true). Única fuente de verdad: DemoWallet los importa
@@ -149,6 +162,8 @@ const readDemoNFTs = (uid: string): NFTInfo[] => {
         if (name) base.name = name;
         if (description) base.description = description;
         if (image) base.image = image;
+        const valueRaw = item.value;
+        if (typeof valueRaw === "number") base.value = valueRaw;
 
         return base;
       });
@@ -184,6 +199,8 @@ interface NFTInfo {
   name?: string;
   description?: string;
   image?: string;
+  /** Valor estimado en CMPX (solo demo). */
+  value?: number;
   created_at: string;
 }
 
@@ -371,7 +388,26 @@ export class NFTService {
         window.localStorage.getItem(getDemoNFTStorageKey(userId)) !== null;
 
       if (WalletService.isDemoMode() || isDemoAuthActive || hasDemoNftsForUser) {
-        return readDemoNFTs(userId);
+        const stored = readDemoNFTs(userId);
+        if (stored.length > 0) return stored;
+        // Sin colección guardada: la canónica demo (DEFAULT_DEMO_NFTS),
+        // SIN escribir en localStorage. El mint parte de vacío y su tope
+        // de 4 no se rompe; el llamador filtra is_couple para la pareja
+        // (2 NFTs). Punto 12: antes devolvía [] y el perfil decía
+        // "NFTs 0" mientras DemoWallet partía de los 4 defaults (y "NFTs 1"
+        // tras mintear 1). Ahora todos leen esta misma fuente.
+        return DEFAULT_DEMO_NFTS.map((nft, index) => ({
+          id: nft.id,
+          token_id: index + 1,
+          owner_address: "DEMO",
+          metadata_uri: "ipfs://demo-metadata-hash",
+          rarity: nft.rarity,
+          is_couple: nft.is_couple,
+          created_at: new Date().toISOString(),
+          name: nft.name,
+          image: nft.image,
+          value: nft.value,
+        }));
       }
 
       const wallet = await this.walletService
@@ -514,6 +550,7 @@ export class NFTService {
             getDemoNFTStorageKey(userId),
             JSON.stringify(stored),
           );
+          notifyDemoNFTsChanged();
         }
 
         logger.info("Mint demo single NFT", {

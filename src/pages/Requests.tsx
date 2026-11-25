@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { openIntimateChat } from "@/lib/intimateChat";
 
 const Requests = () => {
   const { user, isAuthenticated } = useAuth();
@@ -357,6 +358,21 @@ const Requests = () => {
                 </Badge>
               </div>
             )}
+            {/* Entrada al Chat Íntimo: abre el dock "Chat Intimo" de
+                MainLayout (mismo chat que el botón de chat, con su
+                "Cerrar"). Antes /requests no tenía ninguna entrada y
+                /chat-intimo era 404, así que la función no existía en
+                la interfaz. */}
+            <div className="mt-4 flex justify-center">
+              <Button
+                type="button"
+                onClick={openIntimateChat}
+                className="bg-linear-to-r from-fuchsia-600 to-purple-600 text-white hover:from-fuchsia-700 hover:to-purple-700"
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Chat Íntimo
+              </Button>
+            </div>
           </div>
 
           <div className="bg-linear-to-br from-purple-900/40 via-purple-800/30 to-blue-900/40 backdrop-blur-sm rounded-xl border border-white/10 p-6">
@@ -430,7 +446,7 @@ const Requests = () => {
                           </div>
                           {inv.message && (
                             <p className="text-sm text-white bg-black/30 p-3 rounded-md mb-3">
-                              "{inv.message}"
+                              {inv.message}
                             </p>
                           )}
                           <p className="text-xs text-white/70">
@@ -495,7 +511,7 @@ const Requests = () => {
                         </div>
                         {inv.message && (
                           <p className="text-sm text-white bg-black/30 p-3 rounded-md my-3">
-                            "{inv.message}"
+                            {inv.message}
                           </p>
                         )}
                         <p className="text-xs text-white/70">

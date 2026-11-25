@@ -172,9 +172,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
   return (
     <>
-      {/* Header Principal con gradiente difuminado */}
+      {/* RONDA 6 (punto 2): el header YA NO es `fixed top-0`: fijo seguía
+          al hacer scroll en TODAS las páginas públicas y la luna y el
+          engranaje que viven en él se veían como botones flotantes que
+          tapaban contenido. Ahora es EN FLUJO (relative): ocupa su sitio
+          en la página y se va con el scroll. El cromo morado de marca se
+          conserva en ambos temas (texto blanco sobre morado = legible en
+          claro y en oscuro). */}
       <header
-        className={`header-nav-main fixed top-0 left-0 right-0 z-50 transition-all duration-300 safe-area-pt ${
+        className={`header-nav-main relative z-50 transition-all duration-300 safe-area-pt ${
           isScrolled
             ? "bg-linear-to-b from-purple-900/90 via-purple-800/85 to-transparent backdrop-blur-md border-b border-purple-500/20"
             : "bg-linear-to-b from-purple-900/95 via-purple-800/90 to-purple-700/80 backdrop-blur-sm border-b border-purple-400/30"
@@ -529,8 +535,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
         )}
       </header>
 
-      {/* Espaciador para contenido */}
-      <div className="h-16"></div>
+      {/* RONDA 6: sin espaciador: el header ya es en flujo y ocupa su
+          propio sitio; el h-16 duplicaba el hueco superior. */}
 
       {/* Animaciones personalizadas del corazón */}
       <style>{`

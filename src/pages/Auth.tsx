@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -110,6 +110,19 @@ const Auth = () => {
   useEffect(() => {
     console.log("activeTab cambió:", activeTab);
   }, [activeTab]);
+
+  // Ronda 6: /register y /signup redirigen a /auth?tab=signup: abrir
+  // directamente la pestaña de registro en vez de la de login.
+  const routerLocation = useLocation();
+  useEffect(() => {
+    const tab = new URLSearchParams(routerLocation.search).get("tab");
+    if (tab === "signup" || tab === "signin") {
+      setActiveTab(tab);
+    }
+    // Solo al entrar con el parámetro; el cambio manual de pestaña no
+    // debe re-ejecutarse por el search.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerLocation.search]);
 
   // C4/C5 (2026-11-19): eliminado el autofill de TestSprite
   // (VITE_TESTSPRITE_EMAIL / VITE_TESTSPRITE_PASSWORD). Ninguna credencial

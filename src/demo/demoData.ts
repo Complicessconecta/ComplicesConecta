@@ -38,6 +38,25 @@ export const SOFIA_CANONICAL_PHOTO =
 /** Id base de la foto canónica de Sofía, para derivar encuadres. */
 export const SOFIA_CANONICAL_PHOTO_ID = "1494790108377-be9c29b29330";
 
+/**
+ * Fotos públicas de Sofía (3 DISTINTAS, del pool de retratos femeninos
+ * de @/lib/media): la canónica (la misma que su avatar) + 2 retratos
+ * distintos del pool. Antes eran 3 recortes (face/top/entropy) de la
+ * MISMA foto canónica y en el perfil se veían como la misma imagen
+ * repetida 3 veces. Recortes distintos no bastan si se ven iguales.
+ */
+export const SOFIA_PUBLIC_PHOTOS = [
+  SOFIA_CANONICAL_PHOTO,
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
+] as const;
+
+export const SOFIA_PUBLIC_PHOTOS_FULL = [
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&h=900&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+] as const;
+
 /** Etiqueta de edad de una pareja ("25 y 28 años"). */
 export const formatCoupleAgeLabel = (age: number, partnerAge: number): string =>
   `${age} y ${partnerAge} años`;

@@ -775,8 +775,9 @@ export const Discover = () => {
   };
 
   const handleRefresh = () => {
-    // En demo se regeneran los perfiles demo canónicos (orden y datos
-    // estables); en real se regeneran los aleatorios de fallback.
+    // Recarga la MISMA lista estable en ambos modos (ronda 6, punto 15):
+    // los demo canónicos (orden y datos estables) y los de fallback, que
+    // ahora se generan con semilla fija en vez de Math.random/uuidv4.
     const isDemoUser =
       user?.email === "single@outlook.es" ||
       user?.email === "pareja@outlook.es";
@@ -791,7 +792,7 @@ export const Discover = () => {
     }
     toast({
       title: "Perfiles actualizados",
-      description: "Se han cargado nuevos perfiles para ti.",
+      description: "Se recargó la lista de perfiles.",
     });
   };
 

@@ -57,9 +57,12 @@ export default function Tokens() {
       : Boolean(isAuthenticated);
 
   // Cargar NFTs de la wallet cuando hay sesión real
+  // En demo también se cargan (ronda 6, punto 12): getUserNFTs en demo
+  // devuelve la colección canónica sin tocar Supabase, y TokenDashboard
+  // la usa en vez de su MOCK estático — misma fuente que el perfil.
   useEffect(() => {
     const loadUserNFTs = async () => {
-      if (!hasActiveSession || !user?.id || !shouldUseRealSupabase()) {
+      if (!hasActiveSession || !user?.id) {
         setWalletNFTs([]);
         return;
       }

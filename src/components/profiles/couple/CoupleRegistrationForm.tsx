@@ -26,7 +26,8 @@ import { InterestsSelector } from "@/components/auth/InterestsSelector";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { Users } from "lucide-react";
 import { toast } from "@/hooks/useToast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import { createLocalDemoAccount } from "@/lib/demo-registration";
 import { logger } from "@/lib/logger";
 import { getZodiacSignFromDate } from "@/lib/zodiac";
 import {
@@ -288,6 +289,43 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     setIsLoading(true);
 
     try {
+      // Ronda 6: sin Supabase configurado (preview sin variables en
+      // Vercel), el cliente es un stub y signUp siempre falla con
+      // "Supabase not configured - using stub client". El registro demo
+      // no depende de Supabase: se crea la cuenta local y se entra
+      // directo al perfil. La recarga completa es necesaria para que
+      // useAuth relea el `demo_user` nuevo de localStorage.
+      if (!isSupabaseConfigured) {
+        const { userId } = createLocalDemoAccount({
+          email: formData.email,
+          nickname: formData.coupleNickname,
+          accountType: "couple",
+          firstName: formData.hisFirstName,
+          lastName: formData.hisLastName,
+          age: parseInt(formData.hisAge),
+          bio: formData.bio,
+          interests: [...formData.hisInterests, ...formData.herInterests],
+          countryCode: formData.countryCode,
+          birthDate: formData.hisBirthDate || undefined,
+          gender: formData.hisGender || undefined,
+          interestedIn: formData.interestedIn,
+          partnerFirstName: formData.herFirstName,
+          partnerAge: parseInt(formData.herAge),
+          partnerBirthDate: formData.herBirthDate || undefined,
+        });
+        logger.info("✅ Cuenta demo local de pareja creada (sin Supabase)", {
+          userId,
+        });
+        toast({
+          title: "¡Cuenta demo creada!",
+          description:
+            "Sin conexión a Supabase en este preview: tu cuenta se creó en este navegador para probar el flujo.",
+          duration: 5000,
+        });
+        window.location.href = "/profile-couple";
+        return;
+      }
+
       // Registrar usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,

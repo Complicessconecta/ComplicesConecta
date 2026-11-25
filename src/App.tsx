@@ -29,7 +29,12 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/styles/android-grid.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { CrossBrowserOptimizer } from "@/components/ui/CrossBrowserOptimizer";
 import { AccessibilityEnhancer } from "@/components/ui/AccessibilityEnhancer";
 import { MobileOptimizer } from "@/components/ui/MobileOptimizer";
@@ -60,6 +65,7 @@ const ProfileDetail = lazy(
   () => import("@/pages/profiles/shared/ProfileDetail"),
 );
 const Chat = lazyWithDefault(() => import("@/pages/Chat"));
+const ChatIntimo = lazyWithDefault(() => import("@/pages/ChatIntimo"));
 const ChatInfo = lazyWithDefault(() => import("@/pages/ChatInfo"));
 const Matches = lazyWithDefault(() => import("@/pages/Matches"));
 const Requests = lazyWithDefault(() => import("@/pages/Requests"));
@@ -197,6 +203,11 @@ const App = () => {
                             {/* Main Layout wraps all pages except maybe standalone ones if any */}
                             <Route element={<MainLayout />}>
                               <Route path="/" element={<Index />} />
+                              {/* /landing es la misma landing pública que
+                                  "/" (ronda 6, punto 14): antes era 404.
+                                  Index ya redirige al perfil propio
+                                  cuando hay sesión. */}
+                              <Route path="/landing" element={<Index />} />
                             <Route
                               path="/auth"
                               element={
@@ -204,6 +215,26 @@ const App = () => {
                                   <Auth />
                                 </ProtectedRoute>
                               }
+                            />
+                            {/* Ronda 6: /register, /signup y /login eran 404
+                                (solo existía /auth). Redirigen al flujo que
+                                funciona; /register y /signup abren la
+                                pestaña de registro de /auth. */}
+                            <Route
+                              path="/register"
+                              element={
+                                <Navigate to="/auth?tab=signup" replace />
+                              }
+                            />
+                            <Route
+                              path="/signup"
+                              element={
+                                <Navigate to="/auth?tab=signup" replace />
+                              }
+                            />
+                            <Route
+                              path="/login"
+                              element={<Navigate to="/auth" replace />}
                             />
                             <Route path="/demo" element={<Demo />} />
                             <Route path="/faq" element={<FAQ />} />
@@ -256,6 +287,18 @@ const App = () => {
                               element={
                                 <ProtectedRoute>
                                   <Chat />
+                                </ProtectedRoute>
+                              }
+                            />
+                            {/* Ronda 6: /chat-intimo existía como idea pero
+                                era 404; abre el mismo chat íntimo del dock
+                                a pantalla completa, con "Cerrar" a
+                                /requests. */}
+                            <Route
+                              path="/chat-intimo"
+                              element={
+                                <ProtectedRoute>
+                                  <ChatIntimo />
                                 </ProtectedRoute>
                               }
                             />

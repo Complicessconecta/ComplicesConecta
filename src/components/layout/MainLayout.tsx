@@ -5,6 +5,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
 import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
+import { OPEN_INTIMATE_CHAT_EVENT } from "@/lib/intimateChat";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
@@ -99,6 +100,15 @@ export const MainLayout = () => {
     setIsChatOpen(false);
   }, [pathname]);
 
+  // Abrir el dock de Chat Íntimo por evento (botón en /requests y ruta
+  // /chat-intimo): el estado vive aquí y navegar lo cerraría, así que la
+  // apertura es por evento y no por navegación.
+  React.useEffect(() => {
+    const open = () => setIsChatOpen(true);
+    window.addEventListener(OPEN_INTIMATE_CHAT_EVENT, open);
+    return () => window.removeEventListener(OPEN_INTIMATE_CHAT_EVENT, open);
+  }, []);
+
   const isClubDemoRoute = pathname === "/clubs/demo";
 
   // Rutas a pantalla completa: en /chat la burbuja de chat es redundante
@@ -108,15 +118,11 @@ export const MainLayout = () => {
   // modal se monta siempre y no tapa nada.)
   const isChatRoute = pathname === "/chat" || pathname.startsWith("/chat/");
 
-  const isHomeRoute = pathname === "/";
-
-  const headerOffsetClass = isClubDemoRoute
-    ? "pt-[calc(env(safe-area-inset-top)+4rem)]"
-    : showHeaderNav
-      ? isHomeRoute
-        ? "pt-[calc(env(safe-area-inset-top)+6rem)]"
-        : "pt-[calc(env(safe-area-inset-top)+4rem)]"
-      : "pt-[env(safe-area-inset-top)]";
+  // RONDA 6 (punto 2): HeaderNav y la cabecera de /clubs/demo ya son EN
+  // FLUJO (relative) y ocupan su propio sitio: el <main> ya no necesita
+  // el pt de 4-6rem que compensaba el header `fixed` (ese hueco duplicaba
+  // el espacio superior). Solo queda el safe-area superior.
+  const headerOffsetClass = "pt-[env(safe-area-inset-top)]";
 
   // Chat FAB no se muestra en rutas de perfil
   const isProfileRoute =
@@ -182,7 +188,9 @@ export const MainLayout = () => {
         {showHeaderNav && <HeaderNav />}
 
         {isClubDemoRoute && (
-          <div className="header-nav-main fixed top-0 left-0 right-0 z-50 safe-area-pt">
+          // RONDA 6 (punto 2): cabecera EN FLUJO (antes `fixed top-0`):
+          // fija seguía al scroll en /clubs/demo y tapaba contenido.
+          <div className="header-nav-main relative z-50 safe-area-pt">
             <div className="bg-linear-to-b from-purple-900/90 via-purple-800/85 to-transparent backdrop-blur-md border-b border-purple-500/20">
               <div className="w-full max-w-[1920px] mx-auto">
                 <div className="flex items-center justify-between h-16 px-4 lg:px-6 gap-3">
@@ -282,9 +290,12 @@ export const MainLayout = () => {
         {/* Chat: botón en flujo al final del contenido de la página
             (RONDA 5: ya no es un FAB `fixed bottom-24 right-4` que
             seguía al scroll y tapaba contenido; en rutas de perfil no
-            se muestra porque el chat ya vive en el dock). */}
+            se muestra porque el chat ya vive en el dock).
+            RONDA 6 (punto 2): centrado y en píldora con texto (ver
+            ChatFab): abajo a la derecha y redondo se seguía leyendo
+            como burbuja flotante en páginas cortas (404, /matches). */}
         {showChatFab && (
-          <div className="flex justify-end px-4 pt-2">
+          <div className="flex justify-center px-4 py-3">
             <ChatFab onOpen={() => setIsChatOpen(true)} />
           </div>
         )}
@@ -293,7 +304,10 @@ export const MainLayout = () => {
           rutas de perfil con o sin demo */}
         {showDock && <Navigation />}
 
-        <Toaster dockOffset={showDock} />
+        {/* RONDA 6 (punto 17): los toasts ya no van abajo (el viewport
+            vive arriba con margen, ver ui/toast.tsx), así que el offset
+            del dock ya no aplica. */}
+        <Toaster />
       </div>
     </div>
   );

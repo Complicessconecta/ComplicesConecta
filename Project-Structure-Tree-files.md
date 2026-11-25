@@ -790,7 +790,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   chatLimits.ts
 |   |   countries.ts
 |   |   data.ts
+|   |   demo-registration.ts
 |   |   demo-uuid.ts
+|   |   demo-wallet.ts
 |   |   distance-utils.ts
 |   |   email-service.ts
 |   |   env-utils.ts
@@ -804,6 +806,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   index.ts
 |   |   infoCards.ts
 |   |   intelligentAutomation.ts
+|   |   intimateChat.ts
 |   |   invitations.ts
 |   |   lifestyle-interests.ts
 |   |   matching.ts
@@ -914,6 +917,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   Chat.tsx
 |   |   ChatAuthenticated.tsx
 |   |   ChatInfo.tsx
+|   |   ChatIntimo.tsx
 |   |   Clubs.tsx
 |   |   ClubsComingSoon.tsx
 |   |   ClubsDemo.tsx

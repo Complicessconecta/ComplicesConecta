@@ -23,6 +23,7 @@ import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButt
 import { FriendsSection } from "@/components/profiles/shared/FriendsSection";
 import { PrivateProfileGate } from "@/components/profiles/shared/PrivateProfileGate";
 import { getSocialDemoData } from "@/demo/socialDemoData";
+import { formatCoupleAgeLabel } from "@/demo/demoData";
 import {
   readVisibilityLocalOrNull,
   fetchProfileVisibility,
@@ -221,6 +222,18 @@ const ProfileDetail = () => {
     stateMatchesUrl && stateProfile
       ? {
           ...stateProfile,
+          // Edad de pareja ("25 y 28 años"): el perfil que llega por
+          // state (Discover/Matches) es un DemoProfile con `partnerAge`
+          // pero sin `ageLabel`, y el detalle caía en `${age} años` →
+          // "25 años" para Carmen & Roberto. Se deriva aquí para que los
+          // dos sitios que la muestran (insignia del encabezado e
+          // "Información rápida") usen la etiqueta de pareja.
+          ageLabel:
+            stateProfile.ageLabel ??
+            (typeof stateProfile.partnerAge === "number" &&
+            typeof stateProfile.age === "number"
+              ? formatCoupleAgeLabel(stateProfile.age, stateProfile.partnerAge)
+              : undefined),
           profession: stateProfile.profession || "Miembro de la comunidad",
           education: stateProfile.education || "No especificado",
           languages: stateProfile.languages || ["Español"],
@@ -346,13 +359,12 @@ const ProfileDetail = () => {
 
       <div className="relative z-10">
         <div className="px-4 pt-4">
-          {/* ProfileContent hardcodea el post de Ana ("Post Example -
-              Perfil Single (Ana)") y luego "No hay posts aún": en TODOS
-              los /profile/<id> salía el post de Ana seguido del vacío,
-              aunque el perfil visitado fuera otro. El post debe ser del
-              perfil que se visita o no mostrarse: aquí solo se renderiza
-              en el perfil de Ana. El arreglo propio es hacer el post
-              prop-driven en ProfileContent.tsx (ver reporte). */}
+          {/* El post de ejemplo de ProfileContent ES de Ana: solo se
+              renderiza en su perfil (showExamplePost default true) y el
+              vacío "No hay posts aún" solo sale cuando no hay ningún post
+              visible (punto 13, ronda 6). Antes el post se renderizaba
+              siempre y el vacío miraba solo `demoPost`, así que en
+              /profile/3 salían los dos a la vez. */}
           {profile.name === "Ana" && <ProfileContent />}
         </div>
         <main className="container mx-auto px-4 py-8">

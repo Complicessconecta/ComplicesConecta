@@ -545,7 +545,13 @@ export const useAuth = () => {
             profile_type: demoAuth.user.accountType || "single",
             role: demoAuth.user.role || "user",
             display_name: demoAuth.user.first_name || "Demo User",
-            avatar_url: null,
+            // Avatar demo canónico según el tipo de cuenta (antes null y
+            // caía a iniciales): Sofía para single, silueta de pareja
+            // al atardecer para pareja.
+            avatar_url:
+              demoAuth.user.accountType === "couple"
+                ? "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop"
+                : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
             email: demoAuth.user.email || "",
             location: null,
             is_online: false,

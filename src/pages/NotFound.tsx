@@ -135,7 +135,7 @@ const NotFound = () => {
               <p className="text-white/80 text-lg leading-relaxed max-w-prose mx-auto">
                 Parece que este enlace se fue a una fiesta privada. No te
                 preocupes, te ayudamos a regresar al lugar correcto donde la
-                diversin nunca se detiene.
+                diversión nunca se detiene.
               </p>
             </div>
 

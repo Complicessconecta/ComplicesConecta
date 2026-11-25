@@ -9,6 +9,19 @@
    fix/tema-claro-dark-variant-2026-11-24.) */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* RONDA 5 (2026-11-24) — OJO, CAUSA RAÍZ del tema claro que no se
+   aplicaba en el test de verificación del PR #72: ESTE archivo
+   (src/index.css) NO es el que carga la app. main.tsx:15 importa
+   "./styles/index.css", que NO tiene el @custom-variant de arriba, así
+   que en el build `dark:` seguía siendo prefers-color-scheme y la clase
+   .light/.dark de ThemeProvider no hacía nada. La ronda 4 puso el fix
+   en este archivo muerto. FALTA (lo aplica el coordinador, fuera del
+   alcance de este stream): agregar la misma línea
+   `@custom-variant dark (&:where(.dark, .dark *));` en
+   src/styles/index.css justo después de `@import "tailwindcss";`
+   (línea 2), o consolidar ambos archivos, que hoy son casi duplicados.
+   Sin eso, NINGÚN `dark:` de la app responde al toggle. */
+
 :root {
   /* Densidades Android: mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi */
   --android-touch-target: 48px; /* Material Design minimum */
@@ -338,6 +351,23 @@ button:active:not(:disabled),
 }
 [class*="border-white/20"] {
   border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* RONDA 5 — Tema claro: los "fixes" de arriba fuerzan superficies
+   blancas translúcidas pensadas para fondo oscuro. En tema claro
+   (html.light) esas superficies son casi invisibles y el texto blanco
+   sobre ellas no se lee, así que se oscurecen. Solo afecta a elementos
+   que usan esas utilidades; las superficies con `dark:` explícito en
+   cada componente mandan por su cuenta. */
+html.light [class*="bg-white/10"] {
+  background-color: rgba(15, 23, 42, 0.06) !important;
+}
+html.light [class*="hover:bg-white/10"]:hover,
+html.light [class*="bg-white/10"]:hover {
+  background-color: rgba(15, 23, 42, 0.1) !important;
+}
+html.light [class*="border-white/20"] {
+  border-color: rgba(15, 23, 42, 0.2) !important;
 }
 
 /* -------------------------------------------------------------------------- */

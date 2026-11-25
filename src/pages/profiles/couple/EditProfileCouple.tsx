@@ -489,23 +489,24 @@ const EditProfileCouple = () => {
 
   return (
     <div className={`min-h-screen ${themeConfig.backgroundClass} pb-20`}>
-      {/* Header */}
+      {/* Header: con wrap; en móvil el título ocupa su propia línea para
+          que "Volver al perfil" + "Guardar" no lo recorten ("E..."). */}
       <div className="bg-white/10 backdrop-blur-md border-b border-white/20 p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <Button
             onClick={() => navigate("/profile-couple")}
-            className="text-white hover:bg-white/20 bg-transparent border-none"
+            className="shrink-0 whitespace-nowrap text-white hover:bg-white/20 bg-transparent border-none"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver al perfil
           </Button>
-          <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="order-3 w-full text-center text-xl font-bold text-gray-900 flex items-center justify-center gap-2 sm:order-none sm:w-auto sm:flex-1">
             <Users className="h-5 w-5" />
             Editar Perfil de Pareja
           </h1>
           <Button
             onClick={handleSave}
-            className="bg-linear-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white"
+            className="shrink-0 whitespace-nowrap bg-linear-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white"
           >
             <Save className="h-4 w-4 mr-2" />
             Guardar

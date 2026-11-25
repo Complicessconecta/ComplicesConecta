@@ -70,10 +70,12 @@ export default function TokensLegal() {
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
       <TokensSubnav />
-      {/* Header */}
+      {/* Header: el título llevaba `truncate` y entre el botón Regresar
+          y el espaciador w-20 no cabía en móvil ("Responsabilid...").
+          Ahora el título ocupa su propia línea en móvil y no se trunca. */}
       <div className="sticky top-0 z-50 bg-linear-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
             <Button
               onClick={() => navigate("/tokens")}
               className="shrink-0 whitespace-nowrap text-white hover:bg-white/10 btn-accessible bg-transparent border-none"
@@ -82,11 +84,11 @@ export default function TokensLegal() {
               <span className="truncate">Regresar</span>
             </Button>
 
-            <h1 className="min-w-0 flex-1 text-center text-base sm:text-xl font-bold text-white truncate">
+            <h1 className="order-3 w-full text-center text-sm font-bold text-white leading-tight sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:text-xl">
               Responsabilidad Legal - Tokens
             </h1>
 
-            <div className="w-20 shrink-0"></div>
+            <div className="hidden w-20 shrink-0 sm:block"></div>
           </div>
         </div>
       </div>

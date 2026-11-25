@@ -37,7 +37,7 @@ const FEMALE_IMAGE_IDS = [
 
 const COUPLE_IMAGE_IDS = [
   "1511795409834-ef04bbd61622", // Pareja abrazada
-  "1516589178581-6cd7833ae3b2", // Pareja sonriendo
+  "1606216794074-735e91aa2c92", // Pareja de boda caminando de la mano
   "1551218808-94e220e084d2", // Pareja elegante
   "1571019613454-1cb2f99b2d8b", // Pareja casual
 ];

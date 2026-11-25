@@ -87,32 +87,32 @@ const Requests = () => {
       {
         id: "demo-inv-1",
         from_profile: "Anabella & Julio",
-        to_profile: "Sofia",
+        to_profile: "Sofía",
         type: "chat",
         status: "pending",
         message:
-          "Hola! Nos encantaria conocerte mejor. Te gustaria chatear con nosotros?",
+          "¡Hola! Nos encantaría conocerte mejor. ¿Te gustaría chatear con nosotros?",
         created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrás
         decided_at: null,
       },
       {
         id: "demo-inv-2",
         from_profile: "Carmen & Roberto",
-        to_profile: "Sofa",
+        to_profile: "Sofía",
         type: "gallery",
         status: "pending",
         message:
-          "Hola guapa, nos gusta mucho tu perfil. Nos permites ver tu galería privada?",
+          "Hola guapa, nos gusta mucho tu perfil. ¿Nos permites ver tu galería privada?",
         created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 horas atrás
         decided_at: null,
       },
       {
         id: "demo-inv-3",
-        from_profile: "Ral",
-        to_profile: "Sofa",
+        from_profile: "Raúl",
+        to_profile: "Sofía",
         type: "profile",
         status: "accepted",
-        message: "Que tal si nos conocemos mejor?",
+        message: "¿Qué tal si nos conocemos mejor?",
         created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 da atrás
         decided_at: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(),
       },
@@ -122,21 +122,21 @@ const Requests = () => {
     const demoSent: Invitation[] = [
       {
         id: "demo-sent-1",
-        from_profile: "Sofia",
+        from_profile: "Sofía",
         to_profile: "Miguel & Laura",
         type: "chat",
         status: "accepted",
-        message: "Hola, me encanta su perfil. Les gustaria platicar?",
+        message: "Hola, me encanta su perfil. ¿Les gustaría platicar?",
         created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 horas atrás
         decided_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
       },
       {
         id: "demo-sent-2",
-        from_profile: "Sofa",
+        from_profile: "Sofía",
         to_profile: "Carlos",
         type: "profile",
         status: "pending",
-        message: "Hola, me pareces muy interesante. Te gustara conocernos?",
+        message: "Hola, me pareces muy interesante. ¿Te gustaría conocernos?",
         created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 horas atrás
         decided_at: null,
       },

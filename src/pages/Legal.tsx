@@ -23,7 +23,7 @@ const Legal: FC = () => {
       priority: true,
       details: [
         "Artículo 259 Tercero: Difusión de contenido íntimo sin consentimiento (3-6 años prisión)",
-        "Artículo 259 Quárto: Acoso digital (1-3 años prisión)",
+        "Artículo 259 Cuarto: Acoso digital (1-3 años prisión)",
         "Artículo 259 Quinto: Violación a la intimidad sexual (3-6 años prisión)",
         "Verificador IA de Consentimiento integrado en ComplicesConecta",
         "Canal de denuncias 24/7 disponible",
@@ -64,7 +64,7 @@ const Legal: FC = () => {
     {
       title: "Política de Privacidad",
       description:
-        "Cómo protegemos, Recopilamos y Manejamos tu información personal. Cumplimiento con GDPR y Normativas Mexicanas.",
+        "Cómo protegemos, recopilamos y manejamos tu información personal. Cumplimiento con GDPR y Normativas Mexicanas.",
       icon: <Lock className="h-6 w-6" />,
       file: "POLITICA_PRIVACIDAD.md",
       lastUpdated: "2025-11-08",
@@ -296,7 +296,7 @@ const Legal: FC = () => {
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-red-400" />
-                      Artículo 259 Quárto
+                      Artículo 259 Cuarto
                     </h5>
                     <p className="text-white/80 text-sm mb-2">
                       Acoso digital y hostigamiento

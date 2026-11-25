@@ -36,7 +36,8 @@ import {
 import { ShareProfile } from "@/components/profiles/shared/ShareProfile";
 import {
   SOFIA_CANONICAL_PHOTO,
-  SOFIA_CANONICAL_PHOTO_ID,
+  SOFIA_PUBLIC_PHOTOS,
+  SOFIA_PUBLIC_PHOTOS_FULL,
 } from "@/demo/demoData";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { useAuth } from "@/features/auth/useAuth";
@@ -60,7 +61,11 @@ import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { motion } from "framer-motion";
 import { walletService } from "@/services/payments/WalletService";
-import { nftService } from "@/services/payments/NFTService";
+import {
+  nftService,
+  DEMO_NFTS_CHANGED_EVENT,
+} from "@/services/payments/NFTService";
+import { DEMO_WALLET_BALANCES } from "@/lib/demo-wallet";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import {
   PRIVATE_MEDIA_PLACEHOLDER,
@@ -832,8 +837,12 @@ const ProfileSingle: FC = () => {
             nftService.getUserNFTs(targetUserId).catch(() => []),
           ]);
 
-          // Datos demo visibles
-          setTokenBalances({ cmpx: "1250", gtk: "850", matic: "10" }); // Balance demo canónico de single (igual que useTokens): CMPX 1250 / GTK 850.
+          // Datos demo visibles (canónicos, ÚNICA fuente @/lib/demo-wallet).
+          setTokenBalances({
+            cmpx: String(DEMO_WALLET_BALANCES.single.cmpx),
+            gtk: String(DEMO_WALLET_BALANCES.single.gtk),
+            matic: "10",
+          });
           setUserNFTs(nfts);
           setTestnetInfo({
             remaining: 500,
@@ -869,7 +878,11 @@ const ProfileSingle: FC = () => {
 
       // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
       if (isDemoMode()) {
-        setTokenBalances({ cmpx: "1250", gtk: "850", matic: "10" }); // Balance demo canónico de single (igual que useTokens): CMPX 1250 / GTK 850.
+        setTokenBalances({
+          cmpx: String(DEMO_WALLET_BALANCES.single.cmpx),
+          gtk: String(DEMO_WALLET_BALANCES.single.gtk),
+          matic: "10",
+        }); // Balance demo canónico de single (igual que useTokens).
         setUserNFTs([]);
         setTestnetInfo({
           remaining: 500,
@@ -996,6 +1009,14 @@ const ProfileSingle: FC = () => {
     }
   }, [profile?.id, loadProfileStats, loadBlockchainData]);
 
+  // Recargar NFTs si se mintea en otro sitio de la misma página
+  // (DemoWallet, modal de mint): todos leen getUserNFTs (punto 12).
+  useEffect(() => {
+    const onChanged = () => void loadBlockchainData();
+    window.addEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+  }, [loadBlockchainData]);
+
   // singleIsDemo y savedDemoInterests VAN AQUÍ ARRIBA, antes de los early
   // returns de loading/perfil: si se declaran después, en el primer render
   // (cargando) el useMemo no se ejecuta y en el segundo sí → React truena
@@ -1092,21 +1113,12 @@ const ProfileSingle: FC = () => {
         ? SOFIA_CANONICAL_PHOTO
         : "/assets/avatar-placeholder.png";
 
-  // Fotos públicas de Sofía: 3 encuadres distintos de SU foto canónica
-  // (misma persona, 28 años). Antes eran 3 mujeres distintas
-  // (1534528741775, 1438761681033 y 1494790108377).
-  const sofiaPublicPhoto = (size: 400 | 900, crop: string): string =>
-    `https://images.unsplash.com/photo-${SOFIA_CANONICAL_PHOTO_ID}?w=${size}&h=${size}&fit=crop&crop=${crop}`;
-  const SOFIA_PUBLIC_PHOTOS = [
-    sofiaPublicPhoto(400, "face"),
-    sofiaPublicPhoto(400, "top"),
-    sofiaPublicPhoto(400, "entropy"),
-  ];
-  const SOFIA_PUBLIC_PHOTOS_FULL = [
-    sofiaPublicPhoto(900, "face"),
-    sofiaPublicPhoto(900, "top"),
-    sofiaPublicPhoto(900, "entropy"),
-  ];
+  // Fotos públicas de Sofía: 3 DISTINTAS del pool (ver
+  // SOFIA_PUBLIC_PHOTOS en @/demo/demoData): la canónica + 2 retratos
+  // distintos. Antes eran 3 recortes de la misma foto canónica y se
+  // veían como la misma imagen repetida 3 veces.
+  const SOFIA_PUBLIC_PHOTOS_LIST = [...SOFIA_PUBLIC_PHOTOS];
+  const SOFIA_PUBLIC_PHOTOS_FULL_LIST = [...SOFIA_PUBLIC_PHOTOS_FULL];
   const SOFIA_PUBLIC_TILE_GRADIENTS = [
     "from-purple-400 to-blue-600",
     "from-pink-400 to-red-600",
@@ -1406,8 +1418,13 @@ const ProfileSingle: FC = () => {
                             </span>
                           </Button>
                         </DropdownMenuTrigger>
+                        {/* RONDA 6 (punto 2): el menú se abre HACIA ARRIBA
+                            (`side="top"`): hacia abajo tapaba las tarjetas
+                            de estadísticas que están justo debajo de la
+                            cabecera del perfil. */}
                         <DropdownMenuContent
                           align="end"
+                          side="top"
                           className="min-w-[180px]"
                         >
                           <DropdownMenuLabel>
@@ -1495,13 +1512,13 @@ const ProfileSingle: FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Eye className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-blue-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {profileStats.totalViews}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                     Visitas
                   </div>
                 </CardContent>
@@ -1512,13 +1529,15 @@ const ProfileSingle: FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Heart className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {profileStats.totalLikes}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">Likes</div>
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
+                    Likes
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -1527,13 +1546,13 @@ const ProfileSingle: FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {profileStats.totalMatches}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                     Matches
                   </div>
                 </CardContent>
@@ -1544,13 +1563,13 @@ const ProfileSingle: FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-green-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {profileCompleteness}%
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                     Completo
                   </div>
                 </CardContent>
@@ -2019,8 +2038,16 @@ const ProfileSingle: FC = () => {
           <SingleSubscriptionCard
             isPremium={currentProfile.is_premium ?? false}
             isDemoMode={singleIsDemo}
-            cmpx={singleIsDemo ? "1250" : tokenBalances.cmpx}
-            gtk={singleIsDemo ? "850" : tokenBalances.gtk}
+            cmpx={
+              singleIsDemo
+                ? String(DEMO_WALLET_BALANCES.single.cmpx)
+                : tokenBalances.cmpx
+            }
+            gtk={
+              singleIsDemo
+                ? String(DEMO_WALLET_BALANCES.single.gtk)
+                : tokenBalances.gtk
+            }
             nftCount={userNFTs.length}
             isOwnProfile={isOwnProfile}
             onManage={() => navigate("/tokens")}
@@ -2058,13 +2085,17 @@ const ProfileSingle: FC = () => {
             />
           )}
 
-          {/* Publicaciones - después de la información del perfil */}
+          {/* Publicaciones - después de la información del perfil.
+              El post de ejemplo es de Ana, no de Sofía: showExamplePost
+              en false para que la pestaña no muestre el post de Ana ni
+              su vacío contradictorio (punto 13). */}
           <div className="pt-4">
             <ProfileContent
               isOwnProfile={isOwnProfile}
               onUploadImage={handleUploadImage}
               onDeletePost={handleDeletePost}
               onCommentPost={handleCommentPost}
+              showExamplePost={false}
             />
           </div>
 
@@ -2131,7 +2162,7 @@ const ProfileSingle: FC = () => {
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Images className="w-5 h-5" />
-                Galeria de Fotos
+                Galería de Fotos
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 md:p-10">
@@ -2159,7 +2190,7 @@ const ProfileSingle: FC = () => {
                 className="mb-6"
               >
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
-                  {SOFIA_PUBLIC_PHOTOS.map((src, idx) => (
+                  {SOFIA_PUBLIC_PHOTOS_LIST.map((src, idx) => (
                     <div
                       key={src}
                       className={`aspect-square bg-linear-to-br ${SOFIA_PUBLIC_TILE_GRADIENTS[idx] ?? "from-purple-400 to-blue-600"} rounded-lg flex items-center justify-center overflow-hidden`}
@@ -2168,7 +2199,7 @@ const ProfileSingle: FC = () => {
                         type="button"
                         className="w-full h-full"
                         onClick={() =>
-                          openImageModal(SOFIA_PUBLIC_PHOTOS_FULL, idx)
+                          openImageModal(SOFIA_PUBLIC_PHOTOS_FULL_LIST, idx)
                         }
                       >
                         <SafeImage
@@ -2461,6 +2492,9 @@ const ProfileSingle: FC = () => {
         <ParentalControl
           isLocked={isParentalLocked}
           showLockScreen={showParentalUnlock}
+          // Cerrar sin desbloquear (X, Escape, clic en el fondo): sin
+          // onClose el modal no ofrecía ninguna salida salvo el PIN.
+          onClose={() => setShowParentalUnlock(false)}
           onToggle={(locked) => {
             setIsParentalLocked(locked);
             // Si se desbloquea, permitir acceso a imágenes privadas

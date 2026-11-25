@@ -758,6 +758,29 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
       return;
     }
 
+    // Carga directa de /chat/<id> (ronda 6, punto 16): antes el hilo
+    // solo se resolvía con location.state (navegación desde el perfil)
+    // o ?user=, así que /chat/3 directo dejaba selectedChat en null y
+    // la página mostraba la LISTA de chats en vez del hilo. Ahora el id
+    // de la URL se resuelve contra las listas canónicas (privados 1-4,
+    // públicos 101-104); si no existe, se queda en la lista.
+    // NOTA DE ESPACIO DE IDS: estos ids son de SALA de chat, no de
+    // perfil — /chat/3 es "Carmen & Roberto" (sala privada 3) mientras
+    // /profile/3 es Ana (perfil legacy 3). No se pueden unificar sin
+    // salas reales (Supabase) que mapeen sala ↔ perfil; ver reporte.
+    if (chatPartnerId && !selectedChat) {
+      if (profileChatAppliedRef.current === location.key) return;
+      profileChatAppliedRef.current = location.key;
+      const allChats = [...privateChats, ...publicChats];
+      const found = allChats.find((chat) => chat.id === chatPartnerId);
+      if (found) {
+        setSelectedChat(found);
+        setActiveTab(found.roomType);
+        loadMessages(found.id);
+        return;
+      }
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
     // Solo imponer el tab desde la URL cuando viene explícito (?room=...).

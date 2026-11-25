@@ -48,7 +48,12 @@ import {
   WalletService,
   walletService,
 } from "@/services/payments/WalletService";
-import { nftService, seedDemoNFTs } from "@/services/payments/NFTService";
+import {
+  nftService,
+  seedDemoNFTs,
+  DEMO_NFTS_CHANGED_EVENT,
+} from "@/services/payments/NFTService";
+import { DEMO_WALLET_BALANCES } from "@/lib/demo-wallet";
 import { cn } from "@/shared/lib/cn";
 import {
   Tooltip,
@@ -811,8 +816,12 @@ function ProfileCouple() {
         ]);
 
         setWalletInfo(null);
-        // Balance demo canónico de pareja (igual que useTokens): CMPX 2000 / GTK 1500.
-        setTokenBalances({ cmpx: "2000", gtk: "1500", matic: "10" });
+        // Balance demo canónico de pareja (ÚNICA fuente @/lib/demo-wallet).
+        setTokenBalances({
+          cmpx: String(DEMO_WALLET_BALANCES.couple.cmpx),
+          gtk: String(DEMO_WALLET_BALANCES.couple.gtk),
+          matic: "10",
+        });
         setCoupleNFTs(nfts.filter((nft) => Boolean(nft?.is_couple)));
         setCoupleRequests([]);
         setTestnetInfo({
@@ -1134,6 +1143,16 @@ function ProfileCouple() {
 
     loadProfile();
   }, [user, demoAuth, demoUser, navigate, authLoading, isDemoMode]);
+
+  // Recargar NFTs si se mintea en otro sitio de la misma página
+  // (DemoWallet, modal de mint): todos leen getUserNFTs (punto 12).
+  // La función se recrea en cada render: va en deps para no quedarse
+  // con el cierre del primer render (user aún null).
+  useEffect(() => {
+    const onChanged = () => void loadCoupleBlockchainData();
+    window.addEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+  }, [loadCoupleBlockchainData]);
 
   if (loading) {
     return (
@@ -1527,8 +1546,13 @@ function ProfileCouple() {
                               </span>
                             </Button>
                           </DropdownMenuTrigger>
+                          {/* RONDA 6 (punto 2): el menú se abre HACIA ARRIBA
+                              (`side="top"`): hacia abajo tapaba las tarjetas
+                              de estadísticas que están justo debajo de la
+                              cabecera del perfil. */}
                           <DropdownMenuContent
                             align="end"
+                            side="top"
                             className="min-w-[180px]"
                           >
                             <DropdownMenuLabel>
@@ -1885,44 +1909,46 @@ function ProfileCouple() {
 
             {/* Estadísticas - espejo de ProfileSingle */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Eye className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-blue-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {coupleStats.totalViews}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                     Visitas
                   </div>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Heart className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {coupleStats.totalLikes}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">Likes</div>
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
+                    Likes
+                  </div>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {coupleStats.totalMatches}
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                     Matches
                   </div>
                 </CardContent>
               </Card>
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+              <Card className="bg-white backdrop-blur-xl border border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/15 dark:text-white rounded-2xl shadow-xl hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-green-400" />
                   <div className="text-lg sm:text-2xl font-bold">
                     {coupleCompleteness}%
                   </div>
-                  <div className="text-xs sm:text-sm text-white/70">
+                  <div className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                     Completo
                   </div>
                 </CardContent>
@@ -2075,8 +2101,16 @@ function ProfileCouple() {
             <CoupleSubscriptionCard
               isPremium={profile.is_premium ?? false}
               isDemoMode={isDemoMode}
-              cmpx={isDemoMode ? "2000" : tokenBalances.cmpx}
-              gtk={isDemoMode ? "1500" : tokenBalances.gtk}
+              cmpx={
+                isDemoMode
+                  ? String(DEMO_WALLET_BALANCES.couple.cmpx)
+                  : tokenBalances.cmpx
+              }
+              gtk={
+                isDemoMode
+                  ? String(DEMO_WALLET_BALANCES.couple.gtk)
+                  : tokenBalances.gtk
+              }
               nftCount={coupleNFTs.length}
               isOwnProfile={isOwnProfile}
               onManage={() => navigate("/tokens")}
@@ -2135,13 +2169,16 @@ function ProfileCouple() {
               />
             )}
 
-            {/* Publicaciones - después de la información del perfil */}
+            {/* Publicaciones - después de la información del perfil.
+                El post de ejemplo es de Ana, no de la pareja:
+                showExamplePost en false (punto 13). */}
             <div className="pt-4">
               <ProfileContent
                 isOwnProfile={isOwnProfile}
                 onUploadImage={_handleUploadImage}
                 onDeletePost={_handleDeletePost}
                 onCommentPost={_handleCommentPost}
+                showExamplePost={false}
               />
             </div>
 
@@ -2222,6 +2259,9 @@ function ProfileCouple() {
       <ParentalControl
         isLocked={isParentalLocked}
         showLockScreen={showParentalUnlock}
+        // Cerrar sin desbloquear (X, Escape, clic en el fondo): sin
+        // onClose el modal no ofrecía ninguna salida salvo el PIN.
+        onClose={() => setShowParentalUnlock(false)}
         onToggle={(locked) => {
           _setIsParentalLocked(locked);
           if (!locked) {

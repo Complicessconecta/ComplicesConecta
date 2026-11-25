@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info, Building } from "lucide-react";
+import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info, Building, Gem, Coins } from "lucide-react";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 const Legal: FC = () => {
@@ -160,6 +160,88 @@ const Legal: FC = () => {
         "Responsabilidades de desarrolladores",
         "Políticas de rate limiting",
         "Cumplimiento de seguridad",
+      ],
+    },
+    {
+      title: "Términos y Condiciones de Uso",
+      description:
+        "Términos y condiciones de uso de la plataforma (v1.0 BETA): aceptación, descripción del servicio para adultos (+18) y fase beta gratuita.",
+      icon: <FileText className="h-6 w-6" />,
+      file: "TERMINOS_Y_CONDICIONES.md",
+      lastUpdated: "2025-11-16",
+      category: "Términos",
+      details: [
+        "Aceptación de los términos al usar la plataforma",
+        "Servicio exclusivo para adultos mayores de 18 años",
+        "Fase BETA gratuita (Nov 2025 - Abr 2026)",
+        "Funcionalidades sujetas a cambio sin previo aviso",
+      ],
+    },
+    {
+      title: "Deslinde de Responsabilidad",
+      description:
+        "Qué NO cubre la plataforma: encuentros offline, verificación de identidad más allá de lo técnico y seguridad de encuentros físicos; tu responsabilidad al conocer a alguien en persona.",
+      icon: <AlertTriangle className="h-6 w-6" />,
+      file: "DESLINDE_RESPONSABILIDAD.md",
+      lastUpdated: "2025-11-16",
+      category: "Responsabilidad",
+      details: [
+        "No organizamos ni supervisamos encuentros",
+        "Verifica la identidad con videollamada previa",
+        "Reúnete en lugar público y concurrido",
+        "Avisa a un amigo o familiar dónde estarás",
+      ],
+    },
+    {
+      title: "Condiciones de NFTs",
+      description:
+        "Condiciones técnicas de los NFTs v3.7.0: mint individual y de pareja, venta secundaria, staking y revocación con derecho al olvido (Ley Olimpia).",
+      icon: <Gem className="h-6 w-6" />,
+      file: "NFT_CONDITIONS.md",
+      lastUpdated: "2025-11-13",
+      category: "NFTs",
+      details: [
+        "Mint individual gratis o 100 CMPX; de pareja 1000 GTK",
+        "Venta secundaria con 5% de fee de aplicación",
+        "Staking de NFTs: 15-35% APY en CMPX",
+        "Revocación en 72h (derecho al olvido, Ley Olimpia)",
+        "Metadata en IPFS (Pinata)",
+      ],
+    },
+    {
+      title: "Responsabilidad Legal - Tokens CMPX/GTK",
+      description:
+        "Aviso legal del sistema de tokens CMPX/GTK: créditos internos sin valor monetario real en beta, marco regulatorio, KYC/AML y descargo de responsabilidad.",
+      icon: <Coins className="h-6 w-6" />,
+      file: "TOKENS_LEGAL.md",
+      // Ronda 9 (stream C): página estilizada /tokens-legal, que
+      // renderiza este mismo .md. Sin fecha en el documento: se usa la
+      // fecha del repo (último commit que tocó el archivo, 2026-11-24).
+      styledRoute: "/tokens-legal",
+      lastUpdated: "2026-11-24",
+      category: "Tokens",
+      details: [
+        "CMPX sin valor monetario real durante la beta",
+        "No son instrumentos financieros regulados",
+        "KYC y monitoreo anti-lavado (AML)",
+        "Jurisdicción México; regulador CONDUSEF",
+      ],
+    },
+    {
+      title: "Términos de Servicio - Blockchain",
+      description:
+        "Anexo blockchain de los términos: tokens premium no transferibles, CMPX/GTK/NFTs en Polygon y conversión unidireccional e irreversible.",
+      icon: <Globe className="h-6 w-6" />,
+      file: "TERMS_OF_SERVICE-BLOCKCHAIN.md",
+      // Ronda 9 (stream C): el documento es un anexo sin fecha propia;
+      // se usa la fecha del repo (último commit que tocó el archivo,
+      // 2026-11-24).
+      lastUpdated: "2026-11-24",
+      category: "Blockchain",
+      details: [
+        "Tokens premium no transferibles, solo en app",
+        "CMPX/GTK/NFTs en Polygon, transferibles",
+        "Conversión unidireccional e irreversible",
       ],
     },
   ];

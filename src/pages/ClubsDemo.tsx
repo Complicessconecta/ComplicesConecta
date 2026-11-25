@@ -440,7 +440,7 @@ export const ClubsDemo = () => {
 
         <ClubProfileHeader club={club} />
 
-        <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+        <Card className="bg-slate-900/85 dark:bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-4 flex-col sm:flex-row">
               <div className="space-y-2">

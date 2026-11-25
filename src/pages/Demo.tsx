@@ -22,10 +22,10 @@ const Demo = () => {
       <div className="relative z-10 w-full max-w-5xl pt-14 sm:pt-0">
         {/* Logo y título superior */}
         <div className="text-center mb-8 px-2">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg break-words">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 drop-shadow-lg break-words">
             ComplicesConecta
           </h1>
-          <p className="text-xl text-white/90 font-medium drop-shadow-md">
+          <p className="text-xl text-slate-600 dark:text-white/90 font-medium drop-shadow-md">
             Explora nuestra plataforma en modo demo
           </p>
         </div>
@@ -35,11 +35,11 @@ const Demo = () => {
 
         {/* Footer informativo */}
         <div className="mt-8 text-center">
-          <p className="text-white/70 text-sm">
+          <p className="text-slate-500 dark:text-white/70 text-sm">
             ¿Listo para la experiencia completa?{" "}
             <a
               href="/auth"
-              className="text-purple-300 hover:text-purple-200 underline font-semibold"
+              className="text-purple-700 hover:text-purple-800 dark:text-purple-300 dark:hover:text-purple-200 underline font-semibold"
             >
               Crea tu cuenta aquí
             </a>

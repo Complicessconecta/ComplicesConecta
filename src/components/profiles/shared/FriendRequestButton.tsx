@@ -18,6 +18,7 @@ import {
   listIncomingRequestsSync,
   type FriendStatus,
 } from "@/lib/friends";
+import { isViewerAnonymous } from "@/lib/anonymous";
 
 interface FriendRequestButtonProps {
   profileId: string;
@@ -84,6 +85,9 @@ export function FriendRequestButton({
       profileId,
       undefined,
       isDemo,
+      // Ronda 9 (stream A, punto 4): límite diario de solicitudes
+      // para cuentas anónimas (5/día, friends.ts).
+      { isAnonymousSender: isViewerAnonymous(viewerId) },
     );
     setBusy(false);
     if (!result.ok) {

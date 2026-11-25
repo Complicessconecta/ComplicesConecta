@@ -23,8 +23,8 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
     <Card
       className={
         isPremium
-          ? "bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-yellow-400/40 shadow-2xl shadow-yellow-500/20 overflow-hidden"
-          : "bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden"
+          ? "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-yellow-400/40 shadow-2xl shadow-yellow-500/20 overflow-hidden"
+          : "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden"
       }
     >
       {/* Cover Image */}

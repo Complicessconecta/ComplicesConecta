@@ -784,6 +784,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 +---lib
 |   |   advancedFeatures.ts
 |   |   analytics-metrics.ts
+|   |   anonymous.ts
 |   |   app-config.ts
 |   |   asset-loader.ts
 |   |   capture-console-errors.ts
@@ -815,6 +816,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   multimediaSecurity.ts
 |   |   notifications.ts
 |   |   profileCompleteness.ts
+|   |   profileLabels.ts
 |   |   profileVisibility.ts
 |   |   redis-cache.ts
 |   |   report-export.ts

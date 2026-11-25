@@ -1,10 +1,21 @@
-import React, { Suspense, useState, useEffect, lazy } from "react";
+import React, {
+  Suspense,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  lazy,
+} from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
-import { OPEN_INTIMATE_CHAT_EVENT, loadChatModule } from "@/lib/intimateChat";
+import {
+  CHAT_LOAD_TIMEOUT_MS,
+  OPEN_INTIMATE_CHAT_EVENT,
+  loadChatModule,
+} from "@/lib/intimateChat";
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Navigation } from "@/components/Navigation";
@@ -400,6 +411,43 @@ interface ChatDockErrorBoundaryState {
   hasError: boolean;
 }
 
+// Panel de error de carga del dock: lo usan el boundary (rechazo del
+// lazy) y el vigilante de carga de ChatDock (el lazy nunca se resuelve
+// ni rechaza). Mismo texto y mismos botones en ambos caminos.
+const ChatDockLoadError: React.FC<{
+  onRetry: () => void;
+  onOpenFullPage: () => void;
+}> = ({ onRetry, onOpenFullPage }) => (
+  <div className="flex h-full flex-col items-center justify-center gap-3 bg-slate-100 px-4 text-center dark:bg-black/40">
+    <p className="text-sm font-semibold text-slate-900 dark:text-white">
+      No se pudo cargar el chat
+    </p>
+    <p className="text-xs text-slate-600 dark:text-white/70">
+      Revisa tu conexión e inténtalo de nuevo.
+    </p>
+    <div className="flex flex-wrap justify-center gap-2">
+      <button
+        type="button"
+        onClick={onRetry}
+        className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700"
+      >
+        Reintentar
+      </button>
+      {/* Ronda 8 (punto 5): salida al mismo chat a pantalla
+          completa (/chat-intimo, mismo chunk): si la descarga se
+          atascó en el dock, la página la reutiliza ya caliente
+          en vez de dejar al usuario sin chat. */}
+      <button
+        type="button"
+        onClick={onOpenFullPage}
+        className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white/20 dark:text-white dark:hover:bg-white/20"
+      >
+        Abrir en página completa
+      </button>
+    </div>
+  </div>
+);
+
 // Si el chunk del chat falla al cargar, el dock mostraba "Cargando…"
 // para siempre. El boundary muestra el error con "Reintentar" y
 // "Cerrar" sigue funcionando (está fuera del boundary).
@@ -421,39 +469,30 @@ class ChatDockErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex h-full flex-col items-center justify-center gap-3 bg-slate-100 px-4 text-center dark:bg-black/40">
-          <p className="text-sm font-semibold text-slate-900 dark:text-white">
-            No se pudo cargar el chat
-          </p>
-          <p className="text-xs text-slate-600 dark:text-white/70">
-            Revisa tu conexión e inténtalo de nuevo.
-          </p>
-          <div className="flex flex-wrap justify-center gap-2">
-            <button
-              type="button"
-              onClick={this.props.onRetry}
-              className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700"
-            >
-              Reintentar
-            </button>
-            {/* Ronda 8 (punto 5): salida al mismo chat a pantalla
-                completa (/chat-intimo, mismo chunk): si la descarga se
-                atascó en el dock, la página la reutiliza ya caliente
-                en vez de dejar al usuario sin chat. */}
-            <button
-              type="button"
-              onClick={this.props.onOpenFullPage}
-              className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white/20 dark:text-white dark:hover:bg-white/20"
-            >
-              Abrir en página completa
-            </button>
-          </div>
-        </div>
+        <ChatDockLoadError
+          onRetry={this.props.onRetry}
+          onOpenFullPage={this.props.onOpenFullPage}
+        />
       );
     }
     return this.props.children;
   }
 }
+
+// El notificador solo se monta cuando el lazy resolvió (Suspense
+// retiene todo el subárbol mientras el chunk está pendiente): su
+// efecto de montaje es la señal "el chat cargó" que el vigilante de
+// ChatDock usa para no mostrar el error cuando el chat ya está en
+// pantalla. Sin tocar Chat.tsx.
+const ChatReadyNotifier: React.FC<{
+  onReady: () => void;
+  children: React.ReactNode;
+}> = ({ onReady, children }) => {
+  useEffect(() => {
+    onReady();
+  }, [onReady]);
+  return <>{children}</>;
+};
 
 interface ChatDockProps {
   isOpen: boolean;
@@ -469,6 +508,39 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
   // NO reintenta el chunk (vuelve a lanzar el mismo error y
   // "Reintentar" era un botón muerto). Recrearlo sí vuelve a descargar.
   const [ChatLazy, setChatLazy] = useState(() => lazy(loadChatModule));
+  // RONDA 9 (stream C, punto 5) — VIGILANTE DE CARGA DEL DOCK.
+  //
+  // El camino ronda 8 (timeout 6 s en loadChatModule → boundary) cubre
+  // el chunk que tarda o rechaza, y el test r9-stream-c lo prueba con
+  // el ChatDock real. Pero el test de verificación de la ronda 8 vio el
+  // modal quedarse en "Cargando chat…" >10 s / 15 s SIN que el boundary
+  // apareciera nunca: si el lazy no se resuelve NI rechaza (o el
+  // reintento de React no llega al boundary en ese entorno), el spinner
+  // no tiene cota. Este vigilante es la segunda red: si el chat no
+  // montó en CHAT_LOAD_TIMEOUT_MS + 2 s, el dock muestra el mismo
+  // panel de error (Reintentar / Abrir en página completa) aunque el
+  // boundary no se haya disparado. `loadedRef` lo desarma en cuanto el
+  // chat monta (ChatReadyNotifier); al reintentar (errorKey) se rearma.
+  const loadedRef = useRef(false);
+  const [loadTimedOut, setLoadTimedOut] = useState(false);
+  const handleChatReady = useCallback(() => {
+    loadedRef.current = true;
+  }, []);
+  useEffect(() => {
+    if (!isOpen) return;
+    loadedRef.current = false;
+    setLoadTimedOut(false);
+    const timer = setTimeout(() => {
+      if (!loadedRef.current) {
+        console.error(
+          "[ChatDock] el chat no montó en",
+          `${CHAT_LOAD_TIMEOUT_MS + 2000} ms; mostrando salida de error`,
+        );
+        setLoadTimedOut(true);
+      }
+    }, CHAT_LOAD_TIMEOUT_MS + 2000);
+    return () => clearTimeout(timer);
+  }, [isOpen, errorKey]);
   const handleRetry = () => {
     setChatLazy(() => lazy(loadChatModule));
     setErrorKey((prev) => prev + 1);
@@ -513,20 +585,34 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
           <div className="h-[420px] bg-slate-100 dark:bg-black/40">
-            <Suspense fallback={<ChatDockLoader />}>
-              {/* embedded: el Chat a pantalla completa (h-screen) se
-                desbordaba dentro del dock de 420px y se solapaba. */}
-              <ChatDockErrorBoundary
-                key={errorKey}
+            {loadTimedOut ? (
+              <ChatDockLoadError
                 onRetry={handleRetry}
                 onOpenFullPage={handleOpenFullPage}
-              >
-                <ChatLazy embedded />
-              </ChatDockErrorBoundary>
-            </Suspense>
+              />
+            ) : (
+              <Suspense fallback={<ChatDockLoader />}>
+                {/* embedded: el Chat a pantalla completa (h-screen) se
+                desbordaba dentro del dock de 420px y se solapaba. */}
+                <ChatDockErrorBoundary
+                  key={errorKey}
+                  onRetry={handleRetry}
+                  onOpenFullPage={handleOpenFullPage}
+                >
+                  <ChatReadyNotifier onReady={handleChatReady}>
+                    <ChatLazy embedded />
+                  </ChatReadyNotifier>
+                </ChatDockErrorBoundary>
+              </Suspense>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+// RONDA 9 (stream C): exportado para el test de carga del dock
+// (r9-stream-c): el boundary y el dock se prueban con el chunk
+// atascado; sin export no hay forma de montarlos sin MainLayout.
+export { ChatDockErrorBoundary, ChatDock };

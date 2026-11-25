@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Star, MessageSquare, ThumbsUp, User } from "lucide-react";
 import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import {
+  ANONYMOUS_REVIEW_LABEL,
+  canAnonymousReview,
+} from "@/lib/anonymous";
 
 interface ClubReview {
   id: string;
@@ -16,6 +20,14 @@ interface ClubReview {
   helpfulCount: number;
   isVerified: boolean;
   createdAt: string;
+  /**
+   * Ronda 10 (stream A, punto A5): reseña escrita por una cuenta
+   * anónima. Se muestra como "Anónimo" con la etiqueta obligatoria
+   * "Reseña anónima" y queda en revisión por moderación.
+   */
+  isAnonymous?: boolean;
+  /** "pending" = en revisión por moderación; "approved" = publicada. */
+  moderationStatus?: "pending" | "approved";
 }
 
 interface ClubProfileReviewsProps {
@@ -24,6 +36,67 @@ interface ClubProfileReviewsProps {
   totalReviews: number;
   isOwner?: boolean;
   onReply?: (reviewId: string) => void;
+  /**
+   * Ronda 10 (stream A, punto A5): clave para persistir las reseñas
+   * que el usuario escribe en este club (localStorage, por club).
+   * Sin clubId, las reseñas solo viven en esta vista.
+   */
+  clubId?: string;
+  /** Nombre visible del autor (por defecto "Tú"). */
+  currentUserName?: string;
+  /** El autor es una cuenta anónima: su reseña va etiquetada y moderada. */
+  isAnonymous?: boolean;
+  /**
+   * ¿El autor ya interactuó (amistad aceptada o acceso concedido)?
+   * Regla del anónimo: sin interacción previa no hay reseña. En el
+   * contexto de club no hay estado de check-in en demo, así que el
+   * padre no lo pasa y el default es true (el formulario existe y
+   * toda reseña anónima queda en revisión). Si el padre pasa false
+   * explícito, el formulario se bloquea con el motivo.
+   */
+  hasInteraction?: boolean;
+}
+
+/**
+ * Reseñas escritas por el usuario en este club, persistidas en
+ * localStorage por club. Mínimo viable (ronda 10, stream A, punto
+ * A5): no es un sistema nuevo de reseñas, solo el formulario que
+ * faltaba + la etiqueta "Reseña anónima" + la marca de moderación.
+ */
+const USER_REVIEWS_STORAGE_PREFIX = "cc_club_reviews_v1:";
+
+function readUserReviews(clubId: string | undefined): ClubReview[] {
+  if (typeof window === "undefined" || !clubId) return [];
+  try {
+    const raw = window.localStorage.getItem(
+      `${USER_REVIEWS_STORAGE_PREFIX}${clubId}`,
+    );
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (r): r is ClubReview =>
+        Boolean(r) &&
+        typeof r === "object" &&
+        typeof (r as { id?: unknown }).id === "string" &&
+        typeof (r as { comment?: unknown }).comment === "string" &&
+        typeof (r as { rating?: unknown }).rating === "number",
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveUserReviews(clubId: string | undefined, reviews: ClubReview[]): void {
+  if (typeof window === "undefined" || !clubId) return;
+  try {
+    window.localStorage.setItem(
+      `${USER_REVIEWS_STORAGE_PREFIX}${clubId}`,
+      JSON.stringify(reviews),
+    );
+  } catch {
+    // Sin almacenamiento: la reseña solo vive en esta vista.
+  }
 }
 
 /**
@@ -82,10 +155,81 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
   totalReviews,
   isOwner = false,
   onReply,
+  clubId,
+  currentUserName,
+  isAnonymous = false,
+  hasInteraction = true,
 }) => {
   const [sortBy, setSort] = useState<'recent' | 'highest' | 'lowest'>('recent');
 
-  const sortedReviews = [...reviews].sort((a, b) => {
+  // Ronda 10 (stream A, punto A5): formulario de reseña. Las
+  // reseñas del usuario se suman a las del club y se persisten por
+  // club en localStorage.
+  const [userReviews, setUserReviews] = useState<ClubReview[]>(() =>
+    readUserReviews(clubId),
+  );
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formDone, setFormDone] = useState(false);
+
+  // Si cambia el club, recargar sus reseñas escritas.
+  useEffect(() => {
+    setUserReviews(readUserReviews(clubId));
+    setRating(0);
+    setComment("");
+    setFormError(null);
+    setFormDone(false);
+  }, [clubId]);
+
+  const allReviews = [...userReviews, ...reviews];
+  const totalWithUserReviews = totalReviews + userReviews.length;
+
+  const anonymousReviewCheck = isAnonymous
+    ? canAnonymousReview({ hasInteraction })
+    : { allowed: true, label: ANONYMOUS_REVIEW_LABEL };
+
+  const handleSubmitReview = () => {
+    if (!anonymousReviewCheck.allowed) {
+      setFormError(anonymousReviewCheck.reason ?? "No puedes reseñar este club.");
+      return;
+    }
+    if (rating < 1 || rating > 5) {
+      setFormError("Elige una calificación de 1 a 5 estrellas.");
+      return;
+    }
+    if (comment.trim().length < 3) {
+      setFormError("Escribe tu reseña (mínimo 3 caracteres).");
+      return;
+    }
+    const now = new Date().toISOString();
+    const review: ClubReview = {
+      id: `user-review-${Date.now()}`,
+      userId: "current-user",
+      userName: isAnonymous ? "Anónimo" : (currentUserName ?? "Tú"),
+      rating,
+      comment: comment.trim(),
+      checkInDate: now,
+      helpfulCount: 0,
+      isVerified: false,
+      createdAt: now,
+      ...(isAnonymous
+        ? {
+            isAnonymous: true as const,
+            moderationStatus: "pending" as const,
+          }
+        : { moderationStatus: "approved" as const }),
+    };
+    const next = [review, ...userReviews];
+    setUserReviews(next);
+    saveUserReviews(clubId, next);
+    setRating(0);
+    setComment("");
+    setFormError(null);
+    setFormDone(true);
+  };
+
+  const sortedReviews = [...allReviews].sort((a, b) => {
     if (sortBy === 'recent') {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     } else if (sortBy === 'highest') {
@@ -127,9 +271,9 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
    * cuando la lista ES el total, se cuentan las reseñas reales.
    */
   const ratingDistribution = deriveRatingDistribution(
-    reviews,
+    allReviews,
     averageRating,
-    totalReviews,
+    totalWithUserReviews,
   );
 
   return (
@@ -144,7 +288,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
             <div>
               <h3 className="text-xl font-bold text-white">Reseñas</h3>
               <p className="text-white/60 text-sm">
-                {totalReviews} {totalReviews === 1 ? 'reseña' : 'reseñas'}
+                {totalWithUserReviews} {totalWithUserReviews === 1 ? 'reseña' : 'reseñas'}
               </p>
             </div>
           </div>
@@ -161,6 +305,86 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
           </select>
         </div>
 
+        {/* Formulario de reseña (ronda 10, stream A, punto A5): antes
+            no existía ningún formulario en la app — el perfil anónimo
+            decía "solo pueden crear reseñas" pero no había dónde
+            crearlas. La reseña anónima se publica como "Anónimo" con
+            la etiqueta "Reseña anónima" y queda "En revisión" por
+            moderación. */}
+        <div className="bg-white/5 rounded-xl p-4 sm:p-5 mb-6 border border-white/10">
+          <h4 className="text-white font-semibold mb-1">Escribe una reseña</h4>
+          <p className="text-white/60 text-xs mb-4">
+            {isAnonymous
+              ? "Tu reseña se publicará como «Reseña anónima» y quedará en revisión por moderación."
+              : "Tu reseña se publicará con tu nombre visible."}
+          </p>
+          {!anonymousReviewCheck.allowed ? (
+            <p className="text-sm text-amber-200 bg-amber-500/10 border border-amber-400/30 rounded-lg px-3 py-2">
+              {anonymousReviewCheck.reason}
+            </p>
+          ) : (
+            <>
+              <div
+                className="flex items-center gap-1 mb-3"
+                role="radiogroup"
+                aria-label="Calificación de 1 a 5 estrellas"
+              >
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    role="radio"
+                    aria-checked={rating === star}
+                    aria-label={`${star} ${star === 1 ? "estrella" : "estrellas"}`}
+                    onClick={() => {
+                      setRating(star);
+                      setFormError(null);
+                    }}
+                    className="p-1 rounded-full hover:bg-white/10 transition-colors"
+                  >
+                    <Star
+                      className={`h-6 w-6 ${star <= rating ? "text-yellow-400 fill-current" : "text-gray-400"}`}
+                    />
+                  </button>
+                ))}
+                {rating > 0 && (
+                  <span className="ml-2 text-sm text-white/70">
+                    {rating} {rating === 1 ? "estrella" : "estrellas"}
+                  </span>
+                )}
+              </div>
+              <textarea
+                value={comment}
+                onChange={(e) => {
+                  setComment(e.target.value);
+                  setFormError(null);
+                }}
+                placeholder="Cuéntanos cómo te fue en este club…"
+                aria-label="Tu reseña"
+                rows={3}
+                className="w-full bg-white/10 border border-white/20 text-white placeholder:text-white/40 rounded-lg px-3 py-2 text-sm mb-3"
+              />
+              {formError && (
+                <p className="text-sm text-red-300 mb-3">{formError}</p>
+              )}
+              {formDone && (
+                <p className="text-sm text-emerald-300 mb-3">
+                  {isAnonymous
+                    ? "Tu reseña se envió a moderación como «Reseña anónima»."
+                    : "Gracias por tu reseña."}
+                </p>
+              )}
+              <Button
+                onClick={handleSubmitReview}
+                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+              >
+                Publicar reseña
+                {isAnonymous ? " como anónimo" : ""}
+              </Button>
+            </>
+          )}
+        </div>
+
         {/* Rating Summary */}
         <div className="bg-white/5 rounded-xl p-6 mb-6 border border-white/10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -173,7 +397,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
                 {renderStars(Math.round(averageRating))}
               </div>
               <p className="text-white/60 text-sm">
-                {totalReviews} {totalReviews === 1 ? 'reseña' : 'reseñas'}
+                {totalWithUserReviews} {totalWithUserReviews === 1 ? 'reseña' : 'reseñas'}
               </p>
             </div>
 
@@ -237,6 +461,18 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
                           {review.isVerified && (
                             <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                               Verificado
+                            </Badge>
+                          )}
+                          {/* Ronda 10 (stream A, punto A5): etiqueta
+                              obligatoria y marca de moderación. */}
+                          {review.isAnonymous && (
+                            <Badge className="bg-slate-500/25 text-slate-100 border-slate-400/40">
+                              {ANONYMOUS_REVIEW_LABEL}
+                            </Badge>
+                          )}
+                          {review.moderationStatus === "pending" && (
+                            <Badge className="bg-amber-500/20 text-amber-300 border-amber-400/40">
+                              En revisión
                             </Badge>
                           )}
                         </div>

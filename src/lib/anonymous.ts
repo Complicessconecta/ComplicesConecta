@@ -58,6 +58,25 @@ export const ANONYMOUS_REVIEW_LABEL = "Reseña anónima";
 export const ANONYMOUS_WALLET_BLOCKED_REASON =
   "La billetera está desactivada en cuentas anónimas: verifica tu perfil (World ID / KYC) para comprar y recibir CMPX, ganar recompensas y hacer staking.";
 
+/** Mensaje cuando una cuenta anónima intenta dar like (A8). */
+export const ANONYMOUS_LIKE_BLOCKED_MESSAGE =
+  "Las cuentas anónimas no pueden dar like: solo pueden crear reseñas. Verifica tu perfil (World ID / KYC) para dar likes.";
+
+/**
+ * ¿Puede esta cuenta dar like? El anónimo NO: su única interacción
+ * permitida es crear reseñas (moderadas, "Reseña anónima"). El
+ * bloqueo se decide ANTES de alternar el estado del botón: si no,
+ * el botón queda en "Te Gusta" aunque el like no se registró (test
+ * ronda 9) y el error llega después como toast.
+ */
+export function canAnonymousLike(isAnonymous: boolean): {
+  allowed: boolean;
+  reason?: string;
+} {
+  if (!isAnonymous) return { allowed: true };
+  return { allowed: false, reason: ANONYMOUS_LIKE_BLOCKED_MESSAGE };
+}
+
 /* ------------------------------------------------------------------ */
 /* 6. Expiración / conversión                                          */
 /* ------------------------------------------------------------------ */

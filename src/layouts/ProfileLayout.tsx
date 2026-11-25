@@ -40,12 +40,15 @@ export const ProfileLayout: React.FC = () => {
             ID). En flujo empuja el contenido hacia abajo sin tapar nada;
             el menú (Ver Mi Perfil / Cerrar Sesión) se conserva. */}
         {isDemoMode() && (
-          <div className="relative z-10 flex items-center justify-between gap-2 border-b border-purple-900/20 bg-purple-900 dark:bg-purple-950/60 dark:border-white/10 px-3 py-1 backdrop-blur-md">
+          <div className="relative z-10 flex items-center justify-between gap-2 border-b border-purple-900/20 bg-purple-900 dark:bg-purple-950 dark:border-white/10 px-3 py-1">
             {/* RONDA 7 (punto 3): la barra era `bg-purple-950/60`
                 (morado translúcido): en tema claro el fondo claro se
                 transparentaba y el "Demo User / ID" blanco quedaba
                 lavado sobre lavanda. Ahora es morado SÓLIDO en claro
-                (texto blanco legible) y translúcido solo en oscuro. */}
+                (texto blanco legible) y translúcido solo en oscuro.
+                RONDA 10 (stream B, B1): en oscuro seguía siendo
+                translúcido (`dark:bg-purple-950/60`): ahora SÓLIDO
+                también en oscuro. */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="demo-user-heartbeat h-auto bg-transparent px-2 py-1 text-xs font-semibold text-white hover:bg-white/10">
@@ -63,9 +66,17 @@ export const ProfileLayout: React.FC = () => {
                   </span>
                 </Button>
               </DropdownMenuTrigger>
+              {/* RONDA 10 (stream B, B1): el menú era TRANSPARENTE en
+                  ambos temas: `bg-purple-900/95 backdrop-blur-xl` deja
+                  ver el contenido de detrás (fotos, degradado) y se leía
+                  como transparente con los textos solapados. Fondo
+                  SÓLIDO opaco (morado-950, a juego con la barra demo) sin
+                  blur, en ambos temas. */}
               <DropdownMenuContent
                 align="start"
-                className="min-w-[180px] bg-purple-900/95 backdrop-blur-xl border border-purple-500/30 text-white"
+                sideOffset={8}
+                collisionPadding={8}
+                className="min-w-[180px] bg-purple-950 border border-purple-500/30 text-white shadow-xl"
               >
                 <DropdownMenuLabel className="text-white font-semibold">
                   {isDemoMode()

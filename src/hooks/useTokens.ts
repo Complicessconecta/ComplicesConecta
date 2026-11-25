@@ -23,7 +23,10 @@ import {
   findLocalDemoAccountById,
   isAnonymousDemoProfile,
 } from "@/lib/demo-registration";
-import { ANONYMOUS_WALLET_BLOCKED_REASON } from "@/lib/anonymous";
+import {
+  ANONYMOUS_WALLET_BLOCKED_REASON,
+  isViewerAnonymous,
+} from "@/lib/anonymous";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
@@ -134,11 +137,28 @@ export const useTokens = () => {
     };
   }, [user, profile]);
 
+  // Ronda 10 (stream A, punto A3): ¿la sesión actual es una cuenta
+  // ANÓNIMA? Su billetera está bloqueada: no tiene saldos, ni
+  // recompensas, ni staking, ni referidos. Se calcula una vez por
+  // usuario/perfil y lo usan la carga demo, el listener de cambios y
+  // las acciones. La heurística NO se aplica al `user` pelado (sin
+  // tipo ni datos, p. ej. una pareja @demo.local): sin tipo no se
+  // distingue de un anónimo legado; el `profile` sí trae el tipo y
+  // el registro local / `demo_user` son señales fiables.
+  const isAnonymousUser =
+    isAnonymousDemoProfile(profile) ||
+    findLocalDemoAccountById(user?.id ?? "")?.isAnonymous === true ||
+    (user?.id ? isViewerAnonymous(user.id) : false);
+
   // El saldo demo persistido puede cambiar fuera de este hook (reclamo
   // en /tokens, otra instancia del hook): re-leerlo cuando cambie para
   // que todas las superficies muestren el mismo número.
   useEffect(() => {
     if (!isDemo()) return;
+    // Ronda 10 (stream A, punto A3): el anónimo no hereda el saldo
+    // canónico de nadie (ni el de Sofía): su saldo es cero y no se
+    // re-lee el persistido.
+    if (isAnonymousUser) return;
     const onChanged = () => {
       const { accountType, isPremiumDemo } = resolveDemoKind();
       if (isPremiumDemo) return;
@@ -148,7 +168,7 @@ export const useTokens = () => {
     window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
     return () =>
       window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
-  }, [isDemo, resolveDemoKind]);
+  }, [isDemo, resolveDemoKind, isAnonymousUser]);
 
   const tokenService = TokenService.getInstance();
 
@@ -172,6 +192,23 @@ export const useTokens = () => {
       // Si es demo o no debemos usar Supabase real, usar datos mock
       if (isDemo()) {
         logger.info(" Cargando datos de tokens demo", { user: user.email });
+
+        // Ronda 10 (stream A, punto A3): la cuenta ANÓNIMA no tiene
+        // billetera. Causa raíz del fallo del test ronda 9: esta rama
+        // asignaba el saldo canónico single (Sofía: CMPX 1250/850,
+        // 4 NFTs, staking, referidos) a CUALQUIER sesión demo single,
+        // incluida la anónima. Solo estaban bloqueados reclamar y
+        // staking; la VISUALIZACIÓN heredaba la cartera de Sofía.
+        // El anónimo queda en ceros y sin transacciones, staking ni
+        // recompensas: ninguna sesión hereda la cartera de otra.
+        if (isAnonymousUser) {
+          setBalance({ cmpx: 0, gtk: 0 });
+          setTransactions([]);
+          setStakingRecords([]);
+          setRewards([]);
+          setLoading(false);
+          return;
+        }
 
         // Balance demo canónico por tipo de cuenta (ÚNICA fuente:
         // @/lib/demo-wallet — single 1250/850, pareja 2000/1500).
@@ -377,6 +414,13 @@ export const useTokens = () => {
   const processReferral = async (referredUserId: string) => {
     if (!user) return false;
 
+    // Ronda 10 (stream A, punto A3): sin referidos en cuentas
+    // anónimas (la billetera está desactivada hasta verificar).
+    if (isAnonymousUser) {
+      logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, { referredUserId });
+      return false;
+    }
+
     if (isDemo() || !shouldUseRealSupabase()) {
       logger.info(" Simulando procesamiento de referido en modo demo");
       // Simular recompensa por referido
@@ -418,11 +462,9 @@ export const useTokens = () => {
 
     // Ronda 9 (stream A, punto 7): sin staking en cuentas anónimas
     // hasta verificar (World ID / KYC). Mismo bloqueo que en
-    // `claimReward`.
-    if (
-      isAnonymousDemoProfile(user) ||
-      findLocalDemoAccountById(user.id)?.isAnonymous === true
-    ) {
+    // `claimReward`. La señal es `isAnonymousUser` (arriba): no se
+    // aplica la heurística al `user` pelado (ver A3).
+    if (isAnonymousUser) {
       logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, {
         tokenType,
         amount,
@@ -520,10 +562,7 @@ export const useTokens = () => {
     // local subía aunque la billetera estuviera bloqueada. La
     // recompensa de World ID (`claimWorldIdReward`) NO se bloquea: es
     // la que se concede AL verificar, es decir, el camino de
-    // conversión mismo.
-    const isAnonymousUser =
-      isAnonymousDemoProfile(user) ||
-      findLocalDemoAccountById(user.id)?.isAnonymous === true;
+    // conversión mismo. La señal es `isAnonymousUser` (arriba).
     if (isAnonymousUser) {
       logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, { rewardId });
       return false;
@@ -688,8 +727,11 @@ export const useTokens = () => {
       // Persistir el +100 CMPX en la fuente canónica (ronda 7, punto
       // 8): antes solo vivía en este estado local y el perfil seguía
       // en 1250 tras reclamar en /tokens.
+      // Ronda 10 (stream A, punto A3): NO acreditar al bucket
+      // canónico single si quien verifica es anónimo: ese bucket es
+      // el de Sofía y la verificación del anónimo lo inflaría.
       const { accountType, isPremiumDemo } = resolveDemoKind();
-      if (!isPremiumDemo) {
+      if (!isPremiumDemo && !isAnonymousUser) {
         creditDemoWallet(accountType, { cmpx: 100 });
       }
       return true;
@@ -757,5 +799,10 @@ export const useTokens = () => {
     // Información del modo
     isDemo: isDemo(),
     appMode: config.mode,
+
+    // Ronda 10 (stream A, punto A3): la billetera está bloqueada para
+    // la sesión actual (cuenta anónima). TokenDashboard lo usa para
+    // mostrar el estado bloqueado en vez de saldos ajenos.
+    isAnonymousWalletBlocked: isAnonymousUser,
   };
 };

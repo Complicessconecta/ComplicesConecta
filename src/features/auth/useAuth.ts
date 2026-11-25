@@ -8,6 +8,7 @@ import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import {
   findLocalDemoAccount,
   restoreLocalDemoSession,
+  seedAnonymousPrivacyDefaults,
 } from "@/lib/demo-registration";
 import {
   getAppConfig,
@@ -189,9 +190,27 @@ export const useAuth = () => {
           profile_type: (resolveDemoAccountType(parsedDemoUser) ??
             "single") as string,
           is_demo: true,
-          is_verified: true,
+          // Ronda 10 (stream A, punto A2): el anónimo NO es verificado
+          // (no pasó World ID / KYC). Antes TODOS los perfiles demo
+          // forzaban `is_verified: true` y el perfil anónimo mostraba
+          // "✓ Verificado" en vez de la insignia "Anónimo".
+          is_verified: parsedDemoUser.is_anonymous === true ? false : true,
           is_premium: false,
         };
+
+        // Ronda 10 (stream A, punto A1): siembra la privacidad con la
+        // que nace el anónimo (privado/invisible) al cargar su sesión:
+        // cubre cuentas creadas antes de esta ronda (anonr8test) y el
+        // barrido de `single_privacy:*` que hace el logout. Solo
+        // escribe si el dueño no fijó nada aún.
+        if (parsedDemoUser.is_anonymous === true) {
+          seedAnonymousPrivacyDefaults(
+            demoProfile.id,
+            (resolveDemoAccountType(parsedDemoUser) ?? "single") as
+              | "single"
+              | "couple",
+          );
+        }
 
         logger.info("🎭 Perfil demo cargado en useAuth:", {
           displayName: demoProfile.display_name,

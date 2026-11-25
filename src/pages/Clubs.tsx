@@ -12,6 +12,7 @@ import { MapPin, Star, CheckCircle, FileText, Shield, Search, Globe, Camera, Awa
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { logger } from "@/lib/logger";
 import type { Database } from "@/types/supabase-generated";
 import type { Club as ClubEntity } from "@/entities/club";
@@ -207,7 +208,7 @@ const DEMO_ANALYTICS = {
 };
 
 export const Clubs = () => {
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { user, profile, isAuthenticated, isAdmin } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { slug } = useParams<{ slug?: string }>();
@@ -758,6 +759,11 @@ export const Clubs = () => {
               reviews={DEMO_REVIEWS}
               averageRating={selectedClub.rating_average}
               totalReviews={selectedClub.rating_count}
+              clubId={String(selectedClub.id)}
+              currentUserName={
+                profile?.display_name ?? user?.email ?? "Tú"
+              }
+              isAnonymous={isAnonymousDemoProfile(profile)}
             />
 
             {/* Consentimiento del club: el usuario acepta los documentos del

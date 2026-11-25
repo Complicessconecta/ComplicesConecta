@@ -41,6 +41,13 @@ import {
   getBlockedProfileIdsSync,
 } from "@/lib/reportBlock";
 import { getSocialDemoData } from "@/demo/socialDemoData";
+import {
+  ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+  canAnonymousChat,
+  isViewerAnonymous,
+} from "@/lib/anonymous";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
+import { areFriendsSync } from "@/lib/friends";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { motion } from "framer-motion";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
@@ -688,9 +695,34 @@ export const Discover = () => {
     user?.id,
   ]);
 
+  // Ronda 10 (stream A, puntos A4/A8): el espectador es una cuenta
+  // anónima (marca en `profile` o registro local de este navegador).
+  // La heurística no se aplica al `user` pelado (sin tipo ni datos,
+  // p. ej. una pareja @demo.local): sin tipo no se distingue de un
+  // anónimo legado.
+  const viewerIsAnonymous =
+    isAnonymousDemoProfile(profile) ||
+    (user?.id ? isViewerAnonymous(user.id) : false);
+
+  const notifyAnonymousLikeBlocked = () => {
+    toast({
+      title: "Like no disponible",
+      description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+    });
+  };
+
   const handleLike = async (profileId: number | string) => {
     if (!isAuthenticated() || !user) {
       setShowPremiumModal(true);
+      return;
+    }
+
+    // Ronda 10 (stream A, punto A8): el like anónimo está bloqueado
+    // con mensaje claro (sin toast de error). La tarjeta ya no
+    // alterna a "Te Gusta" (ver AnimatedProfileCard), y este gate
+    // cubre además el corazón flotante y cualquier otro llamador.
+    if (viewerIsAnonymous) {
+      notifyAnonymousLikeBlocked();
       return;
     }
 
@@ -779,6 +811,33 @@ export const Discover = () => {
     // Validar que profileId sea válido antes de navegar
     if (!profileId || profileId === "undefined" || profileId === "null") {
       logger.error("Error: profileId inválido", { profileId });
+      return;
+    }
+    // Ronda 10 (stream A, punto A4): gate ANTES de navegar. Si el
+    // espectador o el destino es anónimo, solo hay chat con amistad
+    // aceptada: sin ella no se abre el hilo ni el compositor. Antes
+    // se navegaba a /chat/:id y el bloqueo solo saltaba al enviar
+    // (test ronda 9).
+    const targetProfile = [...filteredProfiles, ...filteredDemoProfiles].find(
+      (p) => String(p.id) === String(profileId),
+    );
+    const chatCheck = canAnonymousChat({
+      senderIsAnonymous: viewerIsAnonymous,
+      recipientIsAnonymous:
+        (targetProfile as { isAnonymous?: boolean } | undefined)
+          ?.isAnonymous === true,
+      areFriends: areFriendsSync(
+        String(user?.id ?? ""),
+        String(profileId),
+        String(profile?.first_name ?? user?.email ?? ""),
+        targetProfile?.name ?? "",
+      ),
+    });
+    if (!chatCheck.allowed) {
+      toast({
+        title: "Chat bloqueado",
+        description: chatCheck.reason,
+      });
       return;
     }
     // Mantener flujo demo sin gating de match: abrir el hilo con esa
@@ -1201,11 +1260,14 @@ export const Discover = () => {
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
                           isVerified={profile.isVerified ?? false}
+                          isAnonymous={profile.isAnonymous ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
                           onLike={handleLike}
+                          isViewerAnonymous={viewerIsAnonymous}
+                          onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
                           onMessage={handleMessage}
                           onViewProfile={handleViewProfile}
                         />
@@ -1248,11 +1310,14 @@ export const Discover = () => {
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
                           isVerified={profile.isVerified ?? false}
+                          isAnonymous={profile.isAnonymous ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
                           onLike={handleLike}
+                          isViewerAnonymous={viewerIsAnonymous}
+                          onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
                           onMessage={handleMessage}
                           onViewProfile={handleViewProfile}
                         />
@@ -1298,6 +1363,8 @@ export const Discover = () => {
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
                           onLike={handleLike}
+                          isViewerAnonymous={viewerIsAnonymous}
+                          onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
                           onMessage={handleMessage}
                           canMessage={matchedIds.has(profile.id.toString())}
                           onViewProfile={handleViewProfile}

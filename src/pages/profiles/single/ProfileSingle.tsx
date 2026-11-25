@@ -77,7 +77,11 @@ import {
   DEMO_WALLET_CHANGED_EVENT,
 } from "@/lib/demo-wallet";
 import { isAnonymousDemoProfile } from "@/lib/demo-registration";
-import { getAnonymousExpiryInfo } from "@/lib/anonymous";
+import {
+  formatAnonymousPhotoAccessRemaining,
+  getAnonymousExpiryInfo,
+} from "@/lib/anonymous";
+import { listAnonymousPhotoAccessGrantedBy } from "@/lib/friends";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import {
   PRIVATE_MEDIA_PLACEHOLDER,
@@ -235,6 +239,11 @@ const ProfileSingle: FC = () => {
   const profilePrivacy = usePrivacySettings(
     user?.id ?? profile?.id ?? "",
     "single",
+    // Ronda 10 (stream A, punto A1): el anónimo es privado por
+    // defecto; sin ajustes guardados, el default es invisible. Se
+    // calcula en línea porque el `isAnonymous` memoizado se define
+    // más abajo (usarlo aquí caería en la zona muerta temporal).
+    isAnonymousDemoProfile(profile),
   );
   const profileZodiac = getProfileZodiacSign(profilePrivacy);
   const visibilityBadge = getVisibilityBadge(
@@ -580,6 +589,33 @@ const ProfileSingle: FC = () => {
         typeof profile?.created_at === "string" ? profile.created_at : null,
       ),
     [profile?.created_at],
+  );
+
+  // Ronda 10 (stream A, punto A6): cuenta atrás de los accesos a la
+  // galería limitada que el dueño ya concedió (24 h desde la
+  // aceptación). Se re-calcula cada 30 s para que el temporizador
+  // avance sin recargar; los expirados desaparecen solos (hay que
+  // volver a pedir acceso).
+  const [galleryAccessNowMs, setGalleryAccessNowMs] = useState(() =>
+    Date.now(),
+  );
+  useEffect(() => {
+    if (!isAnonymous) return;
+    const timer = window.setInterval(
+      () => setGalleryAccessNowMs(Date.now()),
+      30000,
+    );
+    return () => window.clearInterval(timer);
+  }, [isAnonymous]);
+  const grantedGalleryAccess = useMemo(
+    () =>
+      isAnonymous && profile?.id
+        ? listAnonymousPhotoAccessGrantedBy(
+            String(profile.id),
+            galleryAccessNowMs,
+          )
+        : [],
+    [isAnonymous, profile?.id, galleryAccessNowMs],
   );
 
   // Datos de imágenes privadas para el carrusel
@@ -1362,12 +1398,24 @@ const ProfileSingle: FC = () => {
                         toggle "Signo zodiacal" de Privacidad controla si
                         el signo se muestra; el modo invisible se ve con
                         el fantasma 👻. */}
-                    {currentProfile.is_verified && (
+                    {/* Ronda 10 (stream A, punto A2): el anónimo NO es
+                        verificado (no pasó World ID / KYC): nunca
+                        muestra "✓ Verificado"; lleva la insignia
+                        "Anónimo" en su lugar. */}
+                    {currentProfile.is_verified && !isAnonymous && (
                       <Badge
                         className="rounded-full bg-blue-500/15 text-blue-800 border border-blue-500/50 dark:bg-blue-500/20 dark:text-blue-200 dark:border-blue-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-blue-500/20 backdrop-blur-md"
                         title="Perfil verificado"
                       >
                         ✓ Verificado
+                      </Badge>
+                    )}
+                    {isAnonymous && (
+                      <Badge
+                        className="rounded-full bg-slate-600/20 text-slate-800 border border-slate-500/50 dark:bg-slate-500/25 dark:text-slate-100 dark:border-slate-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-slate-500/20 backdrop-blur-md"
+                        title="Perfil anónimo: solo visible para cuentas verificadas"
+                      >
+                        Anónimo
                       </Badge>
                     )}
                     <Badge
@@ -1517,21 +1565,39 @@ const ProfileSingle: FC = () => {
                         {/* RONDA 6 (punto 2): el menú se abre HACIA ARRIBA
                             (`side="top"`): hacia abajo tapaba las tarjetas
                             de estadísticas que están justo debajo de la
-                            cabecera del perfil. */}
+                            cabecera del perfil.
+                            RONDA 10 (stream B, B1): el menú era TRANSPARENTE
+                            en ambos temas: hereda `bg-popover` /
+                            `text-popover-foreground` del DropdownMenu
+                            compartido y en Tailwind v4 esos tokens no
+                            resuelven (`--popover: 0 0% 100%` es un triplete
+                            HSL crudo; el CSS compilado es
+                            `background-color:var(--popover)`, color inválido
+                            que el navegador descarta). Con el fondo
+                            transparente, al abrir hacia arriba se veían a
+                            través la pastilla de edad, la bio y los botones
+                            ("DEMO sobre la pastilla de edad", "Ver Mi Perfil
+                            sobre Editar"). Fondo SÓLIDO opaco explícito en
+                            ambos temas + `sideOffset`/`collisionPadding`
+                            para que no pegue al botón ni al borde. */}
                         <DropdownMenuContent
                           align="end"
                           side="top"
-                          className="min-w-[180px]"
+                          sideOffset={8}
+                          collisionPadding={8}
+                          className="min-w-[180px] bg-white text-slate-900 border-slate-200 shadow-xl dark:bg-slate-900 dark:text-white dark:border-white/15"
                         >
-                          <DropdownMenuLabel>
+                          <DropdownMenuLabel className="text-slate-900 dark:text-white">
                             {accountChipLabel}
                           </DropdownMenuLabel>
                           <DropdownMenuItem
+                            className="hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:focus:text-white cursor-pointer"
                             onClick={() => navigate("/profile")}
                           >
                             Ver Mi Perfil
                           </DropdownMenuItem>
                           <DropdownMenuItem
+                            className="hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:focus:text-white cursor-pointer"
                             onClick={async () => {
                               if (isDemoProfile) {
                                 // Habilitar logout incluso en demo
@@ -2040,7 +2106,10 @@ const ProfileSingle: FC = () => {
                             </div>
                           </div>
                           <div className="text-xs min-w-0">
-                            <div className="font-medium truncate">
+                            <div
+                              className="font-medium truncate"
+                              title={nft.name || `NFT #${nft.token_id}`}
+                            >
                               {nft.name || `NFT #${nft.token_id}`}
                             </div>
                             <div className="flex items-center justify-between gap-1 mt-1 min-w-0">
@@ -2220,6 +2289,10 @@ const ProfileSingle: FC = () => {
               userId={user?.id ?? profile?.id ?? ""}
               profileType="single"
               isDemo={singleIsDemo}
+              // Ronda 10 (stream A, punto A1): el anónimo nace
+              // privado; sin visibilidad guardada, el select arranca
+              // en "🔒 Privado".
+              isAnonymous={isAnonymous}
             />
           )}
 
@@ -2261,19 +2334,41 @@ const ProfileSingle: FC = () => {
               hasta verificar. */}
           {isOwnProfile && isAnonymous && (
             <div className="rounded-2xl border border-amber-400/40 bg-amber-500/10 p-4 sm:p-5 text-sm">
-              <p className="font-semibold text-amber-200">
+              <p className="font-semibold text-amber-800 dark:text-amber-200">
                 Cuenta anónima
                 {anonymousExpiry.expiresAtMs !== null &&
                   !anonymousExpiry.expired &&
                   ` · expira en ${anonymousExpiry.daysRemaining} ${anonymousExpiry.daysRemaining === 1 ? "día" : "días"}`}
                 {anonymousExpiry.expired && " · expirada"}
               </p>
-              <p className="mt-1 text-white/70">
+              <p className="mt-1 text-slate-600 dark:text-white/70">
                 Tu cuenta anónima dura 30 días. Verifica tu perfil (World ID /
                 KYC) para desbloquear todo: billetera, chat sin límites, galería
                 completa y reseñas. Sin verificar, no puedes comprar ni recibir
                 CMPX, ni ganar recompensas ni hacer staking.
               </p>
+              {/* Ronda 10 (stream A, punto A6): cuenta atrás de los
+                  accesos a la galería limitada ya concedidos (24 h
+                  desde la aceptación). Sin accesos vigentes, no se
+                  muestra nada: no hay nada que contar. */}
+              {grantedGalleryAccess.length > 0 && (
+                <div className="mt-3 rounded-xl border border-amber-400/30 bg-black/20 p-3">
+                  <p className="font-semibold text-amber-100">
+                    Acceso a tu galería limitada
+                  </p>
+                  <ul className="mt-1 space-y-1 text-white/80">
+                    {grantedGalleryAccess.map((access) => (
+                      <li key={access.viewerId}>
+                        {access.viewerName} ·{" "}
+                        {formatAnonymousPhotoAccessRemaining(
+                          access.remainingMs,
+                        )}{" "}
+                        · expira a las 24 h de concedido
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <Button
                 onClick={() => navigate("/edit-profile-single")}
                 className="mt-3 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-4 py-2 rounded-full"
@@ -2292,6 +2387,11 @@ const ProfileSingle: FC = () => {
               allowCreatePost={!isAnonymous}
               allowNft={!isAnonymous}
               isAnonymous={isAnonymous}
+              // Ronda 10 (stream A, punto A6): quién ve la galería
+              // limitada y de quién es, para la cuenta atrás del
+              // acceso concedido (24 h).
+              galleryViewerId={user?.id ?? ""}
+              galleryOwnerId={profile?.id ?? ""}
             />
           </div>
 
@@ -2371,7 +2471,7 @@ const ProfileSingle: FC = () => {
                   <h3 className="text-lg font-semibold text-red-400 mb-2">
                     Acceso Denegado
                   </h3>
-                  <p className="text-white/70">
+                  <p className="text-slate-600 dark:text-white/70">
                     Tu solicitud para ver las fotos privadas fue denegada.
                   </p>
                 </div>
@@ -2426,7 +2526,7 @@ const ProfileSingle: FC = () => {
                   id="private-gallery"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <h4 className="text-white font-semibold flex items-center gap-2">
+                    <h4 className="text-slate-900 dark:text-white font-semibold flex items-center gap-2">
                       <Lock className="w-4 h-4" />
                       Fotos Privadas ({galleryImages.length})
                     </h4>
@@ -2437,7 +2537,7 @@ const ProfileSingle: FC = () => {
                       type="button"
                       onClick={() => setPrivateGalleryOpen((prev) => !prev)}
                       aria-expanded={privateGalleryOpen}
-                      className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-all"
+                      className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-slate-900/5 hover:bg-slate-900/10 text-slate-800 border border-slate-300 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white dark:border-white/25 transition-all"
                     >
                       {privateGalleryOpen ? (
                         <>
@@ -2506,11 +2606,11 @@ const ProfileSingle: FC = () => {
                     defecto (punto 14): antes el carrusel renderizaba los
                     58 ítems expandidos al cargar el perfil. */}
                   <div className="mb-4">
-                    <p className="text-white/60 text-xs mb-2">
+                    <p className="text-slate-500 dark:text-white/60 text-xs mb-2">
                       🔒 Galería Privada (requiere desbloqueo con PIN)
                     </p>
                     {!privateGalleryOpen ? (
-                      <p className="text-white/50 text-xs">
+                      <p className="text-slate-400 dark:text-white/50 text-xs">
                         {galleryImages.length} fotos privadas colapsadas. Toca
                         "Ver fotos" para expandir la galería.
                       </p>

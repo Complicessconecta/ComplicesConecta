@@ -270,7 +270,13 @@ export const resolveCurrentDemoAccountType = (
 // conversación/usuario. /demo promete que los datos demo no se guardan
 // tras cerrar sesión; antes solo se borraban 3 claves y todo lo demás
 // (chats, ajustes de privacidad, NFTs demo, wallet demo, historias)
-// persistía tras el logout.
+// persistía tras el logout. Los ajustes de privacidad por cuenta
+// (`single_privacy:<userId>` / `couple_privacy:<userId>`) NO se borran:
+// la visibilidad (modo invisible) es un ajuste de la CUENTA y debe
+// sobrevivir al logout y al cambio de sesión, igual que los saldos demo
+// (`cc_demo_wallet_balances_v1`) — ronda 10, stream C (C2). Borrarlos
+// hacía que al volver a entrar el encabezado volviera a "👁️ Visible"
+// aunque la pareja se hubiera puesto invisible en sesión.
 const DEMO_STORAGE_KEYS = [
   "demo_authenticated",
   "demo_user",
@@ -284,8 +290,6 @@ const DEMO_STORAGE_PREFIXES = [
   "demo_",
   "demo-",
   "chat_messages:",
-  "single_privacy:",
-  "couple_privacy:",
   "demo_nfts:",
   "demo_nfts_updated:",
 ] as const;
@@ -295,7 +299,9 @@ export const clearDemoAuth = () => {
   try {
     DEMO_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     // Barrido por prefijo (claves por chat/usuario, p. ej.
-    // chat_messages:<id>, single_privacy:<userId>, demo_nfts:<uid>).
+    // chat_messages:<id>, demo_nfts:<uid>). Los ajustes de privacidad
+    // por cuenta (`single_privacy:` / `couple_privacy:`) NO se barren:
+    // sobreviven al logout por diseño (ronda 10, stream C, C2).
     const keys: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);

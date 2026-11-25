@@ -40,7 +40,12 @@ export const ProfileLayout: React.FC = () => {
             ID). En flujo empuja el contenido hacia abajo sin tapar nada;
             el menú (Ver Mi Perfil / Cerrar Sesión) se conserva. */}
         {isDemoMode() && (
-          <div className="relative z-10 flex items-center justify-between gap-2 border-b border-white/10 bg-purple-950/60 px-3 py-1 backdrop-blur-md">
+          <div className="relative z-10 flex items-center justify-between gap-2 border-b border-purple-900/20 bg-purple-900 dark:bg-purple-950/60 dark:border-white/10 px-3 py-1 backdrop-blur-md">
+            {/* RONDA 7 (punto 3): la barra era `bg-purple-950/60`
+                (morado translúcido): en tema claro el fondo claro se
+                transparentaba y el "Demo User / ID" blanco quedaba
+                lavado sobre lavanda. Ahora es morado SÓLIDO en claro
+                (texto blanco legible) y translúcido solo en oscuro. */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="demo-user-heartbeat h-auto bg-transparent px-2 py-1 text-xs font-semibold text-white hover:bg-white/10">

@@ -213,6 +213,28 @@ const PUBLIC_ROOM_MEMBERS: Record<string, number> = {
   "104": 19,
 };
 
+/**
+ * Sala de chat → id del PERFIL del interlocutor (ronda 7, punto 12).
+ *
+ * Los ids de `privateChats` son de SALA ("1"-"4"), no de perfil: la
+ * solicitud de ver fotos se guardaba con toId = id de sala, mientras
+ * la misma solicitud desde el perfil se guarda con toId = id del
+ * perfil (UUID o "demo-couple-456"). Eran dos llaves distintas para
+ * la misma persona: la solicitud enviada en el chat no aparecía como
+ * enviada al abrir el perfil (y viceversa), y /requests tampoco la
+ * encontraba por perfil. La sala 3 es Carmen & Roberto, cuya ficha
+ * demo usa el id "demo-couple-456" (el mismo que produce Compartir);
+ * las demás salas no tienen ficha de perfil propia en el repo, así
+ * que conservan su id de sala (consistencia interna del chat).
+ */
+const CHAT_ROOM_PROFILE_IDS: Record<string, string> = {
+  "3": "demo-couple-456",
+};
+
+function resolveChatPartnerProfileId(chatId: string): string {
+  return CHAT_ROOM_PROFILE_IDS[chatId] ?? chatId;
+}
+
 // Persistencia demo: mensajes enviados por sala en localStorage.
 const chatMessagesKey = (chatId: string) => `chat_messages:${chatId}`;
 
@@ -879,6 +901,11 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   // que muestra la píldora "Solicitud de fotos enviada" cuando el
   // estado leído es pendiente, y oculta el botón cuando ya hay
   // acceso concedido.
+  // Ronda 7, punto 12: el dueño NO es el id de sala
+  // (`selectedChat.id` = "1"-"4") sino el id del PERFIL del
+  // interlocutor (ver `resolveChatPartnerProfileId`): con el id de
+  // sala, la solicitud del chat y la del perfil eran dos registros
+  // distintos y el estado no persistía entre superficies.
   useEffect(() => {
     setPhotoAccessStatus(null);
     if (!selectedChat || selectedChat.roomType !== "private" || !user?.id) {
@@ -887,7 +914,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
     let cancelled = false;
     void getPhotoAccessStatus(
       String(user.id),
-      String(selectedChat.id),
+      resolveChatPartnerProfileId(String(selectedChat.id)),
       !isProduction,
     ).then((status) => {
       if (!cancelled) setPhotoAccessStatus(status);
@@ -1093,8 +1120,15 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
     >
       <DecorativeHearts />
 
-      {/* Background decorativo uniforme */}
-      <div className="fixed inset-0 z-0 bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
+      {/* Background decorativo uniforme: ABSOLUTE, no `fixed` (ronda 7,
+          punto 6): `fixed inset-0` escapaba del contenedor del Chat y
+          pintaba sobre TODA la página, incluido el encabezado propio
+          de /chat-intimo ("Chat Íntimo" / "Cerrar" quedaban invisibles
+          y sin clic bajo el degradado opaco). La raíz es `relative`,
+          así que `absolute inset-0` cubre exactamente el Chat: el
+          cuerpo del dock (420 px), la página /chat (h-screen) o el
+          área de contenido de /chat-intimo (h-full). */}
+      <div className="absolute inset-0 z-0 bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
         <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
       </div>
 
@@ -1455,13 +1489,20 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                     </span>
                   ) : photoAccessStatus === "accepted" ? null : (
                     <PhotoAccessRequestButton
-                      profileId={String(selectedChat.id)}
+                      profileId={resolveChatPartnerProfileId(
+                        String(selectedChat.id),
+                      )}
                       profileName={selectedChat.name}
                       viewerId={String(user.id)}
                       isOwnProfile={
                         String(selectedChat.id) === String(user.id)
                       }
                       isDemo={!isProduction}
+                      // Ronda 7, punto 12: al enviar, el padre pasa a
+                      // "pending" de inmediato (confirmación visible
+                      // aunque el botón se remonte); el estado
+                      // persistido se re-lee al reabrir el hilo.
+                      onSent={() => setPhotoAccessStatus("pending")}
                     />
                   )}
                 </div>

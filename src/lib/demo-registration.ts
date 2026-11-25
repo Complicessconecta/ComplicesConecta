@@ -22,6 +22,104 @@ import { writeCountryCodeLocal } from "@/lib/countries";
 import { savePrivacySettingsExtra } from "@/lib/visibility";
 import type { Profile } from "@/types/supabase-custom";
 
+/**
+ * Registro de cuentas demo locales (ronda 7, punto 1).
+ *
+ * `createLocalDemoAccount` solo escribía la SESIÓN (`demo_authenticated`,
+ * `demo_user`): al cerrar sesión `clearDemoAuth` borra esas claves y la
+ * cuenta dejaba de existir, así que el login volvía a caer en
+ * `supabase.auth.signInWithPassword` y el stub rechazaba con
+ * "Supabase not configured - using stub client" (caso PruebaR6, ID
+ * 4388c9fb). Este registro es la agenda de cuentas creadas en este
+ * navegador: sobrevive al logout para que el login pueda resolverlas.
+ *
+ * La clave NO usa el prefijo `demo_` a propósito: `clearDemoAuth` /
+ * `StorageManager.clearDemoSession` barren por prefijo (`demo_`,
+ * `demo-`, `chat_messages:`...) y borrarían el registro en cada
+ * logout, que es justo lo que se quiere evitar. Solo guarda el perfil
+ * (email + apodo, sin contraseña: el modo demo es local y sin
+ * contraseña, C4/C5); nunca es una cuenta real ni otorga admin.
+ */
+const LOCAL_DEMO_ACCOUNTS_KEY = "cc_local_demo_accounts_v1";
+
+export interface LocalDemoAccountRecord {
+  email: string;
+  nickname: string;
+  userId: string;
+  profile: Profile;
+}
+
+function readLocalDemoAccounts(): LocalDemoAccountRecord[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(LOCAL_DEMO_ACCOUNTS_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (r): r is LocalDemoAccountRecord =>
+        Boolean(r) &&
+        typeof r === "object" &&
+        typeof (r as { email?: unknown }).email === "string" &&
+        typeof (r as { userId?: unknown }).userId === "string" &&
+        Boolean((r as { profile?: unknown }).profile) &&
+        typeof (r as { profile?: unknown }).profile === "object",
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalDemoAccount(record: LocalDemoAccountRecord): void {
+  if (typeof window === "undefined") return;
+  try {
+    const accounts = readLocalDemoAccounts().filter(
+      (a) => a.userId !== record.userId && a.email !== record.email,
+    );
+    accounts.push(record);
+    window.localStorage.setItem(
+      LOCAL_DEMO_ACCOUNTS_KEY,
+      JSON.stringify(accounts),
+    );
+  } catch {
+    // Sin almacenamiento: la cuenta solo vive en esta sesión.
+  }
+}
+
+/**
+ * Busca una cuenta demo local por email o por apodo (insensible a
+ * mayúsculas y a espacios). Es lo que el login usa cuando Supabase no
+ * está configurado: si la cuenta existe en este navegador, se restaura
+ * su sesión; si no, el login debe fallar con "cuenta no encontrada"
+ * en vez de llamar al stub de Supabase.
+ */
+export function findLocalDemoAccount(
+  emailOrNickname: string,
+): LocalDemoAccountRecord | null {
+  const needle = emailOrNickname.trim().toLowerCase();
+  if (!needle) return null;
+  return (
+    readLocalDemoAccounts().find(
+      (a) =>
+        a.email.toLowerCase() === needle ||
+        a.nickname.trim().toLowerCase() === needle,
+    ) ?? null
+  );
+}
+
+/**
+ * Restaura la sesión demo de un perfil local (las mismas tres claves
+ * que escribe el registro y `handleDemoAuth`).
+ */
+export function restoreLocalDemoSession(profile: Profile): void {
+  localStorage.setItem("demo_authenticated", "true");
+  localStorage.setItem(
+    "userType",
+    profile.accountType === "couple" ? "couple" : "single",
+  );
+  localStorage.setItem("demo_user", JSON.stringify(profile));
+}
+
 export interface LocalDemoAccountInput {
   email: string;
   /** Apodo / nombre en la comunidad (single) o apodo de pareja. */
@@ -102,9 +200,16 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
   };
 
   // Misma sesión demo que el login demo: useAuth la lee de aquí.
-  localStorage.setItem("demo_authenticated", "true");
-  localStorage.setItem("userType", input.accountType);
-  localStorage.setItem("demo_user", JSON.stringify(profile));
+  restoreLocalDemoSession(profile);
+  // Agenda de cuentas locales (ronda 7, punto 1): sin esto la cuenta
+  // solo existe mientras dura la sesión y no hay con qué volver a
+  // entrar tras cerrar sesión.
+  saveLocalDemoAccount({
+    email,
+    nickname: input.nickname,
+    userId,
+    profile,
+  });
 
   if (input.countryCode) {
     writeCountryCodeLocal(userId, input.countryCode);

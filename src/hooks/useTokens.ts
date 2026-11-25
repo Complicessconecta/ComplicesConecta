@@ -15,10 +15,13 @@ import {
 import {
   getDemoWalletBalance,
   deriveDemoWalletView,
+  creditDemoWallet,
+  DEMO_WALLET_CHANGED_EVENT,
   type DemoAccountType,
 } from "@/lib/demo-wallet";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { toast } from "@/hooks/useToast";
 import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services";
 
 // Interfaces simplificadas para demo vs real
@@ -97,6 +100,52 @@ export const useTokens = () => {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [loading, setLoading] = useState(false);
   const config = getAppConfig();
+
+  // Tipo de cuenta demo del usuario actual (misma resolución que
+  // loadTokenData: correo "couple" o demo_user pareja; la cuenta demo
+  // premium legacy conserva su balance histórico 5000/3000 y NO se
+  // persiste por aquí). Lo necesitan los reclamos para acreditar el
+  // saldo persistido (@/lib/demo-wallet) en vez de solo el estado
+  // local del hook (ronda 7, punto 8).
+  const resolveDemoKind = useCallback((): {
+    accountType: DemoAccountType;
+    isPremiumDemo: boolean;
+  } => {
+    let accountType: DemoAccountType = user?.email?.includes("couple")
+      ? "couple"
+      : "single";
+    try {
+      const storedUser = localStorage.getItem("demo_user");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        if (resolveDemoAccountType(parsedUser) === "couple") {
+          accountType = "couple";
+        }
+      }
+    } catch {
+      // demo_user corrupto: se queda el tipo derivado del correo.
+    }
+    return {
+      accountType,
+      isPremiumDemo: user?.email?.includes("premium") ?? false,
+    };
+  }, [user?.email]);
+
+  // El saldo demo persistido puede cambiar fuera de este hook (reclamo
+  // en /tokens, otra instancia del hook): re-leerlo cuando cambie para
+  // que todas las superficies muestren el mismo número.
+  useEffect(() => {
+    if (!isDemo()) return;
+    const onChanged = () => {
+      const { accountType, isPremiumDemo } = resolveDemoKind();
+      if (isPremiumDemo) return;
+      const canonical = getDemoWalletBalance(accountType);
+      setBalance({ cmpx: canonical.cmpx, gtk: canonical.gtk });
+    };
+    window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    return () =>
+      window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+  }, [isDemo, resolveDemoKind]);
 
   const tokenService = TokenService.getInstance();
 
@@ -476,6 +525,16 @@ export const useTokens = () => {
         [reward.token_type]: prev[reward.token_type] + reward.amount,
       }));
 
+      // Persistir el reclamo en la fuente canónica para que el perfil
+      // y /tokens lo vean también (ronda 7, punto 8): antes solo vivía
+      // en este estado local y se perdía al navegar.
+      const { accountType, isPremiumDemo } = resolveDemoKind();
+      if (!isPremiumDemo) {
+        creditDemoWallet(accountType, {
+          [reward.token_type]: reward.amount,
+        } as { cmpx?: number; gtk?: number });
+      }
+
       // Añadir transacción
       const newTransaction: Transaction = {
         id: `demo-claim-${Date.now()}`,
@@ -512,25 +571,15 @@ export const useTokens = () => {
     setLoading(true);
     await loadTokenData();
 
-    // Mostrar feedback visual al usuario
-    if (typeof window !== "undefined") {
-      // Crear notificación temporal
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300";
-      notification.textContent = "✅ Balance actualizado correctamente";
-      document.body.appendChild(notification as Node);
-
-      // Remover después de 3 segundos
-      setTimeout(() => {
-        notification.style.opacity = "0";
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification as Node);
-          }
-        }, 300);
-      }, 3000);
-    }
+    // Mostrar feedback visual al usuario por el canal de toasts Radix
+    // (zona en flujo de MainLayout). RONDA 7 (punto 10): antes se creaba
+    // un div `fixed top-4 right-4` a mano con document.createElement que
+    // tapaba el texto superior de la página de tokens (el "claim toast"
+    // del test) y vivía fuera del sistema de toasts.
+    toast({
+      title: "Balance actualizado",
+      description: "✅ Balance actualizado correctamente",
+    });
   }, [config.mode, loadTokenData]);
 
   // Helper functions for the Tokens page
@@ -612,6 +661,13 @@ export const useTokens = () => {
       };
       setRewards((prev) => [worldIdReward, ...prev]);
       setBalance((prev) => ({ ...prev, cmpx: prev.cmpx + 100 }));
+      // Persistir el +100 CMPX en la fuente canónica (ronda 7, punto
+      // 8): antes solo vivía en este estado local y el perfil seguía
+      // en 1250 tras reclamar en /tokens.
+      const { accountType, isPremiumDemo } = resolveDemoKind();
+      if (!isPremiumDemo) {
+        creditDemoWallet(accountType, { cmpx: 100 });
+      }
       return true;
     }
     return false;

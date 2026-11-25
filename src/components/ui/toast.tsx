@@ -14,14 +14,18 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      // RONDA 6 (punto 17): los toasts YA NO van abajo: fijos abajo
-      // tapaban el texto y los botones del final de cada página (y en
-      // perfil se pegaban al dock). Ahora van ARRIBA A LA DERECHA con
-      // margen bajo la cabecera / fila superior en flujo (4.5rem), a
-      // ancho contenido (max-w-md) para tapar lo menos posible. Siguen
-      // siendo transitorios (auto-cierre) y pointer-events-none fuera
-      // del toast, así que el área vacía no bloquea botones debajo.
-      "pointer-events-none fixed top-[calc(env(safe-area-inset-top)+4.5rem)] left-4 right-4 z-100 flex max-h-screen flex-col p-4 sm:left-auto sm:right-4 sm:max-w-md",
+      // RONDA 7 (punto 10): el viewport YA NO es un overlay `fixed`:
+      // fijo arriba a la derecha tapaba siempre algo (el toast de tema
+      // tapaba el nombre/foto del perfil, "Perfiles actualizados" la
+      // barra superior, "Datos incompletos" el formulario de registro).
+      // Ahora es una zona EN FLUJO al inicio de <main> (MainLayout lo
+      // renderiza ahí): los avisos empujan el contenido hacia abajo
+      // mientras están visibles y no ocupan nada cuando no hay avisos
+      // (`empty:hidden`). Alineados a la derecha, ancho contenido
+      // (max-w-md). El fondo sólido según tema ya lo pone el Toast
+      // (`bg-background text-foreground`); los toasts siguen siendo
+      // transitorios (auto-cierre 3.5 s, ver hooks/useToast.ts).
+      "flex w-full max-w-md ml-auto flex-col gap-2 px-4 pt-2 empty:hidden",
       className,
     )}
     {...props}

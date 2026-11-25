@@ -271,9 +271,15 @@ export async function getFriendStatus(
   profileId: string,
   isDemo = false,
   viewerName?: string,
+  // RONDA 7 (punto 18): nombre del perfil para la semilla demo. Las
+  // listas demo se keyean por NOMBRE; si aquí llega el id numérico
+  // legacy ("3") o un UUID, `getSocialDemoData` cae al fallback sin
+  // amigos y una amistad semilla (p. ej. Sofía con Ana) se leía como
+  // "sin relación". Con el nombre, la semilla sí aplica.
+  profileName?: string,
 ): Promise<FriendStatus> {
   if (!viewerId || !profileId || viewerId === profileId) return "none";
-  const demo = getSocialDemoData(profileId);
+  const demo = getSocialDemoData(profileName ?? profileId);
   if (isDemo || !supabase) {
     // Amistad semilla demo: las listas demo se keyean por NOMBRE
     // (los ids demo son UUID generados en cada carga), así que se
@@ -337,11 +343,18 @@ export function areFriendsSync(
   viewerId: string,
   profileId: string,
   viewerName?: string,
+  // RONDA 7 (punto 18): mismo problema que en getFriendStatus: la
+  // semilla demo se keyea por NOMBRE y ProfileDetail pasaba el id
+  // numérico legacy ("3") o el UUID del roster, así que
+  // `getSocialDemoData` caía al fallback sin amigos y TODOS eran
+  // "no amigos" (incluida Sofía con Ana). Con el nombre, la amistad
+  // semilla sí resuelve; sin nombre, el comportamiento no cambia.
+  profileName?: string,
 ): boolean {
   if (!viewerId || !profileId || viewerId === profileId) return false;
   if (localAreFriends(viewerId, profileId)) return true;
   if (!viewerName) return false;
-  return getSocialDemoData(profileId).friendNames.some(
+  return getSocialDemoData(profileName ?? profileId).friendNames.some(
     (n) => n.toLowerCase() === viewerName.toLowerCase(),
   );
 }
@@ -529,6 +542,24 @@ export function listIncomingRequestsSync(
   return readLocalRequests().filter(
     (r) => r.toId === userId && r.kind === kind && r.status === "pending",
   );
+}
+
+/**
+ * Solicitudes ENVIADAS por el usuario (ronda 7, punto 12): /requests
+ * → Enviadas solo mostraba su lista demo fija y nunca leía este
+ * almacén, así que una solicitud de ver fotos recién enviada no
+ * dejaba rastro ahí. Sin filtro de estado: las pendientes, aceptadas
+ * y declinadas enviadas también se listan (las más recientes primero).
+ */
+export function listSentRequestsSync(
+  userId: string,
+  kind?: FriendRequestKind,
+): FriendRequest[] {
+  return readLocalRequests()
+    .filter(
+      (r) => r.fromId === userId && (kind === undefined || r.kind === kind),
+    )
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
 /**

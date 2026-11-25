@@ -4,7 +4,11 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import {
+  findLocalDemoAccount,
+  restoreLocalDemoSession,
+} from "@/lib/demo-registration";
 import {
   getAppConfig,
   DEMO_CREDENTIALS,
@@ -619,6 +623,58 @@ export const useAuth = () => {
           logger.info("✅ Sesión demo iniciada", { email });
           return { user: demoAuth.user, session: demoAuth.session };
         }
+      }
+
+      // RONDA 7 (punto 1): sin Supabase configurado, el login NO debe
+      // llamar a supabase.auth: el stub siempre rechaza con "Supabase
+      // not configured - using stub client" (caso PruebaR6, ID
+      // 4388c9fb, creada en el registro demo de la ronda 6 y luego
+      // sin sesión tras el logout). Se resuelve la cuenta demo creada
+      // en local en este navegador (por email o apodo) y se restaura
+      // su sesión con sus propios datos, no con el perfil canónico
+      // de Sofía. El login real sigue necesitando VITE_SUPABASE_URL
+      // + VITE_SUPABASE_ANON_KEY en Vercel (Preview + Production).
+      if (!isSupabaseConfigured) {
+        const localAccount = findLocalDemoAccount(email);
+        if (localAccount) {
+          logger.info("🎭 Cuenta demo local encontrada - restaurando sesión", {
+            email,
+          });
+          restoreLocalDemoSession(localAccount.profile);
+
+          const mockUser: User = {
+            id: localAccount.profile.id,
+            email: localAccount.profile.email || "",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            app_metadata: { provider: "email", providers: ["email"] },
+            user_metadata: {},
+            aud: "authenticated",
+          };
+          const mockSession: Session = {
+            user: mockUser,
+            access_token: `demo-token-${Date.now()}`,
+            expires_in: 3600,
+            token_type: "bearer",
+            refresh_token: "demo-refresh-token",
+          } as Session;
+
+          _setDemoUser(localAccount.profile);
+          setUser(mockUser);
+          setSession(mockSession);
+          await loadProfile(localAccount.profile.id);
+          logger.info("✅ Sesión demo local restaurada", { email });
+          return { user: mockUser, session: mockSession };
+        }
+        logger.info(
+          "🎭 Sin Supabase y sin cuenta demo local para este correo",
+          {
+            email,
+          },
+        );
+        throw new Error(
+          "Cuenta no encontrada en este navegador. Sin Supabase configurado solo se puede entrar con una cuenta demo creada antes en este navegador; el acceso real necesita las variables de Supabase en Vercel.",
+        );
       }
 
       // Verificar si es credencial de producción (admin)

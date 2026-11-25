@@ -382,8 +382,14 @@ export function TokenDashboard({
         </CardHeader>
           <CardContent className="space-y-3 p-6 md:p-8">
             {isWorldIdEligible && (
-              <div className="flex items-center justify-between p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
-                <div className="flex-1 min-w-0">
+              // Punto 14c (ronda 7): la fila era `flex ... justify-between`
+              // sin wrap, con el botón `shrink-0` ("Reclamar 100 CMPX"):
+              // en cuanto la tarjeta se estrecha, el botón se queda con
+              // su ancho y el texto se comprime hasta una palabra por
+              // línea. Ahora apila en móvil (texto a ancho completo y
+              // botón abajo) y solo es fila a partir de sm.
+              <div className="flex flex-col gap-3 p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30 sm:flex-row sm:items-center sm:justify-between">
+                <div className="w-full min-w-0 flex-1">
                   <p className="font-semibold text-white truncate">
                     🌍 World ID Verificado
                   </p>
@@ -402,7 +408,7 @@ export function TokenDashboard({
                       variant: ok ? "default" : "destructive",
                     });
                   }}
-                  className="bg-green-600 hover:bg-green-700 text-white ml-2 shrink-0"
+                  className="bg-green-600 hover:bg-green-700 text-white w-full shrink-0 sm:ml-2 sm:w-auto"
                 >
                   Reclamar 100 CMPX
                 </Button>

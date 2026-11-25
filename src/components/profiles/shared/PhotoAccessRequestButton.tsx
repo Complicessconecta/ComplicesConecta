@@ -22,6 +22,13 @@ interface PhotoAccessRequestButtonProps {
   isOwnProfile: boolean;
   isDemo?: boolean;
   className?: string;
+  /**
+   * Aviso al padre cuando la solicitud quedó guardada (ronda 7, punto
+   * 12): el padre (Chat) muestra entonces su píldora "Solicitud de
+   * fotos enviada" desde su propio estado, que sobrevive a un
+   * remontaje del botón; antes solo vivía en el useState interno.
+   */
+  onSent?: () => void;
 }
 
 export function PhotoAccessRequestButton({
@@ -31,6 +38,7 @@ export function PhotoAccessRequestButton({
   isOwnProfile,
   isDemo = false,
   className = "",
+  onSent,
 }: PhotoAccessRequestButtonProps) {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -53,6 +61,7 @@ export function PhotoAccessRequestButton({
       return;
     }
     setSent(true);
+    onSent?.();
   };
 
   if (sent) {

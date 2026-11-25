@@ -31,11 +31,111 @@ export const DEMO_WALLET_BALANCES: Record<
   couple: { cmpx: 2000, gtk: 1500, nfts: 2 },
 } as const;
 
+/**
+ * Persistencia del saldo demo (ronda 7, punto 8): reclamar 100 CMPX en
+ * /tokens lo subía solo en el estado local del hook useTokens (1250 →
+ * 1350) y el perfil seguía leyendo la constante 1250, así que el
+ * reclamo se perdía al navegar y al recargar. El saldo canónico vive
+ * ahora en localStorage (`demo_wallet_balances`), sembrado con las
+ * constantes de arriba; reclamar escribe aquí y todos los lectores
+ * (perfil, TokenDashboard, DemoWallet, useTokens) leen lo mismo.
+ */
+export const DEMO_WALLET_STORAGE_KEY = "demo_wallet_balances";
+
+/** Evento que se dispara cuando el saldo demo cambia (reclamo). Los
+ * lectores con estado propio (useTokens, DemoWallet, perfiles) lo
+ * escuchan para re-renderizar con el saldo ya persistido. */
+export const DEMO_WALLET_CHANGED_EVENT = "demo-wallet-changed";
+
+export function notifyDemoWalletChanged(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(DEMO_WALLET_CHANGED_EVENT));
+}
+
+function readPersistedDemoWalletBalances(): Record<
+  DemoAccountType,
+  { cmpx: number; gtk: number }
+> {
+  const fallback = {
+    single: {
+      cmpx: DEMO_WALLET_BALANCES.single.cmpx,
+      gtk: DEMO_WALLET_BALANCES.single.gtk,
+    },
+    couple: {
+      cmpx: DEMO_WALLET_BALANCES.couple.cmpx,
+      gtk: DEMO_WALLET_BALANCES.couple.gtk,
+    },
+  };
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = window.localStorage.getItem(DEMO_WALLET_STORAGE_KEY);
+    if (!raw) return fallback;
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return fallback;
+    const next = { ...fallback };
+    for (const key of ["single", "couple"] as const) {
+      const entry = (parsed as Record<string, unknown>)[key];
+      if (entry && typeof entry === "object") {
+        const cmpx = (entry as Record<string, unknown>).cmpx;
+        const gtk = (entry as Record<string, unknown>).gtk;
+        next[key] = {
+          cmpx:
+            typeof cmpx === "number" && Number.isFinite(cmpx) && cmpx >= 0
+              ? cmpx
+              : fallback[key].cmpx,
+          gtk:
+            typeof gtk === "number" && Number.isFinite(gtk) && gtk >= 0
+              ? gtk
+              : fallback[key].gtk,
+        };
+      }
+    }
+    return next;
+  } catch {
+    return fallback;
+  }
+}
+
+/**
+ * Acredita tokens al saldo demo persistido y avisa con el evento. Es
+ * lo que debe llamar todo reclamo demo (World ID +100 CMPX,
+ * recompensas) en vez de tocar solo el estado local del hook: si no,
+ * el perfil y /tokens vuelven a discrepar al navegar o recargar.
+ */
+export function creditDemoWallet(
+  accountType: DemoAccountType,
+  delta: { cmpx?: number; gtk?: number },
+): { cmpx: number; gtk: number; nfts: number } {
+  const persisted = readPersistedDemoWalletBalances();
+  const next = {
+    cmpx: Math.max(0, persisted[accountType].cmpx + (delta.cmpx ?? 0)),
+    gtk: Math.max(0, persisted[accountType].gtk + (delta.gtk ?? 0)),
+  };
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(
+        DEMO_WALLET_STORAGE_KEY,
+        JSON.stringify({ ...persisted, [accountType]: next }),
+      );
+    } catch {
+      // Sin almacenamiento: el reclamo solo vive en esta sesión.
+    }
+  }
+  notifyDemoWalletChanged();
+  return { ...next, nfts: DEMO_WALLET_BALANCES[accountType].nfts };
+}
+
 /** Normaliza cualquier valor a un tipo de cuenta demo válido (single por defecto). */
 export function getDemoWalletBalance(
   accountType: DemoAccountType | string | null | undefined,
 ): { cmpx: number; gtk: number; nfts: number } {
-  return DEMO_WALLET_BALANCES[accountType === "couple" ? "couple" : "single"];
+  const type: DemoAccountType = accountType === "couple" ? "couple" : "single";
+  const persisted = readPersistedDemoWalletBalances()[type];
+  return {
+    cmpx: persisted.cmpx,
+    gtk: persisted.gtk,
+    nfts: DEMO_WALLET_BALANCES[type].nfts,
+  };
 }
 
 export interface DemoWalletView {

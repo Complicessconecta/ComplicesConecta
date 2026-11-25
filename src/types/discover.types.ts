@@ -4,6 +4,8 @@ export interface Profile {
   id: string;
   name: string;
   age: number;
+  // Edad del segundo miembro (parejas demo): se muestra "25 y 28 años".
+  partnerAge?: number;
   location: string;
   distance: number;
   interests: string[];

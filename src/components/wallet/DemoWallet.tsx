@@ -16,6 +16,8 @@ import {
   DEMO_MINT_LIMIT,
 } from "@/services/payments/NFTService";
 import { useToast } from "@/hooks/useToast";
+import { ANONYMOUS_WALLET_BLOCKED_REASON } from "@/lib/anonymous";
+import { findLocalDemoAccountById } from "@/lib/demo-registration";
 import {
   DEMO_WALLET_BALANCES,
   getDemoWalletBalance,
@@ -71,6 +73,14 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
   const [selectedNft, setSelectedNft] = useState<DemoNFT | null>(null);
   const { toast } = useToast();
 
+  // Ronda 10 (stream A, punto A3): una cuenta anónima no tiene
+  // billetera: este componente nunca muestra los saldos canónicos
+  // (de Sofía o de la pareja) para su userId. Los llamadores ya lo
+  // filtran (ProfileSingle), pero la guarda vive también aquí: una
+  // sesión no hereda la cartera de otra por ningún camino.
+  const isAnonymousWallet =
+    findLocalDemoAccountById(userId)?.isAnonymous === true;
+
   const getImageForRarity = (rarity: DemoNFT["rarity"]): string => {
     switch (rarity) {
       case "legendary":
@@ -90,19 +100,22 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
   // En pareja solo se muestran sus 2 NFTs (is_couple); en single los 4.
   const defaultDemoNFTs: DemoNFT[] = useMemo(
     () =>
-      DEFAULT_DEMO_NFTS.filter((nft) =>
-        accountType === "couple" ? nft.is_couple : true,
-      )
-        .slice(0, DEMO_BALANCES[accountType].nfts)
-        .map((nft) => ({
-          id: nft.id,
-          name: nft.name,
-          rarity: nft.rarity,
-          image: nft.image,
-          value: nft.value,
-          isCouple: nft.is_couple,
-        })),
-    [accountType],
+      // Ronda 10 (stream A, punto A3): el anónimo no tiene NFTs.
+      isAnonymousWallet
+        ? []
+        : DEFAULT_DEMO_NFTS.filter((nft) =>
+            accountType === "couple" ? nft.is_couple : true,
+          )
+            .slice(0, DEMO_BALANCES[accountType].nfts)
+            .map((nft) => ({
+              id: nft.id,
+              name: nft.name,
+              rarity: nft.rarity,
+              image: nft.image,
+              value: nft.value,
+              isCouple: nft.is_couple,
+            })),
+    [accountType, isAnonymousWallet],
   );
 
   const [demoNFTs, setDemoNFTs] = useState<DemoNFT[]>(defaultDemoNFTs);
@@ -116,6 +129,11 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
   // tras mintear en el modal del perfil.
   useEffect(() => {
     if (!userId) return;
+    // Ronda 10 (stream A, punto A3): el anónimo no tiene NFTs.
+    if (isAnonymousWallet) {
+      setDemoNFTs([]);
+      return;
+    }
     let cancelled = false;
     const load = async () => {
       try {
@@ -159,7 +177,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
       cancelled = true;
       window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
     };
-  }, [userId, accountType]);
+  }, [userId, accountType, isAnonymousWallet]);
 
   // Minteo demo por la vía compartida (nftService.mintDemoNFT, ronda 8,
   // punto 4): el NFT nuevo es del tipo de la cuenta (isCouple en pareja)
@@ -196,16 +214,27 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
   // 1250/850 y el reclamo de 100 CMPX nunca se reflejaba aquí ni en
   // el perfil (ronda 7, punto 8).
   const [canonical, setCanonical] = useState(() =>
-    getDemoWalletBalance(accountType),
+    // Ronda 10 (stream A, punto A3): el anónimo no tiene saldos.
+    isAnonymousWallet
+      ? { cmpx: 0, gtk: 0, nfts: 0 }
+      : getDemoWalletBalance(accountType),
   );
   useEffect(() => {
-    setCanonical(getDemoWalletBalance(accountType));
+    setCanonical(
+      isAnonymousWallet
+        ? { cmpx: 0, gtk: 0, nfts: 0 }
+        : getDemoWalletBalance(accountType),
+    );
     const onChanged = () =>
-      setCanonical(getDemoWalletBalance(accountType));
+      setCanonical(
+        isAnonymousWallet
+          ? { cmpx: 0, gtk: 0, nfts: 0 }
+          : getDemoWalletBalance(accountType),
+      );
     window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
     return () =>
       window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
-  }, [accountType]);
+  }, [accountType, isAnonymousWallet]);
   const demoTokens: DemoToken[] = [
     {
       symbol: "CMPX",
@@ -247,6 +276,31 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
     setWalletAddress("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb");
     setBalance("1.25");
   };
+
+  // Ronda 10 (stream A, punto A3): estado bloqueado en vez de la
+  // cartera de otra cuenta (saldos, staking, NFTs). Va tras todos
+  // los hooks para no romper su orden.
+  if (isAnonymousWallet) {
+    return (
+      <div className="space-y-6">
+        <Card className="bg-amber-500/10 backdrop-blur-xl border-amber-400/40 shadow-2xl">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-white">
+              <div className="p-2 bg-amber-500/20 rounded-lg">
+                <Lock className="h-6 w-6 text-amber-300" />
+              </div>
+              Billetera desactivada en cuentas anónimas
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-white/80">
+              {ANONYMOUS_WALLET_BLOCKED_REASON}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -396,18 +450,27 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                     />
                   </div>
                   <div className="space-y-2 min-w-0">
-                    <div className="flex items-center justify-between gap-2 min-w-0">
-                      <Badge className={`${rarityBadges[nft.rarity]} text-white text-xs shrink-0`}>
+                    {/* RONDA 10 (stream B, B5): la fila era `flex
+                        items-center justify-between` con AMBOS badges
+                        `shrink-0` (rareza en mayúsculas + "PAREJA" con
+                        icono): en tarjetas angostas la suma superaba el
+                        ancho, flex no podía encogerlos y el
+                        `overflow-hidden` de la tarjeta recortaba la
+                        pastilla "PAREJA" ("✦ PAR"). Ahora las pastillas
+                        saltan de línea en vez de recortarse, más compactas,
+                        y el título lleva el nombre completo en `title`. */}
+                    <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+                      <Badge className={`${rarityBadges[nft.rarity]} text-white text-[10px] sm:text-xs px-2 shrink-0`}>
                         {nft.rarity.toUpperCase()}
                       </Badge>
                       {nft.isCouple && (
-                        <Badge className="bg-pink-500/20 text-pink-200 border-pink-400/40 text-xs shrink-0">
+                        <Badge className="bg-pink-500/20 text-pink-200 border-pink-400/40 text-[10px] sm:text-xs px-2 shrink-0">
                           <Sparkles className="h-3 w-3 mr-1" />
                           PAREJA
                         </Badge>
                       )}
                     </div>
-                    <h4 className="font-semibold text-white text-sm truncate">{nft.name}</h4>
+                    <h4 className="font-semibold text-white text-sm truncate" title={nft.name}>{nft.name}</h4>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         <Coins className="h-3 w-3 text-yellow-400" />

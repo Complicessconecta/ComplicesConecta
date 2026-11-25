@@ -787,6 +787,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   anonymous.ts
 |   |   app-config.ts
 |   |   asset-loader.ts
+|   |   avatarFallback.ts
 |   |   capture-console-errors.ts
 |   |   chatLimits.ts
 |   |   countries.ts

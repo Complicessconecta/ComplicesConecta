@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import {
   readVisibilityLocal,
+  readVisibilityLocalOrNull,
   visibilityDescription,
   writeVisibilityLocal,
   type ProfileVisibility,
@@ -32,15 +33,25 @@ interface ProfileSocialSettingsProps {
   userId: string;
   profileType: "single" | "couple";
   isDemo?: boolean;
+  /**
+   * Ronda 10 (stream A, punto A1): el perfil anónimo nace PRIVADO.
+   * Sin visibilidad guardada en este dispositivo, el select arranca
+   * en "🔒 Privado" (el default general es público). Una elección
+   * explícita guardada manda siempre.
+   */
+  isAnonymous?: boolean;
 }
 
 export function ProfileSocialSettings({
   userId,
   profileType,
   isDemo = false,
+  isAnonymous = false,
 }: ProfileSocialSettingsProps) {
   const [visibility, setVisibility] = useState<ProfileVisibility>(() =>
-    readVisibilityLocal(userId),
+    isAnonymous && readVisibilityLocalOrNull(userId) === null
+      ? "private"
+      : readVisibilityLocal(userId),
   );
   const [sharesLocation, setSharesLocation] = useState<boolean>(() =>
     readLocationSharingLocal(userId),

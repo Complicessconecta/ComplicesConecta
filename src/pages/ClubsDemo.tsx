@@ -526,6 +526,7 @@ export const ClubsDemo = () => {
           reviews={DEMO_REVIEWS}
           averageRating={club.rating_average}
           totalReviews={club.rating_count}
+          clubId={String(club.id)}
         />
 
         <ClubProfileAdmin analytics={DEMO_ANALYTICS} clubId={club.id} />

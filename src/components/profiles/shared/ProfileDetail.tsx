@@ -32,6 +32,11 @@ import {
 } from "@/lib/profileVisibility";
 import { resolveDemoOwnerIdentity } from "@/lib/visibility";
 import { areFriendsSync } from "@/lib/friends";
+import {
+  ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+  canAnonymousChat,
+  isViewerAnonymous,
+} from "@/lib/anonymous";
 import { readLocationSharingLocal } from "@/lib/geolocation";
 
 // Helper for class names if cn is not available globally or imported
@@ -646,6 +651,16 @@ const ProfileDetail = () => {
                   <div className="space-y-4">
                     <Button
                       onClick={() => {
+                        // Ronda 10 (stream A, punto A8): el like anónimo
+                        // está bloqueado con mensaje claro (sin toast de
+                        // error y sin fingir que se envió).
+                        if (isViewerAnonymous(viewerId)) {
+                          toast({
+                            title: "Like no disponible",
+                            description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+                          });
+                          return;
+                        }
                         logger.info("Me gusta", { profileName: profile.name });
                         toast({
                           title: "Like enviado",
@@ -658,18 +673,55 @@ const ProfileDetail = () => {
                       Me gusta
                     </Button>
 
-                    <Button
-                      onClick={() => {
-                        logger.info("Enviando mensaje a", {
-                          profileName: profile.name,
-                        });
-                        navigate(`/chat/${profile.id}`, { state: { profile } });
-                      }}
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg"
-                    >
-                      <MessageCircle className="h-5 w-5 mr-2" />
-                      Enviar mensaje
-                    </Button>
+                    {(() => {
+                      // Ronda 10 (stream A, punto A4): gate ANTES de
+                      // navegar. Si el espectador o el perfil es
+                      // anónimo, solo hay chat con amistad aceptada:
+                      // el botón muestra el estado bloqueado y NO
+                      // navega a /chat/:id. La solicitud de amistad
+                      // (FriendRequestButton, justo debajo) es el
+                      // camino para desbloquearlo.
+                      const chatCheck = canAnonymousChat({
+                        senderIsAnonymous: isViewerAnonymous(viewerId),
+                        recipientIsAnonymous:
+                          (profile as { is_anonymous?: unknown })
+                            .is_anonymous === true,
+                        areFriends: isFriend,
+                      });
+                      if (chatCheck.allowed) {
+                        return (
+                          <Button
+                            onClick={() => {
+                              logger.info("Enviando mensaje a", {
+                                profileName: profile.name,
+                              });
+                              navigate(`/chat/${profile.id}`, {
+                                state: { profile },
+                              });
+                            }}
+                            className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg"
+                          >
+                            <MessageCircle className="h-5 w-5 mr-2" />
+                            Enviar mensaje
+                          </Button>
+                        );
+                      }
+                      return (
+                        <Button
+                          onClick={() => {
+                            toast({
+                              title: "Chat bloqueado",
+                              description: chatCheck.reason,
+                            });
+                          }}
+                          title={chatCheck.reason}
+                          className="w-full bg-slate-500/40 hover:bg-slate-500/50 text-white px-6 py-3 text-lg border border-white/20"
+                        >
+                          <MessageCircle className="h-5 w-5 mr-2" />
+                          Chat bloqueado: envía solicitud de amistad
+                        </Button>
+                      );
+                    })()}
 
                     {/* Amistad y acceso a fotos (punto 4): solicitud de
                         amistad y solicitud para ver la galería. El botón

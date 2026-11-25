@@ -415,7 +415,9 @@ const EditProfileSingle = () => {
       </div>
 
       {/* Header: con wrap y sin recortes. Antes "Guardar Cambios" salía
-          cortado en móvil porque los 3 elementos no cabían en una línea. */}
+          cortado en móvil porque los 3 elementos no cabían en una línea:
+          el título llevaba `truncate` y quedaba en "E...". Ahora el título
+          ocupa su propia línea en móvil y nunca se trunca. */}
       <div className="bg-white/10 backdrop-blur-md border-b border-white/20 p-4 shadow-lg relative z-10">
         <div className="flex flex-wrap items-center justify-between gap-2 max-w-6xl mx-auto">
           <Button
@@ -426,7 +428,7 @@ const EditProfileSingle = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver al perfil
           </Button>
-          <h1 className="min-w-0 flex-1 text-center text-base sm:text-xl font-bold text-white truncate">
+          <h1 className="order-3 w-full text-center text-base font-bold text-white sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:text-xl">
             Editar Perfil
           </h1>
           <Button

@@ -209,7 +209,7 @@ export class PostsService {
       // mostraba el degradado "✨ Image" del onError). URLs del mismo pool
       // que Discover, que sí carga.
       const demoPhotoUrls = [
-        "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=900&h=700&fit=crop",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=900&h=700&fit=crop",
         "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=900&h=700&fit=crop",
         "https://images.unsplash.com/photo-1522098543979-ffc7f79a56c4?w=900&h=700&fit=crop",
         "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=900&h=700&fit=crop",

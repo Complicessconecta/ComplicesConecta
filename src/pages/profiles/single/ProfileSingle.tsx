@@ -30,9 +30,14 @@ import {
   Zap,
   Gift,
   Info,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
-import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
-import { trackEvent } from "@/config/posthog.config";
+import { ShareProfile } from "@/components/profiles/shared/ShareProfile";
+import {
+  SOFIA_CANONICAL_PHOTO,
+  SOFIA_CANONICAL_PHOTO_ID,
+} from "@/demo/demoData";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { useAuth } from "@/features/auth/useAuth";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
@@ -427,6 +432,12 @@ const ProfileSingle: FC = () => {
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
+  // Menú "Compartir" (punto 17): TikTok, Facebook, WhatsApp y X.
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  // Galería privada COLAPSADA por defecto (punto 14, regresión ronda 4):
+  // al cargar se ven los 58 ítems expandidos; debe cargar colapsada y
+  // expandirse solo al tocar "Ver fotos".
+  const [privateGalleryOpen, setPrivateGalleryOpen] = useState(false);
 
   const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
@@ -757,34 +768,6 @@ const ProfileSingle: FC = () => {
     }
   }, [profile?.id, profile?.created_at, profile?.is_verified]);
 
-  const handleShareProfile = async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: `Perfil de ${profile?.name || "Usuario"}`,
-          text: `Mira el perfil de ${profile?.name || "Usuario"} en ComplicesConecta`,
-          url: window.location.href,
-        });
-      } else {
-        // Fallback para navegadores que no soportan Web Share API
-        await navigator.clipboard.writeText(window.location.href);
-        toast({
-          title: "Enlace copiado",
-          description: "El enlace al perfil se ha copiado al portapapeles.",
-        });
-        logger.info("URL copiada al portapapeles");
-      }
-
-      // Track en PostHog
-      trackEvent("profile_shared", {
-        profileId: profile?.id?.substring(0, 8) + "***",
-        method: typeof navigator.share !== "undefined" ? "native" : "clipboard",
-      });
-    } catch (error) {
-      logger.error("Error sharing profile:", { error: String(error) });
-    }
-  };
-
   const handleViewPrivatePhotos = async () => {
     try {
       if (isPrivateRequestBlocked()) {
@@ -1093,10 +1076,42 @@ const ProfileSingle: FC = () => {
     "Usuario", // Fallback genérico, no nombre específico
   );
 
-  const avatarUrl = asString(
-    currentProfile.avatar_url,
-    "/assets/avatar-placeholder.png", // Placeholder genérico, no imagen específica
-  );
+  // Foto principal de Sofía (28, demo single): si el avatar viene vacío
+  // o apunta al asset local roto `img/demo-single-avatar.jpg` (no existe
+  // en public/) o al placeholder genérico (tampoco existe), SafeImage
+  // mostraba "NO DISPONIBLE". En demo se usa su foto canónica verificada.
+  const rawAvatarUrl = asOptionalString(currentProfile.avatar_url);
+  const isBrokenDemoAvatar =
+    rawAvatarUrl != null &&
+    (rawAvatarUrl.includes("demo-single-avatar") ||
+      rawAvatarUrl.includes("avatar-placeholder"));
+  const avatarUrl =
+    rawAvatarUrl && !isBrokenDemoAvatar
+      ? rawAvatarUrl
+      : singleIsDemo
+        ? SOFIA_CANONICAL_PHOTO
+        : "/assets/avatar-placeholder.png";
+
+  // Fotos públicas de Sofía: 3 encuadres distintos de SU foto canónica
+  // (misma persona, 28 años). Antes eran 3 mujeres distintas
+  // (1534528741775, 1438761681033 y 1494790108377).
+  const sofiaPublicPhoto = (size: 400 | 900, crop: string): string =>
+    `https://images.unsplash.com/photo-${SOFIA_CANONICAL_PHOTO_ID}?w=${size}&h=${size}&fit=crop&crop=${crop}`;
+  const SOFIA_PUBLIC_PHOTOS = [
+    sofiaPublicPhoto(400, "face"),
+    sofiaPublicPhoto(400, "top"),
+    sofiaPublicPhoto(400, "entropy"),
+  ];
+  const SOFIA_PUBLIC_PHOTOS_FULL = [
+    sofiaPublicPhoto(900, "face"),
+    sofiaPublicPhoto(900, "top"),
+    sofiaPublicPhoto(900, "entropy"),
+  ];
+  const SOFIA_PUBLIC_TILE_GRADIENTS = [
+    "from-purple-400 to-blue-600",
+    "from-pink-400 to-red-600",
+    "from-blue-400 to-teal-600",
+  ];
 
   const displayAge = currentProfile.age || (singleIsDemo ? 28 : 18); // En demo, la edad canónica de Sofía es 28 (la misma que usa singleAbout); fuera de demo, 18 es la mínima legal, no un valor específico
 
@@ -1321,28 +1336,18 @@ const ProfileSingle: FC = () => {
                       <span className="sm:hidden">Editar</span>
                     </Button>
 
+                    {/* Compartir (punto 17): un solo botón "Compartir" que abre
+                        el menú con TikTok, Facebook, WhatsApp y X. El
+                        botón grande "Compartir en TikTok" se quitó: dos
+                        botones de compartir atascaban la fila en pantallas
+                        chicas. TikTok sigue dentro del menú. */}
                     <Button
-                      onClick={handleShareProfile}
+                      onClick={() => setIsShareOpen(true)}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Share2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">Compartir</span>
-                      <span className="sm:hidden">Share</span>
+                      Compartir
                     </Button>
-
-                    <TikTokShareButton
-                      url={window.location.href}
-                      text={`Mira el perfil de ${displayName} en ComplicesConecta ✨`}
-                      hashtags={[
-                        "ComplicesConecta",
-                        "Swinger",
-                        "Mexico",
-                        "Dating",
-                      ]}
-                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
-                      variant="outline"
-                      size="default"
-                    />
 
                     <Button
                       onClick={() => setShowReportDialog(true)}
@@ -2154,72 +2159,26 @@ const ProfileSingle: FC = () => {
                 className="mb-6"
               >
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
-                  <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
-                    <button
-                      type="button"
-                      className="w-full h-full"
-                      onClick={() =>
-                        openImageModal(
-                          [
-                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
-                            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&h=900&fit=crop&crop=face",
-                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
-                          ],
-                          0,
-                        )
-                      }
+                  {SOFIA_PUBLIC_PHOTOS.map((src, idx) => (
+                    <div
+                      key={src}
+                      className={`aspect-square bg-linear-to-br ${SOFIA_PUBLIC_TILE_GRADIENTS[idx] ?? "from-purple-400 to-blue-600"} rounded-lg flex items-center justify-center overflow-hidden`}
                     >
-                      <SafeImage
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
-                        alt="Foto pública 1"
+                      <button
+                        type="button"
                         className="w-full h-full"
-                      />
-                    </button>
-                  </div>
-                  <div className="aspect-square bg-linear-to-br from-pink-400 to-red-600 rounded-lg flex items-center justify-center overflow-hidden">
-                    <button
-                      type="button"
-                      className="w-full h-full"
-                      onClick={() =>
-                        openImageModal(
-                          [
-                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
-                            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&h=900&fit=crop&crop=face",
-                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
-                          ],
-                          1,
-                        )
-                      }
-                    >
-                      <SafeImage
-                        src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face"
-                        alt="Foto pública 2"
-                        className="w-full h-full"
-                      />
-                    </button>
-                  </div>
-                  <div className="aspect-square bg-linear-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
-                    <button
-                      type="button"
-                      className="w-full h-full"
-                      onClick={() =>
-                        openImageModal(
-                          [
-                            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
-                            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&h=900&fit=crop&crop=face",
-                            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
-                          ],
-                          2,
-                        )
-                      }
-                    >
-                      <SafeImage
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face"
-                        alt="Foto pública 3"
-                        className="w-full h-full"
-                      />
-                    </button>
-                  </div>
+                        onClick={() =>
+                          openImageModal(SOFIA_PUBLIC_PHOTOS_FULL, idx)
+                        }
+                      >
+                        <SafeImage
+                          src={src}
+                          alt={`Foto pública ${idx + 1}`}
+                          className="w-full h-full"
+                        />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </ProtectedMedia>
 
@@ -2234,6 +2193,27 @@ const ProfileSingle: FC = () => {
                     <Lock className="w-4 h-4" />
                     Fotos Privadas ({galleryImages.length})
                   </h4>
+                  {/* Colapsar/expandir (punto 14): la galería carga
+                      colapsada; el botón la expande sin desbloquearla
+                      (las fotos siguen borrosas/bloqueadas hasta el PIN). */}
+                  <button
+                    type="button"
+                    onClick={() => setPrivateGalleryOpen((prev) => !prev)}
+                    aria-expanded={privateGalleryOpen}
+                    className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-all"
+                  >
+                    {privateGalleryOpen ? (
+                      <>
+                        <ChevronUp className="w-3 h-3" />
+                        Ocultar fotos
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-3 h-3" />
+                        Ver fotos ({galleryImages.length})
+                      </>
+                    )}
+                  </button>
                   <div className="flex items-center gap-2">
                     {import.meta.env.PROD &&
                       isOwnProfile &&
@@ -2283,137 +2263,147 @@ const ProfileSingle: FC = () => {
                   </div>
                 </div>
 
-                {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}
+                {/* SECCIÓN GALERÍA PRIVADA CORREGIDA — colapsada por
+                    defecto (punto 14): antes el carrusel renderizaba los
+                    58 ítems expandidos al cargar el perfil. */}
                 <div className="mb-4">
                   <p className="text-white/60 text-xs mb-2">
                     🔒 Galería Privada (requiere desbloqueo con PIN)
                   </p>
-                  <Carousel
-                    className="mt-4"
-                    opts={{ align: "start", loop: false }}
-                  >
-                    <CarouselContent>
-                      {galleryImages.map(
-                        (img: PrivateImageItem | string, idx: number) => {
-                          const imageSource =
-                            typeof img === "string"
-                              ? img
-                              : (img.url ?? img.src ?? "");
-                          return (
-                            <CarouselItem
-                              key={idx}
-                              className="basis-1/2 sm:basis-1/3 md:basis-1/4"
-                            >
-                              <div
-                                className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                                onClick={() => {
-                                  // Si el control parental está bloqueado, abrir
-                                  // la pantalla del PIN (perfil propio) o el
-                                  // flujo de solicitud (visitante).
-                                  if (isParentalLocked) {
-                                    if (isOwnProfile) {
-                                      setShowParentalUnlock(true);
-                                    } else {
-                                      setShowPrivateImageRequest(true);
-                                    }
-                                    return;
-                                  }
-
-                                  // Si ya está desbloqueado, abrir carrusel
-                                  if (isGalleryUnlocked) {
-                                    const resolved = galleryImages
-                                      .map((g) =>
-                                        typeof g === "string"
-                                          ? g
-                                          : (g.url ?? g.src ?? ""),
-                                      )
-                                      .filter(
-                                        (u): u is string =>
-                                          typeof u === "string" && u.length > 0,
-                                      );
-                                    openImageModal(resolved, idx);
-                                    return;
-                                  }
-
-                                  // CASO 1: Perfil propio (demo o real)
-                                  // Al hacer click, activar el control parental para pedir PIN
-                                  if (isOwnProfile) {
-                                    setIsParentalLocked(true);
-                                    setShowParentalUnlock(true);
-                                    return;
-                                  }
-
-                                  // CASO 2: Otros usuarios (vista sin acceso)
-                                  // Mostrar modal de solicitud de acceso legal
-                                  setShowPrivateImageRequest(true);
-                                }}
+                  {!privateGalleryOpen ? (
+                    <p className="text-white/50 text-xs">
+                      {galleryImages.length} fotos privadas colapsadas. Toca
+                      "Ver fotos" para expandir la galería.
+                    </p>
+                  ) : (
+                    <Carousel
+                      className="mt-4"
+                      opts={{ align: "start", loop: false }}
+                    >
+                      <CarouselContent>
+                        {galleryImages.map(
+                          (img: PrivateImageItem | string, idx: number) => {
+                            const imageSource =
+                              typeof img === "string"
+                                ? img
+                                : (img.url ?? img.src ?? "");
+                            return (
+                              <CarouselItem
+                                key={idx}
+                                className="basis-1/2 sm:basis-1/3 md:basis-1/4"
                               >
-                                <img
-                                  src={imageSource}
-                                  alt="Private content"
-                                  {...noDownloadProps(isOwnProfile)}
-                                  onError={(e) => {
-                                    // C6: sin fallback a la imagen privada
-                                    // pública; solo al placeholder genérico,
-                                    // y sin reintentar si ya es el placeholder.
-                                    const img =
-                                      e.currentTarget as HTMLImageElement;
-                                    if (
-                                      !img.src.endsWith(
-                                        PRIVATE_MEDIA_PLACEHOLDER,
-                                      )
-                                    ) {
-                                      img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                                <div
+                                  className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                                  onClick={() => {
+                                    // Si el control parental está bloqueado, abrir
+                                    // la pantalla del PIN (perfil propio) o el
+                                    // flujo de solicitud (visitante).
+                                    if (isParentalLocked) {
+                                      if (isOwnProfile) {
+                                        setShowParentalUnlock(true);
+                                      } else {
+                                        setShowPrivateImageRequest(true);
+                                      }
+                                      return;
                                     }
-                                  }}
-                                  className={cn(
-                                    "w-full h-full object-cover transition-[filter,transform] duration-500",
-                                    isGalleryUnlocked
-                                      ? "blur-0 scale-100"
-                                      : "blur-3xl scale-110",
-                                  )}
-                                />
 
-                                {/* Marca de agua de la galería privada:
+                                    // Si ya está desbloqueado, abrir carrusel
+                                    if (isGalleryUnlocked) {
+                                      const resolved = galleryImages
+                                        .map((g) =>
+                                          typeof g === "string"
+                                            ? g
+                                            : (g.url ?? g.src ?? ""),
+                                        )
+                                        .filter(
+                                          (u): u is string =>
+                                            typeof u === "string" &&
+                                            u.length > 0,
+                                        );
+                                      openImageModal(resolved, idx);
+                                      return;
+                                    }
+
+                                    // CASO 1: Perfil propio (demo o real)
+                                    // Al hacer click, activar el control parental para pedir PIN
+                                    if (isOwnProfile) {
+                                      setIsParentalLocked(true);
+                                      setShowParentalUnlock(true);
+                                      return;
+                                    }
+
+                                    // CASO 2: Otros usuarios (vista sin acceso)
+                                    // Mostrar modal de solicitud de acceso legal
+                                    setShowPrivateImageRequest(true);
+                                  }}
+                                >
+                                  <img
+                                    src={imageSource}
+                                    alt="Private content"
+                                    {...noDownloadProps(isOwnProfile)}
+                                    onError={(e) => {
+                                      // C6: sin fallback a la imagen privada
+                                      // pública; solo al placeholder genérico,
+                                      // y sin reintentar si ya es el placeholder.
+                                      const img =
+                                        e.currentTarget as HTMLImageElement;
+                                      if (
+                                        !img.src.endsWith(
+                                          PRIVATE_MEDIA_PLACEHOLDER,
+                                        )
+                                      ) {
+                                        img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                                      }
+                                    }}
+                                    className={cn(
+                                      "w-full h-full object-cover transition-[filter,transform] duration-500",
+                                      isGalleryUnlocked
+                                        ? "blur-0 scale-100"
+                                        : "blur-3xl scale-110",
+                                    )}
+                                  />
+
+                                  {/* Marca de agua de la galería privada:
                                     solo si el dueño la tiene activa en
                                     Privacidad (antes salía siempre). */}
-                                {isGalleryUnlocked &&
-                                  profilePrivacy.watermark && (
-                                    <div className="absolute inset-0 pointer-events-none select-none">
-                                      <div className="absolute bottom-2 right-2 rounded-md bg-black/50 px-2 py-1 text-[10px] font-semibold text-white border border-white/20">
-                                        ComplicesConecta
-                                      </div>
-                                      <div className="absolute inset-0 flex items-center justify-center opacity-15">
-                                        <div className="text-white text-3xl font-bold -rotate-45">
-                                          CÓMPLICES
+                                  {isGalleryUnlocked &&
+                                    profilePrivacy.watermark && (
+                                      <div className="absolute inset-0 pointer-events-none select-none">
+                                        <div className="absolute bottom-2 right-2 rounded-md bg-black/50 px-2 py-1 text-[10px] font-semibold text-white border border-white/20">
+                                          ComplicesConecta
+                                        </div>
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-15">
+                                          <div className="text-white text-3xl font-bold -rotate-45">
+                                            CÓMPLICES
+                                          </div>
                                         </div>
                                       </div>
+                                    )}
+
+                                  {!isGalleryUnlocked && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
+                                      <div className="bg-white/20 p-4 rounded-2xl border-2 border-white/30 shadow-2xl backdrop-blur-md">
+                                        <Lock className="w-8 h-8 text-white drop-shadow-lg" />
+                                      </div>
+                                      <span className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold text-white bg-white/20 border-2 border-white/40 shadow-lg backdrop-blur-md">
+                                        {isParentalLocked
+                                          ? "🔒 Bloqueado por Control Parental"
+                                          : isOwnProfile
+                                            ? "👆 Click para desbloquear (requiere PIN)"
+                                            : "🔒 Contenido Privado"}
+                                      </span>
                                     </div>
                                   )}
-
-                                {!isGalleryUnlocked && (
-                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
-                                    <div className="bg-white/20 p-4 rounded-2xl border-2 border-white/30 shadow-2xl backdrop-blur-md">
-                                      <Lock className="w-8 h-8 text-white drop-shadow-lg" />
-                                    </div>
-                                    <span className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold text-white bg-white/20 border-2 border-white/40 shadow-lg backdrop-blur-md">
-                                      {isParentalLocked
-                                        ? "🔒 Bloqueado por Control Parental"
-                                        : isOwnProfile
-                                          ? "👆 Click para desbloquear (requiere PIN)"
-                                          : "🔒 Contenido Privado"}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </CarouselItem>
-                          );
-                        },
-                      )}
-                    </CarouselContent>
-                    <CarouselPrevious className="hidden md:flex" />
-                    <CarouselNext className="hidden md:flex" />
-                  </Carousel>
+                                </div>
+                              </CarouselItem>
+                            );
+                          },
+                        )}
+                      </CarouselContent>
+                      <CarouselPrevious className="hidden md:flex" />
+                      <CarouselNext className="hidden md:flex" />
+                    </Carousel>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -2723,6 +2713,14 @@ const ProfileSingle: FC = () => {
         onReport={(reason) => {
           logger.info("Reporte enviado desde perfil single", { reason });
         }}
+      />
+
+      {/* Menú "Compartir" (punto 17): TikTok, Facebook, WhatsApp y X. */}
+      <ShareProfile
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        profileId={String(currentProfile.id)}
+        profileName={displayName}
       />
     </div>
   );

@@ -86,6 +86,16 @@ import {
   getVisibilityBadge,
   usePrivacySettings,
 } from "@/lib/visibility";
+// Alcance A (6 puntos sociales): nacionalidad, amistades, visibilidad,
+// reportar/bloquear y solicitudes de amistad/fotos (espejo de Single).
+import { NationalityBadge } from "@/components/profiles/shared/NationalityBadge";
+import { FriendsSection } from "@/components/profiles/shared/FriendsSection";
+import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
+import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
+import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButtons";
+import { ProfileSocialSettings } from "@/components/profiles/shared/ProfileSocialSettings";
+import { getCountryByName, readCountryCodeLocal } from "@/lib/countries";
+import { getSocialDemoData } from "@/demo/socialDemoData";
 // Espejo de Single: gestor de solicitudes de acceso, reporte y experiencias.
 import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
 import { ReportDialog } from "@/components/dialogs/ReportDialog";
@@ -551,6 +561,16 @@ function ProfileCouple() {
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
   const displayAccountLabel =
     profile?.username || profile?.couple_name || "Cuenta";
+
+  // Nacionalidad: `country_code` (migración 20261124050000) → columna
+  // `country` (texto, ya existe) → local del registro → datos demo.
+  const coupleName = profile?.couple_name || "Perfil de Pareja";
+  const profileCountryCode =
+    (profile as { country_code?: string | null } | null)?.country_code ??
+    getCountryByName((profile as { country?: string | null } | null)?.country)
+      ?.code ??
+    readCountryCodeLocal(user?.id ?? profile?.profile_id ?? "") ??
+    getSocialDemoData(coupleName).countryCode;
 
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = coupleNFTs.length > 0;
@@ -1239,7 +1259,7 @@ function ProfileCouple() {
                       <TooltipTrigger>
                         <Badge
                           className={cn(
-                            "profile-badge flex items-center gap-1",
+                            "profile-badge flex items-center gap-1 whitespace-nowrap shrink-0",
                             profileScore.color,
                           )}
                         >
@@ -1290,6 +1310,8 @@ function ProfileCouple() {
                       <span>{formatZodiacSign(profileZodiac2)}</span>
                     </Badge>
                   )}
+                {/* Nacionalidad (punto 1): país + bandera del registro. */}
+                <NationalityBadge countryCode={profileCountryCode} />
                 {isOwnProfile && hasWalletActive && (
                   <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-emerald-500/50 backdrop-blur-md">
                     <Wallet className="w-3 h-3" />
@@ -1584,6 +1606,34 @@ function ProfileCouple() {
                         </Button>
                       )}
 
+                      {/* Social (puntos 2, 4 y 5): solicitud de amistad y
+                          de ver fotos + bloqueo real. Solo visibles
+                          cuando se ve un perfil ajeno. */}
+                      <FriendRequestButton
+                        profileId={profile?.id || ""}
+                        profileName={coupleName}
+                        viewerId={user?.id || ""}
+                        viewerName={coupleName}
+                        isOwnProfile={isOwnProfile}
+                        isDemo={isDemoMode}
+                      />
+                      <PhotoAccessRequestButton
+                        profileId={profile?.id || ""}
+                        profileName={coupleName}
+                        viewerId={user?.id || ""}
+                        isOwnProfile={isOwnProfile}
+                        isDemo={isDemoMode}
+                      />
+                      <ReportBlockButtons
+                        profileId={profile?.id || ""}
+                        profileName={coupleName}
+                        viewerId={user?.id || ""}
+                        isOwnProfile={isOwnProfile}
+                        isDemo={isDemoMode}
+                        showReport={false}
+                        onReport={() => setShowReportDialog(true)}
+                      />
+
                       {/* Botón para solicitar acceso a fotos privadas */}
                       {privateImageAccess === "none" && (
                         <Button
@@ -1700,25 +1750,40 @@ function ProfileCouple() {
                       )}
                     <Button
                       onClick={() => {
-                        if (!isParentalLocked) {
-                          _setIsParentalLocked(true);
-                          setShowParentalUnlock(false);
-                          _setDemoPrivateUnlocked(false);
-                          _setShowImageModal(false);
-                          clearUnlock();
+                        if (isParentalLocked) {
+                          // DESBLOQUEAR (solo el dueño): abrir la pantalla
+                          // del PIN. Es el botón en flujo de la galería; el
+                          // flotante `fixed top-20 right-4` se eliminó
+                          // porque tapaba contenido y el toggle de tema.
+                          if (isOwnProfile) setShowParentalUnlock(true);
+                          return;
                         }
+                        _setIsParentalLocked(true);
+                        setShowParentalUnlock(false);
+                        _setDemoPrivateUnlocked(false);
+                        _setShowImageModal(false);
+                        clearUnlock();
                       }}
-                      disabled={isParentalLocked}
+                      disabled={isParentalLocked && !isOwnProfile}
                       className={cn(
                         "h-8 px-3 text-xs rounded-full flex items-center gap-1.5 transition-all min-w-[120px] justify-center",
-                        isParentalLocked
-                          ? "bg-red-600/80 hover:bg-red-700/80 cursor-default text-white"
-                          : "bg-orange-600/80 hover:bg-orange-700/80 text-white",
+                        isParentalLocked && isOwnProfile
+                          ? "bg-purple-600/80 hover:bg-purple-700/80 text-white"
+                          : isParentalLocked
+                            ? "bg-red-600/80 cursor-default text-white"
+                            : "bg-orange-600/80 hover:bg-orange-700/80 text-white",
                       )}
                     >
-                      {isParentalLocked
-                        ? "🔒 Bloqueado (PIN requerido)"
-                        : "Bloquear Ahora"}
+                      {isParentalLocked && isOwnProfile ? (
+                        <>
+                          <Unlock className="w-3 h-3" />
+                          Desbloquear
+                        </>
+                      ) : isParentalLocked ? (
+                        "🔒 Bloqueado (PIN requerido)"
+                      ) : (
+                        "Bloquear Ahora"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -2008,6 +2073,22 @@ function ProfileCouple() {
               />
             )}
 
+            {/* Amistades (punto 2) + ajustes sociales: visibilidad
+                público/privado y geolocalización (puntos 3 y 4). */}
+            <FriendsSection
+              profileId={profile?.id ?? ""}
+              profileName={coupleName}
+              isOwnProfile={isOwnProfile}
+              isDemo={isDemoMode}
+            />
+            {(isOwnProfile || isDemoMode) && (
+              <ProfileSocialSettings
+                userId={user?.id ?? profile?.profile_id ?? ""}
+                profileType="couple"
+                isDemo={isDemoMode}
+              />
+            )}
+
             {/* Gestor de solicitudes de acceso a galería privada (solo para propietario) - espejo de Single */}
             {isOwnProfile && (
               <div className="mb-6">
@@ -2143,17 +2224,10 @@ function ProfileCouple() {
         }}
       />
 
-      {isParentalLocked && !showParentalUnlock && (
-        <div className="fixed top-20 right-4 z-50">
-          <button
-            type="button"
-            onClick={() => setShowParentalUnlock(true)}
-            className="px-4 py-2 rounded-full text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 backdrop-blur-md text-white transition-all duration-300"
-          >
-            Desbloquear
-          </button>
-        </div>
-      )}
+      {/* El botón "Desbloquear" flotante (`fixed top-20 right-4`) se
+          eliminó: tapaba contenido y el toggle de tema al hacer scroll.
+          El desbloqueo vive en el botón en flujo del encabezado de la
+          galería ("Fotos Privadas"), que abre la pantalla del PIN. */}
 
       <ImageModal
         isOpen={showImageModal}

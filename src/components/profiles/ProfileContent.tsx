@@ -165,7 +165,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         age: candidate?.age || 25,
         bio: candidate?.interests.join(" • ") || "Sin bio",
         location: candidate?.location.city,
-        avatar: `https://images.unsplash.com/photo-${match.userId === "match-1" ? "1494790108755-2616b612b786" : match.userId === "match-2" ? "1522071820081-009f0129c71c" : "1534528741775-53994a69daeb"}?w=400&h=400&fit=crop`,
+        avatar: `https://images.unsplash.com/photo-${match.userId === "match-1" ? "1531123897727-8f129e1688ce" : match.userId === "match-2" ? "1522071820081-009f0129c71c" : "1534528741775-53994a69daeb"}?w=400&h=400&fit=crop`,
         compatibility: match.totalScore,
         reasons: match.reasons.slice(0, 3),
         fullReasons: match.reasons,
@@ -537,7 +537,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div className="aspect-square bg-linear-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
                   <img
-                    src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
+                    src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                     alt="Galería 1"
                     className="w-full h-full object-cover"
                     onError={(e) => {

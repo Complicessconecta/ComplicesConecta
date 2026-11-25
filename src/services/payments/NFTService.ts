@@ -84,6 +84,67 @@ export const DEFAULT_DEMO_NFTS = [
 ] as const;
 
 /**
+ * Límite demo de NFTs MINTEADOS POR EL USUARIO (ronda 8, puntos 4 y 7).
+ *
+ * Causa raíz del "4/4 sin Confirmar Mint": el tope se aplicaba sobre la
+ * COLECCIÓN TOTAL, y la colección nace sembrada con los 4 NFTs de ejemplo
+ * (single) / 2 de pareja, así que el usuario ya estaba en el límite antes
+ * de mintear nada. El tope cuenta solo lo minteado por el usuario, encima
+ * de la semilla: fresco single 4 (0 minteados), tras 1 mint 5 (1/4).
+ */
+export const DEMO_MINT_LIMIT = 4;
+
+/** Capacidad guardada por colección: semilla (4) + minteados (4). */
+export const DEMO_NFT_STORAGE_CAP = DEFAULT_DEMO_NFTS.length + DEMO_MINT_LIMIT;
+
+/** Ids de la semilla: todo lo demás guardado es un NFT minteado. */
+export function isSeedDemoNFTId(id: unknown): boolean {
+  return (
+    typeof id === "string" &&
+    (DEFAULT_DEMO_NFTS as ReadonlyArray<{ id: string }>).some(
+      (nft) => nft.id === id,
+    )
+  );
+}
+
+/**
+ * Cuenta los NFTs minteados por el usuario dentro de una colección
+ * guardada. Un ítem es minteado si trae `minted_by_user: true` o si su
+ * id no es de la semilla (cubre ítems minteados antes de que existiera
+ * el flag). La semilla (nft-1..nft-4) NUNCA cuenta como minteada.
+ */
+export function countMintedDemoNFTs(
+  items: ReadonlyArray<{ id?: unknown; minted_by_user?: unknown }>,
+): number {
+  return items.filter(
+    (item) =>
+      item?.minted_by_user === true ||
+      (typeof item?.id === "string" && !isSeedDemoNFTId(item.id)),
+  ).length;
+}
+
+/**
+ * La semilla en forma guardada (`demo_nfts:<uid>`): la base sobre la que
+ * se mintea cuando aún no hay colección guardada. Sin esto, el primer
+ * mint escribía SOLO el NFT nuevo y la colección pasaba de 4 (ejemplo en
+ * memoria) a 1 (guardado) — la "desaparición" de la ronda 7.
+ */
+export function getDemoNFTSeedItems(): Array<Record<string, unknown>> {
+  return DEFAULT_DEMO_NFTS.map((nft, index) => ({
+    id: nft.id,
+    name: nft.name,
+    rarity: nft.rarity,
+    image: nft.image,
+    value: nft.value,
+    is_couple: nft.is_couple,
+    created_at: new Date().toISOString(),
+    token_id: index + 1,
+    metadata_uri: "ipfs://demo-metadata-hash",
+    minted_by_user: false,
+  }));
+}
+
+/**
  * Siembra los 4 NFTs demo en localStorage para el usuario dado, SOLO si su
  * llave `demo_nfts:<userId>` aún no existe. No sobrescribe una colección ya
  * minteada/guardada. Espejo de Single: ProfileCouple no renderiza
@@ -96,7 +157,7 @@ export function seedDemoNFTs(userId: string): void {
   const key = getDemoNFTStorageKey(userId);
   try {
     if (window.localStorage.getItem(key) !== null) return;
-    const payload = DEFAULT_DEMO_NFTS.map((nft) => ({
+    const payload = DEFAULT_DEMO_NFTS.map((nft, index) => ({
       id: nft.id,
       name: nft.name,
       rarity: nft.rarity,
@@ -104,8 +165,9 @@ export function seedDemoNFTs(userId: string): void {
       value: nft.value,
       is_couple: nft.is_couple,
       created_at: new Date().toISOString(),
-      token_id: DEFAULT_DEMO_NFTS.length,
+      token_id: index + 1,
       metadata_uri: "ipfs://demo-metadata-hash",
+      minted_by_user: false,
     }));
     window.localStorage.setItem(key, JSON.stringify(payload));
   } catch {
@@ -131,7 +193,7 @@ const readDemoNFTs = (uid: string): NFTInfo[] => {
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
     return (parsed as Array<Record<string, unknown>>)
-      .slice(0, 4)
+      .slice(0, DEMO_NFT_STORAGE_CAP)
       .map((item, index) => {
         const id = typeof item.id === "string" ? item.id : `demo-nft-${uid}-${index}`;
         const tokenIdRaw = item.token_id;
@@ -164,6 +226,11 @@ const readDemoNFTs = (uid: string): NFTInfo[] => {
         if (image) base.image = image;
         const valueRaw = item.value;
         if (typeof valueRaw === "number") base.value = valueRaw;
+        // El flag sobrevive a la lectura: sin él, un NFT minteado se
+        // releía como semilla y el contador de minteados volvía a 0.
+        if (typeof item.minted_by_user === "boolean") {
+          base.minted_by_user = item.minted_by_user;
+        }
 
         return base;
       });
@@ -201,6 +268,8 @@ interface NFTInfo {
   image?: string;
   /** Valor estimado en CMPX (solo demo). */
   value?: number;
+  /** true si el NFT lo minteó el usuario en demo (no es de la semilla). */
+  minted_by_user?: boolean;
   created_at: string;
 }
 
@@ -514,6 +583,64 @@ export class NFTService {
   }
 
   /**
+   * Minteo demo COMPARTIDO (ronda 8, punto 4): única vía por la que un
+   * mint demo escribe en `demo_nfts:<uid>`. La usan el botón single, el
+   * flujo de pareja y "Mintear NFT Demo" de DemoWallet.
+   *
+   * Reglas: la base es la colección guardada, o la semilla si aún no hay
+   * ninguna (así el primer mint NO borra los 4 de ejemplo: fresco 4 →
+   * tras 1 mint 5, no 1); el tope DEMO_MINT_LIMIT cuenta solo minteados;
+   * el NFT nuevo es del tipo que pide el llamador (`isCouple`) — antes
+   * DemoWallet minteaba siempre `isCouple: false` y en pareja el NFT
+   * se filtraba en todas las vistas y el re-corte a 2 dejaba la pareja
+   * en 1. Devuelve el NFT creado o null si se alcanzó el tope.
+   */
+  public async mintDemoNFT(
+    userId: string,
+    opts: { isCouple: boolean; name?: string; description?: string },
+  ): Promise<NFTInfo | null> {
+    if (!userId || typeof window === "undefined") return null;
+    let base = readDemoNFTs(userId);
+    if (base.length === 0) {
+      // Sin colección guardada la base es la semilla (se escribe, para
+      // que el mint no sea el único ítem guardado): sin esto la
+      // colección pasaba de 4 (ejemplo en memoria) a 1 tras el mint.
+      seedDemoNFTs(userId);
+      base = readDemoNFTs(userId);
+    }
+    if (countMintedDemoNFTs(base) >= DEMO_MINT_LIMIT) return null;
+
+    const now = new Date().toISOString();
+    const nextIndex = base.length;
+    const created: NFTInfo = {
+      id: `demo-nft-${userId}-${nextIndex}-${Date.now()}`,
+      token_id: nextIndex + 1,
+      owner_address: "DEMO",
+      metadata_uri: "ipfs://demo-metadata-hash",
+      rarity: "common",
+      is_couple: opts.isCouple,
+      created_at: now,
+      name: opts.name ?? (opts.isCouple ? "NFT de Pareja" : "NFT Demo"),
+      description: opts.description ?? "",
+      image: getDemoNftImageForIndex(nextIndex),
+      minted_by_user: true,
+    };
+
+    const next = [created, ...base].slice(0, DEMO_NFT_STORAGE_CAP);
+    window.localStorage.setItem(
+      getDemoNFTStorageKey(userId),
+      JSON.stringify(next),
+    );
+    notifyDemoNFTsChanged();
+    logger.info("Mint demo NFT", {
+      userId,
+      isCouple: opts.isCouple,
+      count: next.length,
+    });
+    return created;
+  }
+
+  /**
    * Mintea un NFT individual
    */
   public async mintSingleNFT(
@@ -542,40 +669,16 @@ export class NFTService {
         })();
 
       if (WalletService.isDemoMode() || isDemoAuthActive || isDemoUserActive) {
-        const existing = readDemoNFTs(userId);
-        if (existing.length >= 4) return false;
-
-        const now = new Date().toISOString();
-        const nextIndex = existing.length;
-        const created: NFTInfo = {
-          id: `demo-nft-${userId}-${nextIndex}-${Date.now()}`,
-          token_id: nextIndex + 1,
-          owner_address: "DEMO",
-          metadata_uri: "ipfs://demo-metadata-hash",
-          rarity: "common",
-          is_couple: false,
-          created_at: now,
+        // Vía compartida (mintDemoNFT): tope sobre minteados, base con
+        // semilla, aviso a los contadores. Antes el tope era sobre la
+        // colección total (4 sembrados = límite alcanzado) y el mint
+        // devolvía false siempre en demo.
+        const created = await this.mintDemoNFT(userId, {
+          isCouple: false,
           name,
           description,
-          image: getDemoNftImageForIndex(nextIndex),
-        };
-
-        const stored = [...existing, created].slice(0, 4);
-        if (typeof window !== "undefined") {
-          window.localStorage.setItem(
-            getDemoNFTStorageKey(userId),
-            JSON.stringify(stored),
-          );
-          notifyDemoNFTsChanged();
-        }
-
-        logger.info("Mint demo single NFT", {
-          userId,
-          count: stored.length,
-          fileType: imageFile.type,
         });
-
-        return true;
+        return created !== null;
       }
 
       // Asegurar wallet del usuario
@@ -646,10 +749,8 @@ export class NFTService {
 
       // JWT complement (2026-11-19): mismo short-circuit demo que
       // mintSingleNFT. Sin sesión real no hay JWT que enviar a
-      // pinata-proxy, así que en demo / sin sesión se falla cerrado en
-      // local (false) en vez de intentar la subida. Decisión del dueño
-      // pendiente: si el flujo demo de NFT de pareja debe crear algo en
-      // localStorage como mintSingleNFT, o quedarse en login-requerido.
+      // pinata-proxy, así que en demo no se intenta la subida: el NFT de
+      // pareja se crea en local con mintDemoNFT (ronda 8, punto 4).
       const isDemoEnv =
         import.meta.env.VITE_APP_MODE === "demo" ||
         import.meta.env.MODE === "development";
@@ -669,11 +770,23 @@ export class NFTService {
         })();
 
       if (WalletService.isDemoMode() || isDemoAuthActive || isDemoUserActive) {
-        logger.info("Solicitud de NFT de pareja en modo demo: sin subida", {
+        // Ronda 8, punto 4: en demo SÍ se mintea el NFT de pareja en
+        // local (vía compartida mintDemoNFT, is_couple: true). Antes se
+        // devolvía false sin crear nada ("sin subida") y el botón
+        // "Crear NFT de Pareja" no cambiaba ningún contador. El
+        // consentimiento doble se simula en el llamador (ProfileCouple
+        // crea la solicitud y la aprueba a los 5 s); aquí queda el NFT.
+        const created = await this.mintDemoNFT(requesterId, {
+          isCouple: true,
+          name,
+          description,
+        });
+        logger.info("Solicitud de NFT de pareja en modo demo: NFT minteado", {
           requesterId,
           partnerId,
+          minted: created !== null,
         });
-        return false;
+        return created !== null;
       }
 
       const requesterWallet = await this.walletService

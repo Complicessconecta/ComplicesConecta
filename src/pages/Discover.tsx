@@ -51,6 +51,8 @@ import { generalInterests } from "@/constants/discover/generalInterests";
 import { explicitInterests } from "@/constants/discover/explicitInterests";
 import { generateRandomProfiles } from "@/utils/discover/generateRandomProfiles";
 import {
+  PRIVACY_SETTINGS_CHANGED_EVENT,
+  readDemoProfilePrivacySettings,
   readPrivacySettingsSync,
   shouldShowInDiscover,
   type PrivacySettings,
@@ -132,6 +134,20 @@ export const Discover = () => {
     online: false,
     relationshipType: [],
   });
+
+  // Ronda 8 (punto 9): re-aplicar los filtros cuando cambia cualquier
+  // ajuste de privacidad (p. ej. la pareja se pone invisible en su
+  // perfil y vuelve a Discover): sin esto el filtro solo corría al
+  // cambiar filtros/listas y la tarjeta invisible seguía visible
+  // hasta recargar. Las secciones de Privacidad disparan este evento
+  // al guardar (ver visibility.ts).
+  const [privacyVersion, setPrivacyVersion] = useState(0);
+  useEffect(() => {
+    const bump = () => setPrivacyVersion((v) => v + 1);
+    window.addEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, bump);
+    return () =>
+      window.removeEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, bump);
+  }, []);
 
   // Ajustes de privacidad DEL ESPECTADOR (no del perfil listado): el
   // toggle "Acceso a perfiles sin verificar" de su propia sección de
@@ -271,11 +287,23 @@ export const Discover = () => {
             profile.interests.includes(interest),
           );
         // Verificados (según el interruptor) + invisibles (nunca aparecen).
-        // Demo: los perfiles demo no traen dato de invisibilidad, así que
-        // aquí solo se aplica la regla de verificados; la de invisibilidad
-        // actúa cuando el perfil trae `privacySettings`/`invisible`.
+        // Ronda 8 (punto 9): antes solo se pasaba `{id, isVerified}` y el
+        // comentario admitía que la invisibilidad "actúa cuando el perfil
+        // trae privacySettings/invisible" — pero los perfiles demo NUNCA
+        // los traen y su id de tarjeta tampoco es la llave de los ajustes
+        // del dueño, así que una pareja invisible seguía en Discover
+        // (Carmen & Roberto, tarjeta 6 de 20). Ahora se leen los ajustes
+        // del dueño con el puente de identidad demo (visibility.ts).
         const visibilityMatch = shouldShowInDiscover(
-          { id: profile.id, isVerified: profile.isVerified },
+          {
+            id: profile.id,
+            isVerified: profile.isVerified,
+            privacySettings: readDemoProfilePrivacySettings(
+              profile.id,
+              profile.profileType,
+              profile.name,
+            ),
+          },
           effectiveViewerPrivacy,
         );
         const premiumMatch = !filters.premium || profile.isPremium;
@@ -324,18 +352,22 @@ export const Discover = () => {
             profile.interests.includes(interest),
           );
         // Verificados (según el interruptor) + invisibles (nunca aparecen).
-        // Real single: `profiles` no tiene columna `privacy_settings`, así
-        // que la invisibilidad no se puede aplicar hasta la migración; la
-        // regla de verificados sí (ver el mapeo en loadRealProfiles).
+        // Real single: `profiles` no tiene columna `privacy_settings`
+        // (migración 20261124040000 sin aplicar), así que la invisibilidad
+        // se lee del respaldo local del dueño (`single_privacy:<userId>`,
+        // la misma llave que escribe su sección de Privacidad); si la
+        // fuente trajera `privacySettings`, manda ella.
         const visibilityMatch = shouldShowInDiscover(
           {
             id: profile.id,
             isVerified: profile.isVerified,
-            privacySettings: (
-              profile as unknown as {
-                privacySettings?: PrivacySettings | null;
-              }
-            ).privacySettings,
+            privacySettings:
+              (
+                profile as unknown as {
+                  privacySettings?: PrivacySettings | null;
+                }
+              ).privacySettings ??
+              readPrivacySettingsSync(String(profile.id), "single"),
           },
           effectiveViewerPrivacy,
         );
@@ -378,12 +410,17 @@ export const Discover = () => {
         const interestsMatch = filters.interests.length === 0;
         // Verificados (según el interruptor) + invisibles (nunca aparecen).
         // La invisibilidad de parejas se aplica desde
-        // `couple_profiles.privacy_settings` (vía el servicio).
+        // `couple_profiles.privacy_settings` (vía el servicio); si la
+        // fuente no la trae (columna ausente o fila mock), cae al
+        // respaldo local del dueño (`couple_privacy:<id>`, la misma
+        // llave que escribe su sección de Privacidad).
         const visibilityMatch = shouldShowInDiscover(
           {
             id: couple.id,
             is_verified: couple.is_verified ?? false,
-            privacySettings: couple.privacy_settings ?? null,
+            privacySettings:
+              couple.privacy_settings ??
+              readPrivacySettingsSync(String(couple.id), "couple"),
           },
           effectiveViewerPrivacy,
         );
@@ -421,6 +458,8 @@ export const Discover = () => {
     location,
     effectiveViewerPrivacy,
     hiddenProfileIds,
+    // Ronda 8 (punto 9): re-filtrar al cambiar ajustes de privacidad.
+    privacyVersion,
   ]);
 
   // Función para cargar perfiles reales desde Supabase

@@ -64,11 +64,14 @@ import { walletService } from "@/services/payments/WalletService";
 import {
   nftService,
   DEMO_NFTS_CHANGED_EVENT,
+  countMintedDemoNFTs,
+  DEMO_MINT_LIMIT,
 } from "@/services/payments/NFTService";
 import {
   getDemoWalletBalance,
   DEMO_WALLET_CHANGED_EVENT,
 } from "@/lib/demo-wallet";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import {
   PRIVATE_MEDIA_PLACEHOLDER,
@@ -452,7 +455,6 @@ const ProfileSingle: FC = () => {
   const profileScore = useProfileScore(profile);
 
   const [accountChipHovered, setAccountChipHovered] = useState(false);
-  const [accountChipShowAccount, setAccountChipShowAccount] = useState(false);
 
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
@@ -547,27 +549,12 @@ const ProfileSingle: FC = () => {
     return () => window.clearTimeout(id);
   }, [location.hash]);
 
-  useEffect(() => {
-    if (accountChipHovered) return;
-    const schedule = () => {
-      const delay = 4000 + Math.floor(Math.random() * 2001);
-      return window.setTimeout(() => {
-        setAccountChipShowAccount((prev) => !prev);
-      }, delay);
-    };
-
-    let timeoutId = schedule();
-    const intervalId = window.setInterval(() => {
-      window.clearTimeout(timeoutId);
-      timeoutId = schedule();
-    }, 6500);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-      window.clearInterval(intervalId);
-    };
-  }, [accountChipHovered]);
-
+  // Ronda 8 (punto 14): el temporizador que alternaba la etiqueta del
+  // chip (Cuenta ↔ DEMO/nombre) cada 4-6 s SIN interacción del usuario
+  // se eliminó: era la causa de que la etiqueta alternara entre
+  // capturas consecutivas de la MISMA cuenta/sesión. Ahora la etiqueta
+  // es determinista: "Cuenta" solo al pasar el cursor; si no, "DEMO"
+  // en demo o el nombre en sesión real.
   // Estados para funcionalidades blockchain
   const [tokenBalances, setTokenBalances] = useState(() => ({
     cmpx: "0",
@@ -592,6 +579,13 @@ const ProfileSingle: FC = () => {
   const demoTheme = isDemoProfile ? "demo_premium" : undefined;
   useProfileTheme("single", ["male"], demoTheme);
 
+  // Ronda 8 (punto 14): perfil ANÓNIMO. Es su propio perfil limitado
+  // (sin NFTs, sin publicar, permiso para todo) y NO la persona demo
+  // canónica: cuando es anónimo, `singleIsDemo` es false y ningún
+  // fallback de Sofía (foto, edad, bio, saldos, NFTs, fotos privadas)
+  // se aplica. Ver isAnonymousDemoProfile en @/lib/demo-registration.
+  const isAnonymous = useMemo(() => isAnonymousDemoProfile(profile), [profile]);
+
   // Datos de imágenes privadas para el carrusel
   type PrivateImageItem = {
     id?: string;
@@ -607,16 +601,20 @@ const ProfileSingle: FC = () => {
   // `people/...` en el bucket con toPrivateStoragePath(). Las URLs firmadas
   // se resuelven abajo con usePrivateMediaUrls() (solo galería desbloqueada
   // + usuario autenticado); en cualquier otro caso se muestra el placeholder.
+  // Ronda 8 (punto 14): el perfil anónimo NO tiene fotos privadas de
+  // Sofía: su galería privada es vacía (sin sus 58 fotos ni su PIN).
   const privateImageStoragePaths = useMemo(
     () =>
-      Array.from({ length: 58 })
-        .map((_, idx) =>
-          toPrivateStoragePath(
-            `/assets/people/single/privado/aprivadosingle${idx + 1}.jpg`,
-          ),
-        )
-        .filter((p): p is string => p !== null),
-    [],
+      isAnonymous
+        ? []
+        : Array.from({ length: 58 })
+            .map((_, idx) =>
+              toPrivateStoragePath(
+                `/assets/people/single/privado/aprivadosingle${idx + 1}.jpg`,
+              ),
+            )
+            .filter((p): p is string => p !== null),
+    [isAnonymous],
   );
 
   const profilePrivateImagesRaw = profile?.privateImages as
@@ -745,9 +743,12 @@ const ProfileSingle: FC = () => {
     // Demo: no hay API real de estadísticas; contadores coherentes con el
     // contenido demo (12 posts, 2 matches) en vez de 0 junto a contenido.
     // Fuera de demo siguen en 0 hasta que exista la API real.
-    const demoStats = isDemoMode()
-      ? { totalViews: 148, totalLikes: 56, totalMatches: 2 }
-      : { totalViews: 0, totalLikes: 0, totalMatches: 0 };
+    // Ronda 8 (punto 14): el perfil anónimo NO hereda los 148/56/2 de
+    // Sofía: empieza en 0, como una cuenta nueva.
+    const demoStats =
+      isDemoMode() && !isAnonymous
+        ? { totalViews: 148, totalLikes: 56, totalMatches: 2 }
+        : { totalViews: 0, totalLikes: 0, totalMatches: 0 };
     try {
       // Intentar cargar estadísticas reales, no mock
       // TODO: Implementar carga real de estadísticas desde API
@@ -775,7 +776,7 @@ const ProfileSingle: FC = () => {
         verificationLevel: 0,
       });
     }
-  }, [profile?.id, profile?.created_at, profile?.is_verified]);
+  }, [profile?.id, profile?.created_at, profile?.is_verified, isAnonymous]);
 
   const handleViewPrivatePhotos = async () => {
     try {
@@ -834,6 +835,16 @@ const ProfileSingle: FC = () => {
           typeof window !== "undefined" &&
           window.localStorage.getItem("demo_authenticated") === "true";
         const isDemoActive = isDemoMode() || isDemoAuthActive;
+
+        // Ronda 8 (punto 14): el perfil anónimo NO tiene los saldos
+        // canónicos de Sofía (CMPX 1250 / GTK 850), ni NFTs, ni
+        // staking: su billetera empieza vacía.
+        if (isAnonymous) {
+          setTokenBalances({ cmpx: "0", gtk: "0", matic: "0" });
+          setUserNFTs([]);
+          setTestnetInfo(null);
+          return;
+        }
 
         if (targetUserId) {
           // En DEMO mostrar datos demo para que el usuario vea valores.
@@ -899,7 +910,7 @@ const ProfileSingle: FC = () => {
         }
 
         // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
-        if (isDemoMode()) {
+        if (isDemoMode() && !isAnonymous) {
           const canonical = getDemoWalletBalance("single");
           setTokenBalances({
             cmpx: String(canonical.cmpx),
@@ -927,7 +938,7 @@ const ProfileSingle: FC = () => {
       // la rama demo). Al cambiar el user tras el login demo, el efecto
       // de abajo vuelve a correr y recarga con el uid correcto.
     },
-    [user?.id, isDemoProfile],
+    [user?.id, isDemoProfile, isAnonymous],
   );
 
   const handleClaimTestnetTokens = async () => {
@@ -1068,7 +1079,12 @@ const ProfileSingle: FC = () => {
   // amigos. Ahora el flag demo de Sofía exige sesión single
   // (`getProfileType()` lee el `demo_user` fresco y resuelve
   // "couple" para la pareja; en sesión real lee `profile_type`).
-  const singleIsDemo = isDemoMode() && getProfileType() === "single";
+  // Ronda 8 (punto 14): el perfil ANÓNIMO tampoco es Sofía: es su
+  // propio perfil limitado, sin sus datos. Sin el `!isAnonymous`,
+  // "Crear Perfil Anónimo" (TestR7) seguía cayendo aquí y clonaba
+  // foto, bio, saldos, NFTs y fotos privadas de Sofía.
+  const singleIsDemo =
+    isDemoMode() && getProfileType() === "single" && !isAnonymous;
   // Intereses guardados desde el editor (demo): el editor single guarda la
   // selección en `demo_user` (localStorage) y el perfil la refleja. Si aún
   // no se ha editado nada, se usan los títulos demo. En producción se leen
@@ -1176,7 +1192,9 @@ const ProfileSingle: FC = () => {
   // SOFIA_PUBLIC_PHOTOS en @/demo/demoData): la canónica + 2 retratos
   // distintos. Antes eran 3 recortes de la misma foto canónica y se
   // veían como la misma imagen repetida 3 veces.
-  const SOFIA_PUBLIC_PHOTOS_LIST = [...SOFIA_PUBLIC_PHOTOS];
+  // Ronda 8 (punto 14): el perfil anónimo NO muestra las fotos
+  // públicas de Sofía: su galería pública empieza vacía.
+  const SOFIA_PUBLIC_PHOTOS_LIST = isAnonymous ? [] : [...SOFIA_PUBLIC_PHOTOS];
   const SOFIA_PUBLIC_PHOTOS_FULL_LIST = [...SOFIA_PUBLIC_PHOTOS_FULL];
   const SOFIA_PUBLIC_TILE_GRADIENTS = [
     "from-purple-400 to-blue-600",
@@ -1184,7 +1202,12 @@ const ProfileSingle: FC = () => {
     "from-blue-400 to-teal-600",
   ];
 
-  const displayAge = currentProfile.age || (singleIsDemo ? 28 : 18); // En demo, la edad canónica de Sofía es 28 (la misma que usa singleAbout); fuera de demo, 18 es la mínima legal, no un valor específico
+  // En demo, la edad canónica de Sofía es 28 (la misma que usa
+  // singleAbout); fuera de demo, 18 es la mínima legal, no un valor
+  // específico. Ronda 8 (punto 14): el perfil anónimo no tiene edad
+  // registrada: null (sin inventar 18) y la píldora se oculta.
+  const displayAge =
+    currentProfile.age || (singleIsDemo ? 28 : isAnonymous ? null : 18);
 
   // Nacionalidad: columna `country_code` (migración 20261124050000)
   // → local del registro → datos sociales demo (por nombre).
@@ -1210,7 +1233,11 @@ const ProfileSingle: FC = () => {
     return i || "No especificado"; // Fallback genérico
   })();
 
-  const canShowBlockchainSection = isOwnProfile || isDemoProfile;
+  // Ronda 8 (punto 14): el perfil anónimo NO tiene la sección
+  // "Blockchain & NFTs" (sin NFTs, sin mint/claim, sin staking de
+  // Sofía) aunque sea perfil propio/demo.
+  const canShowBlockchainSection =
+    (isOwnProfile || isDemoProfile) && !isAnonymous;
 
   // Secciones espejo de pareja para 1 usuario (modelo del video).
   // En producción se leen las columnas reales de profiles
@@ -1361,9 +1388,11 @@ const ProfileSingle: FC = () => {
                     <NationalityBadge countryCode={profileCountryCode} />
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
-                    <Badge className="profile-badge badge-age">
-                      🎂 {displayAge} años
-                    </Badge>
+                    {displayAge != null && (
+                      <Badge className="profile-badge badge-age">
+                        🎂 {displayAge} años
+                      </Badge>
+                    )}
                     <Badge className="profile-badge badge-gender">
                       {displayGenderLabel}
                     </Badge>
@@ -1372,7 +1401,10 @@ const ProfileSingle: FC = () => {
                     </Badge>
                     <Badge className="profile-badge badge-location">
                       <MapPin className="w-3 h-3" />
-                      {asString(currentProfile["location"], "CDMX, México")}
+                      {asString(
+                        currentProfile["location"],
+                        isAnonymous ? "Sin ubicación" : "CDMX, México",
+                      )}
                     </Badge>
                     <TooltipProvider>
                       <Tooltip>
@@ -1448,13 +1480,20 @@ const ProfileSingle: FC = () => {
                       isOwnProfile={isOwnProfile}
                       isDemo={singleIsDemo}
                     />
-                    <PhotoAccessRequestButton
-                      profileId={profile?.id || ""}
-                      profileName={displayName}
-                      viewerId={user?.id || ""}
-                      isOwnProfile={isOwnProfile}
-                      isDemo={singleIsDemo}
-                    />
+                    {/* Ronda 8 (punto 14, recuperación): el perfil
+                        anónimo NO tiene galería privada, así que no hay
+                        nada que solicitar: el botón de acceso a fotos
+                        se oculta para sus espectadores (la amistad sí
+                        se pide con el botón de arriba, por flujo). */}
+                    {!isAnonymous && (
+                      <PhotoAccessRequestButton
+                        profileId={profile?.id || ""}
+                        profileName={displayName}
+                        viewerId={user?.id || ""}
+                        isOwnProfile={isOwnProfile}
+                        isDemo={singleIsDemo}
+                      />
+                    )}
                     <ReportBlockButtons
                       profileId={profile?.id || ""}
                       profileName={displayName}
@@ -1475,7 +1514,7 @@ const ProfileSingle: FC = () => {
                             className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
                           >
                             <span className="flex items-center gap-2">
-                              {accountChipHovered || accountChipShowAccount
+                              {accountChipHovered
                                 ? "Cuenta"
                                 : isDemoProfile
                                   ? "DEMO"
@@ -1524,8 +1563,10 @@ const ProfileSingle: FC = () => {
                       </DropdownMenu>
                     )}
 
-                    {/* Botón para solicitar acceso a fotos privadas */}
-                    {privateImageAccess === "none" && (
+                    {/* Botón para solicitar acceso a fotos privadas.
+                        Ronda 8 (punto 14): el perfil anónimo no tiene
+                        galería privada: no hay nada que solicitar. */}
+                    {!isAnonymous && privateImageAccess === "none" && (
                       <Button
                         onClick={handleViewPrivatePhotos}
                         disabled={isPrivateRequestBlocked()}
@@ -1540,7 +1581,7 @@ const ProfileSingle: FC = () => {
                     )}
 
                     {/* Estado de solicitud pendiente */}
-                    {privateImageAccess === "pending" && (
+                    {!isAnonymous && privateImageAccess === "pending" && (
                       <Button
                         disabled
                         className="bg-white/10 text-yellow-200 border border-yellow-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
@@ -1554,7 +1595,7 @@ const ProfileSingle: FC = () => {
                     )}
 
                     {/* Acceso aprobado */}
-                    {privateImageAccess === "approved" && (
+                    {!isAnonymous && privateImageAccess === "approved" && (
                       <Button
                         onClick={handleViewApprovedPrivatePhotos}
                         className="bg-white/10 hover:bg-white/20 text-green-200 border border-green-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
@@ -1730,7 +1771,7 @@ const ProfileSingle: FC = () => {
                     <Button
                       onClick={handleClaimDailyTokens}
                       disabled={isClaimingTokens}
-                      className="bg-blue-500/20 hover:bg-blue-600/30 text-blue-200 border-blue-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
+                      className="bg-blue-500/10 hover:bg-blue-600/20 text-blue-700 border-blue-500/40 dark:bg-blue-500/20 dark:hover:bg-blue-600/30 dark:text-blue-200 dark:border-blue-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                     >
                       <Calendar className="w-4 h-4" />
                       {isClaimingTokens
@@ -1750,11 +1791,19 @@ const ProfileSingle: FC = () => {
                           Generar NFT de Perfil
                         </h4>
                         <p className="text-neutral-300 text-sm text-center mb-4">
-                          En modo demo puedes mintear hasta 4 NFTs para probar
-                          el flujo.
+                          En modo demo puedes mintear hasta {DEMO_MINT_LIMIT}{" "}
+                          NFTs para probar el flujo.
                           <br />
                           <span className="text-purple-300 font-semibold">
-                            NFTs creados: {userNFTs.length}/4
+                            {/* Ronda 8, punto 4: el contador es de NFTs
+                              MINTEADOS POR TI, no de la colección total:
+                              la colección nace con los 4 de ejemplo y el
+                              tope es sobre minteados — antes decía 4/4 en
+                              fresco y el modal solo ofrecía "Cerrar". */}
+                            NFTs minteados por ti:{" "}
+                            {countMintedDemoNFTs(userNFTs)}/{DEMO_MINT_LIMIT}
+                            {" · "}
+                            Colección: {userNFTs.length} NFTs
                           </span>
                         </p>
                         <div className="text-center">
@@ -1779,11 +1828,11 @@ const ProfileSingle: FC = () => {
                           el footer nunca estuvo dentro de ella. Ahora el
                           footer vive dentro de ModalContent. */}
                         <ModalFooter className="gap-4">
-                          {userNFTs.length >= 4 ? (
+                          {countMintedDemoNFTs(userNFTs) >= DEMO_MINT_LIMIT ? (
                             <div className="w-full text-center">
                               <p className="text-yellow-300 text-sm mb-2">
-                                🎉 Has alcanzado el límite de 4 NFTs en modo
-                                demo
+                                🎉 Has alcanzado el límite de {DEMO_MINT_LIMIT}{" "}
+                                NFTs minteados en modo demo
                               </p>
                               <Button
                                 onClick={() => setIsMintModalOpen(false)}
@@ -1821,9 +1870,12 @@ const ProfileSingle: FC = () => {
                                   setUserNFTs(updated);
                                   toast({
                                     title: "¡NFT minteado exitosamente!",
-                                    description: `Colección: ${Math.min(updated.length, 4)}/4`,
+                                    description: `Colección: ${updated.length} NFTs (${countMintedDemoNFTs(updated)}/${DEMO_MINT_LIMIT} minteados)`,
                                   });
-                                  if (updated.length >= 4) {
+                                  if (
+                                    countMintedDemoNFTs(updated) >=
+                                    DEMO_MINT_LIMIT
+                                  ) {
                                     setTimeout(
                                       () => setIsMintModalOpen(false),
                                       1500,
@@ -1883,7 +1935,7 @@ const ProfileSingle: FC = () => {
                   </Modal>
 
                   <button
-                    className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border rounded-md"
+                    className="bg-purple-500/10 hover:bg-purple-600/20 text-purple-700 border-purple-500/40 dark:bg-purple-500/20 dark:hover:bg-purple-600/30 dark:text-purple-200 dark:border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border rounded-md"
                     onClick={() => setIsMintModalOpen(true)}
                   >
                     <Camera className="w-4 h-4" />
@@ -1893,21 +1945,25 @@ const ProfileSingle: FC = () => {
 
                 {/* Información de Testnet */}
                 {testnetInfo && (
-                  <div className="p-3 bg-white/5 rounded-lg">
+                  <div className="p-3 bg-slate-900/5 dark:bg-white/5 rounded-lg">
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
                       <Zap className="w-4 h-4 text-yellow-400" />
                       Estado Testnet Mumbai
                     </h4>
                     <div className="grid grid-cols-2 gap-4 text-xs">
                       <div>
-                        <span className="text-white/70">Tokens Gratuitos:</span>
+                        <span className="text-slate-500 dark:text-white/70">
+                          Tokens Gratuitos:
+                        </span>
                         <div className="font-medium">
                           {testnetInfo.claimed || 0} /{" "}
                           {testnetInfo.maxClaim || 1000} CMPX
                         </div>
                       </div>
                       <div>
-                        <span className="text-white/70">Tokens Diarios:</span>
+                        <span className="text-slate-500 dark:text-white/70">
+                          Tokens Diarios:
+                        </span>
                         <div className="font-medium">
                           {Math.floor((testnetInfo.dailyClaimed || 0) / 1000)}K
                           /{" "}
@@ -1930,7 +1986,7 @@ const ProfileSingle: FC = () => {
                           <Images className="w-4 h-4 text-purple-400" />
                           Mis NFTs ({userNFTs.length})
                         </h4>
-                        <p className="text-xs text-white/60">
+                        <p className="text-xs text-slate-500 dark:text-white/60">
                           🎨 Tokens únicos que representan tu perfil en
                           blockchain
                         </p>
@@ -1960,17 +2016,17 @@ const ProfileSingle: FC = () => {
                             }
                             navigate("/nfts");
                           }}
-                          className="text-xs text-purple-400 hover:text-purple-300"
+                          className="text-xs text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
                         >
                           Saber más →
                         </Button>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 min-w-0">
                       {userNFTs.slice(0, 4).map((nft, index) => (
                         <div
                           key={nft.id || index}
-                          className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group"
+                          className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group min-w-0"
                         >
                           <div className="aspect-square rounded mb-2 overflow-hidden relative">
                             {nft.image ? (
@@ -1991,13 +2047,13 @@ const ProfileSingle: FC = () => {
                               {nft.value ? `${nft.value} CMPX` : ""}
                             </div>
                           </div>
-                          <div className="text-xs">
+                          <div className="text-xs min-w-0">
                             <div className="font-medium truncate">
                               {nft.name || `NFT #${nft.token_id}`}
                             </div>
-                            <div className="flex items-center justify-between mt-1">
+                            <div className="flex items-center justify-between gap-1 mt-1 min-w-0">
                               <span
-                                className={`text-[10px] capitalize ${
+                                className={`text-[10px] capitalize shrink-0 ${
                                   nft.rarity === "legendary"
                                     ? "text-yellow-400"
                                     : nft.rarity === "epic"
@@ -2010,7 +2066,7 @@ const ProfileSingle: FC = () => {
                                 {nft.rarity || "Común"}
                               </span>
                               {nft.chain && (
-                                <span className="text-white/50 text-[9px]">
+                                <span className="text-white/50 text-[9px] truncate min-w-0">
                                   {nft.chain}
                                 </span>
                               )}
@@ -2024,7 +2080,10 @@ const ProfileSingle: FC = () => {
                         Colección:{" "}
                         {userNFTs[0]?.collection || "CómplicesConecta"}
                       </span>
-                      <span>{userNFTs.length}/4 NFTs creados</span>
+                      <span>
+                        {userNFTs.length} NFTs · {countMintedDemoNFTs(userNFTs)}
+                        /{DEMO_MINT_LIMIT} minteados
+                      </span>
                     </div>
                     {userNFTs.length > 4 && (
                       <div className="text-center mt-2">
@@ -2050,54 +2109,61 @@ const ProfileSingle: FC = () => {
             </Card>
           )}
 
-          {/* Resumen rápido de Wallet & NFTs */}
-          <Card
-            id="wallet"
-            className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl"
-          >
-            <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                  <Wallet className="w-5 h-5 text-white" />
+          {/* Resumen rápido de Wallet & NFTs.
+              Ronda 8 (punto 14): el perfil anónimo no tiene billetera
+              ni NFTs: se oculta el resumen. */}
+          {!isAnonymous && (
+            <Card
+              id="wallet"
+              className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl"
+            >
+              <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                    <Wallet className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs sm:text-sm text-white/70">
+                      Estado de cuenta NFT
+                    </p>
+                    <p className="text-xs sm:text-sm text-white">
+                      CMPX:{" "}
+                      <span className="font-semibold">
+                        {tokenBalances.cmpx}
+                      </span>
+                      <span className="mx-2 text-white/40">·</span>
+                      NFTs:{" "}
+                      <span className="font-semibold">{userNFTs.length}</span>
+                    </p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-xs sm:text-sm text-white/70">
-                    Estado de cuenta NFT
-                  </p>
-                  <p className="text-xs sm:text-sm text-white">
-                    CMPX:{" "}
-                    <span className="font-semibold">{tokenBalances.cmpx}</span>
-                    <span className="mx-2 text-white/40">·</span>
-                    NFTs:{" "}
-                    <span className="font-semibold">{userNFTs.length}</span>
-                  </p>
-                </div>
-              </div>
-              <Button
-                onClick={() => {
-                  if (isOwnProfile || isDemoProfile) {
-                    navigate("/tokens");
-                    return;
-                  }
+                <Button
+                  onClick={() => {
+                    if (isOwnProfile || isDemoProfile) {
+                      navigate("/tokens");
+                      return;
+                    }
 
-                  if (typeof window !== "undefined") {
-                    window.location.hash = "wallet";
-                    document
-                      .getElementById("wallet")
-                      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }
-                }}
-                className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
-              >
-                <Wallet className="w-4 h-4" />
-                <span>
-                  {isOwnProfile || isDemoProfile
-                    ? "Gestionar mis Tokens"
-                    : "Verificando activos..."}
-                </span>
-              </Button>
-            </CardContent>
-          </Card>
+                    if (typeof window !== "undefined") {
+                      window.location.hash = "wallet";
+                      document.getElementById("wallet")?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                    }
+                  }}
+                  className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
+                >
+                  <Wallet className="w-4 h-4" />
+                  <span>
+                    {isOwnProfile || isDemoProfile
+                      ? "Gestionar mis Tokens"
+                      : "Verificando activos..."}
+                  </span>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Sobre mí - modelo del video (espejo de pareja, 1 usuario) */}
           <SingleAboutSection member={singleAbout} isDemoMode={singleIsDemo} />
@@ -2172,8 +2238,10 @@ const ProfileSingle: FC = () => {
               `demo_nfts:<profile.id>` mientras el mint escribía
               `demo_nfts:<user.id>` — dos colecciones distintas y el
               contador de Wallet decía 1 mientras el perfil decía 0
-              (ronda 7, punto 9). */}
-          {isDemoProfile && (
+              (ronda 7, punto 9).
+              Ronda 8 (punto 14): el perfil anónimo no tiene wallet
+              demo ni staking (170 GTK / 35% APY de Sofía). */}
+          {isDemoProfile && !isAnonymous && (
             <DemoWallet
               userId={
                 user?.id ||
@@ -2188,7 +2256,10 @@ const ProfileSingle: FC = () => {
           {/* Publicaciones - después de la información del perfil.
               El post de ejemplo es de Ana, no de Sofía: showExamplePost
               en false para que la pestaña no muestre el post de Ana ni
-              su vacío contradictorio (punto 13). */}
+              su vacío contradictorio (punto 13).
+              Ronda 8 (punto 14): el perfil anónimo NO puede publicar
+              posts (solo crear reseñas) ni mintear NFTs: se ocultan
+              "Crear Post" y "Crear NFT" en ProfileContent. */}
           <div className="pt-4">
             <ProfileContent
               isOwnProfile={isOwnProfile}
@@ -2196,6 +2267,8 @@ const ProfileSingle: FC = () => {
               onDeletePost={handleDeletePost}
               onCommentPost={handleCommentPost}
               showExamplePost={false}
+              allowCreatePost={!isAnonymous}
+              allowNft={!isAnonymous}
             />
           </div>
 
@@ -2267,8 +2340,9 @@ const ProfileSingle: FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 md:p-10">
-              {/* Mostrar mensaje de acceso denegado si corresponde */}
-              {privateImageAccess === "denied" && (
+              {/* Mostrar mensaje de acceso denegado si corresponde.
+                  Ronda 8 (punto 14): sin galería privada en anónimo. */}
+              {!isAnonymous && privateImageAccess === "denied" && (
                 <div className="text-center py-8">
                   <Lock className="w-12 h-12 mx-auto mb-4 text-red-400" />
                   <h3 className="text-lg font-semibold text-red-400 mb-2">
@@ -2312,237 +2386,251 @@ const ProfileSingle: FC = () => {
                     </div>
                   ))}
                 </div>
+                {SOFIA_PUBLIC_PHOTOS_LIST.length === 0 && (
+                  <p className="text-center text-sm text-slate-500 dark:text-white/60 py-8">
+                    Sin fotos públicas aún
+                  </p>
+                )}
               </ProtectedMedia>
 
-              {/* Galería privada mejorada con carrusel */}
-              <div
-                className="mb-6"
-                ref={privateGalleryRef}
-                id="private-gallery"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                  <h4 className="text-white font-semibold flex items-center gap-2">
-                    <Lock className="w-4 h-4" />
-                    Fotos Privadas ({galleryImages.length})
-                  </h4>
-                  {/* Colapsar/expandir (punto 14): la galería carga
+              {/* Galería privada mejorada con carrusel.
+                  Ronda 8 (punto 14): el perfil anónimo no tiene galería
+                  privada (ni las 58 fotos de Sofía ni su PIN 1234). */}
+              {!isAnonymous && (
+                <div
+                  className="mb-6"
+                  ref={privateGalleryRef}
+                  id="private-gallery"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h4 className="text-white font-semibold flex items-center gap-2">
+                      <Lock className="w-4 h-4" />
+                      Fotos Privadas ({galleryImages.length})
+                    </h4>
+                    {/* Colapsar/expandir (punto 14): la galería carga
                       colapsada; el botón la expande sin desbloquearla
                       (las fotos siguen borrosas/bloqueadas hasta el PIN). */}
-                  <button
-                    type="button"
-                    onClick={() => setPrivateGalleryOpen((prev) => !prev)}
-                    aria-expanded={privateGalleryOpen}
-                    className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-all"
-                  >
-                    {privateGalleryOpen ? (
-                      <>
-                        <ChevronUp className="w-3 h-3" />
-                        Ocultar fotos
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-3 h-3" />
-                        Ver fotos ({galleryImages.length})
-                      </>
-                    )}
-                  </button>
-                  <div className="flex items-center gap-2">
-                    {import.meta.env.PROD &&
-                      isOwnProfile &&
-                      !isGalleryUnlocked && (
-                        <Button
-                          onClick={handleBiometricUnlock}
-                          disabled={isBiometricUnlocking}
-                          className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[110px] justify-center"
-                        >
-                          <Unlock className="w-3 h-3" />
-                          {isBiometricUnlocking ? "Validando..." : "Biométrico"}
-                        </Button>
-                      )}
-                    <Button
-                      onClick={() => {
-                        if (isGalleryUnlocked) {
-                          // BLOQUEAR manual: quitar blur y candado
-                          setIsParentalLocked(true);
-                          setShowParentalUnlock(false);
-                          setDemoPrivateUnlocked(false);
-                          setShowImageModal(false);
-                          clearUnlock();
-                        } else {
-                          // DESBLOQUEAR: activar ParentalControl para ingresar PIN
-                          setIsParentalLocked(true);
-                          setShowParentalUnlock(true);
-                        }
-                      }}
-                      className={`h-8 px-3 text-xs rounded-full flex items-center gap-1.5 transition-all min-w-[110px] justify-center ${
-                        isGalleryUnlocked
-                          ? "bg-red-600/80 hover:bg-red-700/80 text-white"
-                          : "bg-purple-600/80 hover:bg-purple-700/80 text-white"
-                      }`}
+                    <button
+                      type="button"
+                      onClick={() => setPrivateGalleryOpen((prev) => !prev)}
+                      aria-expanded={privateGalleryOpen}
+                      className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-all"
                     >
-                      {isGalleryUnlocked ? (
+                      {privateGalleryOpen ? (
                         <>
-                          <Lock className="w-3 h-3" />
-                          Bloquear
+                          <ChevronUp className="w-3 h-3" />
+                          Ocultar fotos
                         </>
                       ) : (
                         <>
-                          <Unlock className="w-3 h-3" />
-                          Desbloquear
+                          <ChevronDown className="w-3 h-3" />
+                          Ver fotos ({galleryImages.length})
                         </>
                       )}
-                    </Button>
+                    </button>
+                    <div className="flex items-center gap-2">
+                      {import.meta.env.PROD &&
+                        isOwnProfile &&
+                        !isGalleryUnlocked && (
+                          <Button
+                            onClick={handleBiometricUnlock}
+                            disabled={isBiometricUnlocking}
+                            className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-emerald-500/80 hover:bg-emerald-600/80 text-white transition-all min-w-[110px] justify-center"
+                          >
+                            <Unlock className="w-3 h-3" />
+                            {isBiometricUnlocking
+                              ? "Validando..."
+                              : "Biométrico"}
+                          </Button>
+                        )}
+                      <Button
+                        onClick={() => {
+                          if (isGalleryUnlocked) {
+                            // BLOQUEAR manual: quitar blur y candado
+                            setIsParentalLocked(true);
+                            setShowParentalUnlock(false);
+                            setDemoPrivateUnlocked(false);
+                            setShowImageModal(false);
+                            clearUnlock();
+                          } else {
+                            // DESBLOQUEAR: activar ParentalControl para ingresar PIN
+                            setIsParentalLocked(true);
+                            setShowParentalUnlock(true);
+                          }
+                        }}
+                        className={`h-8 px-3 text-xs rounded-full flex items-center gap-1.5 transition-all min-w-[110px] justify-center ${
+                          isGalleryUnlocked
+                            ? "bg-red-600/80 hover:bg-red-700/80 text-white"
+                            : "bg-purple-600/80 hover:bg-purple-700/80 text-white"
+                        }`}
+                      >
+                        {isGalleryUnlocked ? (
+                          <>
+                            <Lock className="w-3 h-3" />
+                            Bloquear
+                          </>
+                        ) : (
+                          <>
+                            <Unlock className="w-3 h-3" />
+                            Desbloquear
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
-                </div>
 
-                {/* SECCIÓN GALERÍA PRIVADA CORREGIDA — colapsada por
+                  {/* SECCIÓN GALERÍA PRIVADA CORREGIDA — colapsada por
                     defecto (punto 14): antes el carrusel renderizaba los
                     58 ítems expandidos al cargar el perfil. */}
-                <div className="mb-4">
-                  <p className="text-white/60 text-xs mb-2">
-                    🔒 Galería Privada (requiere desbloqueo con PIN)
-                  </p>
-                  {!privateGalleryOpen ? (
-                    <p className="text-white/50 text-xs">
-                      {galleryImages.length} fotos privadas colapsadas. Toca
-                      "Ver fotos" para expandir la galería.
+                  <div className="mb-4">
+                    <p className="text-white/60 text-xs mb-2">
+                      🔒 Galería Privada (requiere desbloqueo con PIN)
                     </p>
-                  ) : (
-                    <Carousel
-                      className="mt-4"
-                      opts={{ align: "start", loop: false }}
-                    >
-                      <CarouselContent>
-                        {galleryImages.map(
-                          (img: PrivateImageItem | string, idx: number) => {
-                            const imageSource =
-                              typeof img === "string"
-                                ? img
-                                : (img.url ?? img.src ?? "");
-                            return (
-                              <CarouselItem
-                                key={idx}
-                                className="basis-1/2 sm:basis-1/3 md:basis-1/4"
-                              >
-                                <div
-                                  className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                                  onClick={() => {
-                                    // Si el control parental está bloqueado, abrir
-                                    // la pantalla del PIN (perfil propio) o el
-                                    // flujo de solicitud (visitante).
-                                    if (isParentalLocked) {
-                                      if (isOwnProfile) {
-                                        setShowParentalUnlock(true);
-                                      } else {
-                                        setShowPrivateImageRequest(true);
-                                      }
-                                      return;
-                                    }
-
-                                    // Si ya está desbloqueado, abrir carrusel
-                                    if (isGalleryUnlocked) {
-                                      const resolved = galleryImages
-                                        .map((g) =>
-                                          typeof g === "string"
-                                            ? g
-                                            : (g.url ?? g.src ?? ""),
-                                        )
-                                        .filter(
-                                          (u): u is string =>
-                                            typeof u === "string" &&
-                                            u.length > 0,
-                                        );
-                                      openImageModal(resolved, idx);
-                                      return;
-                                    }
-
-                                    // CASO 1: Perfil propio (demo o real)
-                                    // Al hacer click, activar el control parental para pedir PIN
-                                    if (isOwnProfile) {
-                                      setIsParentalLocked(true);
-                                      setShowParentalUnlock(true);
-                                      return;
-                                    }
-
-                                    // CASO 2: Otros usuarios (vista sin acceso)
-                                    // Mostrar modal de solicitud de acceso legal
-                                    setShowPrivateImageRequest(true);
-                                  }}
+                    {!privateGalleryOpen ? (
+                      <p className="text-white/50 text-xs">
+                        {galleryImages.length} fotos privadas colapsadas. Toca
+                        "Ver fotos" para expandir la galería.
+                      </p>
+                    ) : (
+                      <Carousel
+                        className="mt-4"
+                        opts={{ align: "start", loop: false }}
+                      >
+                        <CarouselContent>
+                          {galleryImages.map(
+                            (img: PrivateImageItem | string, idx: number) => {
+                              const imageSource =
+                                typeof img === "string"
+                                  ? img
+                                  : (img.url ?? img.src ?? "");
+                              return (
+                                <CarouselItem
+                                  key={idx}
+                                  className="basis-1/2 sm:basis-1/3 md:basis-1/4"
                                 >
-                                  <img
-                                    src={imageSource}
-                                    alt="Private content"
-                                    {...noDownloadProps(isOwnProfile)}
-                                    onError={(e) => {
-                                      // C6: sin fallback a la imagen privada
-                                      // pública; solo al placeholder genérico,
-                                      // y sin reintentar si ya es el placeholder.
-                                      const img =
-                                        e.currentTarget as HTMLImageElement;
-                                      if (
-                                        !img.src.endsWith(
-                                          PRIVATE_MEDIA_PLACEHOLDER,
-                                        )
-                                      ) {
-                                        img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                                  <div
+                                    className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                                    onClick={() => {
+                                      // Si el control parental está bloqueado, abrir
+                                      // la pantalla del PIN (perfil propio) o el
+                                      // flujo de solicitud (visitante).
+                                      if (isParentalLocked) {
+                                        if (isOwnProfile) {
+                                          setShowParentalUnlock(true);
+                                        } else {
+                                          setShowPrivateImageRequest(true);
+                                        }
+                                        return;
                                       }
-                                    }}
-                                    className={cn(
-                                      "w-full h-full object-cover transition-[filter,transform] duration-500",
-                                      isGalleryUnlocked
-                                        ? "blur-0 scale-100"
-                                        : "blur-3xl scale-110",
-                                    )}
-                                  />
 
-                                  {/* Marca de agua de la galería privada:
+                                      // Si ya está desbloqueado, abrir carrusel
+                                      if (isGalleryUnlocked) {
+                                        const resolved = galleryImages
+                                          .map((g) =>
+                                            typeof g === "string"
+                                              ? g
+                                              : (g.url ?? g.src ?? ""),
+                                          )
+                                          .filter(
+                                            (u): u is string =>
+                                              typeof u === "string" &&
+                                              u.length > 0,
+                                          );
+                                        openImageModal(resolved, idx);
+                                        return;
+                                      }
+
+                                      // CASO 1: Perfil propio (demo o real)
+                                      // Al hacer click, activar el control parental para pedir PIN
+                                      if (isOwnProfile) {
+                                        setIsParentalLocked(true);
+                                        setShowParentalUnlock(true);
+                                        return;
+                                      }
+
+                                      // CASO 2: Otros usuarios (vista sin acceso)
+                                      // Mostrar modal de solicitud de acceso legal
+                                      setShowPrivateImageRequest(true);
+                                    }}
+                                  >
+                                    <img
+                                      src={imageSource}
+                                      alt="Private content"
+                                      {...noDownloadProps(isOwnProfile)}
+                                      onError={(e) => {
+                                        // C6: sin fallback a la imagen privada
+                                        // pública; solo al placeholder genérico,
+                                        // y sin reintentar si ya es el placeholder.
+                                        const img =
+                                          e.currentTarget as HTMLImageElement;
+                                        if (
+                                          !img.src.endsWith(
+                                            PRIVATE_MEDIA_PLACEHOLDER,
+                                          )
+                                        ) {
+                                          img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                                        }
+                                      }}
+                                      className={cn(
+                                        "w-full h-full object-cover transition-[filter,transform] duration-500",
+                                        isGalleryUnlocked
+                                          ? "blur-0 scale-100"
+                                          : "blur-3xl scale-110",
+                                      )}
+                                    />
+
+                                    {/* Marca de agua de la galería privada:
                                     solo si el dueño la tiene activa en
                                     Privacidad (antes salía siempre). */}
-                                  {isGalleryUnlocked &&
-                                    profilePrivacy.watermark && (
-                                      <div className="absolute inset-0 pointer-events-none select-none">
-                                        <div className="absolute bottom-2 right-2 rounded-md bg-black/50 px-2 py-1 text-[10px] font-semibold text-white border border-white/20">
-                                          ComplicesConecta
-                                        </div>
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-15">
-                                          <div className="text-white text-3xl font-bold -rotate-45">
-                                            CÓMPLICES
+                                    {isGalleryUnlocked &&
+                                      profilePrivacy.watermark && (
+                                        <div className="absolute inset-0 pointer-events-none select-none">
+                                          <div className="absolute bottom-2 right-2 rounded-md bg-black/50 px-2 py-1 text-[10px] font-semibold text-white border border-white/20">
+                                            ComplicesConecta
+                                          </div>
+                                          <div className="absolute inset-0 flex items-center justify-center opacity-15">
+                                            <div className="text-white text-3xl font-bold -rotate-45">
+                                              CÓMPLICES
+                                            </div>
                                           </div>
                                         </div>
+                                      )}
+
+                                    {!isGalleryUnlocked && (
+                                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
+                                        <div className="bg-white/20 p-4 rounded-2xl border-2 border-white/30 shadow-2xl backdrop-blur-md">
+                                          <Lock className="w-8 h-8 text-white drop-shadow-lg" />
+                                        </div>
+                                        <span className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold text-white bg-white/20 border-2 border-white/40 shadow-lg backdrop-blur-md">
+                                          {isParentalLocked
+                                            ? "🔒 Bloqueado por Control Parental"
+                                            : isOwnProfile
+                                              ? "👆 Click para desbloquear (requiere PIN)"
+                                              : "🔒 Contenido Privado"}
+                                        </span>
                                       </div>
                                     )}
-
-                                  {!isGalleryUnlocked && (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
-                                      <div className="bg-white/20 p-4 rounded-2xl border-2 border-white/30 shadow-2xl backdrop-blur-md">
-                                        <Lock className="w-8 h-8 text-white drop-shadow-lg" />
-                                      </div>
-                                      <span className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold text-white bg-white/20 border-2 border-white/40 shadow-lg backdrop-blur-md">
-                                        {isParentalLocked
-                                          ? "🔒 Bloqueado por Control Parental"
-                                          : isOwnProfile
-                                            ? "👆 Click para desbloquear (requiere PIN)"
-                                            : "🔒 Contenido Privado"}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-                              </CarouselItem>
-                            );
-                          },
-                        )}
-                      </CarouselContent>
-                      <CarouselPrevious className="hidden md:flex" />
-                      <CarouselNext className="hidden md:flex" />
-                    </Carousel>
-                  )}
+                                  </div>
+                                </CarouselItem>
+                              );
+                            },
+                          )}
+                        </CarouselContent>
+                        <CarouselPrevious className="hidden md:flex" />
+                        <CarouselNext className="hidden md:flex" />
+                      </Carousel>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* Gestor de solicitudes de acceso a galería privada (solo para propietario) */}
-          {isOwnProfile && (
+          {/* Gestor de solicitudes de acceso a galería privada (solo para propietario).
+              Ronda 8 (punto 14): el perfil anónimo no tiene galería
+              privada: tampoco hereda las 2 solicitudes mock de Sofía
+              (María García / Carlos López). */}
+          {isOwnProfile && !isAnonymous && (
             <div className="mb-6">
               <PrivateImageRequestsManager
                 profileId={profile?.id || ""}
@@ -2588,8 +2676,10 @@ const ProfileSingle: FC = () => {
         />
       )}
 
-      {/* Control Parental - SOLO para perfil propio */}
-      {isOwnProfile && (
+      {/* Control Parental - SOLO para perfil propio.
+          Ronda 8 (punto 14): el perfil anónimo no tiene galería
+          privada ni PIN (el PIN demo 1234 era de Sofía). */}
+      {isOwnProfile && !isAnonymous && (
         <ParentalControl
           isLocked={isParentalLocked}
           showLockScreen={showParentalUnlock}

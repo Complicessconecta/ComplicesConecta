@@ -105,15 +105,20 @@ function mapPublicClubToClub(c: PublicClub): Club {
 
 /**
  * Sin duplicados por nombre normalizado: el catálogo público trae "Club
- * Demo" y la tabla clubs de BD puede traer el mismo club, y la lista
- * mostraba Club Demo dos veces.
+ * Demo CómplicesConecta" y la tabla clubs de BD puede traer el mismo club
+ * como "Club Demo", y la lista mostraba Club Demo dos veces. Dos nombres
+ * son el mismo club si uno es prefijo del otro ("club demo" ⊂ "club demo
+ * cómplicesconecta"); la primera ocurrencia manda (BD antes que catálogo).
  */
 function dedupeClubs(list: Club[]): Club[] {
-  const seen = new Set<string>();
+  const seen: string[] = [];
   return list.filter((club) => {
     const key = club.name.trim().toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
+    if (
+      seen.some((prev) => prev === key || prev.startsWith(key) || key.startsWith(prev))
+    )
+      return false;
+    seen.push(key);
     return true;
   });
 }
@@ -439,7 +444,16 @@ export const Clubs = () => {
         return;
       }
 
-      setClubs(dedupeClubs((data || []) as Club[]));
+      // El catálogo público se MEZCLA con las filas de BD (la BD manda):
+      // antes, si la tabla traía filas, el catálogo se descartaba entero y
+      // "Eden Noir" (que solo vive en el catálogo) no aparecía en /clubs
+      // ni en la búsqueda. Sin clubs en BD se usa solo el catálogo (abajo).
+      setClubs(
+        dedupeClubs([
+          ...((data || []) as Club[]),
+          ...PUBLIC_CLUBS.map(mapPublicClubToClub),
+        ]),
+      );
       logger.info("Clubs loaded successfully", { count: data?.length });
     } catch (error) {
       logger.error("Error loading clubs, using public catalog fallback:", {

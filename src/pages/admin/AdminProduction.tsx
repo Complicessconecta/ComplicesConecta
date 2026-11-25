@@ -11,6 +11,10 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import {
+  formatGenderLabel,
+  formatInterestedInLabel,
+} from "@/lib/profileLabels";
 
 interface Invitation {
   id: string;
@@ -979,12 +983,13 @@ const AdminProduction = () => {
                           </div>
                           <p>
                             <strong>Género:</strong>{" "}
-                            {(profile as any).gender || "No especificado"}
+                            {formatGenderLabel((profile as any).gender)}
                           </p>
                           <p>
                             <strong>Interesado en:</strong>{" "}
-                            {(profile as any).interested_in ||
-                              "No especificado"}
+                            {formatInterestedInLabel(
+                              (profile as any).interested_in,
+                            )}
                           </p>
                         </div>
                       </div>

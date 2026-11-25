@@ -3,7 +3,16 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserPlus, UserCheck, UserX, Clock, GalleryHorizontal, MessageSquare, MailQuestion, Send } from "lucide-react";
+import {
+  UserPlus,
+  UserCheck,
+  UserX,
+  Clock,
+  GalleryHorizontal,
+  MessageSquare,
+  MailQuestion,
+  Send,
+} from "lucide-react";
 import { useFeatures } from "@/hooks/useFeatures";
 import { invitationService, type Invitation } from "@/lib/invitations";
 import { useAuth } from "@/features/auth/useAuth";
@@ -12,7 +21,12 @@ import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { openIntimateChat } from "@/lib/intimateChat";
-import { listSentRequestsSync } from "@/lib/friends";
+import {
+  listIncomingRequestsSync,
+  listSentRequestsSync,
+  respondFriendRequest,
+  resolveDemoProfileName,
+} from "@/lib/friends";
 import { generateDemoProfiles, demoProfiles } from "@/demo/demoData";
 import { getSocialDemoData } from "@/demo/socialDemoData";
 
@@ -49,7 +63,9 @@ function resolveRequestTargetName(toId: string): string {
   if (social.displayName && social.displayName !== toId) {
     return social.displayName;
   }
-  return toId;
+  // Cuentas demo locales (TestR7, anonr8test, …) y canónicas: el
+  // roster y los datos sociales no las conocen (ronda 9, stream D).
+  return resolveDemoProfileName(toId);
 }
 
 const Requests = () => {
@@ -94,7 +110,9 @@ const Requests = () => {
   const loadDemoDecisions = (): Record<string, Invitation["status"]> => {
     try {
       const raw = window.localStorage.getItem(DEMO_DECISIONS_KEY);
-      return raw ? (JSON.parse(raw) as Record<string, Invitation["status"]>) : {};
+      return raw
+        ? (JSON.parse(raw) as Record<string, Invitation["status"]>)
+        : {};
     } catch {
       return {};
     }
@@ -118,7 +136,7 @@ const Requests = () => {
             status: decisions[inv.id] as Invitation["status"],
             decided_at:
               decisions[inv.id] !== "pending"
-                ? inv.decided_at ?? new Date().toISOString()
+                ? (inv.decided_at ?? new Date().toISOString())
                 : null,
           }
         : inv;
@@ -226,10 +244,40 @@ const Requests = () => {
       ...localSent.filter((inv) => !demoSent.some((d) => d.id === inv.id)),
     ];
 
-    setReceivedInvitations(demoReceived.map(applyDecision));
+    // Ronda 9, stream D: las solicitudes REALES recibidas en esta
+    // sesión (amistad y ver fotos, almacén local `friend_requests_demo`
+    // de @/lib/friends) se suman a las recibidas. Antes solo se
+    // mostraba la lista fija de arriba (3 invitaciones a Sofía) y una
+    // solicitud enviada a esta cuenta —p. ej. la del perfil anónimo a
+    // la pareja— nunca llegaba a la bandeja: no se podía aceptar y el
+    // gate de perfil privado no se levantaba (test ronda 8).
+    const localReceived: Invitation[] = listIncomingRequestsSync(
+      currentUserId ?? "",
+    ).map((req) => ({
+      id: req.id,
+      from_profile: resolveDemoProfileName(req.fromId),
+      to_profile: senderName,
+      type: req.kind === "photo_access" ? "gallery" : "profile",
+      status: req.status,
+      message:
+        req.message ??
+        (req.kind === "photo_access"
+          ? "Solicitud para ver la galería privada"
+          : "Solicitud de amistad"),
+      created_at: req.createdAt,
+      decided_at: req.respondedAt ?? null,
+    }));
+    const mergedReceived = [
+      ...demoReceived,
+      ...localReceived.filter(
+        (inv) => !demoReceived.some((d) => d.id === inv.id),
+      ),
+    ];
+
+    setReceivedInvitations(mergedReceived.map(applyDecision));
     setSentInvitations(mergedSent.map(applyDecision));
     logger.info("✅ Solicitudes demo cargadas:", {
-      received: demoReceived.length,
+      received: mergedReceived.length,
       sent: mergedSent.length,
     });
   };
@@ -267,9 +315,7 @@ const Requests = () => {
     // Verificar autenticación real - solo redirigir si realmente no está autenticado
     try {
       if (!isAuthenticated()) {
-        logger.info(
-          "Usuario no autenticado en Requests, redirigiendo a /auth",
-        );
+        logger.info("Usuario no autenticado en Requests, redirigiendo a /auth");
         navigate("/auth");
         return;
       }
@@ -287,7 +333,14 @@ const Requests = () => {
       logger.info("No se pudo obtener userId, redirigiendo a /auth");
       navigate("/auth");
     }
-  }, [isDemoMode, isAuthenticated, navigate, toast, user?.id]);
+    // NOTA (ronda 9, stream D): `isAuthenticated` NO va en las deps.
+    // `useAuth` la recrea en cada render (no es useCallback): listarla
+    // hacía re-ejecutar este efecto en cada render y, en modo demo,
+    // `loadDemoInvitations()` hace setState → bucle infinito de efectos
+    // (en jsdom/act cuelga el test; en navegador quema CPU en /requests).
+    // La comprobación de auth sigue corriendo al montar y cuando cambian
+    // `isDemoMode` o `user?.id`, que es cuando importa.
+  }, [isDemoMode, navigate, toast, user?.id]);
 
   const handleInvitationAction = async (
     invitationId: string,
@@ -303,13 +356,66 @@ const Requests = () => {
       setReceivedInvitations((prev) =>
         prev.map((inv) =>
           inv.id === invitationId
-            ? { ...inv, status: nextStatus, decided_at: new Date().toISOString() }
+            ? {
+                ...inv,
+                status: nextStatus,
+                decided_at: new Date().toISOString(),
+              }
             : inv,
         ),
       );
 
       // Si es modo demo, simular la acción
       if (String(demoAuth) === "true") {
+        // Ronda 9, stream D: las invitaciones locales (amistad / ver
+        // fotos, ids `demo-req-*` / `demo-photo-*`) son solicitudes
+        // reales del almacén local: aceptar crea la amistad
+        // (`friendships_demo`) y levanta el gate de perfil privado;
+        // antes solo se guardaba la decisión en `demo_invitation_status`
+        // y la amistad nunca existía. Las 3 fijas (`demo-inv-*`) siguen
+        // el camino simulado de siempre.
+        if (
+          invitationId.startsWith("demo-req-") ||
+          invitationId.startsWith("demo-photo-")
+        ) {
+          const result = await respondFriendRequest(
+            invitationId,
+            action === "accept" ? "accepted" : "declined",
+            true,
+          );
+          if (!result.ok) {
+            setReceivedInvitations((prev) =>
+              prev.map((inv) =>
+                inv.id === invitationId
+                  ? { ...inv, status: "pending", decided_at: null }
+                  : inv,
+              ),
+            );
+            toast({
+              title: "Error",
+              description: result.error ?? "No se pudo procesar la solicitud.",
+              variant: "destructive",
+            });
+            logger.error("Error respondiendo solicitud local en Requests", {
+              invitationId,
+              error: result.error,
+            });
+            return;
+          }
+          toast({
+            title: `Invitación ${action === "accept" ? "aceptada" : "rechazada"}`,
+            description:
+              action === "accept"
+                ? "Ahora son amigos y el perfil privado queda visible."
+                : "La invitación ha sido rechazada.",
+          });
+          logger.info("✅ Solicitud local respondida en Requests:", {
+            invitationId,
+            action,
+          });
+          return;
+        }
+
         saveDemoDecision(invitationId, nextStatus);
 
         toast({
@@ -516,7 +622,7 @@ const Requests = () => {
               <TabsContent value="received" className="mt-6">
                 <div className="space-y-4">
                   {receivedInvitations.length === 0 ? (
-                    <Card className="p-8 text-center bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10">
+                    <Card className="p-8 text-center bg-white dark:bg-purple-950 dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10">
                       <UserPlus className="h-16 w-16 mx-auto mb-4 text-slate-400 dark:text-white/50" />
                       <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                         No hay invitaciones recibidas
@@ -529,14 +635,15 @@ const Requests = () => {
                     receivedInvitations.map((inv) => (
                       <Card
                         key={inv.id}
-                        className="p-4 bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start gap-4 card-accessible"
+                        className="p-4 bg-white dark:bg-purple-950 dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start gap-4 card-accessible"
                       >
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center text-sm text-slate-700 dark:text-white/80">
                               {getInvitationTypeIcon(inv.type)}
                               <span>
-                                Invitación de <strong>{inv.from_profile}</strong>
+                                Invitación de{" "}
+                                <strong>{inv.from_profile}</strong>
                               </span>
                             </div>
                             {getStatusBadge(inv.status)}
@@ -582,7 +689,7 @@ const Requests = () => {
               <TabsContent value="sent" className="mt-6">
                 <div className="space-y-4">
                   {sentInvitations.length === 0 ? (
-                    <Card className="p-8 text-center bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10">
+                    <Card className="p-8 text-center bg-white dark:bg-purple-950 dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10">
                       <Send className="h-16 w-16 mx-auto mb-4 text-slate-400 dark:text-white/50" />
                       <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                         No has enviado invitaciones
@@ -595,7 +702,7 @@ const Requests = () => {
                     sentInvitations.map((inv) => (
                       <Card
                         key={inv.id}
-                        className="p-4 bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 card-accessible"
+                        className="p-4 bg-white dark:bg-purple-950 dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 card-accessible"
                       >
                         <div className="flex justify-between items-start">
                           <div className="flex items-center text-sm text-slate-700 dark:text-white/80">
@@ -642,4 +749,3 @@ const Requests = () => {
 };
 
 export default Requests;
-

@@ -39,6 +39,15 @@ export interface MessageLimitInput {
   recipientPrivacy: PrivacySettings | null | undefined;
   /** ¿El remitente es un perfil verificado? */
   senderIsVerified: boolean;
+  /**
+   * Ronda 9 (stream A, punto 4): si el remitente O el destinatario
+   * es una cuenta anónima, solo se puede escribir con amistad
+   * aceptada (`areFriends`). Sin amistad no hay chat ni media.
+   */
+  senderIsAnonymous?: boolean;
+  recipientIsAnonymous?: boolean;
+  /** ¿Remitente y destinatario son amigos aceptados? */
+  areFriends?: boolean;
 }
 
 /**
@@ -49,6 +58,16 @@ export interface MessageLimitInput {
  */
 export function canSendMessageTo(input: MessageLimitInput): ChatLimitCheck {
   const { recipientPrivacy, senderIsVerified } = input;
+  if (
+    (input.senderIsAnonymous === true || input.recipientIsAnonymous === true) &&
+    input.areFriends !== true
+  ) {
+    return {
+      allowed: false,
+      reason:
+        "Las cuentas anónimas solo pueden chatear con amigos aceptados. Envía primero una solicitud de amistad y espera a que la acepten.",
+    };
+  }
   if (!recipientPrivacy) return { allowed: true };
   if (recipientPrivacy.limitMessages && !senderIsVerified) {
     return {
@@ -65,11 +84,28 @@ export interface VideoCallLimitInput {
   recipientPrivacy: PrivacySettings | null | undefined;
   /** ¿Hay match mutuo con el destinatario? */
   hasMatch: boolean;
+  /**
+   * Ronda 9 (stream A, punto 4): una videollamada con un anónimo
+   * exige amistad aceptada (el match mutuo es la aceptación en
+   * este flujo); sin ella no hay llamada.
+   */
+  senderIsAnonymous?: boolean;
+  recipientIsAnonymous?: boolean;
 }
 
 /** ¿Se puede iniciar una videollamada con el destinatario? */
 export function canStartVideoCall(input: VideoCallLimitInput): ChatLimitCheck {
   const { recipientPrivacy, hasMatch } = input;
+  if (
+    (input.senderIsAnonymous === true || input.recipientIsAnonymous === true) &&
+    !hasMatch
+  ) {
+    return {
+      allowed: false,
+      reason:
+        "Las cuentas anónimas solo pueden hacer videollamadas con amigos aceptados.",
+    };
+  }
   if (!recipientPrivacy) return { allowed: true };
   if (!recipientPrivacy.videoChat) {
     return {

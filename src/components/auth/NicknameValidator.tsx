@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Check, X, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -71,6 +71,16 @@ const RESERVED_NICKNAMES = new Set([
 const isReservedNickname = (nickname: string): boolean =>
   RESERVED_NICKNAMES.has(nickname.trim().toLowerCase());
 
+/**
+ * Ronda 9, stream D: cota máxima de la verificación contra el
+ * servidor. Pasado este tiempo sin respuesta, el checker emite el
+ * veredicto provisional en vez de girar sin fin (test ronda 8: el
+ * spinner no terminaba y "Continuar" quedaba deshabilitado >8 s).
+ * El debounce del efecto (500 ms) va aparte: el paso 1 resuelve
+ * como muy tarde a los ~5,5 s.
+ */
+export const NICKNAME_CHECK_TIMEOUT_MS = 5000;
+
 export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
   value,
   onChange,
@@ -88,6 +98,31 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
     message: "",
     suggestions: [],
   });
+
+  /**
+   * Ronda 9, stream D — causa raíz del registro bloqueado (test ronda 8:
+   * el checker giraba sin fin y "Continuar" quedaba deshabilitado con
+   * todos los campos llenos, apodos anonr8test y termr8zz99, >8 s):
+   *
+   * 1. Los dos formularios de registro pasan `onValidationChange` como
+   *    arrow inline: su identidad cambiaba en CADA render del padre.
+   *    `checkAvailability` dependía de él (useCallback) y el efecto de
+   *    debounce dependía de ambos, así que cada render del padre
+   *    reiniciaba el temporizador de 500 ms y relanzaba la verificación;
+   *    cada veredicto re-renderizaba al padre y el ciclo no terminaba.
+   *    El callback ahora vive en un ref y `checkAvailability` es
+   *    estable: el efecto solo depende del valor del apodo.
+   * 2. Sin cota de espera: si la RPC o la consulta directa se quedaban
+   *    colgadas (red, cliente sin backend), el spinner no terminaba
+   *    nunca. Ahora la verificación corre contra un timeout de 5 s y
+   *    cae al veredicto provisional.
+   */
+  const onValidationChangeRef = useRef(onValidationChange);
+  onValidationChangeRef.current = onValidationChange;
+  /** Generación de la verificación en curso: un veredicto de un apodo
+   * que ya cambió no se aplica (evita que un resultado tardío pise el
+   * estado del apodo actual). */
+  const checkGenerationRef = useRef(0);
 
   // Validar formato del nickname
   const validateFormat = (
@@ -170,88 +205,114 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
   //     migración esté aplicada (RPC + índice único 20261124050002);
   //     hasta entonces un duplicado es posible pero el registro ya
   //     no queda bloqueado, que es el bloqueador mayor del test.
-  const checkAvailability = useCallback(
-    async (nickname: string) => {
-      if (!nickname.trim()) return;
+  //  Ronda 9, stream D: (d) sin backend configurado no se intenta
+  //     nada contra el servidor (veredicto provisional inmediato) y
+  //     (e) toda verificación corre contra un timeout de 5 s: el
+  //     paso 1 SIEMPRE resuelve en tiempo acotado.
+  const checkAvailability = useCallback(async (nickname: string) => {
+    if (!nickname.trim()) return;
 
-      const formatValidation = validateFormat(nickname);
-      if (!formatValidation.isValid) {
-        setValidation((prev) => ({
-          ...prev,
-          isChecking: false,
-          isValid: false,
-          isAvailable: false,
-          checkStatus: "invalid",
-          message: formatValidation.message,
-          suggestions: [],
-        }));
-        onValidationChange(false, false, "invalid");
-        return;
-      }
-
+    const formatValidation = validateFormat(nickname);
+    if (!formatValidation.isValid) {
       setValidation((prev) => ({
         ...prev,
-        isChecking: true,
-        checkStatus: "checking",
+        isChecking: false,
+        isValid: false,
+        isAvailable: false,
+        checkStatus: "invalid",
+        message: formatValidation.message,
+        suggestions: [],
       }));
+      onValidationChangeRef.current(false, false, "invalid");
+      return;
+    }
 
-      const reportAvailable = (available: boolean) => {
-        if (available) {
-          setValidation((prev) => ({
-            ...prev,
-            isChecking: false,
-            isValid: true,
-            isAvailable: true,
-            checkStatus: "available",
-            message: "✅ Apodo disponible",
-            suggestions: [],
-          }));
-          onValidationChange(true, true, "available");
-        } else {
-          const suggestions = generateSuggestions(nickname);
-          setValidation((prev) => ({
-            ...prev,
-            isChecking: false,
-            isValid: true,
-            isAvailable: false,
-            checkStatus: "taken",
-            message: "❌ Este apodo ya está en uso",
-            suggestions,
-          }));
-          onValidationChange(true, false, "taken");
-        }
-      };
+    // Nueva generación: los veredictos de una verificación anterior
+    // (otro apodo) se descartan al llegar. `settled` evita que un
+    // resultado tardío del servidor pise el veredicto provisional
+    // que ya emitió el timeout.
+    const generation = ++checkGenerationRef.current;
+    let settled = false;
+    const stillCurrent = () =>
+      !settled && checkGenerationRef.current === generation;
 
-      // (c) Veredicto provisional sin servidor: formato válido y no
-      // reservado -> se permite continuar, marcado como no verificado.
-      const reportUnverified = () => {
-        if (isReservedNickname(nickname)) {
-          const suggestions = generateSuggestions(nickname);
-          setValidation((prev) => ({
-            ...prev,
-            isChecking: false,
-            isValid: true,
-            isAvailable: false,
-            checkStatus: "taken",
-            message: "❌ Este apodo está reservado",
-            suggestions,
-          }));
-          onValidationChange(true, false, "taken");
-          return;
-        }
+    setValidation((prev) => ({
+      ...prev,
+      isChecking: true,
+      checkStatus: "checking",
+    }));
+
+    const reportAvailable = (available: boolean) => {
+      if (!stillCurrent()) return;
+      settled = true;
+      if (available) {
         setValidation((prev) => ({
           ...prev,
           isChecking: false,
           isValid: true,
           isAvailable: true,
-          checkStatus: "unverified",
-          message:
-            "⚠️ No se pudo verificar en el servidor (migración pendiente): formato válido y no reservado. Puedes continuar; la disponibilidad definitiva se confirma cuando la verificación del servidor esté activa.",
+          checkStatus: "available",
+          message: "✅ Apodo disponible",
           suggestions: [],
         }));
-        onValidationChange(true, true, "unverified");
-      };
+        onValidationChangeRef.current(true, true, "available");
+      } else {
+        const suggestions = generateSuggestions(nickname);
+        setValidation((prev) => ({
+          ...prev,
+          isChecking: false,
+          isValid: true,
+          isAvailable: false,
+          checkStatus: "taken",
+          message: "❌ Este apodo ya está en uso",
+          suggestions,
+        }));
+        onValidationChangeRef.current(true, false, "taken");
+      }
+    };
 
+    // (c) Veredicto provisional sin servidor: formato válido y no
+    // reservado -> se permite continuar, marcado como no verificado.
+    const reportUnverified = () => {
+      if (!stillCurrent()) return;
+      settled = true;
+      if (isReservedNickname(nickname)) {
+        const suggestions = generateSuggestions(nickname);
+        setValidation((prev) => ({
+          ...prev,
+          isChecking: false,
+          isValid: true,
+          isAvailable: false,
+          checkStatus: "taken",
+          message: "❌ Este apodo está reservado",
+          suggestions,
+        }));
+        onValidationChangeRef.current(true, false, "taken");
+        return;
+      }
+      setValidation((prev) => ({
+        ...prev,
+        isChecking: false,
+        isValid: true,
+        isAvailable: true,
+        checkStatus: "unverified",
+        message:
+          "⚠️ No se pudo verificar en el servidor (migración pendiente): formato válido y no reservado. Puedes continuar; la disponibilidad definitiva se confirma cuando la verificación del servidor esté activa.",
+        suggestions: [],
+      }));
+      onValidationChangeRef.current(true, true, "unverified");
+    };
+
+    // Ronda 9, stream D: sin backend configurado (preview sin
+    // VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY) no hay servidor al
+    // que preguntar: ni RPC ni consulta directa. Veredicto
+    // provisional inmediato, sin depender del stub.
+    if (!isSupabaseConfigured) {
+      reportUnverified();
+      return;
+    }
+
+    const serverCheck = (async (): Promise<void> => {
       try {
         // (a) Disponibilidad vía RPC pública check_nickname_available
         // (migración 20261124050001). SECURITY DEFINER (salta RLS) y
@@ -299,11 +360,31 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
         );
         reportUnverified();
       }
-    },
-    [onValidationChange],
-  );
+    })();
 
-  // Debounce para evitar muchas consultas
+    // Cota de espera: la verificación SIEMPRE resuelve (disponible /
+    // usado / provisional) antes de NICKNAME_CHECK_TIMEOUT_MS, aunque
+    // la red o el cliente se queden colgados. Sin esto el paso 1 del
+    // registro podía girar sin fin (test ronda 8).
+    const outcome = await Promise.race([
+      serverCheck.then((): "done" => "done"),
+      new Promise<"timeout">((resolve) =>
+        setTimeout(() => resolve("timeout"), NICKNAME_CHECK_TIMEOUT_MS),
+      ),
+    ]);
+    if (outcome === "timeout") {
+      console.warn(
+        "Nickname check: tiempo agotado, verificación provisional:",
+        nickname,
+      );
+      reportUnverified();
+    }
+  }, []);
+
+  // Debounce para evitar muchas consultas. `checkAvailability` es
+  // estable (el callback del padre vive en un ref): el efecto solo
+  // depende del valor, así que un render del padre ya no reinicia el
+  // temporizador ni relanza la verificación (ronda 9, stream D).
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (value.trim()) {
@@ -317,12 +398,12 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
           message: "",
           suggestions: [],
         });
-        onValidationChange(false, false, "invalid");
+        onValidationChangeRef.current(false, false, "invalid");
       }
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [value, checkAvailability, onValidationChange]);
+  }, [value, checkAvailability]);
 
   const handleSuggestionClick = (suggestion: string) => {
     onChange(suggestion);

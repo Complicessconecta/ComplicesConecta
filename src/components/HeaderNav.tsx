@@ -249,7 +249,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-56 sm:w-64 bg-purple-900/95 border-purple-500/30 backdrop-blur-md max-h-[80vh] overflow-y-auto z-200 custom-scrollbar"
+                  className="w-56 sm:w-64 bg-purple-900 border-purple-500/30 max-h-[80vh] overflow-y-auto z-200 custom-scrollbar"
                   align="end"
                   sideOffset={5}
                 >
@@ -268,7 +268,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
                       return (
                         <div key={category}>
-                          <DropdownMenuLabel className="text-purple-300 text-xs font-semibold px-2 py-1.5 sticky top-0 bg-purple-900/95 z-10">
+                          <DropdownMenuLabel className="text-purple-300 text-xs font-semibold px-2 py-1.5 sticky top-0 bg-purple-900 z-10">
                             {category}
                           </DropdownMenuLabel>
                           {categoryItems.map((item) => {
@@ -349,7 +349,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="bg-purple-900/95 backdrop-blur-xl border-purple-500/30 text-white w-56"
+                    className="bg-purple-900 border-purple-500/30 text-white w-56"
                   >
                     <DropdownMenuLabel className="text-white font-semibold">
                       {displayUserLabel}

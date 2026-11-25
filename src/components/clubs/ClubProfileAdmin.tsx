@@ -187,7 +187,7 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
   };
 
   return (
-    <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+    <Card className="bg-slate-900/85 dark:bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
       <div className="p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -209,11 +209,11 @@ export const ClubProfileAdmin: React.FC<ClubProfileAdminProps> = ({
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="bg-white/10 border border-white/20 w-full justify-start">
-            <TabsTrigger value="edit" className="data-[state=active]:bg-white/20">
+            <TabsTrigger value="edit" className="data-[state=active]:bg-white/20 data-[state=inactive]:text-white/70 dark:data-[state=inactive]:text-white/70">
               <Edit className="h-4 w-4 mr-2" />
               Editar Perfil
             </TabsTrigger>
-            <TabsTrigger value="images" className="data-[state=active]:bg-white/20">
+            <TabsTrigger value="images" className="data-[state=active]:bg-white/20 data-[state=inactive]:text-white/70 dark:data-[state=inactive]:text-white/70">
               <ImageIcon className="h-4 w-4 mr-2" />
               Imágenes
             </TabsTrigger>

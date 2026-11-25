@@ -203,7 +203,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     <Heart className="absolute top-1 right-0 w-2 h-2 text-pink-400 animate-heart-particle-2" fill="currentColor" />
                   </div>
                 </div>
-                <span className="font-black text-xl lg:text-2xl hidden sm:block bg-linear-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x">
+                <span className="font-black text-xl lg:text-2xl hidden sm:block bg-linear-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x whitespace-nowrap shrink-0">
                   ComplicesConecta
                 </span>
               </button>

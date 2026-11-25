@@ -364,7 +364,10 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       AnimatedProfileCard.tsx
 |   |   |       CollapsedUserProfile.tsx
 |   |   |       DiscoverProfileCard.tsx
+|   |   |       DistanceBadge.tsx
 |   |   |       EnhancedGallery.tsx
+|   |   |       FriendRequestButton.tsx
+|   |   |       FriendsSection.tsx
 |   |   |       Gallery.tsx
 |   |   |       ImageGallery.tsx
 |   |   |       ImageModal.tsx
@@ -372,11 +375,14 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       index.ts
 |   |   |       InterestsSelector.tsx
 |   |   |       MainProfileCard.tsx
+|   |   |       NationalityBadge.tsx
 |   |   |       NFTGalleryManager.tsx
 |   |   |       ParentalControl.tsx
+|   |   |       PhotoAccessRequestButton.tsx
 |   |   |       PrivateImageGallery.tsx
 |   |   |       PrivateImageRequest.tsx
 |   |   |       PrivateImageRequestsManager.tsx
+|   |   |       PrivateProfileGate.tsx
 |   |   |       profile.ts
 |   |   |       ProfileAnalytics.tsx
 |   |   |       ProfileDetail.tsx
@@ -389,11 +395,13 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       ProfileReportsPanel.tsx
 |   |   |       Profiles.tsx
 |   |   |       ProfileSettings.tsx
+|   |   |       ProfileSocialSettings.tsx
 |   |   |       ProfileStats.tsx
 |   |   |       ProfileTabs.tsx
 |   |   |       ProfileThemeDemo.tsx
 |   |   |       ProfileThemeShowcase.tsx
 |   |   |       ProtectedMedia.tsx
+|   |   |       ReportBlockButtons.tsx
 |   |   |       ReportProfileDialog.tsx
 |   |   |       ShareProfile.tsx
 |   |   |       useProfileQuery.ts
@@ -678,6 +686,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       demoData.ts
 |       DemoProvider.tsx
 |       RealProvider.tsx
+|       socialDemoData.ts
 |       
 +---entities
 |       club.ts
@@ -779,6 +788,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   asset-loader.ts
 |   |   capture-console-errors.ts
 |   |   chatLimits.ts
+|   |   countries.ts
 |   |   data.ts
 |   |   demo-uuid.ts
 |   |   distance-utils.ts
@@ -786,6 +796,8 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   env-utils.ts
 |   |   errorHandling.ts
 |   |   features.ts
+|   |   friends.ts
+|   |   geolocation.ts
 |   |   image-optimization.ts
 |   |   images.ts
 |   |   imageService.ts
@@ -800,8 +812,10 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   multimediaSecurity.ts
 |   |   notifications.ts
 |   |   profileCompleteness.ts
+|   |   profileVisibility.ts
 |   |   redis-cache.ts
 |   |   report-export.ts
+|   |   reportBlock.ts
 |   |   requests.ts
 |   |   roles.ts
 |   |   safe-storage.ts

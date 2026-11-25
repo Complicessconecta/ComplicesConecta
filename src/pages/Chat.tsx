@@ -31,6 +31,7 @@ import {
   canSendMessageTo,
   canStartVideoCall,
   loadRecipientPrivacy,
+  readRecipientPrivacySync,
 } from "@/lib/chatLimits";
 import { invitationService } from "@/lib/invitations";
 // Tipos reemplazados con tipos locales para compatibilidad
@@ -54,6 +55,8 @@ export interface SimpleChatMessage {
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
+import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
+import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 import { EmojiPicker } from "@/components/chat/EmojiPicker";
@@ -210,12 +213,23 @@ const chatMessagesKey = (chatId: string) => `chat_messages:${chatId}`;
 
 const readPersistedChatMessages = (chatId: string): SimpleChatMessage[] => {
   try {
-    const raw = safeGetItem<string>(chatMessagesKey(chatId), {
+    // safeGetItem YA parsea el JSON cuando el valor empieza por "[" o
+    // "{": lo que devuelve aquí ya es el array, no un string. El
+    // JSON.parse(raw) anterior lo volvía a parsear ("[object Object]")
+    // y siempre caía en el catch → []. Por eso los mensajes enviados
+    // se veían al enviarlos (estado) pero desaparecían al navegar y
+    // volver (la recarga leía []), y cada envío sobrescribía los
+    // anteriores (persistía [último] sobre []). Verificado con
+    // simulación en /tmp (prove_chat_persist.js).
+    const stored: unknown = safeGetItem(chatMessagesKey(chatId), {
       defaultValue: "",
     });
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as SimpleChatMessage[]) : [];
+    if (Array.isArray(stored)) return stored as SimpleChatMessage[];
+    if (typeof stored === "string" && stored) {
+      const parsed: unknown = JSON.parse(stored);
+      return Array.isArray(parsed) ? (parsed as SimpleChatMessage[]) : [];
+    }
+    return [];
   } catch {
     return [];
   }
@@ -265,6 +279,11 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   const location = useLocation();
   const { features } = useFeatures();
   const { user, isAuthenticated } = useAuth();
+  // Nombre del espectador para las solicitudes de amistad/fotos.
+  const viewerName =
+    (user as { first_name?: string } | null)?.first_name ??
+    user?.email ??
+    "Tú";
   const { id: chatPartnerId } = useParams<{ id: string }>();
   const [_rooms, _setRooms] = useState<SimpleChatRoom[]>([]);
   const [_selectedRoom, _setSelectedRoom] = useState<SimpleChatRoom | null>(
@@ -319,6 +338,13 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   // Privada la abren; el panel tiene su propio cierre.
   const [showPrivateGallery, setShowPrivateGallery] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
+
+  // Clave de la última navegación a la que ya se le aplicó la
+  // auto-selección de hilo (desde ProfileDetail o ?user=): sin este
+  // guard, pulsar "Volver" en el hilo (setSelectedChat(null)) hacía
+  // que el efecto de abajo volviera a correr con los mismos parámetros
+  // y reabriera el hilo al instante — "Volver" parecía no navegar.
+  const profileChatAppliedRef = useRef<string | null>(null);
 
   const getGalleryOwnerId = (): string | null => {
     // Producción: el dueño del contenido privado del chat 1:1 es el partner
@@ -692,9 +718,15 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   }, []);
 
   // Get user from URL params or Navigation State
+  // La auto-selección de hilo solo se aplica UNA VEZ por navegación
+  // (profileChatAppliedRef, clave = location.key). Sin el guard, al
+  // pulsar "Volver" (setSelectedChat(null)) el efecto re-corría con
+  // los mismos parámetros y reabría el hilo al instante.
   useEffect(() => {
     // Handle navigation from ProfileDetail
     if (chatPartnerId && location.state?.profile && !selectedChat) {
+      if (profileChatAppliedRef.current === location.key) return;
+      profileChatAppliedRef.current = location.key;
       const profile = location.state.profile;
       const chatUser: ChatUser = {
         id: String(profile.id),
@@ -726,6 +758,8 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
     }
 
     if (userId) {
+      if (profileChatAppliedRef.current === location.key) return;
+      profileChatAppliedRef.current = location.key;
       const allChats = [...privateChats, ...publicChats];
       const user = allChats.find((chat) => chat.id.toString() === userId);
       if (user) {
@@ -838,7 +872,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
         title: "Chat pausado",
         description:
           verification?.pauseReason ||
-          "El chat est pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.",
+          "El chat está pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.",
       });
       return;
     }
@@ -849,11 +883,19 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
     // Sin datos de privacidad del destinatario se permite (sin falsos
     // bloqueos). El remitente se considera verificado solo si su perfil
     // lo indica (el usuario demo es verificado).
+    // En demo la privacidad vive en localStorage: lectura síncrona. El
+    // loader async hace un round-trip a Supabase en cada envío y el
+    // primer toque parecía no hacer nada mientras esperaba la red.
     if (features.messagingPrivacy && selectedChat.roomType === "private") {
-      const recipientPrivacy = await loadRecipientPrivacy(
-        selectedChat.id.toString(),
-        selectedChat.name.includes("&") ? "couple" : "single",
-      );
+      const recipientPrivacy = isProduction
+        ? await loadRecipientPrivacy(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          )
+        : readRecipientPrivacySync(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          );
       const limit = canSendMessageTo({
         recipientPrivacy,
         senderIsVerified: Boolean(
@@ -941,6 +983,44 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
     setShowPrivateGallery((v) => !v);
   };
 
+  // Videollamada con el hilo seleccionado (o lobby si no hay hilo):
+  // gate del toggle "Chat de video" del destinatario. Antes este
+  // botón solo existía en la cabecera de la LISTA; dentro de la
+  // conversación no había forma de iniciar video. Lo usan el botón
+  // de la lista y el nuevo botón del header del hilo. En demo la
+  // privacidad se lee síncrona de localStorage (sin round-trip a
+  // Supabase en cada toque). El flujo real de videollamada (WebRTC)
+  // no existe aún: el gate queda listo para cuando exista.
+  const handleVideoCall = async () => {
+    // Si hay un hilo privado seleccionado, la llamada es con ese
+    // perfil. Estar dentro del hilo ya implica match (en producción
+    // verifyMatch lo exige; en demo el acceso está concedido), por
+    // eso hasMatch: true. Sin hilo seleccionado se abre el lobby.
+    if (selectedChat?.roomType === "private") {
+      const recipientPrivacy = isProduction
+        ? await loadRecipientPrivacy(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          )
+        : readRecipientPrivacySync(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          );
+      const call = canStartVideoCall({
+        recipientPrivacy,
+        hasMatch: true,
+      });
+      if (!call.allowed) {
+        toast({
+          title: "Videollamada no disponible",
+          description: call.reason,
+        });
+        return;
+      }
+    }
+    navigate("/video-chat");
+  };
+
   return (
     // embedded: dentro del dock flotante (ChatFab) el alto es el del dock
     // (420px); con h-screen el hilo se desbordaba y se solapaba/recortaba.
@@ -992,34 +1072,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                     className="text-white hover:bg-white/10"
                     aria-label="Videollamada"
                     title="Videollamada"
-                    onClick={async () => {
-                      // Gate del toggle "Chat de video" del destinatario:
-                      // si hay un hilo privado seleccionado, la llamada es
-                      // con ese perfil. Estar dentro del hilo ya implica
-                      // match (en producción verifyMatch lo exige; en demo
-                      // el acceso está concedido), por eso hasMatch: true.
-                      // Sin hilo seleccionado se abre el lobby de video.
-                      // El flujo real de videollamada (WebRTC) no existe
-                      // aún: el gate queda listo para cuando exista.
-                      if (selectedChat?.roomType === "private") {
-                        const recipientPrivacy = await loadRecipientPrivacy(
-                          selectedChat.id.toString(),
-                          selectedChat.name.includes("&") ? "couple" : "single",
-                        );
-                        const call = canStartVideoCall({
-                          recipientPrivacy,
-                          hasMatch: true,
-                        });
-                        if (!call.allowed) {
-                          toast({
-                            title: "Videollamada no disponible",
-                            description: call.reason,
-                          });
-                          return;
-                        }
-                      }
-                      navigate("/video-chat");
-                    }}
+                    onClick={handleVideoCall}
                   >
                     <Video className="h-4 w-4" />
                   </Button>
@@ -1038,14 +1091,6 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                     }
                   >
                     <MoreVertical className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-white hover:bg-white/10 md:hidden"
-                    onClick={() => setSelectedChat(null)}
-                  >
-                    <ArrowLeft className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -1094,7 +1139,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                 }}
               >
                 <Globe className="h-4 w-4" />
-                Pblico
+                Público
                 {publicChats.reduce((acc, chat) => acc + chat.unreadCount, 0) >
                   0 && (
                   <Badge className="bg-red-500 text-white text-xs">
@@ -1182,7 +1227,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
             {activeTab === "public" && (
               <div className="mt-4">
                 <div className="text-white font-semibold text-sm mb-3 px-2 drop-shadow-lg">
-                  Salas plicas de la comunidad
+                  Salas públicas de la comunidad
                 </div>
                 <div className="space-y-2">
                   {publicChats.map((chat) => (
@@ -1290,12 +1335,55 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                       {selectedChat.roomType === "public"
                         ? `Sala pública ${PUBLIC_ROOM_MEMBERS[selectedChat.id] ?? 24} miembros activos`
                         : selectedChat.isOnline
-                          ? "En lnea"
-                          : `ltima vez ${selectedChat.timestamp}`}
+                          ? "En línea"
+                          : `Última vez ${selectedChat.timestamp}`}
                     </p>
                   </div>
+                  {/* Videollamada DENTRO de la conversación: antes el
+                      botón de video solo existía en la cabecera de la
+                      lista; en el hilo no había forma de llamar. Mismo
+                      gate (toggle "Chat de video" del destinatario). */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/10 shrink-0"
+                    aria-label="Videollamada"
+                    title="Videollamada"
+                    onClick={handleVideoCall}
+                  >
+                    <Video className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
+
+              {/* Solicitudes de amistad y de ver fotos (punto 4): solo en
+                  chats privados (no en salas públicas). Son píldoras con
+                  texto, por eso van en una fila bajo el encabezado y no
+                  dentro de él: en móvil no caben junto al nombre y al
+                  botón de video. */}
+              {selectedChat.roomType === "private" && user?.id && (
+                <div className="px-4 py-2 border-b border-white/10 flex flex-wrap items-center gap-2">
+                  <FriendRequestButton
+                    profileId={String(selectedChat.id)}
+                    profileName={selectedChat.name}
+                    viewerId={String(user.id)}
+                    viewerName={viewerName}
+                    isOwnProfile={
+                      String(selectedChat.id) === String(user.id)
+                    }
+                    isDemo={!isProduction}
+                  />
+                  <PhotoAccessRequestButton
+                    profileId={String(selectedChat.id)}
+                    profileName={selectedChat.name}
+                    viewerId={String(user.id)}
+                    isOwnProfile={
+                      String(selectedChat.id) === String(user.id)
+                    }
+                    isDemo={!isProduction}
+                  />
+                </div>
+              )}
 
               {/* Indicador de consentimiento */}
               {isProduction && selectedChat && user?.id && (
@@ -1451,8 +1539,8 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                       </span>
                     </div>
                     <p className="text-sm text-white/90 mb-6 leading-relaxed max-w-sm mx-auto">
-                      Necesitas una invitacin aceptada para chatear con{" "}
-                      {selectedChat?.name}. Puedes enviar una invitacin o
+                      Necesitas una invitación aceptada para chatear con{" "}
+                      {selectedChat?.name}. Puedes enviar una invitación o
                       esperar a que te enven una.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -1474,7 +1562,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
                         <UserPlus className="h-4 w-4 mr-2" />
-                        Aceptar invitacin
+                        Aceptar invitación
                       </Button>
                       <Button
                         onClick={() => {
@@ -1648,6 +1736,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         disabled={isPaused}
                       />
                       <Button
+                        type="button"
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() || isPaused}
                         gradient={true}
@@ -1658,15 +1747,15 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                     </div>
                     {isPaused && (
                       <p className="text-xs text-white/70 mt-2 text-center">
-                        El chat est pausado por bajo consenso. El envo de
-                        mensajes est bloqueado.
+                        El chat está pausado por bajo consenso. El envío de
+                        mensajes está bloqueado.
                       </p>
                     )}
                   </div>
                 )}
                 {selectedChat?.roomType === "public" && (
                   <p className="text-xs text-white/50 mt-2 px-1">
-                    Los mensajes en salas plicas son visibles para todos los
+                    Los mensajes en salas públicas son visibles para todos los
                     miembros
                   </p>
                 )}
@@ -1677,12 +1766,12 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
               <div className="text-center text-white">
                 <MessageCircle className="h-16 w-16 mx-auto mb-4 text-white opacity-80 drop-shadow-lg" />
                 <h3 className="text-xl font-semibold mb-2 text-white drop-shadow-md">
-                  Selecciona una conversacin
+                  Selecciona una conversación
                 </h3>
                 <p className="mb-4 text-white/90 drop-shadow-md">
                   {activeTab === "private"
                     ? "Elige un chat privado para conversar de forma segura"
-                    : "nete a una sala pública para conocer la comunidad"}
+                    : "Únete a una sala pública para conocer la comunidad"}
                 </p>
                 <div className="flex items-center justify-center text-sm space-x-4">
                   <div className="flex items-center text-white/90">
@@ -1694,7 +1783,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                   <div className="flex items-center text-white/90">
                     <Globe className="h-4 w-4 mr-1 text-green-300" />
                     <span className="drop-shadow-md">
-                      Salas públicas moderadías
+                      Salas públicas moderadas
                     </span>
                   </div>
                 </div>

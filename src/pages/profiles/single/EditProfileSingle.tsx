@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, X, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/useToast";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppConfig, resolveDemoAccountType } from "@/lib/app-config";
@@ -22,7 +23,15 @@ type Tables<T extends keyof Database["public"]["Tables"]> =
 
 const EditProfileSingle = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [profile, setProfile] = useState<Tables<"profiles"> | any>(null);
+  // Espejo del perfil para el temporizador: si a los 10 s sigue sin
+  // perfil, se muestra error con reintento en vez del "Cargando…" eterno
+  // (~20 s en el test: supabase.auth.getUser() sin sesión puede
+  // quedarse colgado en red y nada lo cortaba).
+  const profileRef = useRef(profile);
+  profileRef.current = profile;
+  const [loadTimedOut, setLoadTimedOut] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -162,7 +171,21 @@ const EditProfileSingle = () => {
 
         const {
           data: { user },
-        } = await supabase.auth.getUser();
+          // getUser() sin sesión puede colgarse ~20 s en red: cortarlo
+          // a los 8 s y caer al flujo de /auth en vez de dejar el
+          // "Cargando…" infinito.
+        } = await Promise.race([
+          supabase.auth.getUser(),
+          new Promise<never>((_resolve, reject) =>
+            setTimeout(
+              () =>
+                reject(
+                  new Error("Tiempo de espera agotado al verificar la sesión"),
+                ),
+              8000,
+            ),
+          ),
+        ]);
 
         if (user) {
           const { data: profile, error } = await (supabase as any)
@@ -232,6 +255,15 @@ const EditProfileSingle = () => {
     loadProfile();
   }, [loadProfile]);
 
+  // Si a los 10 s sigue sin perfil, no dejar el spinner eterno: mostrar
+  // error con acciones (reintentar / ir a iniciar sesión).
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!profileRef.current) setLoadTimedOut(true);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -266,6 +298,10 @@ const EditProfileSingle = () => {
         };
         localStorage.setItem("demo_user", JSON.stringify(updatedUser));
         setSuccess("Perfil guardado exitosamente (modo demo)");
+        toast({
+          title: "Perfil guardado",
+          description: "Tus cambios se guardaron correctamente.",
+        });
       } else {
         // Modo producción - guardar en Supabase
         const nameParts = formData.name.split(" ");
@@ -286,8 +322,17 @@ const EditProfileSingle = () => {
 
         if (error) {
           setError("Error al guardar perfil: " + error.message);
+          toast({
+            title: "No se pudo guardar",
+            description: error.message,
+            variant: "destructive",
+          });
         } else {
           setSuccess("Perfil guardado exitosamente");
+          toast({
+            title: "Perfil guardado",
+            description: "Tus cambios se guardaron correctamente.",
+          });
         }
       }
     } catch (error) {
@@ -310,11 +355,49 @@ const EditProfileSingle = () => {
   };
 
   if (!profile) {
+    // Timeout: la carga no debe quedarse en spinner para siempre.
+    if (loadTimedOut) {
+      return (
+        <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 flex items-center justify-center px-4">
+          <div className="text-center max-w-sm">
+            <p className="text-white text-lg font-semibold mb-2">
+              No se pudo cargar tu perfil
+            </p>
+            <p className="text-white/80 text-sm mb-6">
+              La carga está tardando demasiado. Revisa tu conexión o vuelve a
+              intentarlo.
+            </p>
+            <div className="flex flex-col gap-2">
+              <Button
+                onClick={() => {
+                  setLoadTimedOut(false);
+                  setError("");
+                  void loadProfile();
+                }}
+                className="bg-linear-to-r from-purple-500 to-fuchsia-500 text-white"
+              >
+                Reintentar
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/auth")}
+                className="text-white hover:bg-white/20"
+              >
+                Ir a iniciar sesión
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-white text-lg">Cargando perfil...</p>
+          <p className="text-white/60 text-sm mt-2">
+            Esto puede tardar unos segundos
+          </p>
         </div>
       </div>
     );
@@ -331,30 +414,59 @@ const EditProfileSingle = () => {
         <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
       </div>
 
-      {/* Header */}
+      {/* Header: con wrap y sin recortes. Antes "Guardar Cambios" salía
+          cortado en móvil porque los 3 elementos no cabían en una línea. */}
       <div className="bg-white/10 backdrop-blur-md border-b border-white/20 p-4 shadow-lg relative z-10">
-        <div className="flex items-center justify-between max-w-6xl mx-auto">
+        <div className="flex flex-wrap items-center justify-between gap-2 max-w-6xl mx-auto">
           <Button
             variant="ghost"
             onClick={() => navigate("/profile-single")}
-            className="text-white hover:bg-white/20"
+            className="shrink-0 whitespace-nowrap text-white hover:bg-white/20"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver al perfil
           </Button>
-          <h1 className="text-xl font-bold text-white">Editar Perfil</h1>
+          <h1 className="min-w-0 flex-1 text-center text-base sm:text-xl font-bold text-white truncate">
+            Editar Perfil
+          </h1>
           <Button
             onClick={handleSave}
             disabled={_isLoading}
-            className="bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
+            className="shrink-0 whitespace-nowrap bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
           >
             <Save className="h-4 w-4 mr-2" />
-            {_isLoading ? "Guardando..." : "Guardar Cambios"}
+            {_isLoading ? (
+              "Guardando..."
+            ) : (
+              <>
+                <span className="hidden sm:inline">Guardar Cambios</span>
+                <span className="sm:hidden">Guardar</span>
+              </>
+            )}
           </Button>
         </div>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-6 pb-24 space-y-6 max-w-4xl">
+        {/* Confirmación visible al guardar: antes _success/_error se
+            seteaban pero nunca se renderizaban, así que pulsar Guardar
+            no mostraba nada (además del toast). */}
+        {_success && (
+          <div
+            role="status"
+            className="rounded-lg border border-emerald-400/40 bg-emerald-500/15 px-4 py-3 text-sm text-emerald-200"
+          >
+            ✓ {_success}
+          </div>
+        )}
+        {_error && (
+          <div
+            role="alert"
+            className="rounded-lg border border-red-400/40 bg-red-500/15 px-4 py-3 text-sm text-red-200"
+          >
+            {_error}
+          </div>
+        )}
         {/* Foto de perfil */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6">
@@ -662,6 +774,19 @@ const EditProfileSingle = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Guardar al final del formulario: el botón del header queda
+            fuera de vista al bajar, y antes era el único. */}
+        <div className="sticky bottom-4 z-20">
+          <Button
+            onClick={handleSave}
+            disabled={_isLoading}
+            className="w-full bg-linear-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white shadow-xl"
+          >
+            <Save className="h-4 w-4 mr-2" />
+            {_isLoading ? "Guardando..." : "Guardar Cambios"}
+          </Button>
+        </div>
       </div>
 
       {/* Custom Styles */}

@@ -34,6 +34,9 @@ import { FilterDemoCard as FilterDemoCardComponent } from "@/components/ui/Filte
 import { supabase } from "@/integrations/supabase/client";
 import CoupleProfileCard from "@/components/profiles/couple/CoupleProfileCard";
 import { AnimatedProfileCard } from "@/components/profiles/shared/AnimatedProfileCard";
+import { DistanceBadge } from "@/components/profiles/shared/DistanceBadge";
+import { readLocationSharingLocal } from "@/lib/geolocation";
+import { getSocialDemoData } from "@/demo/socialDemoData";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { motion } from "framer-motion";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
@@ -65,6 +68,29 @@ export const Discover = () => {
   const { location } = useGeolocation();
   const { user, isAuthenticated } = useAuth();
   const [matchedIds, setMatchedIds] = useState<Set<string>>(new Set());
+
+  // Contador "Likes" de la tarjeta de stats (regla de Wacko: marcar +1,
+  // desmarcar −1). Antes era un literal 12 que nunca cambiaba.
+  const [likedProfileIds, setLikedProfileIds] = useState<Set<string>>(
+    new Set(),
+  );
+  const [likesGiven, setLikesGiven] = useState(12);
+
+  // Alterna el contador "Likes" al marcar/desmarcar un perfil.
+  const toggleLikesGiven = (profileId: number | string) => {
+    const key = String(profileId);
+    const isLiking = !likedProfileIds.has(key);
+    setLikedProfileIds((prev) => {
+      const next = new Set(prev);
+      if (isLiking) {
+        next.add(key);
+      } else {
+        next.delete(key);
+      }
+      return next;
+    });
+    setLikesGiven((v) => v + (isLiking ? 1 : -1));
+  };
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [demoProfiles, setDemoProfiles] = useState<DemoProfile[]>([]);
@@ -108,6 +134,13 @@ export const Discover = () => {
     const type = user.email === "pareja@outlook.es" ? "couple" : "single";
     return readPrivacySettingsSync(user.id, type);
   }, [user?.id, user?.email]);
+
+  // Geolocalización del ESPECTADOR (punto 3): si la tiene desactivada,
+  // ninguna distancia se muestra en las tarjetas (ver DistanceBadge).
+  const viewerSharesLocation = useMemo(
+    () => readLocationSharingLocal(user?.id ?? ""),
+    [user?.id],
+  );
 
   // Arrancar el filtro de verificados desde el ajuste del espectador.
   useEffect(() => {
@@ -553,6 +586,7 @@ export const Discover = () => {
       user.email === "single@outlook.es" ||
       user.email === "pareja@outlook.es"
     ) {
+      toggleLikesGiven(profileId);
       toast({
         title: "Like enviado!",
         description: "Le has dado like a este perfil.",
@@ -589,6 +623,7 @@ export const Discover = () => {
           });
         }
       }
+      toggleLikesGiven(profileId);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -777,7 +812,7 @@ export const Discover = () => {
         >
           <GlassCard className="text-center p-4">
             <Heart className="h-6 w-6 mx-auto mb-2 text-red-500" />
-            <div className="text-2xl font-bold text-white">12</div>
+            <div className="text-2xl font-bold text-white">{likesGiven}</div>
             <div className="text-sm text-white/80">Likes</div>
           </GlassCard>
           <GlassCard className="text-center p-4">
@@ -1045,6 +1080,19 @@ export const Discover = () => {
                           onMessage={handleMessage}
                           onViewProfile={handleViewProfile}
                         />
+                        {/* Distancia APROXIMADA para matching (punto 3):
+                            nunca la exacta, mínimo 1 km; oculta si el
+                            perfil o el espectador desactivaron la
+                            geolocalización. */}
+                        <div className="flex justify-center mt-2">
+                          <DistanceBadge
+                            distanceKm={profile.distance}
+                            profileSharesLocation={
+                              getSocialDemoData(profile.name).sharesLocation
+                            }
+                            viewerSharesLocation={viewerSharesLocation}
+                          />
+                        </div>
                       </motion.div>
                     ))}
 
@@ -1078,6 +1126,15 @@ export const Discover = () => {
                           onMessage={handleMessage}
                           onViewProfile={handleViewProfile}
                         />
+                        <div className="flex justify-center mt-2">
+                          <DistanceBadge
+                            distanceKm={profile.distance}
+                            profileSharesLocation={
+                              getSocialDemoData(profile.name).sharesLocation
+                            }
+                            viewerSharesLocation={viewerSharesLocation}
+                          />
+                        </div>
                       </motion.div>
                     ))}
 
@@ -1113,6 +1170,15 @@ export const Discover = () => {
                           canMessage={matchedIds.has(profile.id.toString())}
                           onViewProfile={handleViewProfile}
                         />
+                        {/* Distancia APROXIMADA para matching (punto 3):
+                            nunca la exacta, mínimo 1 km; oculta si el
+                            espectador desactivó la geolocalización. */}
+                        <div className="flex justify-center mt-2">
+                          <DistanceBadge
+                            distanceKm={profile.distance}
+                            viewerSharesLocation={viewerSharesLocation}
+                          />
+                        </div>
                       </motion.div>
                     ))}
                 </>

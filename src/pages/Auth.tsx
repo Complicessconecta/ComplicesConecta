@@ -670,20 +670,20 @@ const Auth = () => {
                       className="bg-white/10 border-white/20 text-white placeholder-white/70"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-3 items-stretch">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-stretch">
                     <Button
                       type="button"
                       onClick={() => {
                         setShowResetPassword(true);
                       }}
                       variant="outline"
-                      className="h-11 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      className="h-11 bg-white/10 border-white/20 text-white hover:bg-white/20 whitespace-nowrap text-xs sm:text-sm"
                     >
                       ¿Olvidaste tu contraseña?
                     </Button>
                     <Button
                       type="submit"
-                      className="h-11 bg-linear-to-r from-purple-600 to-blue-600 text-white"
+                      className="h-11 bg-linear-to-r from-purple-600 to-blue-600 text-white whitespace-nowrap"
                     >
                       Iniciar Sesión
                     </Button>

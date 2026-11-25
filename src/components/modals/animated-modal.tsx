@@ -44,15 +44,21 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/50 z-[60]"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className={`fixed inset-0 flex items-center justify-center z-50 pointer-events-none ${className}`}
+            className={`fixed inset-0 z-[60] flex items-center justify-center px-4 pointer-events-none ${className}`}
           >
-            <div className="pointer-events-auto">{children}</div>
+            {/* Ancho con tope al viewport: antes el div no tenía ancho y
+                ModalContent sumaba `w-full` + `mx-4`, así que el modal
+                desbordaba 2rem y el texto quedaba cortado en el borde
+                derecho (modal de Mint NFT). */}
+            <div className="pointer-events-auto w-full max-w-md min-w-0">
+              {children}
+            </div>
           </motion.div>
         </>
       )}
@@ -77,7 +83,7 @@ export const ModalContent: React.FC<ModalContentProps> = ({
 }) => {
   return (
     <div
-      className={`bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-lg shadow-xl max-w-md w-full mx-4 ${className}`}
+      className={`bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-lg shadow-xl w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto ${className}`}
     >
       {children}
     </div>
@@ -97,7 +103,7 @@ export const ModalFooter: React.FC<ModalFooterProps> = ({
 }) => {
   return (
     <div
-      className={`px-6 py-4 border-t border-white/10 flex gap-3 justify-end ${className}`}
+      className={`px-6 py-4 border-t border-white/10 flex flex-wrap gap-3 justify-end ${className}`}
     >
       {children}
     </div>

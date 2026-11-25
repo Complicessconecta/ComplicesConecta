@@ -1,9 +1,7 @@
 import { useToast } from "@/hooks/useToast";
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 
-export function Toaster({
-  dockOffset = false,
-}: { dockOffset?: boolean } = {}) {
+export function Toaster() {
   const { toasts } = useToast();
 
   return (
@@ -22,16 +20,10 @@ export function Toaster({
           </Toast>
         );
       })}
-      {/* Desplazamiento inferior solo donde hay dock (perfil): en el
-          resto de rutas el dock no existe y el offset de 4.75rem dejaba
-          el toast flotando sobre el contenido central. */}
-      <ToastViewport
-        className={
-          dockOffset
-            ? "bottom-[calc(env(safe-area-inset-bottom)+4.75rem)]"
-            : "bottom-[calc(env(safe-area-inset-bottom)+1rem)]"
-        }
-      />
+      {/* RONDA 6 (punto 17): el viewport vive arriba con margen (ver
+          ui/toast.tsx); el offset inferior del dock de la ronda 5 ya no
+          aplica y se eliminó la prop `dockOffset`. */}
+      <ToastViewport />
     </ToastProvider>
   );
 }

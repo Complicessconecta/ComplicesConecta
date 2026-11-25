@@ -94,7 +94,7 @@ export const MatchCard: FC<MatchCardProps> = ({
     if (!distance) return null;
     if (distance <= 5) return "Muy cerca de ti";
     if (distance <= 15) return "En tu zona";
-    return `${distance}km`;
+    return `${distance} km`;
   };
 
   if (variant === "grid") {

@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Heart, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { walletService, WalletService } from "@/services/payments/WalletService";
-import { nftService } from "@/services/payments/NFTService";
+import {
+  nftService,
+  notifyDemoNFTsChanged,
+} from "@/services/payments/NFTService";
 import { logger } from "@/lib/logger";
 
 // Imágenes de NFTs mock para modo demo
@@ -239,6 +242,9 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 
         const next = [mockNFT as Record<string, unknown>, ...existing].slice(0, 4);
         writeDemoNFTs(userId, next);
+        // Avisar al resto de la página (DemoWallet, perfil) para que sus
+        // contadores se recarguen de la misma fuente (punto 12).
+        notifyDemoNFTsChanged();
 
         result = mockNFT;
       } else {

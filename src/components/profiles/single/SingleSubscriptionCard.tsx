@@ -19,9 +19,9 @@ interface SingleSubscriptionCardProps {
  * modelo del video: "Premium hasta…" y "Tu saldo"). El plan sale del
  * perfil (is_premium); la vigencia no tiene fuente de datos en la página,
  * así que fuera de demo no se inventa fecha. El saldo en demo usa los
- * valores de DemoWallet (CMPX 1,250 / GTK 500); fuera de demo usa los
- * saldos reales que ya carga la página. El saldo solo se muestra al
- * perfil propio.
+ * valores canónicos (@/lib/demo-wallet: CMPX 1,250 / GTK 850); fuera de
+ * demo usa los saldos reales que ya carga la página. El saldo solo se
+ * muestra al perfil propio.
  */
 export const SingleSubscriptionCard: React.FC<
   SingleSubscriptionCardProps

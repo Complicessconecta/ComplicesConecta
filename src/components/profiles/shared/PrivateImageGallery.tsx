@@ -139,7 +139,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                     </p>
                     {request.message && (
                       <p className="text-xs text-white/70 mt-1">
-                        "{request.message}"
+                        {request.message}
                       </p>
                     )}
                     <p className="text-xs text-white/50 mt-2">

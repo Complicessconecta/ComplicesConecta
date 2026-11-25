@@ -213,7 +213,10 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
       animate="animate"
       exit="exit"
       layout
-      className={`relative overflow-hidden rounded-lg shadow-lg backdrop-blur-sm bg-white/10 border border-white/20 p-4 mb-3 max-w-sm`}
+      // RONDA 6 (punto 17): fondo SÓLIDO según tema (antes bg-white/10
+      // casi transparente con texto blanco: en tema claro era ilegible
+      // y dejaba ver el texto de la página por detrás).
+      className={`relative overflow-hidden rounded-lg shadow-lg backdrop-blur-sm bg-white text-slate-900 border border-slate-200 dark:bg-slate-900 dark:text-white dark:border-slate-700 p-4 mb-3 max-w-sm`}
     >
       {/* Animated background gradient */}
       <motion.div
@@ -239,17 +242,19 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
         </motion.div>
 
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-white truncate">
+          <h4 className="text-sm font-semibold truncate">
             {notification.title}
           </h4>
-          <p className="text-xs text-white/80 mt-1">{notification.message}</p>
+          <p className="text-xs text-slate-600 dark:text-white/80 mt-1">
+            {notification.message}
+          </p>
 
           {notification.action && (
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={notification.action.onClick}
-              className="mt-2 px-3 py-1 bg-white/20 hover:bg-white/30 rounded text-xs text-white font-medium transition-colors"
+              className="mt-2 px-3 py-1 bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/20 dark:hover:bg-white/30 rounded text-xs font-medium transition-colors"
             >
               {notification.action.label}
             </motion.button>
@@ -260,7 +265,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => removeNotification(notification.id)}
-          className="text-white/60 hover:text-white transition-colors"
+          className="text-slate-400 hover:text-slate-900 dark:text-white/60 dark:hover:text-white transition-colors"
         >
           <X className="w-4 h-4" />
         </motion.button>
@@ -283,7 +288,14 @@ const NotificationContainer: React.FC = () => {
   const { notifications } = context;
 
   return (
-    <div className="fixed top-4 right-4 z-50 pointer-events-none">
+    // RONDA 6 (punto 17): las notificaciones YA NO van arriba a la
+    // derecha (top-4): ahí tapaban el texto y los botones superiores de
+    // cada página. Ahora van ABAJO A LA DERECHA con margen sobre el dock
+    // (5.5rem ≈ altura del dock + respiro): en perfil quedan justo
+    // encima del dock sin taparlo, y en el resto de rutas flotan sobre
+    // la banda inferior reservada (pb-24 de MainLayout). Más angostas
+    // (max-w-xs) para tapar menos contenido.
+    <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] right-4 z-50 pointer-events-none w-[calc(100vw-2rem)] max-w-xs">
       <AnimatePresence mode="popLayout">
         {notifications.map((notification) => (
           <div key={notification.id} className="pointer-events-auto">

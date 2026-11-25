@@ -106,7 +106,7 @@ const Terms: FC = () => {
                 </p>
                 <p className="text-white/80">
                   <strong className="text-white">Consentimiento:</strong> Todas
-                  las interacciones deben ser consensuales. No se tolerar el
+                  las interacciones deben ser consensuales. No se tolerará el
                   acoso o comportamiento no deseado.
                 </p>
                 <p className="text-white/80">
@@ -163,7 +163,7 @@ const Terms: FC = () => {
               <CardContent className="space-y-4">
                 <p className="text-white/80">
                   <strong className="text-white">Suscripciones:</strong> Los
-                  servicios premium requieren suscripcin mensual o anual.
+                  servicios premium requieren suscripción mensual o anual.
                 </p>
                 <p className="text-white/80">
                   <strong className="text-white">Tokens CMPX:</strong> Sistema
@@ -180,16 +180,16 @@ const Terms: FC = () => {
               </CardContent>
             </Card>
 
-            {/* Limitacin de Responsabilidad */}
+            {/* Limitación de Responsabilidad */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-white">
-                  6. Limitacin de Responsabilidad
+                  6. Limitación de Responsabilidad
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  ComplicesConecta acta como plataforma de conexin. No somos
+                  ComplicesConecta actúa como plataforma de conexión. No somos
                   responsables de:
                 </p>
                 <ul className="list-disc list-inside text-white/80 space-y-2">
@@ -208,18 +208,18 @@ const Terms: FC = () => {
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-white">
-                  7. Modificaciones de los Trminos
+                  7. Modificaciones de los Términos
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  Nos reservamos el derecho de modificar estos trminos en
-                  cualquier momento. Los cambios importantes sern notificados
-                  con al menos 30 días de anticipacin.
+                  Nos reservamos el derecho de modificar estos términos en
+                  cualquier momento. Los cambios importantes serán notificados
+                  con al menos 30 días de anticipación.
                 </p>
                 <p className="text-white/80">
-                  El uso continuado del servicio despus de las modificaciones
-                  constituye la aceptacin de los nuevos trminos.
+                  El uso continuado del servicio después de las modificaciones
+                  constituye la aceptación de los nuevos términos.
                 </p>
               </CardContent>
             </Card>

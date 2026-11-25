@@ -357,9 +357,9 @@ export const useGeolocation = () => {
   // Format distance for display
   const formatDistance = useCallback((distance: number): string => {
     if (distance < 1) {
-      return `${Math.round(distance * 1000)}m`;
+      return `${Math.round(distance * 1000)} m`;
     }
-    return `${distance}km`;
+    return `${distance} km`;
   }, []);
 
   // Cleanup effect

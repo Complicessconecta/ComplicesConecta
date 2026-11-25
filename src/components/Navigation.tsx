@@ -144,7 +144,7 @@ export const Navigation = ({ className }: NavigationProps) => {
           Las etiquetas siguen ocultas por debajo de `lg`. */}
       <nav
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-50",
+          "fixed bottom-0 left-0 right-0 z-50 overflow-x-clip",
           "bg-white/95 dark:bg-linear-to-r dark:from-purple-900/80 dark:via-purple-800/80 dark:to-blue-900/80",
           "backdrop-blur-xl border-t border-slate-200 dark:border-purple-500/40",
           "px-2 sm:px-4 py-1.5 sm:py-2 safe-area-pb",
@@ -152,7 +152,13 @@ export const Navigation = ({ className }: NavigationProps) => {
           className,
         )}
       >
-        <div className="flex items-center justify-center w-full max-w-full mx-auto safe-area-inset gap-0.5 sm:gap-1">
+        {/* RONDA 8 (punto 3): la fila es `overflow-hidden` por
+            construcción: aunque un hueco quisiera medir más que su parte
+            (p. ej. el botón luna de 44 px en un hueco de ~29 px a 360 px
+            de ancho), nada puede salirse del dock ni cortar la luna en
+            el borde derecho. Los huecos siguen siendo `flex-1 min-w-0`
+            con tope 56 px: a 886 px miden 11×56 + 10×4 + 32 = 688 px. */}
+        <div className="flex items-center justify-center w-full max-w-full mx-auto safe-area-inset gap-0.5 sm:gap-1 min-w-0 overflow-hidden">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -205,9 +211,13 @@ export const Navigation = ({ className }: NavigationProps) => {
               un botón `fixed top-20 right-4` que tapaba contenido en todas
               las páginas). El menú se abre hacia arriba por colisión.
               RONDA 6: `tone="auto"` para que el botón sea legible sobre el
-              dock claro (el tono "onDark" era blanco sobre blanco). */}
+              dock claro (el tono "onDark" era blanco sobre blanco).
+              RONDA 8 (punto 3): el botón luna mide 44 px fijos
+              (`size="icon"`) y el hueco baja a ~29 px a 360 px de ancho:
+              sin tope, la luna se salía del último hueco y se cortaba en
+              el borde derecho. `[&_button]:max-w-full` la ciñe al hueco. */}
           <div
-            className="flex flex-col items-center justify-center p-1 sm:p-1 rounded-xl sm:rounded-2xl flex-1 min-w-0 max-w-[56px] min-h-[44px] sm:min-h-[52px] text-slate-600 hover:text-slate-900 hover:bg-slate-900/5 dark:text-white/85 dark:hover:text-white dark:hover:bg-white/10"
+            className="flex flex-col items-center justify-center p-1 sm:p-1 rounded-xl sm:rounded-2xl flex-1 min-w-0 max-w-[56px] min-h-[44px] sm:min-h-[52px] text-slate-600 hover:text-slate-900 hover:bg-slate-900/5 dark:text-white/85 dark:hover:text-white dark:hover:bg-white/10 overflow-hidden [&_button]:max-w-full"
             title="Cambiar tema"
           >
             <ThemeToggle tone="auto" />

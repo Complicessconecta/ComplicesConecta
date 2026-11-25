@@ -13,8 +13,9 @@ import {
   DEFAULT_DEMO_NFTS,
   nftService,
   DEMO_NFTS_CHANGED_EVENT,
-  notifyDemoNFTsChanged,
+  DEMO_MINT_LIMIT,
 } from "@/services/payments/NFTService";
+import { useToast } from "@/hooks/useToast";
 import {
   DEMO_WALLET_BALANCES,
   getDemoWalletBalance,
@@ -68,8 +69,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
   const [balance, setBalance] = useState("0.00");
   const [showPolygonModal, setShowPolygonModal] = useState(false);
   const [selectedNft, setSelectedNft] = useState<DemoNFT | null>(null);
-
-  const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
+  const { toast } = useToast();
 
   const getImageForRarity = (rarity: DemoNFT["rarity"]): string => {
     switch (rarity) {
@@ -129,7 +129,6 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
         if (cancelled) return;
         const normalized = owned
           .filter((nft) => (accountType === "couple" ? nft.is_couple : true))
-          .slice(0, DEMO_BALANCES[accountType].nfts)
           .map((nft, idx): DemoNFT => {
             const rarityRaw = nft.rarity;
             const rarity: DemoNFT["rarity"] =
@@ -162,56 +161,33 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
     };
   }, [userId, accountType]);
 
-  const writeDemoNFTs = (items: DemoNFT[]) => {
+  // Minteo demo por la vía compartida (nftService.mintDemoNFT, ronda 8,
+  // punto 4): el NFT nuevo es del tipo de la cuenta (isCouple en pareja)
+  // y se guarda junto a la semilla, sin recortarla. Antes se minteaba
+  // siempre `isCouple: false` y se persistía la vista recortada a 2, así
+  // que en pareja el NFT minteado se filtraba en todas las vistas, el
+  // re-corte expulsaba un NFT de pareja guardado y la pareja quedaba en
+  // 1 NFT. El contador se actualiza solo por el evento
+  // `demo-nfts-changed` (el `load` de arriba).
+  const handleMintDemoNft = async () => {
     if (!userId) return;
-    if (typeof window === "undefined") return;
-    const payload = items.map((nft) => ({
-      id: nft.id,
-      name: nft.name,
-      rarity: nft.rarity,
-      image: nft.image,
-      value: nft.value,
-      is_couple: nft.isCouple,
-      created_at: new Date().toISOString(),
-      token_id: items.length,
-      metadata_uri: "ipfs://demo-metadata-hash",
-    }));
-    window.localStorage.setItem(getDemoNFTStorageKey(userId), JSON.stringify(payload));
-  };
-
-  const handleMintDemoNft = () => {
-    if (!userId) return;
-    const rarityRoll = Math.random();
-    let rarity: DemoNFT["rarity"] = "common";
-    let value = 100;
-    if (rarityRoll > 0.95) {
-      rarity = "legendary";
-      value = 5000;
-    } else if (rarityRoll > 0.8) {
-      rarity = "epic";
-      value = 1500;
-    } else if (rarityRoll > 0.5) {
-      rarity = "rare";
-      value = 500;
+    const created = await nftService.mintDemoNFT(userId, {
+      isCouple: accountType === "couple",
+      name: "NFT Demo Minteado",
+      description: "NFT demo minteado desde la wallet",
+    });
+    if (!created) {
+      toast({
+        title: "Límite demo alcanzado",
+        description: `Ya minteaste ${DEMO_MINT_LIMIT} NFTs en modo demo.`,
+        variant: "destructive",
+      });
+      return;
     }
-
-    const next: DemoNFT[] = [
-      {
-        id: `demo-nft-${Date.now()}`,
-        name: "NFT Demo Minteado",
-        rarity,
-        image: getImageForRarity(rarity),
-        value,
-        isCouple: false,
-      },
-      ...demoNFTs,
-    ].slice(0, DEMO_BALANCES[accountType].nfts);
-
-    setDemoNFTs(next);
-    writeDemoNFTs(next);
-    // Avisar al resto de la página (perfil, /tokens) para que sus
-    // contadores se recarguen de la misma fuente (punto 12).
-    notifyDemoNFTsChanged();
+    toast({
+      title: "¡NFT minteado (DEMO)!",
+      description: `${created.name} se agregó a tu colección.`,
+    });
   };
 
   // Tokens demo canónicos según el tipo de cuenta (useTokens()).
@@ -390,11 +366,16 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
             <Sparkles className="mr-2 h-4 w-4" />
             Mintear NFT Demo
           </Button>
-          <div className="grid grid-cols-2 gap-4">
+          {/* La rejilla no puede desbordar el viewport (ronda 8, punto
+              3): cada tarjeta es `min-w-0` para que el contenido (fila de
+              badges sin salto) no fuerce la columna más ancha que su
+              parte — eso cortaba la 2ª tarjeta en el borde derecho y
+              arrastraba el desborde horizontal de la página. */}
+          <div className="grid grid-cols-2 gap-4 min-w-0">
             {demoNFTs.map((nft) => (
               <div
                 key={nft.id}
-                className="relative overflow-hidden rounded-xl bg-linear-to-br from-purple-900/30 to-blue-900/30 border border-white/20 hover:border-white/40 transition-all duration-300 group cursor-pointer"
+                className="relative overflow-hidden rounded-xl bg-linear-to-br from-purple-900/30 to-blue-900/30 border border-white/20 hover:border-white/40 transition-all duration-300 group cursor-pointer min-w-0"
                 role="button"
                 tabIndex={0}
                 onClick={() => setSelectedNft(nft)}
@@ -406,7 +387,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                 }}
               >
                 <div className={`absolute inset-0 bg-linear-to-br ${rarityColors[nft.rarity]} opacity-20`} />
-                <div className="relative p-4 space-y-3">
+                <div className="relative p-4 space-y-3 min-w-0">
                   <div className="aspect-square rounded-lg bg-white/10 overflow-hidden">
                     <img
                       src={nft.image}
@@ -414,19 +395,19 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Badge className={`${rarityBadges[nft.rarity]} text-white text-xs`}>
+                  <div className="space-y-2 min-w-0">
+                    <div className="flex items-center justify-between gap-2 min-w-0">
+                      <Badge className={`${rarityBadges[nft.rarity]} text-white text-xs shrink-0`}>
                         {nft.rarity.toUpperCase()}
                       </Badge>
                       {nft.isCouple && (
-                        <Badge className="bg-pink-500/20 text-pink-200 border-pink-400/40 text-xs">
+                        <Badge className="bg-pink-500/20 text-pink-200 border-pink-400/40 text-xs shrink-0">
                           <Sparkles className="h-3 w-3 mr-1" />
                           PAREJA
                         </Badge>
                       )}
                     </div>
-                    <h4 className="font-semibold text-white text-sm">{nft.name}</h4>
+                    <h4 className="font-semibold text-white text-sm truncate">{nft.name}</h4>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         <Coins className="h-3 w-3 text-yellow-400" />

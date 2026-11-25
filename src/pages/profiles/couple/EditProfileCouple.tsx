@@ -616,7 +616,7 @@ const EditProfileCouple = () => {
                   type="button"
                   onClick={handleLocationDetection}
                   disabled={locationStatus === "loading"}
-                  className="w-full border border-gray-300 bg-transparent hover:bg-gray-100 text-gray-700 px-3 py-1 text-sm"
+                  className="w-full border border-gray-300 bg-white hover:bg-gray-100 text-gray-900 dark:border-white/25 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white px-3 py-1 text-sm"
                 >
                   <MapPin className="h-4 w-4 mr-2" />
                   {locationStatus === "loading"

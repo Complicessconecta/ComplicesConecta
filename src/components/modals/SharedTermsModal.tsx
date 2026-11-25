@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,6 +24,7 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
   onAccept,
   title = "Términos de Uso y Política de Privacidad",
 }) => {
+  const navigate = useNavigate();
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [showFullTerms, setShowFullTerms] = useState(false);
@@ -41,6 +43,15 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
     setShowFullTerms(false);
     setShowFullPrivacy(false);
     onClose();
+  };
+
+  // Ronda 8 (punto 12): el enlace "Términos y Condiciones" del flujo
+  // de /auth debe llevar a la página estilizada, no al .md crudo. El
+  // modal se cierra antes de navegar para no quedar abierto sobre
+  // la página de destino.
+  const openStyledDoc = (path: "/terms" | "/privacy") => {
+    handleClose();
+    navigate(path);
   };
 
   const canProceed = termsAccepted && privacyAccepted;
@@ -256,6 +267,28 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
                 </p>
               </div>
             )}
+
+            {/* Ronda 8 (punto 12): documentos completos con diseño
+                (v3.5.0, Nov 2025) en vez del .md crudo de
+                /docs/legal/. */}
+            <p className="text-xs text-gray-500">
+              Documentos completos:{" "}
+              <button
+                type="button"
+                onClick={() => openStyledDoc("/terms")}
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                Términos y Condiciones
+              </button>{" "}
+              ·{" "}
+              <button
+                type="button"
+                onClick={() => openStyledDoc("/privacy")}
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                Política de Privacidad
+              </button>
+            </p>
           </div>
         </ScrollArea>
 

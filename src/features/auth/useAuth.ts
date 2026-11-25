@@ -55,6 +55,20 @@ function safeParseDemoUser<T>(data: T): Profile | null {
   }
 }
 
+// Ronda 8 (punto 14): ¿es esta sesión una sesión MOCK demo?
+// Las sesiones demo locales llevan access_token "demo-..." (la pone
+// handleDemoAuth: "demo-access-token"; el login local:
+// "demo-token-<ts>"). Una sesión real de Supabase lleva un JWT
+// ("eyJ..."), así que el prefijo las distingue sin ambigüedad.
+// Sin esto, `session?.user` trataba la sesión mock como real y
+// `isDemo()`/`isDemoMode()`/`getProfileType()` valían distinto
+// antes del login (sin sesión) que después (sesión mock puesta):
+// la etiqueta Cuenta/DEMO alternaba entre renders.
+function isDemoSession(session: Session | null): boolean {
+  const token = (session as { access_token?: unknown } | null)?.access_token;
+  return typeof token === "string" && token.startsWith("demo-");
+}
+
 export const useAuth = () => {
   // Migración a usePersistedState para tokens y sesión
   const [_authTokens, _setAuthTokens] = usePersistedState<{
@@ -168,6 +182,10 @@ export const useAuth = () => {
           // relationship_type) sin `accountType`; leer solo accountType
           // hacía que una pareja resolviera como single.
           role: "user",
+          // Ronda 8 (punto 14): la marca de cuenta anónima viaja al
+          // perfil cargado; sin esto el perfil single no puede
+          // distinguirla de la Sofía canónica.
+          is_anonymous: parsedDemoUser.is_anonymous === true,
           profile_type: (resolveDemoAccountType(parsedDemoUser) ??
             "single") as string,
           is_demo: true,
@@ -773,7 +791,13 @@ export const useAuth = () => {
     // `demo_user` guardado en localStorage. Sin esto, un usuario real que
     // antes probó el demo seguía resolviendo como demo y el botón Perfil
     // del dock lo lanzaba a los perfiles demo.
-    if (session?.user) {
+    // Ronda 8 (punto 14): una sesión MOCK demo (access_token
+    // "demo-...": la crean handleDemoAuth y el login local) NO es una
+    // sesión real: antes `session?.user` la trataba como real y
+    // `isDemoMode()`/`getProfileType()` cambiaban de valor entre el
+    // login (sesión mock puesta) y la recarga (sesión null), lo que
+    // hacía alternar la etiqueta Cuenta/DEMO.
+    if (session?.user && !isDemoSession(session)) {
       return profile?.profile_type || "single";
     }
     // Misma lectura fresca que isDemo(): el estado `demoUser` de esta
@@ -834,7 +858,8 @@ export const useAuth = () => {
   const isDemo = () => {
     // Sesión real tiene prioridad: con sesión de Supabase activa no hay
     // modo demo, aunque queden flags demo obsoletos en localStorage.
-    if (session?.user) return false;
+    // (Ver isDemoSession: la sesión mock demo no cuenta como real.)
+    if (session?.user && !isDemoSession(session)) return false;
     const sessionFlags = StorageManager.getSessionFlags();
     // Leer demo_user directo de localStorage en cada llamada: useAuth es
     // un hook por componente (sin estado compartido) y cada instancia lee
@@ -885,7 +910,8 @@ export const useAuth = () => {
   const isDemoMode = () => {
     // Sesión real tiene prioridad: con sesión de Supabase activa no hay
     // modo demo, aunque queden flags demo obsoletos en localStorage.
-    if (session?.user) return false;
+    // (Ver isDemoSession: la sesión mock demo no cuenta como real.)
+    if (session?.user && !isDemoSession(session)) return false;
     const sessionFlags = StorageManager.getSessionFlags();
     return sessionFlags.demo_authenticated;
   };

@@ -47,6 +47,13 @@ export interface LocalDemoAccountRecord {
   nickname: string;
   userId: string;
   profile: Profile;
+  /**
+   * Ronda 8 (punto 14): origen de la cuenta. Solo el formulario
+   * "Crear Perfil Anónimo" crea cuentas anónimas; el resto son
+   * registros single/pareja normales. Sin esto no hay forma de
+   * distinguir una cuenta anónima ya guardada de una normal.
+   */
+  isAnonymous?: boolean;
 }
 
 function readLocalDemoAccounts(): LocalDemoAccountRecord[] {
@@ -125,6 +132,12 @@ export interface LocalDemoAccountInput {
   /** Apodo / nombre en la comunidad (single) o apodo de pareja. */
   nickname: string;
   accountType: "single" | "couple";
+  /**
+   * Ronda 8 (punto 14): cuenta creada por "Crear Perfil Anónimo".
+   * El perfil anónimo es suyo y limitado (sin NFTs, sin publicar,
+   * permiso para todo): NO debe heredar los datos demo de Sofía.
+   */
+  isAnonymous?: boolean | undefined;
   firstName?: string | undefined;
   lastName?: string | undefined;
   /** Edad del single o del primer integrante de la pareja. */
@@ -187,6 +200,10 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
         ? input.partnerAge
         : undefined,
     role: "user",
+    // Ronda 8 (punto 14): marca de cuenta anónima. Viaja en
+    // `demo_user` y useAuth la pasa al perfil cargado; el perfil
+    // single la lee para no aplicar los fallbacks de Sofía.
+    ...(input.isAnonymous ? { is_anonymous: true as const } : {}),
     age: typeof input.age === "number" ? input.age : null,
     bio: input.bio ?? null,
     gender: input.gender ?? null,
@@ -209,6 +226,7 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
     nickname: input.nickname,
     userId,
     profile,
+    ...(input.isAnonymous ? { isAnonymous: true as const } : {}),
   });
 
   if (input.countryCode) {
@@ -225,4 +243,58 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
   }
 
   return { userId, profile };
+}
+
+/**
+ * Ronda 8 (punto 14): ¿es este perfil demo una cuenta ANÓNIMA?
+ *
+ * Causa raíz del clon de Sofía: el perfil single demo aplicaba los
+ * datos canónicos de Sofía (foto, 28 años, 168 cm / 60 kg, intereses,
+ * CMPX 1250 / GTK 850, 4 NFTs, 58 fotos privadas, PIN 1234) a
+ * CUALQUIER sesión demo single, porque nada distinguía la persona
+ * demo canónica (Sofía, `single@outlook.es`) de una cuenta creada
+ * por el usuario. La cuenta anónima se crea sin ningún dato personal
+ * (solo alias + email), así que TODOS los fallbacks de Sofía se
+ * disparaban y el perfil quedaba clonado.
+ *
+ * Detección, en orden:
+ * 1. Marca explícita `is_anonymous` (cuentas creadas por "Crear
+ *    Perfil Anónimo" a partir de esta ronda) o tipo "anonymous".
+ * 2. Legado (cuentas anónimas creadas antes de la marca, p. ej.
+ *    TestR7): sesión demo single que NO es la credencial canónica
+ *    de Sofía y NO trae ningún dato personal (sin edad, bio, género,
+ *    avatar ni intereses). El registro single normal siempre pasa
+ *    edad (y bio/intereses/género), y la Sofía canónica trae edad
+ *    28 + foto + género en el perfil cargado por useAuth, así que
+ *    ninguno de los dos cae aquí por error.
+ *
+ * La rama legado SOLO aplica a cuentas demo (`is_demo` o email
+ * `@demo.local`): sin esta guarda, un perfil REAL sin datos
+ * (nuevo usuario que aún no llenó edad/bio/género/avatar/
+ * intereses) se clasificaría como anónimo y perdería NFTs,
+ * publicación y galería privada.
+ */
+export function isAnonymousDemoProfile(profile: unknown): boolean {
+  if (!profile || typeof profile !== "object") return false;
+  const p = profile as Record<string, unknown>;
+  if (p.is_anonymous === true) return true;
+  for (const key of ["accountType", "type", "profile_type"]) {
+    const value = p[key];
+    if (typeof value === "string" && value.trim().toLowerCase() === "anonymous")
+      return true;
+  }
+  const email = typeof p.email === "string" ? p.email.toLowerCase().trim() : "";
+  if (email === "single@outlook.es" || email === "pareja@outlook.es")
+    return false;
+  // Ronda 8 (recuperación): la heurística legado solo vale para
+  // cuentas demo; un perfil real sin datos no es anónimo.
+  const isDemoAccount = p.is_demo === true || email.endsWith("@demo.local");
+  if (!isDemoAccount) return false;
+  const hasPersonalData =
+    typeof p.age === "number" ||
+    (typeof p.bio === "string" && p.bio.trim().length > 0) ||
+    (typeof p.gender === "string" && p.gender.trim().length > 0) ||
+    (typeof p.avatar_url === "string" && p.avatar_url.trim().length > 0) ||
+    (Array.isArray(p.interests) && p.interests.length > 0);
+  return !hasPersonalData;
 }

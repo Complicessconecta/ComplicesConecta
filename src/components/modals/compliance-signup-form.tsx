@@ -58,6 +58,10 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({
           email: trimmedEmail,
           nickname: alias.trim(),
           accountType: "single",
+          // Ronda 8 (punto 14): este formulario CREA el perfil
+          // anónimo: sin la marca, el perfil heredaba todos los datos
+          // demo de Sofía (foto, bio, saldos, NFTs, fotos privadas).
+          isAnonymous: true,
         });
         toast({
           title: "¡Cuenta demo creada!",
@@ -74,6 +78,8 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({
         options: {
           data: {
             nickname: alias.trim(),
+            // Ronda 8 (punto 14): marca de cuenta anónima (ver rama demo).
+            is_anonymous: true,
           },
         },
       });

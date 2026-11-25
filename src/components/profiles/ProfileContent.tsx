@@ -129,6 +129,18 @@ interface ProfileContentProps {
    * el vacío "No hay posts aún" se mostraba debajo de él (punto 13).
    */
   showExamplePost?: boolean;
+  /**
+   * Ronda 8 (punto 14): el perfil ANÓNIMO no puede publicar posts
+   * (solo crear reseñas): con false se oculta "Crear Post" y se
+   * explica la regla en el vacío. Default true (resto de perfiles).
+   */
+  allowCreatePost?: boolean;
+  /**
+   * Ronda 8 (punto 14): el perfil ANÓNIMO no tiene NFTs: con false
+   * se ocultan "Crear NFT" y el botón de mintear de la galería.
+   * Default true (resto de perfiles).
+   */
+  allowNft?: boolean;
 }
 
 export const ProfileContent: React.FC<ProfileContentProps> = ({
@@ -137,6 +149,8 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   onDeletePost,
   onCommentPost,
   showExamplePost = true,
+  allowCreatePost = true,
+  allowNft = true,
 }) => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
@@ -428,7 +442,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 <div className="text-center py-12">
                   <Grid3X3 className="w-12 h-12 mx-auto mb-4 text-white/40" />
                   <p className="text-white/60 mb-4">No hay posts aún</p>
-                  {isOwnProfile && (
+                  {isOwnProfile && allowCreatePost && (
                     <Button
                       onClick={() => {
                         onUploadImage?.();
@@ -443,6 +457,12 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                       <Upload className="w-4 h-4 mr-2" />
                       Crear Post
                     </Button>
+                  )}
+                  {isOwnProfile && !allowCreatePost && (
+                    <p className="text-white/60 text-sm">
+                      Las cuentas anónimas no publican posts: solo pueden
+                      crear reseñas.
+                    </p>
                   )}
                 </div>
               )}
@@ -475,7 +495,9 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
       case "gallery":
         return (
           <div className="space-y-6">
-            {/* Add Photo / Mint NFT Actions */}
+            {/* Add Photo / Mint NFT Actions.
+                Ronda 8 (punto 14): sin NFTs en el perfil anónimo:
+                se ocultan "Crear NFT" y el minteo (queda "Subir Foto"). */}
             {isOwnProfile && (
               <div className="flex flex-wrap gap-4 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
                 <Button
@@ -486,36 +508,40 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   Subir Foto
                 </Button>
 
-                <input
-                  ref={nftFileInputRef}
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  aria-label="Seleccionar archivo de imagen NFT"
-                  title="Seleccionar archivo de imagen para NFT (JPEG, PNG, WebP)"
-                  placeholder="Imagen NFT"
-                  onChange={(e) => {
-                    const file = e.currentTarget.files?.[0];
-                    if (!file) return;
-                    setNftImageFile(file);
-                    logger.info("NFT image selected", {
-                      name: file.name,
-                      size: file.size,
-                      type: file.type,
-                    });
-                  }}
-                />
+                {allowNft && (
+                  <>
+                    <input
+                      ref={nftFileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      aria-label="Seleccionar archivo de imagen NFT"
+                      title="Seleccionar archivo de imagen para NFT (JPEG, PNG, WebP)"
+                      placeholder="Imagen NFT"
+                      onChange={(e) => {
+                        const file = e.currentTarget.files?.[0];
+                        if (!file) return;
+                        setNftImageFile(file);
+                        logger.info("NFT image selected", {
+                          name: file.name,
+                          size: file.size,
+                          type: file.type,
+                        });
+                      }}
+                    />
 
-                <Button
-                  onClick={() => nftFileInputRef.current?.click()}
-                  className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-                >
-                  Crear NFT
-                </Button>
+                    <Button
+                      onClick={() => nftFileInputRef.current?.click()}
+                      className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                    >
+                      Crear NFT
+                    </Button>
+                  </>
+                )}
               </div>
             )}
 
-            {isOwnProfile && nftImageFile && (
+            {isOwnProfile && allowNft && nftImageFile && (
               <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
                 <div className="text-sm text-white/80">
                   Imagen seleccionada:{" "}

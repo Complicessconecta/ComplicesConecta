@@ -362,28 +362,28 @@ const Requests = () => {
     switch (status) {
       case "pending":
         return (
-          <Badge className="text-yellow-400 border border-yellow-400 bg-transparent">
+          <Badge className="text-yellow-700 border border-yellow-600/50 bg-transparent dark:text-yellow-400 dark:border-yellow-400">
             <Clock className="h-3 w-3 mr-1" />
             Pendiente
           </Badge>
         );
       case "accepted":
         return (
-          <Badge className="text-green-400 border border-green-400 bg-transparent">
+          <Badge className="text-green-700 border border-green-600/50 bg-transparent dark:text-green-400 dark:border-green-400">
             <UserCheck className="h-3 w-3 mr-1" />
             Aceptada
           </Badge>
         );
       case "declined":
         return (
-          <Badge className="text-red-400 border border-red-400 bg-transparent">
+          <Badge className="text-red-700 border border-red-600/50 bg-transparent dark:text-red-400 dark:border-red-400">
             <UserX className="h-3 w-3 mr-1" />
             Rechazada
           </Badge>
         );
       case "revoked":
         return (
-          <Badge className="text-white border border-white/40 bg-transparent">
+          <Badge className="text-slate-600 border border-slate-400 bg-transparent dark:text-white dark:border-white/40">
             <UserX className="h-3 w-3 mr-1" />
             Revocada
           </Badge>
@@ -516,12 +516,12 @@ const Requests = () => {
               <TabsContent value="received" className="mt-6">
                 <div className="space-y-4">
                   {receivedInvitations.length === 0 ? (
-                    <Card className="p-8 text-center bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
-                      <UserPlus className="h-16 w-16 mx-auto mb-4 text-white/50" />
-                      <h3 className="text-xl font-semibold text-white mb-2">
+                    <Card className="p-8 text-center bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10">
+                      <UserPlus className="h-16 w-16 mx-auto mb-4 text-slate-400 dark:text-white/50" />
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                         No hay invitaciones recibidas
                       </h3>
-                      <p className="text-white/70">
+                      <p className="text-slate-600 dark:text-white/70">
                         Cuando alguien te envie una invitación, aparecer aqui.
                       </p>
                     </Card>
@@ -529,11 +529,11 @@ const Requests = () => {
                     receivedInvitations.map((inv) => (
                       <Card
                         key={inv.id}
-                        className="p-4 bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10 flex flex-col sm:flex-row items-start gap-4 card-accessible"
+                        className="p-4 bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start gap-4 card-accessible"
                       >
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-2">
-                            <div className="flex items-center text-sm text-white/80">
+                            <div className="flex items-center text-sm text-slate-700 dark:text-white/80">
                               {getInvitationTypeIcon(inv.type)}
                               <span>
                                 Invitación de <strong>{inv.from_profile}</strong>
@@ -542,11 +542,11 @@ const Requests = () => {
                             {getStatusBadge(inv.status)}
                           </div>
                           {inv.message && (
-                            <p className="text-sm text-white bg-black/30 p-3 rounded-md mb-3">
+                            <p className="text-sm text-slate-900 dark:text-white bg-slate-900/5 dark:bg-black/30 p-3 rounded-md mb-3">
                               {inv.message}
                             </p>
                           )}
-                          <p className="text-xs text-white/70">
+                          <p className="text-xs text-slate-500 dark:text-white/70">
                             Recibido:{" "}
                             {inv.created_at
                               ? new Date(inv.created_at).toLocaleString()
@@ -582,12 +582,12 @@ const Requests = () => {
               <TabsContent value="sent" className="mt-6">
                 <div className="space-y-4">
                   {sentInvitations.length === 0 ? (
-                    <Card className="p-8 text-center bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10">
-                      <Send className="h-16 w-16 mx-auto mb-4 text-white/50" />
-                      <h3 className="text-xl font-semibold text-white mb-2">
+                    <Card className="p-8 text-center bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10">
+                      <Send className="h-16 w-16 mx-auto mb-4 text-slate-400 dark:text-white/50" />
+                      <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                         No has enviado invitaciones
                       </h3>
-                      <p className="text-white/70">
+                      <p className="text-slate-600 dark:text-white/70">
                         Explora perfiles y envia invitaciones para conectar.
                       </p>
                     </Card>
@@ -595,10 +595,10 @@ const Requests = () => {
                     sentInvitations.map((inv) => (
                       <Card
                         key={inv.id}
-                        className="p-4 bg-linear-to-br from-purple-900/30 via-purple-800/20 to-blue-900/30 backdrop-blur-sm border-white/10 card-accessible"
+                        className="p-4 bg-white dark:bg-linear-to-br dark:from-purple-900/30 dark:via-purple-800/20 dark:to-blue-900/30 backdrop-blur-sm border-slate-200 dark:border-white/10 card-accessible"
                       >
                         <div className="flex justify-between items-start">
-                          <div className="flex items-center text-sm text-white/80">
+                          <div className="flex items-center text-sm text-slate-700 dark:text-white/80">
                             {getInvitationTypeIcon(inv.type)}
                             <span>
                               Invitación para <strong>{inv.to_profile}</strong>
@@ -607,11 +607,11 @@ const Requests = () => {
                           {getStatusBadge(inv.status)}
                         </div>
                         {inv.message && (
-                          <p className="text-sm text-white bg-black/30 p-3 rounded-md my-3">
+                          <p className="text-sm text-slate-900 dark:text-white bg-slate-900/5 dark:bg-black/30 p-3 rounded-md my-3">
                             {inv.message}
                           </p>
                         )}
-                        <p className="text-xs text-white/70">
+                        <p className="text-xs text-slate-500 dark:text-white/70">
                           Enviado:{" "}
                           {inv.created_at
                             ? new Date(inv.created_at).toLocaleString()

@@ -30,38 +30,22 @@ export const MainLayout = () => {
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
-  // Precarga del chunk de Chat en idle: al abrir el dock el componente
-  // ya está en caché y no aparece el "Cargando…". Sin esto, la primera
-  // apertura esperaba la descarga del chunk con el fallback tapando
-  // todo (punto 10).
-  // RONDA 7 (punto 6): `requestIdleCallback` sin timeout puede no
-  // disparar nunca en una página ocupada (móvil) y la primera apertura
-  // del dock pagaba la descarga entera del chunk ("Cargando chat…"
-  // más de 8 s en el test). El temporizador acota la precarga a 2 s
-  // como máximo; importar dos veces es inocuo (mismo módulo en caché).
+  // Precarga del chunk de Chat AL MONTAR: al abrir el dock el
+  // componente ya está en caché y no aparece el "Cargando…".
+  // RONDA 8 (punto 5): la precarga anterior esperaba
+  // `requestIdleCallback` o un temporizador de 2 s — una carrera que
+  // pierde siempre que el usuario abre el chat en los primeros
+  // segundos o con la página ocupada (móvil), justo cuando el dock
+  // paga la descarga en frío del chunk `pages-chat` (1.578 kB).
+  // Arrancar la descarga con el layout es lo que la deja caliente a
+  // tiempo; el `.catch` es porque `loadChatModule` ahora acota la
+  // espera a 6 s y la precarga en segundo plano no debe dejar un
+  // rechazo sin manejar (la descarga real sigue en curso y el dock
+  // la reutiliza al abrirse).
   useEffect(() => {
-    const preload = () => {
-      void loadChatModule();
-    };
-    const timer = globalThis.setTimeout(preload, 2000);
-    if ("requestIdleCallback" in window) {
-      const idleId = (
-        window as Window & {
-          requestIdleCallback: (cb: () => void) => number;
-        }
-      ).requestIdleCallback(preload);
-      return () => {
-        globalThis.clearTimeout(timer);
-        if ("cancelIdleCallback" in window) {
-          (
-            window as Window & { cancelIdleCallback: (id: number) => void }
-          ).cancelIdleCallback(idleId);
-        }
-      };
-    }
-    // globalThis (no `window`): el `in` de arriba estrecha `window` a
-    // `never` en esta rama y `window.setTimeout` deja de existir para tsc.
-    return () => globalThis.clearTimeout(timer);
+    void loadChatModule().catch(() => {
+      // Precarga en segundo plano: el dock reintentará al abrirse.
+    });
   }, []);
 
   // Determine session state
@@ -408,6 +392,7 @@ const ChatDockLoader = () => (
 
 interface ChatDockErrorBoundaryProps {
   onRetry: () => void;
+  onOpenFullPage: () => void;
   children: React.ReactNode;
 }
 
@@ -443,13 +428,26 @@ class ChatDockErrorBoundary extends React.Component<
           <p className="text-xs text-slate-600 dark:text-white/70">
             Revisa tu conexión e inténtalo de nuevo.
           </p>
-          <button
-            type="button"
-            onClick={this.props.onRetry}
-            className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700"
-          >
-            Reintentar
-          </button>
+          <div className="flex flex-wrap justify-center gap-2">
+            <button
+              type="button"
+              onClick={this.props.onRetry}
+              className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700"
+            >
+              Reintentar
+            </button>
+            {/* Ronda 8 (punto 5): salida al mismo chat a pantalla
+                completa (/chat-intimo, mismo chunk): si la descarga se
+                atascó en el dock, la página la reutiliza ya caliente
+                en vez de dejar al usuario sin chat. */}
+            <button
+              type="button"
+              onClick={this.props.onOpenFullPage}
+              className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white/20 dark:text-white dark:hover:bg-white/20"
+            >
+              Abrir en página completa
+            </button>
+          </div>
         </div>
       );
     }
@@ -463,6 +461,7 @@ interface ChatDockProps {
 }
 
 const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   // `key` del boundary: al reintentar se remonta y limpia `hasError`.
   const [errorKey, setErrorKey] = useState(0);
   // El lazy vive en ESTADO: React.lazy guarda el rechazo del `import()`
@@ -474,39 +473,58 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
     setChatLazy(() => lazy(loadChatModule));
     setErrorKey((prev) => prev + 1);
   };
+  // Ronda 8 (punto 5): la página /chat-intimo monta el MISMO chat a
+  // pantalla completa; al navegar, el efecto de MainLayout cierra el
+  // dock, así que no queda abierto sobre la página.
+  const handleOpenFullPage = () => {
+    onClose();
+    navigate("/chat-intimo");
+  };
 
   if (!isOpen) return null;
 
   return (
-    // Ancho fijo al viewport con margen de 1rem a cada lado y tope de 42rem:
-    // dentro van la lista (20rem) y el hilo del chat, y con max-w-md el
-    // hilo no cabía y su texto quedaba recortado en el borde derecho.
-    <div className="fixed bottom-24 right-4 z-50 w-[calc(100vw-2rem)] max-w-2xl">
-      {/* RONDA 5 — Tema claro: el panel era negro siempre. Ahora fondo
-          explícito claro/oscuro según tema. Sigue siendo un overlay fijo
-          porque es un panel que el usuario abre a demanda (tiene Cerrar),
-          no un botón flotante pasivo. */}
-      <div className="bg-white dark:bg-black/60 backdrop-blur-2xl border border-slate-200 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden">
-        <div className="relative z-10 flex items-center justify-between px-4 py-2 border-b border-slate-200 dark:border-white/10">
-          <span className="text-sm font-semibold text-slate-900 dark:text-white">
-            Chat Íntimo
-          </span>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-slate-500 hover:text-slate-900 text-sm px-2 py-1 rounded-md hover:bg-slate-100 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10"
-          >
-            Cerrar
-          </button>
-        </div>
-        <div className="h-[420px] bg-slate-100 dark:bg-black/40">
-          <Suspense fallback={<ChatDockLoader />}>
-            {/* embedded: el Chat a pantalla completa (h-screen) se
+    // RONDA 8 (stream A): el panel YA NO es `fixed bottom-24 right-4`:
+    // era la única superficie de chat fija abajo a la derecha y es lo
+    // que el test de la ronda 7 seguía viendo como "burbuja fija" tras
+    // tocar "Abrir Chat" (la píldora en sí es en flujo y centrada, ver
+    // ChatFab/MainLayout abajo). Ahora es un diálogo centrado: misma
+    // función (se abre a demanda, tiene Cerrar, mismo cuerpo de 420px),
+    // pero ya no puede leerse como un FAB flotante. El contenedor es
+    // `pointer-events-none` y solo el panel recibe toques, como antes
+    // los toques fuera del panel llegan a la página.
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      <div className="pointer-events-auto w-full max-w-2xl">
+        {/* RONDA 5 — Tema claro: el panel era negro siempre. Ahora fondo
+            explícito claro/oscuro según tema. Sigue siendo un overlay
+            porque es un panel que el usuario abre a demanda (tiene
+            Cerrar), no un botón flotante pasivo. */}
+        <div className="bg-white dark:bg-black/60 backdrop-blur-2xl border border-slate-200 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden">
+          <div className="relative z-10 flex items-center justify-between px-4 py-2 border-b border-slate-200 dark:border-white/10">
+            <span className="text-sm font-semibold text-slate-900 dark:text-white">
+              Chat Íntimo
+            </span>
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-slate-500 hover:text-slate-900 text-sm px-2 py-1 rounded-md hover:bg-slate-100 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10"
+            >
+              Cerrar
+            </button>
+          </div>
+          <div className="h-[420px] bg-slate-100 dark:bg-black/40">
+            <Suspense fallback={<ChatDockLoader />}>
+              {/* embedded: el Chat a pantalla completa (h-screen) se
                 desbordaba dentro del dock de 420px y se solapaba. */}
-            <ChatDockErrorBoundary key={errorKey} onRetry={handleRetry}>
-              <ChatLazy embedded />
-            </ChatDockErrorBoundary>
-          </Suspense>
+              <ChatDockErrorBoundary
+                key={errorKey}
+                onRetry={handleRetry}
+                onOpenFullPage={handleOpenFullPage}
+              >
+                <ChatLazy embedded />
+              </ChatDockErrorBoundary>
+            </Suspense>
+          </div>
         </div>
       </div>
     </div>

@@ -6,6 +6,10 @@ import { walletService, WalletService } from "@/services/payments/WalletService"
 import {
   nftService,
   notifyDemoNFTsChanged,
+  countMintedDemoNFTs,
+  getDemoNFTSeedItems,
+  DEMO_MINT_LIMIT,
+  DEMO_NFT_STORAGE_CAP,
 } from "@/services/payments/NFTService";
 import { logger } from "@/lib/logger";
 
@@ -175,9 +179,16 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
       let result;
 
       if (isDemoMode) {
-        const existing = readDemoNFTs(userId);
-        if (existing.length >= 4) {
-          const error = "Límite demo alcanzado: máximo 4 NFTs";
+        // Base: lo guardado, o la semilla si aún no hay colección (ronda
+        // 8, punto 4): sin la semilla como base, el primer mint
+        // escribía solo el NFT nuevo y la colección pasaba de 4 a 1.
+        // El tope cuenta solo NFTs MINTEADOS por el usuario, no la
+        // semilla: fresco son 0/4, no 4/4.
+        const stored = readDemoNFTs(userId);
+        const existing =
+          stored.length > 0 ? stored : getDemoNFTSeedItems();
+        if (countMintedDemoNFTs(existing) >= DEMO_MINT_LIMIT) {
+          const error = `Límite demo alcanzado: máximo ${DEMO_MINT_LIMIT} NFTs minteados por ti`;
           setErrorMessage(error);
           setMintStatus("error");
           onMintError?.(error);
@@ -233,6 +244,9 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
           description: nftDescription,
           image: imageUrl,
           created_at: new Date().toISOString(),
+          // Marcado como minteado por el usuario: el contador del tope
+          // (y del modal) lo distingue de la semilla.
+          minted_by_user: true,
           // Datos adicionales para simular NFT real
           collection: "CómplicesConecta Demo Collection",
           creator: userId,
@@ -240,7 +254,10 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
           contract_address: "0x0000000000000000000000000000000000000000",
         };
 
-        const next = [mockNFT as Record<string, unknown>, ...existing].slice(0, 4);
+        const next = [mockNFT as Record<string, unknown>, ...existing].slice(
+          0,
+          DEMO_NFT_STORAGE_CAP,
+        );
         writeDemoNFTs(userId, next);
         // Avisar al resto de la página (DemoWallet, perfil) para que sus
         // contadores se recarguen de la misma fuente (punto 12).

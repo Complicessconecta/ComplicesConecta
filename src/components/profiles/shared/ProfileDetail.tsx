@@ -30,6 +30,7 @@ import {
   resolveProfileVisibility,
   isProfileGated,
 } from "@/lib/profileVisibility";
+import { resolveDemoOwnerIdentity } from "@/lib/visibility";
 import { areFriendsSync } from "@/lib/friends";
 import { readLocationSharingLocal } from "@/lib/geolocation";
 
@@ -250,6 +251,26 @@ const ProfileDetail = () => {
 
   const profileScore = useProfileScore(profile);
 
+  // COORDINATOR (integración ronda 8): estos hooks VAN ANTES del
+  // `if (!profile)` de abajo. Estaban después y la primera render
+  // en frío (/profile/<uuid> sin state) retornaba antes de ellos;
+  // cuando la resolución (D, pasos 2c/2d) re-navegaba con el perfil
+  // en state, el segundo render llamaba MÁS hooks y React lanzaba
+  // "Rendered more hooks than during the previous render" — el test
+  // r8-stream-d lo cazó (Sofía en frío). El efecto se salta si aún
+  // no hay perfil; la dependencia es `profile?.id`.
+  const [dbVisibility, setDbVisibility] = useState<string | null>(null);
+  useEffect(() => {
+    if (!profile) return;
+    let alive = true;
+    fetchProfileVisibility(String(profile.id)).then((v) => {
+      if (alive) setDbVisibility(v);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [profile?.id]);
+
   if (!profile) {
     return (
       <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
@@ -296,19 +317,23 @@ const ProfileDetail = () => {
   // Visibilidad efectiva: la BD manda (perfiles reales), luego lo que el
   // dueño guardó en local, y si no hay nada, la semilla demo del perfil.
   // Sin el fetch a BD, un perfil real puesto en privado nunca se cerraba.
-  const [dbVisibility, setDbVisibility] = useState<string | null>(null);
-  useEffect(() => {
-    let alive = true;
-    fetchProfileVisibility(String(profile.id)).then((v) => {
-      if (alive) setDbVisibility(v);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [profile.id]);
+  // Ronda 8 (punto 11): el local se leía con el id de la TARJETA
+  // (`demo-profile-6`, `demo-couple-456`…), pero el dueño guarda su
+  // visibilidad con su id de USUARIO (`profile_visibility:<userId>`):
+  // el gate existía pero nunca se disparaba para las cuentas demo
+  // (la pareja puesta en privada se seguía viendo entera desde la
+  // otra cuenta). El puente de identidad demo resuelve el id del
+  // dueño antes de leer; fuera de demo devuelve null y se usa el id
+  // del perfil tal cual.
+  // (dbVisibility vive arriba, antes del `if (!profile)`: ver nota
+  // del coordinador — hooks después de un return temprano rompen
+  // el orden de hooks en frío.)
+  const visibilityOwnerId =
+    resolveDemoOwnerIdentity(String(profile.id), profile.name)?.userId ??
+    String(profile.id);
   const profileVisibility = resolveProfileVisibility({
     dbVisibility,
-    storedVisibility: readVisibilityLocalOrNull(String(profile.id)),
+    storedVisibility: readVisibilityLocalOrNull(visibilityOwnerId),
     seedVisibility: socialDemo.visibility,
   });
   // RONDA 7 (punto 18): el 4º argumento es el NOMBRE del perfil: la

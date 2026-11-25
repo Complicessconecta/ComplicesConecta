@@ -36,11 +36,23 @@ export const DEMO_WALLET_BALANCES: Record<
  * /tokens lo subía solo en el estado local del hook useTokens (1250 →
  * 1350) y el perfil seguía leyendo la constante 1250, así que el
  * reclamo se perdía al navegar y al recargar. El saldo canónico vive
- * ahora en localStorage (`demo_wallet_balances`), sembrado con las
- * constantes de arriba; reclamar escribe aquí y todos los lectores
- * (perfil, TokenDashboard, DemoWallet, useTokens) leen lo mismo.
+ * ahora en localStorage, sembrado con las constantes de arriba; reclamar
+ * escribe aquí y todos los lectores (perfil, TokenDashboard, DemoWallet,
+ * useTokens) leen lo mismo.
+ *
+ * Ronda 8, punto 8: la clave NO puede empezar por `demo_`: al cerrar
+ * sesión `clearDemoAuth` (app-config) y `StorageManager.clearDemoSession`
+ * barren por prefijo `demo_` y borraban el saldo reclamado, así que tras
+ * logout/login el saldo volvía a la semilla (1250). La clave nueva usa
+ * el prefijo `cc_` — mismo precedente que `cc_local_demo_accounts_v1`
+ * (demo-registration), que sobrevive al logout a propósito. La clave
+ * vieja se sigue leyendo una vez y se migra (no se pierde el saldo de
+ * quien ya reclamó). Esto es solo el SALDO demo: los NFTs demo
+ * (`demo_nfts:<uid>`) siguen borrándose al cerrar sesión, como promete
+ * /demo.
  */
-export const DEMO_WALLET_STORAGE_KEY = "demo_wallet_balances";
+export const DEMO_WALLET_STORAGE_KEY = "cc_demo_wallet_balances_v1";
+export const LEGACY_DEMO_WALLET_STORAGE_KEY = "demo_wallet_balances";
 
 /** Evento que se dispara cuando el saldo demo cambia (reclamo). Los
  * lectores con estado propio (useTokens, DemoWallet, perfiles) lo
@@ -68,7 +80,24 @@ function readPersistedDemoWalletBalances(): Record<
   };
   if (typeof window === "undefined") return fallback;
   try {
-    const raw = window.localStorage.getItem(DEMO_WALLET_STORAGE_KEY);
+    // Clave nueva primero; si no existe, migrar la vieja (`demo_...`)
+    // una vez: se lee, se reescribe en la clave nueva y se borra la
+    // vieja para que el barrido de logout no la vuelva a borrar.
+    let raw = window.localStorage.getItem(DEMO_WALLET_STORAGE_KEY);
+    if (!raw) {
+      const legacy = window.localStorage.getItem(
+        LEGACY_DEMO_WALLET_STORAGE_KEY,
+      );
+      if (legacy) {
+        raw = legacy;
+        try {
+          window.localStorage.setItem(DEMO_WALLET_STORAGE_KEY, legacy);
+          window.localStorage.removeItem(LEGACY_DEMO_WALLET_STORAGE_KEY);
+        } catch {
+          // Sin escritura: se sigue leyendo la vieja en esta sesión.
+        }
+      }
+    }
     if (!raw) return fallback;
     const parsed: unknown = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return fallback;

@@ -237,7 +237,7 @@ export const ChatAuthenticated = () => {
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="text-white text-sm">
-                  {onlineUsers.length} en lnea
+                  {onlineUsers.length} en línea
                 </span>
               </div>
             </div>
@@ -339,7 +339,7 @@ export const ChatAuthenticated = () => {
                         <p className="text-white font-medium text-sm truncate">
                           {user.name}
                         </p>
-                        <p className="text-green-400 text-xs">En lnea</p>
+                        <p className="text-green-400 text-xs">En línea</p>
                       </div>
                     </div>
                   ))}
@@ -493,7 +493,7 @@ export const ChatAuthenticated = () => {
                         onChange={(e) => setCurrentMessage(e.target.value)}
                         placeholder={
                           activeTab === "public"
-                            ? "Escribe un mensaje pblico..."
+                            ? "Escribe un mensaje público..."
                             : "Escribe un mensaje privado..."
                         }
                         className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/50"

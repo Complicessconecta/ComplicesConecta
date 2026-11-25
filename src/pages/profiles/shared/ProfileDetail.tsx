@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import ProfileDetailInner from "@/components/profiles/shared/ProfileDetail";
+import ProfileDetailInner, {
+  LEGACY_NUMERIC_PROFILES,
+} from "@/components/profiles/shared/ProfileDetail";
 import {
   generateDemoProfiles,
   demoProfiles,
+  formatCoupleAgeLabel,
   type DemoProfile,
 } from "@/demo/demoData";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,6 +35,8 @@ interface ResolvedProfile {
   id: string | number;
   name: string;
   age?: number | undefined;
+  /** "25 y 28 años" en parejas con dos edades. */
+  ageLabel?: string | undefined;
   location?: string | undefined;
   interests?: string[] | undefined;
   image?: string | undefined;
@@ -47,6 +52,10 @@ const fromDemoProfile = (p: DemoProfile): ResolvedProfile => ({
   id: p.id,
   name: p.name,
   age: p.age,
+  ageLabel:
+    p.partnerAge !== undefined
+      ? formatCoupleAgeLabel(p.age, p.partnerAge)
+      : undefined,
   location: p.location,
   interests: p.interests,
   image: p.image,
@@ -144,6 +153,33 @@ export default function ProfileDetail() {
         const demo = demos.find((p) => p.id === id);
         if (demo) {
           resolved = fromDemoProfile(demo);
+        }
+
+        // 1b. Ids numéricos legacy 1-4 (misma fuente que el detalle
+        // interno): /profile/3 es Ana siempre, navegando o directo.
+        // Antes el wrapper no resolvía "3" y el interno lo hacía por
+        // parseInt solo cuando NO había state, así que la misma URL
+        // mostraba personas distintas según el origen.
+        if (!resolved) {
+          const legacyNumeric = LEGACY_NUMERIC_PROFILES.find(
+            (p) => String(p.id) === id,
+          );
+          if (legacyNumeric) {
+            resolved = {
+              id: legacyNumeric.id,
+              name: legacyNumeric.name,
+              age: legacyNumeric.age,
+              location: legacyNumeric.location,
+              interests: legacyNumeric.interests,
+              image: legacyNumeric.image,
+              images: legacyNumeric.images,
+              isOnline: legacyNumeric.isOnline,
+              bio: legacyNumeric.bio,
+              profession: legacyNumeric.profession,
+              rating: legacyNumeric.rating,
+              isVerified: true,
+            };
+          }
         }
 
         // 2. Lista demo legacy (demo-1, demo-2, demo-couple-1...).

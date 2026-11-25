@@ -25,7 +25,14 @@ import {
   Eye,
   TrendingUp,
   Calendar,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
+import { ShareProfile } from "@/components/profiles/shared/ShareProfile";
+import {
+  DEMO_COUPLE_CARMEN_ROBERTO,
+  DEMO_COUPLE_IMAGES,
+} from "@/demo/demoData";
 import { toast } from "sonner";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
@@ -216,6 +223,10 @@ function ProfileCouple() {
     "none" | "pending" | "approved" | "denied"
   >("none");
   const [showReportDialog, setShowReportDialog] = useState(false);
+  // Menú "Compartir" (punto 17): TikTok, Facebook, WhatsApp y X.
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  // Galería privada COLAPSADA por defecto (punto 14, regresión ronda 4).
+  const [privateGalleryOpen, setPrivateGalleryOpen] = useState(false);
   // Espejo de Single: modal VIP de la sección "Próximas experiencias".
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
@@ -293,14 +304,15 @@ function ProfileCouple() {
     number | null
   >(null);
 
-  // Galería pública de pareja (espejo de Single): las 3 fotos públicas
-  // demo de la pareja, assets locales /assets/people/couple/c1-c3.jpg.
-  // Single muestra 3 fotos públicas + Fotos Privadas; la pareja solo
-  // tenía las privadas (full test 2026-11-24).
+  // Galería pública de pareja (espejo de Single): 3 fotos verificadas de
+  // PAREJA JUNTA del pool canónico (misma fuente que Discover y Matches):
+  // su foto principal (pool[1], silueta al atardecer) + 2 de reserva
+  // (pool[6] y pool[7]). Antes eran c1-c3.jpg locales, mal etiquetados:
+  // c1 = mujer sola, c2 = hombre solo, c3 = otra mujer sola.
   const couplePublicImageUrls = [
-    "/assets/people/couple/c1.jpg",
-    "/assets/people/couple/c2.jpg",
-    "/assets/people/couple/c3.jpg",
+    DEMO_COUPLE_IMAGES[1] ?? DEMO_COUPLE_CARMEN_ROBERTO.mainImage,
+    DEMO_COUPLE_IMAGES[6] ?? DEMO_COUPLE_CARMEN_ROBERTO.mainImage,
+    DEMO_COUPLE_IMAGES[7] ?? DEMO_COUPLE_CARMEN_ROBERTO.mainImage,
   ];
 
   // C6: rutas de Storage (bucket "media") de las 4 imágenes privadas.
@@ -999,13 +1011,13 @@ function ProfileCouple() {
             partner1_id: "demo-partner-1",
             partner1_first_name: "Carmen",
             partner1_last_name: "",
-            partner1_age: 25,
+            partner1_age: DEMO_COUPLE_CARMEN_ROBERTO.partner1.age,
             partner1_gender: "female" as const,
             partner1_bio: "Usuario de demostración.",
             partner2_id: "demo-partner-2",
             partner2_first_name: "Roberto",
             partner2_last_name: "",
-            partner2_age: 28,
+            partner2_age: DEMO_COUPLE_CARMEN_ROBERTO.partner2.age,
             partner2_gender: "male",
             partner2_interested_in: "female",
             partner2_bio: "Usuario de demostración.",
@@ -1364,38 +1376,15 @@ function ProfileCouple() {
         <div className="flex-1 pb-20 px-2 sm:px-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 py-4">
             <div className="flex gap-1 sm:gap-2">
+              {/* Compartir (punto 17): abre el menú con TikTok,
+                  Facebook, WhatsApp, X y "Más opciones" (compartir
+                  nativo / copiar enlace). Antes copiaba el enlace directo. */}
               <Button
                 className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  if (navigator.share) {
-                    navigator
-                      .share({
-                        title: `Perfil de ${profile ? profile.partner1_first_name : "Ella"} y ${profile ? profile.partner2_first_name : "Él"}`,
-                        text: `Conoce a esta pareja en ComplicesConecta`,
-                        url: window.location.href,
-                      })
-                      .catch((error) => {
-                        logger.error("Error compartiendo perfil de pareja", {
-                          error: String(error),
-                        });
-                      });
-                  } else {
-                    navigator.clipboard
-                      .writeText(window.location.href)
-                      .then(() => {
-                        shadcnToast({
-                          title: "Enlace copiado",
-                          description: "Se copió al portapapeles.",
-                        });
-                      })
-                      .catch((error) => {
-                        logger.error("Error copiando enlace al portapapeles", {
-                          error: String(error),
-                        });
-                      });
-                  }
+                  setIsShareOpen(true);
                 }}
               >
                 <Share2 className="h-4 w-4 text-white opacity-90" />
@@ -1440,13 +1429,19 @@ function ProfileCouple() {
             <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-                  {/* Avatares de la pareja */}
+                  {/* Avatar de la pareja: foto verificada de la pareja
+                      JUNTA (recorte circular de su foto principal). Antes
+                      eran dos círculos con las iniciales "C" y "R". */}
                   <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                     <div className="relative">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-linear-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
-                        {profile?.partner1_first_name?.[0]?.toUpperCase() ||
-                          "E"}
-                      </div>
+                      <img
+                        src={
+                          couplePublicImageUrls[0] ??
+                          DEMO_COUPLE_CARMEN_ROBERTO.mainImage
+                        }
+                        alt="Carmen & Roberto"
+                        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-fuchsia-400/60"
+                      />
                       {profile?.is_verified && (
                         <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
                           <Verified className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
@@ -1454,16 +1449,6 @@ function ProfileCouple() {
                       )}
                     </div>
                     <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-fuchsia-400 animate-pulse" />
-                    <div className="relative">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-linear-to-br from-purple-400 to-fuchsia-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
-                        {profile?.partner2_first_name?.[0]?.toUpperCase() || ""}
-                      </div>
-                      {profile?.is_verified && (
-                        <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
-                          <Verified className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-                        </div>
-                      )}
-                    </div>
                   </div>
 
                   {/* Información básica */}
@@ -1748,6 +1733,26 @@ function ProfileCouple() {
                           {isBiometricUnlocking ? "Validando..." : "Biométrico"}
                         </Button>
                       )}
+                    {/* Colapsar/expandir (punto 14): la galería carga
+                        colapsada; expandirla no la desbloquea (las fotos
+                        siguen borrosas/bloqueadas hasta el PIN). */}
+                    <Button
+                      onClick={() => setPrivateGalleryOpen((prev) => !prev)}
+                      aria-expanded={privateGalleryOpen}
+                      className="h-8 px-3 text-xs rounded-full flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/25 transition-all"
+                    >
+                      {privateGalleryOpen ? (
+                        <>
+                          <ChevronUp className="w-3 h-3" />
+                          Ocultar fotos
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-3 h-3" />
+                          Ver fotos ({_shuffledCouplePrivateImages.length})
+                        </>
+                      )}
+                    </Button>
                     <Button
                       onClick={() => {
                         if (isParentalLocked) {
@@ -1796,73 +1801,85 @@ function ProfileCouple() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-3 gap-4 md:gap-6">
-                  {_shuffledCouplePrivateImages.map((storagePath, idx) => {
-                    // C6: la URL visible es la firmada (o el placeholder si
-                    // la galería está bloqueada / sin sesión / sin permiso).
-                    // `storagePath` solo se usa como key estable, nunca como src.
-                    const imageSource =
-                      couplePrivateImageUrls[idx] ?? PRIVATE_MEDIA_PLACEHOLDER;
-                    return (
-                      <div
-                        key={storagePath}
-                        className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                        onClick={() => {
-                          // Bloqueado: abrir la pantalla del PIN (perfil
-                          // propio) o el flujo de solicitud (visitante),
-                          // en vez de no hacer nada.
-                          if (isParentalLocked) {
-                            void handleViewPrivatePhotos();
-                            return;
-                          }
-
-                          if (isGalleryUnlocked) {
-                            setModalImages(couplePrivateImageUrls);
-                            setSelectedImageIndex(idx);
-                            _setShowImageModal(true);
-                            return;
-                          }
-
-                          void handleViewPrivatePhotos();
-                        }}
-                      >
-                        <img
-                          src={imageSource}
-                          alt="Private content"
-                          {...noDownloadProps(isOwnProfile)}
-                          onError={(e) => {
-                            // C6: sin fallback a la imagen privada pública;
-                            // solo al placeholder genérico, y sin reintentar
-                            // si ya es el placeholder.
-                            const img = e.currentTarget as HTMLImageElement;
-                            if (!img.src.endsWith(PRIVATE_MEDIA_PLACEHOLDER)) {
-                              img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                {/* Colapsada por defecto (punto 14): antes la rejilla
+                    privada renderizaba expandida al cargar el perfil. */}
+                {!privateGalleryOpen ? (
+                  <p className="text-white/50 text-xs">
+                    {_shuffledCouplePrivateImages.length} fotos privadas
+                    colapsadas. Toca "Ver fotos" para expandir la galería.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-4 md:gap-6">
+                    {_shuffledCouplePrivateImages.map((storagePath, idx) => {
+                      // C6: la URL visible es la firmada (o el placeholder si
+                      // la galería está bloqueada / sin sesión / sin permiso).
+                      // `storagePath` solo se usa como key estable, nunca como src.
+                      const imageSource =
+                        couplePrivateImageUrls[idx] ??
+                        PRIVATE_MEDIA_PLACEHOLDER;
+                      return (
+                        <div
+                          key={storagePath}
+                          className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                          onClick={() => {
+                            // Bloqueado: abrir la pantalla del PIN (perfil
+                            // propio) o el flujo de solicitud (visitante),
+                            // en vez de no hacer nada.
+                            if (isParentalLocked) {
+                              void handleViewPrivatePhotos();
+                              return;
                             }
-                          }}
-                          className={cn(
-                            "w-full h-full object-cover transition-[filter,transform] duration-500",
-                            isGalleryUnlocked
-                              ? "blur-0 scale-100"
-                              : "blur-2xl scale-110",
-                          )}
-                        />
 
-                        {!isGalleryUnlocked && (
-                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                            <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                              <Lock className="w-6 h-6 text-white" />
+                            if (isGalleryUnlocked) {
+                              setModalImages(couplePrivateImageUrls);
+                              setSelectedImageIndex(idx);
+                              _setShowImageModal(true);
+                              return;
+                            }
+
+                            void handleViewPrivatePhotos();
+                          }}
+                        >
+                          <img
+                            src={imageSource}
+                            alt="Private content"
+                            {...noDownloadProps(isOwnProfile)}
+                            onError={(e) => {
+                              // C6: sin fallback a la imagen privada pública;
+                              // solo al placeholder genérico, y sin reintentar
+                              // si ya es el placeholder.
+                              const img = e.currentTarget as HTMLImageElement;
+                              if (
+                                !img.src.endsWith(PRIVATE_MEDIA_PLACEHOLDER)
+                              ) {
+                                img.src = PRIVATE_MEDIA_PLACEHOLDER;
+                              }
+                            }}
+                            className={cn(
+                              "w-full h-full object-cover transition-[filter,transform] duration-500",
+                              isGalleryUnlocked
+                                ? "blur-0 scale-100"
+                                : "blur-2xl scale-110",
+                            )}
+                          />
+
+                          {!isGalleryUnlocked && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                              <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
+                                <Lock className="w-6 h-6 text-white" />
+                              </div>
+                              <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                                {isParentalLocked
+                                  ? "Bloqueado por Control Parental"
+                                  : "Click para desbloquear"}
+                              </span>
                             </div>
-                            <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                              {isParentalLocked
-                                ? "Bloqueado por Control Parental"
-                                : "Click para desbloquear"}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -2252,6 +2269,14 @@ function ProfileCouple() {
         onReport={(reason) => {
           logger.info("Reporte enviado desde perfil de pareja", { reason });
         }}
+      />
+
+      {/* Menú "Compartir" (punto 17): TikTok, Facebook, WhatsApp y X. */}
+      <ShareProfile
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        profileId={String(profile?.id || "")}
+        profileName={coupleName}
       />
     </div>
   );

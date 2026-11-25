@@ -21,9 +21,30 @@
  * toast: NO bloquea de verdad. El botón real de bloquear es
  * `ReportBlockButtons` (usa `blockProfile` de aquí). Cablear ese
  * checkbox queda como pendiente del coordinador (ver reporte).
+ *
+ * Menú visible (ronda 5, punto 15a): el diálogo `ReportDialog.tsx`
+ * trae su propia lista fija (Perfil falso, Contenido inapropiado,
+ * Acoso, Spam, Menor de edad, Estafa, Otro) SIN "términos" ni
+ * "suplantación"; ese archivo está fuera del alcance de este stream
+ * y hay que agregarle las dos opciones allí (ver reporte). Aquí el
+ * catálogo canónico SÍ las trae desde la ronda 4
+ * ("terms-violation" y "impersonation"), y `getReportReason` además
+ * resuelve los ids del diálogo (`spam`, `scam`) a su motivo canónico
+ * ("spam-scam"), para que `submitProfileReport` acepte reportes
+ * vengan de donde vengan. "inappropriate-content" también es ya un
+ * motivo canónico aquí (el diálogo lo usaba y antes se rechazaba).
+ *
+ * Espacio de ids REAL (ronda 5, punto 19): `profile_blocks` referencia
+ * `profiles(id)` y sus RLS resuelven `auth.uid()` vía
+ * `profiles.user_id` (migración 20261124050002). Los caminos reales
+ * pasan los ids por `resolveOwnProfileId` de `src/lib/friends.ts`
+ * (auth uid -> profiles.id, con fallback) antes de consultar o
+ * insertar; sin eso el insert violaría la FK y la RLS negaría la
+ * lectura.
  */
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { resolveOwnProfileId } from "@/lib/friends";
 
 /** Motivo de reporte, agrupado como pide Wacko. */
 export interface ReportReason {
@@ -55,6 +76,13 @@ export const REPORT_REASONS: ReportReason[] = [
     group: "conduct",
     label: "Suplantación de identidad",
     description: "Se hace pasar por otra persona",
+    severity: "high",
+  },
+  {
+    id: "inappropriate-content",
+    group: "conduct",
+    label: "Contenido inapropiado",
+    description: "Fotos o descripción ofensiva",
     severity: "high",
   },
   {
@@ -117,8 +145,25 @@ export const REPORT_REASON_GROUPS: Array<{
   { id: "prohibited", label: "Material prohibido" },
 ];
 
+/**
+ * Ids que usan los diálogos de reporte y su motivo canónico de
+ * `REPORT_REASONS`. `ReportDialog.tsx` (lista fija propia) usa
+ * "spam" / "scam" para lo que aquí es "spam-scam"; sin este mapa,
+ * `submitProfileReport` los rechazaba como "Motivo no válido".
+ * "inappropriate-content", "fake-profile", "harassment", "underage"
+ * y "other" ya son ids canónicos y no necesitan alias.
+ */
+export const REPORT_REASON_ALIASES: Record<string, string> = {
+  spam: "spam-scam",
+  scam: "spam-scam",
+};
+
 export function getReportReason(id: string): ReportReason | null {
-  return REPORT_REASONS.find((r) => r.id === id) ?? null;
+  return (
+    REPORT_REASONS.find((r) => r.id === id) ??
+    REPORT_REASONS.find((r) => r.id === REPORT_REASON_ALIASES[id]) ??
+    null
+  );
 }
 
 /** Envía el reporte a revisión del administrador (`reports`). */
@@ -227,11 +272,15 @@ export async function isBlockedBy(
     );
   }
   try {
+    const [blockerProfileId, blockedProfileId] = await Promise.all([
+      resolveOwnProfileId(blockerId),
+      resolveOwnProfileId(blockedId),
+    ]);
     const { data } = await supabase
       .from("profile_blocks")
       .select("id")
-      .eq("blocker_id", blockerId)
-      .eq("blocked_id", blockedId)
+      .eq("blocker_id", blockerProfileId)
+      .eq("blocked_id", blockedProfileId)
       .maybeSingle();
     return Boolean(data);
   } catch {
@@ -267,9 +316,13 @@ export async function blockProfile(
     return { ok: true };
   }
   try {
+    const [blockerProfileId, blockedProfileId] = await Promise.all([
+      resolveOwnProfileId(blockerId),
+      resolveOwnProfileId(blockedId),
+    ]);
     const { error } = await supabase.from("profile_blocks").insert({
-      blocker_id: blockerId,
-      blocked_id: blockedId,
+      blocker_id: blockerProfileId,
+      blocked_id: blockedProfileId,
     });
     if (error) return { ok: false, error: error.message };
     return { ok: true };
@@ -296,11 +349,15 @@ export async function unblockProfile(
     return { ok: true };
   }
   try {
+    const [blockerProfileId, blockedProfileId] = await Promise.all([
+      resolveOwnProfileId(blockerId),
+      resolveOwnProfileId(blockedId),
+    ]);
     const { error } = await supabase
       .from("profile_blocks")
       .delete()
-      .eq("blocker_id", blockerId)
-      .eq("blocked_id", blockedId);
+      .eq("blocker_id", blockerProfileId)
+      .eq("blocked_id", blockedProfileId);
     if (error) return { ok: false, error: error.message };
     return { ok: true };
   } catch (err) {
@@ -327,6 +384,71 @@ export function isSearchBlockedSync(
   return readLocalBlocks().some(
     (b) => b.blockerId === profileOwnerId && b.blockedId === viewerId,
   );
+}
+
+export interface BlockedProfileIds {
+  /** Perfiles que el espectador bloqueó (no deben aparecerle). */
+  blockedByMe: Set<string>;
+  /** Perfiles que bloquearon al espectador (no deben encontrarlo). */
+  blockedMe: Set<string>;
+}
+
+/**
+ * Bloqueos del espectador, solo local (demo). Es la lectura síncrona
+ * que Discover usa al primer render para no mostrar perfiles
+ * bloqueados ni un instante; el refresco real llega después con
+ * `getBlockedProfileIds`.
+ */
+export function getBlockedProfileIdsSync(viewerId: string): BlockedProfileIds {
+  const blockedByMe = new Set<string>();
+  const blockedMe = new Set<string>();
+  if (!viewerId) return { blockedByMe, blockedMe };
+  for (const b of readLocalBlocks()) {
+    if (b.blockerId === viewerId) blockedByMe.add(b.blockedId);
+    if (b.blockedId === viewerId) blockedMe.add(b.blockerId);
+  }
+  return { blockedByMe, blockedMe };
+}
+
+/**
+ * Bloqueos del espectador (punto 15b): unión local + Supabase
+ * (`profile_blocks`, migración 20261124050000; RLS corregida en
+ * 20261124050002). En real el id del espectador se resuelve a su
+ * `profiles.id` (ver `resolveOwnProfileId`). Si Supabase falla, se
+ * devuelve al menos el conjunto local. Discover oculta la unión de
+ * ambos conjuntos: ni los que el usuario bloqueó ni los que lo
+ * bloquearon aparecen en sus resultados.
+ */
+export async function getBlockedProfileIds(
+  viewerId: string,
+  isDemo = false,
+): Promise<BlockedProfileIds> {
+  const local = getBlockedProfileIdsSync(viewerId);
+  if (!viewerId || isDemo || !supabase) return local;
+  try {
+    const viewerProfileId = await resolveOwnProfileId(viewerId);
+    const { data, error } = await supabase
+      .from("profile_blocks")
+      .select("blocker_id,blocked_id")
+      .or(`blocker_id.eq.${viewerProfileId},blocked_id.eq.${viewerProfileId}`);
+    if (error || !data) return local;
+    const blockedByMe = new Set(local.blockedByMe);
+    const blockedMe = new Set(local.blockedMe);
+    for (const row of data as Array<{
+      blocker_id: string;
+      blocked_id: string;
+    }>) {
+      if (row.blocker_id === viewerProfileId) {
+        blockedByMe.add(row.blocked_id);
+      }
+      if (row.blocked_id === viewerProfileId) {
+        blockedMe.add(row.blocker_id);
+      }
+    }
+    return { blockedByMe, blockedMe };
+  } catch {
+    return local;
+  }
 }
 
 /**

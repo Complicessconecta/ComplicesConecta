@@ -7,10 +7,47 @@ import { generateDemoUUID } from "@/lib/demo-uuid";
 import { pickProfileImage, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
 import { getAutoInterests } from "@/lib/lifestyle-interests";
 
+/**
+ * Datos canónicos de la pareja demo (UNA sola fuente, ronda 5):
+ * Carmen & Roberto, 25 y 28 años (los mismos que la semilla demo de
+ * `ProfileCouple.tsx`). Antes cada sitio decía una edad distinta:
+ * 31 en el roster de Discover, 35 en Matches, 25/28 en el perfil
+ * propio. La foto principal es la que les asigna el pool de pareja
+ * (2ª del pool, silueta al atardecer) — la misma en Discover, Matches
+ * y su perfil propio, nunca la de otra pareja.
+ */
+export const DEMO_COUPLE_CARMEN_ROBERTO = {
+  name: "Carmen & Roberto",
+  partner1: { name: "Carmen", age: 25 },
+  partner2: { name: "Roberto", age: 28 },
+  /** "25 y 28 años". */
+  ageLabel: "25 y 28 años",
+  mainImage:
+    "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
+} as const;
+
+/**
+ * Foto canónica de Sofía (single demo, 28 años, id 609dcb3b…): retrato
+ * verificado, la misma en su avatar, su galería pública y Matches.
+ * Antes su avatar apuntaba a `img/demo-single-avatar.jpg` (no existe)
+ * y su galería pública eran 3 mujeres distintas.
+ */
+export const SOFIA_CANONICAL_PHOTO =
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face";
+
+/** Id base de la foto canónica de Sofía, para derivar encuadres. */
+export const SOFIA_CANONICAL_PHOTO_ID = "1494790108377-be9c29b29330";
+
+/** Etiqueta de edad de una pareja ("25 y 28 años"). */
+export const formatCoupleAgeLabel = (age: number, partnerAge: number): string =>
+  `${age} y ${partnerAge} años`;
+
 export interface DemoProfile {
   id: string;
   name: string;
   age: number;
+  /** Edad del segundo miembro (solo parejas, p. ej. Carmen 25 / Roberto 28). */
+  partnerAge?: number;
   location: string;
   distance: number;
   interests: string[];
@@ -42,6 +79,8 @@ const DEMO_ROSTER: Array<{
   gender: Gender;
   profileType: ProfileType;
   age: number;
+  /** Edad del segundo miembro (solo parejas). */
+  partnerAge?: number;
   location: string;
 }> = [
   { name: "Ana", gender: "female", profileType: "single", age: 26, location: "Guadalajara" },
@@ -49,7 +88,7 @@ const DEMO_ROSTER: Array<{
   { name: "María & Juan", gender: "unknown", profileType: "couple", age: 29, location: "Guadalajara" },
   { name: "Carlos", gender: "male", profileType: "single", age: 32, location: "Monterrey" },
   { name: "Laura", gender: "female", profileType: "single", age: 27, location: "Puebla" },
-  { name: "Carmen & Roberto", gender: "unknown", profileType: "couple", age: 31, location: "Ciudad de México" },
+  { name: "Carmen & Roberto", gender: "unknown", profileType: "couple", age: 25, partnerAge: 28, location: "Ciudad de México" },
   { name: "Miguel", gender: "male", profileType: "single", age: 35, location: "Tijuana" },
   { name: "Lucía", gender: "female", profileType: "single", age: 24, location: "Mérida" },
   { name: "Javier & Elena", gender: "unknown", profileType: "couple", age: 33, location: "Querétaro" },
@@ -69,22 +108,24 @@ const DEMO_ROSTER: Array<{
 /**
  * Fotos de pareja VERIFICADAS por vista, una a una: cada URL es una
  * foto distinta de una pareja junta (no símbolos ni fotos sueltas).
- * De las 3 anteriores, solo 1606216794074 era una pareja junta:
- * 1516589178581 son dos manos formando un corazón y 1518568814500 son
- * luces en forma de corazón en la playa SIN personas — por eso Carmen &
- * Roberto salía con "un corazón de luces en la playa" y sin foto propia.
- * Mismo pool que el "couple" de @/lib/media (8 fotos para 6 parejas
- * demo, sin repetir hasta agotar la lista).
+ * Revisión ronda 5 (2026-11-24): se sacaron 1522098543979 (dos
+ * hombres en la playa), 1516589178581 (dos manos formando un corazón
+ * — esa era la foto que se repetía como post de Ana y avatar del
+ * chat) y 1465495976277 (solo manos con anillos, sin caras). Reemplazos
+ * verificados por vista: 1519741497674 novios con ramo, 1532712938310
+ * novios caminando de la mano en la montaña y 1591604466107 retrato
+ * de novios. Mismo pool que el "couple" de @/lib/media (8 fotos para
+ * 6 parejas demo, sin repetir hasta agotar la lista).
  */
-const DEMO_COUPLE_IMAGES = [
+export const DEMO_COUPLE_IMAGES = [
   "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop",
   "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
   "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1522098543979-ffc7f79a56c4?w=400&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
-  "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&h=400&fit=crop",
   "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=400&fit=crop",
   "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=400&fit=crop",
 ];
 
 /** Foto de pareja verificada, sin repetir hasta agotar la lista. */
@@ -140,6 +181,10 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
       id: generateDemoUUID(`demo-profile-${i + 1}`),
       name: entry.name,
       age: entry.age,
+      // Edad del segundo miembro (parejas): la del roster canónico.
+      ...(entry.partnerAge !== undefined
+        ? { partnerAge: entry.partnerAge }
+        : {}),
       location: entry.location,
       distance: 3 + ((i * 11) % 47),
       interests,

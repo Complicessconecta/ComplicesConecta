@@ -19,6 +19,16 @@
  * Supabase falla— se usa localStorage (`friend_requests_demo`,
  * `friendships_demo`, `photo_access_demo`); la demo es la fuente
  * real en los perfiles demo.
+ *
+ * Espacio de ids REAL (ronda 5, punto 19): `profiles.id` es un UUID
+ * propio, distinto de `auth.uid()`; el auth uid vive en
+ * `profiles.user_id`. Las tablas sociales referencian `profiles(id)`
+ * y sus RLS resuelven `auth.uid()` vía `profiles.user_id` (migración
+ * 20261124050002). Por eso los caminos reales de este módulo pasan el
+ * id del espectador por `resolveOwnProfileId` (auth uid ->
+ * profiles.id, con caché y con fallback al id tal cual si no hay
+ * fila) antes de consultar/insertar en Supabase. En demo los ids ya
+ * son los del listado y no se resuelven.
  */
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -39,6 +49,46 @@ export interface FriendRequest {
 
 export type FriendStatus =
   "none" | "pending_sent" | "pending_received" | "friends";
+
+/** Estado de una solicitud de ver fotos (punto 7). */
+export type PhotoAccessStatus = "none" | "pending" | "accepted" | "declined";
+
+/* ------------------------------------------------------------------ */
+/* Resolución auth uid -> profiles.id (real)                           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Resuelve el `profiles.id` del usuario autenticado a partir de su
+ * auth uid (`profiles.user_id`). Las tablas sociales
+ * (`friend_requests`, `friendships`, `profile_blocks`) referencian
+ * `profiles(id)`, no `auth.users(id)`: sin esta resolución, un
+ * insert real con el auth uid violaría la FK y las RLS de
+ * 20261124050000 (que comparaban `auth.uid()` directo con columnas
+ * del espacio `profiles.id`) negarían la lectura. Con caché por
+ * sesión; si no hay fila (el id ya era un profiles.id, o Supabase
+ * falla), devuelve el id tal cual.
+ */
+const ownProfileIdCache = new Map<string, string | null>();
+
+export async function resolveOwnProfileId(authUserId: string): Promise<string> {
+  if (!authUserId || !supabase) return authUserId;
+  if (ownProfileIdCache.has(authUserId)) {
+    return ownProfileIdCache.get(authUserId) ?? authUserId;
+  }
+  try {
+    const { data } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("user_id", authUserId)
+      .maybeSingle();
+    const profileId = (data as { id?: string } | null)?.id ?? null;
+    ownProfileIdCache.set(authUserId, profileId);
+    return profileId ?? authUserId;
+  } catch {
+    ownProfileIdCache.set(authUserId, null);
+    return authUserId;
+  }
+}
 
 export interface Friend {
   /** Id del perfil amigo. */
@@ -248,11 +298,15 @@ export async function getFriendStatus(
     return pending.fromId === viewerId ? "pending_sent" : "pending_received";
   }
   try {
+    // Camino real: las tablas sociales usan profiles.id (ver
+    // resolveOwnProfileId); el profileId del otro lado ya es un
+    // profiles.id en los listados reales.
+    const viewerProfileId = await resolveOwnProfileId(viewerId);
     const { data: friendship } = await supabase
       .from("friendships")
       .select("id")
       .or(
-        `and(user_id_a.eq.${viewerId},user_id_b.eq.${profileId}),and(user_id_a.eq.${profileId},user_id_b.eq.${viewerId})`,
+        `and(user_id_a.eq.${viewerProfileId},user_id_b.eq.${profileId}),and(user_id_a.eq.${profileId},user_id_b.eq.${viewerProfileId})`,
       )
       .maybeSingle();
     if (friendship) return "friends";
@@ -262,11 +316,12 @@ export async function getFriendStatus(
       .eq("kind", "friendship")
       .eq("status", "pending")
       .or(
-        `and(requester_id.eq.${viewerId},addressee_id.eq.${profileId}),and(requester_id.eq.${profileId},addressee_id.eq.${viewerId})`,
+        `and(requester_id.eq.${viewerProfileId},addressee_id.eq.${profileId}),and(requester_id.eq.${profileId},addressee_id.eq.${viewerProfileId})`,
       )
       .maybeSingle();
     if (!request) return "none";
-    return (request as { requester_id: string }).requester_id === viewerId
+    return (request as { requester_id: string }).requester_id ===
+      viewerProfileId
       ? "pending_sent"
       : "pending_received";
   } catch (err) {
@@ -323,8 +378,9 @@ export async function sendFriendRequest(
     return { ok: true };
   }
   try {
+    const viewerProfileId = await resolveOwnProfileId(viewerId);
     const { error } = await supabase.from("friend_requests").insert({
-      requester_id: viewerId,
+      requester_id: viewerProfileId,
       addressee_id: profileId,
       kind: "friendship",
       status: "pending",
@@ -403,11 +459,12 @@ export async function removeFriend(
     return { ok: true };
   }
   try {
+    const viewerProfileId = await resolveOwnProfileId(viewerId);
     const { error } = await supabase
       .from("friendships")
       .delete()
       .or(
-        `and(user_id_a.eq.${viewerId},user_id_b.eq.${profileId}),and(user_id_a.eq.${profileId},user_id_b.eq.${viewerId})`,
+        `and(user_id_a.eq.${viewerProfileId},user_id_b.eq.${profileId}),and(user_id_a.eq.${profileId},user_id_b.eq.${viewerProfileId})`,
       );
     if (error) return { ok: false, error: error.message };
     return { ok: true };
@@ -545,18 +602,79 @@ export async function hasPhotoAccess(
     );
   }
   try {
+    const viewerProfileId = await resolveOwnProfileId(viewerId);
     const { data } = await supabase
       .from("friend_requests")
       .select("id")
       .eq("kind", "photo_access")
       .eq("status", "accepted")
-      .eq("requester_id", viewerId)
+      .eq("requester_id", viewerProfileId)
       .eq("addressee_id", ownerId)
       .maybeSingle();
     return Boolean(data);
   } catch {
     return false;
   }
+}
+
+/**
+ * Estado de la solicitud de ver fotos entre espectador y dueño
+ * (punto 7): el mismo mecanismo de persistencia que la solicitud de
+ * amistad (`friend_requests` kind='photo_access' en real,
+ * localStorage `friend_requests_demo` en demo). Es lo que lee el
+ * chat al abrir una conversación para no volver a mostrar
+ * "Solicitar ver fotos" cuando ya se envió. La solicitud más
+ * reciente manda (una declinada permite volver a pedir).
+ */
+export async function getPhotoAccessStatus(
+  viewerId: string,
+  ownerId: string,
+  isDemo = false,
+): Promise<PhotoAccessStatus> {
+  if (!viewerId || !ownerId || viewerId === ownerId) return "none";
+  if (isDemo || !supabase) {
+    return getPhotoAccessStatusSync(viewerId, ownerId);
+  }
+  try {
+    const viewerProfileId = await resolveOwnProfileId(viewerId);
+    const { data, error } = await supabase
+      .from("friend_requests")
+      .select("status")
+      .eq("kind", "photo_access")
+      .eq("requester_id", viewerProfileId)
+      .eq("addressee_id", ownerId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error || !data) return getPhotoAccessStatusSync(viewerId, ownerId);
+    const status = (data as { status?: string }).status;
+    return status === "pending" ||
+      status === "accepted" ||
+      status === "declined"
+      ? status
+      : "none";
+  } catch {
+    return getPhotoAccessStatusSync(viewerId, ownerId);
+  }
+}
+
+/** Versión síncrona (demo / localStorage) de getPhotoAccessStatus. */
+export function getPhotoAccessStatusSync(
+  viewerId: string,
+  ownerId: string,
+): PhotoAccessStatus {
+  if (!viewerId || !ownerId || viewerId === ownerId) return "none";
+  const matches = readLocalRequests()
+    .filter(
+      (r) =>
+        r.kind === "photo_access" &&
+        r.fromId === viewerId &&
+        r.toId === ownerId,
+    )
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  const latest = matches[0];
+  if (!latest) return "none";
+  return latest.status;
 }
 
 export async function sendPhotoAccessRequest(
@@ -594,8 +712,9 @@ export async function sendPhotoAccessRequest(
     return { ok: true };
   }
   try {
+    const viewerProfileId = await resolveOwnProfileId(viewerId);
     const { error } = await supabase.from("friend_requests").insert({
-      requester_id: viewerId,
+      requester_id: viewerProfileId,
       addressee_id: ownerId,
       kind: "photo_access",
       status: "pending",

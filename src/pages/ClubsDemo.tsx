@@ -26,7 +26,7 @@ const DEMO_CLUB: ClubEntity = {
   latitude: 19.4326,
   longitude: -99.1332,
   logo_url: "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&h=400&fit=crop",
-  cover_image_url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1920&q=80",
+  cover_image_url: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1920&q=80",
   is_featured: true,
   is_active: true,
   rating_average: 4.8,
@@ -41,7 +41,7 @@ const DEMO_CLUB: ClubEntity = {
 const DEMO_GALLERY = [
   {
     id: "demo-1",
-    url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200",
+    url: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200",
     caption: "Entrada principal",
     isPrivate: false,
     uploadedAt: new Date().toISOString(),
@@ -343,7 +343,7 @@ export const ClubsDemo = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
                   <Badge className="shrink-0 whitespace-nowrap bg-purple-500/90 text-white border border-purple-300/40">
                     Admin
                   </Badge>
@@ -371,7 +371,7 @@ export const ClubsDemo = () => {
     <div className="min-h-screen bg-transparent p-4 sm:p-6 relative overflow-hidden">
       {/* Fondo animado */}
       <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1920&q=80)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1920&q=80)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -403,7 +403,7 @@ export const ClubsDemo = () => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
                 <Badge className="shrink-0 whitespace-nowrap bg-purple-500/90 text-white border border-purple-300/40">
                   Admin
                 </Badge>

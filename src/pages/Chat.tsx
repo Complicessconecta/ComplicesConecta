@@ -19,6 +19,7 @@ import {
   Paperclip,
   Mic,
   X,
+  Camera,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
@@ -57,6 +58,10 @@ import { useAuth } from "@/features/auth/useAuth";
 import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
 import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
 import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
+import {
+  getPhotoAccessStatus,
+  type PhotoAccessStatus,
+} from "@/lib/friends";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 import { EmojiPicker } from "@/components/chat/EmojiPicker";
@@ -125,7 +130,7 @@ const privateChats: ChatUser[] = [
     id: "3",
     name: "Carmen & Roberto",
     image:
-      "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
+      "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=100&h=100&fit=crop&crop=faces",
     lastMessage: "Vienen al evento VIP del sábado? 🌟",
     timestamp: "3 h",
     isOnline: false,
@@ -135,7 +140,7 @@ const privateChats: ChatUser[] = [
   },
   {
     id: "4",
-    name: "Ral",
+    name: "Raúl",
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
     lastMessage: "Qué tal si nos vemos para tomar algo? 🍷",
@@ -189,7 +194,7 @@ const publicChats: ChatUser[] = [
     id: "104",
     name: "🔒 Eventos Privados",
     image:
-      "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=100&h=100&fit=crop&crop=faces",
     lastMessage: "Club exclusivo abre sus puertas",
     timestamp: "2 h",
     isOnline: true,
@@ -302,6 +307,14 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   );
   const [isProduction, setIsProduction] = useState(false);
   const [selectedChat, setSelectedChat] = useState<ChatUser | null>(null);
+  // Estado persistido de la solicitud de ver fotos del hilo abierto
+  // (punto 7): null = aún no leído. Se lee al abrir el hilo (ver
+  // efecto abajo) desde el mismo almacén que la solicitud de amistad
+  // (`friend_requests` kind='photo_access' en real, localStorage
+  // `friend_requests_demo` en demo), para que al reabrir la
+  // conversación no vuelva a "Solicitar ver fotos" cuando ya se envió.
+  const [photoAccessStatus, setPhotoAccessStatus] =
+    useState<PhotoAccessStatus | null>(null);
   const [activeTab, setActiveTab] = useState<"private" | "public">("private");
   const [_realRooms, _setRealRooms] = useState<any[]>([]);
   const [_realMessages, _setRealMessages] = useState<SimpleChatMessage[]>([]);
@@ -832,6 +845,34 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
       }
     }
   }, [selectedChat, isProduction]);
+
+  // Solicitud de ver fotos (punto 7): al abrir un hilo privado se
+  // lee el estado persistido, igual que `FriendRequestButton` hace
+  // con la amistad al montar. Sin esta lectura, el botón de fotos
+  // solo guardaba `sent` en su propio useState y al reabrir la
+  // conversación volvía a "Solicitar ver fotos" aunque la solicitud
+  // ya estaba guardada. El botón en sí (`PhotoAccessRequestButton`,
+  // fuera del alcance de este stream) no se toca: es este padre el
+  // que muestra la píldora "Solicitud de fotos enviada" cuando el
+  // estado leído es pendiente, y oculta el botón cuando ya hay
+  // acceso concedido.
+  useEffect(() => {
+    setPhotoAccessStatus(null);
+    if (!selectedChat || selectedChat.roomType !== "private" || !user?.id) {
+      return;
+    }
+    let cancelled = false;
+    void getPhotoAccessStatus(
+      String(user.id),
+      String(selectedChat.id),
+      !isProduction,
+    ).then((status) => {
+      if (!cancelled) setPhotoAccessStatus(status);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedChat, user?.id, isProduction]);
 
   // Iniciar monitoreo de consentimiento cuando se selecciona un chat
   useEffect(() => {
@@ -1373,15 +1414,33 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                     }
                     isDemo={!isProduction}
                   />
-                  <PhotoAccessRequestButton
-                    profileId={String(selectedChat.id)}
-                    profileName={selectedChat.name}
-                    viewerId={String(user.id)}
-                    isOwnProfile={
-                      String(selectedChat.id) === String(user.id)
-                    }
-                    isDemo={!isProduction}
-                  />
+                  {/* Solicitud de ver fotos (punto 7): si el estado
+                      persistido es "pending", se muestra la píldora
+                      "Solicitud de fotos enviada" (misma que muestra
+                      el botón tras enviar) en vez del botón; si es
+                      "accepted" no se muestra nada (ya hay acceso, el
+                      botón no debe ofrecerse). En "none"/"declined" o
+                      mientras se lee (null), va el botón, que al
+                      enviar muestra su propia píldora de enviado. */}
+                  {photoAccessStatus === "pending" ? (
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full bg-white/10 text-white/80 border border-white/25 px-4 py-2.5 text-sm"
+                      title="Solicitud para ver las fotos enviada, pendiente de respuesta"
+                    >
+                      <Camera className="w-4 h-4" aria-hidden="true" />
+                      Solicitud de fotos enviada
+                    </span>
+                  ) : photoAccessStatus === "accepted" ? null : (
+                    <PhotoAccessRequestButton
+                      profileId={String(selectedChat.id)}
+                      profileName={selectedChat.name}
+                      viewerId={String(user.id)}
+                      isOwnProfile={
+                        String(selectedChat.id) === String(user.id)
+                      }
+                      isDemo={!isProduction}
+                    />
+                  )}
                 </div>
               )}
 

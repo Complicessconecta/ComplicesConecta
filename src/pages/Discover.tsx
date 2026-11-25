@@ -36,6 +36,10 @@ import CoupleProfileCard from "@/components/profiles/couple/CoupleProfileCard";
 import { AnimatedProfileCard } from "@/components/profiles/shared/AnimatedProfileCard";
 import { DistanceBadge } from "@/components/profiles/shared/DistanceBadge";
 import { readLocationSharingLocal } from "@/lib/geolocation";
+import {
+  getBlockedProfileIds,
+  getBlockedProfileIdsSync,
+} from "@/lib/reportBlock";
 import { getSocialDemoData } from "@/demo/socialDemoData";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { motion } from "framer-motion";
@@ -105,6 +109,12 @@ export const Discover = () => {
   const [filteredCoupleProfiles, setFilteredCoupleProfiles] = useState<
     CoupleProfileWithPartners[]
   >([]);
+  // Perfiles ocultos por bloqueo (punto 15b): unión de los que el
+  // espectador bloqueó y los que lo bloquearon a él. Ni unos ni otros
+  // aparecen en los resultados (ver efecto abajo y `applyFilters`).
+  const [hiddenProfileIds, setHiddenProfileIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [showFilters, setShowFilters] = useState(false);
   const [showCouples, setShowCouples] = useState(false);
 
@@ -141,6 +151,40 @@ export const Discover = () => {
     () => readLocationSharingLocal(user?.id ?? ""),
     [user?.id],
   );
+
+  // Bloqueos del espectador (punto 15b): primero la lectura local
+  // síncrona (demo: localStorage `profile_blocks_demo`) para no
+  // mostrar ni un instante un perfil bloqueado, y después el
+  // refresco real desde `profile_blocks`. El conjunto es la unión de
+  // los que el espectador bloqueó y los que lo bloquearon: en ambos
+  // casos el perfil no aparece en sus resultados (ver `applyFilters`).
+  useEffect(() => {
+    if (!user?.id) {
+      setHiddenProfileIds(new Set());
+      return;
+    }
+    const viewerId = String(user.id);
+    const demoAuth =
+      safeGetItem<string>("demo_authenticated", {
+        validate: true,
+        defaultValue: "false",
+      }) === "true";
+    const isDemoUser =
+      user.email === "single@outlook.es" || user.email === "pareja@outlook.es";
+    const isDemo = demoAuth && isDemoUser;
+    const local = getBlockedProfileIdsSync(viewerId);
+    setHiddenProfileIds(new Set([...local.blockedByMe, ...local.blockedMe]));
+    let cancelled = false;
+    void getBlockedProfileIds(viewerId, isDemo).then(
+      ({ blockedByMe, blockedMe }) => {
+        if (cancelled) return;
+        setHiddenProfileIds(new Set([...blockedByMe, ...blockedMe]));
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, user?.email]);
 
   // Arrancar el filtro de verificados desde el ajuste del espectador.
   useEffect(() => {
@@ -237,6 +281,9 @@ export const Discover = () => {
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
         const relationshipTypeMatch = relationshipMatch(profile.profileType);
+        // Bloqueo (punto 15b): ni los que el espectador bloqueó ni
+        // los que lo bloquearon aparecen en sus resultados.
+        const notBlocked = !hiddenProfileIds.has(String(profile.id));
 
         return (
           ageMatch &&
@@ -245,7 +292,8 @@ export const Discover = () => {
           visibilityMatch &&
           premiumMatch &&
           onlineMatch &&
-          relationshipTypeMatch
+          relationshipTypeMatch &&
+          notBlocked
         );
       });
 
@@ -294,6 +342,9 @@ export const Discover = () => {
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
         const relationshipTypeMatch = relationshipMatch(profile.profileType);
+        // Bloqueo (punto 15b): ni los que el espectador bloqueó ni
+        // los que lo bloquearon aparecen en sus resultados.
+        const notBlocked = !hiddenProfileIds.has(String(profile.id));
 
         return (
           ageMatch &&
@@ -302,7 +353,8 @@ export const Discover = () => {
           visibilityMatch &&
           premiumMatch &&
           onlineMatch &&
-          relationshipTypeMatch
+          relationshipTypeMatch &&
+          notBlocked
         );
       });
 
@@ -339,6 +391,11 @@ export const Discover = () => {
         const onlineMatch = !filters.online || couple.isOnline;
         // Las parejas solo pasan el filtro "Pareja" (o sin filtro de tipo).
         const relationshipTypeMatch = relationshipMatch("couple");
+        // Bloqueo (punto 15b): se compara el id tal cual se listó.
+        // Límite conocido: los bloqueos se guardan contra
+        // `profiles.id` y el id de pareja es de `couple_profiles`;
+        // un bloqueo guardado con ese mismo id sí la oculta.
+        const notBlocked = !hiddenProfileIds.has(String(couple.id));
 
         return (
           ageMatch &&
@@ -347,7 +404,8 @@ export const Discover = () => {
           visibilityMatch &&
           premiumMatch &&
           onlineMatch &&
-          relationshipTypeMatch
+          relationshipTypeMatch &&
+          notBlocked
         );
       });
 
@@ -362,6 +420,7 @@ export const Discover = () => {
     coupleProfiles,
     location,
     effectiveViewerPrivacy,
+    hiddenProfileIds,
   ]);
 
   // Función para cargar perfiles reales desde Supabase
@@ -893,7 +952,7 @@ export const Discover = () => {
                     Intereses
                     {isDemoOrProduction() && (
                       <span className="ml-2 text-xs text-purple-300">
-                        (Demo/Produccin)
+                        (Demo/Producción)
                       </span>
                     )}
                   </label>
@@ -921,10 +980,10 @@ export const Discover = () => {
                   </div>
                 </div>
 
-                {/* Tipo de Relacion */}
+                {/* Tipo de Relación */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-purple-800 mb-3">
-                    Tipo de Relacion
+                  <label className="block text-sm font-medium text-white mb-3">
+                    Tipo de Relación
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {["Pareja", "Soltero/a", "Abierto", "Poliamoroso"].map(
@@ -937,7 +996,7 @@ export const Discover = () => {
                             className={`cursor-pointer text-xs p-2 text-center transition-all duration-200 ${
                               isSelected
                                 ? "bg-purple-600 text-white border-purple-600 hover:bg-purple-700"
-                                : "border-purple-300 text-purple-700 hover:border-purple-500 hover:bg-purple-50 border bg-transparent"
+                                : "border-white/40 text-white hover:border-white hover:bg-white/10 border bg-transparent"
                             }`}
                             onClick={() => {
                               setFilters((prev) => ({
@@ -963,7 +1022,7 @@ export const Discover = () => {
                     mismo ajuste que "Acceso a perfiles sin verificar"
                     de Privacidad; aquí se controla en vivo. */}
                 <div className="mb-4">
-                  <label className="flex items-center gap-2 text-sm font-medium text-purple-800 cursor-pointer">
+                  <label className="flex items-center gap-2 text-sm font-medium text-white cursor-pointer">
                     <input
                       type="checkbox"
                       checked={!filters.verified}
@@ -977,7 +1036,7 @@ export const Discover = () => {
                     />
                     Mostrar perfiles sin verificar
                   </label>
-                  <p className="text-xs text-purple-800/70 mt-1 ml-6">
+                  <p className="text-xs text-white/70 mt-1 ml-6">
                     {filters.verified
                       ? "Solo se muestran perfiles verificados."
                       : "Se muestran perfiles verificados y sin verificar."}
@@ -1065,6 +1124,7 @@ export const Discover = () => {
                           profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
+                          partnerAge={profile.partnerAge}
                           location={profile.location}
                           image={profile.image}
                           bio={profile.bio}
@@ -1111,6 +1171,7 @@ export const Discover = () => {
                           profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
+                          partnerAge={profile.partnerAge}
                           location={profile.location}
                           image={profile.image}
                           bio={profile.bio}
@@ -1154,6 +1215,7 @@ export const Discover = () => {
                           profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
+                          partnerAge={profile.partnerAge}
                           location={profile.location}
                           image={profile.image}
                           bio={profile.bio}

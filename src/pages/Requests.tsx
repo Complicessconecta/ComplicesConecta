@@ -12,6 +12,45 @@ import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { openIntimateChat } from "@/lib/intimateChat";
+import { listSentRequestsSync } from "@/lib/friends";
+import { generateDemoProfiles, demoProfiles } from "@/demo/demoData";
+import { getSocialDemoData } from "@/demo/socialDemoData";
+
+/**
+ * Id de destino de una solicitud local → nombre visible (ronda 7,
+ * punto 12): las solicitudes de ver fotos se guardan con el id del
+ * perfil o de la sala de chat ("1"-"4", "demo-couple-456", UUID...),
+ * y /requests debe mostrar a quién se le envió, no el id crudo.
+ */
+const CHAT_ROOM_NAMES: Record<string, string> = {
+  "1": "Anabella & Julio",
+  "2": "Sofia",
+  "3": "Carmen & Roberto",
+  "4": "Raúl",
+  "demo-couple-456": "Carmen & Roberto",
+};
+
+function resolveRequestTargetName(toId: string): string {
+  if (CHAT_ROOM_NAMES[toId]) return CHAT_ROOM_NAMES[toId] as string;
+  const roster = generateDemoProfiles(20).find((p) => p.id === toId);
+  if (roster) return roster.name;
+  const legacy = (demoProfiles as unknown as Record<string, unknown>[]).find(
+    (p) => String(p.id) === toId,
+  );
+  if (legacy) {
+    const name =
+      (typeof legacy.display_name === "string" && legacy.display_name) ||
+      [legacy.first_name, legacy.last_name]
+        .filter((v) => typeof v === "string" && v)
+        .join(" ");
+    if (name) return name;
+  }
+  const social = getSocialDemoData(toId);
+  if (social.displayName && social.displayName !== toId) {
+    return social.displayName;
+  }
+  return toId;
+}
 
 const Requests = () => {
   const { user, isAuthenticated } = useAuth();
@@ -143,11 +182,55 @@ const Requests = () => {
       },
     ];
 
+    // Ronda 7, punto 12: las solicitudes REALES enviadas en esta
+    // sesión (amistad y ver fotos, almacén local `friend_requests_demo`
+    // de @/lib/friends) se suman a las enviadas. Antes solo se
+    // mostraba la lista fija de arriba y una solicitud de ver fotos
+    // recién enviada no dejaba ningún rastro en Enviadas.
+    const senderName = (() => {
+      try {
+        const raw = window.localStorage.getItem("demo_user");
+        if (raw) {
+          const parsed = JSON.parse(raw) as Record<string, unknown>;
+          const name =
+            (typeof parsed.display_name === "string" && parsed.display_name) ||
+            (typeof parsed.name === "string" && parsed.name) ||
+            (typeof parsed.nickname === "string" && parsed.nickname);
+          if (name) return name;
+        }
+      } catch {
+        // demo_user corrupto: seguir con el resto de fuentes.
+      }
+      return "Tú";
+    })();
+    const localSent: Invitation[] = listSentRequestsSync(
+      currentUserId ?? "",
+    ).map((req) => ({
+      id: req.id,
+      from_profile: senderName,
+      to_profile: resolveRequestTargetName(req.toId),
+      type: req.kind === "photo_access" ? "gallery" : "profile",
+      status: req.status,
+      message:
+        req.message ??
+        (req.kind === "photo_access"
+          ? "Solicitud para ver la galería privada"
+          : null),
+      created_at: req.createdAt,
+      // Sin fecha de decisión guardada en el almacén local: null en
+      // vez de inventar una (la tarjeta muestra el estado igual).
+      decided_at: null,
+    }));
+    const mergedSent = [
+      ...demoSent,
+      ...localSent.filter((inv) => !demoSent.some((d) => d.id === inv.id)),
+    ];
+
     setReceivedInvitations(demoReceived.map(applyDecision));
-    setSentInvitations(demoSent.map(applyDecision));
+    setSentInvitations(mergedSent.map(applyDecision));
     logger.info("✅ Solicitudes demo cargadas:", {
       received: demoReceived.length,
-      sent: demoSent.length,
+      sent: mergedSent.length,
     });
   };
 
@@ -319,7 +402,7 @@ const Requests = () => {
 
   if (!features.requests) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-100 dark:bg-linear-to-br dark:from-purple-900 dark:via-purple-800 dark:to-blue-900 flex items-center justify-center">
         <Card className="p-8 text-center bg-card/80 backdrop-blur-sm">
           <UserX className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
           <h2 className="text-xl font-semibold mb-2">Función no disponible</h2>
@@ -332,7 +415,15 @@ const Requests = () => {
   }
 
   return (
-    <div className="min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden pb-20">
+    // RONDA 7 (punto 3): el hero era un gradiente morado oscuro fijo con
+    // texto blanco en ambos temas: en tema claro la página entera se
+    // quedaba morada oscura ("Invitaciones" no seguía al tema). Ahora el
+    // fondo es claro en claro y el gradiente morado solo vive en `dark:`;
+    // título, subtítulo y pestañas siguen al tema. Las tarjetas de
+    // invitaciones y los estados vacíos SIGUEN con su cromo morado
+    // oscuro propio (fondo oscuro + texto blanco = legible en ambos
+    // temas): repintarlas es trabajo aparte, no se finge aquí.
+    <div className="min-h-dvh bg-slate-100 dark:bg-linear-to-br dark:from-purple-900 dark:via-purple-800 dark:to-blue-900 relative overflow-x-hidden pb-20">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
@@ -345,15 +436,15 @@ const Requests = () => {
       <div className="relative z-10 container mx-auto px-4 pt-20 pb-24">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
               Invitaciones
             </h1>
-            <p className="text-white/80 text-lg">
+            <p className="text-slate-600 dark:text-white/80 text-lg">
               Gestiona tus invitaciones recibidas y enviadas
             </p>
             {_acceptedCount > 0 && (
               <div className="mt-3">
-                <Badge className="bg-green-500/20 text-green-100 border border-green-400/30">
+                <Badge className="bg-green-500/15 text-green-800 border border-green-500/50 dark:bg-green-500/20 dark:text-green-100 dark:border-green-400/30">
                   Aceptadas: {_acceptedCount}
                 </Badge>
               </div>
@@ -375,7 +466,7 @@ const Requests = () => {
             </div>
           </div>
 
-          <div className="bg-linear-to-br from-purple-900/40 via-purple-800/30 to-blue-900/40 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+          <div className="bg-white/80 dark:bg-linear-to-br dark:from-purple-900/40 dark:via-purple-800/30 dark:to-blue-900/40 backdrop-blur-sm rounded-xl border border-slate-200 dark:border-white/10 p-6">
             <Tabs
               value={activeTab}
               onValueChange={(value) =>
@@ -383,20 +474,26 @@ const Requests = () => {
               }
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm rounded-lg mb-6">
+              <TabsList className="grid w-full grid-cols-2 bg-slate-900/5 dark:bg-white/10 backdrop-blur-sm rounded-lg mb-6">
+                {/* Punto 11 (ronda 7): el disparador es `whitespace-nowrap`
+                    (tabs.tsx) y llevaba icono + 2 badges en una sola línea:
+                    si el contenido superaba el 50% del grid, el badge de
+                    pendientes ("🕐 2") se desbordaba sobre la pestaña
+                    vecina. `min-w-0 flex-wrap` deja que los badges bajen a
+                    una segunda línea en vez de invadir la otra pestaña. */}
                 <TabsTrigger
                   value="received"
-                  className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80 hover:text-white flex items-center gap-2"
+                  className="data-[state=active]:bg-slate-900/10 data-[state=active]:text-slate-900 dark:data-[state=active]:bg-white/20 dark:data-[state=active]:text-white text-slate-600 hover:text-slate-900 dark:text-white/80 dark:hover:text-white flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 px-2 sm:px-3"
                 >
-                  <MailQuestion className="h-4 w-4" />
+                  <MailQuestion className="h-4 w-4 shrink-0" />
                   Recibidas
                   {receivedInvitations.length > 0 && (
-                    <Badge className="bg-red-500 text-white text-xs">
+                    <Badge className="bg-red-500 text-white text-xs shrink-0">
                       {receivedInvitations.length}
                     </Badge>
                   )}
                   {_pendingReceivedCount > 0 && (
-                    <Badge className="bg-yellow-500/20 text-yellow-100 border border-yellow-400/30 text-xs">
+                    <Badge className="bg-yellow-500/15 text-yellow-800 border border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-100 dark:border-yellow-400/30 text-xs shrink-0 whitespace-nowrap">
                       <Clock className="h-3 w-3 mr-1" />
                       {_pendingReceivedCount}
                     </Badge>
@@ -404,12 +501,12 @@ const Requests = () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="sent"
-                  className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/80 hover:text-white flex items-center gap-2"
+                  className="data-[state=active]:bg-slate-900/10 data-[state=active]:text-slate-900 dark:data-[state=active]:bg-white/20 dark:data-[state=active]:text-white text-slate-600 hover:text-slate-900 dark:text-white/80 dark:hover:text-white flex min-w-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 px-2 sm:px-3"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-4 w-4 shrink-0" />
                   Enviadas
                   {sentInvitations.length > 0 && (
-                    <Badge className="bg-blue-500 text-white text-xs">
+                    <Badge className="bg-blue-500 text-white text-xs shrink-0">
                       {sentInvitations.length}
                     </Badge>
                   )}

@@ -1,16 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
+@import "./particles.css";
+@import "./AccessibilityAudit.css";
+@import "./AnalyticsDashboard.css";
+@import "./ImageOptimizer.css";
 
 /* RONDA 5: Tailwind v4 ignora darkMode:"class" de tailwind.config.ts; esta
    variante hace que `dark:` responda a la clase .dark que pone
    ThemeProvider en documentElement. Sin ella el tema claro no se aplica
    (el fix de la ronda 4 quedó en src/index.css, archivo muerto: main.tsx
    importa ESTE archivo). */
+/* RONDA 7 (punto 3): TODOS los @import van ARRIBA, antes de
+   @custom-variant: la spec CSS exige que @import preceda a cualquier
+   otra regla y el log de build de Vercel (22:29 CST) avisaba
+   "[vite:css][postcss] @import statements must precede..." por los 4
+   @import que estaban tras @custom-variant. */
 @custom-variant dark (&:where(.dark, .dark *));
-@import "./particles.css";
-@import "./AccessibilityAudit.css";
-@import "./AnalyticsDashboard.css";
-@import "./ImageOptimizer.css";
 
 :root {
   /* Densidades Android: mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi */

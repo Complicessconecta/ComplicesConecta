@@ -373,7 +373,10 @@ export class NFTService {
   /**
    * Obtiene los NFTs de un usuario
    */
-  public async getUserNFTs(userId: string): Promise<NFTInfo[]> {
+  public async getUserNFTs(
+    userId: string,
+    opts?: { demoFallback?: boolean },
+  ): Promise<NFTInfo[]> {
     try {
       const isDemoEnv =
         import.meta.env.VITE_APP_MODE === "demo" ||
@@ -387,7 +390,20 @@ export class NFTService {
         typeof window !== "undefined" &&
         window.localStorage.getItem(getDemoNFTStorageKey(userId)) !== null;
 
-      if (WalletService.isDemoMode() || isDemoAuthActive || hasDemoNftsForUser) {
+      // demoFallback: el llamador está mostrando un PERFIL demo (p. ej.
+      // /profile-single de Sofía). Su colección canónica es la demo
+      // aunque los flags de modo demo no estén activos en este
+      // navegador: sin esto, tras un mint la colección guardada se
+      // leía bien, pero antes de mintear (o con otro uid) el perfil
+      // decía "NFTs 0" mientras /tokens mostraba los 4 de ejemplo
+      // (ronda 7, puntos 8 y 9). La colección guardada sigue mandando
+      // cuando existe (el mint no se sobrescribe).
+      if (
+        WalletService.isDemoMode() ||
+        isDemoAuthActive ||
+        hasDemoNftsForUser ||
+        opts?.demoFallback
+      ) {
         const stored = readDemoNFTs(userId);
         if (stored.length > 0) return stored;
         // Sin colección guardada: la canónica demo (DEFAULT_DEMO_NFTS),

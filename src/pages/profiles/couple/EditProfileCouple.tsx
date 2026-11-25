@@ -500,7 +500,15 @@ const EditProfileCouple = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver al perfil
           </Button>
-          <h1 className="order-3 w-full text-center text-xl font-bold text-gray-900 flex items-center justify-center gap-2 sm:order-none sm:w-auto sm:flex-1">
+          {/* Punto 14b (ronda 7): el título llevaba `text-gray-900` fijo,
+              casi negro sobre el fondo oscuro del tema dark
+              (`from-gray-900 via-gray-800 to-black`): ilegible. Mismo
+              patrón que la línea ~1080 del archivo: gris oscuro solo en
+              tema claro, blanco en el resto (como el h1 de
+              EditProfileSingle, que ya usa `text-white`). */}
+          <h1
+            className={`order-3 w-full text-center text-xl font-bold ${demoTheme === "light" ? "text-gray-900" : "text-white"} flex items-center justify-center gap-2 sm:order-none sm:w-auto sm:flex-1`}
+          >
             <Users className="h-5 w-5" />
             Editar Perfil de Pareja
           </h1>

@@ -6,6 +6,7 @@ import ProfileDetailInner, {
 import {
   generateDemoProfiles,
   demoProfiles,
+  DEMO_COUPLE_CARMEN_ROBERTO,
   formatCoupleAgeLabel,
   type DemoProfile,
 } from "@/demo/demoData";
@@ -188,6 +189,32 @@ export default function ProfileDetail() {
             demoProfiles as unknown as Record<string, unknown>[]
           ).find((p) => String(p.id) === id);
           if (legacy) resolved = fromLegacyDemo(legacy);
+        }
+
+        // 2b. Pareja demo propia (Carmen & Roberto, punto 13): su ficha
+        // en ProfileCouple usa el id "demo-couple-456" y Compartir
+        // construye /profile/demo-couple-456 con él, pero ese id no
+        // existe en el roster (sus ids son generateDemoUUID
+        // "demo-profile-N"), ni en la lista legacy (que trae
+        // "demo-couple-1" = María & Juan, otra pareja), ni es UUID:
+        // la URL daba "Perfil no encontrado". Se resuelve aquí con los
+        // datos canónicos de la pareja demo (mismo nombre, edades y
+        // foto que su perfil propio).
+        if (!resolved && id === "demo-couple-456") {
+          resolved = {
+            id: "demo-couple-456",
+            name: DEMO_COUPLE_CARMEN_ROBERTO.name,
+            age: DEMO_COUPLE_CARMEN_ROBERTO.partner1.age,
+            ageLabel: DEMO_COUPLE_CARMEN_ROBERTO.ageLabel,
+            location: "Ciudad de México",
+            image: DEMO_COUPLE_CARMEN_ROBERTO.mainImage,
+            images: [DEMO_COUPLE_CARMEN_ROBERTO.mainImage],
+            isOnline: true,
+            bio: "Perfil de demostración. Regístrate para crear tu perfil real.",
+            profession: "Miembro de la comunidad",
+            rating: 4.5,
+            isVerified: false,
+          };
         }
 
         // 3. Sesión demo guardada (perfil propio).

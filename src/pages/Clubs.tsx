@@ -365,6 +365,20 @@ export const Clubs = () => {
 
         if (!bySlugError && bySlug) {
           setSelectedClub(toClubEntity(bySlug as Club));
+          return;
+        }
+
+        // Respaldo del catálogo público (ronda 7, punto 7): "Eden Noir"
+        // solo vive en PUBLIC_CLUBS, no en la tabla clubs. Sin este
+        // paso, /clubs/eden-noir no resolvía nunca el detalle y la
+        // página mostraba la lista genérica; la búsqueda sí lo
+        // encontraba en la lista mezclada, pero el detalle era
+        // inalcanzable. El catálogo manda por slug cuando la BD no
+        // tiene el club (la BD sigue mandando cuando sí lo tiene, por
+        // el `found` de arriba).
+        const catalog = PUBLIC_CLUBS.find((c) => c.slug === slug);
+        if (catalog) {
+          setSelectedClub(toClubEntity(mapPublicClubToClub(catalog)));
         }
       } catch (error) {
         logger.error("Error loading club profile:", {

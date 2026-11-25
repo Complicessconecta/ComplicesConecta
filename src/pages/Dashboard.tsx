@@ -39,6 +39,12 @@ const DashboardCore = () => {
   } = useTokens();
 
   // Función robusta para cargar perfil
+  // Ronda 7, punto 8: el login demo nunca escribe `user-profile`
+  // (escribe `demo_user` + `userType` + `demo_authenticated`), así que
+  // en demo el perfil quedaba en null y el encabezado decía siempre
+  // "Usuario Test · single" aunque la sesión fuera de una pareja o de
+  // otro usuario. El demo es la segunda fuente; `user-profile` (real)
+  // sigue mandando cuando existe.
   const loadUserProfile = useCallback(() => {
     try {
       const userProfileData = localStorage.getItem("user-profile");
@@ -46,6 +52,36 @@ const DashboardCore = () => {
         const profile = JSON.parse(userProfileData);
         setUserProfile(profile);
         debugLog("✅ Dashboard: Perfil cargado", profile);
+        return true;
+      }
+      const demoUserRaw = localStorage.getItem("demo_user");
+      if (demoUserRaw) {
+        const demoUser = JSON.parse(demoUserRaw) as Record<string, unknown>;
+        const demoType = localStorage.getItem("userType");
+        const name =
+          (typeof demoUser.display_name === "string" &&
+            demoUser.display_name) ||
+          (typeof demoUser.name === "string" && demoUser.name) ||
+          (typeof demoUser.nickname === "string" && demoUser.nickname) ||
+          [demoUser.first_name, demoUser.last_name]
+            .filter((v) => typeof v === "string" && v)
+            .join(" ") ||
+          "Usuario Demo";
+        const accountType =
+          demoUser.profile_type ??
+          demoUser.accountType ??
+          demoUser.relationship_type;
+        const userType: "single" | "couple" =
+          accountType === "couple" || demoType === "couple"
+            ? "couple"
+            : "single";
+        const profile: UserProfile = {
+          name,
+          userType,
+          email: typeof demoUser.email === "string" ? demoUser.email : "",
+        };
+        setUserProfile(profile);
+        debugLog("✅ Dashboard: Perfil demo cargado", profile);
         return true;
       }
     } catch (error) {

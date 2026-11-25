@@ -577,25 +577,30 @@ export function TokenDashboard({
           </p>
 
           {/* Estado de cuenta NFT */}
-          <div className="flex items-center justify-between mb-4 text-xs text-white/70">
+          <div className="flex items-center justify-between gap-2 mb-4 text-xs text-white/70 min-w-0">
             <span className="truncate">
               NFTs en esta wallet:{" "}
               <span className="font-semibold text-white">{displayNfts.length}</span>
             </span>
-            <span className="truncate text-right">
-              Galerías NFT verificadas:{" "}
+            <span className="truncate text-right shrink-0">
+              {/* Ronda 8, punto 7: "Galerías NFT verificadas: 4/4" junto a
+                "NFTs en esta wallet: 1" se contradecía porque el 4/4 no
+                contaba NFTs de la wallet: son las 4 galerías de EJEMPLO
+                verificadas (DEFAULT_DEMO_NFTS), no la colección del
+                usuario. La etiqueta ahora dice lo que cuenta. */}
+              Galerías NFT de ejemplo:{" "}
               <span className="font-semibold text-white">
-                {isDemoMode ? "4/4" : "próximamente"}
+                {isDemoMode ? DEMO_NFTS.length : "próximamente"}
               </span>
             </span>
           </div>
 
           {displayNfts.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 min-w-0">
               {displayNfts.slice(0, 4).map((nft, index) => (
                 <div
                   key={nft.id || index}
-                  className="group relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/20"
+                  className="group relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/20 min-w-0"
                 >
                   <img
                     src={nft.image || nft.image_url || MOCK_NFT_IMAGES[index % MOCK_NFT_IMAGES.length] || MOCK_NFT_IMAGES[0]}

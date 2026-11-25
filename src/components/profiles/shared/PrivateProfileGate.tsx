@@ -49,6 +49,10 @@ export function PrivateProfileGate({
           viewerName={viewerName}
           isOwnProfile={false}
           isDemo={isDemo}
+          // Ronda 8 (punto 11): la solicitud ES la de amistad del
+          // sistema existente (friends.ts); aquí se pide ver el perfil,
+          // así que la etiqueta dice lo que hace.
+          ctaLabel="Solicitar ver perfil"
         />
       </div>
     </section>

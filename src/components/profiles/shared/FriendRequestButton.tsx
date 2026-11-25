@@ -27,6 +27,13 @@ interface FriendRequestButtonProps {
   isOwnProfile: boolean;
   isDemo?: boolean;
   className?: string;
+  /**
+   * Texto del botón cuando no hay relación. Por defecto
+   * "Enviar solicitud de amistad"; el gate de perfil privado lo usa
+   * como "Solicitar ver perfil" (ronda 8, punto 11): la solicitud ES
+   * la de amistad del sistema existente, solo cambia la etiqueta.
+   */
+  ctaLabel?: string;
 }
 
 export function FriendRequestButton({
@@ -37,6 +44,7 @@ export function FriendRequestButton({
   isOwnProfile,
   isDemo = false,
   className = "",
+  ctaLabel = "Enviar solicitud de amistad",
 }: FriendRequestButtonProps) {
   const [status, setStatus] = useState<FriendStatus>("none");
   const [incomingId, setIncomingId] = useState<string | null>(null);
@@ -157,10 +165,10 @@ export function FriendRequestButton({
       onClick={() => void handleSend()}
       disabled={busy}
       className={`inline-flex items-center gap-2 rounded-full bg-linear-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-4 py-2.5 text-sm disabled:opacity-50 ${className}`}
-      title={`Enviar solicitud de amistad a ${profileName}`}
+      title={`${ctaLabel} a ${profileName}`}
     >
       <UserPlus className="w-4 h-4" aria-hidden="true" />
-      {busy ? "Enviando…" : "Enviar solicitud de amistad"}
+      {busy ? "Enviando…" : ctaLabel}
     </button>
   );
 }

@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { logger } from "@/lib/logger";
+import { generateDemoUserUUID } from "@/lib/demo-uuid";
 import {
   getZodiacSignById,
   getZodiacSignFromDate,
@@ -321,6 +322,98 @@ export function isProfileInvisible(
   settings: PrivacySettings | null | undefined,
 ): boolean {
   return settings?.invisible === true;
+}
+
+/**
+ * Puente de identidad demo (ronda 8, puntos 9 y 11) — CAUSA RAÍZ de la
+ * regresión de visibilidad de la pareja.
+ *
+ * Un mismo perfil demo tiene TRES ids distintos según dónde se mire y
+ * ninguno es el del otro lado:
+ * - La tarjeta de Discover (`generateDemoProfiles`) usa
+ *   `generateDemoUUID("demo-profile-N")` (Carmen & Roberto es la
+ *   tarjeta 6, `demo-profile-6`).
+ * - La ficha demo / Compartir usa `demo-couple-456` (pareja) y
+ *   `demo-single-1` (single).
+ * - Los ajustes del dueño (Privacidad: `couple_privacy:<userId>`,
+ *   `profile_visibility:<userId>`) se guardan con el id del USUARIO
+ *   demo, `generateDemoUserUUID("user-pareja@outlook.es")` (lo que
+ *   `CouplePrivacySection` recibe como `userId={user?.id}`).
+ *
+ * Sin este puente, el filtro de Discover y el gate de perfil privado
+ * buscaban los ajustes con el id de la TARJETA, que nadie escribe
+ * nunca: la pareja puesta en invisible seguía en Discover (tarjeta 6
+ * de 20) y su perfil privado nunca se cerraba para la otra cuenta
+ * demo. La búsqueda es por nombre canónico (la misma convención que
+ * `getSocialDemoData`, que keyea la semilla demo por nombre) o por
+ * los ids de ficha conocidos; fuera de demo devuelve null y el
+ * llamador usa el id del perfil tal cual.
+ */
+export interface DemoOwnerIdentity {
+  userId: string;
+  type: ProfileType;
+}
+
+const DEMO_OWNER_BY_NAME: Record<string, DemoOwnerIdentity> = {
+  "carmen & roberto": {
+    userId: generateDemoUserUUID("pareja@outlook.es"),
+    type: "couple",
+  },
+  sofía: {
+    userId: generateDemoUserUUID("single@outlook.es"),
+    type: "single",
+  },
+  sofia: {
+    userId: generateDemoUserUUID("single@outlook.es"),
+    type: "single",
+  },
+};
+
+const DEMO_OWNER_BY_PROFILE_ID: Record<string, DemoOwnerIdentity> = {
+  "demo-couple-456": {
+    userId: generateDemoUserUUID("pareja@outlook.es"),
+    type: "couple",
+  },
+  "demo-single-1": {
+    userId: generateDemoUserUUID("single@outlook.es"),
+    type: "single",
+  },
+};
+
+export function resolveDemoOwnerIdentity(
+  profileId: string,
+  profileName?: string | null,
+): DemoOwnerIdentity | null {
+  if (!profileId && !profileName) return null;
+  const byId = profileId ? DEMO_OWNER_BY_PROFILE_ID[profileId] : undefined;
+  if (byId) return byId;
+  // El propio id de usuario demo ya es la llave de sus ajustes.
+  for (const owner of Object.values(DEMO_OWNER_BY_PROFILE_ID)) {
+    if (profileId === owner.userId) return owner;
+  }
+  const name = (profileName ?? "").trim().toLowerCase();
+  if (name) {
+    const byName = DEMO_OWNER_BY_NAME[name];
+    if (byName) return byName;
+  }
+  return null;
+}
+
+/**
+ * Ajustes de privacidad del perfil LISTADO en Discover (demo).
+ * Resuelve el id del dueño con el puente de arriba antes de leer:
+ * sin él, la tarjeta de la pareja nunca encontraba su `invisible`.
+ * Para el resto de tarjetas demo (sin dueño canónico) lee con el id
+ * de la tarjeta, que cae a los valores por defecto (visible).
+ */
+export function readDemoProfilePrivacySettings(
+  profileId: string,
+  profileType: ProfileType,
+  profileName?: string | null,
+): PrivacySettings {
+  const owner = resolveDemoOwnerIdentity(profileId, profileName);
+  if (owner) return readPrivacySettingsSync(owner.userId, owner.type);
+  return readPrivacySettingsSync(profileId, profileType);
 }
 
 export interface DiscoverProfileLike {

@@ -236,6 +236,15 @@ html, body {
   height: 100%;
 }
 
+/* RONDA 8 (punto 3): el documento no puede desplazarse en horizontal:
+   cualquier contenido más ancho que el viewport se recorta en la raíz
+   en vez de ensanchar el documento (eso cortaba la 2ª tarjeta NFT y
+   dejaba la luna del dock en el borde). `clip` (no `hidden`) no crea
+   contenedor de scroll y no rompe `position: sticky`. */
+html {
+  overflow-x: clip;
+}
+
 /* Animations */
 
 @keyframes float {

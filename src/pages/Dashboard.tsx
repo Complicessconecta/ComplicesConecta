@@ -256,7 +256,14 @@ const DashboardCore = () => {
           </TabsContent>
 
           <TabsContent value="notifications" className="space-y-6">
-            <NotificationCenter userId={userProfile?.name || "demo-user"} />
+            {/* Ronda 8 (punto 10): la lista se abre por defecto en la
+                pestaña (antes solo se veía la campana y la pestaña
+                parecía vacía); el clic en una notificación navega por
+                el router a su ruta (ver NotificationCenter). */}
+            <NotificationCenter
+              userId={userProfile?.name || "demo-user"}
+              defaultOpen
+            />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">

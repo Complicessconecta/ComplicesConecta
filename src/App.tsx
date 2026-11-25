@@ -407,6 +407,15 @@ const App = () => {
                               element={<Guidelines />}
                             />
                             <Route path="/legal" element={<Legal />} />
+                            {/* Ronda 8 (punto 12/13a): /docs/legal/ no tenía
+                                ruta y caía en el catch-all 404 aunque el
+                                rewrite de Vercel sí sirve index.html. Es
+                                el mismo índice legal estilizado de /legal
+                                (React Router ignora la barra final, así que
+                                /docs/legal/ también casa). Los .md crudos
+                                de public/docs/legal/ se siguen sirviendo
+                                como estáticos y no pasan por el SPA. */}
+                            <Route path="/docs/legal" element={<Legal />} />
                             <Route
                               path="/ley-olimpia"
                               element={<LeyOlimpia />}
@@ -504,6 +513,16 @@ const App = () => {
                             />
                             <Route path="/investors" element={<Investors />} />
                             <Route path="/nfts" element={<NFTs />} />
+                            {/* Ronda 8 (punto 13): /404 NO existía como
+                                ruta. El ErrorBoundary raíz (main.tsx)
+                                redirige en producción a /404 ante
+                                cualquier error de render, así que un error
+                                en cualquier página terminaba en el
+                                catch-all "*" con la página 404. Con ruta
+                                propia, /404 es una ruta real y el error
+                                muestra la misma página 404 por diseño,
+                                no por un hueco del router. */}
+                            <Route path="/404" element={<NotFound />} />
                             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                             <Route path="*" element={<NotFound />} />
                           </Route>

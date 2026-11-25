@@ -13,7 +13,10 @@ vi.mock("@/utils/safeLocalStorage", () => ({
 }));
 
 vi.mock("@/services/payments/WalletService", () => ({
-  WalletService: { isDemoMode: () => true },
+  // getInstance: el constructor de NFTService lo llama al importar el
+  // módulo (sin él, el test fallaba en la importación, sin llegar a
+  // ningún test).
+  WalletService: { isDemoMode: () => true, getInstance: () => ({}) },
   walletService: {},
 }));
 

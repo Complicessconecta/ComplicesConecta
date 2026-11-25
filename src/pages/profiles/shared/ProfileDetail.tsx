@@ -12,6 +12,7 @@ import {
 } from "@/demo/demoData";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { generateDemoUserUUID } from "@/lib/demo-uuid";
 
 /**
  * Wrapper de /profile/:id.
@@ -25,11 +26,14 @@ import { logger } from "@/lib/logger";
  *
  * Este wrapper resuelve el perfil por el id de la URL antes de
  * renderizar el detalle: demo roster (mismos ids deterministas que
- * Discover), lista demo legacy, sesión demo guardada y, por último,
- * Supabase (perfil real por uuid). Si lo encuentra, re-navega con
- * replace inyectando el perfil en location.state, que es lo que el
- * componente interno ya sabe leer. Si no aparece en ninguna fuente, se
- * renderiza el interno tal cual y muestra su "Perfil no encontrado".
+ * Discover), lista demo legacy, cuentas demo canónicas (Sofía /
+ * Carmen & Roberto, ids deterministas por email y por tanto
+ * resolvibles sin localStorage), registro local de cuentas demo,
+ * sesión demo guardada y, por último, Supabase (perfil real por uuid).
+ * Si lo encuentra, re-navega con replace inyectando el perfil en
+ * location.state, que es lo que el componente interno ya sabe leer.
+ * Si no aparece en ninguna fuente, se renderiza el interno tal cual
+ * y muestra su "Perfil no encontrado".
  */
 
 interface ResolvedProfile {
@@ -215,6 +219,75 @@ export default function ProfileDetail() {
             rating: 4.5,
             isVerified: false,
           };
+        }
+
+        // 2c. Cuentas demo CANÓNICAS (Sofía / Carmen & Roberto): su id
+        // es generateDemoUserUUID(email) — determinista por email — y
+        // NO está en el roster, ni en la lista legacy, ni en demo_user
+        // cuando el enlace se abre en otro navegador o tras cerrar
+        // sesión. Sin esto, /profile/609dcb3b… (Sofía, el enlace que
+        // construye Compartir en el perfil propio) solo resolvía si
+        // demo_user seguía en ESTE localStorage: en frío, para el
+        // destinatario del enlace, daba "Perfil no encontrado". Lo
+        // mismo para /profile/48bb1f12… (pareja demo).
+        if (!resolved && id === generateDemoUserUUID("single@outlook.es")) {
+          resolved = {
+            id,
+            name: "Sofía",
+            age: 28,
+            location: "Ciudad de México",
+            interests: ["Lifestyle Swinger", "Mentalidad Abierta"],
+            image:
+              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=600&fit=crop&crop=face",
+            images: [
+              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=600&fit=crop&crop=face",
+            ],
+            isOnline: true,
+            bio: "Perfil de demostración. Regístrate para crear tu perfil real.",
+            profession: "Miembro de la comunidad",
+            rating: 4.5,
+            isVerified: true,
+          };
+        }
+        if (!resolved && id === generateDemoUserUUID("pareja@outlook.es")) {
+          resolved = {
+            id,
+            name: DEMO_COUPLE_CARMEN_ROBERTO.name,
+            age: DEMO_COUPLE_CARMEN_ROBERTO.partner1.age,
+            ageLabel: DEMO_COUPLE_CARMEN_ROBERTO.ageLabel,
+            location: "Ciudad de México",
+            image: DEMO_COUPLE_CARMEN_ROBERTO.mainImage,
+            images: [DEMO_COUPLE_CARMEN_ROBERTO.mainImage],
+            isOnline: true,
+            bio: "Perfil de demostración. Regístrate para crear tu perfil real.",
+            profession: "Miembro de la comunidad",
+            rating: 4.5,
+            isVerified: false,
+          };
+        }
+
+        // 2d. Cuentas demo LOCALES registradas en este navegador
+        // (registro demo sin Supabase, p. ej. TestR7): sobreviven al
+        // logout en `cc_local_demo_accounts_v1`, así que su /profile/<id>
+        // también debe resolver en frío aquí, sin depender de que la
+        // sesión siga activa. La clave NO lleva prefijo `demo_` a
+        // propósito (clearDemoAuth la barrería en cada logout).
+        if (!resolved) {
+          try {
+            const raw = localStorage.getItem("cc_local_demo_accounts_v1");
+            if (raw) {
+              const accounts = JSON.parse(raw) as Array<{
+                userId?: unknown;
+                profile?: Record<string, unknown>;
+              }>;
+              const match = Array.isArray(accounts)
+                ? accounts.find((a) => String(a.userId ?? "") === id)
+                : undefined;
+              if (match?.profile) resolved = fromDemoUser(match.profile);
+            }
+          } catch {
+            // Registro local corrupto: seguir a Supabase.
+          }
         }
 
         // 3. Sesión demo guardada (perfil propio).

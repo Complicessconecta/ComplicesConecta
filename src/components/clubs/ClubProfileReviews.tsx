@@ -26,6 +26,56 @@ interface ClubProfileReviewsProps {
   onReply?: (reviewId: string) => void;
 }
 
+/**
+ * Distribución de estrellas coherente con el total y el promedio del
+ * club. Si la lista cargada ES el total, se cuentan las reseñas
+ * reales; si no (p. ej. Eden Noir: 1 reseña cargada, 186 en total),
+ * se deriva una distribución determinista: se parte de todas en 5★
+ * y se bajan reseñas de a un escalón hasta que la suma de estrellas
+ * iguala `round(promedio × total)`. Resultado: la suma de la
+ * distribución es el total y su media redondea al promedio mostrado
+ * (186 reseñas, 4.9 → 167×5★ + 19×4★ = 911 estrellas, media 4.90).
+ */
+export function deriveRatingDistribution(
+  reviews: ClubReview[],
+  averageRating: number,
+  totalReviews: number,
+): { star: number; count: number; percentage: number }[] {
+  const total = Math.max(0, Math.floor(totalReviews));
+  if (reviews.length > 0 && reviews.length === total) {
+    return [5, 4, 3, 2, 1].map((star) => {
+      const count = reviews.filter((r) => r.rating === star).length;
+      return {
+        star,
+        count,
+        percentage: total > 0 ? (count / total) * 100 : 0,
+      };
+    });
+  }
+  // counts[0..4] = reseñas de 1★..5★.
+  const counts = [0, 0, 0, 0, 0];
+  counts[4] = total;
+  const targetSum = Math.min(
+    5 * total,
+    Math.max(total, Math.round(averageRating * total)),
+  );
+  let toRemove = 5 * total - targetSum;
+  for (let star = 5; star > 1 && toRemove > 0; star--) {
+    const move = Math.min(counts[star - 1] ?? 0, toRemove);
+    counts[star - 1] = (counts[star - 1] ?? 0) - move;
+    counts[star - 2] = (counts[star - 2] ?? 0) + move;
+    toRemove -= move;
+  }
+  return [5, 4, 3, 2, 1].map((star) => {
+    const count = counts[star - 1] ?? 0;
+    return {
+      star,
+      count,
+      percentage: total > 0 ? (count / total) * 100 : 0,
+    };
+  });
+}
+
 export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
   reviews,
   averageRating,
@@ -67,13 +117,20 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
     ));
   };
 
-  const ratingDistribution = [5, 4, 3, 2, 1].map(star => ({
-    star,
-    count: reviews.filter(r => r.rating === star).length,
-    percentage: reviews.length > 0
-      ? (reviews.filter(r => r.rating === star).length / reviews.length) * 100
-      : 0
-  }));
+  /**
+   * Ronda 8 (punto 15): la distribución contaba SOLO las reseñas
+   * cargadas en la lista (1 reseña demo de 5★ → "5★=1") mientras el
+   * encabezado mostraba el total del club (186 reseñas): dos fuentes
+   * distintas para el mismo número. Cuando la lista trae menos
+   * reseñas que el total, la distribución se deriva del total y del
+   * promedio del club (suma = total, media ponderada ≈ promedio);
+   * cuando la lista ES el total, se cuentan las reseñas reales.
+   */
+  const ratingDistribution = deriveRatingDistribution(
+    reviews,
+    averageRating,
+    totalReviews,
+  );
 
   return (
     <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">

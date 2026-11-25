@@ -126,9 +126,12 @@ export default function TokensLegal() {
                   </p>
                   <p className="text-sm text-white/80">{loadError}</p>
                   <p className="mt-2 text-sm text-white/80">
-                    Puedes consultar los términos generales en la{" "}
-                    <Link to="/terms" className="underline text-white">
-                      página de Términos
+                    Puedes consultar los términos de tokens en la{" "}
+                    <Link
+                      to="/tokens-terms"
+                      className="underline text-white"
+                    >
+                      página de Términos de Tokens
                     </Link>{" "}
                     o escribir a tokens@complicesconecta.com.
                   </p>

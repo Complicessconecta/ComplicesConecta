@@ -252,6 +252,13 @@ export class NotificationService {
 
   /**
    * Notify user about an achievement
+   *
+   * Ronda 8 (punto 10): el actionUrl era "/achievements" y NO EXISTE
+   * esa ruta (ni página) en el router: al tocar la notificación, el
+   * `window.location.href` del centro de notificaciones hacía una
+   * navegación completa a una ruta sin match y el catch-all mostraba
+   * la página 404. Los logros viven en la pestaña "Logros" del
+   * Dashboard (/dashboard), así que esa es la ruta correcta.
    */
   static async notifyAchievement(
     userId: string,
@@ -263,7 +270,7 @@ export class NotificationService {
       type: "achievement",
       title: `¡Logro desbloqueado! 🏆`,
       message: `${achievementTitle}: ${achievementDescription}`,
-      actionUrl: "/achievements",
+      actionUrl: "/dashboard",
       metadata: { achievement_title: achievementTitle },
     });
   }
@@ -288,6 +295,11 @@ export class NotificationService {
 
   /**
    * Notify user about a connection request
+   *
+   * Ronda 8 (punto 10): el actionUrl era "/connections" y NO EXISTE
+   * esa ruta en el router (mismo 404 que /achievements, ver
+   * notifyAchievement). Las solicitudes de conexión/amistad viven en
+   * /requests, así que esa es la ruta correcta.
    */
   static async notifyConnectionRequest(
     userId: string,
@@ -299,7 +311,7 @@ export class NotificationService {
       type: "request",
       title: "Nueva solicitud de conexión",
       message: `${requesterUserName} quiere conectarse contigo`,
-      actionUrl: `/connections`,
+      actionUrl: `/requests`,
       senderId: requesterUserId,
       senderName: requesterUserName,
       metadata: { request_type: "connection" },

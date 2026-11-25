@@ -45,6 +45,30 @@ export interface FriendRequest {
   status: FriendRequestStatus;
   message: string | null;
   createdAt: string;
+  /**
+   * Ronda 8 (punto 14): cuándo se respondió la solicitud. El acceso
+   * a la galería de un perfil ANÓNIMO dura 24 h desde la aceptación
+   * (no desde la solicitud): sin este sello no hay desde dónde contar.
+   */
+  respondedAt?: string;
+}
+
+/**
+ * Ronda 8 (punto 14): vigencia del acceso a la galería de un perfil
+ * anónimo: UN acceso que expira a las 24 h de concedido; expirado, el
+ * espectador debe volver a pedirlo (el flujo de solicitud ya existe:
+ * `sendPhotoAccessRequest` solo bloquea si hay una pendiente).
+ */
+export const ANONYMOUS_PHOTO_ACCESS_TTL_MS = 24 * 60 * 60 * 1000;
+
+/** ¿Expiró un acceso a fotos concedido (solo aplica a anónimos)? */
+function isPhotoAccessExpired(
+  req: FriendRequest,
+  nowMs: number = Date.now(),
+): boolean {
+  const grantedAt = Date.parse(req.respondedAt ?? req.createdAt);
+  if (Number.isNaN(grantedAt)) return false;
+  return nowMs - grantedAt >= ANONYMOUS_PHOTO_ACCESS_TTL_MS;
 }
 
 export type FriendStatus =
@@ -424,6 +448,9 @@ export async function respondFriendRequest(
     const req = requests.find((r) => r.id === requestId);
     if (!req) return { ok: false, error: "Solicitud no encontrada" };
     req.status = response;
+    // Ronda 8 (punto 14): sello de aceptación (base de la vigencia
+    // de 24 h del acceso a la galería de un perfil anónimo).
+    req.respondedAt = new Date().toISOString();
     writeLocalRequests(requests);
     if (response === "accepted" && req.kind === "friendship") {
       localAddFriendship(req.fromId, req.toId);
@@ -621,6 +648,7 @@ export async function hasPhotoAccess(
   viewerId: string,
   ownerId: string,
   isDemo = false,
+  opts?: { ownerIsAnonymous?: boolean },
 ): Promise<boolean> {
   if (!viewerId || !ownerId || viewerId === ownerId) return true;
   if (isDemo || !supabase) {
@@ -629,7 +657,10 @@ export async function hasPhotoAccess(
         r.kind === "photo_access" &&
         r.status === "accepted" &&
         r.fromId === viewerId &&
-        r.toId === ownerId,
+        r.toId === ownerId &&
+        // Ronda 8 (punto 14): en un perfil anónimo el acceso concedido
+        // expira a las 24 h; expirado se trata como si no existiera.
+        !(opts?.ownerIsAnonymous && isPhotoAccessExpired(r)),
     );
   }
   try {
@@ -661,10 +692,11 @@ export async function getPhotoAccessStatus(
   viewerId: string,
   ownerId: string,
   isDemo = false,
+  opts?: { ownerIsAnonymous?: boolean },
 ): Promise<PhotoAccessStatus> {
   if (!viewerId || !ownerId || viewerId === ownerId) return "none";
   if (isDemo || !supabase) {
-    return getPhotoAccessStatusSync(viewerId, ownerId);
+    return getPhotoAccessStatusSync(viewerId, ownerId, opts);
   }
   try {
     const viewerProfileId = await resolveOwnProfileId(viewerId);
@@ -693,6 +725,7 @@ export async function getPhotoAccessStatus(
 export function getPhotoAccessStatusSync(
   viewerId: string,
   ownerId: string,
+  opts?: { ownerIsAnonymous?: boolean },
 ): PhotoAccessStatus {
   if (!viewerId || !ownerId || viewerId === ownerId) return "none";
   const matches = readLocalRequests()
@@ -705,6 +738,15 @@ export function getPhotoAccessStatusSync(
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
   const latest = matches[0];
   if (!latest) return "none";
+  // Ronda 8 (punto 14): acceso concedido a un perfil anónimo y ya
+  // expirado (24 h) se lee como "none": el espectador debe pedirlo
+  // de nuevo en vez de conservar acceso indefinido.
+  if (
+    latest.status === "accepted" &&
+    opts?.ownerIsAnonymous &&
+    isPhotoAccessExpired(latest)
+  )
+    return "none";
   return latest.status;
 }
 

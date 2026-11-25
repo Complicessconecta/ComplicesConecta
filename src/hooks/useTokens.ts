@@ -10,7 +10,7 @@ import { validateStaking } from "@/lib/validation/zod/zod-schemas";
 import {
   shouldUseRealSupabase,
   getAppConfig,
-  resolveDemoAccountType,
+  resolveCurrentDemoAccountType,
 } from "@/lib/app-config";
 import {
   getDemoWalletBalance,
@@ -19,10 +19,18 @@ import {
   DEMO_WALLET_CHANGED_EVENT,
   type DemoAccountType,
 } from "@/lib/demo-wallet";
+import {
+  findLocalDemoAccountById,
+  isAnonymousDemoProfile,
+} from "@/lib/demo-registration";
+import { ANONYMOUS_WALLET_BLOCKED_REASON } from "@/lib/anonymous";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
-import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services";
+import {
+  TokenService,
+  type TokenTransaction as ServiceTokenTransaction,
+} from "@/services";
 
 // Interfaces simplificadas para demo vs real
 export interface TokenBalance {
@@ -93,7 +101,7 @@ const mapTransactionType = (
 };
 
 export const useTokens = () => {
-  const { user, isDemo, appMode: _appMode } = useAuth();
+  const { user, isDemo, appMode: _appMode, profile } = useAuth();
   const [balance, setBalance] = useState<TokenBalance>({ cmpx: 0, gtk: 0 });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [stakingRecords, setStakingRecords] = useState<StakingRecord[]>([]);
@@ -102,34 +110,29 @@ export const useTokens = () => {
   const config = getAppConfig();
 
   // Tipo de cuenta demo del usuario actual (misma resolución que
-  // loadTokenData: correo "couple" o demo_user pareja; la cuenta demo
-  // premium legacy conserva su balance histórico 5000/3000 y NO se
-  // persiste por aquí). Lo necesitan los reclamos para acreditar el
-  // saldo persistido (@/lib/demo-wallet) en vez de solo el estado
-  // local del hook (ronda 7, punto 8).
+  // loadTokenData y que TokenDashboard: perfil cargado → `user` →
+  // `demo_user`/`userType` de localStorage; la cuenta demo premium
+  // legacy conserva su balance histórico 5000/3000 y NO se persiste
+  // por aquí). Lo necesitan los reclamos para acreditar el saldo
+  // persistido (@/lib/demo-wallet) en vez de solo el estado local
+  // del hook (ronda 7, punto 8).
+  //
+  // Ronda 9, stream D: antes el tipo salía de
+  // `user.email.includes("couple")`, que no cubre `pareja@outlook.es`
+  // ni las cuentas `@demo.local` creadas por registro, y de una
+  // lectura de `demo_user` que solo miraba `accountType`: una pareja
+  // acreditaba (y leía) el saldo de single (test ronda 8).
   const resolveDemoKind = useCallback((): {
     accountType: DemoAccountType;
     isPremiumDemo: boolean;
   } => {
-    let accountType: DemoAccountType = user?.email?.includes("couple")
-      ? "couple"
-      : "single";
-    try {
-      const storedUser = localStorage.getItem("demo_user");
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        if (resolveDemoAccountType(parsedUser) === "couple") {
-          accountType = "couple";
-        }
-      }
-    } catch {
-      // demo_user corrupto: se queda el tipo derivado del correo.
-    }
+    const accountType =
+      resolveCurrentDemoAccountType(profile, user) ?? "single";
     return {
       accountType,
       isPremiumDemo: user?.email?.includes("premium") ?? false,
     };
-  }, [user?.email]);
+  }, [user, profile]);
 
   // El saldo demo persistido puede cambiar fuera de este hook (reclamo
   // en /tokens, otra instancia del hook): re-leerlo cuando cambie para
@@ -174,28 +177,17 @@ export const useTokens = () => {
         // @/lib/demo-wallet — single 1250/850, pareja 2000/1500).
         // Antes los literales vivían aquí duplicados y cada superficie
         // tenía los suyos (TokenDashboard: MOCK 5000/2500).
-        let demoAccountType: DemoAccountType = user.email?.includes("couple")
-          ? "couple"
-          : "single";
+        //
+        // Ronda 9, stream D: el tipo se resuelve igual que en
+        // TokenDashboard (`resolveCurrentDemoAccountType`); el
+        // `email.includes("couple")` anterior no cubría
+        // `pareja@outlook.es` ni las cuentas `@demo.local`, así que
+        // una pareja leía el saldo de single en /tokens (test r8).
+        const demoAccountType: DemoAccountType =
+          resolveCurrentDemoAccountType(profile, user) ?? "single";
         // Cuenta demo premium legacy (sin usuario demo canónico con ese
         // correo): conserva su balance histórico 5000/3000.
         const isPremiumDemo = user.email?.includes("premium") ?? false;
-
-        // Intentar obtener balance personalizado del localStorage
-        const storedUser = localStorage.getItem("demo_user");
-        if (storedUser) {
-          try {
-            const parsedUser = JSON.parse(storedUser);
-            // Resolver con todas las variantes: el demo_user guardado
-            // puede tener forma de Profile (profile_type) sin `accountType`;
-            // leer solo accountType daba el balance de single a una pareja.
-            if (resolveDemoAccountType(parsedUser) === "couple") {
-              demoAccountType = "couple";
-            }
-          } catch {
-            logger.warn("Error parsing demo user for balance");
-          }
-        }
 
         const canonical = getDemoWalletBalance(demoAccountType);
         const demoBalance: TokenBalance = isPremiumDemo
@@ -283,7 +275,9 @@ export const useTokens = () => {
         ];
         setRewards(mockRewards);
 
-        logger.info("Datos de tokens demo cargados - Balance:", { ...demoBalance });
+        logger.info("Datos de tokens demo cargados - Balance:", {
+          ...demoBalance,
+        });
       } else {
         // Cargar datos reales desde Supabase usando TokenService
         logger.info(
@@ -422,6 +416,20 @@ export const useTokens = () => {
   ) => {
     if (!user) return false;
 
+    // Ronda 9 (stream A, punto 7): sin staking en cuentas anónimas
+    // hasta verificar (World ID / KYC). Mismo bloqueo que en
+    // `claimReward`.
+    if (
+      isAnonymousDemoProfile(user) ||
+      findLocalDemoAccountById(user.id)?.isAnonymous === true
+    ) {
+      logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, {
+        tokenType,
+        amount,
+      });
+      return false;
+    }
+
     if (isDemo() || !shouldUseRealSupabase()) {
       logger.info(" Simulando staking en modo demo:", {
         tokenType,
@@ -504,6 +512,22 @@ export const useTokens = () => {
   // Reclamar recompensa
   const claimReward = async (rewardId: string) => {
     if (!user) return false;
+
+    // Ronda 9 (stream A, punto 7): la billetera está desactivada en
+    // cuentas anónimas — sin recompensas hasta verificar (World ID /
+    // KYC). Se corta ANTES de marcar la recompensa como reclamada y
+    // de tocar el saldo: si no, el reclamo quedaba marcado y el saldo
+    // local subía aunque la billetera estuviera bloqueada. La
+    // recompensa de World ID (`claimWorldIdReward`) NO se bloquea: es
+    // la que se concede AL verificar, es decir, el camino de
+    // conversión mismo.
+    const isAnonymousUser =
+      isAnonymousDemoProfile(user) ||
+      findLocalDemoAccountById(user.id)?.isAnonymous === true;
+    if (isAnonymousUser) {
+      logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, { rewardId });
+      return false;
+    }
 
     if (isDemo() || !shouldUseRealSupabase()) {
       logger.info("🎭 Reclamando recompensa en modo demo:", { rewardId });
@@ -735,4 +759,3 @@ export const useTokens = () => {
     appMode: config.mode,
   };
 };
-

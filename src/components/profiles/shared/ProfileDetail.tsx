@@ -335,6 +335,10 @@ const ProfileDetail = () => {
     dbVisibility,
     storedVisibility: readVisibilityLocalOrNull(visibilityOwnerId),
     seedVisibility: socialDemo.visibility,
+    // Ronda 9 (stream A, punto 2): el perfil anónimo es privado por
+    // defecto: no-amigos ven solo la tarjeta mínima + solicitud.
+    isAnonymous:
+      (profile as { is_anonymous?: unknown }).is_anonymous === true,
   });
   // RONDA 7 (punto 18): el 4º argumento es el NOMBRE del perfil: la
   // semilla demo de amistades se keyea por nombre (ver friends.ts).

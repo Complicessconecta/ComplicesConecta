@@ -72,7 +72,7 @@ export const Discover = () => {
   const { toast } = useToast();
   const [_isMobile] = useState(false);
   const { location } = useGeolocation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   const [matchedIds, setMatchedIds] = useState<Set<string>>(new Set());
 
   // Contador "Likes" de la tarjeta de stats (regla de Wacko: marcar +1,
@@ -256,6 +256,13 @@ export const Discover = () => {
     return { ...viewerPrivacy, allowUnverified: !filters.verified };
   }, [viewerPrivacy, filters.verified]);
 
+  // Ronda 9 (stream A, punto 3): los perfiles anónimos solo aparecen
+  // en Discover para espectadores VERIFICADOS. La sesión demo es
+  // verificada (useAuth marca is_verified en demo_user).
+  const viewerIsVerified: boolean =
+    (profile as { is_verified?: boolean } | null)?.is_verified === true ||
+    (user as { is_verified?: boolean } | null)?.is_verified === true;
+
   // Aplicar filtros
   useEffect(() => {
     const applyFilters = () => {
@@ -305,6 +312,7 @@ export const Discover = () => {
             ),
           },
           effectiveViewerPrivacy,
+          { viewerIsVerified },
         );
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
@@ -361,6 +369,8 @@ export const Discover = () => {
           {
             id: profile.id,
             isVerified: profile.isVerified,
+            is_anonymous: (profile as unknown as { is_anonymous?: boolean })
+              .is_anonymous,
             privacySettings:
               (
                 profile as unknown as {
@@ -370,6 +380,7 @@ export const Discover = () => {
               readPrivacySettingsSync(String(profile.id), "single"),
           },
           effectiveViewerPrivacy,
+          { viewerIsVerified },
         );
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
@@ -423,6 +434,7 @@ export const Discover = () => {
               readPrivacySettingsSync(String(couple.id), "couple"),
           },
           effectiveViewerPrivacy,
+          { viewerIsVerified },
         );
         const premiumMatch = !filters.premium || couple.is_premium;
         const onlineMatch = !filters.online || couple.isOnline;
@@ -550,6 +562,11 @@ export const Discover = () => {
               // (antes todo perfil premium contaba como verificado y ningún
               // perfil verificado no-premium aparecía con el filtro).
               isVerified: profile.is_verified || false,
+              // Ronda 9 (stream A, punto 3): el flag anónimo viaja a la
+              // tarjeta (insignia "Anónimo") y al filtro de Discover.
+              isAnonymous:
+                (profile as unknown as { is_anonymous?: boolean })
+                  .is_anonymous ?? false,
               isPremium: profile.is_premium || false,
               rating: 4.5,
               matchScore: 60 + ((index * 7) % 40),
@@ -849,26 +866,26 @@ export const Discover = () => {
       <div className="relative z-10"></div>
 
       {/* Header con navegacin */}
-      <div className="bg-white/10 backdrop-blur-md border-b border-white/20 p-4 shadow-lg relative z-10">
+      <div className="bg-white/80 dark:bg-white/10 backdrop-blur-md border-b border-slate-200 dark:border-white/20 p-4 shadow-lg relative z-10">
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center space-x-2 sm:space-x-4">
             <Button
               onClick={() => navigate("/")}
-              className="text-white hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
             >
               <Home className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
               <span className="hidden sm:inline">Inicio</span>
             </Button>
             <Button
               onClick={() => navigate("/profile")}
-              className="text-white hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
             >
               <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
               <span className="hidden sm:inline">Perfil</span>
             </Button>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Search className="h-5 w-5 sm:h-6 sm:w-6" />
             <span className="hidden sm:inline">Descubrir</span>
           </h1>
@@ -876,7 +893,7 @@ export const Discover = () => {
           <div className="flex items-center space-x-1 sm:space-x-2">
             <Button
               onClick={() => setShowCouples(!showCouples)}
-              className={`p-2 sm:px-4 bg-transparent hover:bg-white/20 ${showCouples ? "text-purple-300 bg-white/20" : "text-white"}`}
+              className={`p-2 sm:px-4 bg-transparent hover:bg-slate-100 dark:hover:bg-white/20 ${showCouples ? "text-purple-700 bg-purple-100 dark:text-purple-300 dark:bg-white/20" : "text-slate-800 dark:text-white"}`}
             >
               <span className="hidden sm:inline">
                 {showCouples ? "Singles" : "Parejas"}
@@ -885,14 +902,14 @@ export const Discover = () => {
             </Button>
             <Button
               onClick={() => setShowFilters(!showFilters)}
-              className="text-white hover:bg-white/20 p-2 sm:px-4 bg-transparent"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent"
             >
               <Filter className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
               <span className="hidden sm:inline">Filtros</span>
             </Button>
             <Button
               onClick={handleRefresh}
-              className="text-white hover:bg-white/20 p-2 bg-transparent"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 bg-transparent"
             >
               <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
@@ -911,18 +928,30 @@ export const Discover = () => {
         >
           <GlassCard className="text-center p-4">
             <Heart className="h-6 w-6 mx-auto mb-2 text-red-500" />
-            <div className="text-2xl font-bold text-white">{likesGiven}</div>
-            <div className="text-sm text-white/80">Likes</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              {likesGiven}
+            </div>
+            <div className="text-sm text-slate-500 dark:text-white/80">
+              Likes
+            </div>
           </GlassCard>
           <GlassCard className="text-center p-4">
             <Flame className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-            <div className="text-2xl font-bold text-white">5</div>
-            <div className="text-sm text-white/80">Super Likes</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              5
+            </div>
+            <div className="text-sm text-slate-500 dark:text-white/80">
+              Super Likes
+            </div>
           </GlassCard>
           <GlassCard className="text-center p-4">
             <Star className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
-            <div className="text-2xl font-bold text-white">0</div>
-            <div className="text-sm text-white/80">Matches</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              0
+            </div>
+            <div className="text-sm text-slate-500 dark:text-white/80">
+              Matches
+            </div>
           </GlassCard>
         </motion.div>
 
@@ -940,15 +969,15 @@ export const Discover = () => {
                 variant="colored"
               >
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Sliders className="h-5 w-5 text-purple-300" />
-                  <span className="text-white drop-shadow-lg font-bold">
+                  <Sliders className="h-5 w-5 text-purple-700 dark:text-purple-300" />
+                  <span className="text-slate-900 dark:text-white drop-shadow-lg font-bold">
                     Filtros Avanzados:
                   </span>
                 </h3>
 
                 {/* Edad */}
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-white mb-3">
+                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
                     Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
                   </label>
                   <Slider
@@ -968,7 +997,7 @@ export const Discover = () => {
 
                 {/* Distancia */}
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-white mb-3">
+                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
                     Distancia: {filters.distance} km
                   </label>
                   <Slider
@@ -988,22 +1017,22 @@ export const Discover = () => {
 
                 {/* Intereses */}
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-white mb-3">
+                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
                     Intereses
                     {isDemoOrProduction() && (
-                      <span className="ml-2 text-xs text-purple-300">
+                      <span className="ml-2 text-xs text-purple-700 dark:text-purple-300">
                         (Demo/Producción)
                       </span>
                     )}
                   </label>
-                  <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-3 bg-white/20 rounded-lg border border-white/30">
+                  <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-3 bg-slate-100 dark:bg-white/20 rounded-lg border border-slate-300 dark:border-white/30">
                     {availableInterests.map((interest: string) => (
                       <Badge
                         key={interest}
                         className={`cursor-pointer text-xs font-medium transition-all duration-200 hover:scale-105 ${
                           filters.interests.includes(interest)
                             ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg"
-                            : "border-white/60 text-white hover:border-white hover:bg-white/20 border bg-transparent"
+                            : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/60 dark:text-white dark:hover:border-white dark:hover:bg-white/20 border bg-transparent"
                         }`}
                         onClick={() => {
                           setFilters((prev) => ({
@@ -1022,7 +1051,7 @@ export const Discover = () => {
 
                 {/* Tipo de Relación */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-white mb-3">
+                  <label className="block text-sm font-medium text-slate-800 dark:text-white mb-3">
                     Tipo de Relación
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -1036,7 +1065,7 @@ export const Discover = () => {
                             className={`cursor-pointer text-xs p-2 text-center transition-all duration-200 ${
                               isSelected
                                 ? "bg-purple-600 text-white border-purple-600 hover:bg-purple-700"
-                                : "border-white/40 text-white hover:border-white hover:bg-white/10 border bg-transparent"
+                                : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/40 dark:text-white dark:hover:border-white dark:hover:bg-white/10 border bg-transparent"
                             }`}
                             onClick={() => {
                               setFilters((prev) => ({
@@ -1062,7 +1091,7 @@ export const Discover = () => {
                     mismo ajuste que "Acceso a perfiles sin verificar"
                     de Privacidad; aquí se controla en vivo. */}
                 <div className="mb-4">
-                  <label className="flex items-center gap-2 text-sm font-medium text-white cursor-pointer">
+                  <label className="flex items-center gap-2 text-sm font-medium text-slate-800 dark:text-white cursor-pointer">
                     <input
                       type="checkbox"
                       checked={!filters.verified}
@@ -1076,7 +1105,7 @@ export const Discover = () => {
                     />
                     Mostrar perfiles sin verificar
                   </label>
-                  <p className="text-xs text-white/70 mt-1 ml-6">
+                  <p className="text-xs text-slate-500 dark:text-white/70 mt-1 ml-6">
                     {filters.verified
                       ? "Solo se muestran perfiles verificados."
                       : "Se muestran perfiles verificados y sin verificar."}
@@ -1263,6 +1292,7 @@ export const Discover = () => {
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
                           isVerified={profile.isVerified ?? false}
+                          isAnonymous={profile.isAnonymous ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive

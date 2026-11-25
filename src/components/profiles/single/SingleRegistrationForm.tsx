@@ -401,7 +401,15 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue placeholder="Selecciona tu identidad" />
           </SelectTrigger>
-          <SelectContent>
+          {/* RONDA 9 (stream B): la lista se ancla abajo del gatillo
+              y no colisiona hacia arriba: antes Radix la volteaba y tapaba
+              el encabezado "Registro Single". */}
+          <SelectContent
+            side="bottom"
+            sideOffset={4}
+            avoidCollisions={false}
+            className="max-h-60"
+          >
             {IDENTITY_OPTIONS.map((option) => (
               <SelectItem key={option} value={option}>
                 {option}

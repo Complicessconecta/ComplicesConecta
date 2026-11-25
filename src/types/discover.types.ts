@@ -15,6 +15,12 @@ export interface Profile {
   lastActive: string;
   isVerified: boolean;
   isPremium: boolean;
+  /**
+   * Ronda 9 (stream A, punto 3): perfil anónimo (columna real
+   * `is_anonymous`). Solo visible en Discover para espectadores
+   * verificados, con insignia "Anónimo".
+   */
+  isAnonymous?: boolean;
   rating: number;
   matchScore: number;
   profileType: ProfileType;

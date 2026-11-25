@@ -51,6 +51,11 @@ interface ResolvedProfile {
   profession?: string | undefined;
   rating?: number | undefined;
   isVerified?: boolean | undefined;
+  /**
+   * Ronda 9 (stream A, punto 2): marca de cuenta anónima. El detalle
+   * interno la usa para resolver visibilidad privada por defecto.
+   */
+  is_anonymous?: boolean | undefined;
 }
 
 const fromDemoProfile = (p: DemoProfile): ResolvedProfile => ({
@@ -126,6 +131,9 @@ const fromDemoUser = (u: Record<string, unknown>): ResolvedProfile => {
     profession: "Miembro de la comunidad",
     rating: 4.5,
     isVerified: true,
+    // Ronda 9 (stream A, punto 2): la marca anónima viaja del registro
+    // local al detalle, para el gate de privado por defecto.
+    is_anonymous: u.is_anonymous === true,
   };
 };
 

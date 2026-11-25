@@ -280,15 +280,17 @@ Fecha: ${new Date().toLocaleString()}
         <div className="absolute top-40 right-10 w-96 h-96 bg-linear-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-32 left-20 w-96 h-96 bg-linear-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
 
-        {/* Floating Hearts */}
-        <div className="absolute inset-0 overflow-hidden">
+        {/* Corazones flotantes: solo en la mitad inferior de la página
+            (top >= 35%): antes caían también sobre el encabezado y se
+            solapaban con el subtítulo. `aria-hidden`: decoración. */}
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
           {[...Array(8)].map((_, i) => (
             <Heart
               key={i}
               className={`absolute text-primary/10 animate-float-slow`}
               style={{
                 left: `${(i * 73) % 100}%`,
-                top: `${(i * 89) % 100}%`,
+                top: `${35 + ((i * 89) % 60)}%`,
                 animationDelay: `${i * 2}s`,
                 fontSize: `${((i * 2) % 20) + 10}px`,
               }}
@@ -310,7 +312,7 @@ Fecha: ${new Date().toLocaleString()}
                 FAQ & Comentarios
               </span>
             </h1>
-            <p className="text-xl text-white font-medium max-w-2xl mx-auto">
+            <p className="text-xl text-slate-600 dark:text-white font-medium max-w-2xl mx-auto">
               Encuentra respuestas a tus preguntas y ayúdanos a mejorar tu
               experiencia en ComplicesConecta
             </p>
@@ -344,7 +346,7 @@ Fecha: ${new Date().toLocaleString()}
                               <span className="font-semibold">
                                 {category.title}
                               </span>
-                              <span className="text-sm text-white/80">
+                              <span className="text-sm text-slate-500 dark:text-white/80">
                                 ({category.faqs.length})
                               </span>
                             </div>
@@ -359,7 +361,7 @@ Fecha: ${new Date().toLocaleString()}
                                   <h4 className="font-medium text-foreground mb-2">
                                     {faq.question}
                                   </h4>
-                                  <p className="text-white/90 text-sm leading-relaxed">
+                                  <p className="text-slate-600 dark:text-white/90 text-sm leading-relaxed">
                                     {faq.answer}
                                   </p>
                                 </div>
@@ -379,11 +381,11 @@ Fecha: ${new Date().toLocaleString()}
               {/* Bug Report Form */}
               <Card className="bg-card/80 backdrop-blur-sm border border-red-200/70 dark:border-red-800/80">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl text-red-400">
+                  <CardTitle className="flex items-center gap-2 text-2xl text-red-600 dark:text-red-400">
                     <HelpCircle className="h-6 w-6" />
                     Reporte de Errores Beta
                   </CardTitle>
-                  <p className="text-white/90">
+                  <p className="text-slate-600 dark:text-white/90">
                     Ayúdanos a mejorar reportando errores, bugs o problemas que
                     encuentres
                   </p>
@@ -391,7 +393,7 @@ Fecha: ${new Date().toLocaleString()}
                 <CardContent className="space-y-4">
                   {/* Bug Type */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Tipo de Error
                     </label>
                     <Select
@@ -399,7 +401,7 @@ Fecha: ${new Date().toLocaleString()}
                         handleBugReportChange("type", value)
                       }
                     >
-                      <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
+                      <SelectTrigger className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/70">
                         <SelectValue placeholder="Selecciona el tipo de error" />
                       </SelectTrigger>
                       <SelectContent>
@@ -425,7 +427,7 @@ Fecha: ${new Date().toLocaleString()}
 
                   {/* Severity */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Severidad
                     </label>
                     <Select
@@ -433,7 +435,7 @@ Fecha: ${new Date().toLocaleString()}
                         handleBugReportChange("severity", value)
                       }
                     >
-                      <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
+                      <SelectTrigger className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/70">
                         <SelectValue placeholder="¿Qué tan grave es?" />
                       </SelectTrigger>
                       <SelectContent>
@@ -456,7 +458,7 @@ Fecha: ${new Date().toLocaleString()}
                   {/* Device & Browser */}
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-sm font-medium text-white mb-2">
+                      <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                         Dispositivo
                       </label>
                       <Input
@@ -465,11 +467,11 @@ Fecha: ${new Date().toLocaleString()}
                         onChange={(e) =>
                           handleBugReportChange("device", e.target.value)
                         }
-                        className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
+                        className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-white mb-2">
+                      <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                         Navegador/App
                       </label>
                       <Input
@@ -478,14 +480,14 @@ Fecha: ${new Date().toLocaleString()}
                         onChange={(e) =>
                           handleBugReportChange("browser", e.target.value)
                         }
-                        className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
+                        className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                       />
                     </div>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Descripción del Problema
                     </label>
                     <Textarea
@@ -495,13 +497,13 @@ Fecha: ${new Date().toLocaleString()}
                         handleBugReportChange("description", e.target.value)
                       }
                       rows={3}
-                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
+                      className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60 resize-none"
                     />
                   </div>
 
                   {/* Steps to reproduce */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Pasos para Reproducir el Error
                     </label>
                     <Textarea
@@ -511,13 +513,13 @@ Fecha: ${new Date().toLocaleString()}
                         handleBugReportChange("steps", e.target.value)
                       }
                       rows={3}
-                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
+                      className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60 resize-none"
                     />
                   </div>
 
                   {/* Contact Email */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       E-mail de Contacto
                     </label>
                     <Input
@@ -527,7 +529,7 @@ Fecha: ${new Date().toLocaleString()}
                       onChange={(e) =>
                         handleBugReportChange("email", e.target.value)
                       }
-                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
+                      className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                     />
                   </div>
 
@@ -541,7 +543,7 @@ Fecha: ${new Date().toLocaleString()}
                     Enviar Reporte de Error
                   </Button>
 
-                  <div className="text-xs text-white/90 bg-red-50 dark:bg-red-950/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="text-xs text-slate-700 dark:text-white/90 bg-red-50 dark:bg-red-950/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
                     <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400 inline mr-1" />
                     Este formulario abrir tu cliente de email con el reporte
                     pre-llenado para enviarlo a support@complicesconecta.com
@@ -556,7 +558,7 @@ Fecha: ${new Date().toLocaleString()}
                     <MessageSquare className="h-6 w-6 text-accent" />
                     💬 Comentarios Generales
                   </CardTitle>
-                  <p className="text-white/90">
+                  <p className="text-slate-600 dark:text-white/90">
                     Tu opinión nos ayuda a crear la mejor experiencia swinger
                   </p>
                 </CardHeader>
@@ -578,7 +580,7 @@ Fecha: ${new Date().toLocaleString()}
                             className={`h-6 w-6 ${
                               star <= rating
                                 ? "text-accent fill-current"
-                                : "text-white/60 hover:text-accent"
+                                : "text-slate-300 hover:text-accent dark:text-white/60 dark:hover:text-accent"
                             }`}
                           />
                         </button>
@@ -625,7 +627,7 @@ Fecha: ${new Date().toLocaleString()}
                   </Button>
 
                   {/* Privacy Note */}
-                  <div className="text-xs text-white/90 bg-muted/20 p-3 rounded-lg">
+                  <div className="text-xs text-slate-700 dark:text-white/90 bg-muted/20 p-3 rounded-lg">
                     <Crown className="h-4 w-4 text-accent inline mr-1" />
                     Tus comentarios son confidenciales y nos ayudan a mejorar la
                     experiencia para toda la comunidad swinger.

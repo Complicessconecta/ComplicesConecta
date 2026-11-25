@@ -36,6 +36,7 @@ import { getSocialDemoData } from "@/demo/socialDemoData";
 import { generateDemoProfiles } from "@/demo/demoData";
 import { generateDemoUserUUID } from "@/lib/demo-uuid";
 import { findLocalDemoAccountById } from "@/lib/demo-registration";
+import { resolveDemoOwnerIdentity } from "@/lib/visibility";
 
 export type FriendRequestKind = "friendship" | "photo_access";
 export type FriendRequestStatus = "pending" | "accepted" | "declined";
@@ -189,7 +190,12 @@ function readLocalRemoved(profileKey: string): string[] {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return [];
     }
-    const list = (parsed as Record<string, unknown>)[profileKey];
+    // Ronda 10, stream C (C1): la lista se keyea por id canonizado
+    // (ver canonicalDemoOwnerId): la eliminación hecha desde una
+    // ficha/tarjeta no debe reaparecer al leer con el id de usuario.
+    const list = (parsed as Record<string, unknown>)[
+      canonicalDemoOwnerId(profileKey)
+    ];
     return Array.isArray(list)
       ? list.filter((x): x is string => typeof x === "string")
       : [];
@@ -207,9 +213,12 @@ function addLocalRemoved(profileKey: string, friendId: string): void {
       parsed && typeof parsed === "object" && !Array.isArray(parsed)
         ? (parsed as Record<string, string[]>)
         : {};
-    const list = new Set(map[profileKey] ?? []);
-    list.add(friendId);
-    map[profileKey] = [...list];
+    // Ronda 10, stream C (C1): llave y valor canonizados (mismo
+    // motivo que readLocalRemoved).
+    const key = canonicalDemoOwnerId(profileKey);
+    const list = new Set(map[key] ?? []);
+    list.add(canonicalDemoOwnerId(friendId));
+    map[key] = [...list];
     window.localStorage.setItem(REMOVED_KEY, JSON.stringify(map));
   } catch {
     // Sin almacenamiento: la eliminación solo vive en esta sesión.
@@ -267,7 +276,12 @@ function writeLocalFriendships(pairs: Array<[string, string]>): void {
 }
 
 function pairKey(a: string, b: string): [string, string] {
-  return a < b ? [a, b] : [b, a];
+  // Ronda 10, stream C (C1): el par se guarda con ids canonizados:
+  // una amistad creada desde la ficha ("demo-couple-456") o la tarjeta
+  // de Discover es la misma que la creada con el id de usuario.
+  const x = canonicalDemoOwnerId(a);
+  const y = canonicalDemoOwnerId(b);
+  return x < y ? [x, y] : [y, x];
 }
 
 function localAreFriends(a: string, b: string): boolean {
@@ -327,15 +341,24 @@ export async function getFriendStatus(
     ) {
       return "friends";
     }
-    const pending = readLocalRequests().find(
-      (r) =>
-        r.kind === "friendship" &&
-        r.status === "pending" &&
-        ((r.fromId === viewerId && r.toId === profileId) ||
-          (r.fromId === profileId && r.toId === viewerId)),
-    );
+    const pending = readLocalRequests().find((r) => {
+      if (r.kind !== "friendship" || r.status !== "pending") return false;
+      // Ronda 10, stream C (C1): la solicitud puede estar guardada con
+      // el id de ficha/tarjeta del destinatario (o del remitente): se
+      // compara canonizado, no el id crudo.
+      const from = canonicalDemoOwnerId(r.fromId);
+      const to = canonicalDemoOwnerId(r.toId);
+      const viewer = canonicalDemoOwnerId(viewerId);
+      const other = canonicalDemoOwnerId(profileId);
+      return (
+        (from === viewer && to === other) || (from === other && to === viewer)
+      );
+    });
     if (!pending) return "none";
-    return pending.fromId === viewerId ? "pending_sent" : "pending_received";
+    return canonicalDemoOwnerId(pending.fromId) ===
+      canonicalDemoOwnerId(viewerId)
+      ? "pending_sent"
+      : "pending_received";
   }
   try {
     // Camino real: las tablas sociales usan profiles.id (ver
@@ -421,19 +444,27 @@ export async function sendFriendRequest(
     }
   }
   if (isDemo || !supabase) {
+    // Ronda 10, stream C (C1): la UI pasa el id de ficha
+    // ("demo-couple-456") o de tarjeta de Discover, no el id de
+    // usuario de la sesión del destinatario: se guarda canonizado
+    // para que /requests lo encuentre con el id de sesión. Sin esto
+    // la solicitud existía pero nunca aparecía en Recibidas del otro
+    // (test de verificación ronda 9).
+    const fromId = canonicalDemoOwnerId(viewerId);
+    const toId = canonicalDemoOwnerId(profileId);
     const requests = readLocalRequests();
     const existing = requests.find(
       (r) =>
         r.kind === "friendship" &&
         r.status === "pending" &&
-        r.fromId === viewerId &&
-        r.toId === profileId,
+        r.fromId === fromId &&
+        r.toId === toId,
     );
     if (existing) return { ok: false, error: "Ya enviaste una solicitud" };
     requests.push({
       id: `demo-req-${Date.now()}`,
-      fromId: viewerId,
-      toId: profileId,
+      fromId,
+      toId,
       kind: "friendship",
       status: "pending",
       message: message ?? null,
@@ -549,6 +580,43 @@ export async function removeFriend(
 /* ------------------------------------------------------------------ */
 
 /**
+ * Ronda 10, stream C (C1): id de USUARIO canónico del dueño de un
+ * perfil demo. CAUSA RAÍZ del fallo del merge de la ronda 9.
+ *
+ * Un mismo perfil demo canónico tiene TRES ids distintos según dónde
+ * se mire y ninguno es el del otro lado (mismo problema que
+ * `resolveDemoOwnerIdentity` documenta para privacidad/visibilidad,
+ * pero que nunca se aplicó a las solicitudes):
+ * - La sesión demo (`demo_user.id`) usa
+ *   `generateDemoUserUUID("<email>")` (Sofía / Carmen & Roberto).
+ * - La ficha demo / Compartir usa `demo-single-1` / `demo-couple-456`.
+ * - La tarjeta de Discover (`generateDemoProfiles`) usa
+ *   `generateDemoUUID("demo-profile-N")` (Carmen & Roberto es la 6).
+ *
+ * La UI envía la solicitud con el id de ficha o de tarjeta
+ * (`FriendRequestButton profileId={profile?.id}`), pero /requests
+ * buscaba con el id de sesión: la solicitud existía en el almacén y
+ * el remitente la veía en Enviadas, pero jamás aparecía en Recibidas
+ * del destinatario. Esta función es el puente: cualquier alias
+ * conocido se resuelve a su id de usuario canónico; cualquier otro
+ * id se devuelve tal cual (nunca se inventa un dueño).
+ */
+export function canonicalDemoOwnerId(profileId: string): string {
+  if (!profileId) return profileId;
+  // Id de ficha ("demo-couple-456") o el propio id de usuario.
+  const direct = resolveDemoOwnerIdentity(profileId);
+  if (direct) return direct.userId;
+  // Id de tarjeta del roster: el nombre resuelve el dueño (la misma
+  // convención que `getSocialDemoData`, que keyea por nombre).
+  const name = resolveDemoProfileName(profileId);
+  if (name && name !== profileId) {
+    const byName = resolveDemoOwnerIdentity("", name);
+    if (byName) return byName.userId;
+  }
+  return profileId;
+}
+
+/**
  * Ronda 9, stream D: id de perfil demo → nombre visible.
  *
  * Las solicitudes locales (`friend_requests_demo`) solo guardan ids,
@@ -588,9 +656,12 @@ export function listFriendsSync(profileId: string): Friend[] {
   const removed = new Set(readLocalRemoved(profileId));
   const names = new Set<string>(demo.friendNames);
   const ids = new Set<string>();
+  // Ronda 10, stream C (C1): los pares locales se guardan
+  // canonizados; el id que llega puede ser ficha/tarjeta.
+  const ownerId = canonicalDemoOwnerId(profileId);
   for (const [a, b] of readLocalFriendships()) {
-    if (a === profileId) ids.add(b);
-    if (b === profileId) ids.add(a);
+    if (a === ownerId) ids.add(b);
+    if (b === ownerId) ids.add(a);
   }
   const fromNames: Friend[] = [...names].map((name) => {
     const d = getSocialDemoData(name);
@@ -628,8 +699,16 @@ export function listIncomingRequestsSync(
   userId: string,
   kind: FriendRequestKind = "friendship",
 ): FriendRequest[] {
+  // Ronda 10, stream C (C1): se compara canonizado — una solicitud
+  // guardada con el id de ficha/tarjeta del destinatario (o con el
+  // id de sesión) es la misma solicitud. Sin esto, el merge de /requests
+  // de la ronda 9 nunca veía la solicitud del anónimo a la pareja.
+  const ownerId = canonicalDemoOwnerId(userId);
   return readLocalRequests().filter(
-    (r) => r.toId === userId && r.kind === kind && r.status === "pending",
+    (r) =>
+      canonicalDemoOwnerId(r.toId) === ownerId &&
+      r.kind === kind &&
+      r.status === "pending",
   );
 }
 
@@ -644,9 +723,14 @@ export function listSentRequestsSync(
   userId: string,
   kind?: FriendRequestKind,
 ): FriendRequest[] {
+  // Ronda 10, stream C (C1): remitente canonizado (mismo motivo que
+  // listIncomingRequestsSync).
+  const senderId = canonicalDemoOwnerId(userId);
   return readLocalRequests()
     .filter(
-      (r) => r.fromId === userId && (kind === undefined || r.kind === kind),
+      (r) =>
+        canonicalDemoOwnerId(r.fromId) === senderId &&
+        (kind === undefined || r.kind === kind),
     )
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
@@ -663,9 +747,11 @@ export function countFriendRequestsSentToday(
 ): number {
   const startOfDay = new Date(nowMs);
   startOfDay.setHours(0, 0, 0, 0);
+  // Ronda 10, stream C (C1): remitente canonizado.
+  const senderId = canonicalDemoOwnerId(userId);
   return readLocalRequests().filter(
     (r) =>
-      r.fromId === userId &&
+      canonicalDemoOwnerId(r.fromId) === senderId &&
       r.kind === kind &&
       Date.parse(r.createdAt) >= startOfDay.getTime(),
   ).length;
@@ -685,13 +771,17 @@ export function getAnonymousPhotoAccessRemainingMs(
   nowMs: number = Date.now(),
 ): number | null {
   if (!viewerId || !ownerId || viewerId === ownerId) return null;
+  // Ronda 10, stream C (C1): la concesión puede estar guardada con
+  // el id de ficha/tarjeta del dueño (o del espectador).
+  const viewer = canonicalDemoOwnerId(viewerId);
+  const owner = canonicalDemoOwnerId(ownerId);
   const accepted = readLocalRequests()
     .filter(
       (r) =>
         r.kind === "photo_access" &&
         r.status === "accepted" &&
-        r.fromId === viewerId &&
-        r.toId === ownerId,
+        canonicalDemoOwnerId(r.fromId) === viewer &&
+        canonicalDemoOwnerId(r.toId) === owner,
     )
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
   const latest = accepted[0];
@@ -700,6 +790,60 @@ export function getAnonymousPhotoAccessRemainingMs(
   if (Number.isNaN(grantedAt)) return null;
   const remaining = grantedAt + ANONYMOUS_PHOTO_ACCESS_TTL_MS - nowMs;
   return remaining > 0 ? remaining : null;
+}
+
+export interface GrantedAnonymousPhotoAccess {
+  viewerId: string;
+  viewerName: string;
+  /** Ms restantes del acceso (24 h desde la aceptación). */
+  remainingMs: number;
+  grantedAtMs: number;
+}
+
+/**
+ * Ronda 10 (stream A, punto A6): accesos a la galería limitada que
+ * el dueño (perfil anónimo) ya concedió y siguen vigentes, con su
+ * cuenta atrás. Es lo que renderiza el perfil propio del anónimo:
+ * sin esto, el temporizador no existía en ninguna superficie — la
+ * cuenta atrás solo vivía como helper (`anonymous.ts`) sin UI.
+ * Un acceso por espectador (el último concedido); los expirados no
+ * se listan: al expirar hay que volver a pedir acceso.
+ */
+export function listAnonymousPhotoAccessGrantedBy(
+  ownerId: string,
+  nowMs: number = Date.now(),
+): GrantedAnonymousPhotoAccess[] {
+  if (!ownerId) return [];
+  const byViewer = new Map<string, FriendRequest>();
+  for (const req of readLocalRequests()) {
+    if (
+      req.kind !== "photo_access" ||
+      req.status !== "accepted" ||
+      req.toId !== ownerId
+    ) {
+      continue;
+    }
+    const prev = byViewer.get(req.fromId);
+    if (!prev || req.createdAt > prev.createdAt) {
+      byViewer.set(req.fromId, req);
+    }
+  }
+  const granted: GrantedAnonymousPhotoAccess[] = [];
+  for (const req of byViewer.values()) {
+    const grantedAt = Date.parse(req.respondedAt ?? req.createdAt);
+    if (Number.isNaN(grantedAt)) continue;
+    const remainingMs = grantedAt + ANONYMOUS_PHOTO_ACCESS_TTL_MS - nowMs;
+    if (remainingMs <= 0) continue;
+    granted.push({
+      viewerId: req.fromId,
+      viewerName:
+        findLocalDemoAccountById(req.fromId)?.nickname ??
+        resolveDemoProfileName(req.fromId),
+      remainingMs,
+      grantedAtMs: grantedAt,
+    });
+  }
+  return granted.sort((a, b) => a.remainingMs - b.remainingMs);
 }
 
 /**
@@ -765,12 +909,16 @@ export async function hasPhotoAccess(
 ): Promise<boolean> {
   if (!viewerId || !ownerId || viewerId === ownerId) return true;
   if (isDemo || !supabase) {
+    // Ronda 10, stream C (C1): ids canonizados (mismo motivo que
+    // hasPhotoAccess/getPhotoAccessStatusSync).
+    const viewer = canonicalDemoOwnerId(viewerId);
+    const owner = canonicalDemoOwnerId(ownerId);
     return readLocalRequests().some(
       (r) =>
         r.kind === "photo_access" &&
         r.status === "accepted" &&
-        r.fromId === viewerId &&
-        r.toId === ownerId &&
+        canonicalDemoOwnerId(r.fromId) === viewer &&
+        canonicalDemoOwnerId(r.toId) === owner &&
         // Ronda 8 (punto 14): en un perfil anónimo el acceso concedido
         // expira a las 24 h; expirado se trata como si no existiera.
         !(opts?.ownerIsAnonymous && isPhotoAccessExpired(r)),
@@ -841,12 +989,16 @@ export function getPhotoAccessStatusSync(
   opts?: { ownerIsAnonymous?: boolean },
 ): PhotoAccessStatus {
   if (!viewerId || !ownerId || viewerId === ownerId) return "none";
+  // Ronda 10, stream C (C1): la solicitud puede estar guardada con
+  // el id de ficha/tarjeta del dueño (o del espectador).
+  const viewer = canonicalDemoOwnerId(viewerId);
+  const owner = canonicalDemoOwnerId(ownerId);
   const matches = readLocalRequests()
     .filter(
       (r) =>
         r.kind === "photo_access" &&
-        r.fromId === viewerId &&
-        r.toId === ownerId,
+        canonicalDemoOwnerId(r.fromId) === viewer &&
+        canonicalDemoOwnerId(r.toId) === owner,
     )
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
   const latest = matches[0];
@@ -873,22 +1025,27 @@ export async function sendPhotoAccessRequest(
     return { ok: false, error: "No puedes pedirte acceso a ti mismo" };
   }
   if (isDemo || !supabase) {
+    // Ronda 10, stream C (C1): se guarda canonizado (mismo motivo
+    // que sendFriendRequest: la UI pasa ficha/tarjeta, /requests y
+    // el gestor de solicitudes leen con el id de sesión).
+    const fromId = canonicalDemoOwnerId(viewerId);
+    const toId = canonicalDemoOwnerId(ownerId);
     const requests = readLocalRequests();
     if (
       requests.some(
         (r) =>
           r.kind === "photo_access" &&
           r.status === "pending" &&
-          r.fromId === viewerId &&
-          r.toId === ownerId,
+          r.fromId === fromId &&
+          r.toId === toId,
       )
     ) {
       return { ok: false, error: "Ya pediste acceso a las fotos" };
     }
     requests.push({
       id: `demo-photo-${Date.now()}`,
-      fromId: viewerId,
-      toId: ownerId,
+      fromId,
+      toId,
       kind: "photo_access",
       status: "pending",
       message: message ?? null,

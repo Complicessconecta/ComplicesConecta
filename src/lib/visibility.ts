@@ -65,6 +65,23 @@ export const DEFAULT_PRIVACY_SETTINGS: PrivacySettings = {
   videoChat: true,
 };
 
+/**
+ * Ronda 10 (stream A, punto A1): ajustes con los que NACE una cuenta
+ * anónima. El perfil anónimo es privado por defecto: invisible en
+ * Discover/búsquedas/visitas recientes. Causa raíz del fallo del test
+ * ronda 9: nada escribía jamás estos ajustes al crear el anónimo y
+ * todos los lectores caían al default visible (`invisible: false` en
+ * `DEFAULT_PRIVACY_SETTINGS`, `"public"` en `readVisibilityLocal`).
+ * La ronda 9 solo resolvió `resolveProfileVisibility(isAnonymous →
+ * "private")` en @/lib/profileVisibility, que ni el badge del perfil
+ * propio (`getVisibilityBadge` sobre `usePrivacySettings`) ni el
+ * select de `ProfileSocialSettings` usan.
+ */
+export const ANONYMOUS_DEFAULT_PRIVACY_SETTINGS: PrivacySettings = {
+  ...DEFAULT_PRIVACY_SETTINGS,
+  invisible: true,
+};
+
 const BOOLEAN_KEYS = [
   "invisible",
   "allowUnverified",
@@ -161,6 +178,41 @@ function writeLocalSettings(
   } catch {
     // Sin almacenamiento: el cambio solo vive en esta sesión.
   }
+}
+
+/**
+ * Ronda 10 (stream A, punto A1): ¿el dueño fijó alguna vez sus
+ * ajustes de privacidad en este dispositivo? Distingue "guardado
+ * explícito" de "default": sin esto no se puede aplicar el default
+ * anónimo (privado) sin pisar la elección explícita del dueño.
+ */
+export function hasStoredPrivacySettings(
+  userId: string,
+  type: ProfileType,
+): boolean {
+  if (typeof window === "undefined" || !userId) return false;
+  try {
+    return (
+      window.localStorage.getItem(privacyStorageKey(userId, type)) !== null
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Ronda 10 (stream A, punto A1): guarda los ajustes completos de un
+ * perfil (local + aviso a los lectores en vivo). Lo usa la siembra
+ * de privacidad del anónimo al crearse/cargarse.
+ */
+export function savePrivacySettings(
+  userId: string,
+  type: ProfileType,
+  settings: PrivacySettings,
+): void {
+  if (!userId) return;
+  writeLocalSettings(userId, type, { ...settings });
+  notifyPrivacySettingsChanged(userId);
 }
 
 /**
@@ -293,28 +345,48 @@ export function savePrivacySettingsExtra(
 /**
  * Hook para leer los ajustes de un perfil y reaccionar cuando la
  * sección de Privacidad los cambia en la misma página.
+ *
+ * Ronda 10 (stream A, punto A1): con `isAnonymous === true` y sin
+ * ajustes guardados en este dispositivo, el default es el del
+ * anónimo (privado/invisible), no el general visible. Si el dueño
+ * ya fijó sus ajustes, esos mandan: el default no pisa una elección
+ * explícita. Cubre cuentas anónimas creadas antes de esta ronda
+ * (p. ej. anonr8test), que nunca se sembraron al crearse.
  */
 export function usePrivacySettings(
   userId: string | undefined | null,
   type: ProfileType,
+  isAnonymous?: boolean,
 ): PrivacySettings {
   const [settings, setSettings] = useState<PrivacySettings>(() =>
-    readLocalSettings(userId ?? "", type),
+    readEffectiveSettings(userId ?? "", type, isAnonymous),
   );
   useEffect(() => {
     if (!userId) return;
-    setSettings(readLocalSettings(userId, type));
+    setSettings(readEffectiveSettings(userId, type, isAnonymous));
     const reload = (event: Event) => {
       const detail = (event as CustomEvent<{ userId?: string }>).detail;
       if (!detail?.userId || detail.userId === userId) {
-        setSettings(readLocalSettings(userId, type));
+        setSettings(readEffectiveSettings(userId, type, isAnonymous));
       }
     };
     window.addEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, reload);
     return () =>
       window.removeEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, reload);
-  }, [userId, type]);
+  }, [userId, type, isAnonymous]);
   return settings;
+}
+
+function readEffectiveSettings(
+  userId: string,
+  type: ProfileType,
+  isAnonymous?: boolean,
+): PrivacySettings {
+  const stored = readLocalSettings(userId, type);
+  if (isAnonymous === true && !hasStoredPrivacySettings(userId, type)) {
+    return { ...ANONYMOUS_DEFAULT_PRIVACY_SETTINGS };
+  }
+  return stored;
 }
 
 /** El perfil es invisible: no debe aparecer en ningún listado ajeno. */

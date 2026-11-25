@@ -5,10 +5,12 @@
  * Evita el auto-login forzado y mejora la experiencia de usuario
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Users, Sparkles, ArrowRight, LogIn } from "lucide-react";
+import { User, Users, Sparkles, ArrowRight, LogIn, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
+import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
+import { canCreateAnonymousAccountOnDevice } from "@/lib/anonymous";
 import {
   Card,
   CardContent,
@@ -22,6 +24,8 @@ import { logger } from "@/lib/logger";
 import { safeRemoveItem, safeSetItem } from "@/lib/safe-storage";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import {
+  deleteLocalDemoAccount,
+  findLocalAnonymousAccount,
   listLocalDemoAccounts,
   restoreLocalDemoSession,
   type LocalDemoAccountRecord,
@@ -53,9 +57,29 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
   const [localAccounts, setLocalAccounts] = useState<LocalDemoAccountRecord[]>(
     [],
   );
-  useEffect(() => {
+  // Ronda 10, stream D: la lista se relee al montar, al recuperar el
+  // foco y con el evento `storage`, para que el borrado de cuentas
+  // demo (stream A, misma ronda) se refleje sin recargar la página.
+  const refreshLocalAccounts = useCallback(() => {
     setLocalAccounts(listLocalDemoAccounts());
   }, []);
+  useEffect(() => {
+    refreshLocalAccounts();
+    window.addEventListener("focus", refreshLocalAccounts);
+    window.addEventListener("storage", refreshLocalAccounts);
+    return () => {
+      window.removeEventListener("focus", refreshLocalAccounts);
+      window.removeEventListener("storage", refreshLocalAccounts);
+    };
+  }, [refreshLocalAccounts]);
+
+  // Ronda 10, stream D (D1): la cuenta anónima de este navegador se
+  // lee directa del registro en cada render (no del estado de la
+  // lista): así el estado del botón es el vigente aunque la lista aún
+  // no se haya refrescado tras un borrado.
+  const anonymousAccount = findLocalAnonymousAccount();
+  const anonymousCheck = canCreateAnonymousAccountOnDevice();
+  const [showAnonymousForm, setShowAnonymousForm] = useState(false);
 
   /**
    * Entrada con una cuenta demo local ya registrada (un clic, sin
@@ -110,6 +134,35 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
     false,
   );
   const [, setUserType] = usePersistedState<string>("userType", "");
+
+  /**
+   * Ronda 10 (stream A, punto A7): eliminar una cuenta demo creada
+   * localmente en este navegador, con confirmación. Sin esto, una
+   * cuenta anónima vieja (anonr8test) ocupaba el único hueco y no
+   * había forma de crear otra (anonr9test). Las canónicas (Sofía,
+   * Carmen & Roberto) no están en esta lista y no se pueden borrar.
+   */
+  const handleDeleteLocalAccount = (account: LocalDemoAccountRecord) => {
+    if (isLoading) return;
+    const confirmed = window.confirm(
+      `¿Eliminar la cuenta demo "${account.nickname}" (${account.email}) de este navegador? Esta acción no se puede deshacer.`,
+    );
+    if (!confirmed) return;
+    const result = deleteLocalDemoAccount(account.userId);
+    if (!result.deleted) {
+      toast({
+        title: "No se pudo eliminar",
+        description: result.reason ?? "No se pudo eliminar esa cuenta demo.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setLocalAccounts(listLocalDemoAccounts());
+    toast({
+      title: "Cuenta demo eliminada",
+      description: `Se eliminó "${account.nickname}" de este navegador.`,
+    });
+  };
 
   /**
    * Maneja el inicio de sesión demo según el tipo seleccionado
@@ -362,12 +415,81 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
                           </>
                         )}
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        disabled={isLoading}
+                        onClick={() => handleDeleteLocalAccount(account)}
+                        title={`Eliminar la cuenta demo "${account.nickname}" de este navegador`}
+                        aria-label={`Eliminar la cuenta demo ${account.nickname}`}
+                        className="text-red-300 hover:text-red-200 hover:bg-red-500/10 shrink-0"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Eliminar
+                      </Button>
                     </li>
                   );
                 })}
               </ul>
             </div>
           )}
+
+          {/* Ronda 10, stream D (D1): crear cuenta demo anónima,
+              SIEMPRE visible en /demo. Antes la única vía era el
+              formulario incrustado en el perfil (sesión activa): tras
+              cerrar sesión no había forma de crear una cuenta anónima
+              (test ronda 9: el botón solo aparecía en la sesión
+              inicial heredada). Si ya existe una en este navegador,
+              el botón queda visible pero deshabilitado con el motivo
+              (una por dispositivo); borrarla de "Tus cuentas demo en
+              este navegador" (stream A) vuelve a habilitarlo. */}
+          <div className="rounded-lg border border-purple-400/30 bg-purple-500/10 p-4">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
+              Cuenta demo anónima
+            </h3>
+            {anonymousAccount ? (
+              <>
+                <p className="text-slate-600 dark:text-white/70 text-xs mb-3">
+                  Ya existe una cuenta anónima en este navegador (la verás en
+                  "Tus cuentas demo en este navegador").{" "}
+                  {anonymousCheck.reason ??
+                    "Solo se permite una cuenta anónima por navegador."}{" "}
+                  Para crear otra, elimínala primero de esa lista.
+                </p>
+                <Button
+                  type="button"
+                  disabled
+                  title={anonymousCheck.reason}
+                  className="w-full bg-purple-600/50 text-white/80 cursor-not-allowed"
+                >
+                  Crear cuenta demo anónima
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-slate-600 dark:text-white/70 text-xs mb-3">
+                  Explora sin mostrar tu identidad: solo tu alias es visible,
+                  sin foto de rostro y sin billetera hasta que verifiques tu
+                  perfil. Solo se permite una cuenta anónima por navegador.
+                </p>
+                <Button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => setShowAnonymousForm((v) => !v)}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  {showAnonymousForm
+                    ? "Ocultar formulario"
+                    : "Crear cuenta demo anónima"}
+                </Button>
+                {showAnonymousForm && (
+                  <div className="mt-4">
+                    <ComplianceSignupForm />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
 
           {/* Botón para volver */}
           <div className="flex justify-center pt-4">

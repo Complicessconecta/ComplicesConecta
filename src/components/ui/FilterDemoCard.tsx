@@ -111,7 +111,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <Card
-              className={`relative bg-white/10 backdrop-blur-md border border-white/20 hover:border-white/40 transition-all duration-300 group overflow-hidden h-full ${isHovered ? "bg-blue-500/20 shadow-lg shadow-blue-500/20" : ""}`}
+              className={`relative bg-white dark:bg-white/10 backdrop-blur-md border border-slate-200 dark:border-white/20 hover:border-slate-300 dark:hover:border-white/40 transition-all duration-300 group overflow-hidden h-full ${isHovered ? "bg-blue-500/10 dark:bg-blue-500/20 shadow-lg shadow-blue-500/20" : ""}`}
             >
               <CardContent className="p-6 h-full flex flex-col relative z-10">
                 {/* Header */}
@@ -126,13 +126,13 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
                     </div>
                     <div>
                       <h3
-                        className={`text-lg font-semibold text-white transition-all duration-300 ${isHovered ? "text-blue-200" : ""}`}
+                        className={`text-lg font-semibold text-slate-900 dark:text-white transition-all duration-300 ${isHovered ? "text-blue-700 dark:text-blue-200" : ""}`}
                       >
                         {card.title}
                       </h3>
                       <Badge
                         variant="outline"
-                        className="text-xs border-white/30 text-white/70"
+                        className="text-xs border-slate-300 text-slate-600 dark:border-white/30 dark:text-white/70"
                       >
                         Filtro Demo
                       </Badge>
@@ -151,18 +151,18 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
 
                 {/* Description */}
                 <p
-                  className={`text-white/80 text-sm mb-4 leading-relaxed transition-all duration-300 ${isHovered ? "text-blue-100" : ""}`}
+                  className={`text-slate-600 dark:text-white/80 text-sm mb-4 leading-relaxed transition-all duration-300 ${isHovered ? "text-blue-700 dark:text-blue-100" : ""}`}
                 >
                   {card.description}
                 </p>
 
                 {/* Demo Value */}
                 <div
-                  className={`mb-4 p-3 bg-white/5 rounded-lg border border-white/10 transition-all duration-300 ${isHovered ? "bg-blue-500/10 border-blue-400/30" : ""}`}
+                  className={`mb-4 p-3 bg-slate-900/5 rounded-lg border border-slate-200 dark:bg-white/5 dark:border-white/10 transition-all duration-300 ${isHovered ? "bg-blue-500/10 border-blue-400/30" : ""}`}
                 >
                   <div className="flex items-center justify-between">
                     <span
-                      className={`text-white/60 text-xs transition-all duration-300 ${isHovered ? "text-blue-200" : ""}`}
+                      className={`text-slate-500 dark:text-white/60 text-xs transition-all duration-300 ${isHovered ? "text-blue-700 dark:text-blue-200" : ""}`}
                     >
                       Valor de ejemplo:
                     </span>
@@ -176,7 +176,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
 
                 {/* Explanation */}
                 <p
-                  className={`text-white/70 text-xs mb-4 italic transition-all duration-300 ${isHovered ? "text-blue-200" : ""}`}
+                  className={`text-slate-600 dark:text-white/70 text-xs mb-4 italic transition-all duration-300 ${isHovered ? "text-blue-700 dark:text-blue-200" : ""}`}
                 >
                   {card.explanation}
                 </p>
@@ -195,7 +195,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
                         className={`h-4 w-4 text-green-400 shrink-0 transition-all duration-300 ${isHovered ? "text-blue-300" : ""}`}
                       />
                       <span
-                        className={`text-white/70 text-xs transition-all duration-300 ${isHovered ? "text-blue-200" : ""}`}
+                        className={`text-slate-600 dark:text-white/70 text-xs transition-all duration-300 ${isHovered ? "text-blue-700 dark:text-blue-200" : ""}`}
                       >
                         {benefit}
                       </span>
@@ -219,7 +219,7 @@ export const FilterDemoCard: FC<FilterDemoCardProps> = ({
                 {/* Interactive Demo Indicator */}
                 <div className="mt-3 text-center">
                   <span
-                    className={`text-xs text-white/50 transition-all duration-300 ${isHovered ? "text-blue-300" : ""}`}
+                    className={`text-xs text-slate-400 dark:text-white/50 transition-all duration-300 ${isHovered ? "text-blue-600 dark:text-blue-300" : ""}`}
                   >
                     💡 Regístrate para usar filtros reales
                   </span>

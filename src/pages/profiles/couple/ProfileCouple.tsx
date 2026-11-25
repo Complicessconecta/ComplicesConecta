@@ -1634,21 +1634,37 @@ function ProfileCouple() {
                           {/* RONDA 6 (punto 2): el menú se abre HACIA ARRIBA
                               (`side="top"`): hacia abajo tapaba las tarjetas
                               de estadísticas que están justo debajo de la
-                              cabecera del perfil. */}
+                              cabecera del perfil.
+                              RONDA 10 (stream B, B1): el menú era TRANSPARENTE
+                              en ambos temas: hereda `bg-popover` /
+                              `text-popover-foreground` del DropdownMenu
+                              compartido y en Tailwind v4 esos tokens no
+                              resuelven (`--popover: 0 0% 100%` es un triplete
+                              HSL crudo; el CSS compilado es
+                              `background-color:var(--popover)`, color inválido
+                              que el navegador descarta). Con el fondo
+                              transparente, al abrir hacia arriba se veían a
+                              través la pastilla de edad, la bio y los botones.
+                              Fondo SÓLIDO opaco explícito en ambos temas +
+                              `sideOffset`/`collisionPadding`. */}
                           <DropdownMenuContent
                             align="end"
                             side="top"
-                            className="min-w-[180px]"
+                            sideOffset={8}
+                            collisionPadding={8}
+                            className="min-w-[180px] bg-white text-slate-900 border-slate-200 shadow-xl dark:bg-slate-900 dark:text-white dark:border-white/15"
                           >
-                            <DropdownMenuLabel>
+                            <DropdownMenuLabel className="text-slate-900 dark:text-white">
                               {accountChipLabel}
                             </DropdownMenuLabel>
                             <DropdownMenuItem
+                              className="hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:focus:text-white cursor-pointer"
                               onClick={() => navigate("/profile")}
                             >
                               Ver Mi Perfil
                             </DropdownMenuItem>
                             <DropdownMenuItem
+                              className="hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:focus:text-white cursor-pointer"
                               onClick={async () => {
                                 if (isDemoMode) {
                                   // Habilitar logout incluso en demo

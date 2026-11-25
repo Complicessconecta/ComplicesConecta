@@ -67,6 +67,10 @@ export class StorageManager {
   // demás: chats, privacidad, NFTs demo), así que los datos demo
   // persistían tras cerrar sesión aunque /demo dice que no se guardan.
   // Usa el mismo barrido que clearDemoAuth en app-config.
+  // Ronda 10, stream C (C2): los ajustes de privacidad por cuenta
+  // (`single_privacy:<userId>` / `couple_privacy:<userId>`) NO se
+  // borran aquí: la visibilidad (modo invisible) debe sobrevivir al
+  // logout y al cambio de sesión, igual que los saldos demo.
   static clearDemoSession() {
     localStorage.removeItem("demo_authenticated");
     localStorage.removeItem("userType");
@@ -84,8 +88,6 @@ export class StorageManager {
         key.startsWith("demo_") ||
         key.startsWith("demo-") ||
         key.startsWith("chat_messages:") ||
-        key.startsWith("single_privacy:") ||
-        key.startsWith("couple_privacy:") ||
         key.startsWith("demo_nfts:") ||
         key.startsWith("demo_nfts_updated:")
       ) {

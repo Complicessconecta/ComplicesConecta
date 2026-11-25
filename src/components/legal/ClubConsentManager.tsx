@@ -373,10 +373,18 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
           {documents.map((document) => (
             <Card key={document.id} className="border-l-4 border-l-blue-500">
               <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold">{document.title}</h3>
+                {/* RONDA 10 (stream B, B4): la fila era `flex
+                    justify-between` con la columna izquierda `flex-1`
+                    SIN `min-w-0` y la fila de título sin salto de línea:
+                    título + badges "Requerido"/"vX.Y" forzaban un ancho
+                    mínimo y el botón "Ver" se recortaba en el borde
+                    derecho. Ahora la columna puede encogerse, el título
+                    salta de línea y en móvil el bloque Ver/Acepto baja
+                    debajo en vez de recortarse. */}
+                <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-3">
+                  <div className="min-w-0 w-full sm:flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-2 min-w-0">
+                      <h3 className="font-semibold min-w-0 break-words">{document.title}</h3>
                       <Badge variant={document.required ? "default" : "secondary"}>
                         {document.required ? "Requerido" : "Opcional"}
                       </Badge>
@@ -389,7 +397,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
                             document.type === 'privacy' ? 'Privacidad' : 'Aviso Legal'}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
                     <Button
                       variant="outline"
                       size="sm"
@@ -447,7 +455,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
       {/* Modal para ver documento completo */}
       {currentDocument && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="max-w-4xl max-h-[80vh] overflow-hidden">
+          <Card className="w-full max-w-4xl max-h-[80vh] overflow-hidden">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{currentDocument.title}</CardTitle>

@@ -13,6 +13,10 @@ import CompatibilityModal from "@/components/modals/CompatibilityModal";
 import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
+import {
+  formatAnonymousPhotoAccessRemaining,
+  getAnonymousGalleryAccessRemainingMs,
+} from "@/lib/anonymous";
 import { useSmartMatching,  type UserProfile, type PersonalityTraits, type MatchingPreferences, type ActivityMetrics, type VerificationStatus } from "@/lib/ai/smartMatching";
 import { ProfileNavTabs, type TabType } from "@/components/profiles/ProfileNavTabs";
 
@@ -149,6 +153,14 @@ interface ProfileContentProps {
    * exige solicitud de acceso (1 acceso, expira en 24 h).
    */
   isAnonymous?: boolean;
+  /**
+   * Ronda 10 (stream A, punto A6): quién ve la galería limitada y
+   * de quién es. Con acceso concedido y vigente, el bloque muestra
+   * la cuenta atrás (24 h desde la aceptación); sin acceso, el aviso
+   * de pedirlo. Sin estos ids no hay cuenta atrás que mostrar.
+   */
+  galleryViewerId?: string | undefined;
+  galleryOwnerId?: string | undefined;
 }
 
 export const ProfileContent: React.FC<ProfileContentProps> = ({
@@ -160,10 +172,36 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   allowCreatePost = true,
   allowNft = true,
   isAnonymous = false,
+  galleryViewerId,
+  galleryOwnerId,
 }) => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
   const currentUserId = user?.id ?? profile?.id ?? "current-user";
+
+  // Ronda 10 (stream A, punto A6): cuenta atrás del acceso concedido
+  // a la galería limitada de un perfil anónimo (24 h desde la
+  // aceptación). Se re-calcula cada 30 s para que avance sin
+  // recargar; al expirar, el bloque vuelve al aviso de pedir acceso.
+  const [galleryAccessNowMs, setGalleryAccessNowMs] = useState(() =>
+    Date.now(),
+  );
+  useEffect(() => {
+    if (!isAnonymous) return;
+    const timer = window.setInterval(
+      () => setGalleryAccessNowMs(Date.now()),
+      30000,
+    );
+    return () => window.clearInterval(timer);
+  }, [isAnonymous]);
+  const galleryAccessRemainingMs =
+    isAnonymous && galleryViewerId && galleryOwnerId
+      ? getAnonymousGalleryAccessRemainingMs(
+          galleryViewerId,
+          galleryOwnerId,
+          galleryAccessNowMs,
+        )
+      : null;
   const isAuthFn = typeof isAuthenticated === "function" ? isAuthenticated() : !!isAuthenticated;
   const loginLabel = "Configuración";
 
@@ -654,10 +692,24 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     públicas. Para ver el resto, pide acceso al dueño
                     del perfil.
                   </p>
-                  <p className="mt-2">
-                    1 acceso concedido expira a las 24 h; al expirar
-                    tienes que volver a pedirlo.
-                  </p>
+                  {/* Ronda 10 (stream A, punto A6): con acceso
+                      concedido y vigente, la cuenta atrás (24 h desde
+                      la aceptación); al expirar, vuelve el aviso de
+                      pedir acceso. */}
+                  {galleryAccessRemainingMs !== null ? (
+                    <p className="mt-2 font-semibold text-white">
+                      Acceso a la galería concedido:{" "}
+                      {formatAnonymousPhotoAccessRemaining(
+                        galleryAccessRemainingMs,
+                      )}{" "}
+                      · expira a las 24 h de concedido
+                    </p>
+                  ) : (
+                    <p className="mt-2">
+                      1 acceso concedido expira a las 24 h; al expirar
+                      tienes que volver a pedirlo.
+                    </p>
+                  )}
                 </div>
               </div>
             ) : (

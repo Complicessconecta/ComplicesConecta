@@ -76,6 +76,12 @@ export interface DemoProfile {
   lastActive: string;
   isVerified: boolean;
   isPremium: boolean;
+  /**
+   * Ronda 10 (stream A, punto A2): perfil anónimo en el roster demo
+   * (la tarjeta muestra la insignia "Anónimo" y nunca "✓ Verificado").
+   * Opcional: los perfiles demo semilla no son anónimos.
+   */
+  isAnonymous?: boolean;
   rating: number;
   matchScore: number;
   profileType: ProfileType;

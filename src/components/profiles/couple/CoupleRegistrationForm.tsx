@@ -29,6 +29,12 @@ import { toast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { getZodiacSignFromDate } from "@/lib/zodiac";
+import {
+  COUNTRIES,
+  DEFAULT_COUNTRY_CODE,
+  getCountryByCode,
+  writeCountryCodeLocal,
+} from "@/lib/countries";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -54,6 +60,8 @@ interface CoupleRegistrationData {
 
   // Información compartida
   coupleNickname: string;
+  /** País de origen de la pareja (código ISO): la nacionalidad se muestra en el perfil. */
+  countryCode: string;
   email: string;
   phone: string;
   password: string;
@@ -124,6 +132,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     herGender: "",
     herInterests: [],
     coupleNickname: "",
+    countryCode: DEFAULT_COUNTRY_CODE,
     email: "",
     phone: "",
     password: "",
@@ -316,6 +325,11 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             her_gender: formData.herGender,
             her_interests: formData.herInterests,
             is_verified: false,
+            // País de origen: `couple_profiles.country` (texto) ya
+            // existe en la BD; el código ISO va en `country_code`
+            // (migración 20261124050000, aún sin aplicar: se intenta
+            // aparte sin romper el registro si la columna no existe).
+            country: getCountryByCode(formData.countryCode)?.name ?? null,
             // Fechas de nacimiento en privacy_settings (jsonb): de ahí se
             // derivan los signos zodiacales de cada integrante.
             privacy_settings: {
@@ -353,6 +367,19 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             coupleProfileError,
           });
           throw new Error("Error al crear el perfil de pareja");
+        }
+
+        // Código ISO del país: local siempre + intento en BD
+        // (`country_code`, migración 20261124050000) sin romper el
+        // registro si la columna aún no existe en producción.
+        writeCountryCodeLocal(authData.user.id, formData.countryCode);
+        try {
+          await supabase
+            .from("couple_profiles")
+            .update({ country_code: formData.countryCode } as never)
+            .eq("user_id", authData.user.id);
+        } catch {
+          // Columna aún sin aplicar: el país queda en local.
         }
 
         toast({
@@ -626,6 +653,32 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             </Select>
           </div>
         </div>
+      </div>
+
+      <div>
+        <Label className="text-white">País de origen *</Label>
+        <Select
+          value={formData.countryCode}
+          onValueChange={(value: string) =>
+            handleInputChange("countryCode", value)
+          }
+        >
+          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectValue placeholder="Selecciona su país" />
+          </SelectTrigger>
+          <SelectContent>
+            {COUNTRIES.map((country) => (
+              <SelectItem key={country.code} value={country.code}>
+                {country.flag} {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-white/70 text-sm mt-1">
+          Su nacionalidad aparecerá en el perfil como{" "}
+          {getCountryByCode(formData.countryCode)?.flag}{" "}
+          {getCountryByCode(formData.countryCode)?.name}.
+        </p>
       </div>
 
       <NicknameValidator

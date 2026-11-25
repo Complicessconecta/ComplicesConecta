@@ -15,6 +15,20 @@ import { toast } from "@/hooks/useToast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { clsx } from "clsx";
 import { useProfileScore } from "@/features/profile/useProfileScore";
+import { NationalityBadge } from "@/components/profiles/shared/NationalityBadge";
+import { DistanceBadge } from "@/components/profiles/shared/DistanceBadge";
+import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
+import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
+import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButtons";
+import { FriendsSection } from "@/components/profiles/shared/FriendsSection";
+import { PrivateProfileGate } from "@/components/profiles/shared/PrivateProfileGate";
+import { getSocialDemoData } from "@/demo/socialDemoData";
+import {
+  readVisibilityLocal,
+  isProfileGated,
+} from "@/lib/profileVisibility";
+import { areFriendsSync } from "@/lib/friends";
+import { readLocationSharingLocal } from "@/lib/geolocation";
 
 // Helper for class names if cn is not available globally or imported
 function cn(...inputs: (string | undefined | null | false)[]) {
@@ -28,7 +42,7 @@ const ProfileDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   // Modal de reporte (mismo componente legible que en los perfiles
   // propios): antes el botón "Reportar perfil" solo mostraba un toast.
   const [showReportDialog, setShowReportDialog] = useState(false);
@@ -224,6 +238,70 @@ const ProfileDetail = () => {
     );
   }
 
+  // Espectador y datos sociales (amistad, reporte/bloqueo, nacionalidad,
+  // distancia, perfil privado): el perfil que se ve es ajeno casi siempre;
+  // si el id coincide con el del espectador, es el propio.
+  const demoUserParsed = (() => {
+    try {
+      return demoUser
+        ? (JSON.parse(demoUser) as {
+            id?: string;
+            first_name?: string;
+            email?: string;
+          })
+        : null;
+    } catch {
+      return null;
+    }
+  })();
+  const viewerId = String(demoUserParsed?.id ?? user?.id ?? "demo-viewer");
+  const viewerName = String(
+    demoUserParsed?.first_name ?? user?.email ?? "Tú",
+  );
+  const isDemo = demoAuth === "true" || Boolean(demoUser);
+  const isOwnProfile = String(profile.id) === viewerId;
+  const socialDemo = getSocialDemoData(profile.name);
+  const countryCode =
+    (profile as { country_code?: string | null }).country_code ??
+    socialDemo.countryCode;
+  // Visibilidad efectiva: lo que el dueño guardó (local) manda; si no hay
+  // nada guardado, la semilla demo del perfil.
+  const storedVisibility = readVisibilityLocal(String(profile.id));
+  const profileVisibility =
+    storedVisibility === "private" ? "private" : socialDemo.visibility;
+  const isFriend = areFriendsSync(viewerId, String(profile.id), viewerName);
+  const gated = isProfileGated({
+    visibility: profileVisibility,
+    isOwner: isOwnProfile,
+    isFriend,
+  });
+
+  // Perfil privado y espectador no amigo: solo la pantalla de solicitud
+  // (como Twitter). El dueño y los amigos aceptados ven el perfil completo.
+  if (gated) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+        <main className="container mx-auto px-4 py-8 max-w-3xl">
+          <Button
+            onClick={() => navigate("/discover")}
+            className="text-white bg-white/10 border border-white/30 hover:bg-white/20 mb-6"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver a Discover
+          </Button>
+          <PrivateProfileGate
+            profileId={String(profile.id)}
+            profileName={profile.name}
+            viewerId={viewerId}
+            viewerName={viewerName}
+            isDemo={isDemo}
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
@@ -264,12 +342,12 @@ const ProfileDetail = () => {
                           onError={(e) => {
                             // Si la imagen falla, usar fallback de Unsplash
                             const fallbackImages = [
-                              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
+                              "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
                               "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
                               "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
                             ];
                             const defaultFallback =
-                              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face&auto=format&q=80";
+                              "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face&auto=format&q=80";
                             const randomFallback: string =
                               fallbackImages[
                                 Math.floor(
@@ -299,19 +377,20 @@ const ProfileDetail = () => {
                     </div>
 
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
                         <h1 className="text-3xl font-bold text-white">
                           {profile.name}
                         </h1>
-                        <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm">
+                        <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm whitespace-nowrap shrink-0">
                           {profile.age} años
                         </Badge>
+                        <NationalityBadge countryCode={countryCode} />
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               <Badge
                                 className={cn(
-                                  "profile-badge flex items-center gap-1",
+                                  "profile-badge flex items-center gap-1 whitespace-nowrap shrink-0",
                                   profileScore.color,
                                 )}
                               >
@@ -334,6 +413,19 @@ const ProfileDetail = () => {
                           <MapPin className="h-4 w-4" />
                           <span>{profile.location}</span>
                         </div>
+                        <DistanceBadge
+                          distanceKm={
+                            (
+                              profile as {
+                                distance?: number | null;
+                              }
+                            ).distance ?? null
+                          }
+                          profileSharesLocation={socialDemo.sharesLocation}
+                          viewerSharesLocation={readLocationSharingLocal(
+                            viewerId,
+                          )}
+                        />
                         <div className="flex items-center gap-1">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                           <span>{profile.rating}</span>
@@ -411,6 +503,15 @@ const ProfileDetail = () => {
                 </CardContent>
               </Card>
 
+              {/* Amistades (punto 2): en línea / última conexión y, si es
+                  el dueño, "Eliminar de amigos". */}
+              <FriendsSection
+                profileId={String(profile.id)}
+                profileName={profile.name}
+                isOwnProfile={isOwnProfile}
+                isDemo={isDemo}
+              />
+
               {/* Photo Gallery */}
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
@@ -471,6 +572,35 @@ const ProfileDetail = () => {
                       <MessageCircle className="h-5 w-5 mr-2" />
                       Enviar mensaje
                     </Button>
+
+                    {/* Amistad y acceso a fotos (punto 4): solicitud de
+                        amistad y solicitud para ver la galería. El botón
+                        "Reportar perfil" de abajo sigue abriendo el
+                        diálogo; ReportBlockButtons solo aporta Bloquear. */}
+                    <FriendRequestButton
+                      profileId={String(profile.id)}
+                      profileName={profile.name}
+                      viewerId={viewerId}
+                      viewerName={viewerName}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={isDemo}
+                    />
+                    <PhotoAccessRequestButton
+                      profileId={String(profile.id)}
+                      profileName={profile.name}
+                      viewerId={viewerId}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={isDemo}
+                    />
+                    <ReportBlockButtons
+                      profileId={String(profile.id)}
+                      profileName={profile.name}
+                      viewerId={viewerId}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={isDemo}
+                      onReport={() => setShowReportDialog(true)}
+                      showReport={false}
+                    />
 
                     <Button
                       onClick={() => {

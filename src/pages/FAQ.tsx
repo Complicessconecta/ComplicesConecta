@@ -41,12 +41,12 @@ const FAQ = () => {
         {
           question: "¿Cómo funciona la verificación KYC?",
           answer:
-            "Utilizamos tecnologa blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
+            "Utilizamos tecnología blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
         },
         {
           question: "¿Qué documentos necesito para verificarme?",
           answer:
-            "Necesitas una identificacin oficial vigente (INE, pasaporte o cdula profesional) y una selfie clara. El proceso es completamente seguro y tus datos están protegidos.",
+            "Necesitas una identificación oficial vigente (INE, pasaporte o cédula profesional) y una selfie clara. El proceso es completamente seguro y tus datos están protegidos.",
         },
         {
           question: "Cuánto tarda la verificación?",
@@ -66,9 +66,9 @@ const FAQ = () => {
             "Absolutamente. Todas las conversaciones están encriptadas end-to-end con AES-GCM. Además, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discreción son nuestra máxima prioridad.",
         },
         {
-          question: "Cmo protegen mis datos personales?",
+          question: "¿Cómo protegen mis datos personales?",
           answer:
-            "Utilizamos encriptacin de grado militar y cumplimos con GDPR. Nunca compartimos tu información personal con terceros sin tu consentimiento explcito.",
+            "Utilizamos encriptación de grado militar y cumplimos con GDPR. Nunca compartimos tu información personal con terceros sin tu consentimiento explícito.",
         },
         {
           question: "Puedo controlar quién ve mi perfil?",
@@ -83,19 +83,19 @@ const FAQ = () => {
       color: "text-purple-500",
       faqs: [
         {
-          question: "Como funcionan las galerías privadas?",
+          question: "¿Cómo funcionan las galerías privadas?",
           answer:
             "Las galerías privadas te permiten compartir fotos íntimas solo con personas que hayas autorizado. Tienes control total sobre quién puede acceder. Además, puedes crear Galerías NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificación de tus galerías.",
         },
         {
-          question: "Como envio una invitacion de galería?",
+          question: "¿Cómo envío una invitación de galería?",
           answer:
-            "Desde cualquier perfil, puedes enviar una invitacion para acceder a tu galería privada. La persona debe aceptar la invitacion para ver tu contenido privado.",
+            "Desde cualquier perfil, puedes enviar una invitación para acceder a tu galería privada. La persona debe aceptar la invitación para ver tu contenido privado.",
         },
         {
           question: "Puedo revocar el acceso a mi galería?",
           answer:
-            "S, puedes revocar el acceso a tu galería privada en cualquier momento desde tu configuracin de privacidad.",
+            "Sí, puedes revocar el acceso a tu galería privada en cualquier momento desde tu configuración de privacidad.",
         },
       ],
     },
@@ -105,17 +105,17 @@ const FAQ = () => {
       color: "text-fuchsia-500",
       faqs: [
         {
-          question: "Como funcionan las invitaciones?",
+          question: "¿Cómo funcionan las invitaciones?",
           answer:
             "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos.",
         },
         {
-          question: "Que tipos de invitaciones existen?",
+          question: "¿Qué tipos de invitaciones existen?",
           answer:
             "Hay tres tipos: invitaciones de perfil (para conectar), de galería (para ver fotos privadas) y de chat (para conversaciones privadas).",
         },
         {
-          question: "Puedo rechazar una invitacin?",
+          question: "¿Puedo rechazar una invitación?",
           answer:
             "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo.",
         },
@@ -127,12 +127,12 @@ const FAQ = () => {
       color: "text-yellow-500",
       faqs: [
         {
-          question: "Como son los eventos VIP?",
+          question: "¿Cómo son los eventos VIP?",
           answer:
             "Son fiestas privadas y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas íntimas y experiencias únicas para la comunidad swinger.",
         },
         {
-          question: "Como puedo acceder a eventos VIP?",
+          question: "¿Cómo puedo acceder a eventos VIP?",
           answer:
             "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias.",
         },
@@ -149,14 +149,14 @@ const FAQ = () => {
       color: "text-orange-500",
       faqs: [
         {
-          question: "Como son los tokens?",
+          question: "¿Cómo son los tokens?",
           answer:
             "Los tokens son nuestra moneda virtual que puedes usar para enviar regalos, destacar tu perfil y acceder a funciones premium especiales.",
         },
         {
-          question: "Como obtengo tokens?",
+          question: "¿Cómo obtengo tokens?",
           answer:
-            "Puedes comprar tokens o ganarlos completando tu perfil, verificndote, siendo activo en la comunidad y recibiendo valoraciones positivas.",
+            "Puedes comprar tokens o ganarlos completando tu perfil, verificándote, siendo activo en la comunidad y recibiendo valoraciones positivas.",
         },
         {
           question: "Los tokens caducan?",
@@ -171,48 +171,48 @@ const FAQ = () => {
       color: "text-red-500",
       faqs: [
         {
-          question: "Como puedo reportar un perfil?",
+          question: "¿Cómo puedo reportar un perfil?",
           answer:
             "Puedes reportar cualquier perfil sospechoso directamente desde su página. Nuestro equipo de moderación revisa todos los reportes en menos de 24 horas.",
         },
         {
-          question: "Que hago si alguien me acosa?",
+          question: "¿Qué hago si alguien me acosa?",
           answer:
-            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rpidas para proteger a nuestra comunidad.",
+            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rápidas para proteger a nuestra comunidad.",
         },
         {
           question: "Hay moderadores activos?",
           answer:
-            "S, tenemos un equipo de moderación 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad.",
+            "Sí, tenemos un equipo de moderación 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad.",
         },
       ],
     },
     soporte: {
-      title: "Soporte Tcnico",
+      title: "Soporte Técnico",
       icon: Zap,
       color: "text-cyan-500",
       faqs: [
         {
-          question: "Encontraste un error en la version Beta?",
+          question: "¿Encontraste un error en la versión Beta?",
           answer:
-            "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores ms abajo para ayudarnos a identificar y corregir cualquier problema que encuentres.",
+            "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores más abajo para ayudarnos a identificar y corregir cualquier problema que encuentres.",
         },
         {
           question: "Problemas con la aplicación móvil?",
           answer:
-            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app móvil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
+            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app móvil, repórtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
         },
         {
           question: "Problemas con pagos o suscripciones?",
           answer:
-            "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contctanos inmediatamente a travs del formulario con todos los detalles de la transacción.",
+            "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contáctanos inmediatamente a través del formulario con todos los detalles de la transacción.",
         },
       ],
     },
   };
 
   const handleSubmitFeedback = () => {
-    // Aqu se enviara el feedback al backend
+    // Aquí se enviará el feedback al backend
     logger.info("Feedback enviado:", { email, feedback, rating });
     toast({
       title: "Comentarios enviados!",
@@ -233,7 +233,7 @@ Tipo de Error: ${bugReport.type}
 Severidad: ${bugReport.severity}
 Dispositivo/Navegador: ${bugReport.device} - ${bugReport.browser}
 
-DESCRIPCIN DEL PROBLEMA:
+DESCRIPCIÓN DEL PROBLEMA:
 ${bugReport.description}
 
 PASOS PARA REPRODUCIR:
@@ -243,13 +243,13 @@ Email de contacto: ${bugReport.email}
 Fecha: ${new Date().toLocaleString()}
     `.trim();
 
-    const mailtoLink = `mailto:support@complicesconecta.com?subject=?? Reporte de Error Beta&body=${encodeURIComponent(emailBody)}`;
+    const mailtoLink = `mailto:support@complicesconecta.com?subject=🐛 Reporte de Error Beta&body=${encodeURIComponent(emailBody)}`;
     window.location.href = mailtoLink;
 
     toast({
       title: "Reporte enviado!",
       description:
-        "Se abrió tu cliente de email con el reporte. Envalo para que podamos ayudarte.",
+        "Se abrió tu cliente de email con el reporte. Envíalo para que podamos ayudarte.",
     });
 
     // Reset form
@@ -309,7 +309,7 @@ Fecha: ${new Date().toLocaleString()}
               </span>
             </h1>
             <p className="text-xl text-white font-medium max-w-2xl mx-auto">
-              Encuentra respuestas a tus preguntas y aydanos a mejorar tu
+              Encuentra respuestas a tus preguntas y ayúdanos a mejorar tu
               experiencia en ComplicesConecta
             </p>
           </div>
@@ -408,7 +408,7 @@ Fecha: ${new Date().toLocaleString()}
                         <SelectItem value="performance">
                           Problema de Rendimiento
                         </SelectItem>
-                        <SelectItem value="mobile">Error en Mvil</SelectItem>
+                        <SelectItem value="mobile">Error en Móvil</SelectItem>
                         <SelectItem value="payment">
                           Problema de Pagos
                         </SelectItem>
@@ -432,11 +432,11 @@ Fecha: ${new Date().toLocaleString()}
                       }
                     >
                       <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
-                        <SelectValue placeholder="Qu tan grave es?" />
+                        <SelectValue placeholder="¿Qué tan grave es?" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="critical">
-                          Critico - La app no funciona
+                          Crítico - La app no funciona
                         </SelectItem>
                         <SelectItem value="high">
                           Alto - Funcionalidad importante rota
@@ -471,7 +471,7 @@ Fecha: ${new Date().toLocaleString()}
                         Navegador/App
                       </label>
                       <Input
-                        placeholder="Chrome, Safari, App mvil..."
+                        placeholder="Chrome, Safari, App móvil..."
                         value={bugReport.browser}
                         onChange={(e) =>
                           handleBugReportChange("browser", e.target.value)
@@ -487,7 +487,7 @@ Fecha: ${new Date().toLocaleString()}
                       Descripción del Problema
                     </label>
                     <Textarea
-                      placeholder="Describe detalladamente qu error encontraste..."
+                      placeholder="Describe detalladamente qué error encontraste..."
                       value={bugReport.description}
                       onChange={(e) =>
                         handleBugReportChange("description", e.target.value)
@@ -503,7 +503,7 @@ Fecha: ${new Date().toLocaleString()}
                       Pasos para Reproducir el Error
                     </label>
                     <Textarea
-                      placeholder="1. Entr a la seccin de... &#10;2. Hice clic en... &#10;3. Entonces apareci..."
+                      placeholder="1. Entré a la sección de... &#10;2. Hice clic en... &#10;3. Entonces apareció..."
                       value={bugReport.steps}
                       onChange={(e) =>
                         handleBugReportChange("steps", e.target.value)
@@ -604,7 +604,7 @@ Fecha: ${new Date().toLocaleString()}
                       Tus comentarios y sugerencias
                     </label>
                     <Textarea
-                      placeholder="Cuntanos qu te gusta, qu mejoraras, o cualquier sugerencia para hacer ComplicesConecta an mejor..."
+                      placeholder="Cuéntanos qué te gusta, qué mejorarías, o cualquier sugerencia para hacer ComplicesConecta aún mejor..."
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
                       rows={4}

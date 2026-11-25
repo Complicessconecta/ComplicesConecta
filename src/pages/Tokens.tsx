@@ -14,6 +14,7 @@ import { TokenDashboard } from "@/components/tokens/TokenDashboard";
 import { StakingModal } from "@/components/tokens/StakingModal";
 import { TokenChatBot } from "@/components/tokens/TokenChatBot";
 import { useAuth } from "@/features/auth/useAuth";
+import { clearDemoAuth } from "@/lib/app-config";
 import { nftService } from "@/services/payments/NFTService";
 import { walletService } from "@/services/payments/WalletService";
 import { logger } from "@/lib/logger";
@@ -1088,9 +1089,10 @@ export default function Tokens() {
             {hasActiveSession && !shouldUseRealSupabase() && (
               <Button
                 onClick={() => {
-                  localStorage.removeItem("demo_authenticated");
-                  localStorage.removeItem("demo_user");
-                  localStorage.removeItem("wallet_demo_created");
+                  // Limpieza completa de la sesión demo (antes solo se
+                  // borraban 3 claves y chats/privacidad/NFTs demo
+                  // persistían tras cerrar sesión).
+                  clearDemoAuth();
                   window.location.href = "/auth";
                 }}
                 variant="outline"

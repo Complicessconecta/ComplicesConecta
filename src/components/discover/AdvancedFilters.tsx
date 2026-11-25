@@ -106,6 +106,16 @@ export const AdvancedFilters = ({
     // Colores explícitos (no tokens bg-card/foreground): en Tailwind v4
     // esos tokens no resolvían y el panel quedaba con texto morado
     // oscuro sobre fondo morado oscuro, casi ilegible (full test).
+    // RONDA 5 — NOTA: el texto ilegible que Wacko confirmó con captura
+    // ("Mostrar perfiles sin verificar", "Tipo de Relacion",
+    // "Solo se muestran perfiles verificados.", "(Demo/Produccin)") NO
+    // vive en este componente: es el panel de filtros EN LÍNEA de
+    // src/pages/Discover.tsx:896,924-927,963-984 (text-purple-800 sobre
+    // fondo morado oscuro, sin acentos). Discover.tsx NO está en el
+    // alcance de este stream; el fix va ahí con las mismas clases
+    // explícitas de este archivo. Este componente ya trae todos sus
+    // textos explícitos y sus acentos correctos ("Tipo de relación
+    // buscada"); aquí solo se endurecieron los dos botones.
     <Card className="w-full max-w-md bg-white text-slate-900 border-slate-200 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center justify-between text-slate-900 dark:text-white">
@@ -351,10 +361,22 @@ export const AdvancedFilters = ({
 
         {/* Botones de acción */}
         <div className="flex gap-2 pt-4">
-          <Button variant="outline" onClick={handleReset} className="flex-1">
+          {/* RONDA 5: colores explícitos en ambos temas. La variante
+              "outline" del Button usa tokens (border-primary / bg-background)
+              que en este panel quedaban poco legibles; con clases explícitas
+              el contraste es real en claro y en oscuro. */}
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            className="flex-1 bg-white text-slate-900 border-slate-300 hover:bg-slate-100 dark:bg-slate-800 dark:text-white dark:border-slate-600 dark:hover:bg-slate-700"
+          >
             Limpiar
           </Button>
-          <Button variant="default" onClick={() => {}} className="flex-1">
+          <Button
+            variant="default"
+            onClick={() => {}}
+            className="flex-1 bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-600 dark:hover:bg-purple-500"
+          >
             Aplicar Filtros
           </Button>
         </div>

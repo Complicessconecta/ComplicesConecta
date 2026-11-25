@@ -369,6 +369,24 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           throw new Error("Error al crear el perfil de pareja");
         }
 
+        // Apodo en la columna `nickname`: la RPC
+        // `check_nickname_available` (migración 20261124050001) busca
+        // duplicados en profiles.nickname Y couple_profiles.nickname.
+        // Sin esta escritura, el apodo de pareja nunca quedaba en
+        // `nickname` (solo en `couple_name`) y la RPC lo reportaba
+        // siempre como disponible aunque ya existiera. Best-effort
+        // como el país: si la columna aún no existe en producción
+        // (migración sin aplicar), el registro ya quedó creado y no
+        // se rompe.
+        try {
+          await supabase
+            .from("couple_profiles")
+            .update({ nickname: formData.coupleNickname })
+            .eq("user_id", authData.user.id);
+        } catch {
+          // Columna aún sin aplicar: el apodo queda en couple_name.
+        }
+
         // Código ISO del país: local siempre + intento en BD
         // (`country_code`, migración 20261124050000) sin romper el
         // registro si la columna aún no existe en producción.

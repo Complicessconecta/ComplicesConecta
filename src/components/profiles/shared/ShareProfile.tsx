@@ -1,12 +1,19 @@
 import { useState } from "react";
-import { Share2, Copy, MessageCircle, QrCode } from "lucide-react";
-import { IconBrandFacebook, IconBrandInstagram } from "@tabler/icons-react";
+import { Share2, Copy } from "lucide-react";
+import {
+  IconBrandFacebook,
+  IconBrandTiktok,
+  IconBrandWhatsapp,
+  IconBrandX,
+} from "@tabler/icons-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
+import { shareProfileToTikTok } from "@/lib/tiktok-share";
+import { logger } from "@/lib/logger";
 
 interface ShareProfileProps {
   isOpen: boolean;
@@ -47,6 +54,26 @@ export const ShareProfile = ({
     const text = `¡Mira el perfil de ${profileName} en ComplicesConecta!`;
 
     switch (platform) {
+      case "tiktok":
+        // TikTok no tiene share web directo: abre la subida y copia el
+        // texto con el enlace para pegarlo (ver @/lib/tiktok-share).
+        void shareProfileToTikTok(profileId, profileName).then((ok) => {
+          if (ok) {
+            toast({
+              title: "Listo para TikTok",
+              description:
+                "Texto copiado. Pégalo al subir tu video en TikTok",
+            });
+          } else {
+            logger.error("Error compartiendo en TikTok");
+            toast({
+              title: "No se pudo compartir en TikTok",
+              description: "Inténtalo de nuevo o copia el enlace",
+              variant: "destructive",
+            });
+          }
+        });
+        break;
       case "facebook":
         safeOpenUrl(
           `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`,
@@ -55,13 +82,10 @@ export const ShareProfile = ({
       case "whatsapp":
         safeOpenUrl(`https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`);
         break;
-      case "instagram":
-        // Instagram no permite compartir enlaces directamente, copiamos el link
-        handleCopyLink();
-        toast({
-          title: "Listo para Instagram",
-          description: "Enlace copiado. Pégalo en tu historia de Instagram",
-        });
+      case "x":
+        safeOpenUrl(
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(profileUrl)}`,
+        );
         break;
       default:
         if (navigator.share) {
@@ -101,10 +125,21 @@ export const ShareProfile = ({
             </div>
           </div>
 
-          {/* Opciones de compartir */}
+          {/* Opciones de compartir: TikTok, Facebook, WhatsApp y X.
+              Menú compacto para pantallas chicas: 2 columnas, sin el
+              bloque de QR "próximamente" que solo ocupaba espacio. */}
           <div className="space-y-3">
             <Label>Compartir en:</Label>
             <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant="outline"
+                onClick={() => handleShare("tiktok")}
+                className="flex items-center gap-2"
+              >
+                <IconBrandTiktok className="h-4 w-4" />
+                TikTok
+              </Button>
+
               <Button
                 variant="outline"
                 onClick={() => handleShare("facebook")}
@@ -119,36 +154,28 @@ export const ShareProfile = ({
                 onClick={() => handleShare("whatsapp")}
                 className="flex items-center gap-2"
               >
-                <MessageCircle className="h-4 w-4" />
+                <IconBrandWhatsapp className="h-4 w-4" />
                 WhatsApp
               </Button>
 
               <Button
                 variant="outline"
-                onClick={() => handleShare("instagram")}
+                onClick={() => handleShare("x")}
                 className="flex items-center gap-2"
               >
-                <IconBrandInstagram className="h-4 w-4" />
-                Instagram
+                <IconBrandX className="h-4 w-4" />
+                X
               </Button>
 
               <Button
                 variant="outline"
                 onClick={() => handleShare("native")}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 col-span-2"
               >
-                <QrCode className="h-4 w-4" />
+                <Share2 className="h-4 w-4" />
                 Más opciones
               </Button>
             </div>
-          </div>
-
-          {/* Código QR */}
-          <div className="text-center p-4 bg-muted/50 rounded-lg">
-            <QrCode className="h-16 w-16 mx-auto mb-2 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">
-              Código QR disponible próximamente
-            </p>
           </div>
         </div>
       </DialogContent>

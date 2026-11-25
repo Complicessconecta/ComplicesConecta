@@ -17,6 +17,7 @@ type ReportReasonId =
   | "fake-profile"
   | "fraud"
   | "underage"
+  | "terms-violation"
   | "other";
 
 const REPORT_REASONS: {
@@ -60,6 +61,13 @@ const REPORT_REASONS: {
     description: "Usuario menor de 18 años",
     icon: Baby,
     color: "text-pink-500",
+  },
+  {
+    id: "terms-violation",
+    label: "Infringe los términos y condiciones",
+    description: "Viola los términos y condiciones de la plataforma",
+    icon: Shield,
+    color: "text-blue-500",
   },
   {
     id: "other",

@@ -6,12 +6,15 @@ export const HeroSection = () => {
       {/* Main Content */}
       <div className="relative text-center px-4 max-w-6xl mx-auto w-full">
         <div className="animate-slide-up">
-          {/* Logo ComplicesConecta - Mejorado con gradiente y glow */}
+          {/* Logo ComplicesConecta - Mejorado con gradiente y glow.
+              En móvil el corazón + el nombre no cabían en una línea y el
+              título se cortaba ("ComplicesConect"): fila con wrap, corazón
+              y texto más chicos en móvil, nombre con break-words. */}
           <div className="mb-12 flex justify-center">
-            <div className="flex items-center space-x-6 group">
-              <div className="relative">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-6 group">
+              <div className="relative shrink-0">
                 <Heart
-                  className="text-red-500 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-pulse group-hover:text-red-400 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
+                  className="text-red-500 transition-all duration-300 h-10 w-10 sm:h-20 sm:w-20 animate-pulse group-hover:text-red-400 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
                   fill="currentColor"
                   stroke="white"
                   strokeWidth="2"
@@ -22,7 +25,7 @@ export const HeroSection = () => {
                 />
                 <div className="absolute inset-0 animate-float">
                   <Heart
-                    className="text-red-400 opacity-80 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-ping drop-shadow-lg"
+                    className="text-red-400 opacity-80 transition-all duration-300 h-10 w-10 sm:h-20 sm:w-20 animate-ping drop-shadow-lg"
                     fill="currentColor"
                     stroke="white"
                     strokeWidth="1"
@@ -30,14 +33,14 @@ export const HeroSection = () => {
                 </div>
                 <div className="absolute inset-0 animate-pulse">
                   <Heart
-                    className="text-red-300 opacity-50 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 drop-shadow-md"
+                    className="text-red-300 opacity-50 transition-all duration-300 h-10 w-10 sm:h-20 sm:w-20 drop-shadow-md"
                     fill="currentColor"
                     stroke="white"
                     strokeWidth="1"
                   />
                 </div>
               </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black bg-linear-to-r from-white via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)] transition-all duration-300 group-hover:scale-105 tracking-wide">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black bg-linear-to-r from-white via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)] transition-all duration-300 group-hover:scale-105 tracking-wide break-words">
                 ComplicesConecta
               </h1>
             </div>

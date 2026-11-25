@@ -35,6 +35,12 @@ IMPORT_AUDIT_REPORT.md
 IMPORT_CORRECTIONS_REPORT.md
 *.md
 !README.md
+# PERO los documentos legales de public/ SÍ se despliegan: sin esta
+# excepción el `*.md` de arriba excluía public/docs/legal/*.md del
+# deploy a Vercel y /docs/legal/TERMS_OF_SERVICE.md daba 404 en vivo
+# (el build local sí los copia a dist/docs/legal/). El fetch de
+# TokensLegal recibía entonces el index.html del fallback SPA.
+!public/docs/legal/*.md
 
 # Ignore Android build files (too large for Vercel)
 android/

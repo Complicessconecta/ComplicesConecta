@@ -16,7 +16,7 @@ export interface SingleAboutMember {
   name: string;
   age: number | null;
   gender: string;
-  bio?: string | null;
+  bio?: string | null | undefined;
   avatarGradient: string;
   details: SingleMemberDetails;
 }

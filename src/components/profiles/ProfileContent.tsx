@@ -238,7 +238,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   {/* Post Image */}
                   <div className="aspect-video bg-linear-to-br from-purple-400 to-fuchsia-600 rounded-lg mb-3 overflow-hidden">
                     <img
-                      src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop"
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=400&fit=crop"
                       alt="Post"
                       className="w-full h-full object-cover"
                       onError={(e) => {

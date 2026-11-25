@@ -9,6 +9,7 @@ import { useDeviceCapability } from "@/hooks/useDeviceCapability";
 import { useBackgroundPreferences } from "@/hooks/useBackgroundPreferences";
 import { useBgMode } from "@/hooks/useBgMode";
 import { useAuth } from "@/features/auth/useAuth";
+import { useTheme } from "@/components/ui/ThemeProvider";
 import { logger } from "@/lib/logger";
 
 interface UnifiedBackgroundProps {
@@ -57,6 +58,20 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   const { preferences } = useBackgroundPreferences();
   const { reducedMotion } = useBgMode();
   const { profile } = useAuth();
+
+  // RONDA 5 — Tema claro: las partículas neón (cian/magenta/morado con
+  // líneas) están pensadas para fondo oscuro; sobre fondo claro ensucian
+  // la página y no se ve el cambio de tema. En claro se apagan; la
+  // nieve rosa de rutas públicas sí se mantiene (se lee bien en claro).
+  // useTheme con try/catch: este fondo también se usa fuera del
+  // ThemeProvider en algún montaje aislado; ahí se asume oscuro.
+  let actualTheme: "light" | "dark" = "dark";
+  try {
+    actualTheme = useTheme().actualTheme;
+  } catch {
+    actualTheme = "dark";
+  }
+  const isLightTheme = actualTheme === "light";
 
   const [backgroundImage, setBackgroundImage] = useState<string>(() =>
     getBackgroundImageByPath(location.pathname),
@@ -349,12 +364,13 @@ const neonOptions = useMemo(
     isSnowRoute && variant === "tsparticles" && engineReady;
   const showCssParticles = variant === "css";
   const showNeonParticles =
+    !isLightTheme &&
     engineReady &&
     (forceNeon || preferences.particlesEnabled || forceImageAndNeon);
 
   // Fallback CSS: Mostrar partículas CSS si el motor no está listo pero se forzaron partículas
   const showFallbackParticles =
-    !engineReady && forceNeon && preferences.particlesEnabled;
+    !isLightTheme && !engineReady && forceNeon && preferences.particlesEnabled;
 
   // LOGGING: Diagnosticar por qué no se muestran las partículas
   if (import.meta.env.DEV) { console.log("🔍 ParticlesNeon Debug:",

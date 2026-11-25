@@ -12,6 +12,8 @@ interface ProfileCardProps {
   profileId?: string;
   name: string;
   age: number;
+  // Edad del segundo miembro (parejas): se muestra "25 y 28 años".
+  partnerAge?: number | undefined;
   location: string;
   image: string;
   images?: string[];
@@ -35,6 +37,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     profileId,
     name,
     age,
+    partnerAge,
     location,
     image,
     images = [],
@@ -261,6 +264,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   title={`Ver perfil de ${name}`}
                 >
                   {name}, {age}
+                  {partnerAge ? ` y ${partnerAge}` : ""}
                 </motion.h3>
                 {/* Insignia de perfil verificado */}
                 {isVerified && (

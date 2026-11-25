@@ -23,6 +23,13 @@ export const ChatFab: React.FC<ChatFabProps> = ({ onOpen }) => {
     return null;
   }
 
+  // RONDA 5: ya NO es un botón flotante (`fixed bottom-24 right-4`):
+  // seguía al hacer scroll y tapaba textos/fotos en perfil, Discover,
+  // /faq, /tokens-legal, clubs, Matches y video-chat. Ahora es un botón
+  // en flujo: MainLayout lo renderiza en una franja al final del
+  // contenido de la página, donde nunca se solapa con nada. El panel
+  // ChatDock que abre sigue siendo un overlay bajo demanda (lo abre el
+  // usuario y tiene su botón Cerrar), eso no es un flotante pasivo.
   return (
     <Button
       onClick={() => {
@@ -32,7 +39,7 @@ export const ChatFab: React.FC<ChatFabProps> = ({ onOpen }) => {
           navigate("/chat");
         }
       }}
-      className="fixed bottom-24 right-4 z-50 rounded-full w-14 h-14 shadow-lg bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-0 flex items-center justify-center transition-transform hover:scale-110"
+      className="relative rounded-full w-14 h-14 shadow-lg bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white p-0 flex items-center justify-center transition-transform hover:scale-110"
       aria-label="Abrir Chat"
     >
       <MessageCircle className="w-8 h-8" />

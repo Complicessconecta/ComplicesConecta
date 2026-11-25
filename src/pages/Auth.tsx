@@ -18,7 +18,7 @@ import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { logger } from "@/lib/logger";
-import { isProductionAdmin } from "@/lib/app-config";
+import { isProductionAdmin, resolveDemoAccountType } from "@/lib/app-config";
 
 interface FormData {
   email: string;
@@ -330,6 +330,23 @@ const Auth = () => {
         }
         
         // Determinar navegación basada en DB, no metadata
+        // RONDA 7 (punto 1): sin Supabase la RPC de arriba falla
+        // contra el stub y el fallback era siempre /profile-single:
+        // una pareja demo restaurada caía en el perfil de single.
+        // El fallback lee el tipo de la sesión demo guardada.
+        const navigateToOwnProfile = () => {
+          try {
+            const raw = window.localStorage.getItem("demo_user");
+            const stored = raw ? (JSON.parse(raw) as unknown) : null;
+            navigate(
+              resolveDemoAccountType(stored) === "couple"
+                ? "/profile-couple"
+                : "/profile-single",
+            );
+          } catch {
+            navigate("/profile-single");
+          }
+        };
         setTimeout(async () => {
           try {
             // Consultar account_type real desde DB usando vista unificada
@@ -340,7 +357,7 @@ const Auth = () => {
             if (error) {
               logger.error("Error obteniendo account_type de DB:", { error: error.message });
               // Fallback a navegación por defecto
-              navigate("/profile-single");
+              navigateToOwnProfile();
               return;
             }
 
@@ -353,7 +370,7 @@ const Auth = () => {
           } catch (navError) {
             logger.error("Error en navegación post-login:", { error: String(navError) });
             // Fallback seguro
-            navigate("/profile-single");
+            navigateToOwnProfile();
           }
         }, 3000);
       } else {

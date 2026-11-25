@@ -286,9 +286,7 @@ const ProfileDetail = () => {
     }
   })();
   const viewerId = String(demoUserParsed?.id ?? user?.id ?? "demo-viewer");
-  const viewerName = String(
-    demoUserParsed?.first_name ?? user?.email ?? "Tú",
-  );
+  const viewerName = String(demoUserParsed?.first_name ?? user?.email ?? "Tú");
   const isDemo = demoAuth === "true" || Boolean(demoUser);
   const isOwnProfile = String(profile.id) === viewerId;
   const socialDemo = getSocialDemoData(profile.name);
@@ -313,7 +311,16 @@ const ProfileDetail = () => {
     storedVisibility: readVisibilityLocalOrNull(String(profile.id)),
     seedVisibility: socialDemo.visibility,
   });
-  const isFriend = areFriendsSync(viewerId, String(profile.id), viewerName);
+  // RONDA 7 (punto 18): el 4º argumento es el NOMBRE del perfil: la
+  // semilla demo de amistades se keyea por nombre (ver friends.ts).
+  // Sin él, el id numérico legacy ("3") o el UUID del roster caían
+  // al fallback sin amigos y Sofía resultaba "no amiga" de Ana.
+  const isFriend = areFriendsSync(
+    viewerId,
+    String(profile.id),
+    viewerName,
+    profile.name,
+  );
   const gated = isProfileGated({
     visibility: profileVisibility,
     isOwner: isOwnProfile,

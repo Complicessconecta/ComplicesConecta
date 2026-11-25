@@ -15,7 +15,11 @@ import {
   DEMO_NFTS_CHANGED_EVENT,
   notifyDemoNFTsChanged,
 } from "@/services/payments/NFTService";
-import { DEMO_WALLET_BALANCES } from "@/lib/demo-wallet";
+import {
+  DEMO_WALLET_BALANCES,
+  getDemoWalletBalance,
+  DEMO_WALLET_CHANGED_EVENT,
+} from "@/lib/demo-wallet";
 
 /**
  * Interfaz para NFT mock
@@ -115,7 +119,13 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
     let cancelled = false;
     const load = async () => {
       try {
-        const owned = await nftService.getUserNFTs(userId);
+        // demoFallback: DemoWallet solo se renderiza en perfiles demo;
+        // sin él, en el preview (VITE_APP_MODE != "demo") la lectura
+        // caía a la rama de Supabase y devolvía [] aunque la colección
+        // minteada estuviera guardada (punto 9).
+        const owned = await nftService.getUserNFTs(userId, {
+          demoFallback: true,
+        });
         if (cancelled) return;
         const normalized = owned
           .filter((nft) => (accountType === "couple" ? nft.is_couple : true))
@@ -205,7 +215,21 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
   };
 
   // Tokens demo canónicos según el tipo de cuenta (useTokens()).
-  const canonical = DEMO_BALANCES[accountType];
+  // Se leen del saldo PERSISTIDO (@/lib/demo-wallet) y se re-leen
+  // cuando cambia (reclamo en /tokens): antes eran las constantes
+  // 1250/850 y el reclamo de 100 CMPX nunca se reflejaba aquí ni en
+  // el perfil (ronda 7, punto 8).
+  const [canonical, setCanonical] = useState(() =>
+    getDemoWalletBalance(accountType),
+  );
+  useEffect(() => {
+    setCanonical(getDemoWalletBalance(accountType));
+    const onChanged = () =>
+      setCanonical(getDemoWalletBalance(accountType));
+    window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    return () =>
+      window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+  }, [accountType]);
   const demoTokens: DemoToken[] = [
     {
       symbol: "CMPX",

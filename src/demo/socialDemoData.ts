@@ -88,11 +88,24 @@ const SEED: Record<string, SocialDemoEntry> = {
     "Carmen & Roberto",
     "Lucía",
   ]),
-  ana: entry("Ana", "MX", "Guadalajara", true, null, [
-    "Sofía",
-    "Carlos",
-    "Laura",
-  ]),
+  // RONDA 7 (punto 18): Ana es el perfil privado de la demo. Antes
+  // TODOS los perfiles semilla eran públicos y el gate de perfil
+  // privado (PrivateProfileGate + solicitud de amistad) no se podía
+  // alcanzar nunca en demo: ni siquiera una cuenta nueva veía la
+  // pantalla de "perfil privado". Sofía está en sus amigos semilla,
+  // así que la demo canónica sigue viendo el perfil completo y una
+  // cuenta nueva (p. ej. PruebaR6) ve el gate con el botón de
+  // solicitud. La visibilidad semilla solo aplica en demo; en real
+  // manda la BD (columna `visibility`, migración 20261124050000).
+  ana: entry(
+    "Ana",
+    "MX",
+    "Guadalajara",
+    true,
+    null,
+    ["Sofía", "Carlos", "Laura"],
+    "private",
+  ),
   francisco: entry("Francisco", "MX", "Ciudad de México", false, 45, [
     "Miguel",
     "David",

@@ -104,6 +104,16 @@ import {
   getVisibilityBadge,
   usePrivacySettings,
 } from "@/lib/visibility";
+// Alcance A (6 puntos sociales): nacionalidad, amistades, visibilidad,
+// reportar/bloquear y solicitudes de amistad/fotos.
+import { NationalityBadge } from "@/components/profiles/shared/NationalityBadge";
+import { FriendsSection } from "@/components/profiles/shared/FriendsSection";
+import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
+import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
+import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButtons";
+import { ProfileSocialSettings } from "@/components/profiles/shared/ProfileSocialSettings";
+import { readCountryCodeLocal } from "@/lib/countries";
+import { getSocialDemoData } from "@/demo/socialDemoData";
 
 // --- Secciones modelo del video, espejo de pareja (1 usuario) ---
 // Campos físicos que NO existen en el modelo de perfil: en demo se muestran
@@ -1090,6 +1100,13 @@ const ProfileSingle: FC = () => {
 
   const displayAge = currentProfile.age || (singleIsDemo ? 28 : 18); // En demo, la edad canónica de Sofía es 28 (la misma que usa singleAbout); fuera de demo, 18 es la mínima legal, no un valor específico
 
+  // Nacionalidad: columna `country_code` (migración 20261124050000)
+  // → local del registro → datos sociales demo (por nombre).
+  const profileCountryCode =
+    (currentProfile as { country_code?: string | null }).country_code ??
+    readCountryCodeLocal(user?.id ?? profile?.id ?? "") ??
+    getSocialDemoData(displayName).countryCode;
+
   const displayGenderLabel = (() => {
     const g = currentProfile.gender?.toLowerCase();
     if (g === "male") return "Hombre";
@@ -1248,6 +1265,8 @@ const ProfileSingle: FC = () => {
                         {formatZodiacSign(profileZodiac)}
                       </Badge>
                     )}
+                    {/* Nacionalidad (punto 1): país + bandera del registro. */}
+                    <NationalityBadge countryCode={profileCountryCode} />
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
                     <Badge className="profile-badge badge-age">
@@ -1268,7 +1287,7 @@ const ProfileSingle: FC = () => {
                         <TooltipTrigger>
                           <Badge
                             className={cn(
-                              "profile-badge flex items-center gap-1",
+                              "profile-badge flex items-center gap-1 whitespace-nowrap shrink-0",
                               profileScore.color,
                             )}
                           >
@@ -1333,6 +1352,36 @@ const ProfileSingle: FC = () => {
                       <span className="hidden sm:inline">Reportar</span>
                       <span className="sm:hidden">Report</span>
                     </Button>
+
+                    {/* Social (puntos 2, 4 y 5): solicitud de amistad y de
+                        ver fotos + bloqueo real. Solo visibles cuando se
+                        ve un perfil ajeno (en el propio no se muestran);
+                        el botón Reportar de arriba sigue abriendo el
+                        ReportDialog existente. */}
+                    <FriendRequestButton
+                      profileId={profile?.id || ""}
+                      profileName={displayName}
+                      viewerId={user?.id || ""}
+                      viewerName={displayName}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={singleIsDemo}
+                    />
+                    <PhotoAccessRequestButton
+                      profileId={profile?.id || ""}
+                      profileName={displayName}
+                      viewerId={user?.id || ""}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={singleIsDemo}
+                    />
+                    <ReportBlockButtons
+                      profileId={profile?.id || ""}
+                      profileName={displayName}
+                      viewerId={user?.id || ""}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={singleIsDemo}
+                      showReport={false}
+                      onReport={() => setShowReportDialog(true)}
+                    />
 
                     {/* Botón único (Demo/Nombre ↔ Cuenta) con menú */}
                     {isOwnProfile && (
@@ -1980,6 +2029,22 @@ const ProfileSingle: FC = () => {
             />
           )}
 
+          {/* Amistades (punto 2) + ajustes sociales: visibilidad
+              público/privado y geolocalización (puntos 3 y 4). */}
+          <FriendsSection
+            profileId={profile?.id ?? ""}
+            profileName={displayName}
+            isOwnProfile={isOwnProfile}
+            isDemo={singleIsDemo}
+          />
+          {(isOwnProfile || singleIsDemo) && (
+            <ProfileSocialSettings
+              userId={user?.id ?? profile?.id ?? ""}
+              profileType="single"
+              isDemo={singleIsDemo}
+            />
+          )}
+
           {/* Demo Wallet - solo demo, tras la información del perfil */}
           {isDemoProfile && (
             <DemoWallet
@@ -2429,21 +2494,11 @@ const ProfileSingle: FC = () => {
         />
       )}
 
-      {/* Botón discreto para abrir desbloqueo cuando está bloqueado.
-          Antes era `fixed bottom-24 right-4` y tapaba contenido y
-          estadísticas al hacer scroll; ahora va arriba a la derecha,
-          bajo el encabezado, donde no cubre el contenido. */}
-      {isOwnProfile && isParentalLocked && !showParentalUnlock && (
-        <div className="fixed top-20 right-4 z-50">
-          <button
-            type="button"
-            onClick={() => setShowParentalUnlock(true)}
-            className="px-4 py-2 rounded-full text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 backdrop-blur-md text-white transition-all duration-300"
-          >
-            Desbloquear
-          </button>
-        </div>
-      )}
+      {/* El botón "Desbloquear" flotante (`fixed top-20 right-4`) se
+          eliminó: tapaba contenido y el toggle de tema al hacer scroll.
+          El desbloqueo vive en el botón en flujo del encabezado de la
+          galería privada ("Fotos Privadas"), que abre la pantalla del
+          PIN. */}
 
       {/* Modal de carrusel de imágenes */}
       <ImageModal

@@ -3437,6 +3437,7 @@ export type Database = {
           city: string | null
           communication_preference: string | null
           country: string | null
+          country_code: string | null
           couple_age_range: string | null
           couple_availability: string | null
           couple_body_type: string | null
@@ -3468,6 +3469,7 @@ export type Database = {
           last_active: string | null
           latitude: number | null
           location: string | null
+          location_sharing_enabled: boolean | null
           longitude: number | null
           looking_for: string | null
           max_distance: number | null
@@ -3492,6 +3494,7 @@ export type Database = {
           updated_at: string
           user_id: string
           verification_level: number | null
+          visibility: string | null
         }
         Insert: {
           activities_interested?: string[] | null
@@ -3503,6 +3506,7 @@ export type Database = {
           city?: string | null
           communication_preference?: string | null
           country?: string | null
+          country_code?: string | null
           couple_age_range?: string | null
           couple_availability?: string | null
           couple_body_type?: string | null
@@ -3534,6 +3538,7 @@ export type Database = {
           last_active?: string | null
           latitude?: number | null
           location?: string | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
@@ -3558,6 +3563,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           verification_level?: number | null
+          visibility?: string | null
         }
         Update: {
           activities_interested?: string[] | null
@@ -3569,6 +3575,7 @@ export type Database = {
           city?: string | null
           communication_preference?: string | null
           country?: string | null
+          country_code?: string | null
           couple_age_range?: string | null
           couple_availability?: string | null
           couple_body_type?: string | null
@@ -3600,6 +3607,7 @@ export type Database = {
           last_active?: string | null
           latitude?: number | null
           location?: string | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
@@ -3624,6 +3632,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           verification_level?: number | null
+          visibility?: string | null
         }
         Relationships: [
           {
@@ -4389,6 +4398,93 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      friend_requests: {
+        Row: {
+          addressee_id: string
+          created_at: string | null
+          decided_at: string | null
+          id: string
+          kind: string
+          message: string | null
+          requester_id: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          addressee_id: string
+          created_at?: string | null
+          decided_at?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          requester_id: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          addressee_id?: string
+          created_at?: string | null
+          decided_at?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          requester_id?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friend_requests_addressee_id_fkey"
+            columns: ["addressee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friend_requests_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      friendships: {
+        Row: {
+          created_at: string | null
+          id: string
+          user_id_a: string
+          user_id_b: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          user_id_a: string
+          user_id_b: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          user_id_a?: string
+          user_id_b?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_user_id_a_fkey"
+            columns: ["user_id_a"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_user_id_b_fkey"
+            columns: ["user_id_b"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -7205,6 +7301,42 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string | null
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string | null
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_blocks_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_blocks_blocker_id_fkey"
+            columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_cache: {
         Row: {
           cache_key: string
@@ -7310,6 +7442,7 @@ export type Database = {
           blocked_reason: string | null
           city: string | null
           consent_status: string | null
+          country_code: string | null
           created_at: string | null
           display_name: string | null
           dispute_id: string | null
@@ -7337,10 +7470,12 @@ export type Database = {
           lifestyle_preferences: Json | null
           location: string | null
           location_preferences: Json | null
+          location_sharing_enabled: boolean | null
           longitude: number | null
           looking_for: string | null
           max_distance: number | null
           name: string
+          nickname: string | null
           personality_traits: Json | null
           phone: string | null
           phone_verified_at: string | null
@@ -7364,6 +7499,7 @@ export type Database = {
           updated_at: string | null
           user_id: string
           verification_level: string | null
+          visibility: string | null
           warnings_count: number | null
           world_id_nullifier_hash: string | null
           world_id_verified_at: string | null
@@ -7380,6 +7516,7 @@ export type Database = {
           blocked_reason?: string | null
           city?: string | null
           consent_status?: string | null
+          country_code?: string | null
           created_at?: string | null
           display_name?: string | null
           dispute_id?: string | null
@@ -7407,10 +7544,12 @@ export type Database = {
           lifestyle_preferences?: Json | null
           location?: string | null
           location_preferences?: Json | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
           name: string
+          nickname?: string | null
           personality_traits?: Json | null
           phone?: string | null
           phone_verified_at?: string | null
@@ -7434,6 +7573,7 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           verification_level?: string | null
+          visibility?: string | null
           warnings_count?: number | null
           world_id_nullifier_hash?: string | null
           world_id_verified_at?: string | null
@@ -7450,6 +7590,7 @@ export type Database = {
           blocked_reason?: string | null
           city?: string | null
           consent_status?: string | null
+          country_code?: string | null
           created_at?: string | null
           display_name?: string | null
           dispute_id?: string | null
@@ -7477,10 +7618,12 @@ export type Database = {
           lifestyle_preferences?: Json | null
           location?: string | null
           location_preferences?: Json | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
           name?: string
+          nickname?: string | null
           personality_traits?: Json | null
           phone?: string | null
           phone_verified_at?: string | null
@@ -7504,6 +7647,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           verification_level?: string | null
+          visibility?: string | null
           warnings_count?: number | null
           world_id_nullifier_hash?: string | null
           world_id_verified_at?: string | null
@@ -7859,6 +8003,50 @@ export type Database = {
             columns: ["referrer_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      retained_identities: {
+        Row: {
+          ban_reason: string
+          banned_at: string
+          banned_by: string | null
+          created_at: string | null
+          email: string
+          id: string
+          report_id: string | null
+          user_id: string
+          username: string
+        }
+        Insert: {
+          ban_reason: string
+          banned_at?: string
+          banned_by?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          report_id?: string | null
+          user_id: string
+          username: string
+        }
+        Update: {
+          ban_reason?: string
+          banned_at?: string
+          banned_by?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          report_id?: string | null
+          user_id?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "retained_identities_banned_by_fkey"
+            columns: ["banned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -11673,6 +11861,10 @@ export type Database = {
           p_combined_hash?: string
           p_worldid_nullifier_hash?: string
         }
+        Returns: boolean
+      }
+      check_nickname_available: {
+        Args: { p_nickname: string }
         Returns: boolean
       }
       check_rate_limit: {

@@ -18,6 +18,10 @@ const Legal: FC = () => {
         "Marco legal mexicano que tipifica como delito la violencia digital y la difusión de contenido íntimo sin consentimiento. ComplicesConecta cumple estrictamente con esta normativa.",
       icon: <Shield className="h-6 w-6" />,
       file: "LEY_OLIMPIA.md",
+      // Ronda 8 (punto 12): si el documento tiene página estilizada,
+      // "Ver Documento" navega a ella en vez de abrir el .md crudo.
+      // Sin styledRoute se sigue abriendo el .md (sigue servido).
+      styledRoute: "/ley-olimpia",
       lastUpdated: "2025-11-09",
       category: "Protección Legal",
       priority: true,
@@ -51,6 +55,8 @@ const Legal: FC = () => {
         "Condiciones de uso completas de la plataforma ComplicesConecta, derechos y obligaciones de usuarios.",
       icon: <FileText className="h-6 w-6" />,
       file: "TERMS_OF_SERVICE.md",
+      // Ronda 8 (punto 12): página estilizada v3.5.0 (Nov 2025).
+      styledRoute: "/terms",
       lastUpdated: "2025-11-08",
       category: "Términos",
       details: [
@@ -67,6 +73,8 @@ const Legal: FC = () => {
         "Cómo protegemos, recopilamos y manejamos tu información personal. Cumplimiento con GDPR y Normativas Mexicanas.",
       icon: <Lock className="h-6 w-6" />,
       file: "POLITICA_PRIVACIDAD.md",
+      // Ronda 8 (punto 12): página estilizada v3.5.0 (Nov 2025).
+      styledRoute: "/privacy",
       lastUpdated: "2025-11-08",
       category: "Privacidad",
       details: [
@@ -448,7 +456,9 @@ const Legal: FC = () => {
                       <Button
                         className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30"
                         onClick={() =>
-                          safeOpenUrl(`/docs/legal/${doc.file}`)
+                          doc.styledRoute
+                            ? navigate(doc.styledRoute)
+                            : safeOpenUrl(`/docs/legal/${doc.file}`)
                         }
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />

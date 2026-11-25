@@ -288,7 +288,6 @@ function ProfileCouple() {
   const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
 
   const [accountChipHovered, setAccountChipHovered] = useState(false);
-  const [accountChipShowAccount, setAccountChipShowAccount] = useState(false);
 
   // Estados para modal de imágenes
   const [showImageModal, _setShowImageModal] = useState(false);
@@ -631,26 +630,10 @@ function ProfileCouple() {
     return () => window.clearTimeout(id);
   }, [location.hash]);
 
-  useEffect(() => {
-    if (accountChipHovered) return;
-    const schedule = () => {
-      const delay = 4000 + Math.floor(Math.random() * 2001);
-      return window.setTimeout(() => {
-        setAccountChipShowAccount((prev) => !prev);
-      }, delay);
-    };
-
-    let timeoutId = schedule();
-    const intervalId = window.setInterval(() => {
-      window.clearTimeout(timeoutId);
-      timeoutId = schedule();
-    }, 6500);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-      window.clearInterval(intervalId);
-    };
-  }, [accountChipHovered]);
+  // Ronda 8 (punto 14): el temporizador que alternaba la etiqueta del
+  // chip (Cuenta ↔ DEMO/nombre) cada 4-6 s SIN interacción del usuario
+  // se eliminó (mismo defecto que en el perfil single): la etiqueta
+  // ahora es determinista ("Cuenta" solo al pasar el cursor).
   const [_showDisputeWarning, _setShowDisputeWarning] = useState(false);
 
   const { authenticate, isBiometricAvailable, isBiometricEnabled, hasPin } =
@@ -878,23 +861,17 @@ function ProfileCouple() {
   const handleRequestCoupleNFT = async (partnerEmail: string) => {
     if (!user?.id) return;
 
-    // Gating legal: requiere contrato activo y cuenta no congelada
-    if (!hasActiveAgreement) {
-      toast.error(
-        "Acción bloqueada: se requiere un Contrato de Pareja ACTIVO para crear un NFT de pareja.",
-      );
-      return;
-    }
-
-    if (relationshipStatus !== "ACTIVE") {
-      toast.error(
-        "Acción bloqueada: la cuenta de pareja está en protocolo de disolución y los activos están congelados.",
-      );
-      return;
-    }
-
-    try {
-      if (isDemoMode) {
+    // Ronda 8, punto 4 — causa raíz del botón "muerto": en demo el
+    // gating legal NUNCA se cumple (no hay fila en `couple_agreements`
+    // en Supabase y el preview demo ni siquiera tiene sesión real), así
+    // que el clic moría en `toast.error`... y ese toast es de `sonner`,
+    // cuyo <Toaster> no está montado en ningún sitio (MainLayout monta
+    // solo el Toaster Radix): el error era invisible, sin modal, sin
+    // toast y sin cambio de contador. En demo el gating se salta (el
+    // hard-lock legal sigue vigente en modo real) y los avisos usan
+    // `shadcnToast` (Radix, montado).
+    if (isDemoMode) {
+      try {
         // Modo demo - simular creación
         logger.info("Solicitud de NFT de pareja creada (DEMO):", {
           partnerEmail,
@@ -920,6 +897,39 @@ function ProfileCouple() {
         };
 
         setCoupleRequests((prev) => [newRequest, ...prev]);
+        shadcnToast({
+          title: "Solicitud de NFT de pareja creada (DEMO)",
+          description:
+            "La pareja debe aprobarla; el NFT ya se minteó en local.",
+        });
+
+        // El NFT de pareja se mintea en demo (vía compartida, is_couple:
+        // true) y persiste en `demo_nfts:<uid>`: antes la rama demo solo
+        // creaba la solicitud y ningún contador cambiaba.
+        const minted = await nftService.mintDemoNFT(user.id, {
+          isCouple: true,
+          name:
+            profile?.partner1_first_name && profile?.partner2_first_name
+              ? `NFT de ${profile.partner1_first_name} & ${profile.partner2_first_name}`
+              : "NFT de Pareja",
+          description: "NFT de pareja con consentimiento doble (DEMO)",
+        });
+        if (minted) {
+          const nfts = await nftService
+            .getUserNFTs(user.id, { demoFallback: true })
+            .catch(() => []);
+          setCoupleNFTs(nfts.filter((nft) => Boolean(nft?.is_couple)));
+          shadcnToast({
+            title: "¡NFT de pareja minteado (DEMO)!",
+            description: `${minted.name} se agregó a la colección conjunta.`,
+          });
+        } else {
+          shadcnToast({
+            title: "Límite demo alcanzado",
+            description: "Ya minteaste 4 NFTs en modo demo.",
+            variant: "destructive",
+          });
+        }
 
         // Simular respuesta del partner después de un tiempo
         setTimeout(() => {
@@ -935,25 +945,59 @@ function ProfileCouple() {
             ),
           );
         }, 5000);
-      } else {
-        // Modo real - crear solicitud real
-        // Crear un archivo temporal para el NFT de pareja
-        const tempFile = new File([""], "couple-nft.png", {
-          type: "image/png",
+      } catch (error) {
+        logger.error("Error creando solicitud de NFT de pareja (DEMO):", {
+          error: String(error),
         });
-        const request = await nftService.requestCoupleNFT(
-          user.id,
-          partnerEmail,
-          `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
-          "NFT de pareja con consentimiento doble",
-          tempFile,
-        );
-        logger.info("Solicitud de NFT de pareja creada:", { request });
-
-        // Recargar solicitudes
-        const updatedRequests = await nftService.getCoupleNFTRequests(user.id);
-        setCoupleRequests(updatedRequests);
+        shadcnToast({
+          title: "Error",
+          description: "No se pudo crear el NFT de pareja en modo demo.",
+          variant: "destructive",
+        });
       }
+      return;
+    }
+
+    // Gating legal (solo modo real): requiere contrato activo y cuenta
+    // no congelada.
+    if (!hasActiveAgreement) {
+      shadcnToast({
+        title: "Acción bloqueada",
+        description:
+          "Se requiere un Contrato de Pareja ACTIVO para crear un NFT de pareja.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (relationshipStatus !== "ACTIVE") {
+      shadcnToast({
+        title: "Acción bloqueada",
+        description:
+          "La cuenta de pareja está en protocolo de disolución y los activos están congelados.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Modo real - crear solicitud real
+      // Crear un archivo temporal para el NFT de pareja
+      const tempFile = new File([""], "couple-nft.png", {
+        type: "image/png",
+      });
+      const request = await nftService.requestCoupleNFT(
+        user.id,
+        partnerEmail,
+        `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
+        "NFT de pareja con consentimiento doble",
+        tempFile,
+      );
+      logger.info("Solicitud de NFT de pareja creada:", { request });
+
+      // Recargar solicitudes
+      const updatedRequests = await nftService.getCoupleNFTRequests(user.id);
+      setCoupleRequests(updatedRequests);
     } catch (error) {
       logger.error("Error creando solicitud de NFT de pareja:", {
         error: String(error),
@@ -1583,7 +1627,7 @@ function ProfileCouple() {
                               className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
                             >
                               <span className="flex items-center gap-2">
-                                {accountChipHovered || accountChipShowAccount
+                                {accountChipHovered
                                   ? "Cuenta"
                                   : isDemoMode
                                     ? "DEMO"
@@ -2049,7 +2093,7 @@ function ProfileCouple() {
 
             {/* Sección Blockchain para Parejas - Solo para perfil propio */}
             {isOwnProfile && (
-              <Card className="bg-linear-to-br from-fuchsia-600/20 to-purple-600/20 backdrop-blur-md border-fuchsia-400/30 text-white mt-6">
+              <Card className="bg-white/80 dark:bg-linear-to-br dark:from-fuchsia-600/20 dark:to-purple-600/20 backdrop-blur-md border-slate-200 dark:border-fuchsia-400/30 text-slate-900 dark:text-white mt-6">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Wallet className="w-5 h-5 text-fuchsia-400" />
@@ -2057,14 +2101,14 @@ function ProfileCouple() {
                       Blockchain & NFTs de Pareja
                     </h3>
                     {isDemoMode && (
-                      <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
+                      <Badge className="bg-yellow-500/15 text-yellow-800 border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-300 dark:border-yellow-400/30 text-xs">
                         DEMO
                       </Badge>
                     )}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                    <div className="p-3 bg-white/10 rounded-lg">
+                    <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Coins className="w-4 h-4 text-yellow-400" />
                         <span className="text-sm font-medium">CMPX</span>
@@ -2072,12 +2116,12 @@ function ProfileCouple() {
                       <div className="text-lg font-bold">
                         {tokenBalances.cmpx}
                       </div>
-                      <div className="text-xs text-white/70">
+                      <div className="text-xs text-slate-500 dark:text-white/70">
                         Tokens Compartidos
                       </div>
                     </div>
 
-                    <div className="p-3 bg-white/10 rounded-lg">
+                    <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Users className="w-4 h-4 text-fuchsia-400" />
                         <span className="text-sm font-medium">NFTs Pareja</span>
@@ -2085,12 +2129,12 @@ function ProfileCouple() {
                       <div className="text-lg font-bold">
                         {coupleNFTs.length}
                       </div>
-                      <div className="text-xs text-white/70">
+                      <div className="text-xs text-slate-500 dark:text-white/70">
                         Colección Conjunta
                       </div>
                     </div>
 
-                    <div className="p-3 bg-white/10 rounded-lg">
+                    <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Heart className="w-4 h-4 text-fuchsia-400" />
                         <span className="text-sm font-medium">Solicitudes</span>
@@ -2098,21 +2142,23 @@ function ProfileCouple() {
                       <div className="text-lg font-bold">
                         {coupleRequests.length}
                       </div>
-                      <div className="text-xs text-white/70">Pendientes</div>
+                      <div className="text-xs text-slate-500 dark:text-white/70">
+                        Pendientes
+                      </div>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-4">
                     <Button
                       onClick={() => handleRequestCoupleNFT("pareja@demo.com")}
-                      className="bg-fuchsia-500/20 hover:bg-fuchsia-600/30 text-fuchsia-200 border-fuchsia-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
+                      className="bg-fuchsia-500/10 hover:bg-fuchsia-600/20 text-fuchsia-700 border-fuchsia-500/40 dark:bg-fuchsia-500/20 dark:hover:bg-fuchsia-600/30 dark:text-fuchsia-200 dark:border-fuchsia-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                     >
                       <Heart className="w-4 h-4" />
                       Crear NFT de Pareja
                     </Button>
                   </div>
 
-                  <div className="p-3 bg-white/5 rounded-lg">
+                  <div className="p-3 bg-slate-900/5 dark:bg-white/5 rounded-lg">
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
                       <Lock className="w-4 h-4 text-yellow-400" />
                       Sistema de Consentimiento Doble

@@ -139,10 +139,13 @@ const NotFound = () => {
               </p>
             </div>
 
-            {/* Action Buttons */}
-            <div
-              className={`flex flex-col sm:flex-row gap-4 justify-center items-center transition-all duration-1000 delay-700 ${isVisible ? "animate-fade-in-delay-2" : "opacity-0 translate-y-5"}`}
-            >
+            {/* Action Buttons.
+                Ronda 8 (punto 15): los botones nacían con `opacity-0`
+                + fade de ~1 s con delay (parecían desvanecidos al
+                entrar). La animación de entrada se quitó solo de los
+                botones: son legibles desde el primer frame; el resto
+                de la página conserva su animación. */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 asChild
                 size="lg"

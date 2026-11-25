@@ -44,22 +44,26 @@ export function FriendRequestButton({
 
   useEffect(() => {
     let cancelled = false;
-    void getFriendStatus(viewerId, profileId, isDemo, viewerName).then(
-      (value) => {
-        if (cancelled) return;
-        setStatus(value);
-        if (value === "pending_received") {
-          const incoming = listIncomingRequestsSync(viewerId).find(
-            (r) => r.fromId === profileId,
-          );
-          setIncomingId(incoming?.id ?? null);
-        }
-      },
-    );
+    void getFriendStatus(
+      viewerId,
+      profileId,
+      isDemo,
+      viewerName,
+      profileName,
+    ).then((value) => {
+      if (cancelled) return;
+      setStatus(value);
+      if (value === "pending_received") {
+        const incoming = listIncomingRequestsSync(viewerId).find(
+          (r) => r.fromId === profileId,
+        );
+        setIncomingId(incoming?.id ?? null);
+      }
+    });
     return () => {
       cancelled = true;
     };
-  }, [viewerId, profileId, isDemo, viewerName]);
+  }, [viewerId, profileId, isDemo, viewerName, profileName]);
 
   if (isOwnProfile || !viewerId || !profileId || viewerId === profileId) {
     return null;

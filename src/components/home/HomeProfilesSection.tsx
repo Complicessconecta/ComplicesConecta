@@ -117,7 +117,11 @@ export const HomeProfilesSection = ({
             <p className="text-xl md:text-2xl text-white/95 max-w-4xl mx-auto leading-relaxed animate-slide-up font-medium px-4">
               La plataforma{" "}
               <strong className="text-purple-300">más exclusiva</strong> para la
-              comunidad lifestyle mexicana.
+              comunidad lifestyle mexicana.{" "}
+              {/* Punto 11 (ronda 7): el <br> de abajo es `hidden md:block`:
+                  en móvil no hay salto de línea y el texto quedaba
+                  "mexicana.Conexiones" sin espacio. El {" "} explícito lo
+                  separa en todos los anchos; en md+ el salto lo absorbe. */}
               <br className="hidden md:block" />
               <span className="text-purple-200">
                 Conexiones auténticas, experiencias únicas.

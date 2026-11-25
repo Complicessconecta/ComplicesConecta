@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit, Trash2, Eye, Ban, CheckCircle, Loader2 } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Eye, Ban, CheckCircle, Loader2, Building } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -14,9 +14,15 @@ import {
 } from '@/services/clubs/clubContentService';
 
 // Datos de respaldo cuando Supabase no devuelve clubs (tabla vacía / RLS).
+// Las fotos son las mismas del catálogo público (PUBLIC_CLUBS en
+// @/pages/ClubsPublic): cada club tiene UNA foto distinta — Eden Noir
+// (1514525253161) no se repite en ningún otro club (ronda 7, punto 7).
+// Antes este respaldo no tenía foto ni slug y la tabla no mostraba
+// ninguna imagen, así que en /clubs/demo los clubs eran solo texto.
 const MOCK_CLUBS = [
   {
     id: "demo-1",
+    slug: "demo",
     name: "Club Demo CómplicesConecta",
     city: "CDMX",
     rating: 4.8,
@@ -24,10 +30,13 @@ const MOCK_CLUBS = [
     isActive: true,
     isVerified: true,
     category: "premium",
-    createdAt: "2026-01-26"
+    createdAt: "2026-01-26",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=400",
   },
   {
-    id: "demo-2", 
+    id: "demo-2",
+    slug: "noche-vip-lounge",
     name: "Noche VIP Lounge",
     city: "Guadalajara",
     rating: 4.5,
@@ -35,10 +44,13 @@ const MOCK_CLUBS = [
     isActive: true,
     isVerified: true,
     category: "standard",
-    createdAt: "2026-01-25"
+    createdAt: "2026-01-25",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400",
   },
   {
     id: "demo-3",
+    slug: "mystic-garden",
     name: "Mystic Garden",
     city: "Monterrey",
     rating: 4.2,
@@ -46,12 +58,34 @@ const MOCK_CLUBS = [
     isActive: false,
     isVerified: false,
     category: "standard",
-    createdAt: "2026-01-24"
-  }
+    createdAt: "2026-01-24",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400",
+  },
+  {
+    // Ronda 7, punto 7: "Eden Noir" no existía en este respaldo (la
+    // tabla de /clubs/demo solo listaba Club Demo, Noche VIP Lounge y
+    // Mystic Garden) aunque sí está en el catálogo público. Foto
+    // distinta a las de los otros tres (la misma portada que en
+    // PUBLIC_CLUBS, 1514525253161).
+    id: "demo-4",
+    slug: "eden-noir",
+    name: "Eden Noir Club",
+    city: "CDMX",
+    rating: 4.9,
+    checkIns: 980,
+    isActive: true,
+    isVerified: true,
+    category: "premium",
+    createdAt: "2026-01-23",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400",
+  },
 ];
 
 interface SimpleClub {
   id: string;
+  slug?: string | undefined;
   name: string;
   city: string;
   rating: number;
@@ -60,6 +94,8 @@ interface SimpleClub {
   isVerified: boolean;
   category: string;
   createdAt: string;
+  /** Portada del club (foto distinta por club); sin ella la tabla muestra un icono. */
+  coverImageUrl?: string | null;
 }
 
 const ClubAdminPanelSimple: React.FC = () => {
@@ -111,7 +147,7 @@ const ClubAdminPanelSimple: React.FC = () => {
     try {
       const query = supabase
         .from("clubs")
-        .select("id, name, city, rating_average, check_in_count, is_active, verified_at, membership_tier, created_at")
+        .select("id, slug, name, city, cover_image_url, rating_average, check_in_count, is_active, verified_at, membership_tier, created_at")
         .order("created_at", { ascending: false });
       const { data, error } = await Promise.race([
         query,
@@ -123,6 +159,7 @@ const ClubAdminPanelSimple: React.FC = () => {
       if (data && data.length > 0) {
         const mapped: SimpleClub[] = data.map((row) => ({
           id: row.id,
+          slug: (row as { slug?: string | null }).slug ?? undefined,
           name: row.name,
           city: row.city,
           rating: row.rating_average ?? 0,
@@ -131,6 +168,9 @@ const ClubAdminPanelSimple: React.FC = () => {
           isVerified: Boolean(row.verified_at),
           category: row.membership_tier ?? "standard",
           createdAt: row.created_at,
+          coverImageUrl:
+            (row as { cover_image_url?: string | null }).cover_image_url ??
+            null,
         }));
         setClubs(mapped);
       } else {
@@ -340,6 +380,7 @@ const ClubAdminPanelSimple: React.FC = () => {
             <table className="w-full min-w-[720px] border-collapse border border-white/15 text-white">
               <thead>
                 <tr className="bg-purple-950/80">
+                  <th className="border border-white/15 px-4 py-2 text-left text-white">Foto</th>
                   <th className="border border-white/15 px-4 py-2 text-left text-white">Nombre</th>
                   <th className="border border-white/15 px-4 py-2 text-left text-white">Ciudad</th>
                   <th className="border border-white/15 px-4 py-2 text-left text-white">Categoría</th>
@@ -352,6 +393,20 @@ const ClubAdminPanelSimple: React.FC = () => {
               <tbody>
                 {filteredClubs.map((club) => (
                   <tr key={club.id} className="hover:bg-white/5">
+                    <td className="border border-white/15 px-4 py-2">
+                      {club.coverImageUrl ? (
+                        <img
+                          src={club.coverImageUrl}
+                          alt={club.name}
+                          className="h-12 w-16 object-cover rounded-md"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="h-12 w-16 rounded-md bg-white/10 flex items-center justify-center">
+                          <Building className="h-5 w-5 text-white/50" />
+                        </div>
+                      )}
+                    </td>
                     <td className="border border-white/15 px-4 py-2 font-medium text-white">{club.name}</td>
                     <td className="border border-white/15 px-4 py-2 text-white/90">{club.city}</td>
                     <td className="border border-white/15 px-4 py-2">{getCategoryBadge(club.category)}</td>

@@ -33,6 +33,9 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { getSocialDemoData } from "@/demo/socialDemoData";
+import { generateDemoProfiles } from "@/demo/demoData";
+import { generateDemoUserUUID } from "@/lib/demo-uuid";
+import { findLocalDemoAccountById } from "@/lib/demo-registration";
 
 export type FriendRequestKind = "friendship" | "photo_access";
 export type FriendRequestStatus = "pending" | "accepted" | "declined";
@@ -60,6 +63,13 @@ export interface FriendRequest {
  * `sendPhotoAccessRequest` solo bloquea si hay una pendiente).
  */
 export const ANONYMOUS_PHOTO_ACCESS_TTL_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Ronda 9 (stream A, punto 4): solicitudes de amistad que una cuenta
+ * anónima puede enviar por día. Vive aquí (no en anonymous.ts) para
+ * no crear un ciclo de imports: anonymous.ts importa de friends.ts.
+ */
+export const ANONYMOUS_FRIEND_REQUESTS_DAILY_LIMIT = 5;
 
 /** ¿Expiró un acceso a fotos concedido (solo aplica a anónimos)? */
 function isPhotoAccessExpired(
@@ -388,9 +398,27 @@ export async function sendFriendRequest(
   profileId: string,
   message?: string,
   isDemo = false,
+  opts?: { isAnonymousSender?: boolean },
 ): Promise<{ ok: boolean; error?: string }> {
   if (!viewerId || !profileId || viewerId === profileId) {
     return { ok: false, error: "No puedes enviarte una solicitud a ti mismo" };
+  }
+  // Ronda 9 (stream A, punto 4): una cuenta anónima tiene límite
+  // diario de solicitudes de amistad (5/día). Se aplica en demo y
+  // en real (la cuenta es local en demo; en real el flag viaja con
+  // el perfil). Sin el flag no hay límite por esta regla.
+  if (opts?.isAnonymousSender) {
+    const sentToday = countFriendRequestsSentToday(
+      viewerId,
+      "friendship",
+      Date.now(),
+    );
+    if (sentToday >= ANONYMOUS_FRIEND_REQUESTS_DAILY_LIMIT) {
+      return {
+        ok: false,
+        error: `Límite diario alcanzado: las cuentas anónimas pueden enviar hasta ${ANONYMOUS_FRIEND_REQUESTS_DAILY_LIMIT} solicitudes de amistad por día. Inténtalo mañana.`,
+      };
+    }
   }
   if (isDemo || !supabase) {
     const requests = readLocalRequests();
@@ -520,6 +548,40 @@ export async function removeFriend(
 /* Listas                                                              */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Ronda 9, stream D: id de perfil demo → nombre visible.
+ *
+ * Las solicitudes locales (`friend_requests_demo`) solo guardan ids,
+ * y /requests mostraba el id crudo o "Perfil" cuando no lo resolvía:
+ * una solicitud de anonr8test a la pareja era invisible como tal.
+ * Orden: cuentas demo canónicas (Sofía / Carmen & Roberto) →
+ * registro local de cuentas (`cc_local_demo_accounts_v1`, p. ej.
+ * TestR7, anonr8test) → roster de Discover → datos sociales demo.
+ * Sin coincidencia devuelve el id tal cual (nunca inventa un nombre).
+ */
+export function resolveDemoProfileName(profileId: string): string {
+  if (!profileId) return profileId;
+  if (profileId === generateDemoUserUUID("single@outlook.es")) return "Sofía";
+  if (profileId === generateDemoUserUUID("pareja@outlook.es"))
+    return "Carmen & Roberto";
+  const local = findLocalDemoAccountById(profileId);
+  if (local) {
+    const display =
+      (typeof local.profile.display_name === "string" &&
+        local.profile.display_name.trim()) ||
+      (typeof local.profile.name === "string" && local.profile.name.trim()) ||
+      local.nickname;
+    if (display) return display;
+  }
+  const roster = generateDemoProfiles(20).find((p) => p.id === profileId);
+  if (roster?.name) return roster.name;
+  const social = getSocialDemoData(profileId);
+  if (social.displayName && social.displayName !== profileId) {
+    return social.displayName;
+  }
+  return profileId;
+}
+
 /** Amigos de un perfil (demo: datos semilla + pares locales). */
 export function listFriendsSync(profileId: string): Friend[] {
   const demo = getSocialDemoData(profileId);
@@ -587,6 +649,57 @@ export function listSentRequestsSync(
       (r) => r.fromId === userId && (kind === undefined || r.kind === kind),
     )
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+}
+
+/**
+ * Ronda 9 (stream A, punto 4): solicitudes de un tipo enviadas por
+ * el usuario HOY (día local del navegador). Base del límite diario
+ * de solicitudes de amistad de las cuentas anónimas.
+ */
+export function countFriendRequestsSentToday(
+  userId: string,
+  kind: FriendRequestKind = "friendship",
+  nowMs: number = Date.now(),
+): number {
+  const startOfDay = new Date(nowMs);
+  startOfDay.setHours(0, 0, 0, 0);
+  return readLocalRequests().filter(
+    (r) =>
+      r.fromId === userId &&
+      r.kind === kind &&
+      Date.parse(r.createdAt) >= startOfDay.getTime(),
+  ).length;
+}
+
+/**
+ * Ronda 9 (stream A, punto 1): ms restantes del acceso concedido a
+ * la galería de un perfil anónimo (24 h desde la aceptación,
+ * `respondedAt`); null si no hay acceso vigente (nunca concedido,
+ * pendiente, declinado o ya expirado). Es lo que lee la superficie
+ * de galería limitada del perfil anónimo para mostrar la cuenta
+ * atrás y pedir de nuevo al expirar.
+ */
+export function getAnonymousPhotoAccessRemainingMs(
+  viewerId: string,
+  ownerId: string,
+  nowMs: number = Date.now(),
+): number | null {
+  if (!viewerId || !ownerId || viewerId === ownerId) return null;
+  const accepted = readLocalRequests()
+    .filter(
+      (r) =>
+        r.kind === "photo_access" &&
+        r.status === "accepted" &&
+        r.fromId === viewerId &&
+        r.toId === ownerId,
+    )
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  const latest = accepted[0];
+  if (!latest) return null;
+  const grantedAt = Date.parse(latest.respondedAt ?? latest.createdAt);
+  if (Number.isNaN(grantedAt)) return null;
+  const remaining = grantedAt + ANONYMOUS_PHOTO_ACCESS_TTL_MS - nowMs;
+  return remaining > 0 ? remaining : null;
 }
 
 /**

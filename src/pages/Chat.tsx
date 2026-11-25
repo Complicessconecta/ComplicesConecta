@@ -59,9 +59,14 @@ import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
 import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
 import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
 import {
+  areFriendsSync,
   getPhotoAccessStatus,
   type PhotoAccessStatus,
 } from "@/lib/friends";
+import {
+  findLocalDemoAccountById,
+  isAnonymousDemoProfile,
+} from "@/lib/demo-registration";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 import { EmojiPicker } from "@/components/chat/EmojiPicker";
@@ -966,6 +971,42 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
           "El chat está pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.",
       });
       return;
+    }
+
+    // Ronda 9 (stream A, punto 4): si el remitente O el destinatario
+    // es una cuenta anónima, no hay chat ni media hasta que el otro
+    // lado acepte la amistad. Aplica siempre (no depende del toggle
+    // de privacidad) y solo en hilos privados; las salas públicas
+    // siempre permiten. El destinatario anónimo se resuelve en el
+    // registro local demo; fuera de demo, sin registro, no se bloquea
+    // por falta de datos (no hay falsos bloqueos).
+    if (selectedChat.roomType === "private") {
+      const senderIsAnonymous =
+        isAnonymousDemoProfile(user) ||
+        findLocalDemoAccountById(user?.id ?? "")?.isAnonymous === true;
+      const recipientIsAnonymous =
+        findLocalDemoAccountById(selectedChat.id.toString())?.isAnonymous ===
+        true;
+      if (senderIsAnonymous || recipientIsAnonymous) {
+        const friends = areFriendsSync(
+          user?.id ?? "",
+          selectedChat.id.toString(),
+        );
+        const limit = canSendMessageTo({
+          recipientPrivacy: null,
+          senderIsVerified: false,
+          senderIsAnonymous,
+          recipientIsAnonymous,
+          areFriends: friends,
+        });
+        if (!limit.allowed) {
+          toast({
+            title: "Sin permisos",
+            description: limit.reason,
+          });
+          return;
+        }
+      }
     }
 
     // Enforcement del toggle "Limitar el envío de mensajes" del

@@ -44,6 +44,11 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { logger } from "@/lib/logger";
 import { computeProfileCompleteness } from "@/lib/profileCompleteness";
+import {
+  deriveOrientationLabel,
+  formatGenderLabel,
+  formatInterestedInLabel,
+} from "@/lib/profileLabels";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useToast } from "@/hooks/useToast";
 import { Input } from "@/components/ui/forms/Input";
@@ -72,6 +77,7 @@ import {
   DEMO_WALLET_CHANGED_EVENT,
 } from "@/lib/demo-wallet";
 import { isAnonymousDemoProfile } from "@/lib/demo-registration";
+import { getAnonymousExpiryInfo } from "@/lib/anonymous";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import {
   PRIVATE_MEDIA_PLACEHOLDER,
@@ -155,32 +161,14 @@ const DEMO_SINGLE_INTEREST_TITLES = [
   "Match Inteligente",
 ] as const;
 
+// Orientación derivada (Heterosexual / Homosexual / Bisexual). Ronda 9
+// (stream B): delega en `deriveOrientationLabel`, que acepta "men" /
+// "women" además de "male" / "female" (el mapeo anterior no los conocía
+// y devolvía null para el valor guardado en demo, "men").
 const deriveSingleOrientation = (
   gender?: string | null,
   interestedIn?: string | null,
-): string | null => {
-  if (!interestedIn) return null;
-  // useAuth une interested_in (string[]) con ", " al cargar el perfil.
-  const parts = interestedIn
-    .toLowerCase()
-    .split(/[,\s]+/)
-    .filter((p) => p.length > 0);
-  if (
-    parts.includes("both") ||
-    parts.includes("all") ||
-    parts.includes("everyone")
-  )
-    return "Bisexual";
-  const wantsMale = parts.includes("male");
-  const wantsFemale = parts.includes("female");
-  if (wantsMale && wantsFemale) return "Bisexual";
-  const target = wantsMale ? "male" : wantsFemale ? "female" : null;
-  if (!target) return null;
-  const g = (gender ?? "").toLowerCase();
-  if (g === "male") return target === "female" ? "Heterosexual" : "Homosexual";
-  if (g === "female") return target === "male" ? "Heterosexual" : "Homosexual";
-  return null;
-};
+): string | null => deriveOrientationLabel(gender, interestedIn);
 
 const splitLookingFor = (lookingFor: string | null): string[] =>
   (lookingFor ?? "")
@@ -454,8 +442,6 @@ const ProfileSingle: FC = () => {
   const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
 
-  const [accountChipHovered, setAccountChipHovered] = useState(false);
-
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
   // PIN persistente (full test 2026-11-24): el desbloqueo de la galería
@@ -585,6 +571,16 @@ const ProfileSingle: FC = () => {
   // fallback de Sofía (foto, edad, bio, saldos, NFTs, fotos privadas)
   // se aplica. Ver isAnonymousDemoProfile en @/lib/demo-registration.
   const isAnonymous = useMemo(() => isAnonymousDemoProfile(profile), [profile]);
+
+  // Ronda 9 (stream A, punto 6): vigencia de la cuenta anónima (30
+  // días desde su creación) para el aviso de expiración/conversión.
+  const anonymousExpiry = useMemo(
+    () =>
+      getAnonymousExpiryInfo(
+        typeof profile?.created_at === "string" ? profile.created_at : null,
+      ),
+    [profile?.created_at],
+  );
 
   // Datos de imágenes privadas para el carrusel
   type PrivateImageItem = {
@@ -1172,6 +1168,15 @@ const ProfileSingle: FC = () => {
     "Usuario", // Fallback genérico, no nombre específico
   );
 
+  // Ronda 9 (stream A, Cuenta/DEMO): la etiqueta del chip es
+  // CONSTANTE — "DEMO" en demo o el nombre en sesión real. Antes
+  // dependía del hover (`accountChipHovered`: "Cuenta" al pasar el
+  // cursor) y en táctil el hover se quedaba pegado al abrir el menú,
+  // así que la etiqueta cambiaba según el estado del menú y la ruta
+  // (ronda 8: "DEMO" con menú cerrado, "Cuenta" con menú abierto o
+  // en /profile-couple). Sin hover no hay dependencia.
+  const accountChipLabel = isDemoProfile ? "DEMO" : displayName;
+
   // Foto principal de Sofía (28, demo single): si el avatar viene vacío
   // o apunta al asset local roto `img/demo-single-avatar.jpg` (no existe
   // en public/) o al placeholder genérico (tampoco existe), SafeImage
@@ -1216,22 +1221,17 @@ const ProfileSingle: FC = () => {
     readCountryCodeLocal(user?.id ?? profile?.id ?? "") ??
     getSocialDemoData(displayName).countryCode;
 
-  const displayGenderLabel = (() => {
-    const g = currentProfile.gender?.toLowerCase();
-    if (g === "male") return "Hombre";
-    if (g === "female") return "Mujer";
-    if (g === "couple") return "Pareja";
-    return g || "No especificado"; // Fallback genérico
-  })();
+  // Ronda 9 (stream B): `formatGenderLabel` localiza el valor crudo
+  // ("female" -> "Mujer"); antes un valor desconocido se devolvía tal cual.
+  const displayGenderLabel = formatGenderLabel(currentProfile.gender);
 
-  const displayOrientationLabel = (() => {
-    const i = currentProfile.interested_in?.toLowerCase();
-    if (i === "male") return "Hombres";
-    if (i === "female") return "Mujeres";
-    if (i === "couple") return "Parejas";
-    if (i === "all" || i === "everyone") return "Todos";
-    return i || "No especificado"; // Fallback genérico
-  })();
+  // Ronda 9 (stream B): la píldora mostraba "men" en crudo porque el
+  // mapeo anterior solo conocía "male"/"female" y el valor guardado es
+  // "men". `formatInterestedInLabel` lo localiza ("Hombres") y nunca
+  // devuelve el valor crudo en inglés.
+  const displayOrientationLabel = formatInterestedInLabel(
+    currentProfile.interested_in,
+  );
 
   // Ronda 8 (punto 14): el perfil anónimo NO tiene la sección
   // "Blockchain & NFTs" (sin NFTs, sin mint/claim, sin staking de
@@ -1508,17 +1508,9 @@ const ProfileSingle: FC = () => {
                     {isOwnProfile && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
-                            onMouseEnter={() => setAccountChipHovered(true)}
-                            onMouseLeave={() => setAccountChipHovered(false)}
-                            className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
-                          >
+                          <Button className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30">
                             <span className="flex items-center gap-2">
-                              {accountChipHovered
-                                ? "Cuenta"
-                                : isDemoProfile
-                                  ? "DEMO"
-                                  : displayName}
+                              {accountChipLabel}
                             </span>
                           </Button>
                         </DropdownMenuTrigger>
@@ -1532,7 +1524,7 @@ const ProfileSingle: FC = () => {
                           className="min-w-[180px]"
                         >
                           <DropdownMenuLabel>
-                            {isDemoProfile ? "DEMO" : "Sesión Activa"}
+                            {accountChipLabel}
                           </DropdownMenuLabel>
                           <DropdownMenuItem
                             onClick={() => navigate("/profile")}
@@ -2259,7 +2251,37 @@ const ProfileSingle: FC = () => {
               su vacío contradictorio (punto 13).
               Ronda 8 (punto 14): el perfil anónimo NO puede publicar
               posts (solo crear reseñas) ni mintear NFTs: se ocultan
-              "Crear Post" y "Crear NFT" en ProfileContent. */}
+              "Crear Post" y "Crear NFT" en ProfileContent.
+              Ronda 9 (stream A, puntos 1 y 6): el perfil anónimo tiene
+              galería LIMITADA propia (isAnonymous) y aviso de
+              expiración/conversión: 30 días desde su creación; al
+              expirar, o se verifica (World ID / KYC) o se pierde el
+              acceso completo. La billetera ya está desactivada
+              (sin compra/recibo de CMPX, sin recompensas, sin staking)
+              hasta verificar. */}
+          {isOwnProfile && isAnonymous && (
+            <div className="rounded-2xl border border-amber-400/40 bg-amber-500/10 p-4 sm:p-5 text-sm">
+              <p className="font-semibold text-amber-200">
+                Cuenta anónima
+                {anonymousExpiry.expiresAtMs !== null &&
+                  !anonymousExpiry.expired &&
+                  ` · expira en ${anonymousExpiry.daysRemaining} ${anonymousExpiry.daysRemaining === 1 ? "día" : "días"}`}
+                {anonymousExpiry.expired && " · expirada"}
+              </p>
+              <p className="mt-1 text-white/70">
+                Tu cuenta anónima dura 30 días. Verifica tu perfil (World ID /
+                KYC) para desbloquear todo: billetera, chat sin límites, galería
+                completa y reseñas. Sin verificar, no puedes comprar ni recibir
+                CMPX, ni ganar recompensas ni hacer staking.
+              </p>
+              <Button
+                onClick={() => navigate("/edit-profile-single")}
+                className="mt-3 bg-amber-500 hover:bg-amber-600 text-black font-semibold px-4 py-2 rounded-full"
+              >
+                Completar mi perfil para verificarme
+              </Button>
+            </div>
+          )}
           <div className="pt-4">
             <ProfileContent
               isOwnProfile={isOwnProfile}
@@ -2269,6 +2291,7 @@ const ProfileSingle: FC = () => {
               showExamplePost={false}
               allowCreatePost={!isAnonymous}
               allowNft={!isAnonymous}
+              isAnonymous={isAnonymous}
             />
           </div>
 

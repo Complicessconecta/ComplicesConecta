@@ -30,8 +30,7 @@ export const getAppConfig = (): AppConfig => {
   }
 
   const mode = (import.meta.env.VITE_APP_MODE || "production") as
-    | "demo"
-    | "production";
+    "demo" | "production";
 
   // Usar modo configurado directamente
   const realMode = mode;
@@ -68,10 +67,7 @@ export const getAppConfig = (): AppConfig => {
 };
 
 // Credenciales demo permitidas (SOLO para demo)
-export const DEMO_CREDENTIALS = [
-  "single@outlook.es",
-  "pareja@outlook.es",
-];
+export const DEMO_CREDENTIALS = ["single@outlook.es", "pareja@outlook.es"];
 
 // C4/C5 (2026-11-19): las contraseñas demo/admin/producción se eliminaron del
 // bundle. No existe ninguna función que lea VITE_*_PASSWORD en el cliente.
@@ -89,7 +85,9 @@ export const getProductionAdminEmails = (): string[] => {
   const primary = (import.meta.env.VITE_ADMIN_EMAIL as string | undefined)
     ?.trim()
     .toLowerCase();
-  const secondary = (import.meta.env.VITE_PROD_ADMIN_EMAIL_2 as string | undefined)
+  const secondary = (
+    import.meta.env.VITE_PROD_ADMIN_EMAIL_2 as string | undefined
+  )
     ?.trim()
     .toLowerCase();
 
@@ -102,7 +100,7 @@ export const isDemoCredential = (email: string): boolean => {
     // Validar formato de email con Zod
     const emailSchema = z.string().email();
     emailSchema.parse(email);
-    
+
     const normalizedEmail = email.toLowerCase().trim();
     return DEMO_CREDENTIALS.includes(normalizedEmail);
   } catch (error) {
@@ -154,10 +152,10 @@ export const handleDemoAuth = (
     accountType: finalAccountType,
     first_name:
       email === "single@outlook.es"
-          ? "Sofía"
-          : email === "pareja@outlook.es"
-            ? "Carmen & Roberto"
-              : email.split("@")[0],
+        ? "Sofía"
+        : email === "pareja@outlook.es"
+          ? "Carmen & Roberto"
+          : email.split("@")[0],
     is_demo: true,
     created_at: new Date().toISOString(),
   };
@@ -210,12 +208,63 @@ export const resolveDemoAccountType = (
       if (normalized === "single") return "single";
     }
   }
-  const email =
-    typeof u.email === "string" ? u.email.toLowerCase().trim() : "";
+  const email = typeof u.email === "string" ? u.email.toLowerCase().trim() : "";
   if (email === "pareja@outlook.es") return "couple";
   if (email === "single@outlook.es") return "single";
   return null;
 };
+
+/**
+ * Ronda 9, stream D: tipo de cuenta de la SESIÓN demo actual, leído
+ * de localStorage (`demo_user` y, como respaldo, la clave `userType`
+ * que escriben `handleDemoAuth` y `restoreLocalDemoSession`).
+ *
+ * Por qué hace falta: en la ruta de inicialización de `useAuth` el
+ * `user` (mock) se construye solo con `{id, email}` — sin
+ * `accountType` ni `profile_type` — y el `email.includes("couple")`
+ * de `useTokens` tampoco cubre `pareja@outlook.es` ni las cuentas
+ * `@demo.local` creadas por registro. Una sesión de pareja resolvía
+ * como single y /tokens mostraba la wallet de Sofía (test ronda 8:
+ * CMPX 1350 / GTK 850 / 4 NFTs en sesión de pareja, en vez de
+ * 2000 / 1500 / 2). Las páginas de perfil no caían en esto porque
+ * hardcodean su propio tipo ("single"/"couple").
+ */
+export const resolveStoredDemoAccountType = (): DemoAccountType | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem("demo_user");
+    if (raw) {
+      const parsed: unknown = JSON.parse(raw);
+      const fromUser = resolveDemoAccountType(parsed);
+      if (fromUser) return fromUser;
+    }
+    const rawUserType = window.localStorage.getItem("userType");
+    if (rawUserType) {
+      // El valor puede venir entrecomillado ('"couple"'): el setter
+      // de usePersistedState de DemoSelector serializa con
+      // JSON.stringify, mientras los lectores comparan en crudo.
+      const userType = rawUserType.replace(/^"|"$/g, "");
+      if (userType === "couple" || userType === "single") return userType;
+    }
+  } catch {
+    // demo_user corrupto o sin almacenamiento: sin veredicto.
+  }
+  return null;
+};
+
+/**
+ * Tipo de cuenta demo del usuario actual, en orden de fiabilidad:
+ * perfil cargado (`useAuth` lo resuelve desde `demo_user`) → `user`
+ * de la sesión → `demo_user`/`userType` de localStorage. `null` si
+ * ninguna fuente dice el tipo (el llamador decide el fallback).
+ */
+export const resolveCurrentDemoAccountType = (
+  profile: unknown,
+  user: unknown,
+): DemoAccountType | null =>
+  resolveDemoAccountType(profile) ??
+  resolveDemoAccountType(user) ??
+  resolveStoredDemoAccountType();
 
 // Claves demo conocidas (exactas) y prefijos de datos demo por
 // conversación/usuario. /demo promete que los datos demo no se guardan
@@ -320,4 +369,3 @@ if (appConfig.mode === "demo") {
 } else {
   logger.info("🔐 Modo producción activo - autenticación real requerida");
 }
-

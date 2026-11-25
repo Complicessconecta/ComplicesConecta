@@ -22,6 +22,12 @@ interface ProfileCardProps {
   isOnline?: boolean;
   isPremium?: boolean;
   isVerified?: boolean;
+  /**
+   * Ronda 9 (stream A, punto 3): perfil anónimo: insignia "Anónimo"
+   * junto a la de verificado. Solo lo ven espectadores verificados
+   * (el filtro vive en shouldShowInDiscover).
+   */
+  isAnonymous?: boolean;
   isPrivate?: boolean;
   lastSeen?: string;
   onLike?: (id: number | string) => void;
@@ -46,6 +52,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     isOnline = false,
     isPremium = false,
     isVerified = false,
+    isAnonymous = false,
     isPrivate = false,
     lastSeen,
     onLike,
@@ -273,6 +280,15 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                     title="Perfil verificado"
                   >
                     ✓ Verificado
+                  </Badge>
+                )}
+                {/* Ronda 9 (stream A, punto 3): insignia de anónimo */}
+                {isAnonymous && (
+                  <Badge
+                    className="shrink-0 bg-slate-600 text-white border-0 text-[10px] sm:text-xs"
+                    title="Perfil anónimo: solo visible para cuentas verificadas"
+                  >
+                    Anónimo
                   </Badge>
                 )}
               </div>

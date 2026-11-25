@@ -459,29 +459,29 @@ export default function Tokens() {
             <Badge className="bg-linear-to-r from-yellow-400 to-orange-500 text-black font-bold mb-4">
               💰 SISTEMA DUAL DE TOKENS
             </Badge>
-            <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
+            <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-slate-900 dark:text-white mb-6 leading-tight">
               Tokens
               <span className="bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 {" "}
                 CMPX & GTK
               </span>
             </h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-slate-600 dark:text-white/80 max-w-3xl mx-auto mb-8">
               Dos tokens, dos propósitos: CMPX para consumo diario y GTK para
               inversión blockchain. Economía digital única con staking del 8-18%
               APY.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-blue-500/20 to-cyan-500/20 text-blue-700 dark:text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Coins className="h-4 w-4 mr-2" />
                 CMPX Consumo
               </Badge>
-              <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-700 dark:text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Rocket className="h-4 w-4 mr-2" />
                 GTK Inversión
               </Badge>
-              <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
+              <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-700 dark:text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 8-18% APY
               </Badge>
@@ -503,7 +503,7 @@ export default function Tokens() {
               <Button
                 onClick={handleOpenStaking}
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg"
+                className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10 px-8 py-3 text-lg"
               >
                 <TrendingUp className="w-5 h-5 mr-2" />
                 Hacer Staking
@@ -520,7 +520,7 @@ export default function Tokens() {
                     });
                   }}
                   variant="outline"
-                  className="border-yellow-300/30 text-yellow-100 hover:bg-yellow-400/10"
+                  className="border-yellow-300/30 text-yellow-700 hover:bg-yellow-400/10 dark:text-yellow-100 dark:hover:bg-yellow-400/10"
                 >
                   Reiniciar Wallet Demo
                 </Button>
@@ -551,7 +551,7 @@ export default function Tokens() {
                     }
                   }}
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10"
+                  className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
                 >
                   Refrescar estado de Wallet
                 </Button>
@@ -566,13 +566,13 @@ export default function Tokens() {
               transition={{ duration: 0.4 }}
               className="mb-8"
             >
-              <Card className="bg-white/5 border border-white/15 backdrop-blur-xl rounded-2xl">
-                <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-white/90">
+              <Card className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/15 backdrop-blur-xl rounded-2xl">
+                <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-slate-700 dark:text-white/90">
                   <div>
                     <div className="font-semibold">
                       Para usar Tokens inicia sesión o entra al modo Demo
                     </div>
-                    <div className="text-sm text-white/70">
+                    <div className="text-sm text-slate-500 dark:text-white/70">
                       El modo Demo te permite explorar sin registro.
                     </div>
                   </div>
@@ -586,7 +586,7 @@ export default function Tokens() {
                     <Button
                       onClick={() => navigate("/auth")}
                       variant="outline"
-                      className="border-white/30 text-white hover:bg-white/10"
+                      className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
                     >
                       Iniciar sesión
                     </Button>
@@ -603,13 +603,13 @@ export default function Tokens() {
               transition={{ duration: 0.4 }}
               className="mb-8"
             >
-              <Card className="bg-white/5 border border-white/15 backdrop-blur-xl rounded-2xl">
-                <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-white/90">
+              <Card className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/15 backdrop-blur-xl rounded-2xl">
+                <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-slate-700 dark:text-white/90">
                   <div>
                     <div className="font-semibold">
                       Aún no tienes una wallet
                     </div>
-                    <div className="text-sm text-white/70">
+                    <div className="text-sm text-slate-500 dark:text-white/70">
                       Crea tu wallet para gestionar CMPX/GTK y NFTs.
                     </div>
                   </div>
@@ -647,16 +647,16 @@ export default function Tokens() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="mb-16"
               >
-                <Card className="bg-white/5 backdrop-blur-xl border border-yellow-500/50 animate-pulse rounded-2xl shadow-xl">
+                <Card className="bg-white dark:bg-white dark:bg-white/5 backdrop-blur-xl border border-yellow-500/50 animate-pulse rounded-2xl shadow-xl">
                   <CardHeader>
-                    <CardTitle className="text-white flex items-center gap-3">
-                      <Shield className="h-5 w-5 text-yellow-300" />
+                    <CardTitle className="text-slate-900 dark:text-white flex items-center gap-3">
+                      <Shield className="h-5 w-5 text-yellow-600 dark:text-yellow-300" />
                       <span>Evidencia Legal de Transacción</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-6 md:p-10 space-y-3 text-sm text-white/90">
+                  <CardContent className="p-6 md:p-10 space-y-3 text-sm text-slate-700 dark:text-white/90">
                     {isLoadingEvidence ? (
-                      <p className="text-white/70">Cargando seguridad...</p>
+                      <p className="text-slate-500 dark:text-white/70">Cargando seguridad...</p>
                     ) : (
                       <>
                         <p>
@@ -684,7 +684,7 @@ export default function Tokens() {
                             </>
                           )}
                         </p>
-                        <p className="text-[11px] text-white/70 break-all">
+                        <p className="text-[11px] text-slate-500 dark:text-white/70 break-all">
                           Hash de Seguridad:{" "}
                           {agreementMeta?.agreementHash ||
                             "Se generará y almacenará en Supabase al completar el acuerdo."}{" "}
@@ -697,7 +697,7 @@ export default function Tokens() {
                             ? new Date(agreementMeta.signedAt).toLocaleString()
                             : "pendiente de firma"}
                         </p>
-                        <p className="text-[11px] text-white/60">
+                        <p className="text-[11px] text-slate-500 dark:text-white/60">
                           Jurisdicción: Protocolo de Arbitraje Digital
                           Cómplices.
                         </p>
@@ -716,64 +716,64 @@ export default function Tokens() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-20"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white text-center mb-12">
               Dos Tokens, Dos Propósitos
             </h2>
 
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Token CMPX */}
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
+              <Card className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 rounded-2xl shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
+                  <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                     <div className="p-3 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <DollarSign className="h-6 w-6 text-white" />
                     </div>
                     <div>
                       <div>{tokenInfo.cmpx.name}</div>
-                      <div className="text-lg font-normal text-blue-300">
+                      <div className="text-lg font-normal text-blue-700 dark:text-blue-300">
                         {tokenInfo.cmpx.subtitle}
                       </div>
                     </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 md:p-10 space-y-6">
-                  <p className="text-white/90 text-lg">
+                  <p className="text-slate-700 dark:text-slate-700 dark:text-white/90 text-lg">
                     {tokenInfo.cmpx.description}
                   </p>
 
                   <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">
+                    <div className="p-3 bg-slate-100 dark:bg-white/10 rounded-lg">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.cmpx.supply}
                       </div>
-                      <div className="text-white/70 text-sm">Suministro</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Suministro</div>
                     </div>
-                    <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">
+                    <div className="p-3 bg-slate-100 dark:bg-white/10 rounded-lg">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.cmpx.purpose}
                       </div>
-                      <div className="text-white/70 text-sm">Propósito</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Propósito</div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
                       Casos de Uso:
                     </h4>
                     <div className="grid grid-cols-1 gap-3">
                       {tokenInfo.cmpx.useCases.map((useCase, index) => (
                         <div
                           key={index}
-                          className="flex items-start gap-3 p-3 bg-white/5 rounded-lg"
+                          className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-lg"
                         >
-                          <div className="p-2 bg-blue-500/20 rounded-lg text-blue-300">
+                          <div className="p-2 bg-blue-500/20 rounded-lg text-blue-700 dark:text-blue-300">
                             {useCase.icon}
                           </div>
                           <div>
-                            <h5 className="font-semibold text-white text-sm">
+                            <h5 className="font-semibold text-slate-900 dark:text-white text-sm">
                               {useCase.title}
                             </h5>
-                            <p className="text-white/70 text-xs">
+                            <p className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">
                               {useCase.desc}
                             </p>
                           </div>
@@ -783,19 +783,19 @@ export default function Tokens() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
                       Distribución:
                     </h4>
                     <div className="space-y-2">
                       {tokenInfo.cmpx.distribution.map((item, index) => (
                         <div
                           key={index}
-                          className="flex justify-between items-center p-2 bg-white/5 rounded"
+                          className="flex justify-between items-center p-2 bg-slate-50 dark:bg-white/5 rounded"
                         >
-                          <span className="text-white/80 text-sm">
+                          <span className="text-slate-600 dark:text-slate-600 dark:text-white/80 text-sm">
                             {item.purpose}
                           </span>
-                          <span className="font-bold text-blue-300">
+                          <span className="font-bold text-blue-700 dark:text-blue-300">
                             {item.percentage}
                           </span>
                         </div>
@@ -806,63 +806,63 @@ export default function Tokens() {
               </Card>
 
               {/* Token GTK */}
-              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
+              <Card className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 rounded-2xl shadow-xl">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
+                  <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                     <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Rocket className="h-6 w-6 text-white" />
                     </div>
                     <div>
                       <div>{tokenInfo.gtk.name}</div>
-                      <div className="text-lg font-normal text-purple-300">
+                      <div className="text-lg font-normal text-purple-700 dark:text-purple-300">
                         {tokenInfo.gtk.subtitle}
                       </div>
                     </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <p className="text-white/90 text-lg">
+                  <p className="text-slate-700 dark:text-slate-700 dark:text-white/90 text-lg">
                     {tokenInfo.gtk.description}
                   </p>
 
                   <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">
+                    <div className="p-3 bg-slate-100 dark:bg-white/10 rounded-lg">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.gtk.supply}
                       </div>
-                      <div className="text-white/70 text-sm">Suministro</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Suministro</div>
                     </div>
-                    <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">
+                    <div className="p-3 bg-slate-100 dark:bg-white/10 rounded-lg">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.gtk.purpose}
                       </div>
-                      <div className="text-white/70 text-sm">Propósito</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Propósito</div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
                       Staking Tiers:
                     </h4>
                     <div className="space-y-2">
                       {tokenInfo.gtk.stakingTiers.map((tier, index) => (
                         <div
                           key={index}
-                          className="flex justify-between items-center p-3 bg-white/5 rounded-lg"
+                          className="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg"
                         >
                           <div>
-                            <div className="font-semibold text-white text-sm">
+                            <div className="font-semibold text-slate-900 dark:text-white text-sm">
                               {tier.duration}
                             </div>
-                            <div className="text-white/70 text-xs">
+                            <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">
                               Min: {tier.minAmount}
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-bold text-purple-300 text-lg">
+                            <div className="font-bold text-purple-700 dark:text-purple-300 text-lg">
                               {tier.apy}
                             </div>
-                            <div className="text-white/70 text-xs">APY</div>
+                            <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">APY</div>
                           </div>
                         </div>
                       ))}
@@ -870,7 +870,7 @@ export default function Tokens() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">
+                    <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
                       Roadmap Blockchain:
                     </h4>
                     <div className="space-y-2">
@@ -879,10 +879,10 @@ export default function Tokens() {
                           key={index}
                           className="flex items-start gap-3 p-2 bg-white/5 rounded"
                         >
-                          <div className="font-bold text-purple-300 text-sm shrink-0">
+                          <div className="font-bold text-purple-700 dark:text-purple-300 text-sm shrink-0">
                             {item.phase}
                           </div>
-                          <div className="text-white/80 text-sm">
+                          <div className="text-slate-600 dark:text-slate-600 dark:text-white/80 text-sm">
                             {item.milestone}
                           </div>
                         </div>
@@ -901,9 +901,9 @@ export default function Tokens() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mb-20"
           >
-            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl">
+            <Card className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 rounded-2xl shadow-2xl">
               <CardHeader>
-                <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
+                <CardTitle className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                   <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                     <BarChart3 className="h-6 w-6 text-white" />
                   </div>
@@ -918,28 +918,28 @@ export default function Tokens() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.7 + index * 0.1 }}
-                      className="p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl"
+                      className="p-6 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl"
                     >
-                      <h4 className="text-xl font-bold text-white mb-4">
+                      <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
                         {projection.year}
                       </h4>
-                      <div className="space-y-2 text-white/80">
+                      <div className="space-y-2 text-slate-600 dark:text-white/80">
                         <div className="flex justify-between">
                           <span>Venta CMPX:</span>
-                          <span className="font-bold text-white">
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {projection.cmpxSales}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Suscripciones:</span>
-                          <span className="font-bold text-white">
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {projection.subscriptions}
                           </span>
                         </div>
                         {projection.staking && (
                           <div className="flex justify-between">
                             <span>Staking:</span>
-                            <span className="font-bold text-white">
+                            <span className="font-bold text-slate-900 dark:text-white">
                               {projection.staking}
                             </span>
                           </div>
@@ -947,14 +947,14 @@ export default function Tokens() {
                         {projection.blockchain && (
                           <div className="flex justify-between">
                             <span>Blockchain:</span>
-                            <span className="font-bold text-white">
+                            <span className="font-bold text-slate-900 dark:text-white">
                               {projection.blockchain}
                             </span>
                           </div>
                         )}
-                        <div className="border-t border-white/20 pt-2 mt-2 flex justify-between">
+                        <div className="border-t border-slate-200 dark:border-white/20 pt-2 mt-2 flex justify-between">
                           <span className="font-semibold">Total:</span>
-                          <span className="text-2xl font-black text-white">
+                          <span className="text-2xl font-black text-slate-900 dark:text-white">
                             {projection.total}
                           </span>
                         </div>
@@ -973,10 +973,10 @@ export default function Tokens() {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="mb-20"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white text-center mb-4">
               Ventajas para Inversores
             </h2>
-            <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-500 dark:text-white/70 text-center mb-12 max-w-2xl mx-auto">
               Sistema dual de tokens diseñado para crear valor sostenible y
               oportunidades de crecimiento
             </p>
@@ -988,17 +988,17 @@ export default function Tokens() {
                   initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="p-6 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                  className="p-6 bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-all duration-300"
                 >
                   <div
                     className={`inline-flex p-3 rounded-lg bg-linear-to-r ${advantage.color} text-white mb-4`}
                   >
                     {advantage.icon}
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-3">
+                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
                     {advantage.title}
                   </h4>
-                  <p className="text-white/70 leading-relaxed">
+                  <p className="text-slate-600 dark:text-slate-600 dark:text-white/70 leading-relaxed">
                     {advantage.description}
                   </p>
                 </motion.div>
@@ -1013,9 +1013,9 @@ export default function Tokens() {
             transition={{ duration: 0.8, delay: 1.0 }}
             className="mb-12"
           >
-            <Card className="bg-linear-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+            <Card className="bg-linear-to-r from-purple-600/10 via-fuchsia-600/10 to-blue-600/10 dark:from-purple-600/30 dark:via-fuchsia-600/30 dark:to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
               <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold text-white mb-6">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
                   ¿Listo para Comenzar con Tokens?
                 </h3>
 
@@ -1039,14 +1039,14 @@ export default function Tokens() {
                   <Button
                     onClick={() => navigate("/tokens-info")}
                     variant="premium"
-                    className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
+                    className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10 px-8 py-3"
                   >
                     <Info className="w-5 h-5 mr-2" />
                     Más Información
                   </Button>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-4 text-white/80">
+                <div className="flex flex-wrap justify-center gap-4 text-slate-600 dark:text-white/80">
                   <div className="flex items-center gap-2">
                     <Shield className="h-4 w-4" />
                     <span>Seguro y Verificado</span>
@@ -1074,7 +1074,7 @@ export default function Tokens() {
             <Button
               onClick={handleGoBack}
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10"
+              className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver
@@ -1083,7 +1083,7 @@ export default function Tokens() {
             <Button
               onClick={handleGoHome}
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10"
+              className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
             >
               <Home className="w-4 h-4 mr-2" />
               Inicio
@@ -1099,7 +1099,7 @@ export default function Tokens() {
                   window.location.href = "/auth";
                 }}
                 variant="outline"
-                className="border-red-400/30 text-red-100 hover:bg-red-400/10"
+                className="border-red-400/30 text-red-700 hover:bg-red-400/10 dark:text-red-100 dark:hover:bg-red-400/10"
               >
                 <Shield className="w-4 h-4 mr-2" />
                 Cerrar Sesión Demo

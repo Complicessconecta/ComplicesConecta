@@ -102,6 +102,19 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({
       setAlias("");
       setEmail("");
       setPassword("");
+    } catch (err) {
+      // Ronda 9 (stream A, punto 6): `createLocalDemoAccount` lanza
+      // si ya existe una cuenta anónima en este dispositivo o si la
+      // identidad está retenida tras un reporte. Sin catch, el error
+      // subía al ErrorBoundary en vez de mostrar el motivo.
+      toast({
+        title: "No se pudo crear tu cuenta",
+        description:
+          err instanceof Error
+            ? err.message
+            : "No se pudo crear la cuenta anónima.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

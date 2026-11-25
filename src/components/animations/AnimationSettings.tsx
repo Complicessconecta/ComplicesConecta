@@ -320,6 +320,13 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
 };
 
 // Settings button component
+// RONDA 5: el engranaje flotante (`fixed bottom-4 left-4`) se ELIMINÓ:
+// seguía al hacer scroll y tapaba el compositor en /chat y los controles
+// en /video-chat. Este componente ahora es SOLO el host del modal: lo
+// abre el botón "Config" del dock (evento OPEN_ANIMATION_SETTINGS_EVENT),
+// el engranaje en flujo del HeaderNav (páginas públicas) y la fila
+// superior en flujo de MainLayout (rutas logueadas sin dock). El modal
+// en sí sigue siendo un overlay centrado bajo demanda, no un flotante.
 export const AnimationSettingsButton: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -333,18 +340,5 @@ export const AnimationSettingsButton: React.FC = () => {
       window.removeEventListener(OPEN_ANIMATION_SETTINGS_EVENT, open);
   }, []);
 
-  return (
-    <>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 left-4 z-40 p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-colors"
-      >
-        <Settings className="w-5 h-5" />
-      </motion.button>
-
-      <AnimationSettings isOpen={isOpen} onClose={() => setIsOpen(false)} />
-    </>
-  );
+  return <AnimationSettings isOpen={isOpen} onClose={() => setIsOpen(false)} />;
 };

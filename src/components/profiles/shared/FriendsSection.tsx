@@ -97,11 +97,20 @@ export function FriendsSection({
             const country = getCountryByCode(friend.countryCode);
             const status = formatLastSeen(friend.isOnline, friend.lastSeenAt);
             return (
+              // Fila con wrap: el nombre NUNCA se tapa. Antes la fila era
+              // un flex de una línea con el estado a la derecha en
+              // shrink-0: con nombres largos ("Carmen & Roberto") y el
+              // estado largo de fuera de línea ("Última conexión hace
+              // 5 horas") el bloque del nombre se encogía a casi cero y
+              // solo se veían la bandera y la última conexión. Ahora el
+              // nombre tiene un mínimo garantizado (basis 9rem) y el
+              // estado + "Eliminar" bajan a una segunda línea antes que
+              // tapar el nombre.
               <li
                 key={friend.id}
-                className="flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 px-3 py-2"
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-white/5 border border-white/10 px-3 py-2"
               >
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex min-w-0 flex-1 basis-36 items-center gap-2">
                   <span
                     className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                       friend.isOnline ? "bg-emerald-400" : "bg-white/30"
@@ -124,7 +133,7 @@ export function FriendsSection({
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span
-                    className={`text-xs ${
+                    className={`text-xs whitespace-nowrap ${
                       friend.isOnline ? "text-emerald-300" : "text-white/60"
                     }`}
                   >

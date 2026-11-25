@@ -118,15 +118,6 @@ export const Navigation = ({ className }: NavigationProps) => {
 
   return (
     <>
-      {/* Botón flotante de cambio de tema. No se muestra en los editores
-          de perfil: ahí tapaba las zonas de foto (captura 16:26, editor
-          de pareja). El tema se puede cambiar desde cualquier otra ruta. */}
-      {!location.pathname.startsWith("/edit-profile") && (
-        <div className="fixed top-20 right-4 z-40">
-          <ThemeToggle />
-        </div>
-      )}
-
       {/* Navegación inferior */}
       <nav
         className={cn(
@@ -187,6 +178,15 @@ export const Navigation = ({ className }: NavigationProps) => {
               </button>
             );
           })}
+          {/* Tema claro/oscuro en flujo dentro del dock (RONDA 5: antes era
+              un botón `fixed top-20 right-4` que tapaba contenido en todas
+              las páginas). El menú se abre hacia arriba por colisión. */}
+          <div
+            className="flex flex-col items-center justify-center p-1 sm:p-1.5 rounded-xl sm:rounded-2xl flex-1 min-w-0 sm:flex-none sm:min-w-[55px] sm:w-[55px] min-h-[44px] sm:min-h-[60px] text-white/85 hover:text-white hover:bg-white/10"
+            title="Cambiar tema"
+          >
+            <ThemeToggle />
+          </div>
         </div>
 
         <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-purple-400/50 to-transparent" />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flag, AlertTriangle, UserX, MessageSquareOff, Camera } from "lucide-react";
+import { Flag, AlertTriangle, UserX, MessageSquareOff, Camera, Shield, User } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { Label } from "@/components/ui/label";
@@ -66,6 +66,18 @@ export const ReportDialog = ({
       label: "Estafa o fraude",
       description: "Intento de estafa o solicitud de dinero",
       icon: <AlertTriangle className="h-4 w-4" />,
+    },
+    {
+      id: "terms-violation",
+      label: "Infringe los términos y condiciones",
+      description: "Viola los términos y condiciones de la plataforma",
+      icon: <Shield className="h-4 w-4" />,
+    },
+    {
+      id: "impersonation",
+      label: "Suplantación de identidad",
+      description: "Se hace pasar por otra persona",
+      icon: <User className="h-4 w-4" />,
     },
     {
       id: "other",

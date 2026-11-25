@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Heart, Search, User, MessageSquare, Calendar, Building2, Shield, HelpCircle, Info, DollarSign, Settings, Menu, ShoppingBag, FileText, Lock, Crown, ChevronDown, MoreHorizontal, Scale, Image, Home, BookOpen, Users, Sparkles } from "lucide-react";
 import { BetaBanner } from "@/components/BetaBanner";
 import { Button } from "@/components/ui/buttons/Button";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/features/auth/useAuth";
@@ -309,6 +311,22 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                 >
                   <Sparkles className="h-5 w-5 text-white hover:text-purple-400 block" />
                 </button>
+                {/* RONDA 5: tema y animaciones EN FLUJO en el header (nunca
+                    flotantes). El header es cromo morado de marca en ambos
+                    temas, así que el ThemeToggle usa su tono "onDark". */}
+                <button
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new Event(OPEN_ANIMATION_SETTINGS_EVENT),
+                    )
+                  }
+                  className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                  title="Ajustes de animación y fondo"
+                  aria-label="Ajustes de animación y fondo"
+                >
+                  <Settings className="h-5 w-5 text-white hover:text-purple-400 block" />
+                </button>
+                <ThemeToggle />
               </div>
 
               {/* Botón de Login/Perfil - Muestra estado de autenticación */}
@@ -475,6 +493,27 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         <Settings className="h-5 w-5 text-white" />
                         <span>Configuración</span>
                       </button>
+                      {/* RONDA 5: tema y animaciones también en el menú móvil,
+                          en flujo dentro del Sheet, nunca flotantes. */}
+                      <div className="flex items-center gap-2 px-4 py-2">
+                        <ThemeToggle />
+                        <button
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            window.dispatchEvent(
+                              new Event(OPEN_ANIMATION_SETTINGS_EVENT),
+                            );
+                          }}
+                          className="p-2.5 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                          title="Ajustes de animación y fondo"
+                          aria-label="Ajustes de animación y fondo"
+                        >
+                          <Settings className="h-5 w-5 text-white block" />
+                        </button>
+                        <span className="text-white/70 text-sm">
+                          Tema y fondo
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </SheetContent>

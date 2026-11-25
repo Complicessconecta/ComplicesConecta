@@ -68,18 +68,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         let resolvedTheme: "light" | "dark";
 
         if (theme === "system") {
-          // Detectar preferencia del sistema automáticamente
+          // Detectar preferencia del sistema automáticamente.
+          // RONDA 5: se ELIMINÓ el forzado oscuro por hora (20:00–06:00):
+          // con tema "sistema" el usuario en modo claro de su teléfono
+          // amanecía con la app oscura sin explicación, y el toast de
+          // "Tema SISTEMA (Claro)" mentía. Sistema = SO, sin más.
           const prefersDark = window.matchMedia(
             "(prefers-color-scheme: dark)",
           ).matches;
           resolvedTheme = prefersDark ? "dark" : "light";
-
-          // Dark mode automático por hora del día (siempre activo)
-          const hour = new Date().getHours();
-          if (hour >= 20 || hour < 6) {
-            // Forzar dark mode entre 8 PM y 6 AM automáticamente
-            resolvedTheme = "dark";
-          }
         } else {
           resolvedTheme = theme;
         }

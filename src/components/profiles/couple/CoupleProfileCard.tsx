@@ -46,7 +46,7 @@ const CoupleProfileCard = ({
   // (fotos de pareja verificadas, no retratos individuales).
   const partner1Avatar =
     profile.couple_images?.[0] ||
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop";
+    "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=600&fit=crop";
   const partner2Avatar =
     profile.couple_images?.[1] ||
     "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=600&fit=crop";

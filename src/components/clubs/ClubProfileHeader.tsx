@@ -52,7 +52,7 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
         )}
 
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
+        <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
           {isDemoClub && (
             <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
               Admin

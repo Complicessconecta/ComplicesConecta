@@ -1,9 +1,11 @@
-import React, { Suspense, useState, lazy } from "react";
+import React, { Suspense, useState, useEffect, lazy } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Settings } from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
+import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Navigation } from "@/components/Navigation";
@@ -25,6 +27,34 @@ export const MainLayout = () => {
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // Precarga del chunk de Chat en idle: al abrir el dock el componente
+  // ya está en caché y no aparece el "Cargando…". Sin esto, la primera
+  // apertura esperaba la descarga del chunk con el fallback tapando
+  // todo (punto 10).
+  useEffect(() => {
+    const preload = () => {
+      void import("@/pages/Chat");
+    };
+    if ("requestIdleCallback" in window) {
+      const idleId = (
+        window as Window & {
+          requestIdleCallback: (cb: () => void) => number;
+        }
+      ).requestIdleCallback(preload);
+      return () => {
+        if ("cancelIdleCallback" in window) {
+          (
+            window as Window & { cancelIdleCallback: (id: number) => void }
+          ).cancelIdleCallback(idleId);
+        }
+      };
+    }
+    // globalThis (no `window`): el `in` de arriba estrecha `window` a
+    // `never` en esta rama y `window.setTimeout` deja de existir para tsc.
+    const timer = globalThis.setTimeout(preload, 800);
+    return () => globalThis.clearTimeout(timer);
+  }, []);
 
   // Determine session state
   const isAuthFn =
@@ -71,13 +101,12 @@ export const MainLayout = () => {
 
   const isClubDemoRoute = pathname === "/clubs/demo";
 
-  // Rutas a pantalla completa donde los flotantes fijos tapan controles:
-  // en /chat el engranaje (bottom-4 left-4) cae sobre el compositor
-  // ("Escribe tu mensaje…") y la burbuja de chat es redundante (ya
-  // estás en el chat); en /video-chat el engranaje tapa los controles
-  // de llamada. En esas rutas no se renderizan.
+  // Rutas a pantalla completa: en /chat la burbuja de chat es redundante
+  // (ya estás en el chat), así que el ChatFab no se renderiza ahí.
+  // (RONDA 5: el engranaje que tapaba el compositor en /chat y los
+  // controles en /video-chat ya no existe como flotante; el host del
+  // modal se monta siempre y no tapa nada.)
   const isChatRoute = pathname === "/chat" || pathname.startsWith("/chat/");
-  const isVideoChatRoute = pathname === "/video-chat";
 
   const isHomeRoute = pathname === "/";
 
@@ -103,17 +132,52 @@ export const MainLayout = () => {
   // en el mismo perfil (10 iconos a las 13:07, 5 a las 13:19): el dock
   // debe ser ESTABLE. Ahora Navigation es el único dock de perfil, con
   // o sin demo; BottomNavigation ya no se renderiza.
-  const showDock = isProfileRoute;
+  // RONDA 5 — Regla de Wacko "dock solo en el perfil": el dock es SOLO
+  // para el perfil PROPIO (/profile, /profile-single, /profile-couple).
+  // Antes showDock usaba isProfileRoute, que incluye /profile/<id>
+  // (perfil de OTRO usuario) y /edit-profile-*, y el dock aparecía ahí.
+  // Esas rutas ahora llevan la fila superior en flujo con Volver.
+  const isOwnProfileRoute =
+    pathname === "/profile" ||
+    pathname === "/profile-single" ||
+    pathname === "/profile-couple";
+  const showDock = isOwnProfileRoute;
+
+  // Fila superior en flujo (Volver + tema + engranaje) para rutas
+  // logueadas sin dock ni header: misma lista de exclusiones que el
+  // BackButton (esas rutas ya tienen su propio regreso o navegación).
+  // Es EN FLUJO (dentro de <main>), nunca `fixed`: no tapa contenido.
+  const isTopRowExcludedRoute =
+    pathname === "/" ||
+    pathname === "/auth" ||
+    pathname === "/clubs/demo" ||
+    pathname === "/tokens" ||
+    pathname.startsWith("/tokens/") ||
+    pathname === "/chat" ||
+    pathname.startsWith("/chat/") ||
+    pathname === "/settings" ||
+    pathname === "/video-chat" ||
+    pathname === "/clubs-public" ||
+    pathname.startsWith("/clubs-public/");
+  const showTopRow = hasSession && !isOwnProfileRoute && !isTopRowExcludedRoute;
 
   const showChatFab = !isProfileRoute && !isChatRoute;
 
   return (
-    <div className="min-h-dvh w-full text-white pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] overflow-x-hidden">
+    // RONDA 5 — Tema claro: el texto raíz era `text-white` incondicional,
+    // así que en tema claro todo texto heredado quedaba blanco sobre fondo
+    // claro (invisible). Ahora sigue al tema; el fondo claro lo ponen
+    // body (token bg-background) y UnifiedBackground.
+    <div className="min-h-dvh w-full text-slate-900 dark:text-white pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] overflow-x-hidden">
       <div className="min-h-full relative pb-24 flex flex-col">
         {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
-        {/* Engranaje de ajustes: no se renderiza en /chat ni /video-chat,
-            donde su posición fija tapaba el compositor y los controles. */}
-        {!isChatRoute && !isVideoChatRoute && <AnimationSettingsButton />}
+        {/* RONDA 5: AnimationSettingsButton ya no pinta ningún botón
+            flotante (el engranaje `fixed bottom-4 left-4` se eliminó);
+            aquí solo se monta el host del modal, que abren el botón
+            "Config" del dock, el engranaje del header y la fila superior
+            en flujo. Se monta siempre, también en /chat y /video-chat,
+            porque el host es invisible y no tapa nada. */}
+        <AnimationSettingsButton />
 
         {showHeaderNav && <HeaderNav />}
 
@@ -159,8 +223,8 @@ export const MainLayout = () => {
           </div>
         )}
 
-        {/* Chat FAB */}
-        {showChatFab && <ChatFab onOpen={() => setIsChatOpen(true)} />}
+        {/* Chat FAB: RONDA 5 — ya no se renderiza flotante aquí. Vive en
+            flujo al final del contenido (ver debajo de </main>). */}
 
         {/* Chat Dock in-app */}
         {hasSession && showChatFab && (
@@ -169,6 +233,34 @@ export const MainLayout = () => {
 
         {/* Main Content */}
         <main className={headerOffsetClass}>
+          {/* RONDA 5 — Fila superior EN FLUJO (nunca `fixed`): Volver a la
+              izquierda y, a la derecha, el engranaje de animaciones y el
+              botón de tema. Es la única vía de tema/ajustes en rutas
+              logueadas sin dock ni header (Discover, /matches, /requests,
+              /faq, /profile/<id>, /edit-profile-*...). En perfil propio
+              esos controles viven en el dock; en páginas públicas, en el
+              HeaderNav. */}
+          {showTopRow && (
+            <div className="flex items-center justify-between gap-2 px-4 pt-2">
+              <BackButton />
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new Event(OPEN_ANIMATION_SETTINGS_EVENT),
+                    )
+                  }
+                  aria-label="Ajustes de animación y fondo"
+                  title="Ajustes de animación y fondo"
+                  className="p-2.5 rounded-lg bg-white/80 border border-slate-300 text-slate-700 hover:bg-white dark:bg-white/10 dark:border-white/20 dark:text-white dark:hover:bg-white/20 transition-colors"
+                >
+                  <Settings className="w-5 h-5" />
+                </button>
+                <ThemeToggle tone="auto" />
+              </div>
+            </div>
+          )}
           <div className={showHeaderNav ? "-mt-px" : ""}>
             {/* Sin PageTransitionWrapper: el AnimatePresence que envolvía
               el Outlet dejaba atorada la navegación al salir de un chat
@@ -187,9 +279,15 @@ export const MainLayout = () => {
           </div>
         </main>
 
-        {/* Botón de regreso en páginas sin dock ni header: sin él no había
-          forma de volver atrás (Wacko, full test 24 Nov 2026). */}
-        {hasSession && !isProfileRoute && <BackButton />}
+        {/* Chat: botón en flujo al final del contenido de la página
+            (RONDA 5: ya no es un FAB `fixed bottom-24 right-4` que
+            seguía al scroll y tapaba contenido; en rutas de perfil no
+            se muestra porque el chat ya vive en el dock). */}
+        {showChatFab && (
+          <div className="flex justify-end px-4 pt-2">
+            <ChatFab onOpen={() => setIsChatOpen(true)} />
+          </div>
+        )}
 
         {/* Bottom Navigation (perfil) — el dock de 10 botones, estable en
           rutas de perfil con o sin demo */}
@@ -201,8 +299,11 @@ export const MainLayout = () => {
   );
 };
 
-// Botón flotante "Volver" para rutas autenticadas sin dock (feed, chat,
+// Botón "Volver" para rutas autenticadas sin dock (feed, chat,
 // tokens, clubs, ajustes...): vuelve a la página anterior o al perfil.
+// RONDA 5: ya NO es una píldora `fixed` (tapaba títulos y se solapaba
+// con el "Volver" propio de varias páginas); vive EN FLUJO en la fila
+// superior de MainLayout.
 const BackButton: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -253,7 +354,7 @@ const BackButton: React.FC = () => {
       type="button"
       onClick={handleBack}
       aria-label="Volver a la página anterior"
-      className="fixed left-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-40 flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 px-3 py-2 text-sm font-semibold text-white shadow-lg hover:bg-black/80"
+      className="inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-900 shadow-lg hover:bg-white dark:bg-black/60 dark:border-white/20 dark:text-white dark:hover:bg-black/80"
     >
       <ArrowLeft className="h-4 w-4" />
       Volver
@@ -261,12 +362,78 @@ const BackButton: React.FC = () => {
   );
 };
 
+// Loader CONFINADO al cuerpo del dock (420 px): antes el fallback era
+// PageLoader (`fixed inset-0 z-50`), que cubría TODA la pantalla incluido
+// el botón "Cerrar" del encabezado del dock: mientras el chunk del chat
+// cargaba (o se atascaba), "Cerrar" era intocable 20 s+ (punto 10).
+const ChatDockLoader = () => (
+  <div className="flex h-full flex-col items-center justify-center gap-3 bg-slate-100 dark:bg-black/40">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500" />
+    <p className="text-sm text-slate-600 dark:text-white/70">Cargando chat…</p>
+  </div>
+);
+
+interface ChatDockErrorBoundaryProps {
+  onRetry: () => void;
+  children: React.ReactNode;
+}
+
+interface ChatDockErrorBoundaryState {
+  hasError: boolean;
+}
+
+// Si el chunk del chat falla al cargar, el dock mostraba "Cargando…"
+// para siempre. El boundary muestra el error con "Reintentar" y
+// "Cerrar" sigue funcionando (está fuera del boundary).
+class ChatDockErrorBoundary extends React.Component<
+  ChatDockErrorBoundaryProps,
+  ChatDockErrorBoundaryState
+> {
+  state: ChatDockErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): ChatDockErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    // Sin logger aquí: MainLayout no lo importa y el error queda en consola.
+    console.error("[ChatDock] no se pudo cargar el chat:", error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex h-full flex-col items-center justify-center gap-3 bg-slate-100 px-4 text-center dark:bg-black/40">
+          <p className="text-sm font-semibold text-slate-900 dark:text-white">
+            No se pudo cargar el chat
+          </p>
+          <p className="text-xs text-slate-600 dark:text-white/70">
+            Revisa tu conexión e inténtalo de nuevo.
+          </p>
+          <button
+            type="button"
+            onClick={this.props.onRetry}
+            className="rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700"
+          >
+            Reintentar
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 interface ChatDockProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
+  // `key` del boundary: al reintentar se remonta y React.lazy vuelve a
+  // intentar cargar el chunk (el lazy anterior cachea el fallo).
+  const [errorKey, setErrorKey] = useState(0);
+
   if (!isOpen) return null;
 
   return (
@@ -274,22 +441,33 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
     // dentro van la lista (20rem) y el hilo del chat, y con max-w-md el
     // hilo no cabía y su texto quedaba recortado en el borde derecho.
     <div className="fixed bottom-24 right-4 z-50 w-[calc(100vw-2rem)] max-w-2xl">
-      <div className="bg-black/60 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
-        <div className="relative z-10 flex items-center justify-between px-4 py-2 border-b border-white/10">
-          <span className="text-sm font-semibold text-white">Chat Intimo</span>
+      {/* RONDA 5 — Tema claro: el panel era negro siempre. Ahora fondo
+          explícito claro/oscuro según tema. Sigue siendo un overlay fijo
+          porque es un panel que el usuario abre a demanda (tiene Cerrar),
+          no un botón flotante pasivo. */}
+      <div className="bg-white dark:bg-black/60 backdrop-blur-2xl border border-slate-200 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="relative z-10 flex items-center justify-between px-4 py-2 border-b border-slate-200 dark:border-white/10">
+          <span className="text-sm font-semibold text-slate-900 dark:text-white">
+            Chat Intimo
+          </span>
           <button
             type="button"
             onClick={onClose}
-            className="text-white/60 hover:text-white text-sm px-2 py-1 rounded-md hover:bg-white/10"
+            className="text-slate-500 hover:text-slate-900 text-sm px-2 py-1 rounded-md hover:bg-slate-100 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10"
           >
             Cerrar
           </button>
         </div>
-        <div className="h-[420px] bg-black/40">
-          <Suspense fallback={<PageLoader />}>
+        <div className="h-[420px] bg-slate-100 dark:bg-black/40">
+          <Suspense fallback={<ChatDockLoader />}>
             {/* embedded: el Chat a pantalla completa (h-screen) se
                 desbordaba dentro del dock de 420px y se solapaba. */}
-            <ChatLazy embedded />
+            <ChatDockErrorBoundary
+              key={errorKey}
+              onRetry={() => setErrorKey((prev) => prev + 1)}
+            >
+              <ChatLazy embedded />
+            </ChatDockErrorBoundary>
           </Suspense>
         </div>
       </div>

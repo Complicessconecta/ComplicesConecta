@@ -483,8 +483,18 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
         </div>
       )}
 
-      {/* Mint Dialog */}
-      <Dialog open={showMintDialog} onOpenChange={setShowMintDialog}>
+      {/* Mint Dialog: al cerrarse sin mintear se limpia la galería
+          seleccionada; si no, el diálogo de detalle se abriría justo
+          después de cerrar este (punto 18). */}
+      <Dialog
+        open={showMintDialog}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowMintDialog(false);
+            setSelectedGallery(null);
+          }
+        }}
+      >
         <DialogContent className="bg-black/90 border-white/20">
           <DialogHeader>
             <DialogTitle className="text-white">Mint Galería NFT</DialogTitle>
@@ -538,7 +548,10 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
               <div className="flex justify-end space-x-2">
                 <Button
                   variant="outline"
-                  onClick={() => setShowMintDialog(false)}
+                  onClick={() => {
+                    setShowMintDialog(false);
+                    setSelectedGallery(null);
+                  }}
                   disabled={isMinting}
                 >
                   Cancelar
@@ -570,10 +583,12 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
         </DialogContent>
       </Dialog>
 
-      {/* Gallery Detail Modal */}
+      {/* Gallery Detail Modal: suprimido mientras el diálogo de Mint
+          está abierto; si no, el detalle tapaba el formulario de Mint y
+          el botón "Mint" parecía no hacer nada (punto 18). */}
       {selectedGallery && (
         <Dialog
-          open={!!selectedGallery}
+          open={!!selectedGallery && !showMintDialog}
           onOpenChange={() => setSelectedGallery(null)}
         >
           <DialogContent className="bg-black/90 border-white/20 max-w-4xl">

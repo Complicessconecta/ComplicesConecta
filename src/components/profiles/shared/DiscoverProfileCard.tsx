@@ -14,6 +14,8 @@ interface DiscoverProfile {
   first_name: string;
   last_name?: string | null;
   age: number;
+  // Edad del segundo miembro (parejas): se muestra "25 y 28 años".
+  partnerAge?: number;
   bio: string | null;
   gender: string;
   interested_in: string;
@@ -193,7 +195,10 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(
               )}
             </div>
             <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm overlay-text">
-              <span className="overlay-text">{profile.age} años</span>
+              <span className="overlay-text">
+                {profile.age}
+                {profile.partnerAge ? ` y ${profile.partnerAge}` : ""} años
+              </span>
               <span className="overlay-text">•</span>
               <div className="flex items-center gap-1">
                 <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />

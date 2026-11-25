@@ -57,6 +57,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
   nftName,
   nftDescription,
   imageFile,
+  demoImageUrl,
   onMintSuccess,
   onMintError,
   className = "",
@@ -192,9 +193,12 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 
         // Usar índice secuencial para evitar repeticiones
         const nextImageIndex = existing.length % MOCK_NFT_IMAGES.length;
+        // demoImageUrl (foto del perfil que se mintea) manda sobre el
+        // mock genérico: antes el prop se declaraba pero nunca se usaba y
+        // el NFT minteado ignoraba la foto del perfil (punto 18).
         const imageUrl = imageFile
           ? URL.createObjectURL(imageFile)
-          : MOCK_NFT_IMAGES[nextImageIndex];
+          : (demoImageUrl ?? MOCK_NFT_IMAGES[nextImageIndex]);
 
         // Generar rarity aleatoria
         const rarityRoll = Math.random();

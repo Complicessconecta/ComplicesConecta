@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
@@ -24,7 +24,9 @@ import { FriendsSection } from "@/components/profiles/shared/FriendsSection";
 import { PrivateProfileGate } from "@/components/profiles/shared/PrivateProfileGate";
 import { getSocialDemoData } from "@/demo/socialDemoData";
 import {
-  readVisibilityLocal,
+  readVisibilityLocalOrNull,
+  fetchProfileVisibility,
+  resolveProfileVisibility,
   isProfileGated,
 } from "@/lib/profileVisibility";
 import { areFriendsSync } from "@/lib/friends";
@@ -37,6 +39,146 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 
 // Professional profile images from Unsplash - Production ready
 // Removed local imports that fail in production
+
+// Perfiles legacy de ids numéricos 1-4 (lista local del detalle).
+// Exportada para que el wrapper de /profile/:id resuelva por URL con
+// la MISMA fuente: antes el wrapper no conocía estos ids y /profile/3
+// directo mostraba a Ana mientras que al navegar desde Matches con
+// state mostraba a Carmen & Roberto (el id 3 de match). Ahora la URL
+// manda siempre: /profile/3 es Ana en los dos casos.
+export const LEGACY_NUMERIC_PROFILES = [
+  {
+    id: 1,
+    name: "Demo User",
+    age: 28,
+    location: "Ciudad de México",
+    interests: [
+      "Lifestyle Swinger",
+      "Mentalidad Abierta",
+      "Experiencias Nuevas",
+      "Conexiones Auténticas",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+    rating: 4.8,
+    isOnline: true,
+    bio: "Explorando el lifestyle con mentalidad abierta. Busco conexiones auténticas y experiencias únicas.",
+    profession: "Profesional Independiente",
+    education: "Universidad Nacional Autónoma de México",
+    languages: ["Español"],
+    hobbies: [
+      "Fotografía Sensual",
+      "Baile",
+      "Cenas Íntimas",
+      "Eventos Sociales",
+    ],
+    lookingFor:
+      "Personas con mentalidad abierta para compartir experiencias del lifestyle",
+    images: [
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+  {
+    id: 2,
+    name: "Antonio",
+    age: 34,
+    location: "Ciudad de México",
+    interests: [
+      "Lifestyle Swinger",
+      "Intercambio de Parejas",
+      "Eventos Lifestyle",
+      "Mentalidad Abierta",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face&auto=format&q=80",
+    rating: 4.9,
+    isOnline: false,
+    bio: "Chef profesional del lifestyle. Me encanta crear experiencias culinarias íntimas y ambientes sensuales.",
+    profession: "Chef",
+    education: "Escuela de Hostelería de Ciudad de México",
+    languages: ["Español"],
+    hobbies: [
+      "Cocina Afrodisíaca",
+      "Cenas Íntimas",
+      "Degustación de Vinos",
+      "Masajes Relajantes",
+    ],
+    lookingFor:
+      "Parejas y personas del lifestyle para compartir experiencias culinarias sensuales",
+    images: [
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+  {
+    id: 3,
+    name: "Ana",
+    age: 26,
+    location: "Guadalajara",
+    interests: [
+      "Fiestas Temáticas",
+      "Clubs Privados",
+      "Experiencias Nuevas",
+      "Ambiente Sensual",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
+    rating: 4.7,
+    isOnline: true,
+    bio: "Artista del lifestyle. Exploro la sensualidad a través del arte y busco conexiones creativas auténticas.",
+    profession: "Artista",
+    education: "Bellas Artes - Universidad de Guadalajara",
+    languages: ["Español"],
+    hobbies: [
+      "Arte Erótico",
+      "Fotografía Sensual",
+      "Baile Contemporáneo",
+      "Literatura Erótica",
+    ],
+    lookingFor:
+      "Personas creativas del lifestyle que aprecien el arte sensual y las experiencias únicas",
+    images: [
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+  {
+    id: 4,
+    name: "Diego",
+    age: 30,
+    location: "Monterrey",
+    interests: [
+      "Arte Erótico",
+      "Fotografía Erótica",
+      "Ambiente Sensual",
+      "Conexiones Auténticas",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+    rating: 4.8,
+    isOnline: true,
+    bio: "Desarrollador del lifestyle tech. Combino mi pasión por la tecnología con experiencias sensuales auténticas.",
+    profession: "Desarrollador",
+    education: "Ingeniería Informática - Universidad de Monterrey",
+    languages: ["Español"],
+    hobbies: [
+      "Fotografía Erótica",
+      "Tecnología Sensual",
+      "Spa de Parejas",
+      "Eventos Exclusivos",
+    ],
+    lookingFor:
+      "Parejas y personas del lifestyle tech que valoren la innovación y la sensualidad",
+    images: [
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+];
 
 const ProfileDetail = () => {
   const { id } = useParams();
@@ -63,159 +205,35 @@ const ProfileDetail = () => {
     }
   }
 
-  // Demo profile data for beta
-  const allProfiles = [
-    {
-      id: 1,
-      name: "Demo User",
-      age: 28,
-      location: "Ciudad de México",
-      interests: [
-        "Lifestyle Swinger",
-        "Mentalidad Abierta",
-        "Experiencias Nuevas",
-        "Conexiones Auténticas",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-      rating: 4.8,
-      isOnline: true,
-      bio: "Explorando el lifestyle con mentalidad abierta. Busco conexiones auténticas y experiencias únicas.",
-      profession: "Profesional Independiente",
-      education: "Universidad Nacional Autónoma de México",
-      languages: ["Español"],
-      hobbies: [
-        "Fotografía Sensual",
-        "Baile",
-        "Cenas Íntimas",
-        "Eventos Sociales",
-      ],
-      lookingFor:
-        "Personas con mentalidad abierta para compartir experiencias del lifestyle",
-      images: [
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-    {
-      id: 2,
-      name: "Antonio",
-      age: 34,
-      location: "Ciudad de México",
-      interests: [
-        "Lifestyle Swinger",
-        "Intercambio de Parejas",
-        "Eventos Lifestyle",
-        "Mentalidad Abierta",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face&auto=format&q=80",
-      rating: 4.9,
-      isOnline: false,
-      bio: "Chef profesional del lifestyle. Me encanta crear experiencias culinarias íntimas y ambientes sensuales.",
-      profession: "Chef",
-      education: "Escuela de Hostelería de Ciudad de México",
-      languages: ["Español"],
-      hobbies: [
-        "Cocina Afrodisíaca",
-        "Cenas Íntimas",
-        "Degustación de Vinos",
-        "Masajes Relajantes",
-      ],
-      lookingFor:
-        "Parejas y personas del lifestyle para compartir experiencias culinarias sensuales",
-      images: [
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-    {
-      id: 3,
-      name: "Ana",
-      age: 26,
-      location: "Guadalajara",
-      interests: [
-        "Fiestas Temáticas",
-        "Clubs Privados",
-        "Experiencias Nuevas",
-        "Ambiente Sensual",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
-      rating: 4.7,
-      isOnline: true,
-      bio: "Artista del lifestyle. Exploro la sensualidad a través del arte y busco conexiones creativas auténticas.",
-      profession: "Artista",
-      education: "Bellas Artes - Universidad de Guadalajara",
-      languages: ["Español"],
-      hobbies: [
-        "Arte Erótico",
-        "Fotografía Sensual",
-        "Baile Contemporáneo",
-        "Literatura Erótica",
-      ],
-      lookingFor:
-        "Personas creativas del lifestyle que aprecien el arte sensual y las experiencias únicas",
-      images: [
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-    {
-      id: 4,
-      name: "Diego",
-      age: 30,
-      location: "Monterrey",
-      interests: [
-        "Arte Erótico",
-        "Fotografía Erótica",
-        "Ambiente Sensual",
-        "Conexiones Auténticas",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-      rating: 4.8,
-      isOnline: true,
-      bio: "Desarrollador del lifestyle tech. Combino mi pasión por la tecnología con experiencias sensuales auténticas.",
-      profession: "Desarrollador",
-      education: "Ingeniería Informática - Universidad de Monterrey",
-      languages: ["Español"],
-      hobbies: [
-        "Fotografía Erótica",
-        "Tecnología Sensual",
-        "Spa de Parejas",
-        "Eventos Exclusivos",
-      ],
-      lookingFor:
-        "Parejas y personas del lifestyle tech que valoren la innovación y la sensualidad",
-      images: [
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-  ];
-
   const stateProfile = location.state?.profile;
 
-  // Adapt state profile to local shape if needed
-  const adaptedStateProfile = stateProfile
-    ? {
-        ...stateProfile,
-        profession: stateProfile.profession || "Miembro de la comunidad",
-        education: stateProfile.education || "No especificado",
-        languages: stateProfile.languages || ["Español"],
-        hobbies: stateProfile.hobbies || stateProfile.interests || [],
-        lookingFor: stateProfile.lookingFor || "Conexiones auténticas",
-        images: stateProfile.images || [stateProfile.image],
-        rating: stateProfile.rating || 4.5,
-      }
-    : null;
+  // Adapt state profile to local shape if needed. La URL manda: el
+  // perfil del state solo vale si su id coincide con el :id de la URL.
+  // Sin esta guarda, /profile/3 con state de Matches (Carmen &
+  // Roberto, id 3 de match) mostraba a la pareja, y /profile/3 directo
+  // mostraba a Ana (id 3 legacy): la misma URL, dos personas distintas
+  // según cómo se llegara. Matches ya navega con profileId estable;
+  // si algún otro flujo pasa un state con id distinto, se ignora y
+  // resuelve por URL.
+  const stateMatchesUrl =
+    stateProfile != null && String(stateProfile.id) === String(id ?? "");
+  const adaptedStateProfile =
+    stateMatchesUrl && stateProfile
+      ? {
+          ...stateProfile,
+          profession: stateProfile.profession || "Miembro de la comunidad",
+          education: stateProfile.education || "No especificado",
+          languages: stateProfile.languages || ["Español"],
+          hobbies: stateProfile.hobbies || stateProfile.interests || [],
+          lookingFor: stateProfile.lookingFor || "Conexiones auténticas",
+          images: stateProfile.images || [stateProfile.image],
+          rating: stateProfile.rating || 4.5,
+        }
+      : null;
 
   const profile =
-    adaptedStateProfile || allProfiles.find((p) => p.id === parseInt(id || ""));
+    adaptedStateProfile ||
+    LEGACY_NUMERIC_PROFILES.find((p) => p.id === parseInt(id || ""));
 
   const profileScore = useProfileScore(profile);
 
@@ -264,11 +282,24 @@ const ProfileDetail = () => {
   const countryCode =
     (profile as { country_code?: string | null }).country_code ??
     socialDemo.countryCode;
-  // Visibilidad efectiva: lo que el dueño guardó (local) manda; si no hay
-  // nada guardado, la semilla demo del perfil.
-  const storedVisibility = readVisibilityLocal(String(profile.id));
-  const profileVisibility =
-    storedVisibility === "private" ? "private" : socialDemo.visibility;
+  // Visibilidad efectiva: la BD manda (perfiles reales), luego lo que el
+  // dueño guardó en local, y si no hay nada, la semilla demo del perfil.
+  // Sin el fetch a BD, un perfil real puesto en privado nunca se cerraba.
+  const [dbVisibility, setDbVisibility] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetchProfileVisibility(String(profile.id)).then((v) => {
+      if (alive) setDbVisibility(v);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [profile.id]);
+  const profileVisibility = resolveProfileVisibility({
+    dbVisibility,
+    storedVisibility: readVisibilityLocalOrNull(String(profile.id)),
+    seedVisibility: socialDemo.visibility,
+  });
   const isFriend = areFriendsSync(viewerId, String(profile.id), viewerName);
   const gated = isProfileGated({
     visibility: profileVisibility,
@@ -315,7 +346,14 @@ const ProfileDetail = () => {
 
       <div className="relative z-10">
         <div className="px-4 pt-4">
-          <ProfileContent />
+          {/* ProfileContent hardcodea el post de Ana ("Post Example -
+              Perfil Single (Ana)") y luego "No hay posts aún": en TODOS
+              los /profile/<id> salía el post de Ana seguido del vacío,
+              aunque el perfil visitado fuera otro. El post debe ser del
+              perfil que se visita o no mostrarse: aquí solo se renderiza
+              en el perfil de Ana. El arreglo propio es hacer el post
+              prop-driven en ProfileContent.tsx (ver reporte). */}
+          {profile.name === "Ana" && <ProfileContent />}
         </div>
         <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
@@ -340,7 +378,10 @@ const ProfileDetail = () => {
                           src={profile.image}
                           alt={profile.name}
                           onError={(e) => {
-                            // Si la imagen falla, usar fallback de Unsplash
+                            // Si la imagen falla, usar fallback de Unsplash.
+                            // DETERMINISTA por nombre (antes era
+                            // Math.random: la misma URL mostraba caras
+                            // distintas en cada carga).
                             const fallbackImages = [
                               "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
                               "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
@@ -348,14 +389,21 @@ const ProfileDetail = () => {
                             ];
                             const defaultFallback =
                               "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face&auto=format&q=80";
-                            const randomFallback: string =
+                            const nameHash = profile.name
+                              .split("")
+                              .reduce(
+                                (acc: number, ch: string) =>
+                                  acc + ch.charCodeAt(0),
+                                0,
+                              );
+                            const deterministicFallback: string =
                               fallbackImages[
-                                Math.floor(
-                                  Math.random() * fallbackImages.length,
-                                )
+                                nameHash % fallbackImages.length
                               ] ?? defaultFallback;
-                            if (e.currentTarget.src !== randomFallback) {
-                              e.currentTarget.src = randomFallback;
+                            if (
+                              e.currentTarget.src !== deterministicFallback
+                            ) {
+                              e.currentTarget.src = deterministicFallback;
                             } else {
                               // Si también falla el fallback, ocultar imagen y mostrar fallback
                               e.currentTarget.style.display = "none";
@@ -382,7 +430,9 @@ const ProfileDetail = () => {
                           {profile.name}
                         </h1>
                         <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm whitespace-nowrap shrink-0">
-                          {profile.age} años
+                          {(
+                            profile as { ageLabel?: string }
+                          ).ageLabel ?? `${profile.age} años`}
                         </Badge>
                         <NationalityBadge countryCode={countryCode} />
                         <TooltipProvider>
@@ -626,7 +676,10 @@ const ProfileDetail = () => {
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-white/80">Edad:</span>
-                      <span className="text-white">{profile.age} años</span>
+                      <span className="text-white">
+                        {(profile as { ageLabel?: string }).ageLabel ??
+                          `${profile.age} años`}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-white/80">Ubicación:</span>

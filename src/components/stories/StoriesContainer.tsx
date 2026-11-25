@@ -94,7 +94,7 @@ const StoriesContainer: React.FC = () => {
             userId: 3,
             content: {
               type: "image",
-              url: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop&crop=faces&auto=format&q=80",
+              url: "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&h=600&fit=crop&crop=faces&auto=format&q=80",
             },
             createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
             expiresAt: new Date(Date.now() + 18 * 60 * 60 * 1000).toISOString(), // 18 hours from now
@@ -292,7 +292,7 @@ const StoriesContainer: React.FC = () => {
               </div>
               <div className="aspect-square bg-linear-to-br from-orange-500 to-red-500 rounded-lg relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
+                  src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Momento especial"
                   className="w-full h-full object-cover"
                 />

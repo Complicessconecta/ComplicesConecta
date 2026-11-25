@@ -1,5 +1,4 @@
 import type { Database } from "@/types/supabase-generated";
-import { getAssetUrl } from "@/utils/assetLoader";
 
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -39,7 +38,8 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
   last_seen: null,
   two_factor_enabled: false,
   is_demo: true,
-  avatar_url: getAssetUrl("img/demo-single-avatar.jpg"),
+  avatar_url:
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
   bio: "Explorando conexiones auténticas en el lifestyle swinger. Disfruto de experiencias discretas, respeto mutuo y encuentros sofisticados.",
   location: "Ciudad de México, México",
   gender: "female",
@@ -138,7 +138,8 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   last_seen: null,
   two_factor_enabled: false,
   is_demo: true,
-  avatar_url: getAssetUrl("img/demo-couple-avatar.jpg"),
+  avatar_url:
+    "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
   bio: "Pareja abierta de Ciudad de México explorando el lifestyle con reglas claras, respeto y mucha complicidad.",
   location: "Ciudad de México, México",
   gender: "couple",

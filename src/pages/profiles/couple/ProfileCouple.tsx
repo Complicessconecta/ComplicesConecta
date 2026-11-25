@@ -34,7 +34,7 @@ import {
   DEMO_COUPLE_IMAGES,
 } from "@/demo/demoData";
 import { toast } from "sonner";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
 import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
 import { useAuth } from "@/features/auth/useAuth";
@@ -53,7 +53,10 @@ import {
   seedDemoNFTs,
   DEMO_NFTS_CHANGED_EVENT,
 } from "@/services/payments/NFTService";
-import { DEMO_WALLET_BALANCES } from "@/lib/demo-wallet";
+import {
+  getDemoWalletBalance,
+  DEMO_WALLET_CHANGED_EVENT,
+} from "@/lib/demo-wallet";
 import { cn } from "@/shared/lib/cn";
 import {
   Tooltip,
@@ -192,6 +195,7 @@ function ProfileCouple() {
     profile: authProfile,
     loading: authLoading,
     signOut,
+    getProfileType,
   } = useAuth();
 
   const { toast: shadcnToast } = useToast();
@@ -373,10 +377,17 @@ function ProfileCouple() {
   // declara después, el `demoAssetFallback: isDemoMode` de abajo lee el
   // const antes de inicializarse (TDZ) → ReferenceError en cada render →
   // ErrorBoundary → /404. Fue lo que rompió /profile-couple en el PR #44.
+  // Punto 14a (ronda 7, espejo de ProfileSingle): el flag demo era true
+  // para CUALQUIER sesión demo, así que con sesión single esta página
+  // cargaba el perfil demo de Carmen & Roberto (nombre/foto de pareja)
+  // con los datos de la sesión single. Ahora exige sesión de pareja
+  // (`getProfileType()` resuelve "single"/"couple" del `demo_user`
+  // fresco o de `profile_type` en sesión real).
   const isDemoMode =
-    WalletService.isDemoMode() ||
-    (typeof window !== "undefined" &&
-      window.localStorage.getItem("demo_authenticated") === "true");
+    (WalletService.isDemoMode() ||
+      (typeof window !== "undefined" &&
+        window.localStorage.getItem("demo_authenticated") === "true")) &&
+    getProfileType() === "couple";
 
   // C6: resuelve las rutas de Storage (en el mismo orden que
   // `_shuffledCouplePrivateImages`) a URLs firmadas (1 h) solo cuando la
@@ -812,14 +823,19 @@ function ProfileCouple() {
         // sección "Blockchain & NFTs de Pareja" nunca se renderiza.
         seedDemoNFTs(user.id);
         const [nfts] = await Promise.all([
-          nftService.getUserNFTs(user.id).catch(() => []),
+          nftService
+            .getUserNFTs(user.id, { demoFallback: true })
+            .catch(() => []),
         ]);
 
         setWalletInfo(null);
-        // Balance demo canónico de pareja (ÚNICA fuente @/lib/demo-wallet).
+        // Balance demo canónico PERSISTIDO de pareja (ÚNICA fuente
+        // @/lib/demo-wallet, ronda 7 punto 8): tras reclamar en /tokens
+        // esta sección debe reflejarlo, no la constante 2000/1500.
+        const canonical = getDemoWalletBalance("couple");
         setTokenBalances({
-          cmpx: String(DEMO_WALLET_BALANCES.couple.cmpx),
-          gtk: String(DEMO_WALLET_BALANCES.couple.gtk),
+          cmpx: String(canonical.cmpx),
+          gtk: String(canonical.gtk),
           matic: "10",
         });
         setCoupleNFTs(nfts.filter((nft) => Boolean(nft?.is_couple)));
@@ -1148,11 +1164,40 @@ function ProfileCouple() {
   // (DemoWallet, modal de mint): todos leen getUserNFTs (punto 12).
   // La función se recrea en cada render: va en deps para no quedarse
   // con el cierre del primer render (user aún null).
+  // Ronda 7, punto 8: también al cambiar el saldo demo (reclamo en
+  // /tokens) para que "Blockchain & NFTs" y Suscripción digan el saldo
+  // persistido sin recargar la página.
   useEffect(() => {
     const onChanged = () => void loadCoupleBlockchainData();
     window.addEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
-    return () => window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    return () => {
+      window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+      window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    };
   }, [loadCoupleBlockchainData]);
+
+  // Punto 14a (ronda 7, espejo de ProfileSingle): una sesión single NO
+  // tiene perfil de pareja propio: su página es /profile-single (a donde
+  // ya apunta el botón Perfil del dock). Sin esta redirección, entrar
+  // directo a /profile-couple con sesión single cargaba el perfil demo
+  // de Carmen & Roberto. Va antes del spinner/`!profile`: el tipo se
+  // conoce por la sesión aunque el perfil no haya cargado.
+  // `getProfileType()` devuelve "single" por default cuando no puede
+  // resolver, así que se exige tipo CONOCIDO (perfil cargado en
+  // `authProfile` o `demo_user` en localStorage): sin perfil cargado no
+  // se redirige por error y se conserva el comportamiento actual
+  // (pantalla "No se pudo cargar" / fallback).
+  if (
+    !authLoading &&
+    isAuthenticated() &&
+    (Boolean(authProfile) ||
+      (typeof window !== "undefined" &&
+        window.localStorage.getItem("demo_user") !== null)) &&
+    getProfileType() === "single"
+  ) {
+    return <Navigate to="/profile-single" replace />;
+  }
 
   if (loading) {
     return (
@@ -1313,19 +1358,19 @@ function ProfileCouple() {
                     fantasma 👻. (El check azul ya existe en los avatares;
                     este texto lo hace explícito.) */}
                 {profile?.is_verified && (
-                  <Badge className="flex items-center gap-1 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-blue-500/50 backdrop-blur-md">
+                  <Badge className="flex items-center gap-1 rounded-full bg-blue-500/15 text-blue-800 border border-blue-500/50 dark:bg-blue-500/20 dark:text-blue-200 dark:border-blue-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-blue-500/50 backdrop-blur-md">
                     <span>✓ Verificado</span>
                   </Badge>
                 )}
                 <Badge
-                  className="flex items-center gap-1 rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
+                  className="flex items-center gap-1 rounded-full bg-slate-900/5 text-slate-800 border border-slate-300 dark:bg-white/10 dark:text-white/90 dark:border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
                   title={visibilityBadge.title}
                 >
                   <span>{visibilityBadge.label}</span>
                 </Badge>
                 {profilePrivacy.zodiacVisible && profileZodiac1 && (
                   <Badge
-                    className="flex items-center gap-1 rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
+                    className="flex items-center gap-1 rounded-full bg-slate-900/5 text-slate-800 border border-slate-300 dark:bg-white/10 dark:text-white/90 dark:border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
                     title="Signo zodiacal"
                   >
                     <span>{formatZodiacSign(profileZodiac1)}</span>
@@ -1335,7 +1380,7 @@ function ProfileCouple() {
                   profileZodiac2 &&
                   profileZodiac2.id !== profileZodiac1?.id && (
                     <Badge
-                      className="flex items-center gap-1 rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
+                      className="flex items-center gap-1 rounded-full bg-slate-900/5 text-slate-800 border border-slate-300 dark:bg-white/10 dark:text-white/90 dark:border-white/20 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg backdrop-blur-md"
                       title="Signo zodiacal"
                     >
                       <span>{formatZodiacSign(profileZodiac2)}</span>
@@ -1344,19 +1389,19 @@ function ProfileCouple() {
                 {/* Nacionalidad (punto 1): país + bandera del registro. */}
                 <NationalityBadge countryCode={profileCountryCode} />
                 {isOwnProfile && hasWalletActive && (
-                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-emerald-500/50 backdrop-blur-md">
+                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/15 text-emerald-800 border border-emerald-500/50 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-emerald-500/50 backdrop-blur-md">
                     <Wallet className="w-3 h-3" />
                     <span>WALLET ACTIVA</span>
                   </Badge>
                 )}
                 {isOwnProfile && hasAnyNFTs && (
-                  <Badge className="flex items-center gap-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-purple-500/50 backdrop-blur-md">
+                  <Badge className="flex items-center gap-1 rounded-full bg-purple-500/15 text-purple-800 border border-purple-500/50 dark:bg-purple-500/20 dark:text-purple-200 dark:border-purple-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-purple-500/50 backdrop-blur-md">
                     <Users className="w-3 h-3" />
                     <span>NFT VERIFIED</span>
                   </Badge>
                 )}
                 {isOwnProfile && hasActiveAgreement && (
-                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-100 border border-emerald-400/70 px-2.5 py-1 text-[10px] sm:text-xs shadow-[0_0_15px_rgba(16,185,129,0.4)] backdrop-blur-md">
+                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/15 text-emerald-800 border border-emerald-500/60 dark:bg-emerald-500/20 dark:text-emerald-100 dark:border-emerald-400/70 px-2.5 py-1 text-[10px] sm:text-xs shadow-[0_0_15px_rgba(16,185,129,0.4)] backdrop-blur-md">
                     <ShieldCheck className="w-3 h-3" />
                     <span>CONTRATO ACTIVO</span>
                   </Badge>
@@ -1365,7 +1410,7 @@ function ProfileCouple() {
               <p className="profile-header-username">
                 {profile.username || "@pareja_love"}
               </p>
-              <p className="text-sm text-white/60">
+              <p className="text-sm text-slate-500 dark:text-white/60">
                 ID: {profile.profile_id || "CC-2025-002"}
               </p>
               {isAuthenticated() && user && (
@@ -2097,18 +2142,22 @@ function ProfileCouple() {
               dislikes={coupleDislikes}
             />
 
-            {/* Suscripción y saldo */}
+            {/* Suscripción y saldo: en demo se lee el saldo PERSISTIDO
+                (ronda 7, punto 8), no la constante 2000/1500: tras
+                reclamar en /tokens, esta tarjeta debe reflejarlo. El
+                re-render llega por el listener de demo-wallet-changed,
+                que recarga tokenBalances. */}
             <CoupleSubscriptionCard
               isPremium={profile.is_premium ?? false}
               isDemoMode={isDemoMode}
               cmpx={
                 isDemoMode
-                  ? String(DEMO_WALLET_BALANCES.couple.cmpx)
+                  ? String(getDemoWalletBalance("couple").cmpx)
                   : tokenBalances.cmpx
               }
               gtk={
                 isDemoMode
-                  ? String(DEMO_WALLET_BALANCES.couple.gtk)
+                  ? String(getDemoWalletBalance("couple").gtk)
                   : tokenBalances.gtk
               }
               nftCount={coupleNFTs.length}
@@ -2161,12 +2210,17 @@ function ProfileCouple() {
             )}
 
             {/* Demo Wallet (pareja): valores canónicos 2000/1500/2 NFTs
-            vía accountType="couple" — espejo del de single. */}
+            vía accountType="couple" — espejo del de single.
+            El uid es SOLO user.id, el mismo que usa
+            loadCoupleBlockchainData (punto 9): profile.id es
+            "demo-couple-456" (id de la ficha demo, no del usuario) y
+            con él DemoWallet leía/escribía `demo_nfts:demo-couple-456`
+            mientras el perfil leía `demo_nfts:<user.id>` — dos
+            colecciones distintas. Sin user.id no hay uid válido: se
+            pasa "" y DemoWallet muestra sus defaults en memoria sin
+            tocar localStorage. */}
             {isDemoMode && (
-              <DemoWallet
-                userId={user?.id || profile?.id || ""}
-                accountType="couple"
-              />
+              <DemoWallet userId={user?.id || ""} accountType="couple" />
             )}
 
             {/* Publicaciones - después de la información del perfil.
@@ -2211,19 +2265,20 @@ function ProfileCouple() {
                               matchmaking prioritario.
                             </p>
                           </div>
+                          {/* Mismo defecto que el modal de Mint de Single
+                            (punto 5): el footer flotaba fuera de la caja. */}
+                          <ModalFooter className="gap-4">
+                            <button
+                              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                              onClick={() => setIsVipModalOpen(false)}
+                            >
+                              Cancelar
+                            </button>
+                            <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
+                              Solicitar Acceso
+                            </button>
+                          </ModalFooter>
                         </ModalContent>
-
-                        <ModalFooter className="gap-4">
-                          <button
-                            className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-                            onClick={() => setIsVipModalOpen(false)}
-                          >
-                            Cancelar
-                          </button>
-                          <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
-                            Solicitar Acceso
-                          </button>
-                        </ModalFooter>
                       </ModalBody>
                     </Modal>
 

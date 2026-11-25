@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FC } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import {
   Card,
@@ -65,7 +65,10 @@ import {
   nftService,
   DEMO_NFTS_CHANGED_EVENT,
 } from "@/services/payments/NFTService";
-import { DEMO_WALLET_BALANCES } from "@/lib/demo-wallet";
+import {
+  getDemoWalletBalance,
+  DEMO_WALLET_CHANGED_EVENT,
+} from "@/lib/demo-wallet";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import {
   PRIVATE_MEDIA_PLACEHOLDER,
@@ -222,6 +225,7 @@ const ProfileSingle: FC = () => {
     signOut,
     loading: isLoading,
     isDemoMode,
+    getProfileType,
   } = useAuth();
   const { toast } = useToast();
   const {
@@ -816,34 +820,93 @@ const ProfileSingle: FC = () => {
   };
 
   // Funciones para blockchain
-  const loadBlockchainData = useCallback(async (forcedUserId?: string) => {
-    const targetUserId =
-      forcedUserId ||
-      user?.id ||
-      asOptionalString(currentProfile["user_id"]) ||
-      currentProfile.id ||
-      null;
+  const loadBlockchainData = useCallback(
+    async (forcedUserId?: string) => {
+      const targetUserId =
+        forcedUserId ||
+        user?.id ||
+        asOptionalString(currentProfile["user_id"]) ||
+        currentProfile.id ||
+        null;
 
-    try {
-      const isDemoAuthActive =
-        typeof window !== "undefined" &&
-        window.localStorage.getItem("demo_authenticated") === "true";
-      const isDemoActive = isDemoMode() || isDemoAuthActive;
+      try {
+        const isDemoAuthActive =
+          typeof window !== "undefined" &&
+          window.localStorage.getItem("demo_authenticated") === "true";
+        const isDemoActive = isDemoMode() || isDemoAuthActive;
 
-      if (targetUserId) {
-        // En DEMO mostrar datos demo para que el usuario vea valores
-        if (isDemoActive) {
-          const [nfts] = await Promise.all([
+        if (targetUserId) {
+          // En DEMO mostrar datos demo para que el usuario vea valores.
+          // Ronda 7, puntos 8 y 9: la rama demo también aplica cuando el
+          // PERFIL que se está viendo es demo (isDemoProfile), no solo
+          // cuando los flags de modo demo están activos: en el test el
+          // perfil demo mostraba "Blockchain & NFTs" en 0/0/0 mientras
+          // Suscripción (constantes) decía 1250/850. Y el uid es el
+          // mismo que usa el botón de mint (user.id primero): antes
+          // este callback tenía deps [] y capturaba el user del primer
+          // render (null), así que leía `demo_nfts:<profile.user_id>`
+          // mientras el mint escribía `demo_nfts:<user.id>` — tras
+          // recargar, la colección minteada se leía con otro uid y el
+          // contador volvía a 0.
+          if (isDemoActive || isDemoProfile) {
+            const [nfts] = await Promise.all([
+              nftService
+                .getUserNFTs(targetUserId, { demoFallback: isDemoProfile })
+                .catch(() => []),
+            ]);
+
+            // Datos demo visibles (canónicos PERSISTIDOS, ÚNICA fuente
+            // @/lib/demo-wallet): tras reclamar 100 CMPX en /tokens el
+            // perfil debe decir 1350, no 1250.
+            const canonical = getDemoWalletBalance("single");
+            setTokenBalances({
+              cmpx: String(canonical.cmpx),
+              gtk: String(canonical.gtk),
+              matic: "10",
+            });
+            setUserNFTs(nfts);
+            setTestnetInfo({
+              remaining: 500,
+              dailyRemaining: 2500000,
+              canClaim: true,
+              dailyLimit: 2500000,
+              dailyClaimed: 0,
+              claimed: 500,
+              maxClaim: 1000,
+            } as any);
+            return;
+          }
+
+          // Producción: obtener address real antes de consultar balances
+          const walletInfo =
+            await walletService.getOrCreateWallet(targetUserId);
+          const address = walletInfo?.address;
+
+          const [tokens, nfts, testnet] = await Promise.all([
+            address
+              ? walletService
+                  .getTokenBalances(address, walletInfo.network || "mumbai")
+                  .catch(() => ({ cmpx: "0", gtk: "0", matic: "0" }))
+              : Promise.resolve({ cmpx: "0", gtk: "0", matic: "0" }),
             nftService.getUserNFTs(targetUserId).catch(() => []),
+            walletService.getTestnetTokensInfo(targetUserId).catch(() => null),
           ]);
 
-          // Datos demo visibles (canónicos, ÚNICA fuente @/lib/demo-wallet).
-          setTokenBalances({
-            cmpx: String(DEMO_WALLET_BALANCES.single.cmpx),
-            gtk: String(DEMO_WALLET_BALANCES.single.gtk),
-            matic: "10",
-          });
+          setTokenBalances(tokens);
           setUserNFTs(nfts);
+          setTestnetInfo(testnet);
+          return;
+        }
+
+        // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
+        if (isDemoMode()) {
+          const canonical = getDemoWalletBalance("single");
+          setTokenBalances({
+            cmpx: String(canonical.cmpx),
+            gtk: String(canonical.gtk),
+            matic: "10",
+          }); // Balance demo canónico de single (igual que useTokens).
+          setUserNFTs([]);
           setTestnetInfo({
             remaining: 500,
             dailyRemaining: 2500000,
@@ -853,53 +916,19 @@ const ProfileSingle: FC = () => {
             claimed: 500,
             maxClaim: 1000,
           } as any);
-          return;
         }
-
-        // Producción: obtener address real antes de consultar balances
-        const walletInfo = await walletService.getOrCreateWallet(targetUserId);
-        const address = walletInfo?.address;
-
-        const [tokens, nfts, testnet] = await Promise.all([
-          address
-            ? walletService
-                .getTokenBalances(address, walletInfo.network || "mumbai")
-                .catch(() => ({ cmpx: "0", gtk: "0", matic: "0" }))
-            : Promise.resolve({ cmpx: "0", gtk: "0", matic: "0" }),
-          nftService.getUserNFTs(targetUserId).catch(() => []),
-          walletService.getTestnetTokensInfo(targetUserId).catch(() => null),
-        ]);
-
-        setTokenBalances(tokens);
-        setUserNFTs(nfts);
-        setTestnetInfo(testnet);
-        return;
+      } catch (error) {
+        logger.error("Error cargando datos blockchain:", {
+          error: String(error),
+        });
       }
-
-      // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
-      if (isDemoMode()) {
-        setTokenBalances({
-          cmpx: String(DEMO_WALLET_BALANCES.single.cmpx),
-          gtk: String(DEMO_WALLET_BALANCES.single.gtk),
-          matic: "10",
-        }); // Balance demo canónico de single (igual que useTokens).
-        setUserNFTs([]);
-        setTestnetInfo({
-          remaining: 500,
-          dailyRemaining: 2500000,
-          canClaim: true,
-          dailyLimit: 2500000,
-          dailyClaimed: 0,
-          claimed: 500,
-          maxClaim: 1000,
-        } as any);
-      }
-    } catch (error) {
-      logger.error("Error cargando datos blockchain:", {
-        error: String(error),
-      });
-    }
-  }, []);
+      // Deps con user?.id e isDemoProfile: el callback lee ambos y con
+      // deps [] capturaba el user del primer render (ver comentario en
+      // la rama demo). Al cambiar el user tras el login demo, el efecto
+      // de abajo vuelve a correr y recarga con el uid correcto.
+    },
+    [user?.id, isDemoProfile],
+  );
 
   const handleClaimTestnetTokens = async () => {
     const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
@@ -1011,10 +1040,17 @@ const ProfileSingle: FC = () => {
 
   // Recargar NFTs si se mintea en otro sitio de la misma página
   // (DemoWallet, modal de mint): todos leen getUserNFTs (punto 12).
+  // Ronda 7, punto 8: también al cambiar el saldo demo (reclamo en
+  // /tokens) para que "Blockchain & NFTs" y Suscripción digan 1350
+  // sin recargar la página.
   useEffect(() => {
     const onChanged = () => void loadBlockchainData();
     window.addEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
-    return () => window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    return () => {
+      window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+      window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    };
   }, [loadBlockchainData]);
 
   // singleIsDemo y savedDemoInterests VAN AQUÍ ARRIBA, antes de los early
@@ -1022,7 +1058,17 @@ const ProfileSingle: FC = () => {
   // (cargando) el useMemo no se ejecuta y en el segundo sí → React truena
   // con el error #310 ("Rendered more hooks than during the previous
   // render") → /404.
-  const singleIsDemo = isDemoMode();
+  // Punto 14a (ronda 7): `isDemoMode()` es true para CUALQUIER sesión
+  // demo (single o pareja: solo mira `demo_authenticated` en
+  // localStorage). Antes `singleIsDemo` era eso a secas, así que con
+  // sesión de pareja esta página mostraba el nombre/foto de la pareja
+  // (del `profile` de useAuth, bien resuelto) pero TODOS los datos demo
+  // de Sofía: CMPX 1250 (`DEMO_WALLET_BALANCES.single`), staking 170 GTK
+  // (20% de 850), "Soltera" (`DEMO_SINGLE_DETAILS`), sus fotos y sus
+  // amigos. Ahora el flag demo de Sofía exige sesión single
+  // (`getProfileType()` lee el `demo_user` fresco y resuelve
+  // "couple" para la pareja; en sesión real lee `profile_type`).
+  const singleIsDemo = isDemoMode() && getProfileType() === "single";
   // Intereses guardados desde el editor (demo): el editor single guarda la
   // selección en `demo_user` (localStorage) y el perfil la refleja. Si aún
   // no se ha editado nada, se usan los títulos demo. En producción se leen
@@ -1054,6 +1100,19 @@ const ProfileSingle: FC = () => {
         </div>
       </div>
     );
+  }
+
+  // Punto 14a (ronda 7): una sesión de pareja NO tiene perfil single
+  // propio: su página es /profile-couple (a donde ya apunta el botón
+  // Perfil del dock, que resuelve por tipo). Sin esta redirección, entrar
+  // directo a /profile-single con sesión de pareja renderizaba el híbrido
+  // (nombre/foto de la pareja + datos de Sofía). Va antes del `!profile`:
+  // el tipo se conoce por la sesión aunque el perfil no haya cargado.
+  // `getProfileType()` solo devuelve "couple" con resolución positiva
+  // (su default es "single"), así que una sesión sin tipo conocido no
+  // redirige por error.
+  if (checkAuth() && getProfileType() === "couple") {
+    return <Navigate to="/profile-couple" replace />;
   }
 
   if (!profile) {
@@ -1221,10 +1280,16 @@ const ProfileSingle: FC = () => {
   ]);
 
   return (
-    <div className="min-h-dvh bg-transparent text-white pb-20 md:pb-0 pt-20 overflow-x-hidden">
+    <div className="min-h-dvh bg-transparent text-slate-900 dark:text-white pb-20 md:pb-0 pt-20 overflow-x-hidden">
       <div className="container mx-auto px-4 pb-24 w-full max-w-full">
         <div className="max-w-4xl mx-auto">
-          <Card className="bg-white/5 backdrop-blur-xl border border-white/10 overflow-hidden mb-6">
+          {/* RONDA 7 (punto 3): la tarjeta era `bg-white/5` con texto
+              `text-white` heredado: en tema claro el fondo es claro y
+              el nombre, las píldoras y los botones quedaban blancos
+              sobre claro (ilegibles). Ahora la tarjeta es blanca sólida
+              en claro y translúcida oscura en oscuro; el texto sigue al
+              tema. */}
+          <Card className="bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 overflow-hidden mb-6">
             <CardContent className="p-0">
               <div className="flex flex-col sm:flex-row">
                 {/* Imagen de perfil */}
@@ -1249,18 +1314,18 @@ const ProfileSingle: FC = () => {
                     className={cn(
                       "profile-header-title",
                       isDemoProfile &&
-                        "bg-linear-to-r from-purple-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent drop-shadow",
+                        "bg-linear-to-r from-purple-700 via-fuchsia-700 to-cyan-700 dark:from-purple-300 dark:via-fuchsia-300 dark:to-cyan-300 bg-clip-text text-transparent drop-shadow",
                     )}
                   >
                     {displayName}
                   </h2>
                   <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2">
                     {isDemoProfile && (
-                      <Badge className="rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-yellow-500/20 backdrop-blur-md">
+                      <Badge className="rounded-full bg-yellow-500/15 text-yellow-800 border border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-200 dark:border-yellow-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-yellow-500/20 backdrop-blur-md">
                         DEMO
                       </Badge>
                     )}
-                    <Badge className="rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md">
+                    <Badge className="rounded-full bg-slate-900/5 text-slate-800 border border-slate-300 dark:bg-white/10 dark:text-white/90 dark:border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md">
                       <span className="font-semibold">ID:</span>
                       <span className="ml-1 font-mono">
                         {String(currentProfile.id).slice(0, 8)}
@@ -1272,21 +1337,21 @@ const ProfileSingle: FC = () => {
                         el fantasma 👻. */}
                     {currentProfile.is_verified && (
                       <Badge
-                        className="rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-blue-500/20 backdrop-blur-md"
+                        className="rounded-full bg-blue-500/15 text-blue-800 border border-blue-500/50 dark:bg-blue-500/20 dark:text-blue-200 dark:border-blue-400/40 px-2.5 py-1 text-[11px] shadow-lg shadow-blue-500/20 backdrop-blur-md"
                         title="Perfil verificado"
                       >
                         ✓ Verificado
                       </Badge>
                     )}
                     <Badge
-                      className="rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md"
+                      className="rounded-full bg-slate-900/5 text-slate-800 border border-slate-300 dark:bg-white/10 dark:text-white/90 dark:border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md"
                       title={visibilityBadge.title}
                     >
                       {visibilityBadge.label}
                     </Badge>
                     {profilePrivacy.zodiacVisible && profileZodiac && (
                       <Badge
-                        className="rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md"
+                        className="rounded-full bg-slate-900/5 text-slate-800 border border-slate-300 dark:bg-white/10 dark:text-white/90 dark:border-white/20 px-2.5 py-1 text-[11px] shadow-lg shadow-purple-500/10 backdrop-blur-md"
                         title="Signo zodiacal"
                       >
                         {formatZodiacSign(profileZodiac)}
@@ -1332,7 +1397,7 @@ const ProfileSingle: FC = () => {
                   {/* Biografa */}
                   {SHOW_BIO_SECTION &&
                     asOptionalString(currentProfile["name"]) && (
-                      <p className="text-white/90 mb-4 leading-relaxed">
+                      <p className="text-slate-700 dark:text-white/90 mb-4 leading-relaxed">
                         {asString(currentProfile["name"], "")}
                       </p>
                     )}
@@ -1341,7 +1406,7 @@ const ProfileSingle: FC = () => {
                   <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">
                     <Button
                       onClick={() => navigate("/edit-profile-single")}
-                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
+                      className="bg-slate-900/5 hover:bg-slate-900/10 text-slate-900 border border-slate-300 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white dark:border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Edit className="w-4 h-4" />
                       <span className="hidden sm:inline">Editar Perfil</span>
@@ -1355,7 +1420,7 @@ const ProfileSingle: FC = () => {
                         chicas. TikTok sigue dentro del menú. */}
                     <Button
                       onClick={() => setIsShareOpen(true)}
-                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
+                      className="bg-slate-900/5 hover:bg-slate-900/10 text-slate-900 border border-slate-300 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white dark:border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Share2 className="w-4 h-4" />
                       Compartir
@@ -1363,7 +1428,7 @@ const ProfileSingle: FC = () => {
 
                     <Button
                       onClick={() => setShowReportDialog(true)}
-                      className="bg-white/10 hover:bg-white/20 text-red-200 border border-red-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
+                      className="bg-slate-900/5 hover:bg-slate-900/10 text-red-700 border border-red-400/50 dark:bg-white/10 dark:hover:bg-white/20 dark:text-red-200 dark:border-red-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Flag className="w-4 h-4" />
                       <span className="hidden sm:inline">Reportar</span>
@@ -1579,13 +1644,13 @@ const ProfileSingle: FC = () => {
 
           {/* Sección Blockchain - Perfil propio o demo */}
           {canShowBlockchainSection && (
-            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+            <Card className="bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-2xl shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                   <Wallet className="w-5 h-5 text-purple-400" />
                   Blockchain & NFTs
                   {isDemoMode() && (
-                    <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
+                    <Badge className="bg-yellow-500/15 text-yellow-800 border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-300 dark:border-yellow-400/30 text-xs">
                       DEMO
                     </Badge>
                   )}
@@ -1594,7 +1659,7 @@ const ProfileSingle: FC = () => {
               <CardContent className="p-6 md:p-10 space-y-4">
                 {/* Información de Wallet */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-                  <div className="p-3 bg-white/10 rounded-lg">
+                  <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Coins className="w-4 h-4 text-yellow-400" />
                       <span className="text-sm font-medium">CMPX</span>
@@ -1602,25 +1667,31 @@ const ProfileSingle: FC = () => {
                     <div className="text-lg font-bold">
                       {tokenBalances.cmpx}
                     </div>
-                    <div className="text-xs text-white/70">Tokens Utility</div>
+                    <div className="text-xs text-slate-500 dark:text-white/70">
+                      Tokens Utility
+                    </div>
                   </div>
 
-                  <div className="p-3 bg-white/10 rounded-lg">
+                  <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="w-4 h-4 text-blue-400" />
                       <span className="text-sm font-medium">GTK</span>
                     </div>
                     <div className="text-lg font-bold">{tokenBalances.gtk}</div>
-                    <div className="text-xs text-white/70">Governance</div>
+                    <div className="text-xs text-slate-500 dark:text-white/70">
+                      Governance
+                    </div>
                   </div>
 
-                  <div className="p-3 bg-white/10 rounded-lg">
+                  <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Images className="w-4 h-4 text-purple-400" />
                       <span className="text-sm font-medium">NFTs</span>
                     </div>
                     <div className="text-lg font-bold">{userNFTs.length}</div>
-                    <div className="text-xs text-white/70">Colección</div>
+                    <div className="text-xs text-slate-500 dark:text-white/70">
+                      Colección
+                    </div>
                   </div>
                 </div>
 
@@ -1634,7 +1705,7 @@ const ProfileSingle: FC = () => {
                       }
                       navigate("/nfts");
                     }}
-                    className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm px-3 py-2"
+                    className="bg-slate-900/5 hover:bg-slate-900/10 text-slate-900 border border-slate-300 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white dark:border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm px-3 py-2"
                   >
                     <Images className="w-4 h-4" />
                     Ver NFTs
@@ -1645,7 +1716,7 @@ const ProfileSingle: FC = () => {
                     <Button
                       onClick={handleClaimTestnetTokens}
                       disabled={isClaimingTokens}
-                      className="bg-green-500/20 hover:bg-green-600/30 text-green-200 border-green-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
+                      className="bg-green-500/15 hover:bg-green-600/20 text-green-800 border-green-500/50 dark:bg-green-500/20 dark:hover:bg-green-600/30 dark:text-green-200 dark:border-green-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                     >
                       <Gift className="w-4 h-4" />
                       {isClaimingTokens
@@ -1699,67 +1770,78 @@ const ProfileSingle: FC = () => {
                             Más información sobre NFTs
                           </Button>
                         </div>
-                      </ModalContent>
-                      <ModalFooter className="gap-4">
-                        {userNFTs.length >= 4 ? (
-                          <div className="w-full text-center">
-                            <p className="text-yellow-300 text-sm mb-2">
-                              🎉 Has alcanzado el límite de 4 NFTs en modo demo
-                            </p>
-                            <Button
-                              onClick={() => setIsMintModalOpen(false)}
-                              className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/25"
-                            >
-                              Cerrar
-                            </Button>
-                          </div>
-                        ) : (
-                          <>
-                            <NFTMintButton
-                              userId={
-                                user?.id ||
-                                asString(
-                                  currentProfile["user_id"],
-                                  currentProfile.id,
-                                )
-                              }
-                              type="single"
-                              nftName={`Profile NFT #${userNFTs.length + 1}`}
-                              nftDescription="NFT demo de perfil"
-                              demoImageUrl={avatarUrl}
-                              buttonText="Confirmar Mint"
-                              onMintSuccess={async () => {
-                                const uid =
+                        {/* Ronda 7, punto 5: el footer con "Confirmar
+                          Mint" + DEMO + "Cerrar" era HERMANO de
+                          ModalContent (la caja con fondo, max-w-md y
+                          overflow), no hijo: los botones se renderizaban
+                          FUERA de la caja, flotando sobre la página. La
+                          ronda 6 ajustó el tamaño de ModalContent, pero
+                          el footer nunca estuvo dentro de ella. Ahora el
+                          footer vive dentro de ModalContent. */}
+                        <ModalFooter className="gap-4">
+                          {userNFTs.length >= 4 ? (
+                            <div className="w-full text-center">
+                              <p className="text-yellow-300 text-sm mb-2">
+                                🎉 Has alcanzado el límite de 4 NFTs en modo
+                                demo
+                              </p>
+                              <Button
+                                onClick={() => setIsMintModalOpen(false)}
+                                className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/25"
+                              >
+                                Cerrar
+                              </Button>
+                            </div>
+                          ) : (
+                            <>
+                              <NFTMintButton
+                                userId={
                                   user?.id ||
-                                  asOptionalString(currentProfile["user_id"]) ||
-                                  currentProfile.id;
-                                if (!uid) return;
-                                const updated = await nftService
-                                  .getUserNFTs(uid)
-                                  .catch(() => []);
-                                setUserNFTs(updated);
-                                toast({
-                                  title: "¡NFT minteado exitosamente!",
-                                  description: `Colección: ${Math.min(updated.length, 4)}/4`,
-                                });
-                                if (updated.length >= 4) {
-                                  setTimeout(
-                                    () => setIsMintModalOpen(false),
-                                    1500,
-                                  );
+                                  asString(
+                                    currentProfile["user_id"],
+                                    currentProfile.id,
+                                  )
                                 }
-                              }}
-                              className="w-full"
-                            />
-                            <Button
-                              onClick={() => setIsMintModalOpen(false)}
-                              className="bg-white/10 hover:bg-white/20 text-white border border-white/25"
-                            >
-                              Cerrar
-                            </Button>
-                          </>
-                        )}
-                      </ModalFooter>
+                                type="single"
+                                nftName={`Profile NFT #${userNFTs.length + 1}`}
+                                nftDescription="NFT demo de perfil"
+                                demoImageUrl={avatarUrl}
+                                buttonText="Confirmar Mint"
+                                onMintSuccess={async () => {
+                                  const uid =
+                                    user?.id ||
+                                    asOptionalString(
+                                      currentProfile["user_id"],
+                                    ) ||
+                                    currentProfile.id;
+                                  if (!uid) return;
+                                  const updated = await nftService
+                                    .getUserNFTs(uid)
+                                    .catch(() => []);
+                                  setUserNFTs(updated);
+                                  toast({
+                                    title: "¡NFT minteado exitosamente!",
+                                    description: `Colección: ${Math.min(updated.length, 4)}/4`,
+                                  });
+                                  if (updated.length >= 4) {
+                                    setTimeout(
+                                      () => setIsMintModalOpen(false),
+                                      1500,
+                                    );
+                                  }
+                                }}
+                                className="w-full"
+                              />
+                              <Button
+                                onClick={() => setIsMintModalOpen(false)}
+                                className="bg-white/10 hover:bg-white/20 text-white border border-white/25"
+                              >
+                                Cerrar
+                              </Button>
+                            </>
+                          )}
+                        </ModalFooter>
+                      </ModalContent>
                     </ModalBody>
                   </Modal>
 
@@ -1785,16 +1867,18 @@ const ProfileSingle: FC = () => {
                             preventiva).
                           </p>
                         </div>
+                        {/* Mismo defecto que el modal de Mint (punto 5):
+                          el footer flotaba fuera de la caja. */}
+                        <ModalFooter className="gap-4">
+                          <button
+                            className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                            onClick={() => setShowPrivateBlockedModal(false)}
+                            type="button"
+                          >
+                            Entendido
+                          </button>
+                        </ModalFooter>
                       </ModalContent>
-                      <ModalFooter className="gap-4">
-                        <button
-                          className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-                          onClick={() => setShowPrivateBlockedModal(false)}
-                          type="button"
-                        >
-                          Entendido
-                        </button>
-                      </ModalFooter>
                     </ModalBody>
                   </Modal>
 
@@ -2034,18 +2118,22 @@ const ProfileSingle: FC = () => {
             dislikes={singleDislikes}
           />
 
-          {/* Suscripción y saldo */}
+          {/* Suscripción y saldo: en demo se lee el saldo PERSISTIDO
+              (ronda 7, punto 8), no la constante 1250/850: tras
+              reclamar 100 CMPX en /tokens, esta tarjeta debe decir
+              1350. El re-render llega por el listener de
+              demo-wallet-changed, que recarga tokenBalances. */}
           <SingleSubscriptionCard
             isPremium={currentProfile.is_premium ?? false}
             isDemoMode={singleIsDemo}
             cmpx={
               singleIsDemo
-                ? String(DEMO_WALLET_BALANCES.single.cmpx)
+                ? String(getDemoWalletBalance("single").cmpx)
                 : tokenBalances.cmpx
             }
             gtk={
               singleIsDemo
-                ? String(DEMO_WALLET_BALANCES.single.gtk)
+                ? String(getDemoWalletBalance("single").gtk)
                 : tokenBalances.gtk
             }
             nftCount={userNFTs.length}
@@ -2077,10 +2165,22 @@ const ProfileSingle: FC = () => {
             />
           )}
 
-          {/* Demo Wallet - solo demo, tras la información del perfil */}
+          {/* Demo Wallet - solo demo, tras la información del perfil.
+              El uid es el MISMO que usan el modal de mint y
+              loadBlockchainData (user.id, luego user_id del perfil):
+              antes era `profile?.id` y DemoWallet leía/escribía
+              `demo_nfts:<profile.id>` mientras el mint escribía
+              `demo_nfts:<user.id>` — dos colecciones distintas y el
+              contador de Wallet decía 1 mientras el perfil decía 0
+              (ronda 7, punto 9). */}
           {isDemoProfile && (
             <DemoWallet
-              userId={user?.id || profile?.id || ""}
+              userId={
+                user?.id ||
+                asOptionalString(currentProfile["user_id"]) ||
+                currentProfile.id ||
+                ""
+              }
               accountType="single"
             />
           )}
@@ -2129,19 +2229,20 @@ const ProfileSingle: FC = () => {
                           </p>
                           {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
                         </div>
+                        {/* Mismo defecto que el modal de Mint (punto 5):
+                          el footer flotaba fuera de la caja. */}
+                        <ModalFooter className="gap-4">
+                          <button
+                            className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                            onClick={() => setIsVipModalOpen(false)}
+                          >
+                            Cancelar
+                          </button>
+                          <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
+                            Solicitar Acceso
+                          </button>
+                        </ModalFooter>
                       </ModalContent>
-
-                      <ModalFooter className="gap-4">
-                        <button
-                          className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-                          onClick={() => setIsVipModalOpen(false)}
-                        >
-                          Cancelar
-                        </button>
-                        <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
-                          Solicitar Acceso
-                        </button>
-                      </ModalFooter>
                     </ModalBody>
                   </Modal>
 
@@ -2158,9 +2259,9 @@ const ProfileSingle: FC = () => {
           </Card>
 
           {/* Galería */}
-          <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+          <Card className="bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-2xl shadow-xl">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                 <Images className="w-5 h-5" />
                 Galería de Fotos
               </CardTitle>
@@ -2566,43 +2667,46 @@ const ProfileSingle: FC = () => {
                 En demo este flujo se simula para validar UX.
               </p>
             </div>
+            {/* Mismo defecto que el modal de Mint (punto 5): el footer
+              flotaba fuera de la caja. */}
+            <ModalFooter className="gap-4">
+              <button
+                className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                onClick={() => {
+                  setPrivateImageAccess("denied");
+                  setShowPrivateDecisionModal(false);
+                  setShowPrivateDeniedModal(true);
+                }}
+                type="button"
+              >
+                Denegar
+              </button>
+              <button
+                className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
+                onClick={() => {
+                  clearPrivateRequestAttempts();
+                  resetPrivateBlock();
+                  setPrivateImageAccess("approved");
+                  setTemporaryPrivateAccess(true);
+                  setShowPrivateDecisionModal(false);
+                  setTimeout(() => {
+                    const resolved = galleryImages
+                      .map((g) =>
+                        typeof g === "string" ? g : (g.url ?? g.src ?? ""),
+                      )
+                      .filter(
+                        (u): u is string =>
+                          typeof u === "string" && u.length > 0,
+                      );
+                    openImageModal(resolved, 0);
+                  }, 50);
+                }}
+                type="button"
+              >
+                Confirmar
+              </button>
+            </ModalFooter>
           </ModalContent>
-          <ModalFooter className="gap-4">
-            <button
-              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-              onClick={() => {
-                setPrivateImageAccess("denied");
-                setShowPrivateDecisionModal(false);
-                setShowPrivateDeniedModal(true);
-              }}
-              type="button"
-            >
-              Denegar
-            </button>
-            <button
-              className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
-              onClick={() => {
-                clearPrivateRequestAttempts();
-                resetPrivateBlock();
-                setPrivateImageAccess("approved");
-                setTemporaryPrivateAccess(true);
-                setShowPrivateDecisionModal(false);
-                setTimeout(() => {
-                  const resolved = galleryImages
-                    .map((g) =>
-                      typeof g === "string" ? g : (g.url ?? g.src ?? ""),
-                    )
-                    .filter(
-                      (u): u is string => typeof u === "string" && u.length > 0,
-                    );
-                  openImageModal(resolved, 0);
-                }, 50);
-              }}
-              type="button"
-            >
-              Confirmar
-            </button>
-          </ModalFooter>
         </ModalBody>
       </Modal>
 
@@ -2628,26 +2732,28 @@ const ProfileSingle: FC = () => {
                 deberás solicitar de nuevo.
               </p>
             </div>
+            {/* Mismo defecto que el modal de Mint (punto 5): el footer
+              flotaba fuera de la caja. */}
+            <ModalFooter className="gap-4">
+              <button
+                className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                onClick={() => setShowPrivatePolicyModal(false)}
+                type="button"
+              >
+                Cancelar
+              </button>
+              <button
+                className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
+                onClick={() => {
+                  setShowPrivatePolicyModal(false);
+                  setShowPrivateImageRequest(true);
+                }}
+                type="button"
+              >
+                Continuar
+              </button>
+            </ModalFooter>
           </ModalContent>
-          <ModalFooter className="gap-4">
-            <button
-              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-              onClick={() => setShowPrivatePolicyModal(false)}
-              type="button"
-            >
-              Cancelar
-            </button>
-            <button
-              className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
-              onClick={() => {
-                setShowPrivatePolicyModal(false);
-                setShowPrivateImageRequest(true);
-              }}
-              type="button"
-            >
-              Continuar
-            </button>
-          </ModalFooter>
         </ModalBody>
       </Modal>
 
@@ -2670,16 +2776,18 @@ const ProfileSingle: FC = () => {
                 acceso temporalmente.
               </p>
             </div>
+            {/* Mismo defecto que el modal de Mint (punto 5): el footer
+              flotaba fuera de la caja. */}
+            <ModalFooter className="gap-4">
+              <button
+                className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                onClick={() => setShowPrivateDeniedModal(false)}
+                type="button"
+              >
+                Entendido
+              </button>
+            </ModalFooter>
           </ModalContent>
-          <ModalFooter className="gap-4">
-            <button
-              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-              onClick={() => setShowPrivateDeniedModal(false)}
-              type="button"
-            >
-              Entendido
-            </button>
-          </ModalFooter>
         </ModalBody>
       </Modal>
 
@@ -2703,38 +2811,40 @@ const ProfileSingle: FC = () => {
                 {commentDraft.length}/280
               </p>
             </div>
+            {/* Mismo defecto que el modal de Mint (punto 5): el footer
+              flotaba fuera de la caja. */}
+            <ModalFooter className="gap-4">
+              <button
+                className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                onClick={() => setIsPostCommentModalOpen(false)}
+                type="button"
+              >
+                Cancelar
+              </button>
+              <button
+                className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700 disabled:opacity-50"
+                type="button"
+                disabled={!commentDraft.trim() || commentDraft.length > 280}
+                onClick={() => {
+                  if (!commentPostId) return;
+                  logger.info("Comentario de post enviado (demo)", {
+                    postId: commentPostId,
+                    length: commentDraft.trim().length,
+                  });
+                  toast({
+                    title: "Comentario enviado",
+                    description:
+                      "Tu comentario se registró (DEMO). En producción se guardará en backend.",
+                  });
+                  setIsPostCommentModalOpen(false);
+                  setCommentPostId(null);
+                  setCommentDraft("");
+                }}
+              >
+                Enviar
+              </button>
+            </ModalFooter>
           </ModalContent>
-          <ModalFooter className="gap-4">
-            <button
-              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-              onClick={() => setIsPostCommentModalOpen(false)}
-              type="button"
-            >
-              Cancelar
-            </button>
-            <button
-              className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700 disabled:opacity-50"
-              type="button"
-              disabled={!commentDraft.trim() || commentDraft.length > 280}
-              onClick={() => {
-                if (!commentPostId) return;
-                logger.info("Comentario de post enviado (demo)", {
-                  postId: commentPostId,
-                  length: commentDraft.trim().length,
-                });
-                toast({
-                  title: "Comentario enviado",
-                  description:
-                    "Tu comentario se registró (DEMO). En producción se guardará en backend.",
-                });
-                setIsPostCommentModalOpen(false);
-                setCommentPostId(null);
-                setCommentDraft("");
-              }}
-            >
-              Enviar
-            </button>
-          </ModalFooter>
         </ModalBody>
       </Modal>
 

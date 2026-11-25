@@ -3,7 +3,8 @@
  * Visualización amigable para usuarios Beta con gráficos y métricas
  */
 
-import { useId } from "react";
+import { useId, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -17,6 +18,8 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { resolveCurrentDemoAccountType } from "@/lib/app-config";
 import { getDemoWalletBalance, deriveDemoWalletView } from "@/lib/demo-wallet";
+import { ANONYMOUS_WALLET_BLOCKED_REASON, isViewerAnonymous } from "@/lib/anonymous";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { DEFAULT_DEMO_NFTS } from "@/services/payments/NFTService";
 import {
   Coins,
@@ -26,6 +29,8 @@ import {
   Users,
   Calendar,
   Sparkles,
+  Check,
+  Copy,
 } from "lucide-react";
 import { TokenAiChat } from "@/components/tokens/TokenAiChat";
 
@@ -141,10 +146,35 @@ export function TokenDashboard({
     hasActiveStaking,
     hasPendingRewards,
     isWorldIdEligible,
+    isAnonymousWalletBlocked,
   } = useTokens();
 
   const { user, profile } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [referralCopied, setReferralCopied] = useState(false);
+
+  // RONDA 10 (stream B, B3): el código de referido no tenía botón de
+  // copiar en esta vista y el badge rebosaba la pastilla en ancho
+  // estrecho. Copia al portapapeles con confirmación visual (✓).
+  const copyReferralCode = async () => {
+    if (!balance?.referralCode) return;
+    try {
+      await navigator.clipboard.writeText(balance.referralCode);
+      setReferralCopied(true);
+      window.setTimeout(() => setReferralCopied(false), 2000);
+      toast({
+        title: "Código copiado",
+        description: "Código de referido copiado al portapapeles",
+      });
+    } catch {
+      toast({
+        title: "No se pudo copiar",
+        description: "Copia el código manualmente",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Reclamar 100 CMPX: el hook ya acredita el saldo; aquí se confirma
   // con toast (antes el botón no daba ninguna señal).
@@ -234,6 +264,50 @@ export function TokenDashboard({
         >
           Reintentar
         </Button>
+      </main>
+    );
+  }
+
+  // Ronda 10 (stream A, punto A3): la cuenta ANÓNIMA no tiene
+  // billetera. Sin este retorno, /tokens mostraba la cartera
+  // COMPLETA de Sofía (CMPX 1450, GTK 850, 4 NFTs, "Reclamar 100
+  // CMPX", staking, referidos): el hook devolvía el saldo canónico
+  // single, el `canonicalFallback` de abajo lo reponía cuando el
+  // hook era 0, y `demoNftsFromProp` caía a los 4 NFTs demo. El
+  // estado bloqueado no muestra saldos, ni reclamar, ni staking, ni
+  // referidos, ni NFTs.
+  const isAnonymousWallet =
+    isAnonymousWalletBlocked === true ||
+    isAnonymousDemoProfile(profile) ||
+    // La heurística no se aplica al `user` pelado (sin tipo ni
+    // datos, p. ej. una pareja @demo.local): sin tipo no se
+    // distingue de un anónimo legado. `isViewerAnonymous` lee el
+    // registro local y `demo_user`, señales fiables.
+    (user?.id ? isViewerAnonymous(user.id) : false);
+  if (isAnonymousWallet) {
+    return (
+      <main role="main" className="space-y-6 p-4 md:p-8">
+        <div className="rounded-2xl border border-amber-400/40 bg-amber-500/10 p-6 md:p-8 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/20">
+            <Lock className="h-6 w-6 text-amber-300" aria-hidden="true" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            Billetera desactivada en cuentas anónimas
+          </h2>
+          <p className="mt-2 text-sm text-slate-700 dark:text-white/80">
+            {ANONYMOUS_WALLET_BLOCKED_REASON}
+          </p>
+          <p className="mt-2 text-sm text-slate-700 dark:text-white/70">
+            Sin saldos, sin recompensas, sin staking y sin referidos
+            hasta verificarte.
+          </p>
+          <Button
+            onClick={() => navigate("/edit-profile-single")}
+            className="mt-4 bg-amber-500 hover:bg-amber-600 text-black font-semibold"
+          >
+            Completar mi perfil para verificarme
+          </Button>
+        </div>
       </main>
     );
   }
@@ -582,16 +656,40 @@ export function TokenDashboard({
         </CardHeader>
         <CardContent className="p-6 md:p-8">
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-700 dark:text-white/90 truncate">
+            {/* RONDA 10 (stream B, B3): la fila era `justify-between`
+                con etiqueta `truncate` sin `min-w-0` y un Badge `shrink-0`
+                sin ancho máximo: en ancho estrecho el código (mono, hasta
+                10 caracteres) rebosaba la pastilla y no había forma de
+                copiarlo. Ahora la fila puede encogerse, el código se trunca
+                con su valor completo en `title` y hay botón copiar. */}
+            <div className="flex items-center justify-between gap-2 min-w-0">
+              <span className="text-slate-700 dark:text-white/90 truncate min-w-0">
                 Tu código de referido:
               </span>
-              <Badge
-                variant="outline"
-                className="font-mono bg-slate-100 text-slate-900 border-slate-300 dark:bg-white/20 dark:text-white dark:border-white/30 ml-2 shrink-0"
-              >
-                {balance.referralCode}
-              </Badge>
+              <span className="flex items-center gap-1 min-w-0 shrink-0">
+                <Badge
+                  variant="outline"
+                  title={balance.referralCode}
+                  className="font-mono bg-slate-100 text-slate-900 border-slate-300 dark:bg-white/20 dark:text-white dark:border-white/30 min-w-0 max-w-[180px] truncate"
+                >
+                  {balance.referralCode}
+                </Badge>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={copyReferralCode}
+                  aria-label="Copiar código de referido"
+                  title="Copiar código de referido"
+                  className="shrink-0 h-7 w-7 p-0 text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10"
+                >
+                  {referralCopied ? (
+                    <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-slate-700 dark:text-white/90 truncate">

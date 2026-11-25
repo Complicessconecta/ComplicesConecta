@@ -19,7 +19,16 @@
  */
 import { generateDemoUserUUID } from "@/lib/demo-uuid";
 import { writeCountryCodeLocal } from "@/lib/countries";
-import { savePrivacySettingsExtra } from "@/lib/visibility";
+import {
+  ANONYMOUS_DEFAULT_PRIVACY_SETTINGS,
+  hasStoredPrivacySettings,
+  savePrivacySettings,
+  savePrivacySettingsExtra,
+} from "@/lib/visibility";
+import {
+  readVisibilityLocalOrNull,
+  writeVisibilityLocal,
+} from "@/lib/profileVisibility";
 import { isIdentityRetainedDemo } from "@/lib/reportBlock";
 import type { Profile } from "@/types/supabase-custom";
 
@@ -155,6 +164,109 @@ export function findLocalDemoAccountById(
   const needle = userId.trim();
   if (!needle) return null;
   return readLocalDemoAccounts().find((a) => a.userId === needle) ?? null;
+}
+
+/**
+ * Ronda 10 (stream A, punto A1): siembra los ajustes de privacidad
+ * con los que NACE una cuenta anónima (privada/invisible). Solo
+ * escribe cuando el dueño no fijó nada aún en este dispositivo: una
+ * elección explícita posterior (p. ej. volverla visible) no se pisa
+ * al volver a cargar la sesión. Se llama al crear la cuenta y al
+ * cargar una sesión demo anónima (cubre cuentas creadas antes de
+ * esta ronda, p. ej. anonr8test, que nunca se sembraron).
+ *
+ * Nota: `clearDemoAuth` barre `single_privacy:*` al cerrar sesión
+ * (comportamiento demo preexistente para todos los perfiles), así
+ * que la siembra se repite en cada carga: el default anónimo
+ * siempre es privado, también tras un logout.
+ */
+export function seedAnonymousPrivacyDefaults(
+  userId: string,
+  accountType: "single" | "couple",
+): void {
+  if (!userId) return;
+  if (!hasStoredPrivacySettings(userId, accountType)) {
+    savePrivacySettings(userId, accountType, {
+      ...ANONYMOUS_DEFAULT_PRIVACY_SETTINGS,
+    });
+  }
+  if (readVisibilityLocalOrNull(userId) === null) {
+    writeVisibilityLocal(userId, "private");
+  }
+}
+
+/**
+ * Ronda 10 (stream A, punto A7): elimina una cuenta demo creada
+ * localmente en este navegador (registro `cc_local_demo_accounts_v1`)
+ * y sus ajustes locales (privacidad y visibilidad). Las cuentas
+ * demo canónicas (Sofía `single@outlook.es`, Carmen & Roberto
+ * `pareja@outlook.es`) NO están en el registro y NO se pueden
+ * borrar: el intento se rechaza. Si la cuenta eliminada tenía la
+ * sesión activa, la sesión se limpia para no dejar un fantasma.
+ * Sin esto, anonr8test ocupaba el único hueco de cuenta anónima y
+ * no había forma de crear anonr9test.
+ */
+export function deleteLocalDemoAccount(userId: string): {
+  deleted: boolean;
+  reason?: string;
+} {
+  const needle = userId.trim();
+  if (!needle)
+    return { deleted: false, reason: "Falta el identificador de la cuenta." };
+  const accounts = readLocalDemoAccounts();
+  const target = accounts.find((a) => a.userId === needle);
+  if (!target)
+    return {
+      deleted: false,
+      reason: "Esa cuenta demo no existe en este navegador.",
+    };
+  if (
+    target.email === "single@outlook.es" ||
+    target.email === "pareja@outlook.es"
+  ) {
+    return {
+      deleted: false,
+      reason:
+        "Las cuentas demo de Sofía y de Carmen & Roberto no se pueden eliminar.",
+    };
+  }
+  if (typeof window === "undefined") return { deleted: false };
+  try {
+    window.localStorage.setItem(
+      LOCAL_DEMO_ACCOUNTS_KEY,
+      JSON.stringify(accounts.filter((a) => a.userId !== needle)),
+    );
+    // Ajustes locales de esa cuenta (privacidad y visibilidad).
+    for (const type of ["single", "couple"] as const) {
+      window.localStorage.removeItem(`${type}_privacy:${needle}`);
+    }
+    window.localStorage.removeItem(`profile_visibility:${needle}`);
+    // Si era la sesión activa, limpiarla: si no, el perfil seguiría
+    // mostrando una cuenta que ya no existe en el registro.
+    try {
+      const raw = window.localStorage.getItem("demo_user");
+      if (raw) {
+        const demoUser: unknown = JSON.parse(raw);
+        if (
+          demoUser &&
+          typeof demoUser === "object" &&
+          (demoUser as { id?: unknown }).id === needle
+        ) {
+          window.localStorage.removeItem("demo_authenticated");
+          window.localStorage.removeItem("demo_user");
+          window.localStorage.removeItem("userType");
+        }
+      }
+    } catch {
+      // demo_user corrupto: el registro ya se borró arriba.
+    }
+  } catch {
+    return {
+      deleted: false,
+      reason: "No se pudo escribir en el almacenamiento local.",
+    };
+  }
+  return { deleted: true };
 }
 
 /**
@@ -294,6 +406,14 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
     ...(input.isAnonymous ? { isAnonymous: true as const } : {}),
   });
 
+  // Ronda 10 (stream A, punto A1): el anónimo nace PRIVADO
+  // (invisible + visibilidad "private"). Sin esta siembra, el
+  // perfil nacía Visible ("👁️ Visible", "🌐 Público") porque todos
+  // los lectores caían al default visible.
+  if (input.isAnonymous) {
+    seedAnonymousPrivacyDefaults(userId, input.accountType);
+  }
+
   if (input.countryCode) {
     writeCountryCodeLocal(userId, input.countryCode);
   }
@@ -351,6 +471,17 @@ export function isAnonymousDemoProfile(profile: unknown): boolean {
   const email = typeof p.email === "string" ? p.email.toLowerCase().trim() : "";
   if (email === "single@outlook.es" || email === "pareja@outlook.es")
     return false;
+  // Ronda 10 (stream A, punto A3): la heurística legado solo vale
+  // para cuentas SINGLE sin datos. Una pareja nunca es anónima (el
+  // formulario "Crear Perfil Anónimo" crea singles) y una pareja
+  // @demo.local sin datos (p. ej. el test r9 de wallet por perfil)
+  // se clasificaba como anónima por error: /tokens le mostraba el
+  // estado bloqueado en vez de su cartera conjunta 2000/1500/2.
+  for (const key of ["accountType", "type", "profile_type"]) {
+    const value = p[key];
+    if (typeof value === "string" && value.trim().toLowerCase() === "couple")
+      return false;
+  }
   // Ronda 8 (recuperación): la heurística legado solo vale para
   // cuentas demo; un perfil real sin datos no es anónimo.
   const isDemoAccount = p.is_demo === true || email.endsWith("@demo.local");

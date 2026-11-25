@@ -39,13 +39,13 @@ export const CoupleSubscriptionCard: React.FC<
     validUntil ?? (isDemoMode ? "Demo" : "Sin fecha registrada");
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+    <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 text-slate-900 dark:text-white">
       <CardHeader>
-        <CardTitle className="text-white flex items-center gap-2">
+        <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
           <Crown className="w-5 h-5 text-yellow-400" />
           Suscripción
           {isDemoMode && (
-            <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
+            <Badge className="bg-yellow-500/20 text-yellow-800 border-yellow-500/40 dark:text-yellow-300 dark:border-yellow-400/30 text-xs">
               DEMO
             </Badge>
           )}
@@ -56,22 +56,22 @@ export const CoupleSubscriptionCard: React.FC<
           <Badge
             className={
               planLabel === "Premium"
-                ? "bg-yellow-500/20 text-yellow-200 border-yellow-400/40"
-                : "bg-white/10 text-white/80 border-white/20"
+                ? "bg-yellow-500/20 text-yellow-800 border-yellow-500/40 dark:text-yellow-200 dark:border-yellow-400/40"
+                : "bg-slate-900/5 text-slate-600 border-slate-300 dark:bg-white/10 dark:text-white/80 dark:border-white/20"
             }
           >
             {planLabel}
           </Badge>
-          <span className="text-sm text-white/70">
+          <span className="text-sm text-slate-500 dark:text-white/70">
             Válido hasta:{" "}
-            <span className="text-white font-medium">{validityLabel}</span>
+            <span className="text-slate-900 dark:text-white font-medium">{validityLabel}</span>
           </span>
         </div>
 
         {isOwnProfile && (cmpx !== undefined || gtk !== undefined) && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {cmpx !== undefined && (
-              <div className="p-3 bg-white/10 rounded-lg">
+              <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <Coins className="w-4 h-4 text-yellow-400" />
                   <span className="text-sm font-medium">CMPX</span>
@@ -79,12 +79,12 @@ export const CoupleSubscriptionCard: React.FC<
                 <div className="text-lg font-bold">
                   {Number(cmpx).toLocaleString("es-MX")}
                 </div>
-                <div className="text-xs text-white/70">Saldo</div>
+                <div className="text-xs text-slate-500 dark:text-white/70">Saldo</div>
               </div>
             )}
 
             {gtk !== undefined && (
-              <div className="p-3 bg-white/10 rounded-lg">
+              <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <Coins className="w-4 h-4 text-fuchsia-400" />
                   <span className="text-sm font-medium">GTK</span>
@@ -92,18 +92,18 @@ export const CoupleSubscriptionCard: React.FC<
                 <div className="text-lg font-bold">
                   {Number(gtk).toLocaleString("es-MX")}
                 </div>
-                <div className="text-xs text-white/70">Saldo</div>
+                <div className="text-xs text-slate-500 dark:text-white/70">Saldo</div>
               </div>
             )}
 
             {typeof nftCount === "number" && (
-              <div className="p-3 bg-white/10 rounded-lg">
+              <div className="p-3 bg-slate-900/5 dark:bg-white/10 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <Wallet className="w-4 h-4 text-purple-400" />
                   <span className="text-sm font-medium">NFTs</span>
                 </div>
                 <div className="text-lg font-bold">{nftCount}</div>
-                <div className="text-xs text-white/70">Colección</div>
+                <div className="text-xs text-slate-500 dark:text-white/70">Colección</div>
               </div>
             )}
           </div>

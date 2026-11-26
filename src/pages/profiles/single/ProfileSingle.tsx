@@ -138,6 +138,11 @@ import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButt
 import { ProfileSocialSettings } from "@/components/profiles/shared/ProfileSocialSettings";
 import { readCountryCodeLocal } from "@/lib/countries";
 import { getSocialDemoData } from "@/demo/socialDemoData";
+import {
+  DEMO_USER_CHANGED_EVENT,
+  parseSavedSingleDemoInterests,
+  resolveDemoInterestList,
+} from "@/lib/profile-interests";
 
 // --- Secciones modelo del video, espejo de pareja (1 usuario) ---
 // Campos físicos que NO existen en el modelo de perfil: en demo se muestran
@@ -1119,20 +1124,31 @@ const ProfileSingle: FC = () => {
   // selección en `demo_user` (localStorage) y el perfil la refleja. Si aún
   // no se ha editado nada, se usan los títulos demo. En producción se leen
   // las actividades reales (activities_interested).
+  // Ronda 14 (stream F, F2/F3): la lectura vivía en un useMemo con deps
+  // [singleIsDemo] que leía localStorage una sola vez al montar y un `[]`
+  // guardado anulaba el fallback (`[] ?? fallback` no dispara). Ahora la
+  // lectura pasa por el resolver compartido (un `[]` es "sin selección" y
+  // cae al fallback) y se re-lee cuando el editor guarda en la misma
+  // sesión (evento demo-user-changed): sin esto, volver del editor sin
+  // remontaje dejaba la vista con los intereses viejos.
+  const [demoUserVersion, setDemoUserVersion] = useState(0);
+  useEffect(() => {
+    const onChanged = () => setDemoUserVersion((v) => v + 1);
+    window.addEventListener(DEMO_USER_CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(DEMO_USER_CHANGED_EVENT, onChanged);
+  }, []);
   const savedDemoInterests = useMemo(() => {
     if (!singleIsDemo || typeof window === "undefined") return null;
     try {
       const raw = window.localStorage.getItem("demo_user");
       if (!raw) return null;
-      const parsed = JSON.parse(raw) as { interests?: unknown };
-      return Array.isArray(parsed.interests) &&
-        parsed.interests.every((x) => typeof x === "string")
-        ? (parsed.interests as string[])
-        : null;
+      return parseSavedSingleDemoInterests(JSON.parse(raw));
     } catch {
       return null;
     }
-  }, [singleIsDemo]);
+    // demoUserVersion: re-leer cuando el editor guarda (ver arriba).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [singleIsDemo, demoUserVersion]);
 
   if (isLoading) {
     return (
@@ -1303,7 +1319,7 @@ const ProfileSingle: FC = () => {
     },
   };
   const singleLikes = singleIsDemo
-    ? (savedDemoInterests ?? [
+    ? resolveDemoInterestList(savedDemoInterests, [
         DEMO_SINGLE_INTEREST_TITLES[0],
         DEMO_SINGLE_INTEREST_TITLES[2],
         DEMO_SINGLE_INTEREST_TITLES[4],
@@ -1341,7 +1357,10 @@ const ProfileSingle: FC = () => {
   ]);
 
   return (
-    <div className="min-h-dvh bg-transparent text-slate-900 dark:text-white pb-20 md:pb-0 pt-20 overflow-x-hidden">
+    // Ronda 14 (stream F, F1): el `pt-20` (80 px) era un hueco vacío
+    // encima de la tarjeta: el header de MainLayout ya es EN FLUJO
+    // desde la ronda 6 y no hay nada que compensar. Solo respiro corto.
+    <div className="min-h-dvh bg-transparent text-slate-900 dark:text-white pb-20 md:pb-0 pt-4 overflow-x-hidden">
       <div className="container mx-auto px-4 pb-24 w-full max-w-full">
         <div className="max-w-4xl mx-auto">
           {/* RONDA 7 (punto 3): la tarjeta era `bg-white/5` con texto

@@ -246,10 +246,21 @@ function readLocalRequests(): FriendRequest[] {
   }
 }
 
+/**
+ * Ronda 14 (stream F, F3): aviso de que `friend_requests_demo` cambió
+ * (envío, respuesta, petición de acceso a fotos). Las listas
+ * (`Requests.tsx`, `FriendsSection`) y los botones cargaban una sola
+ * vez al montar: si la solicitud se enviaba desde otra vista de la
+ * misma sesión, la bandeja no se enteraba hasta recargar. Quien
+ * escribe suscribe y recarga; quien muta solo dispara el evento.
+ */
+export const FRIEND_REQUESTS_CHANGED_EVENT = "friend-requests-changed";
+
 function writeLocalRequests(requests: FriendRequest[]): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+    window.dispatchEvent(new Event(FRIEND_REQUESTS_CHANGED_EVENT));
   } catch {
     // Sin almacenamiento: el cambio solo vive en esta sesión.
   }

@@ -1,7 +1,17 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles, Building2 } from "lucide-react";
+import {
+  Home,
+  MessageCircle,
+  Heart,
+  User,
+  Settings,
+  Coins,
+  Search,
+  UserPlus,
+  Sparkles,
+  Building2,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
 import { useFeatures } from "@/hooks/useFeatures";
 import { cn } from "@/shared/lib/cn";
 import { useAuth } from "@/features/auth/useAuth";
@@ -20,18 +30,19 @@ export const Navigation = ({ className }: NavigationProps) => {
 
   const demoActive = typeof isDemoMode === "function" ? isDemoMode() : false;
 
-  const getSettingsPath = () => {
-    return profileType === "couple"
-      ? "/edit-profile-couple"
-      : "/edit-profile-single";
-  };
-
   const navItems = features.requests
     ? [
         { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
-          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          ? [
+              {
+                id: "clubs-demo",
+                icon: Building2,
+                label: "Clubs",
+                path: "/clubs/demo",
+              },
+            ]
           : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         {
@@ -48,14 +59,21 @@ export const Navigation = ({ className }: NavigationProps) => {
           id: "settings",
           icon: Settings,
           label: "Config",
-          path: getSettingsPath(),
+          path: "/settings",
         },
       ]
     : [
         { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
-          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          ? [
+              {
+                id: "clubs-demo",
+                icon: Building2,
+                label: "Clubs",
+                path: "/clubs/demo",
+              },
+            ]
           : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         { id: "matches", icon: Heart, label: "Matches", path: "/matches" },
@@ -65,7 +83,7 @@ export const Navigation = ({ className }: NavigationProps) => {
           id: "settings",
           icon: Settings,
           label: "Config",
-          path: getSettingsPath(),
+          path: "/settings",
         },
       ];
 
@@ -78,27 +96,9 @@ export const Navigation = ({ className }: NavigationProps) => {
       return;
     }
 
-    // El botón "Config" apunta a la ruta del editor. Estando ya en esa
-    // ruta, navegar al mismo path no hace nada (la URL no cambia y no hay
-    // re-render): en ese caso abrir el modal de configuración de
-    // animaciones, el mismo que abre el engranaje flotante.
-    if (path === getSettingsPath() && location.pathname === path) {
-      window.dispatchEvent(new Event(OPEN_ANIMATION_SETTINGS_EVENT));
-      return;
-    }
-
     if (path === "/profile") {
       navigate(
         profileType === "couple" ? "/profile-couple" : "/profile-single",
-      );
-      return;
-    }
-
-    if (path === "/tokens") {
-      navigate(
-        profileType === "couple"
-          ? "/profile-couple#wallet"
-          : "/profile-single#wallet",
       );
       return;
     }
@@ -112,7 +112,10 @@ export const Navigation = ({ className }: NavigationProps) => {
   }
 
   // Evitar doble navegación en páginas de Tokens (ya existe TokensSubnav)
-  if (location.pathname === "/tokens" || location.pathname.startsWith("/tokens")) {
+  if (
+    location.pathname === "/tokens" ||
+    location.pathname.startsWith("/tokens")
+  ) {
     return null;
   }
 

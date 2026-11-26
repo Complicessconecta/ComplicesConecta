@@ -4,16 +4,35 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, Camera, X, Users, MapPin, AlertCircle, Sun, Moon, Eye, EyeOff } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  Camera,
+  X,
+  Users,
+  MapPin,
+  AlertCircle,
+  Sun,
+  Moon,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
+import {
+  notifyDemoUserChanged,
+  visibleInterestOptions,
+} from "@/lib/profile-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from "@/lib/logger";
 import { resolveDemoAccountType } from "@/lib/app-config";
 import { supabase } from "@/integrations/supabase/client";
-import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfileTheme";
+import {
+  useDemoThemeConfig,
+  useProfileTheme,
+} from "@/features/profile/useProfileTheme";
 import { motion } from "framer-motion";
 
 const EditProfileCouple = () => {
@@ -85,6 +104,73 @@ const EditProfileCouple = () => {
     useDemoThemeConfig();
   const themeConfig = useProfileTheme("couple", ["male", "female"], demoTheme);
 
+  // Ronda 14 (stream F, F4): las 4 casillas de "Configuración de
+  // privacidad" eran `defaultChecked` sin controlar y nunca se guardaban.
+  // Ahora son estado controlado que se persiste en el MISMO almacén que
+  // leen las secciones de perfil (`couple_privacy:<userId>` en demo y
+  // `couple_profiles.privacy_settings` en real). "Aparecer en búsquedas"
+  // es el inverso de `invisible`; "Solo parejas verificadas" es el
+  // inverso de `allowUnverified`.
+  const [privacyPrefs, setPrivacyPrefs] = useState({
+    show_age: true,
+    showRegion: true,
+    invisible: false,
+    allowUnverified: true,
+  });
+
+  /** JSON completo guardado por las secciones (no solo estas 4 claves). */
+  const readStoredPrivacy = (uid: string): Record<string, unknown> => {
+    try {
+      const raw = localStorage.getItem(`couple_privacy:${uid}`);
+      const parsed: unknown = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === "object"
+        ? (parsed as Record<string, unknown>)
+        : {};
+    } catch {
+      return {};
+    }
+  };
+
+  const applyStoredPrivacy = (uid: string) => {
+    const stored = readStoredPrivacy(uid);
+    setPrivacyPrefs((prev) => ({
+      show_age:
+        typeof stored.show_age === "boolean" ? stored.show_age : prev.show_age,
+      showRegion:
+        typeof stored.showRegion === "boolean"
+          ? stored.showRegion
+          : prev.showRegion,
+      invisible:
+        typeof stored.invisible === "boolean"
+          ? stored.invisible
+          : prev.invisible,
+      allowUnverified:
+        typeof stored.allowUnverified === "boolean"
+          ? stored.allowUnverified
+          : prev.allowUnverified,
+    }));
+  };
+
+  // Ronda 14 (stream F, F4): persistir las preferencias de privacidad
+  // del editor en el mismo almacén que las secciones, mezclando sobre el
+  // JSON completo para no borrar las demás claves.
+  const persistPrivacyPrefs = async (isDemo: boolean) => {
+    const uid = profile?.id;
+    if (!uid) return;
+    const merged = { ...readStoredPrivacy(uid), ...privacyPrefs };
+    try {
+      localStorage.setItem(`couple_privacy:${uid}`, JSON.stringify(merged));
+    } catch {
+      // Sin almacenamiento: el cambio solo vive en esta sesión.
+    }
+    if (!isDemo && supabase) {
+      await (supabase as any)
+        .from("couple_profiles")
+        .update({ privacy_settings: merged })
+        .eq("id", uid);
+    }
+  };
+
   const {
     location,
     error: locationError,
@@ -120,7 +206,12 @@ const EditProfileCouple = () => {
     return mockCities[seed % mockCities.length] || "";
   }, [location]);
 
-  const availableInterests = SAFE_INTERESTS;
+  // Ronda 14 (stream F, F2/F8): la lista visible es SAFE_INTERESTS MÁS
+  // lo ya guardado (los títulos demo pre-cargados no están en
+  // SAFE_INTERESTS y antes no se veían como seleccionados aunque el
+  // contador dijera 6/6). Por lista, porque cada una tiene su selección.
+  const visibleInterestsFor = (saved: string[]) =>
+    visibleInterestOptions(SAFE_INTERESTS, saved);
 
   // Poblar el formulario con la identidad demo guardada en `demo_user`.
   // Los campos que el demo no trae usan los valores canónicos del perfil
@@ -131,11 +222,15 @@ const EditProfileCouple = () => {
     const asString = (value: unknown): string =>
       typeof value === "string" ? value : "";
     const asStringArray = (value: unknown): string[] =>
-      Array.isArray(value) &&
-      value.every((item) => typeof item === "string")
+      Array.isArray(value) && value.every((item) => typeof item === "string")
         ? (value as string[])
         : [];
-    const partner = (stored: any, firstName: string, age: string, fallbackInterests: string[]) => {
+    const partner = (
+      stored: any,
+      firstName: string,
+      age: string,
+      fallbackInterests: string[],
+    ) => {
       const nameParts = asString(stored?.name).split(" ");
       const storedInterests = asStringArray(stored?.interests);
       return {
@@ -168,6 +263,7 @@ const EditProfileCouple = () => {
 
     const storedInterests = asStringArray(user.interests);
     setProfile(user);
+    applyStoredPrivacy(user.id);
     setFormData({
       coupleName:
         asString(user.name) ||
@@ -395,9 +491,7 @@ const EditProfileCouple = () => {
                 <button
                   type="button"
                   aria-label="Quitar foto añadida"
-                  onClick={() =>
-                    handleRemoveGalleryImage(partner, type, url)
-                  }
+                  onClick={() => handleRemoveGalleryImage(partner, type, url)}
                   className="absolute top-0.5 right-0.5 p-0.5 rounded-full bg-black/70 text-white hover:bg-black/90"
                 >
                   <X className="h-3 w-3" />
@@ -448,6 +542,10 @@ const EditProfileCouple = () => {
           },
         };
         window.localStorage.setItem("demo_user", JSON.stringify(updatedUser));
+        // Ronda 14 (stream F, F2/F3): avisar a la página de perfil para
+        // que re-lea los intereses sin recargar.
+        notifyDemoUserChanged();
+        await persistPrivacyPrefs(true);
         logger.info("Perfil de pareja guardado (demo)");
       } catch (error) {
         logger.error("Error guardando perfil de pareja en demo", {
@@ -471,6 +569,8 @@ const EditProfileCouple = () => {
         logger.error("Error guardando intereses de pareja", {
           error: error.message,
         });
+      } else {
+        await persistPrivacyPrefs(false);
       }
     }
     navigate("/profile-couple");
@@ -799,31 +899,35 @@ const EditProfileCouple = () => {
 
             {/* Intereses individuales para Partner 1 */}
             <div>
-              <label className="block text-sm font-medium text-white mb-2">
+              <label
+                className={`block text-sm font-medium ${themeConfig.textClass} mb-2`}
+              >
                 Intereses Lifestyle
               </label>
-              <p className="text-xs text-white/80 mb-3">
+              <p className={`text-xs ${themeConfig.textClass}/80 mb-3`}>
                 Selecciona sus intereses para encontrar matches compatibles
               </p>
-              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border rounded-lg bg-fuchsia-50">
-                {availableInterests.map((interest) => (
-                  <Badge
-                    key={interest}
-                    className={`cursor-pointer transition-all text-xs ${
-                      formData.partner1.interests.includes(interest)
-                        ? "bg-linear-to-r from-fuchsia-500 to-rose-500 text-white shadow-md"
-                        : "hover:bg-fuchsia-100 text-gray-800 border border-fuchsia-200"
-                    }`}
-                    onClick={() => toggleInterest(interest, "partner1")}
-                  >
-                    {interest}
-                    {formData.partner1.interests.includes(interest) && (
-                      <X className="h-3 w-3 ml-1" />
-                    )}
-                  </Badge>
-                ))}
+              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border border-slate-300 dark:border-white/30 rounded-lg bg-white dark:bg-white/10">
+                {visibleInterestsFor(formData.partner1.interests).map(
+                  (interest) => (
+                    <Badge
+                      key={interest}
+                      className={`cursor-pointer transition-all text-xs ${
+                        formData.partner1.interests.includes(interest)
+                          ? "bg-linear-to-r from-fuchsia-500 to-rose-500 text-white shadow-md"
+                          : "bg-slate-100 text-slate-900 border border-slate-300 hover:bg-slate-200 dark:bg-white/20 dark:text-white dark:border-white/30 dark:hover:bg-white/30"
+                      }`}
+                      onClick={() => toggleInterest(interest, "partner1")}
+                    >
+                      {interest}
+                      {formData.partner1.interests.includes(interest) && (
+                        <X className="h-3 w-3 ml-1" />
+                      )}
+                    </Badge>
+                  ),
+                )}
               </div>
-              <p className="text-xs text-white/80 mt-2">
+              <p className={`text-xs ${themeConfig.textClass}/80 mt-2`}>
                 {formData.partner1.interests.length}/10 seleccionados
               </p>
             </div>
@@ -983,31 +1087,35 @@ const EditProfileCouple = () => {
 
             {/* Intereses individuales para Partner 2 */}
             <div>
-              <label className="block text-sm font-medium text-white mb-2">
+              <label
+                className={`block text-sm font-medium ${themeConfig.textClass} mb-2`}
+              >
                 Intereses Lifestyle
               </label>
-              <p className="text-xs text-white/80 mb-3">
+              <p className={`text-xs ${themeConfig.textClass}/80 mb-3`}>
                 Selecciona sus intereses para encontrar matches compatibles
               </p>
-              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border rounded-lg bg-blue-50">
-                {availableInterests.map((interest) => (
-                  <Badge
-                    key={interest}
-                    className={`cursor-pointer transition-all text-xs ${
-                      formData.partner2.interests.includes(interest)
-                        ? "bg-linear-to-r from-blue-500 to-indigo-500 text-white shadow-md"
-                        : "hover:bg-blue-100 text-gray-800 border border-blue-200"
-                    }`}
-                    onClick={() => toggleInterest(interest, "partner2")}
-                  >
-                    {interest}
-                    {formData.partner2.interests.includes(interest) && (
-                      <X className="h-3 w-3 ml-1" />
-                    )}
-                  </Badge>
-                ))}
+              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border border-slate-300 dark:border-white/30 rounded-lg bg-white dark:bg-white/10">
+                {visibleInterestsFor(formData.partner2.interests).map(
+                  (interest) => (
+                    <Badge
+                      key={interest}
+                      className={`cursor-pointer transition-all text-xs ${
+                        formData.partner2.interests.includes(interest)
+                          ? "bg-linear-to-r from-blue-500 to-indigo-500 text-white shadow-md"
+                          : "bg-slate-100 text-slate-900 border border-slate-300 hover:bg-slate-200 dark:bg-white/20 dark:text-white dark:border-white/30 dark:hover:bg-white/30"
+                      }`}
+                      onClick={() => toggleInterest(interest, "partner2")}
+                    >
+                      {interest}
+                      {formData.partner2.interests.includes(interest) && (
+                        <X className="h-3 w-3 ml-1" />
+                      )}
+                    </Badge>
+                  ),
+                )}
               </div>
-              <p className="text-xs text-white/80 mt-2">
+              <p className={`text-xs ${themeConfig.textClass}/80 mt-2`}>
                 {formData.partner2.interests.length}/10 seleccionados
               </p>
             </div>
@@ -1017,20 +1125,20 @@ const EditProfileCouple = () => {
         {/* Intereses compartidos */}
         <Card className="bg-linear-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-white mb-4">
+            <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>
               Intereses compartidos
             </h3>
-            <p className="text-sm text-white/80 mb-4">
+            <p className={`text-sm ${themeConfig.textClass}/80 mb-4`}>
               Seleccionen hasta 6 intereses que los representen como pareja
             </p>
-            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 border rounded-lg bg-gray-50">
-              {availableInterests.map((interest) => (
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 border border-slate-300 dark:border-white/30 rounded-lg bg-white dark:bg-white/10">
+              {visibleInterestsFor(formData.interests).map((interest) => (
                 <Badge
                   key={interest}
-                  className={`cursor-pointer transition-all text-contrast ${
+                  className={`cursor-pointer transition-all ${
                     formData.interests.includes(interest)
                       ? "bg-linear-to-r from-fuchsia-500 to-purple-500 text-white shadow-md"
-                      : "hover:bg-gray-200 text-gray-800 border border-gray-300"
+                      : "bg-slate-100 text-slate-900 border border-slate-300 hover:bg-slate-200 dark:bg-white/20 dark:text-white dark:border-white/30 dark:hover:bg-white/30"
                   }`}
                   onClick={() => toggleInterest(interest)}
                 >
@@ -1041,7 +1149,7 @@ const EditProfileCouple = () => {
                 </Badge>
               ))}
             </div>
-            <p className="text-xs text-white/80 mt-2">
+            <p className={`text-xs ${themeConfig.textClass}/80 mt-2`}>
               {formData.interests.length}/6 seleccionados
             </p>
           </CardContent>
@@ -1157,46 +1265,75 @@ const EditProfileCouple = () => {
         {/* Configuración de privacidad */}
         <Card className="bg-linear-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-white mb-4">
+            <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>
               Configuración de privacidad
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Mostrar edades</span>
+                <span className={`text-sm ${themeConfig.textClass}`}>
+                  Mostrar edades
+                </span>
                 <input
                   type="checkbox"
-                  defaultChecked
-                  className="rounded bg-white/20 border-white/30"
+                  checked={privacyPrefs.show_age}
+                  onChange={(e) =>
+                    setPrivacyPrefs((prev) => ({
+                      ...prev,
+                      show_age: e.target.checked,
+                    }))
+                  }
+                  className="rounded bg-white/20 border-white/30 accent-fuchsia-500"
                   title="Mostrar edades en perfil"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Mostrar ubicación</span>
+                <span className={`text-sm ${themeConfig.textClass}`}>
+                  Mostrar ubicación
+                </span>
                 <input
                   type="checkbox"
-                  defaultChecked
-                  className="rounded bg-white/20 border-white/30"
+                  checked={privacyPrefs.showRegion}
+                  onChange={(e) =>
+                    setPrivacyPrefs((prev) => ({
+                      ...prev,
+                      showRegion: e.target.checked,
+                    }))
+                  }
+                  className="rounded bg-white/20 border-white/30 accent-fuchsia-500"
                   title="Mostrar ubicación en perfil"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">
+                <span className={`text-sm ${themeConfig.textClass}`}>
                   Aparecer en búsquedas
                 </span>
                 <input
                   type="checkbox"
-                  defaultChecked
-                  className="rounded bg-white/20 border-white/30"
+                  checked={!privacyPrefs.invisible}
+                  onChange={(e) =>
+                    setPrivacyPrefs((prev) => ({
+                      ...prev,
+                      invisible: !e.target.checked,
+                    }))
+                  }
+                  className="rounded bg-white/20 border-white/30 accent-fuchsia-500"
                   title="Aparecer en resultados de búsqueda"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">
+                <span className={`text-sm ${themeConfig.textClass}`}>
                   Solo parejas verificadas
                 </span>
                 <input
                   type="checkbox"
-                  className="rounded bg-white/20 border-white/30"
+                  checked={!privacyPrefs.allowUnverified}
+                  onChange={(e) =>
+                    setPrivacyPrefs((prev) => ({
+                      ...prev,
+                      allowUnverified: !e.target.checked,
+                    }))
+                  }
+                  className="rounded bg-white/20 border-white/30 accent-fuchsia-500"
                   title="Solo mostrar parejas verificadas"
                 />
               </div>
@@ -1209,4 +1346,3 @@ const EditProfileCouple = () => {
 };
 
 export default EditProfileCouple;
-

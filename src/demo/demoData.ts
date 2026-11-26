@@ -131,6 +131,18 @@ const DEMO_ROSTER: Array<{
 ];
 
 /**
+ * Edad canónica de un nombre del roster (ronda 14, stream C): la
+ * lista aleatoria de Discover reutiliza estos nombres y antes les
+ * asignaba otra edad por sorteo (Carlos 32 en el roster, 41/40/45 en
+ * la lista), así que el mismo nombre se veía con edades distintas
+ * según la superficie. La lista aleatoria usa esta edad cuando el
+ * nombre está en el roster; fuera de él, la edad es un hash estable
+ * del nombre (ver `ageForDemoName`).
+ */
+export const getDemoRosterAge = (name: string): number | undefined =>
+  DEMO_ROSTER.find((entry) => entry.name === name)?.age;
+
+/**
  * Fotos de pareja VERIFICADAS por vista, una a una: cada URL es una
  * foto distinta de una pareja junta (no símbolos ni fotos sueltas).
  * Revisión ronda 5 (2026-11-24): se sacaron 1522098543979 (dos

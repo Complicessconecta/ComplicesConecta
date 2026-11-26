@@ -51,6 +51,52 @@ export interface UserConsent {
   user_agent: string;
 }
 
+// Ronda 12 (stream D): respaldo local de consentimientos, mismo
+// patrón que `club_events_local:` / `club_discounts_local:` en
+// `clubContentService`. Sin la columna `user_consents.club_id`
+// (migración 20261124030000 sin aplicar) el insert en BD falla con
+// 42703 y antes el consentimiento se PERDÍA (solo `onConsentError`).
+// Ahora queda guardado en este dispositivo y el flujo continúa con
+// los consentimientos locales (id `local-...`). Límite conocido:
+// no hay sincronización posterior — al aplicar 30000 estos
+// consentimientos locales NO suben solos a BD, igual que los
+// eventos/descuentos locales.
+const LOCAL_CONSENTS_KEY = (userId: string, clubId: string) =>
+  `user_consents_local:${userId}:${clubId}`;
+
+function saveLocalConsents(
+  userId: string,
+  clubId: string,
+  consents: UserConsent[],
+): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(
+      LOCAL_CONSENTS_KEY(userId, clubId),
+      JSON.stringify(consents),
+    );
+  } catch {
+    // Sin almacenamiento: el consentimiento solo vive en esta sesión.
+  }
+}
+
+export function readLocalConsents(
+  userId: string,
+  clubId: string,
+): UserConsent[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(
+      LOCAL_CONSENTS_KEY(userId, clubId),
+    );
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as UserConsent[]) : [];
+  } catch {
+    return [];
+  }
+}
+
 interface ClubConsentManagerProps {
   clubId: string;
   userId: string;
@@ -321,23 +367,49 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
         return;
       }
 
-      const { data, error } = await supabase
-        .from('user_consents')
-        .insert(inserts)
-        .select('id, club_id, user_id, consent_type, version, consented_at');
+      // Ronda 12 (stream D): si el insert en BD falla (p. ej. falta
+      // `user_consents.club_id`, migración 30000 sin aplicar), el
+      // consentimiento ya no se pierde: se guarda local
+      // (`user_consents_local:`) y el flujo continúa con los
+      // consentimientos locales. Sin este respaldo, el error solo
+      // disparaba `onConsentError` y no quedaba registro del
+      // consentimiento en ningún lado.
+      let consents: UserConsent[];
+      try {
+        const { data, error } = await supabase
+          .from('user_consents')
+          .insert(inserts)
+          .select('id, club_id, user_id, consent_type, version, consented_at');
 
-      if (error) throw error;
+        if (error) throw error;
 
-      const consents: UserConsent[] = (data ?? []).map((row) => ({
-        id: row.id,
-        club_id: row.club_id ?? clubId,
-        user_id: row.user_id,
-        consent_type: row.consent_type,
-        consent_version: row.version,
-        accepted_at: row.consented_at,
-        ip_address: '',
-        user_agent: navigator.userAgent,
-      }));
+        consents = (data ?? []).map((row) => ({
+          id: row.id,
+          club_id: row.club_id ?? clubId,
+          user_id: row.user_id,
+          consent_type: row.consent_type,
+          consent_version: row.version,
+          accepted_at: row.consented_at,
+          ip_address: '',
+          user_agent: navigator.userAgent,
+        }));
+      } catch (dbError) {
+        logger.warn(
+          'Consentimientos de club no se pudieron guardar en BD, se guardan local',
+          { error: String(dbError), clubId },
+        );
+        consents = inserts.map((row, i) => ({
+          id: `local-${Date.now()}-${i}`,
+          club_id: row.club_id ?? clubId,
+          user_id: row.user_id,
+          consent_type: row.consent_type,
+          consent_version: row.version,
+          accepted_at: row.consented_at,
+          ip_address: '',
+          user_agent: navigator.userAgent,
+        }));
+        saveLocalConsents(userId, clubId, consents);
+      }
 
       logger.info('Consentimientos de club guardados', { count: consents.length, clubId });
       onConsentComplete?.(consents);

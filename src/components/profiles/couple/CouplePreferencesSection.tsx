@@ -21,9 +21,9 @@ export const CouplePreferencesSection: React.FC<
   CouplePreferencesSectionProps
 > = ({ members }) => {
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+    <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 text-slate-900 dark:text-white">
       <CardHeader>
-        <CardTitle className="text-white flex items-center gap-2">
+        <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
           <Heart className="w-5 h-5 text-fuchsia-400" />
           Nuestros Intereses
         </CardTitle>
@@ -38,26 +38,26 @@ export const CouplePreferencesSection: React.FC<
             return (
               <div
                 key={member.name}
-                className="p-4 bg-white/5 rounded-xl border border-white/10"
+                className="p-4 bg-slate-900/5 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10"
               >
                 <p className="font-semibold text-white mb-3">{member.name}</p>
 
                 {empty ? (
-                  <p className="text-xs text-white/50">
+                  <p className="text-xs text-slate-500 dark:text-white/50">
                     Sin preferencias registradas por ahora.
                   </p>
                 ) : (
                   <div className="space-y-3">
                     {likes.length > 0 && (
                       <div>
-                        <p className="text-xs text-white/50 mb-1.5">
+                        <p className="text-xs text-slate-500 dark:text-white/50 mb-1.5">
                           Me gusta
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {likes.map((tag) => (
                             <Badge
                               key={tag}
-                              className="bg-fuchsia-500/20 text-fuchsia-100 border-fuchsia-400/30 font-normal"
+                              className="bg-fuchsia-500/15 text-fuchsia-800 border-fuchsia-500/40 dark:bg-fuchsia-500/20 dark:text-fuchsia-100 dark:border-fuchsia-400/30 font-normal"
                             >
                               {tag}
                             </Badge>
@@ -68,14 +68,14 @@ export const CouplePreferencesSection: React.FC<
 
                     {dependsOn.length > 0 && (
                       <div>
-                        <p className="text-xs text-white/50 mb-1.5">
+                        <p className="text-xs text-slate-500 dark:text-white/50 mb-1.5">
                           Depende de la situación
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {dependsOn.map((tag) => (
                             <Badge
                               key={tag}
-                              className="bg-blue-500/20 text-blue-100 border-blue-400/30 font-normal"
+                              className="bg-blue-500/15 text-blue-800 border-blue-500/40 dark:bg-blue-500/20 dark:text-blue-100 dark:border-blue-400/30 font-normal"
                             >
                               {tag}
                             </Badge>

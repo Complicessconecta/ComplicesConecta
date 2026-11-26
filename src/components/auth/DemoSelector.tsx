@@ -413,12 +413,21 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
                     (typeof account.profile.display_name === "string" &&
                       account.profile.display_name) ||
                     account.nickname;
+                  // Ronda 12 (stream B, 1b): la columna del nombre era
+                  // `min-w-0 flex-1` (flex: 1 1 0%) con `wrap-break-word`:
+                  // a 390 px (ancho CSS de móvil) la fila "casi cabía" y el
+                  // algoritmo flex aplastaba la columna a ~27 px, así que el
+                  // nombre y el email se rompían LETRA POR LETRA
+                  // ("Te / st / R7"). Ahora la columna tiene un mínimo
+                  // garantizado (`min-w-40 basis-40`): antes que aplastar el
+                  // nombre, los botones Entrar / Eliminar bajan a la
+                  // siguiente línea (el `li` ya es `flex-wrap`).
                   return (
                     <li
                       key={account.userId}
                       className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white dark:border-white/10 dark:bg-white/5 px-3 py-2"
                     >
-                      <div className="min-w-0 flex-1">
+                      <div className="min-w-40 flex-1 basis-40">
                         <p className="text-slate-900 dark:text-white font-medium wrap-break-word">
                           {displayName}
                           {account.isAnonymous && (

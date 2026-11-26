@@ -27,7 +27,7 @@ import {
   listIncomingRequestsSync,
   listSentRequestsSync,
   respondFriendRequest,
-  resolveDemoProfileName,
+  resolveDemoDisplayName,
 } from "@/lib/friends";
 import { findLocalDemoAccountById } from "@/lib/demo-registration";
 import { generateDemoProfiles, demoProfiles } from "@/demo/demoData";
@@ -68,7 +68,9 @@ function resolveRequestTargetName(toId: string): string {
   }
   // Cuentas demo locales (TestR7, anonr8test, …) y canónicas: el
   // roster y los datos sociales no las conocen (ronda 9, stream D).
-  return resolveDemoProfileName(toId);
+  // Ronda 12, stream C: versión SEGURA (nunca un UUID crudo: una
+  // cuenta borrada u huérfana se etiqueta, no se enseña su id).
+  return resolveDemoDisplayName(toId);
 }
 
 /**
@@ -294,12 +296,22 @@ const Requests = () => {
     // kinds (el lado Enviadas ya los traía todos: `listSentRequestsSync`
     // sin kind no filtra). Sin esto, la solicitud de ver fotos solo
     // existía en el gestor del perfil y no se podía responder aquí.
+    // Ronda 12 (stream A, punto 2): `includeDecided: true` — la
+    // bandeja se reconstruía SOLO con pendientes, así que una
+    // solicitud aceptada desaparecía de Recibidas al recargar (y la
+    // cuenta atrás de la concesión seguía viva: bandeja y galería en
+    // desacuerdo). El almacén es la fuente de la decisión: aceptadas
+    // y declinadas quedan visibles con su estado real y persistente.
     const localReceived: Invitation[] = [
-      ...listIncomingRequestsSync(currentUserId ?? ""),
-      ...listIncomingRequestsSync(currentUserId ?? "", "photo_access"),
+      ...listIncomingRequestsSync(currentUserId ?? "", "friendship", {
+        includeDecided: true,
+      }),
+      ...listIncomingRequestsSync(currentUserId ?? "", "photo_access", {
+        includeDecided: true,
+      }),
     ].map((req) => ({
       id: req.id,
-      from_profile: resolveDemoProfileName(req.fromId),
+      from_profile: resolveDemoDisplayName(req.fromId),
       // Ronda 10 (stream A, punto A2): insignia "Anónimo" al
       // remitente anónimo (el registro local sabe si lo es).
       fromIsAnonymous:

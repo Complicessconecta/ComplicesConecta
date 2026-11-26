@@ -991,17 +991,31 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
     // siempre permiten. El destinatario anónimo se resuelve en el
     // registro local demo; fuera de demo, sin registro, no se bloquea
     // por falta de datos (no hay falsos bloqueos).
+    // Ronda 12 (stream A, punto 1): el gate comparaba la amistad con
+    // el id de SALA ("3"), no con el id del PERFIL del interlocutor:
+    // la amistad aceptada se guarda con ids canónicos de perfil (la
+    // pareja es 48bb1f12-…), así que `areFriendsSync(anónimo, "3")`
+    // siempre era false y el envío fallaba con "Sin permisos" aunque
+    // /chat/3 mostrara "✓ Amigos" (ese botón SÍ usa el id de perfil
+    // resuelto, ronda 11 stream C). Es el mismo puente
+    // (`resolveChatPartnerProfileId`) que ya usan el estado de acceso
+    // a fotos y los botones de este hilo; el nombre va como 4º
+    // argumento para el fallback de la amistad semilla.
     if (selectedChat.roomType === "private") {
+      const partnerProfileId = resolveChatPartnerProfileId(
+        String(selectedChat.id),
+      );
       const senderIsAnonymous =
         isAnonymousDemoProfile(user) ||
         findLocalDemoAccountById(user?.id ?? "")?.isAnonymous === true;
       const recipientIsAnonymous =
-        findLocalDemoAccountById(selectedChat.id.toString())?.isAnonymous ===
-        true;
+        findLocalDemoAccountById(partnerProfileId)?.isAnonymous === true;
       if (senderIsAnonymous || recipientIsAnonymous) {
         const friends = areFriendsSync(
           user?.id ?? "",
-          selectedChat.id.toString(),
+          partnerProfileId,
+          undefined,
+          selectedChat.name,
         );
         const limit = canSendMessageTo({
           recipientPrivacy: null,

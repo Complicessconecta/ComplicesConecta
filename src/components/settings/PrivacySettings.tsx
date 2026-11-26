@@ -1,16 +1,47 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader,  CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/buttons/Button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, Eye, EyeOff, Users, AlertTriangle, Trash2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Shield,
+  Eye,
+  EyeOff,
+  Users,
+  AlertTriangle,
+  Trash2,
+} from "lucide-react";
 import { logger } from "@/lib/logger";
 import { dataPrivacyService } from "@/services";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
-import { loadSettingsStateRemote, saveSettingsState } from "@/components/settings/settingsStorage";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  loadSettingsStateRemote,
+  saveSettingsState,
+} from "@/components/settings/settingsStorage";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const DEFAULT_PRIVACY = {
   profile_visibility: "everyone",
@@ -193,6 +224,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("show_online_status", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -209,6 +242,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("show_distance", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -225,6 +260,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("show_age", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
         </CardContent>
@@ -254,6 +291,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("auto_approve_matches", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -272,6 +311,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("block_screenshots", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -291,6 +332,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("incognito_mode", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
         </CardContent>
@@ -424,4 +467,3 @@ export const PrivacySettings = () => {
     </div>
   );
 };
-

@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles, TicketPercent, Eye } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  Building,
+  CheckCircle,
+  Share2,
+  Star,
+  ArrowLeft,
+  Sparkles,
+  TicketPercent,
+  Eye,
+  LogOut,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
@@ -14,6 +24,13 @@ import {
   type ClubDiscountItem,
   type ClubEventItem,
 } from "@/services/clubs/clubContentService";
+import {
+  clearClubDemoAdminSession,
+  closeClubDemoSession,
+  enterClubDemoAdminSession,
+  hasClubDemoAdminSession,
+  isClubDemoSessionActive,
+} from "@/lib/clubDemoSession";
 
 const DEMO_CLUB: ClubEntity = {
   id: "demo",
@@ -290,10 +307,50 @@ const ClubDiscountsCard = ({
 
 export const ClubsDemo = () => {
   const navigate = useNavigate();
-  // Demo en modo creador/administrador por defecto: entrar a un club en
-  // demo muestra la vista admin (Panel Admin, stats, eventos/descuentos/
-  // miembros) y la vista pública queda a un toque en "Ver perfil público".
-  const [showAdminPanel, setShowAdminPanel] = useState(true);
+  const location = useLocation();
+  // Ronda 14, stream E (revierte la decisión de la ronda 3): /clubs/demo
+  // abre en vista PÚBLICA por defecto — el visitante ve los demos del
+  // club y solo entra al admin si quiere publicar su club, por la acción
+  // explícita "Panel Admin". La vista admin exige la sesión demo del
+  // club (`demo_club_admin`): sin ella, una visita — también tras un
+  // logout — muestra la vista pública, no el admin.
+  const [showAdminPanel, setShowAdminPanel] = useState(() =>
+    hasClubDemoAdminSession(),
+  );
+  // "Volver" vuelve al paso anterior del flujo del que se vino: la
+  // entrada desde el directorio /clubs vuelve a /clubs; sin origen (o
+  // desde el listado público) vuelve a /clubs-public. Antes iba siempre
+  // a /clubs-public aunque se viniera de /clubs.
+  const backTarget =
+    (location.state as { from?: string } | null)?.from === "/clubs"
+      ? "/clubs"
+      : "/clubs-public";
+  // ¿Hay sesión demo que cerrar? La de la app (`demo_authenticated`) o
+  // la de admin del club demo. Sin sesión no hay nada que cerrar y el
+  // botón no se muestra.
+  const [demoSessionActive, setDemoSessionActive] = useState(() =>
+    isClubDemoSessionActive(),
+  );
+
+  // Entrar al admin por acción explícita: marca la sesión demo del club.
+  const enterAdmin = () => {
+    enterClubDemoAdminSession();
+    setDemoSessionActive(true);
+    setShowAdminPanel(true);
+  };
+  // Salir del admin a la vista pública del mismo club: cierra la sesión
+  // de admin (volver a entrar exige pasar otra vez por "Panel Admin").
+  const exitAdminToPublic = () => {
+    clearClubDemoAdminSession();
+    setShowAdminPanel(false);
+  };
+  // Cerrar la sesión demo (admin + app) y volver al listado público.
+  const handleClubDemoLogout = () => {
+    closeClubDemoSession();
+    setDemoSessionActive(false);
+    setShowAdminPanel(false);
+    navigate("/clubs-public");
+  };
   const [isFollowing, setIsFollowing] = useState(false);
   const [interestLevel, setInterestLevel] = useState<"neutral" | "tour" | "vip">("neutral");
   // Eventos y descuentos del club: se leen de club_events / club_discounts
@@ -328,9 +385,21 @@ export const ClubsDemo = () => {
                   grupo envuelve entero en vez de recortarse. */}
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <div className="flex min-w-0 flex-1 items-center gap-2">
+                  {/* Volver en admin: al paso anterior del flujo, la vista
+                      pública del mismo club. Antes no había Volver aquí:
+                      solo "Ver perfil público" (que hace lo mismo, sin
+                      ser un regreso). */}
                   <Button
                     variant="outline"
-                    onClick={() => setShowAdminPanel(false)}
+                    onClick={exitAdminToPublic}
+                    className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2 shrink-0" />
+                    Volver
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={exitAdminToPublic}
                     className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                   >
                     <Eye className="h-4 w-4 mr-2 shrink-0" />
@@ -355,6 +424,18 @@ export const ClubsDemo = () => {
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Verificado
                   </Badge>
+                  {demoSessionActive && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleClubDemoLogout}
+                      className="shrink-0 whitespace-nowrap border-red-400/40 text-red-200 hover:bg-red-500/20"
+                      title="Cerrar la sesión demo y volver al listado público"
+                    >
+                      <LogOut className="h-4 w-4 mr-2 shrink-0" />
+                      Cerrar sesión
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -393,7 +474,7 @@ export const ClubsDemo = () => {
               <div className="flex min-w-0 flex-1 items-center gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/clubs-public")}
+                  onClick={() => navigate(backTarget)}
                   className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2 shrink-0" />
@@ -418,12 +499,24 @@ export const ClubsDemo = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setShowAdminPanel(true)}
+                  onClick={enterAdmin}
                   className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                   title="Panel de administración del club"
                 >
                   Panel Admin
                 </Button>
+                {demoSessionActive && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClubDemoLogout}
+                    className="shrink-0 whitespace-nowrap border-red-400/40 text-red-200 hover:bg-red-500/20"
+                    title="Cerrar la sesión demo y volver al listado público"
+                  >
+                    <LogOut className="h-4 w-4 mr-2 shrink-0" />
+                    Cerrar sesión
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"

@@ -18,6 +18,7 @@
  * el camino principal y estas cuentas demo no existen en la BD.
  */
 import { generateDemoUserUUID } from "@/lib/demo-uuid";
+import { resolveDemoAccountType } from "@/lib/app-config";
 import { writeCountryCodeLocal } from "@/lib/countries";
 import {
   ANONYMOUS_DEFAULT_PRIVACY_SETTINGS,
@@ -432,6 +433,150 @@ export function restoreLocalDemoSession(profile: Profile): void {
     profile.accountType === "couple" ? "couple" : "single",
   );
   localStorage.setItem("demo_user", JSON.stringify(profile));
+}
+
+export interface ActiveDemoSession {
+  userId: string;
+  email: string;
+  nickname: string;
+  displayName: string;
+  type: "single" | "couple";
+  /**
+   * Sofía (`single@outlook.es`) / Carmen & Roberto (`pareja@outlook.es`):
+   * fixture compartido, no borrable (ronda 11); su Eliminar solo
+   * cierra la sesión.
+   */
+  isCanonical: boolean;
+  /** ¿Está en el registro `cc_local_demo_accounts_v1`? */
+  isRegistered: boolean;
+}
+
+/**
+ * Ronda 14, stream B: la sesión demo ACTIVA, leída de localStorage en
+ * cada llamada (mismo patrón que `findLocalAnonymousAccount` en
+ * DemoSelector: así el estado es el vigente aunque la lista aún no se
+ * haya refrescado tras un borrado).
+ *
+ * Causa raíz del hallazgo del test de la ronda 13 (la sección
+ * "Cuenta demo activa" no aparecía tras la primera visita y el
+ * Eliminar de Single/Pareja no era alcanzable en /demo): la sesión
+ * canónica (`handleDemoAuth` / `useAuth.signIn`) solo escribe las
+ * claves de SESIÓN (`demo_authenticated`, `demo_user`, `userType`) y
+ * NUNCA entra en el registro `cc_local_demo_accounts_v1`; la única
+ * UI de gestión de /demo ("Tus cuentas demo en este navegador") solo
+ * lista ese registro. Sin esta lectura, una sesión Single/Pareja
+ * activa era invisible en /demo.
+ *
+ * Respaldo: si `demo_user` falta o está corrupto pero el flag de
+ * sesión existe, se devuelve una sesión mínima (sin userId/email)
+ * para que /demo siga pudiendo cerrarla; el tipo se lee de `userType`
+ * y el apodo cae a "Sesión demo".
+ */
+export function getActiveDemoSession(): ActiveDemoSession | null {
+  if (typeof window === "undefined") return null;
+  try {
+    if (window.localStorage.getItem("demo_authenticated") !== "true")
+      return null;
+    const rawUserType = window.localStorage.getItem("userType");
+    const fallbackType: "single" | "couple" =
+      rawUserType?.replace(/^"|"$/g, "") === "couple" ? "couple" : "single";
+    const raw = window.localStorage.getItem("demo_user");
+    if (!raw) {
+      return {
+        userId: "",
+        email: "",
+        nickname: "Sesión demo",
+        displayName: "Sesión demo",
+        type: fallbackType,
+        isCanonical: false,
+        isRegistered: false,
+      };
+    }
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") {
+      return {
+        userId: "",
+        email: "",
+        nickname: "Sesión demo",
+        displayName: "Sesión demo",
+        type: fallbackType,
+        isCanonical: false,
+        isRegistered: false,
+      };
+    }
+    const p = parsed as Record<string, unknown>;
+    const userId = typeof p.id === "string" ? p.id.trim() : "";
+    const email =
+      typeof p.email === "string" ? p.email.toLowerCase().trim() : "";
+    if (!userId || !email) {
+      return {
+        userId,
+        email,
+        nickname: "Sesión demo",
+        displayName: "Sesión demo",
+        type: resolveDemoAccountType(parsed) ?? fallbackType,
+        isCanonical: false,
+        isRegistered: userId
+          ? findLocalDemoAccountById(userId) !== null
+          : false,
+      };
+    }
+    const nickname =
+      (typeof p.display_name === "string" && p.display_name.trim()) ||
+      (typeof p.first_name === "string" && p.first_name.trim()) ||
+      (typeof p.name === "string" && p.name.trim()) ||
+      email.split("@")[0] ||
+      "Sesión demo";
+    const isCanonical =
+      email === "single@outlook.es" || email === "pareja@outlook.es";
+    return {
+      userId,
+      email,
+      nickname,
+      displayName: nickname,
+      type: resolveDemoAccountType(parsed) ?? fallbackType,
+      isCanonical,
+      isRegistered: findLocalDemoAccountById(userId) !== null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Ronda 14, stream B: elimina la sesión demo ACTIVA desde /demo.
+ *
+ * - Registrada y no canónica: se borra la cuenta del navegador
+ *   (igual que el Eliminar de la lista; `deleteLocalDemoAccount`
+ *   ya limpia la sesión si era la activa, y purga sus filas
+ *   sociales).
+ * - Canónica (Sofía / Carmen & Roberto) o sin registro: el fixture
+ *   no se puede borrar (ronda 11, `deleteLocalDemoAccount` lo
+ *   rechaza); se cierran las claves de sesión, así que la cuenta
+ *   demo sigue disponible para volver a entrar.
+ */
+export function deleteActiveDemoSession(): {
+  deleted: boolean;
+  reason?: string;
+} {
+  const session = getActiveDemoSession();
+  if (!session)
+    return { deleted: false, reason: "No hay ninguna sesión demo activa." };
+  if (session.isRegistered && !session.isCanonical) {
+    return deleteLocalDemoAccount(session.userId);
+  }
+  if (typeof window === "undefined") return { deleted: false };
+  try {
+    window.localStorage.removeItem("demo_authenticated");
+    window.localStorage.removeItem("demo_user");
+    window.localStorage.removeItem("userType");
+  } catch {
+    return {
+      deleted: false,
+      reason: "No se pudo escribir en el almacenamiento local.",
+    };
+  }
+  return { deleted: true };
 }
 
 export interface LocalDemoAccountInput {

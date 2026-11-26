@@ -196,6 +196,11 @@ const ProfileDetail = () => {
   // propios): antes el botón "Reportar perfil" solo mostraba un toast.
   const [showReportDialog, setShowReportDialog] = useState(false);
 
+  // Ronda 13, stream C (C3): estado local del like, igual que la
+  // tarjeta de Discover (AnimatedProfileCard): el botón refleja si
+  // ya se dio like (corazón rojo + "Te gusta") y se puede retirar.
+  const [isLiked, setIsLiked] = useState(false);
+
   // Verificar autenticación demo
   const demoAuth = localStorage.getItem("demo_authenticated");
   const demoUser = localStorage.getItem("demo_user");
@@ -276,6 +281,12 @@ const ProfileDetail = () => {
     };
   }, [profile?.id]);
 
+  // Ronda 13, stream C (C3): al cambiar de perfil el like vuelve a
+  // "sin like" (el estado es local por perfil, como en Discover).
+  useEffect(() => {
+    setIsLiked(false);
+  }, [profile?.id]);
+
   if (!profile) {
     return (
       <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
@@ -327,6 +338,13 @@ const ProfileDetail = () => {
   // usuario; fuera de demo devuelve el id tal cual, sin cambios.
   const isOwnProfile =
     canonicalDemoOwnerId(String(profile.id)) === canonicalDemoOwnerId(viewerId);
+  // Ronda 13, stream C (C1): la edad puede faltar (perfil anónimo
+  // sin edad): sin esta guarda la insignia y "Edad:" pintaban el
+  // literal "undefined años". Sin edad no se muestra ni la insignia
+  // ni la fila de "Edad:" (null en los dos sitios).
+  const ageLabel =
+    (profile as { ageLabel?: string }).ageLabel ??
+    (typeof profile.age === "number" ? `${profile.age} años` : null);
   const socialDemo = getSocialDemoData(profile.name);
   const countryCode =
     (profile as { country_code?: string | null }).country_code ??
@@ -494,11 +512,11 @@ const ProfileDetail = () => {
                         <h1 className="text-3xl font-bold text-white">
                           {profile.name}
                         </h1>
-                        <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm whitespace-nowrap shrink-0">
-                          {(
-                            profile as { ageLabel?: string }
-                          ).ageLabel ?? `${profile.age} años`}
-                        </Badge>
+                        {ageLabel && (
+                          <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm whitespace-nowrap shrink-0">
+                            {ageLabel}
+                          </Badge>
+                        )}
                         <NationalityBadge countryCode={countryCode} />
                         <TooltipProvider>
                           <Tooltip>
@@ -665,79 +683,118 @@ const ProfileDetail = () => {
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
                   <div className="space-y-4">
-                    <Button
-                      onClick={() => {
-                        // Ronda 10 (stream A, punto A8): el like anónimo
-                        // está bloqueado con mensaje claro (sin toast de
-                        // error y sin fingir que se envió).
-                        if (isViewerAnonymous(viewerId)) {
-                          toast({
-                            title: "Like no disponible",
-                            description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
-                          });
-                          return;
-                        }
-                        logger.info("Me gusta", { profileName: profile.name });
-                        toast({
-                          title: "Like enviado",
-                          description: `¡Has dado like a ${profile.name}!`,
-                        });
-                      }}
-                      className="w-full bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
-                    >
-                      <Heart className="h-5 w-5 mr-2" />
-                      Me gusta
-                    </Button>
-
-                    {(() => {
-                      // Ronda 10 (stream A, punto A4): gate ANTES de
-                      // navegar. Si el espectador o el perfil es
-                      // anónimo, solo hay chat con amistad aceptada:
-                      // el botón muestra el estado bloqueado y NO
-                      // navega a /chat/:id. La solicitud de amistad
-                      // (FriendRequestButton, justo debajo) es el
-                      // camino para desbloquearlo.
-                      const chatCheck = canAnonymousChat({
-                        senderIsAnonymous: isViewerAnonymous(viewerId),
-                        recipientIsAnonymous:
-                          (profile as { is_anonymous?: unknown })
-                            .is_anonymous === true,
-                        areFriends: isFriend,
-                      });
-                      if (chatCheck.allowed) {
-                        return (
-                          <Button
-                            onClick={() => {
-                              logger.info("Enviando mensaje a", {
-                                profileName: profile.name,
-                              });
-                              navigate(`/chat/${profile.id}`, {
-                                state: { profile },
-                              });
-                            }}
-                            className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
-                          >
-                            <MessageCircle className="h-5 w-5 mr-2" />
-                            Enviar mensaje
-                          </Button>
-                        );
-                      }
-                      return (
+                    {/* Ronda 13, stream C (C2): en el perfil PROPIO no
+                        hay acciones de visitante: ni like ni mensaje
+                        (el dueño no se da like ni se escribe a sí
+                        mismo). FriendRequestButton, PhotoAccess y
+                        ReportBlock ya se ocultan solos con
+                        isOwnProfile. */}
+                    {!isOwnProfile && (
+                      <>
                         <Button
+                          aria-pressed={isLiked}
                           onClick={() => {
+                            // Ronda 10 (stream A, punto A8): el like anónimo
+                            // está bloqueado con mensaje claro (sin toast de
+                            // error y sin fingir que se envió).
+                            if (isViewerAnonymous(viewerId)) {
+                              toast({
+                                title: "Like no disponible",
+                                description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+                              });
+                              return;
+                            }
+                            // Ronda 13, stream C (C3): el like alterna
+                            // como la tarjeta de Discover
+                            // (AnimatedProfileCard): corazón relleno +
+                            // "Te gusta" al darlo, y se puede retirar
+                            // con un segundo toque. Estado local por
+                            // perfil; no hay store compartido de likes
+                            // (Discover guarda sus ids solo en su página)
+                            // y createLike es solo inserción (sin unlike),
+                            // así que el servicio no se toca.
+                            const next = !isLiked;
+                            setIsLiked(next);
+                            logger.info(
+                              next ? "Me gusta" : "Me gusta retirado",
+                              {
+                                profileName: profile.name,
+                              },
+                            );
                             toast({
-                              title: "Chat bloqueado",
-                              description: chatCheck.reason,
+                              title: next ? "Like enviado" : "Like retirado",
+                              description: next
+                                ? `¡Has dado like a ${profile.name}!`
+                                : `Ya no le das like a ${profile.name}.`,
                             });
                           }}
-                          title={chatCheck.reason}
-                          className="w-full bg-slate-500/40 hover:bg-slate-500/50 text-white px-6 py-3 text-lg border border-white/20 whitespace-normal h-auto min-h-11 text-center leading-snug"
+                          className={cn(
+                            "w-full px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug",
+                            isLiked
+                              ? "bg-red-500/20 text-red-300 border border-red-500/50 hover:bg-red-500/30"
+                              : "bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white",
+                          )}
                         >
-                          <MessageCircle className="h-5 w-5 mr-2" />
-                          Chat bloqueado: envía solicitud de amistad
+                          <Heart
+                            className={cn(
+                              "h-5 w-5 mr-2",
+                              isLiked && "fill-current",
+                            )}
+                          />
+                          {isLiked ? "Te gusta" : "Me gusta"}
                         </Button>
-                      );
-                    })()}
+
+                        {(() => {
+                          // Ronda 10 (stream A, punto A4): gate ANTES de
+                          // navegar. Si el espectador o el perfil es
+                          // anónimo, solo hay chat con amistad aceptada:
+                          // el botón muestra el estado bloqueado y NO
+                          // navega a /chat/:id. La solicitud de amistad
+                          // (FriendRequestButton, justo debajo) es el
+                          // camino para desbloquearlo.
+                          const chatCheck = canAnonymousChat({
+                            senderIsAnonymous: isViewerAnonymous(viewerId),
+                            recipientIsAnonymous:
+                              (profile as { is_anonymous?: unknown })
+                                .is_anonymous === true,
+                            areFriends: isFriend,
+                          });
+                          if (chatCheck.allowed) {
+                            return (
+                              <Button
+                                onClick={() => {
+                                  logger.info("Enviando mensaje a", {
+                                    profileName: profile.name,
+                                  });
+                                  navigate(`/chat/${profile.id}`, {
+                                    state: { profile },
+                                  });
+                                }}
+                                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
+                              >
+                                <MessageCircle className="h-5 w-5 mr-2" />
+                                Enviar mensaje
+                              </Button>
+                            );
+                          }
+                          return (
+                            <Button
+                              onClick={() => {
+                                toast({
+                                  title: "Chat bloqueado",
+                                  description: chatCheck.reason,
+                                });
+                              }}
+                              title={chatCheck.reason}
+                              className="w-full bg-slate-500/40 hover:bg-slate-500/50 text-white px-6 py-3 text-lg border border-white/20 whitespace-normal h-auto min-h-11 text-center leading-snug"
+                            >
+                              <MessageCircle className="h-5 w-5 mr-2" />
+                              Chat bloqueado: envía solicitud de amistad
+                            </Button>
+                          );
+                        })()}
+                      </>
+                    )}
 
                     {/* Amistad y acceso a fotos (punto 4): solicitud de
                         amistad y solicitud para ver la galería. El botón
@@ -776,17 +833,23 @@ const ProfileDetail = () => {
                       showReport={false}
                     />
 
-                    <Button
-                      onClick={() => {
-                        logger.info("Reportando perfil de", {
-                          profileName: profile.name,
-                        });
-                        setShowReportDialog(true);
-                      }}
-                      className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300 whitespace-normal h-auto min-h-11 text-center leading-snug"
-                    >
-                      Reportar perfil
-                    </Button>
+                    {/* Ronda 13, stream C (C2): "Reportar perfil" también
+                        es acción de visitante: el dueño no se reporta a
+                        sí mismo (ReportBlockButtons ya se oculta solo
+                        con isOwnProfile; este botón suelto no lo hacía). */}
+                    {!isOwnProfile && (
+                      <Button
+                        onClick={() => {
+                          logger.info("Reportando perfil de", {
+                            profileName: profile.name,
+                          });
+                          setShowReportDialog(true);
+                        }}
+                        className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300 whitespace-normal h-auto min-h-11 text-center leading-snug"
+                      >
+                        Reportar perfil
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -798,13 +861,12 @@ const ProfileDetail = () => {
                     Información rápida
                   </h3>
                   <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-white/80">Edad:</span>
-                      <span className="text-white">
-                        {(profile as { ageLabel?: string }).ageLabel ??
-                          `${profile.age} años`}
-                      </span>
-                    </div>
+                    {ageLabel && (
+                      <div className="flex justify-between">
+                        <span className="text-white/80">Edad:</span>
+                        <span className="text-white">{ageLabel}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
                       <span className="text-white/80">Ubicación:</span>
                       <span className="text-white">{profile.location}</span>

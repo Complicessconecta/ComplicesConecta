@@ -934,17 +934,17 @@ export const Clubs = () => {
           transition={{ delay: 0.3 }}
           className="mb-8"
         >
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+          <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-white/60 h-4 w-4" />
                     <Input
                       placeholder="Buscar clubs por nombre o ciudad..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                      className="pl-10 bg-slate-900/5 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                     />
                   </div>
                 </div>
@@ -954,7 +954,7 @@ export const Clubs = () => {
                     onChange={(e) => setSelectedCity(e.target.value)}
                     aria-label="Filtrar por ciudad"
                     title="Filtrar por ciudad"
-                    className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
+                    className="w-full p-2 bg-white dark:bg-white/10 border border-slate-300 dark:border-white/20 rounded-md text-slate-900 dark:text-white"
                   >
                     <option value="all" className="bg-purple-900">
                       Todas las ciudades
@@ -1170,25 +1170,25 @@ export const Clubs = () => {
               {[...Array(6)].map((_, i) => (
                 <Card
                   key={i}
-                  className="bg-white/10 backdrop-blur-xl border-white/20 animate-pulse"
+                  className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 animate-pulse"
                 >
                   <CardContent className="p-6">
-                    <div className="h-48 bg-white/10 rounded-lg mb-4"></div>
-                    <div className="h-6 bg-white/10 rounded mb-2"></div>
-                    <div className="h-4 bg-white/10 rounded mb-4"></div>
+                    <div className="h-48 bg-slate-900/10 dark:bg-white/10 rounded-lg mb-4"></div>
+                    <div className="h-6 bg-slate-900/10 dark:bg-white/10 rounded mb-2"></div>
+                    <div className="h-4 bg-slate-900/10 dark:bg-white/10 rounded mb-4"></div>
                     <div className="flex gap-2">
-                      <div className="h-8 bg-white/10 rounded flex-1"></div>
-                      <div className="h-8 bg-white/10 rounded w-20"></div>
+                      <div className="h-8 bg-slate-900/10 dark:bg-white/10 rounded flex-1"></div>
+                      <div className="h-8 bg-slate-900/10 dark:bg-white/10 rounded w-20"></div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : filteredClubs.length === 0 ? (
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-center p-12">
-              <div className="text-white/60 mb-4">
+            <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 text-center p-12">
+              <div className="text-slate-500 dark:text-white/60 mb-4">
                 <Building className="h-16 w-16 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                   No se encontraron clubs
                 </h3>
                 <p>Intenta ajustar tus filtros de búsqueda</p>
@@ -1203,7 +1203,7 @@ export const Clubs = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0 }}
                 >
-                  <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
+                  <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 hover:bg-slate-50 dark:hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
                     <CardContent className="p-0">
                       <div className="relative h-48 bg-linear-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
                         {DEMO_CLUB.cover_image_url ? (
@@ -1243,11 +1243,11 @@ export const Clubs = () => {
                       </div>
 
                       <div className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-2">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                           {DEMO_CLUB.name}
                         </h3>
 
-                        <div className="flex items-center gap-2 text-white/70 mb-3">
+                        <div className="flex items-center gap-2 text-slate-600 dark:text-white/70 mb-3">
                           <MapPin className="h-4 w-4" />
                           <span>
                             {DEMO_CLUB.address}
@@ -1258,30 +1258,30 @@ export const Clubs = () => {
                           <ExpandableClubDescription
                             text={DEMO_CLUB.description}
                             className="mb-4"
-                            textClassName="text-white/80 text-sm"
+                            textClassName="text-slate-600 dark:text-white/80 text-sm"
                           />
                         )}
 
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {DEMO_CLUB.check_in_count}
                             </div>
-                            <div className="text-white/60 text-xs">
+                            <div className="text-slate-500 dark:text-white/60 text-xs">
                               Check-ins
                             </div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {DEMO_CLUB.rating_count}
                             </div>
-                            <div className="text-white/60 text-xs">Reseñas</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Reseñas</div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {DEMO_CLUB.rating_count}
                             </div>
-                            <div className="text-white/60 text-xs">Ratings</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Ratings</div>
                           </div>
                         </div>
 
@@ -1306,7 +1306,7 @@ export const Clubs = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
+                  <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 hover:bg-slate-50 dark:hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
                     <CardContent className="p-0">
                       {/* Imagen del Club */}
                       <div className="relative h-48 bg-linear-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
@@ -1351,11 +1351,11 @@ export const Clubs = () => {
 
                       {/* Información del Club */}
                       <div className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-2">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                           {club.name}
                         </h3>
 
-                        <div className="flex items-center gap-2 text-white/70 mb-3">
+                        <div className="flex items-center gap-2 text-slate-600 dark:text-white/70 mb-3">
                           <MapPin className="h-4 w-4" />
                           <span>
                             {club.address || "Ubicación no disponible"}
@@ -1366,31 +1366,31 @@ export const Clubs = () => {
                           <ExpandableClubDescription
                             text={club.description}
                             className="mb-4"
-                            textClassName="text-white/80 text-sm"
+                            textClassName="text-slate-600 dark:text-white/80 text-sm"
                           />
                         )}
 
                         {/* Estadísticas */}
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {club.check_in_count}
                             </div>
-                            <div className="text-white/60 text-xs">
+                            <div className="text-slate-500 dark:text-white/60 text-xs">
                               Check-ins
                             </div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {club.review_count}
                             </div>
-                            <div className="text-white/60 text-xs">Reseñas</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Reseñas</div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {club.rating_count}
                             </div>
-                            <div className="text-white/60 text-xs">Ratings</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Ratings</div>
                           </div>
                         </div>
 
@@ -1408,7 +1408,7 @@ export const Clubs = () => {
                             <Button
                               onClick={() => handleCheckIn(club.id)}
                               disabled={checkingIn === club.id}
-                              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                              className="bg-slate-900/5 hover:bg-slate-900/10 text-slate-700 border-slate-300 dark:bg-white/20 dark:hover:bg-white/30 dark:text-white dark:border-white/30"
                             >
                               {checkingIn === club.id ? (
                                 <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
@@ -1434,12 +1434,12 @@ export const Clubs = () => {
           transition={{ delay: 0.6 }}
           className="mt-12"
         >
-          <Card className="bg-linear-to-r from-blue-600/20 via-purple-600/20 to-fuchsia-600/20 backdrop-blur-xl border-white/20">
+          <Card className="bg-white dark:bg-linear-to-r dark:from-blue-600/20 dark:via-purple-600/20 dark:to-fuchsia-600/20 backdrop-blur-xl border-slate-200 dark:border-white/20">
             <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold text-white mb-4">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
                 ¿Tienes un Club?
               </h3>
-              <p className="text-white/80 mb-6 max-w-2xl mx-auto">
+              <p className="text-slate-600 dark:text-white/80 mb-6 max-w-2xl mx-auto">
                 Únete a nuestro programa de clubs verificados y obtén acceso a
                 herramientas exclusivas, check-ins geolocalizados y un sistema
                 de reseñas auténticas.
@@ -1812,14 +1812,14 @@ export const Clubs = () => {
               <button
                 type="button"
                 onClick={() => setShowClubTermsModal(true)}
-                className="text-sm text-purple-300 hover:text-purple-200 underline underline-offset-2"
+                className="text-sm text-purple-700 hover:text-purple-800 dark:text-purple-300 dark:hover:text-purple-200 underline underline-offset-2"
               >
                 {clubTermsAccepted
                   ? "✓ Términos de Uso para Clubs aceptados (ver)"
                   : "Leer y aceptar los Términos de Uso para Clubs"}
               </button>
               {!clubTermsAccepted && (
-                <p className="text-xs text-white/60 mt-1">
+                <p className="text-xs text-slate-500 dark:text-white/60 mt-1">
                   Debes aceptar los términos y la política de privacidad para
                   clubs para enviar la solicitud.
                 </p>

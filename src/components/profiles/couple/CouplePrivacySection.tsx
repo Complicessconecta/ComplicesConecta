@@ -206,6 +206,13 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
           saveToLocalStorage(next, nextExtras);
         } else {
           storedExtras.current = merged;
+          // Ronda 13, stream D (D3): espejo local también en éxito.
+          // Las galerías y `usePrivacySettings` leen SOLO localStorage
+          // (`readWatermarkForProfile` / `readLocalSettings`); sin este
+          // espejo, en real la marca de agua quedaba en la BD pero las
+          // galerías seguían viéndola apagada (en demo no se notaba:
+          // ahí todo es local).
+          saveToLocalStorage(next, nextExtras);
         }
       });
   };
@@ -553,11 +560,16 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
                   onChange={(e) =>
                     saveExtras({ ...extras, [person.signKey]: e.target.value })
                   }
+                  // Ronda 13 (stream B, B3): igual que en
+                  // SinglePrivacySection — el texto de un `<option>`
+                  // nativo NO envuelve y en angosto se cortaba sin el
+                  // paréntesis de cierre; etiqueta acortada a una que
+                  // cabe siempre, frase completa en `title` y en el
+                  // párrafo de ayuda de arriba.
+                  title="Automático (según fecha de nacimiento)"
                   className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 [color-scheme:light] dark:border-white/20 dark:bg-white/10 dark:text-white dark:[color-scheme:dark]"
                 >
-                  <option value="">
-                    Automático (según fecha de nacimiento)
-                  </option>
+                  <option value="">Automático (según fecha)</option>
                   {ZODIAC_SIGNS.map((sign) => (
                     <option key={sign.id} value={sign.id}>
                       {sign.symbol} {sign.name}

@@ -1,7 +1,18 @@
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles, Building2 } from "lucide-react";
+import {
+  Home,
+  MessageCircle,
+  Heart,
+  User,
+  Settings,
+  Coins,
+  Search,
+  UserPlus,
+  Sparkles,
+  Building2,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
 import { useFeatures } from "@/hooks/useFeatures";
 import { cn } from "@/shared/lib/cn";
 import { useAuth } from "@/features/auth/useAuth";
@@ -20,18 +31,52 @@ export const Navigation = ({ className }: NavigationProps) => {
 
   const demoActive = typeof isDemoMode === "function" ? isDemoMode() : false;
 
-  const getSettingsPath = () => {
-    return profileType === "couple"
-      ? "/edit-profile-couple"
-      : "/edit-profile-single";
-  };
+  // RONDA 16 (stream B, bloqueador 2 — dock Config lento): el chunk
+  // de /settings se descargaba EN FRÍO al tocar Config (nada lo
+  // precargaba en ningún sitio) y, mientras estaba en vuelo, la
+  // navegación en transición retenía el perfil viejo en pantalla.
+  // El dock solo existe en el perfil propio y Config es uno de sus
+  // destinos: precargar el chunk en idle, al montar el dock, deja la
+  // ruta caliente antes del toque y el contenido pinta de inmediato.
+  // Es el mismo patrón que MainLayout ya usa para el chunk del chat
+  // (loadChatModule al montar, ronda 8). Si la precarga falla o no
+  // llega a tiempo, la navegación la reintenta; y la `key={pathname}`
+  // del Suspense de MainLayout garantiza que, en ese caso, se vea el
+  // loader y nunca el perfil viejo.
+  useEffect(() => {
+    const preload = () => {
+      void import("@/pages/Settings").catch(() => {
+        // Precarga en segundo plano: el toque en Config reintentará.
+      });
+    };
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout: number },
+      ) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (typeof idleWindow.requestIdleCallback === "function") {
+      const id = idleWindow.requestIdleCallback(preload, { timeout: 2000 });
+      return () => idleWindow.cancelIdleCallback?.(id);
+    }
+    const timer = window.setTimeout(preload, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const navItems = features.requests
     ? [
         { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
-          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          ? [
+              {
+                id: "clubs-demo",
+                icon: Building2,
+                label: "Clubs",
+                path: "/clubs/demo",
+              },
+            ]
           : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         {
@@ -48,14 +93,21 @@ export const Navigation = ({ className }: NavigationProps) => {
           id: "settings",
           icon: Settings,
           label: "Config",
-          path: getSettingsPath(),
+          path: "/settings",
         },
       ]
     : [
         { id: "feed", icon: Home, label: "Inicio", path: "/" },
         { id: "discover", icon: Search, label: "Descubrir", path: "/discover" },
         ...(demoActive
-          ? [{ id: "clubs-demo", icon: Building2, label: "Clubs", path: "/clubs/demo" }]
+          ? [
+              {
+                id: "clubs-demo",
+                icon: Building2,
+                label: "Clubs",
+                path: "/clubs/demo",
+              },
+            ]
           : []),
         { id: "chat", icon: MessageCircle, label: "Chat", path: "/chat" },
         { id: "matches", icon: Heart, label: "Matches", path: "/matches" },
@@ -65,7 +117,7 @@ export const Navigation = ({ className }: NavigationProps) => {
           id: "settings",
           icon: Settings,
           label: "Config",
-          path: getSettingsPath(),
+          path: "/settings",
         },
       ];
 
@@ -78,27 +130,9 @@ export const Navigation = ({ className }: NavigationProps) => {
       return;
     }
 
-    // El botón "Config" apunta a la ruta del editor. Estando ya en esa
-    // ruta, navegar al mismo path no hace nada (la URL no cambia y no hay
-    // re-render): en ese caso abrir el modal de configuración de
-    // animaciones, el mismo que abre el engranaje flotante.
-    if (path === getSettingsPath() && location.pathname === path) {
-      window.dispatchEvent(new Event(OPEN_ANIMATION_SETTINGS_EVENT));
-      return;
-    }
-
     if (path === "/profile") {
       navigate(
         profileType === "couple" ? "/profile-couple" : "/profile-single",
-      );
-      return;
-    }
-
-    if (path === "/tokens") {
-      navigate(
-        profileType === "couple"
-          ? "/profile-couple#wallet"
-          : "/profile-single#wallet",
       );
       return;
     }
@@ -112,7 +146,10 @@ export const Navigation = ({ className }: NavigationProps) => {
   }
 
   // Evitar doble navegación en páginas de Tokens (ya existe TokensSubnav)
-  if (location.pathname === "/tokens" || location.pathname.startsWith("/tokens")) {
+  if (
+    location.pathname === "/tokens" ||
+    location.pathname.startsWith("/tokens")
+  ) {
     return null;
   }
 

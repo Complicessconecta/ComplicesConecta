@@ -197,6 +197,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       ClubProfileGallery.tsx
 |   |       ClubProfileHeader.tsx
 |   |       ClubProfileReviews.tsx
+|   |       ClubReviewCount.tsx
 |   |       ExpandableClubDescription.tsx
 |   |       index.ts
 |   |       PartnerRequestModal.tsx
@@ -792,6 +793,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   avatarFallback.ts
 |   |   capture-console-errors.ts
 |   |   chatLimits.ts
+|   |   clubDemoSession.ts
 |   |   countries.ts
 |   |   data.ts
 |   |   demo-registration.ts
@@ -818,6 +820,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   mobile.ts
 |   |   multimediaSecurity.ts
 |   |   notifications.ts
+|   |   profile-interests.ts
 |   |   profileCompleteness.ts
 |   |   profileLabels.ts
 |   |   profileVisibility.ts
@@ -1399,6 +1402,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
     |   lazyWithDefault.ts
     |   mobile.ts
     |   platformDetection.ts
+    |   preloadRoutes.ts
     |   reportExport.ts
     |   safeLocalStorage.ts
     |   safeOpenUrl.ts

@@ -348,9 +348,15 @@ export function TokenDashboard({
       <div className="relative overflow-hidden text-center bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white p-6 md:p-8 rounded-2xl shadow-xl">
         <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-purple-600/40 to-blue-600/40" />
         <div className="relative z-10">
+          {/* RONDA 11 (stream B, B1): la pastilla era `absolute top-2
+              right-2` y en ancho estrecho tapaba el título ("e de" de
+              "Balance"). Ahora va en flujo, arriba a la derecha, y el
+              título queda siempre libre. */}
           {isDemoMode && (
-            <div className="absolute top-2 right-2 bg-yellow-400/20 text-yellow-700 dark:text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">
-              SIMULACIÓN
+            <div className="flex justify-end mb-1">
+              <span className="bg-yellow-400/20 text-yellow-700 dark:text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">
+                SIMULACIÓN
+              </span>
             </div>
           )}
           <h2 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">
@@ -656,21 +662,22 @@ export function TokenDashboard({
         </CardHeader>
         <CardContent className="p-6 md:p-8">
           <div className="space-y-3">
-            {/* RONDA 10 (stream B, B3): la fila era `justify-between`
-                con etiqueta `truncate` sin `min-w-0` y un Badge `shrink-0`
-                sin ancho máximo: en ancho estrecho el código (mono, hasta
-                10 caracteres) rebosaba la pastilla y no había forma de
-                copiarlo. Ahora la fila puede encogerse, el código se trunca
-                con su valor completo en `title` y hay botón copiar. */}
-            <div className="flex items-center justify-between gap-2 min-w-0">
-              <span className="text-slate-700 dark:text-white/90 truncate min-w-0">
+            {/* RONDA 11 (stream B, B1): la ronda 10 dejó la pastilla
+                con `max-w-[180px] truncate` y la etiqueta con `truncate`:
+                el código UUID (`REF` + uuid) se cortaba ("REF609dcb3b-…")
+                y la etiqueta también ("Tu c…"). Ahora la fila envuelve,
+                la etiqueta nunca se trunca y la pastilla muestra el
+                código COMPLETO (envuelve a 2 líneas solo si el ancho no
+                da); el botón copiar sigue intacto. */}
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0">
+              <span className="text-slate-700 dark:text-white/90 shrink-0">
                 Tu código de referido:
               </span>
-              <span className="flex items-center gap-1 min-w-0 shrink-0">
+              <span className="flex items-center gap-1 min-w-0 flex-1">
                 <Badge
                   variant="outline"
                   title={balance.referralCode}
-                  className="font-mono bg-slate-100 text-slate-900 border-slate-300 dark:bg-white/20 dark:text-white dark:border-white/30 min-w-0 max-w-[180px] truncate"
+                  className="font-mono bg-slate-100 text-slate-900 border-slate-300 dark:bg-white/20 dark:text-white dark:border-white/30 min-w-0 max-w-full wrap-break-word whitespace-normal text-left"
                 >
                   {balance.referralCode}
                 </Badge>
@@ -765,7 +772,15 @@ export function TokenDashboard({
                     }}
                   />
                   {/* Badges */}
-                  <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md rounded px-2 py-0.5 border border-white/20">
+                  {/*
+                    Ronda 11 (stream D, punto v): la píldora CMPX estaba
+                    arriba a la izquierda y tapaba el texto
+                    "Cómplices Conecta" del arte del NFT. Baja a la
+                    esquina inferior con un degradado para que siga
+                    legible sin tapar el arte.
+                  */}
+                  <div className="absolute inset-x-0 bottom-0 h-10 bg-linear-to-t from-black/70 to-transparent pointer-events-none" />
+                  <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-md rounded px-2 py-0.5 border border-white/20">
                     <span className="text-[10px] text-white font-semibold">
                       {nft.value ? `${nft.value} CMPX` : ""}
                     </span>

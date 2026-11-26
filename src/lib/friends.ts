@@ -35,7 +35,10 @@ import { logger } from "@/lib/logger";
 import { getSocialDemoData } from "@/demo/socialDemoData";
 import { generateDemoProfiles } from "@/demo/demoData";
 import { generateDemoUserUUID } from "@/lib/demo-uuid";
-import { findLocalDemoAccountById } from "@/lib/demo-registration";
+import {
+  findLocalDemoAccount,
+  findLocalDemoAccountById,
+} from "@/lib/demo-registration";
 import { resolveDemoOwnerIdentity } from "@/lib/visibility";
 
 export type FriendRequestKind = "friendship" | "photo_access";
@@ -327,18 +330,14 @@ export async function getFriendStatus(
   profileName?: string,
 ): Promise<FriendStatus> {
   if (!viewerId || !profileId || viewerId === profileId) return "none";
-  const demo = getSocialDemoData(profileName ?? profileId);
   if (isDemo || !supabase) {
     // Amistad semilla demo: las listas demo se keyean por NOMBRE
     // (los ids demo son UUID generados en cada carga), así que se
     // compara también el nombre del espectador cuando se conoce.
-    if (
-      localAreFriends(viewerId, profileId) ||
-      (viewerName &&
-        demo.friendNames.some(
-          (n) => n.toLowerCase() === viewerName.toLowerCase(),
-        ))
-    ) {
+    // Ronda 11, stream C (iv): se delega en `areFriendsSync`, que
+    // mira el par local Y la semilla con el nombre del espectador
+    // resuelto (un email como viewerName ya no rompe la semilla).
+    if (areFriendsSync(viewerId, profileId, viewerName, profileName)) {
       return "friends";
     }
     const pending = readLocalRequests().find((r) => {
@@ -391,7 +390,15 @@ export async function getFriendStatus(
     logger.error("Error leyendo estado de amistad:", {
       error: err instanceof Error ? err.message : String(err),
     });
-    return localAreFriends(viewerId, profileId) ? "friends" : "none";
+    // Ronda 11, stream C (iv): el respaldo no era solo el par local
+    // (`localAreFriends`): una amistad SEMILLA (p. ej. Sofía con
+    // Carmen & Roberto) no tiene par local y se leía "no amigos",
+    // así que el CTA de solicitud reaparecía. `areFriendsSync` mira
+    // el par local Y la semilla (con el nombre del espectador
+    // resuelto), igual que la rama demo de arriba.
+    return areFriendsSync(viewerId, profileId, viewerName, profileName)
+      ? "friends"
+      : "none";
   }
 }
 
@@ -410,9 +417,21 @@ export function areFriendsSync(
 ): boolean {
   if (!viewerId || !profileId || viewerId === profileId) return false;
   if (localAreFriends(viewerId, profileId)) return true;
-  if (!viewerName) return false;
-  return getSocialDemoData(profileName ?? profileId).friendNames.some(
-    (n) => n.toLowerCase() === viewerName.toLowerCase(),
+  // Ronda 11, stream C (iv): el nombre del espectador puede llegar
+  // como email ("single@outlook.es", lo que pasaba Chat al leer
+  // `user.first_name` del Auth user, que no lo trae) mientras la
+  // semilla trae el nombre visible ("Sofía"). Se prueba también el
+  // nombre resuelto del propio id del espectador, así la amistad
+  // semilla resuelve mire por donde se mire.
+  const viewerNames = new Set<string>();
+  if (viewerName) viewerNames.add(viewerName.toLowerCase());
+  const resolvedViewerName = resolveDemoProfileName(viewerId);
+  if (resolvedViewerName && resolvedViewerName !== viewerId) {
+    viewerNames.add(resolvedViewerName.toLowerCase());
+  }
+  if (viewerNames.size === 0) return false;
+  return getSocialDemoData(profileName ?? profileId).friendNames.some((n) =>
+    viewerNames.has(n.toLowerCase()),
   );
 }
 
@@ -613,6 +632,17 @@ export function canonicalDemoOwnerId(profileId: string): string {
     const byName = resolveDemoOwnerIdentity("", name);
     if (byName) return byName.userId;
   }
+  // Ronda 11, stream C (v): una cuenta demo LOCAL (p. ej. anonr8test)
+  // se busca por APODO en la UI (FriendsSection usa el nombre como
+  // llave en demo), pero las amistades se guardan con su userId
+  // (`generateDemoUserUUID(email)`). Sin este puente, la lista de
+  // amistades de una cuenta local nunca encontraba sus pares y el
+  // amigo aparecía (o no aparecía) según desde qué lado se mirara.
+  // `findLocalDemoAccount` casa por email o apodo; un UUID o un id de
+  // ficha/tarjeta no casa nunca con ninguno, así que no hay falsos
+  // positivos con ids que no son cuentas locales.
+  const local = findLocalDemoAccount(profileId);
+  if (local) return local.userId;
   return profileId;
 }
 
@@ -650,18 +680,53 @@ export function resolveDemoProfileName(profileId: string): string {
   return profileId;
 }
 
-/** Amigos de un perfil (demo: datos semilla + pares locales). */
-export function listFriendsSync(profileId: string): Friend[] {
-  const demo = getSocialDemoData(profileId);
-  const removed = new Set(readLocalRemoved(profileId));
+/**
+ * Amigos de un perfil (demo: datos semilla + pares locales).
+ *
+ * Ronda 11, stream C (v) — dos fallos del test de verificación ronda 10
+ * (2026-11-25 18:02–18:30 CST):
+ * 1. La lista de anonr8test mostraba a la pareja como el UUID crudo
+ *    "48bb1f12-ff99-4ff9-a900-0000ff99c6cb" (`generateDemoUserUUID(
+ *    "pareja@outlook.es")`). Causa: los amigos que vienen de pares
+ *    locales se nombraban con `getSocialDemoData(id).displayName`, y
+ *    ese fallback devuelve el propio id cuando no hay semilla para él
+ *    (un UUID no empieza por "demo-"). Ahora el nombre se resuelve
+ *    con `resolveDemoProfileName(id)` (cuentas canónicas → "Carmen &
+ *    Roberto"; cuentas locales → su apodo), que nunca inventa un
+ *    nombre y devuelve el id tal cual solo si nada lo resuelve.
+ * 2. La lista de la pareja NO incluía a anonr8test tras aceptar. La
+ *    lista se keyeaba por UN solo id canónico del `profileId` que
+ *    llega; en demo ese id puede ser la ficha, la tarjeta, el nombre
+ *    o el apodo, y cada forma resuelve por un camino distinto. Ahora
+ *    se prueban TODAS las formas conocidas (`profileId` y
+ *    `profileName`, ambas canonizadas) como dueños candidatos, así
+ *    que el par aceptado aparece en ambas direcciones mire por donde
+ *    se mire. `profileName` es opcional para no romper a los
+ *    llamadores que solo pasan el id.
+ */
+export function listFriendsSync(
+  profileId: string,
+  profileName?: string,
+): Friend[] {
+  const demo = getSocialDemoData(profileName ?? profileId);
+  const removed = new Set<string>();
+  for (const key of [profileId, profileName]) {
+    if (!key) continue;
+    for (const r of readLocalRemoved(key)) removed.add(r);
+  }
   const names = new Set<string>(demo.friendNames);
   const ids = new Set<string>();
   // Ronda 10, stream C (C1): los pares locales se guardan
-  // canonizados; el id que llega puede ser ficha/tarjeta.
-  const ownerId = canonicalDemoOwnerId(profileId);
+  // canonizados; el id que llega puede ser ficha/tarjeta. Ronda 11:
+  // también el nombre/apodo (FriendsSection usa el nombre en demo).
+  const ownerIds = new Set<string>();
+  for (const key of [profileId, profileName]) {
+    if (!key) continue;
+    ownerIds.add(canonicalDemoOwnerId(key));
+  }
   for (const [a, b] of readLocalFriendships()) {
-    if (a === ownerId) ids.add(b);
-    if (b === ownerId) ids.add(a);
+    if (ownerIds.has(a)) ids.add(b);
+    if (ownerIds.has(b)) ids.add(a);
   }
   const fromNames: Friend[] = [...names].map((name) => {
     const d = getSocialDemoData(name);
@@ -677,7 +742,11 @@ export function listFriendsSync(profileId: string): Friend[] {
     const d = getSocialDemoData(id);
     return {
       id,
-      name: d.displayName,
+      // Ronda 11 (streams C y D, punto v): el nombre visible se
+      // resuelve por el puente de cuentas demo
+      // (resolveDemoProfileName), no por la semilla social: sin
+      // esto el UUID del dueño salía crudo.
+      name: resolveDemoProfileName(id),
       isOnline: d.isOnline,
       lastSeenAt: d.lastSeenAt,
       countryCode: d.countryCode,
@@ -814,12 +883,19 @@ export function listAnonymousPhotoAccessGrantedBy(
   nowMs: number = Date.now(),
 ): GrantedAnonymousPhotoAccess[] {
   if (!ownerId) return [];
+  // Ronda 11 (stream A, 1f): la concesión se guarda con el id de
+  // usuario canónico (sendPhotoAccessRequest canoniza), pero la UI
+  // pasa a veces la ficha ("demo-couple-456") o la tarjeta: sin
+  // canonizar aquí, el dueño de una pareja nunca veía sus accesos
+  // concedidos (la lista salía vacía aunque la solicitud aceptada
+  // existiera). Mismo puente que getAnonymousPhotoAccessRemainingMs.
+  const owner = canonicalDemoOwnerId(ownerId);
   const byViewer = new Map<string, FriendRequest>();
   for (const req of readLocalRequests()) {
     if (
       req.kind !== "photo_access" ||
       req.status !== "accepted" ||
-      req.toId !== ownerId
+      canonicalDemoOwnerId(req.toId) !== owner
     ) {
       continue;
     }

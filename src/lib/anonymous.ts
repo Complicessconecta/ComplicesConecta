@@ -300,6 +300,24 @@ export function formatAnonymousPhotoAccessRemaining(
   return rest > 0 ? `${hours} h ${rest} min restantes` : `${hours} h restantes`;
 }
 
+/**
+ * Ronda 11 (stream A, 1f): "23:59:41" / "00:45:12" / "00:00:45" para
+ * la cuenta atrás EN VIVO (tick de 1 s) del acceso de 24 h. El formato
+ * anterior ("23 h 12 min") solo cambia cada minuto: en un test corto
+ * parecía texto estático y el test de la ronda 10 lo reportó como "sin
+ * cuenta atrás visible". HH:MM:SS cambia cada segundo y se ve tickear.
+ */
+export function formatRemainingHHMMSS(remainingMs: number | null): string {
+  if (remainingMs === null) return "sin acceso";
+  if (remainingMs <= 0) return "expirado";
+  const totalSeconds = Math.floor(remainingMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
 /* ------------------------------------------------------------------ */
 /* 7. Billetera bloqueada hasta verificar                              */
 /* ------------------------------------------------------------------ */

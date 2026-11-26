@@ -377,23 +377,23 @@ const ClubAdminPanelSimple: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] border-collapse border border-white/15 text-white">
+            <table className="w-full min-w-[720px] border-collapse border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white">
               <thead>
-                <tr className="bg-purple-950/80">
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Foto</th>
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Nombre</th>
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Ciudad</th>
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Categoría</th>
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Estado</th>
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Rating</th>
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Check-ins</th>
-                  <th className="border border-white/15 px-4 py-2 text-left text-white">Acciones</th>
+                <tr className="bg-purple-100 dark:bg-purple-950/80">
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Foto</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Nombre</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Ciudad</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Categoría</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Estado</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Rating</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Check-ins</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredClubs.map((club) => (
-                  <tr key={club.id} className="hover:bg-white/5">
-                    <td className="border border-white/15 px-4 py-2">
+                  <tr key={club.id} className="hover:bg-slate-100 dark:hover:bg-white/5">
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
                       {club.coverImageUrl ? (
                         <img
                           src={club.coverImageUrl}
@@ -402,23 +402,23 @@ const ClubAdminPanelSimple: React.FC = () => {
                           loading="lazy"
                         />
                       ) : (
-                        <div className="h-12 w-16 rounded-md bg-white/10 flex items-center justify-center">
-                          <Building className="h-5 w-5 text-white/50" />
+                        <div className="h-12 w-16 rounded-md bg-slate-200 dark:bg-white/10 flex items-center justify-center">
+                          <Building className="h-5 w-5 text-slate-500 dark:text-white/50" />
                         </div>
                       )}
                     </td>
-                    <td className="border border-white/15 px-4 py-2 font-medium text-white">{club.name}</td>
-                    <td className="border border-white/15 px-4 py-2 text-white/90">{club.city}</td>
-                    <td className="border border-white/15 px-4 py-2">{getCategoryBadge(club.category)}</td>
-                    <td className="border border-white/15 px-4 py-2">{getStatusBadge(club)}</td>
-                    <td className="border border-white/15 px-4 py-2">
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 font-medium text-slate-900 dark:text-white">{club.name}</td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 text-slate-700 dark:text-white/90">{club.city}</td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">{getCategoryBadge(club.category)}</td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">{getStatusBadge(club)}</td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
                       <div className="flex items-center gap-1">
                         <span>{club.rating}</span>
-                        <span className="text-white/60">({club.checkIns})</span>
+                        <span className="text-slate-500 dark:text-white/60">({club.checkIns})</span>
                       </div>
                     </td>
-                    <td className="border border-white/15 px-4 py-2 text-white/90">{club.checkIns}</td>
-                    <td className="border border-white/15 px-4 py-2">
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 text-slate-700 dark:text-white/90">{club.checkIns}</td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
                       <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
@@ -471,32 +471,32 @@ const ClubAdminPanelSimple: React.FC = () => {
           <select
             value={selectedClubId}
             onChange={(e) => setSelectedClubId(e.target.value)}
-            className="w-full rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white"
+            className="w-full rounded-lg border border-slate-300 bg-white dark:border-white/20 dark:bg-purple-950/60 px-3 py-2 text-slate-900 dark:text-white"
           >
             {clubs.map((c) => (
-              <option key={c.id} value={c.id} className="bg-purple-950 text-white">
+              <option key={c.id} value={c.id} className="bg-white text-slate-900 dark:bg-purple-950 dark:text-white">
                 {c.name} — {c.city}
               </option>
             ))}
           </select>
 
           {eventsLoading ? (
-            <p className="text-white/70 text-sm flex items-center gap-2">
+            <p className="text-slate-600 dark:text-white/70 text-sm flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" /> Cargando eventos y miembros...
             </p>
           ) : (
             <>
               <div>
-                <h4 className="text-white font-semibold mb-2">Eventos ({events.length})</h4>
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-2">Eventos ({events.length})</h4>
                 {events.length === 0 ? (
-                  <p className="text-white/60 text-sm">Sin eventos para este club.</p>
+                  <p className="text-slate-500 dark:text-white/60 text-sm">Sin eventos para este club.</p>
                 ) : (
                   <ul className="space-y-2">
                     {events.map((ev) => (
-                      <li key={ev.id} className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
+                      <li key={ev.id} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5 px-3 py-2">
                         <div className="min-w-0">
-                          <p className="text-white font-medium truncate">{ev.title}</p>
-                          <p className="text-white/60 text-xs">
+                          <p className="text-slate-900 dark:text-white font-medium truncate">{ev.title}</p>
+                          <p className="text-slate-500 dark:text-white/60 text-xs">
                             {new Date(ev.date).toLocaleDateString("es-MX")} {ev.startTime ? `· ${ev.startTime}` : ""} · {ev.registeredCount}/{ev.capacity} registrados
                           </p>
                         </div>
@@ -528,13 +528,13 @@ const ClubAdminPanelSimple: React.FC = () => {
                   value={newEventTitle}
                   onChange={(e) => setNewEventTitle(e.target.value)}
                   placeholder="Título del evento"
-                  className="flex-1 min-w-[160px] rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white placeholder:text-white/40"
+                  className="flex-1 min-w-[160px] rounded-lg border border-slate-300 bg-white dark:border-white/20 dark:bg-purple-950/60 px-3 py-2 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/40"
                 />
                 <input
                   type="date"
                   value={newEventDate}
                   onChange={(e) => setNewEventDate(e.target.value)}
-                  className="rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white"
+                  className="rounded-lg border border-slate-300 bg-white dark:border-white/20 dark:bg-purple-950/60 px-3 py-2 text-slate-900 dark:text-white"
                 />
                 <input
                   type="number"
@@ -542,7 +542,7 @@ const ClubAdminPanelSimple: React.FC = () => {
                   value={newEventPrice}
                   onChange={(e) => setNewEventPrice(e.target.value)}
                   placeholder="Precio $"
-                  className="w-28 rounded-lg border border-white/20 bg-purple-950/60 px-3 py-2 text-white placeholder:text-white/40"
+                  className="w-28 rounded-lg border border-slate-300 bg-white dark:border-white/20 dark:bg-purple-950/60 px-3 py-2 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/40"
                 />
                 <Button type="submit" variant="love">
                   <Plus className="h-4 w-4 mr-1" /> Crear evento
@@ -550,14 +550,14 @@ const ClubAdminPanelSimple: React.FC = () => {
               </form>
 
               <div>
-                <h4 className="text-white font-semibold mb-2">Miembros ({members.length})</h4>
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-2">Miembros ({members.length})</h4>
                 {members.length === 0 ? (
-                  <p className="text-white/60 text-sm">Sin miembros registrados.</p>
+                  <p className="text-slate-500 dark:text-white/60 text-sm">Sin miembros registrados.</p>
                 ) : (
                   <ul className="space-y-2">
                     {members.map((m) => (
-                      <li key={m.id} className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2">
-                        <span className="text-white truncate">{m.displayName}</span>
+                      <li key={m.id} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5 px-3 py-2">
+                        <span className="text-slate-900 dark:text-white truncate">{m.displayName}</span>
                         <Badge variant="secondary">
                           {m.role} · {m.status}
                         </Badge>

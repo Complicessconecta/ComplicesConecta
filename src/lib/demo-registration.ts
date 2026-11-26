@@ -241,6 +241,13 @@ export function deleteLocalDemoAccount(userId: string): {
       window.localStorage.removeItem(`${type}_privacy:${needle}`);
     }
     window.localStorage.removeItem(`profile_visibility:${needle}`);
+    // Ronda 11 (stream A, 1h): resto de claves POR CUENTA que crea
+    // el registro (país `profile_country:<id>`, NFTs demo
+    // `demo_nfts:<id>`). NO se toca `cc_demo_wallet_balances_v1`:
+    // es compartido por TIPO de cuenta (single/couple), no por
+    // usuario, y borrarlo afectaría a la demo canónica.
+    window.localStorage.removeItem(`profile_country:${needle}`);
+    window.localStorage.removeItem(`demo_nfts:${needle}`);
     // Si era la sesión activa, limpiarla: si no, el perfil seguiría
     // mostrando una cuenta que ya no existe en el registro.
     try {

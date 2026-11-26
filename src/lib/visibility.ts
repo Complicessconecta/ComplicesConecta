@@ -23,6 +23,10 @@ import type { Json } from "@/integrations/supabase/types";
 import { logger } from "@/lib/logger";
 import { generateDemoUserUUID } from "@/lib/demo-uuid";
 import {
+  readVisibilityLocalOrNull,
+  writeVisibilityLocal,
+} from "@/lib/profileVisibility";
+import {
   getZodiacSignById,
   getZodiacSignFromDate,
   type ZodiacSign,
@@ -216,6 +220,86 @@ export function savePrivacySettings(
 }
 
 /**
+ * Ronda 11, stream C (iii): FUENTE ÚNICA de la visibilidad del perfil
+ * propio.
+ *
+ * Antes había DOS controles con DOS almacenes que no se hablaban:
+ * - "Modo invisible" (toggle en `SinglePrivacySection` /
+ *   `CouplePrivacySection`) → `PrivacySettings.invisible` en
+ *   `single_privacy:<userId>` / `couple_privacy:<userId>`.
+ * - "Visibilidad del perfil" (select en `ProfileSocialSettings`) →
+ *   "public" | "private" en `profile_visibility:<userId>`.
+ * Y la píldora (`getVisibilityBadge` sobre `usePrivacySettings`) solo
+ * leía el primero. Resultado del test de verificación ronda 10
+ * (2026-11-25 18:02–18:30 CST): la pareja tenía el toggle ON con el
+ * select en "Público" y el anónimo el toggle OFF con el select en
+ * "Privado", y en ambos casos la píldora decía "Invisible". El caso
+ * anónimo tenía una segunda causa: el toggle no aplicaba el default
+ * anónimo (privado/invisible) que sí aplican `usePrivacySettings` y
+ * el select.
+ *
+ * Regla unificada: el perfil está OCULTO si CUALQUIERA de los dos
+ * almacenes dice oculto (`invisible === true` O visibilidad
+ * "private"). El default anónimo (privado cuando nada está guardado)
+ * aplica en ambos. Si los almacenes heredados discrepan, gana lo más
+ * privado (no se expone un perfil que el dueño puso oculto por un
+ * lado); en cuanto el dueño mueve CUALQUIER control, ambos almacenes
+ * se escriben juntos con el mismo valor y ya no pueden discrepar.
+ * `saveUnifiedInvisible` es el único escritor local: escribe los dos
+ * almacenes y avisa con `PRIVACY_SETTINGS_CHANGED_EVENT`, que es lo
+ * que escuchan la píldora, el toggle y el select.
+ *
+ * Consecuencia semántica (asumida por la ronda): "Privado" implica
+ * también invisible en Discover/búsquedas, y "Modo invisible"
+ * implica también perfil privado (gate de solo-amigos). Antes eran
+ * dos efectos distintos; la ronda los unifica en un solo estado
+ * porque la UI los presenta como el mismo ("¿se me ve o no?").
+ * La persistencia no cambia: ambos almacenes siguen en localStorage
+ * por cuenta y `clearDemoAuth` ya no los barre (ronda 10, C2), así
+ * que la visibilidad sigue sobreviviendo al logout.
+ */
+export function readUnifiedInvisible(
+  userId: string,
+  type: ProfileType,
+  isAnonymous?: boolean,
+): boolean {
+  if (!userId) return false;
+  const privacyInvisible = readEffectiveSettings(
+    userId,
+    type,
+    isAnonymous,
+  ).invisible;
+  const storedVisibility = readVisibilityLocalOrNull(userId);
+  const effectiveVisibility =
+    storedVisibility ?? (isAnonymous === true ? "private" : "public");
+  return privacyInvisible || effectiveVisibility === "private";
+}
+
+/**
+ * Escribe el estado unificado en AMBOS almacenes locales y avisa a
+ * todos los lectores en vivo. Preserva el resto de claves de los
+ * ajustes de privacidad (watermark, signo, etc.). `base` permite
+ * partir de los ajustes que el llamador ya tiene en memoria (p. ej.
+ * los recién guardados en BD) en vez de releer el local.
+ */
+export function saveUnifiedInvisible(
+  userId: string,
+  type: ProfileType,
+  invisible: boolean,
+  isAnonymous?: boolean,
+  base?: PrivacySettings,
+): void {
+  if (!userId) return;
+  const next = {
+    ...(base ?? readEffectiveSettings(userId, type, isAnonymous)),
+    invisible,
+  };
+  writeLocalSettings(userId, type, next);
+  writeVisibilityLocal(userId, invisible ? "private" : "public");
+  notifyPrivacySettingsChanged(userId);
+}
+
+/**
  * Lectura síncrona (demo y respaldo local). En demo es la fuente real;
  * en producción es el respaldo cuando la BD no tiene la columna
  * (caso single) o falla la lectura.
@@ -282,6 +366,51 @@ export async function loadPrivacySettings(
       error: err instanceof Error ? err.message : String(err),
     });
     return { settings: local, fromDatabase: false };
+  }
+}
+
+/**
+ * Ronda 11, stream C (iii): espejo en BD de `invisible` dentro de
+ * `privacy_settings` (real). Lo usa el select de
+ * `ProfileSocialSettings`: su columna es `visibility`, pero el toggle
+ * "Modo invisible" lee `privacy_settings.invisible`; sin este espejo
+ * ambos controles discreparían tras recargar en real. Best-effort:
+ * si la columna/tabla no existe aún (single: migración
+ * 20261124040000 pendiente) solo se registra el error y el estado
+ * local —que ya se escribió con `saveUnifiedInvisible`— sigue
+ * mandando en este dispositivo.
+ */
+export async function saveInvisibleMirrorToDatabase(
+  userId: string,
+  type: ProfileType,
+  invisible: boolean,
+): Promise<void> {
+  if (!userId || !supabase) return;
+  try {
+    const table = type === "couple" ? "couple_profiles" : "profiles";
+    const { data } = await supabase
+      .from(table)
+      .select("privacy_settings")
+      .eq("id", userId)
+      .single();
+    const stored = data?.privacy_settings;
+    const record =
+      typeof stored === "object" && stored !== null && !Array.isArray(stored)
+        ? (stored as Record<string, Json>)
+        : {};
+    const { error } = await supabase
+      .from(table)
+      .update({ privacy_settings: { ...record, invisible } })
+      .eq("id", userId);
+    if (error) {
+      logger.error("Error guardando espejo invisible en privacy_settings:", {
+        error: error.message,
+      });
+    }
+  } catch (err: unknown) {
+    logger.error("Error guardando espejo invisible en privacy_settings:", {
+      error: err instanceof Error ? err.message : String(err),
+    });
   }
 }
 

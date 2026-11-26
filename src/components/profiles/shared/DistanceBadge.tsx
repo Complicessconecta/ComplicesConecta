@@ -28,7 +28,7 @@ export function DistanceBadge({
   if (!label) return null;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full bg-white/10 text-white/90 border border-white/20 px-2.5 py-1 text-[11px] ${className}`}
+      className={`inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-800 border border-slate-300 dark:bg-white/10 dark:text-white/90 dark:border-white/20 px-2.5 py-1 text-[11px] ${className}`}
       title="Distancia aproximada para matching (nunca la exacta)"
     >
       <MapPin className="w-3 h-3" aria-hidden="true" />

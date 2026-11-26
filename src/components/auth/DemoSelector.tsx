@@ -9,6 +9,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Users, Sparkles, ArrowRight, LogIn, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { canCreateAnonymousAccountOnDevice } from "@/lib/anonymous";
 import {
@@ -136,18 +146,34 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
   const [, setUserType] = usePersistedState<string>("userType", "");
 
   /**
-   * Ronda 10 (stream A, punto A7): eliminar una cuenta demo creada
-   * localmente en este navegador, con confirmación. Sin esto, una
-   * cuenta anónima vieja (anonr8test) ocupaba el único hueco y no
-   * había forma de crear otra (anonr9test). Las canónicas (Sofía,
-   * Carmen & Roberto) no están en esta lista y no se pueden borrar.
+   * Ronda 11 (stream A, 1h): eliminar una cuenta demo creada
+   * localmente en este navegador, con confirmación EN LA APP.
+   *
+   * Causa raíz del hallazgo (1h) del test de la ronda 10 (5 clics en
+   * "Eliminar", sin diálogo, sin toast, sin borrado): la confirmación
+   * era `window.confirm(...)`, que en varias webviews móviles (el
+   * navegador in-app del test) se descarta solo o ni se muestra — el
+   * mismo motivo documentado en Single/CouplePrivacySection, que ya
+   * habían abandonado window.confirm por ese motivo. El handler SÍ
+   * estaba cableado y `deleteLocalDemoAccount()` SÍ funciona (19/19
+   * en r10-stream-a), pero el confirm nativo nunca dejaba llegar a él.
+   * Ahora el diálogo es un AlertDialog (Radix, mismo patrón que
+   * PrivacySettings): visible y táctil en cualquier webview.
+   * Las canónicas (Sofía, Carmen & Roberto) no están en esta lista y
+   * no se pueden borrar: `deleteLocalDemoAccount` las rechaza.
    */
+  const [accountPendingDelete, setAccountPendingDelete] =
+    useState<LocalDemoAccountRecord | null>(null);
+
   const handleDeleteLocalAccount = (account: LocalDemoAccountRecord) => {
     if (isLoading) return;
-    const confirmed = window.confirm(
-      `¿Eliminar la cuenta demo "${account.nickname}" (${account.email}) de este navegador? Esta acción no se puede deshacer.`,
-    );
-    if (!confirmed) return;
+    setAccountPendingDelete(account);
+  };
+
+  const confirmDeleteLocalAccount = () => {
+    const account = accountPendingDelete;
+    setAccountPendingDelete(null);
+    if (!account || isLoading) return;
     const result = deleteLocalDemoAccount(account.userId);
     if (!result.deleted) {
       toast({
@@ -157,6 +183,10 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
       });
       return;
     }
+    // La lista y el hueco de anónima se releen en el mismo render:
+    // `anonymousAccount` / `anonymousCheck` se calculan en cada
+    // render desde el registro, así que "Crear cuenta demo anónima"
+    // vuelve a habilitarse al borrar la anónima anterior.
     setLocalAccounts(listLocalDemoAccounts());
     toast({
       title: "Cuenta demo eliminada",
@@ -359,12 +389,19 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
           {/* Ronda 9, stream D: cuentas demo locales de este navegador.
               Sin esta sección, tras cerrar sesión no había forma de
               volver a entrar con una cuenta creada por registro. */}
+          {/* RONDA 11 (stream B, B6): la sección era `text-white`
+              sobre `bg-white/5` (blanco sobre blanco en tema claro) y
+              el nombre/email llevaban `truncate`: en la prueba de la
+              ronda 10 los nombres se veían como "a…" / "T…". Ahora el
+              fondo es opaco claro y los textos envuelven
+              (`wrap-break-word`) en vez de truncarse: el nombre
+              completo siempre se ve. */}
           {localAccounts.length > 0 && (
-            <div className="rounded-lg border border-white/20 bg-white/5 p-4">
-              <h3 className="text-lg font-semibold text-white mb-1">
+            <div className="rounded-lg border border-slate-300 bg-slate-50 dark:border-white/20 dark:bg-white/5 p-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
                 Tus cuentas demo en este navegador
               </h3>
-              <p className="text-white/70 text-xs mb-3">
+              <p className="text-slate-600 dark:text-white/70 text-xs mb-3">
                 Cuentas creadas por registro en este dispositivo. Un clic para
                 entrar, sin contraseña.
               </p>
@@ -379,21 +416,21 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
                   return (
                     <li
                       key={account.userId}
-                      className="flex flex-wrap items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2"
+                      className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white dark:border-white/10 dark:bg-white/5 px-3 py-2"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-white font-medium truncate">
+                        <p className="text-slate-900 dark:text-white font-medium wrap-break-word">
                           {displayName}
                           {account.isAnonymous && (
-                            <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-400/20 text-purple-100 border border-purple-400/40">
+                            <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-800 border border-purple-500/40 dark:bg-purple-400/20 dark:text-purple-100 dark:border-purple-400/40">
                               Anónimo
                             </span>
                           )}
-                          <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/80 border border-white/20">
+                          <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 dark:bg-white/10 dark:text-white/80 dark:border-white/20">
                             {type === "couple" ? "Pareja" : "Single"}
                           </span>
                         </p>
-                        <p className="text-white/60 text-xs truncate">
+                        <p className="text-slate-500 dark:text-white/60 text-xs wrap-break-word">
                           {account.email}
                         </p>
                       </div>
@@ -415,24 +452,68 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
                           </>
                         )}
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        disabled={isLoading}
-                        onClick={() => handleDeleteLocalAccount(account)}
-                        title={`Eliminar la cuenta demo "${account.nickname}" de este navegador`}
-                        aria-label={`Eliminar la cuenta demo ${account.nickname}`}
-                        className="text-red-300 hover:text-red-200 hover:bg-red-500/10 shrink-0"
-                      >
-                        <Trash2 className="h-4 w-4 mr-1" />
-                        Eliminar
-                      </Button>
+                      {/* Ronda 11 (stream A, 1h): las cuentas demo
+                          canónicas (Sofía, Carmen & Roberto) NO tienen
+                          botón de eliminar — ni en la lista ni en el
+                          lib (`deleteLocalDemoAccount` las rechaza).
+                          Sin esta guarda, un registro canónico colado
+                          en la lista mostraría un botón que siempre
+                          falla. */}
+                      {account.email !== "single@outlook.es" &&
+                        account.email !== "pareja@outlook.es" && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={isLoading}
+                            onClick={() => handleDeleteLocalAccount(account)}
+                            title={`Eliminar la cuenta demo "${account.nickname}" de este navegador`}
+                            aria-label={`Eliminar la cuenta demo ${account.nickname}`}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-500/10 dark:text-red-300 dark:hover:text-red-200 shrink-0"
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Eliminar
+                          </Button>
+                        )}
                     </li>
                   );
                 })}
               </ul>
             </div>
           )}
+
+          {/* Ronda 11 (stream A, 1h): confirmación EN LA APP para
+              eliminar una cuenta demo. Sin window.confirm (se descarta
+              en webviews y el borrado nunca ocurría, test ronda 10). */}
+          <AlertDialog
+            open={accountPendingDelete !== null}
+            onOpenChange={(open) => {
+              if (!open) setAccountPendingDelete(null);
+            }}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Eliminar cuenta demo?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Se eliminará la cuenta demo &quot;
+                  {accountPendingDelete?.nickname}&quot; (
+                  {accountPendingDelete?.email}) de este navegador, con sus
+                  ajustes de privacidad y visibilidad. Esta acción no se puede
+                  deshacer.
+                  {accountPendingDelete?.isAnonymous &&
+                    " Al eliminarla, el hueco de cuenta anónima queda libre y podrás crear otra."}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={confirmDeleteLocalAccount}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Sí, eliminar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           {/* Ronda 10, stream D (D1): crear cuenta demo anónima,
               SIEMPRE visible en /demo. Antes la única vía era el

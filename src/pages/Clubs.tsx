@@ -746,7 +746,7 @@ export const Clubs = () => {
               <Button
                 variant="outline"
                 onClick={() => navigate("/clubs")}
-                className="border-white/30 text-white hover:bg-white/10"
+                className="border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
               >
                 Volver
               </Button>
@@ -826,14 +826,20 @@ export const Clubs = () => {
           <Badge className="bg-linear-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
             🏢 CLUBS VERIFICADOS
           </Badge>
-          <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
+          {/* RONDA 11 (stream B, B3): el hero y la tarjeta de
+              verificación eran `text-white` sobre cristal `bg-white/10`:
+              en tema claro el fondo es lavanda claro y el texto blanco
+              era ilegible. Ahora el fondo de la tarjeta es blanco opaco
+              en claro (oscuro translúcido en oscuro) y los textos
+              llevan su variante clara. */}
+          <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-slate-900 dark:text-white mb-6 leading-tight">
             Clubs
             <span className="bg-linear-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               {" "}
               Verificados
             </span>
           </h1>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-slate-600 dark:text-white/80 max-w-3xl mx-auto mb-8">
             Descubre clubs auténticos con check-ins geolocalizados, reseñas
             verificadas y sistema de watermark automático
           </p>
@@ -846,15 +852,15 @@ export const Clubs = () => {
           transition={{ delay: 0.2 }}
           className="mb-12"
         >
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 shadow-2xl">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
+              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                 <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                   <Verified className="h-6 w-6 text-white" />
                 </div>
                 Sistema de Clubs Verificados
               </CardTitle>
-              <CardDescription className="text-white/70 text-lg">
+              <CardDescription className="text-slate-600 dark:text-white/70 text-lg">
                 Proceso riguroso de verificación para garantizar clubs
                 auténticos y experiencias seguras
               </CardDescription>
@@ -863,7 +869,7 @@ export const Clubs = () => {
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Proceso de Verificación */}
                 <div>
-                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <Target className="h-5 w-5 text-green-400" />
                     Proceso de Verificación
                   </h4>
@@ -871,16 +877,16 @@ export const Clubs = () => {
                     {clubSystemInfo.verificationProcess.map((step, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
+                        className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10"
                       >
                         <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg text-white shrink-0">
                           {step.icon}
                         </div>
                         <div>
-                          <h5 className="font-semibold text-white">
+                          <h5 className="font-semibold text-slate-900 dark:text-white">
                             {step.step}
                           </h5>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             {step.description}
                           </p>
                         </div>
@@ -891,7 +897,7 @@ export const Clubs = () => {
 
                 {/* Beneficios */}
                 <div>
-                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-purple-400" />
                     Beneficios de Verificación
                   </h4>
@@ -899,16 +905,16 @@ export const Clubs = () => {
                     {clubSystemInfo.benefits.map((benefit, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
+                        className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10"
                       >
                         <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white shrink-0">
                           {benefit.icon}
                         </div>
                         <div>
-                          <h5 className="font-semibold text-white">
+                          <h5 className="font-semibold text-slate-900 dark:text-white">
                             {benefit.title}
                           </h5>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             {benefit.description}
                           </p>
                         </div>

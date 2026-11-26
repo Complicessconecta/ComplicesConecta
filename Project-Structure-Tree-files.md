@@ -378,6 +378,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       NationalityBadge.tsx
 |   |   |       NFTGalleryManager.tsx
 |   |   |       ParentalControl.tsx
+|   |   |       PhotoAccessCountdown.tsx
 |   |   |       PhotoAccessRequestButton.tsx
 |   |   |       PrivateImageGallery.tsx
 |   |   |       PrivateImageRequest.tsx

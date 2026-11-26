@@ -39,13 +39,21 @@ export function FriendsSection({
   // En demo la identidad estable es el NOMBRE (los ids demo son UUID
   // generados en cada carga); en real es el id del perfil.
   const lookupKey = isDemo ? profileName : profileId || profileName;
+  // Ronda 11, stream C (v): la lista se pide con id Y nombre: el par
+  // aceptado se encuentra mire por donde se mire (ficha, tarjeta,
+  // nombre o apodo de cuenta local) y los nombres se resuelven en
+  // `listFriendsSync`, no aquí. En real solo va el id (el nombre como
+  // candidato podría casar con un par demo residual del mismo
+  // navegador).
   const [friends, setFriends] = useState<Friend[]>(() =>
-    listFriendsSync(lookupKey),
+    listFriendsSync(profileId || lookupKey, isDemo ? profileName : undefined),
   );
   const [removingId, setRemovingId] = useState<string | null>(null);
 
   useEffect(() => {
-    setFriends(listFriendsSync(lookupKey));
+    setFriends(
+      listFriendsSync(profileId || lookupKey, isDemo ? profileName : undefined),
+    );
     // En real, la lista viene de `friendships` en Supabase; si trae
     // filas, reemplaza el respaldo demo/local.
     if (!isDemo) {
@@ -58,7 +66,7 @@ export function FriendsSection({
       };
     }
     return undefined;
-  }, [lookupKey, isDemo, profileId]);
+  }, [lookupKey, isDemo, profileId, profileName]);
 
   const handleRemove = async (friend: Friend) => {
     if (!window.confirm(`¿Eliminar a ${friend.name} de tus amigos?`)) return;

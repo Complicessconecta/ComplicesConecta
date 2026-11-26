@@ -229,14 +229,25 @@ const PUBLIC_ROOM_MEMBERS: Record<string, number> = {
  * enviada al abrir el perfil (y viceversa), y /requests tampoco la
  * encontraba por perfil. La sala 3 es Carmen & Roberto, cuya ficha
  * demo usa el id "demo-couple-456" (el mismo que produce Compartir);
- * las demás salas no tienen ficha de perfil propia en el repo, así
- * que conservan su id de sala (consistencia interna del chat).
+ * la sala 2 es Sofía, cuya ficha demo usa "demo-single-1". Las
+ * demás salas no tienen ficha de perfil propia en el repo, así que
+ * conservan su id de sala (consistencia interna del chat).
+ *
+ * Ronda 14 (stream A): faltaba la sala 2. Sin ella, la solicitud de
+ * ver fotos (y la de amistad) enviada desde el chat de la pareja a
+ * Sofía se guardaba con toId = "2": el remitente la veía como
+ * enviada, pero la bandeja de Sofía —que lee con su UUID canónico—
+ * nunca la encontraba (test de verificación ronda 13, 23:30–23:58).
+ * Y como la solicitud real nunca llegaba, lo único aprobable en la
+ * bandeja eran las 2 mock, cuya aprobación es solo estado local: sin
+ * cuenta atrás HH:MM:SS y revertida a "2 pendientes" al remontar.
  */
 const CHAT_ROOM_PROFILE_IDS: Record<string, string> = {
+  "2": "demo-single-1",
   "3": "demo-couple-456",
 };
 
-function resolveChatPartnerProfileId(chatId: string): string {
+export function resolveChatPartnerProfileId(chatId: string): string {
   return CHAT_ROOM_PROFILE_IDS[chatId] ?? chatId;
 }
 
@@ -1182,7 +1193,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
     // embedded: dentro del dock flotante (ChatFab) el alto es el del dock
     // (420px); con h-screen el hilo se desbordaba y se solapaba/recortaba.
     <div
-      className={`flex flex-col ${embedded ? "h-full" : "h-screen"} bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden`}
+      className={`flex flex-col ${embedded ? "h-full" : "h-screen"} bg-linear-to-br from-purple-100 via-violet-50 to-blue-100 dark:from-purple-900 dark:via-purple-800 dark:to-blue-900 relative overflow-hidden`}
     >
       <DecorativeHearts />
 
@@ -1194,8 +1205,8 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
           así que `absolute inset-0` cubre exactamente el Chat: el
           cuerpo del dock (420 px), la página /chat (h-screen) o el
           área de contenido de /chat-intimo (h-full). */}
-      <div className="absolute inset-0 z-0 bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
-        <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
+      <div className="absolute inset-0 z-0 bg-linear-to-br from-purple-100 via-violet-50 to-blue-100 dark:from-purple-900 dark:via-purple-800 dark:to-blue-900">
+        <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-violet-500/10 to-blue-500/10 dark:from-purple-900/20 dark:via-purple-800/20 dark:to-blue-900/20"></div>
       </div>
 
       <div
@@ -1204,9 +1215,9 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
         {/* Chat List Sidebar: en móvil es UN solo panel — lista O hilo,
             nunca los dos partidos. Con hilo abierto la lista se oculta. */}
         <div
-          className={`${selectedChat ? "hidden sm:flex" : "flex"} w-full sm:w-80 shrink-0 bg-linear-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex-col`}
+          className={`${selectedChat ? "hidden sm:flex" : "flex"} w-full sm:w-80 shrink-0 bg-white/80 dark:bg-transparent dark:bg-linear-to-br dark:from-purple-900/40 dark:via-purple-800/40 dark:to-blue-900/40 backdrop-blur-sm border-r border-slate-200 dark:border-white/10 flex-col`}
         >
-          <div className="p-4 border-b border-white/10">
+          <div className="p-4 border-b border-slate-200 dark:border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <Button
                 variant="ghost"
@@ -1214,7 +1225,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                 // Visible siempre (antes sm:hidden): sin hilo es la salida
                 // de la lista hacia el feed; en el hilo manda el botón del
                 // header del hilo.
-                className="text-white hover:bg-white/20 p-2"
+                className="text-slate-700 hover:bg-slate-900/10 dark:text-white dark:hover:bg-white/20 p-2"
                 aria-label="Volver"
                 onClick={() => {
                   // Dentro de un hilo: volver a la LISTA de conversaciones,
@@ -1226,14 +1237,14 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <div className="flex items-center justify-between flex-1 min-w-0">
-                <h2 className="text-lg sm:text-xl font-bold text-white truncate">
+                <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white truncate">
                   Conversaciones
                 </h2>
                 <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-white hover:bg-white/10"
+                    className="text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10"
                     aria-label="Videollamada"
                     title="Videollamada"
                     onClick={handleVideoCall}
@@ -1243,7 +1254,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-white hover:bg-white/10"
+                    className="text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10"
                     aria-label="Más opciones"
                     title="Más opciones"
                     onClick={() =>
@@ -1261,14 +1272,14 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
             </div>
 
             {/* Tabs para Private/Public */}
-            <div className="flex gap-2 bg-linear-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-lg p-1 border border-purple-400/20">
+            <div className="flex gap-2 bg-white/70 dark:bg-transparent dark:bg-linear-to-r dark:from-purple-900/30 dark:to-blue-900/30 backdrop-blur-sm rounded-lg p-1 border border-purple-300/60 dark:border-purple-400/20">
               <Button
                 variant={activeTab === "private" ? "default" : "ghost"}
                 size="sm"
                 className={`flex-1 flex items-center gap-2 transition-all duration-200 ${
                   activeTab === "private"
                     ? "bg-purple-500 text-white shadow-lg"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-900/5 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10"
                 }`}
                 onClick={() => {
                   setTabError(null);
@@ -1293,7 +1304,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                 className={`flex-1 flex items-center gap-2 transition-all duration-200 ${
                   activeTab === "public"
                     ? "bg-purple-500 text-white shadow-lg"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-900/5 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10"
                 }`}
                 onClick={() => {
                   setTabError(null);
@@ -1319,14 +1330,16 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
             {/* Error display */}
             {tabError && (
               <div className="mt-2 p-2 bg-red-500/20 border border-red-500/30 rounded-lg">
-                <p className="text-red-200 text-sm">{tabError}</p>
+                <p className="text-red-700 dark:text-red-200 text-sm">
+                  {tabError}
+                </p>
               </div>
             )}
 
             {/* Tab Content */}
             {activeTab === "private" && (
               <div className="mt-4">
-                <div className="text-white font-semibold text-sm mb-3 px-2 drop-shadow-lg">
+                <div className="text-slate-900 dark:text-white font-semibold text-sm mb-3 px-2 dark:drop-shadow-lg">
                   🔒 Chats privados con tus conexiones
                 </div>
                 <div className="space-y-2">
@@ -1347,8 +1360,8 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                       }}
                       className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
                         selectedChat?.id === chat.id
-                          ? "bg-white/20 border border-white/30"
-                          : "hover:bg-white/10"
+                          ? "bg-purple-100 border border-purple-300 dark:bg-white/20 dark:border-white/30"
+                          : "hover:bg-slate-900/5 dark:hover:bg-white/10"
                       }`}
                     >
                       <div className="flex items-center space-x-3">
@@ -1356,23 +1369,23 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                           <img
                             src={chat.image}
                             alt={chat.name}
-                            className="w-12 h-12 rounded-full object-cover border-2 border-white/20"
+                            className="w-12 h-12 rounded-full object-cover border-2 border-slate-200 dark:border-white/20"
                           />
                           {chat.isOnline && (
-                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-black/50"></div>
+                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-black/50"></div>
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-white truncate flex items-center gap-2">
+                            <h3 className="font-semibold text-slate-900 dark:text-white truncate flex items-center gap-2">
                               {chat.name}
-                              <Lock className="h-3 w-3 text-purple-300" />
+                              <Lock className="h-3 w-3 text-purple-600 dark:text-purple-300" />
                             </h3>
-                            <span className="text-xs text-white/90 font-medium">
+                            <span className="text-xs text-slate-500 dark:text-white/90 font-medium">
                               {chat.timestamp}
                             </span>
                           </div>
-                          <p className="text-sm text-white/90 truncate font-medium">
+                          <p className="text-sm text-slate-600 dark:text-white/90 truncate font-medium">
                             {previewFor(chat)}
                           </p>
                         </div>
@@ -1390,7 +1403,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
 
             {activeTab === "public" && (
               <div className="mt-4">
-                <div className="text-white font-semibold text-sm mb-3 px-2 drop-shadow-lg">
+                <div className="text-slate-900 dark:text-white font-semibold text-sm mb-3 px-2 dark:drop-shadow-lg">
                   Salas públicas de la comunidad
                 </div>
                 <div className="space-y-2">
@@ -1411,28 +1424,28 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                       }}
                       className={`p-3 rounded-lg cursor-pointer transition-all duration-200 ${
                         selectedChat?.id === chat.id
-                          ? "bg-white/20 border border-white/30"
-                          : "hover:bg-white/10"
+                          ? "bg-purple-100 border border-purple-300 dark:bg-white/20 dark:border-white/30"
+                          : "hover:bg-slate-900/5 dark:hover:bg-white/10"
                       }`}
                     >
                       <div className="flex items-center space-x-3">
                         <div className="relative">
-                          <div className="w-12 h-12 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg border-2 border-white/20">
+                          <div className="w-12 h-12 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg border-2 border-slate-200 dark:border-white/20">
                             {chat.name.charAt(0)}
                           </div>
-                          <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-black/50"></div>
+                          <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-black/50"></div>
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-white truncate flex items-center gap-2">
+                            <h3 className="font-semibold text-slate-900 dark:text-white truncate flex items-center gap-2">
                               {chat.name}
-                              <Globe className="h-3 w-3 text-green-300" />
+                              <Globe className="h-3 w-3 text-green-600 dark:text-green-300" />
                             </h3>
-                            <span className="text-xs text-white/90 font-medium">
+                            <span className="text-xs text-slate-500 dark:text-white/90 font-medium">
                               {chat.timestamp}
                             </span>
                           </div>
-                          <p className="text-sm text-white/90 truncate font-medium">
+                          <p className="text-sm text-slate-600 dark:text-white/90 truncate font-medium">
                             {previewFor(chat)}
                           </p>
                         </div>
@@ -1455,47 +1468,47 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
           // min-w-0: sin él, el panel no encoge por debajo del ancho de su
           // contenido y dentro del dock flotante (28-42rem) el texto de la
           // derecha ("Selecciona una conversación") quedaba recortado.
-          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 min-w-0 flex flex-col bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 backdrop-blur-sm`}
+          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 min-w-0 flex flex-col bg-white/60 dark:bg-transparent dark:bg-linear-to-br dark:from-purple-900/20 dark:via-purple-800/20 dark:to-blue-900/20 backdrop-blur-sm`}
         >
           {selectedChat ? (
             <>
               {/* Header del chat */}
-              <div className="p-4 border-b border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30">
+              <div className="p-4 border-b border-slate-200 dark:border-white/10 bg-white/70 dark:bg-transparent dark:bg-linear-to-r dark:from-purple-900/30 dark:via-purple-800/30 dark:to-blue-900/30">
                 <div className="flex items-center space-x-3">
                   <Button
                     variant="ghost"
                     size="sm"
                     // Visible siempre (antes md:hidden): en el hilo vuelve
                     // a la LISTA de conversaciones, también en escritorio.
-                    className="text-white hover:bg-white/10 mr-2"
+                    className="text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10 mr-2"
                     aria-label="Volver a la lista de chats"
                     onClick={() => setSelectedChat(null)}
                   >
                     <ArrowLeft className="h-4 w-4" />
                   </Button>
                   {selectedChat.roomType === "public" ? (
-                    <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold border-2 border-white/20">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold border-2 border-slate-200 dark:border-white/20">
                       {selectedChat.name.charAt(0)}
                     </div>
                   ) : (
                     <img
                       src={selectedChat.image}
                       alt={selectedChat.name}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-white/20"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-slate-200 dark:border-white/20"
                     />
                   )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-white">
+                      <h3 className="font-semibold text-slate-900 dark:text-white">
                         {selectedChat.name}
                       </h3>
                       {selectedChat.roomType === "private" ? (
-                        <Lock className="h-4 w-4 text-purple-300" />
+                        <Lock className="h-4 w-4 text-purple-600 dark:text-purple-300" />
                       ) : (
-                        <Globe className="h-4 w-4 text-green-300" />
+                        <Globe className="h-4 w-4 text-green-600 dark:text-green-300" />
                       )}
                     </div>
-                    <p className="text-sm text-white/90 drop-shadow-md">
+                    <p className="text-sm text-slate-600 dark:text-white/90 dark:drop-shadow-md">
                       {selectedChat.roomType === "public"
                         ? `Sala pública ${PUBLIC_ROOM_MEMBERS[selectedChat.id] ?? 24} miembros activos`
                         : selectedChat.isOnline
@@ -1510,7 +1523,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-white hover:bg-white/10 shrink-0"
+                    className="text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10 shrink-0"
                     aria-label="Videollamada"
                     title="Videollamada"
                     onClick={handleVideoCall}
@@ -1526,7 +1539,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                   dentro de él: en móvil no caben junto al nombre y al
                   botón de video. */}
               {selectedChat.roomType === "private" && user?.id && (
-                <div className="px-4 py-2 border-b border-white/10 flex flex-wrap items-center gap-2">
+                <div className="px-4 py-2 border-b border-slate-200 dark:border-white/10 flex flex-wrap items-center gap-2">
                   {/* Ronda 11, stream C (iv): el botón recibía el id de
                       SALA ("1"-"4"), no el del perfil del interlocutor:
                       `getFriendStatus` comparaba la amistad con "3" y
@@ -1560,7 +1573,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                       enviar muestra su propia píldora de enviado. */}
                   {photoAccessStatus === "pending" ? (
                     <span
-                      className="inline-flex items-center gap-1.5 rounded-full bg-white/10 text-white/80 border border-white/25 px-4 py-2.5 text-sm"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 dark:bg-white/10 dark:text-white/80 dark:border-white/25 px-4 py-2.5 text-sm"
                       title="Solicitud para ver las fotos enviada, pendiente de respuesta"
                     >
                       <Camera className="w-4 h-4" aria-hidden="true" />
@@ -1589,7 +1602,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
 
               {/* Indicador de consentimiento */}
               {isProduction && selectedChat && user?.id && (
-                <div className="px-4 py-2 border-b border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30">
+                <div className="px-4 py-2 border-b border-slate-200 dark:border-white/10 bg-white/70 dark:bg-transparent dark:bg-linear-to-r dark:from-purple-900/30 dark:via-purple-800/30 dark:to-blue-900/30">
                   <ConsentIndicator
                     chatId={selectedChat.id.toString()}
                     userId1={user.id}
@@ -1613,16 +1626,16 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
               {selectedChat?.roomType === "private" && showPrivateGallery && (
                 <div
                   ref={galleryRef}
-                  className="shrink-0 max-h-[38%] overflow-y-auto px-4 py-3 border-b border-white/10 bg-purple-950/40"
+                  className="shrink-0 max-h-[38%] overflow-y-auto px-4 py-3 border-b border-slate-200 dark:border-white/10 bg-purple-100/70 dark:bg-purple-950/40"
                 >
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-sm font-semibold text-white truncate">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">
                       Galería privada de {selectedChat.name}
                     </span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-white/70 hover:text-white hover:bg-white/10 h-7 px-2 shrink-0"
+                      className="text-slate-600 hover:text-slate-900 hover:bg-slate-900/5 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/10 h-7 px-2 shrink-0"
                       aria-label="Cerrar galería"
                       onClick={() => setShowPrivateGallery(false)}
                     >
@@ -1665,10 +1678,12 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                               defaultValue: "",
                             })
                               ? "bg-linear-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                              : "bg-linear-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
+                              : "bg-white text-slate-900 shadow-md border border-slate-200 dark:bg-linear-to-r dark:from-blue-500/95 dark:to-purple-600/95 dark:text-white dark:border-blue-400/50 backdrop-blur-sm"
                           }`}
                         >
-                          <p className="text-xs sm:text-sm leading-relaxed wrap-break-word whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text">
+                          <p
+                            className={`text-xs sm:text-sm leading-relaxed wrap-break-word whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium ${message.sender_id === safeGetItem<string>("user_id", { validate: false, defaultValue: "" }) ? "text-white drop-shadow-md" : "text-slate-900 dark:text-white dark:drop-shadow-md"} chat-message-text`}
+                          >
                             {message.content}
                           </p>
                           <p
@@ -1679,7 +1694,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                                 defaultValue: "",
                               })
                                 ? "text-purple-100 drop-shadow-sm"
-                                : "text-white/90 drop-shadow-sm"
+                                : "text-slate-500 dark:text-white/90 dark:drop-shadow-sm"
                             }`}
                           >
                             {new Date(message.created_at).toLocaleTimeString(
@@ -1700,17 +1715,19 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                           className={`max-w-[90%] sm:max-w-[75%] md:max-w-[65%] lg:max-w-[55%] px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
                             String(message.sender_id) === "0"
                               ? "bg-linear-to-r from-purple-500 to-blue-500 text-white shadow-lg"
-                              : "bg-linear-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm"
+                              : "bg-white text-slate-900 shadow-md border border-slate-200 dark:bg-linear-to-r dark:from-blue-500/95 dark:to-purple-600/95 dark:text-white dark:border-blue-400/50 backdrop-blur-sm"
                           }`}
                         >
-                          <p className="text-xs sm:text-sm leading-relaxed wrap-break-word whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text word-break-break-all">
+                          <p
+                            className={`text-xs sm:text-sm leading-relaxed wrap-break-word whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium ${String(message.sender_id) === "0" ? "text-white drop-shadow-md" : "text-slate-900 dark:text-white dark:drop-shadow-md"} chat-message-text word-break-break-all`}
+                          >
                             {message.content}
                           </p>
                           <p
                             className={`text-xs mt-1 font-medium ${
                               String(message.sender_id) === "0"
                                 ? "text-purple-100 drop-shadow-sm"
-                                : "text-white/90 drop-shadow-sm"
+                                : "text-slate-500 dark:text-white/90 dark:drop-shadow-sm"
                             }`}
                           >
                             {/* Igual que la rama de mensajes reales: hora
@@ -1726,21 +1743,21 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
               </div>
 
               {/* Input para enviar mensajes */}
-              <div className="p-4 border-t border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30 chat-input relative">
+              <div className="p-4 border-t border-slate-200 dark:border-white/10 bg-white/70 dark:bg-transparent dark:bg-linear-to-r dark:from-purple-900/30 dark:via-purple-800/30 dark:to-blue-900/30 chat-input relative">
                 {/* El bloqueo solo aplica a hilos privados sin historial ni
                     acceso: con historial el usuario ya es participante y el
                     compositor debe aparecer (igual en single y en pareja). */}
                 {selectedChat?.isPrivate &&
                 !hasChatAccess[selectedChat.id] &&
                 !threadHasHistory(selectedChat) ? (
-                  <div className="text-center space-y-4 bg-linear-to-br from-purple-900/50 via-purple-800/50 to-blue-900/50 rounded-lg p-6 border border-white/20">
-                    <div className="flex items-center justify-center text-white mb-3">
+                  <div className="text-center space-y-4 bg-white dark:bg-transparent dark:bg-linear-to-br dark:from-purple-900/50 dark:via-purple-800/50 dark:to-blue-900/50 rounded-lg p-6 border border-slate-200 dark:border-white/20">
+                    <div className="flex items-center justify-center text-slate-900 dark:text-white mb-3">
                       <Lock className="h-6 w-6 mr-2" />
                       <span className="font-semibold text-lg">
                         Chat privado bloqueado
                       </span>
                     </div>
-                    <p className="text-sm text-white/90 mb-6 leading-relaxed max-w-sm mx-auto">
+                    <p className="text-sm text-slate-600 dark:text-white/90 mb-6 leading-relaxed max-w-sm mx-auto">
                       Necesitas una invitación aceptada para chatear con{" "}
                       {selectedChat?.name}. Puedes enviar una invitación o
                       esperar a que te enven una.
@@ -1777,7 +1794,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                           });
                         }}
                         variant="outline"
-                        className="border-red-300/50 text-red-300 hover:bg-red-500/20 px-6 py-2 rounded-lg font-medium transition-all duration-200"
+                        className="border-red-300/50 text-red-600 hover:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/20 px-6 py-2 rounded-lg font-medium transition-all duration-200"
                       >
                         Rechazar
                       </Button>
@@ -1845,7 +1862,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         onClick={togglePrivateGallery}
                         aria-expanded={showPrivateGallery}
                         variant="outline"
-                        className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
+                        className="flex-1 min-w-0 border-purple-400/50 text-purple-700 hover:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
                         <Heart className="h-3 w-3 mr-1" />
                         <span className="truncate">Galería</span>
@@ -1853,7 +1870,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                       <Button
                         onClick={() => navigate("/requests")}
                         variant="outline"
-                        className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
+                        className="flex-1 min-w-0 border-purple-400/50 text-purple-700 hover:bg-purple-500/10 dark:text-purple-300 dark:hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
                         <UserPlus className="h-3 w-3 mr-1" />
                         <span className="truncate">Solicitudes</span>
@@ -1862,7 +1879,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         onClick={togglePrivateGallery}
                         aria-expanded={showPrivateGallery}
                         variant="outline"
-                        className="flex-1 border-green-400/50 text-green-300 hover:bg-green-500/20 text-xs py-2"
+                        className="flex-1 border-green-400/50 text-green-700 hover:bg-green-500/10 dark:text-green-300 dark:hover:bg-green-500/20 text-xs py-2"
                       >
                         <Globe className="h-3 w-3 mr-1" />
                         {selectedChat?.roomType === "private"
@@ -1879,7 +1896,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         aria-label="Emojis"
                         title="Emojis"
                         disabled={isPaused}
-                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        className="text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10 h-8 w-8 p-0"
                         onClick={() => {
                           setShowFileUpload(false);
                           setShowVoiceRecorder(false);
@@ -1894,7 +1911,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         aria-label="Adjuntar archivo"
                         title="Adjuntar archivo"
                         disabled={isPaused}
-                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        className="text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10 h-8 w-8 p-0"
                         onClick={() => {
                           setShowEmojiPicker(false);
                           setShowVoiceRecorder(false);
@@ -1909,7 +1926,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         aria-label="Grabar audio"
                         title="Grabar audio"
                         disabled={isPaused}
-                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        className="text-slate-700 hover:bg-slate-900/5 dark:text-white dark:hover:bg-white/10 h-8 w-8 p-0"
                         onClick={() => {
                           setShowEmojiPicker(false);
                           setShowFileUpload(false);
@@ -1934,7 +1951,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                             handleSendMessage();
                           }
                         }}
-                        className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
+                        className="flex-1 bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-purple-400 dark:bg-white/10 dark:border-white/20 dark:text-white dark:placeholder-white/50 dark:focus:border-white/40 text-sm sm:text-base"
                         disabled={isPaused}
                       />
                       <Button
@@ -1948,7 +1965,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                       </Button>
                     </div>
                     {isPaused && (
-                      <p className="text-xs text-white/70 mt-2 text-center">
+                      <p className="text-xs text-slate-500 dark:text-white/70 mt-2 text-center">
                         El chat está pausado por bajo consenso. El envío de
                         mensajes está bloqueado.
                       </p>
@@ -1956,7 +1973,7 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                   </div>
                 )}
                 {selectedChat?.roomType === "public" && (
-                  <p className="text-xs text-white/50 mt-2 px-1">
+                  <p className="text-xs text-slate-500 dark:text-white/50 mt-2 px-1">
                     Los mensajes en salas públicas son visibles para todos los
                     miembros
                   </p>
@@ -1965,26 +1982,26 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <div className="text-center text-white">
-                <MessageCircle className="h-16 w-16 mx-auto mb-4 text-white opacity-80 drop-shadow-lg" />
-                <h3 className="text-xl font-semibold mb-2 text-white drop-shadow-md">
+              <div className="text-center text-slate-900 dark:text-white">
+                <MessageCircle className="h-16 w-16 mx-auto mb-4 text-purple-500 dark:text-white opacity-80 dark:drop-shadow-lg" />
+                <h3 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white dark:drop-shadow-md">
                   Selecciona una conversación
                 </h3>
-                <p className="mb-4 text-white/90 drop-shadow-md">
+                <p className="mb-4 text-slate-600 dark:text-white/90 dark:drop-shadow-md">
                   {activeTab === "private"
                     ? "Elige un chat privado para conversar de forma segura"
                     : "Únete a una sala pública para conocer la comunidad"}
                 </p>
                 <div className="flex items-center justify-center text-sm space-x-4">
-                  <div className="flex items-center text-white/90">
-                    <Lock className="h-4 w-4 mr-1 text-purple-300" />
-                    <span className="drop-shadow-md">
+                  <div className="flex items-center text-slate-600 dark:text-white/90">
+                    <Lock className="h-4 w-4 mr-1 text-purple-600 dark:text-purple-300" />
+                    <span className="dark:drop-shadow-md">
                       Chats privados encriptados
                     </span>
                   </div>
-                  <div className="flex items-center text-white/90">
-                    <Globe className="h-4 w-4 mr-1 text-green-300" />
-                    <span className="drop-shadow-md">
+                  <div className="flex items-center text-slate-600 dark:text-white/90">
+                    <Globe className="h-4 w-4 mr-1 text-green-600 dark:text-green-300" />
+                    <span className="dark:drop-shadow-md">
                       Salas públicas moderadas
                     </span>
                   </div>

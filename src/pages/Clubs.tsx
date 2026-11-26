@@ -8,7 +8,26 @@ import { Modal } from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import { MapPin, Star, CheckCircle, FileText, Shield, Search, Globe, Camera, Award, Verified, Navigation, Eye, Building, Target, Sparkles, User, Users } from "lucide-react";
+import {
+  MapPin,
+  Star,
+  CheckCircle,
+  FileText,
+  Shield,
+  Search,
+  Globe,
+  Camera,
+  Award,
+  Verified,
+  Navigation,
+  Eye,
+  Building,
+  Target,
+  Sparkles,
+  User,
+  Users,
+  ArrowLeft,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
@@ -207,6 +226,31 @@ const DEMO_ANALYTICS = {
   live_status: "🔥 On Fire",
 };
 
+/**
+ * Predicado de búsqueda/filtro de clubs (ronda 14, stream B).
+ *
+ * La búsqueda compara nombre y ciudad (no descripción ni dirección):
+ * buscar "Eden" no debe dejar a "Club Demo" solo porque su descripción
+ * o dirección comparta una palabra. Lo usan `filterClubs` (la lista) Y
+ * la tarjeta fija Club Demo, que vive fuera de `filteredClubs`: sin
+ * este predicado compartido la búsqueda nunca la filtraba (test de la
+ * ronda 13: escribir "Eden" dejaba visible Club Demo).
+ */
+export function clubMatchesSearch(
+  name: string,
+  city: string | null | undefined,
+  query: string,
+  cityFilter: string,
+): boolean {
+  if (cityFilter !== "all" && city !== cityFilter) return false;
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return (
+    name.toLowerCase().includes(q) ||
+    (city ?? "").toLowerCase().includes(q)
+  );
+}
+
 export const Clubs = () => {
   const { user, profile, isAuthenticated, isAdmin } = useAuth();
   const { toast } = useToast();
@@ -298,13 +342,13 @@ export const Clubs = () => {
         icon: <Globe className="h-5 w-5" />,
       },
       {
-        title: "Check-ins Verificados",
-        description: "Sistema de check-in geolocalizado (radio 50m)",
+        title: "Check-ins Verificados (próximamente)",
+        description: "Check-in geolocalizado (radio 50 m) con WorldID — próximamente",
         icon: <MapPin className="h-5 w-5" />,
       },
       {
         title: "Reseñas Auténticas",
-        description: "Solo usuarios con check-in real pueden reseñar",
+        description: "En beta, las reseñas están abiertas a todos los usuarios; la verificación con check-in llega próximamente",
         icon: <Star className="h-5 w-5" />,
       },
       {
@@ -332,8 +376,9 @@ export const Clubs = () => {
     }
 
     if (slug === "demo") {
-      // Demo en modo creador/admin: la vista pública es /clubs-public/demo;
-      // /clubs/demo muestra el panel de administración del club.
+      // La vista pública del demo es /clubs-public/demo; /clubs/demo
+      // abre en vista pública por defecto (ronda 14, stream E) y el
+      // admin solo entra por "Panel Admin" con sesión demo del club.
       navigate("/clubs/demo", { replace: true });
       return;
     }
@@ -341,6 +386,21 @@ export const Clubs = () => {
     const found = clubs.find((club) => club.id === slug || club.slug === slug);
     if (found) {
       setSelectedClub(toClubEntity(found));
+      return;
+    }
+
+    // Ronda 14, stream B: el slug del catálogo se resuelve SÍNCRONO,
+    // antes de tocar Supabase. `fetchSingle` (abajo) solo alcanzaba el
+    // catálogo tras dos consultas: con el stub del preview (sin
+    // variables en Vercel) esas consultas RECHAZAN y el `catch` se
+    // saltaba el respaldo, así que el detalle dependía de que
+    // `loadClubs` terminara y repusiera el catálogo por su lado. Un
+    // slug de catálogo nunca necesita la red: si la BD trae ese slug,
+    // el re-render al cargar `clubs` lo sustituye por la fila de BD
+    // (`found` manda arriba).
+    const catalog = PUBLIC_CLUBS.find((c) => c.slug === slug);
+    if (catalog) {
+      setSelectedClub(toClubEntity(mapPublicClubToClub(catalog)));
       return;
     }
 
@@ -368,23 +428,21 @@ export const Clubs = () => {
           setSelectedClub(toClubEntity(bySlug as Club));
           return;
         }
-
-        // Respaldo del catálogo público (ronda 7, punto 7): "Eden Noir"
-        // solo vive en PUBLIC_CLUBS, no en la tabla clubs. Sin este
-        // paso, /clubs/eden-noir no resolvía nunca el detalle y la
-        // página mostraba la lista genérica; la búsqueda sí lo
-        // encontraba en la lista mezclada, pero el detalle era
-        // inalcanzable. El catálogo manda por slug cuando la BD no
-        // tiene el club (la BD sigue mandando cuando sí lo tiene, por
-        // el `found` de arriba).
-        const catalog = PUBLIC_CLUBS.find((c) => c.slug === slug);
-        if (catalog) {
-          setSelectedClub(toClubEntity(mapPublicClubToClub(catalog)));
-        }
       } catch (error) {
         logger.error("Error loading club profile:", {
           error: error instanceof Error ? error.message : String(error),
         });
+      }
+
+      // Respaldo del catálogo público (ronda 7, punto 7): "Eden Noir"
+      // solo vive en PUBLIC_CLUBS, no en la tabla clubs. FUERA del
+      // `try` (ronda 14, stream B): antes vivía dentro y un rechazo
+      // del stub lo saltaba entero, así que el detalle era inalcanzable
+      // por esta vía. La BD sigue mandando cuando sí tiene el club
+      // (el `found` de arriba y las dos consultas de este `try`).
+      const fallback = PUBLIC_CLUBS.find((c) => c.slug === slug);
+      if (fallback) {
+        setSelectedClub(toClubEntity(mapPublicClubToClub(fallback)));
       }
     };
 
@@ -503,25 +561,14 @@ export const Clubs = () => {
   };
 
   const filterClubs = () => {
-    let filtered = clubs;
-
-    // La búsqueda compara nombre y ciudad (no descripción ni dirección):
-    // buscar "Eden" no debe dejar a "Club Demo" solo porque su descripción
-    // o dirección comparta una palabra.
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (club) =>
-          club.name.toLowerCase().includes(q) ||
-          (club.city && club.city.toLowerCase().includes(q)),
-      );
-    }
-
-    if (selectedCity !== "all") {
-      filtered = filtered.filter((club) => club.city === selectedCity);
-    }
-
-    setFilteredClubs(filtered);
+    // Ronda 14, stream B: el predicado es compartido con la tarjeta
+    // fija Club Demo (abajo): antes solo filtraba `filteredClubs` y la
+    // tarjeta quedaba fuera, así que buscar "Eden" la dejaba visible.
+    setFilteredClubs(
+      clubs.filter((club) =>
+        clubMatchesSearch(club.name, club.city, searchQuery, selectedCity),
+      ),
+    );
   };
 
   const handleCheckIn = async (clubId: string) => {
@@ -748,6 +795,7 @@ export const Clubs = () => {
                 onClick={() => navigate("/clubs")}
                 className="border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
               >
+                <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver
               </Button>
             </div>
@@ -934,17 +982,17 @@ export const Clubs = () => {
           transition={{ delay: 0.3 }}
           className="mb-8"
         >
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+          <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-white/60 h-4 w-4" />
                     <Input
                       placeholder="Buscar clubs por nombre o ciudad..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                      className="pl-10 bg-slate-900/5 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                     />
                   </div>
                 </div>
@@ -954,7 +1002,7 @@ export const Clubs = () => {
                     onChange={(e) => setSelectedCity(e.target.value)}
                     aria-label="Filtrar por ciudad"
                     title="Filtrar por ciudad"
-                    className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
+                    className="w-full p-2 bg-white dark:bg-white/10 border border-slate-300 dark:border-white/20 rounded-md text-slate-900 dark:text-white"
                   >
                     <option value="all" className="bg-purple-900">
                       Todas las ciudades
@@ -978,7 +1026,11 @@ export const Clubs = () => {
           transition={{ delay: 0.3 }}
           className="mb-12"
         >
-          <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+          {/* Ronda 15 (stream C): mismo bug que la wallet demo —
+              gradiente translúcido (`/40`) con texto blanco: en tema
+              claro el fondo claro se transparentaba y el blanco era
+              ilegible. Gradiente opaco en ambos temas. */}
+          <Card className="bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-2xl text-white flex items-center gap-3">
                 <Sparkles className="h-6 w-6" />
@@ -1007,10 +1059,10 @@ export const Clubs = () => {
                     <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <MapPin className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Check-ins Verificados</h3>
+                    <h3 className="text-lg font-semibold text-white">Check-ins Verificados (próximamente)</h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Sistema geolocalizado (radio 50m) con WorldID para verificación auténtica
+                    Check-in geolocalizado (radio 50 m) con WorldID — próximamente
                   </p>
                 </div>
 
@@ -1022,7 +1074,7 @@ export const Clubs = () => {
                     <h3 className="text-lg font-semibold text-white">Reseñas Auténticas</h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Solo usuarios con check-in real pueden reseñar, garantizando opiniones genuinas
+                    En beta, las reseñas están abiertas a todos los usuarios; la reseña verificada con check-in real llega próximamente
                   </p>
                 </div>
 
@@ -1170,25 +1222,25 @@ export const Clubs = () => {
               {[...Array(6)].map((_, i) => (
                 <Card
                   key={i}
-                  className="bg-white/10 backdrop-blur-xl border-white/20 animate-pulse"
+                  className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 animate-pulse"
                 >
                   <CardContent className="p-6">
-                    <div className="h-48 bg-white/10 rounded-lg mb-4"></div>
-                    <div className="h-6 bg-white/10 rounded mb-2"></div>
-                    <div className="h-4 bg-white/10 rounded mb-4"></div>
+                    <div className="h-48 bg-slate-900/10 dark:bg-white/10 rounded-lg mb-4"></div>
+                    <div className="h-6 bg-slate-900/10 dark:bg-white/10 rounded mb-2"></div>
+                    <div className="h-4 bg-slate-900/10 dark:bg-white/10 rounded mb-4"></div>
                     <div className="flex gap-2">
-                      <div className="h-8 bg-white/10 rounded flex-1"></div>
-                      <div className="h-8 bg-white/10 rounded w-20"></div>
+                      <div className="h-8 bg-slate-900/10 dark:bg-white/10 rounded flex-1"></div>
+                      <div className="h-8 bg-slate-900/10 dark:bg-white/10 rounded w-20"></div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           ) : filteredClubs.length === 0 ? (
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-center p-12">
-              <div className="text-white/60 mb-4">
+            <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 text-center p-12">
+              <div className="text-slate-500 dark:text-white/60 mb-4">
                 <Building className="h-16 w-16 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                   No se encontraron clubs
                 </h3>
                 <p>Intenta ajustar tus filtros de búsqueda</p>
@@ -1196,14 +1248,24 @@ export const Clubs = () => {
             </Card>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {!slug && (
+              {/* Ronda 14, stream B: la tarjeta fija Club Demo pasa por
+                  el mismo predicado de búsqueda/ciudad que la lista:
+                  antes era incondicional (`{!slug && ...}`) y buscar
+                  "Eden" la dejaba visible junto a Eden Noir. */}
+              {!slug &&
+                clubMatchesSearch(
+                  DEMO_CLUB.name,
+                  DEMO_CLUB.city,
+                  searchQuery,
+                  selectedCity,
+                ) && (
                 <motion.div
                   key="demo"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0 }}
                 >
-                  <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
+                  <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 hover:bg-slate-50 dark:hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
                     <CardContent className="p-0">
                       <div className="relative h-48 bg-linear-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
                         {DEMO_CLUB.cover_image_url ? (
@@ -1243,11 +1305,11 @@ export const Clubs = () => {
                       </div>
 
                       <div className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-2">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                           {DEMO_CLUB.name}
                         </h3>
 
-                        <div className="flex items-center gap-2 text-white/70 mb-3">
+                        <div className="flex items-center gap-2 text-slate-600 dark:text-white/70 mb-3">
                           <MapPin className="h-4 w-4" />
                           <span>
                             {DEMO_CLUB.address}
@@ -1258,36 +1320,43 @@ export const Clubs = () => {
                           <ExpandableClubDescription
                             text={DEMO_CLUB.description}
                             className="mb-4"
-                            textClassName="text-white/80 text-sm"
+                            textClassName="text-slate-600 dark:text-white/80 text-sm"
                           />
                         )}
 
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {DEMO_CLUB.check_in_count}
                             </div>
-                            <div className="text-white/60 text-xs">
+                            <div className="text-slate-500 dark:text-white/60 text-xs">
                               Check-ins
                             </div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {DEMO_CLUB.rating_count}
                             </div>
-                            <div className="text-white/60 text-xs">Reseñas</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Reseñas</div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {DEMO_CLUB.rating_count}
                             </div>
-                            <div className="text-white/60 text-xs">Ratings</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Ratings</div>
                           </div>
                         </div>
 
                         <div className="flex gap-2">
                           <Button
-                            onClick={() => navigate("/clubs/demo")}
+                            // Origen del flujo (ronda 14, stream E): el
+                            // "Volver" de /clubs/demo vuelve aquí, al
+                            // directorio, no al listado público.
+                            onClick={() =>
+                              navigate("/clubs/demo", {
+                                state: { from: "/clubs" },
+                              })
+                            }
                             className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />
@@ -1306,7 +1375,7 @@ export const Clubs = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
+                  <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 hover:bg-slate-50 dark:hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
                     <CardContent className="p-0">
                       {/* Imagen del Club */}
                       <div className="relative h-48 bg-linear-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
@@ -1351,11 +1420,11 @@ export const Clubs = () => {
 
                       {/* Información del Club */}
                       <div className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-2">
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                           {club.name}
                         </h3>
 
-                        <div className="flex items-center gap-2 text-white/70 mb-3">
+                        <div className="flex items-center gap-2 text-slate-600 dark:text-white/70 mb-3">
                           <MapPin className="h-4 w-4" />
                           <span>
                             {club.address || "Ubicación no disponible"}
@@ -1366,31 +1435,31 @@ export const Clubs = () => {
                           <ExpandableClubDescription
                             text={club.description}
                             className="mb-4"
-                            textClassName="text-white/80 text-sm"
+                            textClassName="text-slate-600 dark:text-white/80 text-sm"
                           />
                         )}
 
                         {/* Estadísticas */}
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {club.check_in_count}
                             </div>
-                            <div className="text-white/60 text-xs">
+                            <div className="text-slate-500 dark:text-white/60 text-xs">
                               Check-ins
                             </div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {club.review_count}
                             </div>
-                            <div className="text-white/60 text-xs">Reseñas</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Reseñas</div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">
+                            <div className="text-slate-900 dark:text-white font-semibold">
                               {club.rating_count}
                             </div>
-                            <div className="text-white/60 text-xs">Ratings</div>
+                            <div className="text-slate-500 dark:text-white/60 text-xs">Ratings</div>
                           </div>
                         </div>
 
@@ -1408,7 +1477,7 @@ export const Clubs = () => {
                             <Button
                               onClick={() => handleCheckIn(club.id)}
                               disabled={checkingIn === club.id}
-                              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                              className="bg-slate-900/5 hover:bg-slate-900/10 text-slate-700 border-slate-300 dark:bg-white/20 dark:hover:bg-white/30 dark:text-white dark:border-white/30"
                             >
                               {checkingIn === club.id ? (
                                 <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
@@ -1434,12 +1503,12 @@ export const Clubs = () => {
           transition={{ delay: 0.6 }}
           className="mt-12"
         >
-          <Card className="bg-linear-to-r from-blue-600/20 via-purple-600/20 to-fuchsia-600/20 backdrop-blur-xl border-white/20">
+          <Card className="bg-white dark:bg-linear-to-r dark:from-blue-600/20 dark:via-purple-600/20 dark:to-fuchsia-600/20 backdrop-blur-xl border-slate-200 dark:border-white/20">
             <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold text-white mb-4">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
                 ¿Tienes un Club?
               </h3>
-              <p className="text-white/80 mb-6 max-w-2xl mx-auto">
+              <p className="text-slate-600 dark:text-white/80 mb-6 max-w-2xl mx-auto">
                 Únete a nuestro programa de clubs verificados y obtén acceso a
                 herramientas exclusivas, check-ins geolocalizados y un sistema
                 de reseñas auténticas.
@@ -1812,14 +1881,14 @@ export const Clubs = () => {
               <button
                 type="button"
                 onClick={() => setShowClubTermsModal(true)}
-                className="text-sm text-purple-300 hover:text-purple-200 underline underline-offset-2"
+                className="text-sm text-purple-700 hover:text-purple-800 dark:text-purple-300 dark:hover:text-purple-200 underline underline-offset-2"
               >
                 {clubTermsAccepted
                   ? "✓ Términos de Uso para Clubs aceptados (ver)"
                   : "Leer y aceptar los Términos de Uso para Clubs"}
               </button>
               {!clubTermsAccepted && (
-                <p className="text-xs text-white/60 mt-1">
+                <p className="text-xs text-slate-500 dark:text-white/60 mt-1">
                   Debes aceptar los términos y la política de privacidad para
                   clubs para enviar la solicitud.
                 </p>

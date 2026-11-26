@@ -19,11 +19,16 @@ import {
 import { ChatFab } from "@/components/chat/ChatFab";
 import { HeaderNav } from "@/components/HeaderNav";
 import { Navigation } from "@/components/Navigation";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Toaster } from "@/components/ui/toaster";
 // El lazy del Chat NO vive a nivel de módulo (ver ChatDock abajo):
 // React.lazy cachea el rechazo del `import()` y remontar el boundary
 // no reintenta el chunk; el reintento recrea el lazy desde el estado.
 import { NotificationContainer } from "@/components/animations/NotificationSystem";
+import {
+  clearClubDemoAdminSession,
+  hasClubDemoAdminSession,
+} from "@/lib/clubDemoSession";
 
 // Loading component
 const PageLoader = () => (
@@ -234,16 +239,36 @@ export const MainLayout = () => {
                       Club Demo
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        await signOut();
-                        window.location.assign("/");
-                      }}
-                      className="px-3 py-2 rounded-lg text-xs font-semibold bg-red-500/15 hover:bg-red-500/25 border border-red-500/20 backdrop-blur-sm transition-all duration-300"
-                    >
-                      Cerrar sesión
-                    </button>
+                    {/* Ronda 15, stream B: el botón solo se muestra si
+                        hay sesión que cerrar (de la app o de admin del
+                        club demo). Antes se pintaba siempre en
+                        /clubs/demo, también sin ninguna sesión activa.
+                        OJO: este es el logout GLOBAL de la app
+                        (`signOut` cierra también la sesión demo de la
+                        app): es por diseño, distinto del botón en
+                        página de /clubs/demo ("Cerrar sesión del
+                        club"), que cierra solo la sesión del club. */}
+                    {(hasSession || hasClubDemoAdminSession()) && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          // Ronda 14, stream E: este logout también cierra
+                          // la sesión de admin del club demo. `signOut`
+                          // solo barre la sesión demo de la app cuando
+                          // `demo_authenticated` está puesto; un visitante
+                          // anónimo que entró al admin por "Panel Admin"
+                          // no la tiene, y sin esta línea la marca
+                          // `demo_club_admin` sobrevivía y /clubs/demo
+                          // reabría en admin tras el logout.
+                          clearClubDemoAdminSession();
+                          await signOut();
+                          window.location.assign("/");
+                        }}
+                        className="px-3 py-2 rounded-lg text-xs font-semibold bg-red-500/15 hover:bg-red-500/25 border border-red-500/20 backdrop-blur-sm transition-all duration-300"
+                      >
+                        Cerrar sesión
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -281,6 +306,17 @@ export const MainLayout = () => {
           {showTopRow && (
             <div className="flex items-center justify-between gap-2 px-4 pt-2">
               <BackButton />
+              {/* RONDA 14 (stream C, punto C3): la campana NO estaba
+                  montada en ningún sitio (ni header, ni nav, ni dock):
+                  el componente NotificationBell existía y funcionaba,
+                  pero no había campana/centro alcanzable en la UI (el
+                  test de la ronda 13 solo veía los toasts). La fila
+                  superior EN FLUJO es su sitio: páginas logueadas sin
+                  dock ni header (Discover, Matches, Feed, /profile/id,
+                  ...); el desplegable ES el centro (lista, no leídas,
+                  marcar leídas, eliminar). Sin flotantes: vive en flujo
+                  a la derecha, junto a Volver. */}
+              <NotificationBell />
             </div>
           )}
           <div className={showHeaderNav ? "-mt-px" : ""}>

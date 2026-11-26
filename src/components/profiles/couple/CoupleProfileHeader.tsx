@@ -72,7 +72,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
   );
 
   return (
-    <div className="bg-white/10 backdrop-blur-md border-white/20 text-white rounded-lg p-6">
+    <div className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 text-slate-900 dark:text-white rounded-lg p-6">
       <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
         {/* Dual Avatar Section */}
         <div className="relative">
@@ -120,7 +120,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
         <div className="flex-1 text-center lg:text-left">
           {/* Couple Name & Type */}
           <div className="mb-4">
-            <h1 className="text-3xl font-bold mb-2 bg-linear-to-r from-white to-white/80 bg-clip-text text-transparent stable-element">
+            <h1 className="text-3xl font-bold mb-2 bg-linear-to-r from-slate-900 to-slate-600 dark:from-white dark:to-white/80 bg-clip-text text-transparent stable-element">
               {profile.couple_name}
             </h1>
             <Badge className={`${theme.badge} text-white mb-2`}>
@@ -131,19 +131,19 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
 
           {/* Partner Names */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+            <div className="bg-slate-900/5 dark:bg-white/10 rounded-lg p-3 backdrop-blur-sm">
               <h3 className="font-semibold text-lg">
                 {profile.partner1_first_name} {profile.partner1_last_name}
               </h3>
-              <p className="text-white/80 text-sm">
+              <p className="text-slate-600 dark:text-white/80 text-sm">
                 {profile.partner1_age} años • {profile.partner1_gender}
               </p>
             </div>
-            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
+            <div className="bg-slate-900/5 dark:bg-white/10 rounded-lg p-3 backdrop-blur-sm">
               <h3 className="font-semibold text-lg">
                 {profile.partner2_first_name} {profile.partner2_last_name}
               </h3>
-              <p className="text-white/80 text-sm">
+              <p className="text-slate-600 dark:text-white/80 text-sm">
                 {profile.partner2_age} años • {profile.partner2_gender}
               </p>
             </div>
@@ -154,7 +154,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
             {profile.location && (
               <Badge
                 variant="secondary"
-                className="bg-white/20 text-white border-white/30 flex items-center gap-1"
+                className="bg-slate-900/10 dark:bg-white/20 text-slate-800 dark:text-white border-slate-300 dark:border-white/30 flex items-center gap-1"
               >
                 <MapPin className="w-3 h-3" />
                 {profile.location}
@@ -168,10 +168,10 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
           {/* Couple Bio */}
           {profile.couple_bio && (
             <div className="mb-6">
-              <h4 className="text-lg font-semibold mb-2 text-white/90">
+              <h4 className="text-lg font-semibold mb-2 text-slate-700 dark:text-white/90">
                 Sobre nosotros
               </h4>
-              <p className="text-white/80 leading-relaxed bg-white/5 rounded-lg p-4 backdrop-blur-sm">
+              <p className="text-slate-600 dark:text-white/80 leading-relaxed bg-slate-900/5 dark:bg-white/5 rounded-lg p-4 backdrop-blur-sm">
                 {profile.couple_bio}
               </p>
             </div>
@@ -192,7 +192,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
               <Button
                 onClick={onMessage}
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10 backdrop-blur-sm"
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Mensaje
@@ -202,7 +202,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
               <Button
                 onClick={onLike}
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                className="border-slate-300 text-slate-800 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10 backdrop-blur-sm"
               >
                 <Heart className="w-4 h-4 mr-2" />
                 Me gusta

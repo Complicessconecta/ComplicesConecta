@@ -422,16 +422,16 @@ export function TokenDashboard({
             </div>
 
             {/* Leyenda */}
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded"></div>
-                <span className="text-slate-700 dark:text-white/90 truncate">
+            <div className="grid grid-cols-2 gap-4 text-sm min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-3 h-3 shrink-0 bg-green-500 rounded"></div>
+                <span className="min-w-0 text-slate-700 dark:text-white/90 wrap-break-word">
                   Disponibles: {availableCMPX} CMPX
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                <span className="text-slate-700 dark:text-white/90 truncate">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-3 h-3 shrink-0 bg-blue-500 rounded"></div>
+                <span className="min-w-0 text-slate-700 dark:text-white/90 wrap-break-word">
                   En Staking: {balance.cmpxStaked} CMPX
                 </span>
               </div>
@@ -451,13 +451,13 @@ export function TokenDashboard({
         <CardContent className="p-6 md:p-8">
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-slate-700 dark:text-white/90 truncate">Ganados este mes:</span>
+              <span className="min-w-0 text-slate-700 dark:text-white/90 wrap-break-word">Ganados este mes:</span>
               <span className="font-semibold text-slate-900 dark:text-white truncate">
                 {balance.monthlyEarned} CMPX
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-700 dark:text-white/90 truncate">Restantes:</span>
+              <span className="min-w-0 text-slate-700 dark:text-white/90 wrap-break-word">Restantes:</span>
               <span className="font-semibold text-green-400 truncate">
                 {balance.monthlyRemaining} CMPX
               </span>
@@ -699,7 +699,7 @@ export function TokenDashboard({
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-700 dark:text-white/90 truncate">
+              <span className="min-w-0 text-slate-700 dark:text-white/90 wrap-break-word">
                 Referidos exitosos:
               </span>
               <span className="font-semibold text-slate-900 dark:text-white shrink-0 ml-2">

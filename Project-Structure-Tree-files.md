@@ -197,6 +197,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       ClubProfileGallery.tsx
 |   |       ClubProfileHeader.tsx
 |   |       ClubProfileReviews.tsx
+|   |       ExpandableClubDescription.tsx
 |   |       index.ts
 |   |       PartnerRequestModal.tsx
 |   |       

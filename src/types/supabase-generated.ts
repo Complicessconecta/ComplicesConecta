@@ -11863,6 +11863,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      check_identity_retained: {
+        Args: { p_email: string; p_username: string }
+        Returns: boolean
+      }
       check_nickname_available: {
         Args: { p_nickname: string }
         Returns: boolean
@@ -12151,6 +12155,10 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_admin_or_moderator: { Args: never; Returns: boolean }
+      is_club_owner_or_admin: {
+        Args: { p_club_id: string }
+        Returns: boolean
+      }
       is_ip_blocked: { Args: { p_ip_address: string }; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       is_valid_email: { Args: { email: string }; Returns: boolean }
@@ -12238,7 +12246,8 @@ export type Database = {
       start_staking: {
         Args: {
           amount_param: number
-          duration_days?: number
+          duration_days: number
+          token_type_param: string
           user_id_param: string
         }
         Returns: Json

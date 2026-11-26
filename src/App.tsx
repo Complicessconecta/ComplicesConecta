@@ -43,6 +43,7 @@ import { lazy } from "react";
 import { lazyWithDefault } from "@/utils/lazyWithDefault";
 import { AnimationProvider } from "@/components/animations/AnimationProvider";
 import { NotificationProvider } from "@/components/animations/NotificationSystem";
+import { APP_ROUTER_USE_TRANSITIONS } from "@/utils/routerConfig";
 import AdminRoute from "@/components/auth/AdminRoute";
 import ModeratorRoute from "@/components/auth/ModeratorRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -198,7 +199,15 @@ const App = () => {
                   <AnimationProvider>
                     <NotificationProvider>
                       <AppFactory>
-                        <Router>
+                        {/* RONDA 17 (stream A): `useTransitions={false}`
+                            (ver src/utils/routerConfig.ts). Con el valor
+                            por defecto (`true`) cada navegación va en
+                            `startTransition` y, con el chunk destino en
+                            frío, React retiene la vista vieja sin
+                            loader — el síntoma de la ronda 16 en los 5
+                            caminos. En urgente, el fallback de
+                            MainLayout commitea de inmediato. */}
+                        <Router useTransitions={APP_ROUTER_USE_TRANSITIONS}>
                           <Routes>
                             {/* Main Layout wraps all pages except maybe standalone ones if any */}
                             <Route element={<MainLayout />}>

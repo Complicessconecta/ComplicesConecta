@@ -187,6 +187,19 @@ const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
+ * Ronda 17 (stream B): tope de espera de la consulta a Supabase del
+ * paso 4. La consulta no tenía timeout: si la red se quedaba colgada
+ * en frío, el `await` no resolvía nunca y "Cargando perfil…" se
+ * quedaba para siempre (la única salida era recargar la página a
+ * mano). Mismo patrón que el timeout de sesión de
+ * `@/integrations/supabase/client` (5 s en prod / 10 s en dev): al
+ * vencer, se cae al estado `failed` y la pantalla ofrece Reintentar
+ * en vez de dejar el spinner infinito. La consulta tardía, si llega,
+ * se descarta (el intento ya no es el vigente).
+ */
+const PROFILE_QUERY_TIMEOUT_MS = 10_000;
+
+/**
  * Resolución SÍNCRONA por id de URL (pasos 1–3 del wrapper): roster
  * demo de Discover, ids numéricos legacy, lista demo legacy, pareja
  * demo propia, cuentas demo canónicas, registro local de cuentas
@@ -408,45 +421,65 @@ export default function ProfileDetail() {
       // 4. Perfil real en Supabase (solo ids con forma UUID).
       if (UUID_RE.test(id) && supabase) {
         try {
-          const { data, error } = await supabase
-            .from("profiles")
-            .select(
-              "id, display_name, first_name, last_name, age, bio, avatar_url, city, location, is_verified",
-            )
-            .eq("id", id)
-            .maybeSingle();
-          if (error) {
-            logger.error("ProfileDetail: error buscando perfil real:", {
-              error: error.message,
-            });
-          } else if (data) {
-            const row = data as Record<string, unknown>;
-            const name =
-              (typeof row.display_name === "string" && row.display_name) ||
-              [row.first_name, row.last_name]
-                .filter((v) => typeof v === "string" && v)
-                .join(" ") ||
-              "Usuario";
-            const avatar =
-              typeof row.avatar_url === "string" && row.avatar_url
-                ? row.avatar_url
-                : undefined;
-            resolved = {
-              id: String(row.id),
-              name,
-              age: typeof row.age === "number" ? row.age : undefined,
-              location:
-                (typeof row.location === "string" && row.location) ||
-                (typeof row.city === "string" && row.city) ||
-                "Ciudad de México",
-              image: avatar,
-              images: avatar ? [avatar] : undefined,
-              isOnline: false,
-              bio: typeof row.bio === "string" ? row.bio : undefined,
-              profession: "Miembro de la comunidad",
-              rating: 4.5,
-              isVerified: row.is_verified === true,
-            };
+          // Ronda 17 (stream B): carrera contra el timeout (ver
+          // PROFILE_QUERY_TIMEOUT_MS): sin él, una red colgada deja
+          // "Cargando perfil…" para siempre.
+          const result = await Promise.race([
+            supabase
+              .from("profiles")
+              .select(
+                "id, display_name, first_name, last_name, age, bio, avatar_url, city, location, is_verified",
+              )
+              .eq("id", id)
+              .maybeSingle(),
+            new Promise<null>((resolve) =>
+              setTimeout(() => resolve(null), PROFILE_QUERY_TIMEOUT_MS),
+            ),
+          ]);
+          if (result === null) {
+            // Timeout: `resolved` queda en null y el flujo sigue al
+            // final del intento (`setResolving(false)` + `failed`):
+            // el `return` aquí dejaría el spinner colgado, que es
+            // justo lo que el timeout viene a evitar.
+            logger.warn(
+              "ProfileDetail: timeout buscando perfil real (10 s), se ofrece Reintentar:",
+              { id },
+            );
+          } else {
+            const { data, error } = result;
+            if (error) {
+              logger.error("ProfileDetail: error buscando perfil real:", {
+                error: error.message,
+              });
+            } else if (data) {
+              const row = data as Record<string, unknown>;
+              const name =
+                (typeof row.display_name === "string" && row.display_name) ||
+                [row.first_name, row.last_name]
+                  .filter((v) => typeof v === "string" && v)
+                  .join(" ") ||
+                "Usuario";
+              const avatar =
+                typeof row.avatar_url === "string" && row.avatar_url
+                  ? row.avatar_url
+                  : undefined;
+              resolved = {
+                id: String(row.id),
+                name,
+                age: typeof row.age === "number" ? row.age : undefined,
+                location:
+                  (typeof row.location === "string" && row.location) ||
+                  (typeof row.city === "string" && row.city) ||
+                  "Ciudad de México",
+                image: avatar,
+                images: avatar ? [avatar] : undefined,
+                isOnline: false,
+                bio: typeof row.bio === "string" ? row.bio : undefined,
+                profession: "Miembro de la comunidad",
+                rating: 4.5,
+                isVerified: row.is_verified === true,
+              };
+            }
           }
         } catch (err) {
           logger.error("ProfileDetail: excepción buscando perfil real:", {
@@ -480,10 +513,12 @@ export default function ProfileDetail() {
 
   if (resolving) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-linear-to-br dark:from-purple-900 dark:via-purple-800 dark:to-blue-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white text-lg">Cargando perfil…</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 dark:border-white mx-auto mb-4"></div>
+          <p className="text-slate-900 dark:text-white text-lg">
+            Cargando perfil…
+          </p>
         </div>
       </div>
     );
@@ -494,12 +529,12 @@ export default function ProfileDetail() {
     // mismo "Perfil no encontrado" del interno, pero con Reintentar
     // (ronda 12, stream C): antes solo quedaba recargar la página.
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
+      <div className="min-h-screen bg-white dark:bg-linear-to-br dark:from-purple-900 dark:via-purple-800 dark:to-blue-900">
         <main className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
             Perfil no encontrado
           </h1>
-          <p className="text-white/70 text-sm mb-6">
+          <p className="text-slate-500 dark:text-white/70 text-sm mb-6">
             No pudimos cargar este perfil. Puede que el enlace esté
             desactualizado o que el perfil ya no exista.
           </p>
@@ -516,7 +551,7 @@ export default function ProfileDetail() {
             </Button>
             <Button
               onClick={() => navigate("/profiles")}
-              className="text-white bg-white/10 border border-white/30 hover:bg-white/20"
+              className="text-slate-900 dark:text-white bg-white dark:bg-white/10 border border-slate-300 dark:border-white/30 hover:bg-slate-100 dark:hover:bg-white/20"
             >
               Volver a perfiles
             </Button>

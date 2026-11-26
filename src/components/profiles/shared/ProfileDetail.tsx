@@ -31,7 +31,7 @@ import {
   isProfileGated,
 } from "@/lib/profileVisibility";
 import { resolveDemoOwnerIdentity } from "@/lib/visibility";
-import { areFriendsSync } from "@/lib/friends";
+import { areFriendsSync, canonicalDemoOwnerId } from "@/lib/friends";
 import {
   ANONYMOUS_LIKE_BLOCKED_MESSAGE,
   canAnonymousChat,
@@ -314,7 +314,19 @@ const ProfileDetail = () => {
   const viewerId = String(demoUserParsed?.id ?? user?.id ?? "demo-viewer");
   const viewerName = String(demoUserParsed?.first_name ?? user?.email ?? "Tú");
   const isDemo = demoAuth === "true" || Boolean(demoUser);
-  const isOwnProfile = String(profile.id) === viewerId;
+  // Ronda 12, stream C: el dueño tiene TRES ids distintos según
+  // dónde se mire (sesión `generateDemoUserUUID(email)`, ficha
+  // `demo-couple-456` / `demo-single-1`, tarjeta de Discover
+  // `generateDemoUUID("demo-profile-N")`). Comparar los ids crudos
+  // (`profile.id === viewerId`) NO reconocía al dueño cuando abría
+  // su propio perfil desde su tarjeta de Discover (p. ej. la pareja
+  // abriendo /profile/20e31658-…): `isOwnProfile` era false y, si el
+  // perfil estaba en privado, el GATE LE CERABA SU PROPIO PERFIL
+  // (veía "Solicitar ver perfil" para verse a sí mismo). La
+  // comparación canonizada resuelve cualquier alias a su id de
+  // usuario; fuera de demo devuelve el id tal cual, sin cambios.
+  const isOwnProfile =
+    canonicalDemoOwnerId(String(profile.id)) === canonicalDemoOwnerId(viewerId);
   const socialDemo = getSocialDemoData(profile.name);
   const countryCode =
     (profile as { country_code?: string | null }).country_code ??

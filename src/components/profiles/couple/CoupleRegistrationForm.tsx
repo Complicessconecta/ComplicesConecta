@@ -28,6 +28,7 @@ import { Users } from "lucide-react";
 import { toast } from "@/hooks/useToast";
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { createLocalDemoAccount } from "@/lib/demo-registration";
+import { checkIdentityRetained } from "@/lib/reportBlock";
 import { logger } from "@/lib/logger";
 import { getZodiacSignFromDate } from "@/lib/zodiac";
 import {
@@ -323,6 +324,28 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           duration: 5000,
         });
         window.location.href = "/profile-couple";
+        return;
+      }
+
+      // Ronda 12 (stream D): identidad retenida tras baja por reporte
+      // (`retained_identities`, RPC `check_identity_retained`,
+      // migración 20261124050004). Solo cierra el registro cuando la
+      // RPC responde que SÍ está retenida; si la RPC falta o falla
+      // (migración sin aplicar) el registro continúa (fail-open con
+      // warning, ver `checkIdentityRetained`). En demo manda el
+      // espejo local `isIdentityRetainedDemo` (vía
+      // `createLocalDemoAccount`), no esta RPC.
+      const retained = await checkIdentityRetained(
+        formData.email,
+        formData.coupleNickname,
+      );
+      if (retained.checked && retained.retained) {
+        toast({
+          variant: "destructive",
+          title: "Registro no permitido",
+          description:
+            "Esta identidad fue dada de baja por un reporte y no puede registrarse de nuevo.",
+        });
         return;
       }
 

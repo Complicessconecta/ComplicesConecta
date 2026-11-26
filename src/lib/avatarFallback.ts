@@ -13,6 +13,8 @@
  * devuelve null y quien renderiza pone el icono de persona.
  */
 
+import { DELETED_ACCOUNT_LABEL, UNKNOWN_ACCOUNT_LABEL } from "@/lib/friends";
+
 /** UUID v4 con guiones (lo que devuelve `generateDemoUUID`). */
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -33,6 +35,13 @@ export function getAvatarInitials(
   if (/^[\d\s]+$/.test(name)) return null;
   // UUID crudo de un perfil sin resolver.
   if (UUID_RE.test(name)) return null;
+  // Ronda 12, stream C: etiquetas de sistema para una cuenta
+  // borrada o sin resolver ("Cuenta eliminada", "Cuenta no
+  // disponible"): no son nombres de persona, así que no llevan
+  // iniciales — el avatar sigue siendo el icono de persona.
+  if (name === DELETED_ACCOUNT_LABEL || name === UNKNOWN_ACCOUNT_LABEL) {
+    return null;
+  }
   const lower = name.toLowerCase();
   if (
     lower.startsWith("demo-") ||

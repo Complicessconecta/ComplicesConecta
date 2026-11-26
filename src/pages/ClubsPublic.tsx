@@ -4,6 +4,7 @@ import { ArrowLeft, Building, CheckCircle, MapPin, Sparkles, Star } from "lucide
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
+import { ExpandableClubDescription } from "@/components/clubs/ExpandableClubDescription";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import type { Database } from "@/types/supabase-generated";
@@ -450,9 +451,13 @@ export const ClubsPublic = () => {
                       {club.city}, {club.state}
                     </div>
                   </div>
-                  <p className="text-white/70 text-sm line-clamp-2">
-                    {club.description}
-                  </p>
+                  {/* Ronda 12 (stream B, 1a): la intro iba con
+                      `line-clamp-2` sin vía para leerla completa
+                      ("…iluminació…"). Ahora se expande/contrae. */}
+                  <ExpandableClubDescription
+                    text={club.description}
+                    textClassName="text-white/70 text-sm"
+                  />
                   <div className="flex items-center gap-3 text-white/80 text-sm">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 text-yellow-300" />

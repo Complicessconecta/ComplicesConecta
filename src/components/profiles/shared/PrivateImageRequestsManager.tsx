@@ -11,10 +11,12 @@ import { Check, X, Eye, Shield, Clock } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import {
+  getAnonymousPhotoAccessRemainingMs,
   listIncomingRequestsSync,
   respondFriendRequest,
-  resolveDemoProfileName,
+  resolveDemoDisplayName,
 } from "@/lib/friends";
+import { LiveCountdown } from "@/components/profiles/shared/PhotoAccessCountdown";
 
 interface AccessRequest {
   id: string;
@@ -88,13 +90,20 @@ export const PrivateImageRequestsManager: React.FC<
         // y Carlos López) y una solicitud enviada de verdad —p. ej. la
         // del perfil anónimo a la pareja— nunca aparecía aquí ni se
         // podía conceder (test ronda 8).
+        // Ronda 12 (stream A, punto 2): `includeDecided: true` — el
+        // gestor se reconstruía SOLO con pendientes, así que una
+        // solicitud aceptada desaparecía al recargar mientras la
+        // cuenta atrás de la concesión seguía viva (bandeja y galería
+        // en desacuerdo). Aceptadas y declinadas quedan visibles con
+        // su estado real del almacén.
         const localRequests: AccessRequest[] = listIncomingRequestsSync(
           profileId,
           "photo_access",
+          { includeDecided: true },
         ).map((req) => ({
           id: req.id,
           requesterId: req.fromId,
-          requesterName: resolveDemoProfileName(req.fromId),
+          requesterName: resolveDemoDisplayName(req.fromId),
           message: req.message ?? "Solicitud para ver la galería privada.",
           timestamp: Date.parse(req.createdAt) || Date.now(),
           status:
@@ -378,31 +387,49 @@ export const PrivateImageRequestsManager: React.FC<
             <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">
               Aprobadas
             </p>
-            {approvedRequests.map((request) => (
-              <div
-                key={request.id}
-                className="bg-green-500/5 rounded-xl p-3 border border-green-500/20"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <Check className="h-4 w-4 text-green-400" />
+            {approvedRequests.map((request) => {
+              // Ronda 12 (stream A, punto 2): la concesión vive 24 h
+              // desde la aceptación: la fila aprobada muestra su
+              // cuenta atrás en vivo, igual que la galería del dueño.
+              // Sin ms restantes (concesión vencida) solo queda la
+              // insignia: el acceso ya no es vigente.
+              const remainingMs = getAnonymousPhotoAccessRemainingMs(
+                request.requesterId,
+                profileId,
+              );
+              return (
+                <div
+                  key={request.id}
+                  className="bg-green-500/5 rounded-xl p-3 border border-green-500/20"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <Check className="h-4 w-4 text-green-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">
+                          {request.requesterName}
+                        </p>
+                        <p className="text-xs text-white/60">
+                          {formatTimeAgo(request.timestamp)}
+                          {remainingMs !== null && (
+                            <>
+                              {" · "}
+                              <LiveCountdown remainingMs={remainingMs} />
+                              {" · expira a las 24 h de concedido"}
+                            </>
+                          )}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-white">
-                        {request.requesterName}
-                      </p>
-                      <p className="text-xs text-white/60">
-                        {formatTimeAgo(request.timestamp)}
-                      </p>
-                    </div>
+                    <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
+                      Acceso concedido
+                    </Badge>
                   </div>
-                  <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
-                    Acceso concedido
-                  </Badge>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

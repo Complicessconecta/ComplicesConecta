@@ -48,20 +48,20 @@ export const SingleAboutSection: React.FC<SingleAboutSectionProps> = ({
   ].filter(([, value]) => value.trim().length > 0) as Array<[string, string]>;
 
   return (
-    <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+    <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 text-slate-900 dark:text-white">
       <CardHeader>
-        <CardTitle className="text-white flex items-center gap-2">
+        <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
           <User className="w-5 h-5 text-fuchsia-400" />
           Sobre mí
           {isDemoMode && (
-            <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
+            <Badge className="bg-yellow-500/20 text-yellow-800 border-yellow-500/40 dark:bg-yellow-500/20 dark:text-yellow-300 dark:border-yellow-400/30 text-xs">
               DEMO
             </Badge>
           )}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+        <div className="p-4 bg-slate-900/5 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10">
           <div className="flex items-center gap-3 mb-3">
             <div
               className={`w-14 h-14 rounded-full bg-linear-to-br ${member.avatarGradient} flex items-center justify-center text-white text-xl font-bold shrink-0`}
@@ -69,7 +69,7 @@ export const SingleAboutSection: React.FC<SingleAboutSectionProps> = ({
               {member.name?.[0]?.toUpperCase() || "?"}
             </div>
             <div className="min-w-0">
-              <p className="font-semibold text-white truncate">{member.name}</p>
+              <p className="font-semibold text-slate-900 dark:text-white truncate">{member.name}</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {typeof member.age === "number" && (
                   <Badge className="profile-badge badge-age">
@@ -86,20 +86,20 @@ export const SingleAboutSection: React.FC<SingleAboutSectionProps> = ({
           </div>
 
           {member.bio && (
-            <p className="text-sm text-white/80 mb-3">{member.bio}</p>
+            <p className="text-sm text-slate-600 dark:text-white/80 mb-3">{member.bio}</p>
           )}
 
           {rows.length > 0 ? (
             <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
               {rows.map(([label, value]) => (
                 <div key={label}>
-                  <dt className="text-xs text-white/50">{label}</dt>
-                  <dd className="text-white font-medium">{value}</dd>
+                  <dt className="text-xs text-slate-500 dark:text-white/50">{label}</dt>
+                  <dd className="text-slate-900 dark:text-white font-medium">{value}</dd>
                 </div>
               ))}
             </dl>
           ) : (
-            <p className="text-xs text-white/50">
+            <p className="text-xs text-slate-500 dark:text-white/50">
               Sin detalles adicionales por ahora.
             </p>
           )}

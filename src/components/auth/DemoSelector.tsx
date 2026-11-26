@@ -499,7 +499,15 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
               if (!open) setAccountPendingDelete(null);
             }}
           >
-            <AlertDialogContent>
+            <AlertDialogContent
+              // Ronda 13, stream D (D1): fondo opaco explícito. El
+              // default `bg-background` del componente es transparente
+              // en Tailwind v4 (`--background: 350 20% 99%` sin hsl()
+              // + `@theme inline` → `background-color: var(--background)`
+              // inválido) y el texto se solapaba con la página detrás.
+              // Per-site: sin tocar el @theme global.
+              className="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50"
+            >
               <AlertDialogHeader>
                 <AlertDialogTitle>¿Eliminar cuenta demo?</AlertDialogTitle>
                 <AlertDialogDescription>

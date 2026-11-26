@@ -103,6 +103,7 @@ import {
   resolveDemoProfileName,
   sendFriendRequest,
   sendPhotoAccessRequest,
+  UNKNOWN_ACCOUNT_LABEL,
 } from "@/lib/friends";
 import {
   ANONYMOUS_BADGE_LABEL,
@@ -281,8 +282,14 @@ describe("D2: avatar en las tarjetas de /requests", () => {
       </MemoryRouter>,
     );
 
+    // Ronda 12, stream C: la tarjeta ya NO enseña el UUID crudo
+    // como nombre (eso era lo que este test localizaba): un remitente
+    // sin resolver se etiqueta "Cuenta no disponible" y el UUID no
+    // aparece en ningún sitio de la tarjeta. El avatar sigue siendo
+    // el icono de persona (sin iniciales ni dígitos).
+    expect(screen.queryByText(unknownSenderId)).toBeNull();
     const card = screen
-      .getByText(unknownSenderId)
+      .getByText(UNKNOWN_ACCOUNT_LABEL)
       .closest(".card-accessible") as HTMLElement;
     expect(card).not.toBeNull();
     const avatar = within(card).getByTestId("request-avatar");

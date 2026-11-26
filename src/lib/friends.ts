@@ -38,6 +38,7 @@ import { generateDemoUserUUID } from "@/lib/demo-uuid";
 import {
   findLocalDemoAccount,
   findLocalDemoAccountById,
+  isDeletedDemoAccountId,
 } from "@/lib/demo-registration";
 import { resolveDemoOwnerIdentity } from "@/lib/visibility";
 
@@ -285,6 +286,21 @@ function pairKey(a: string, b: string): [string, string] {
   const x = canonicalDemoOwnerId(a);
   const y = canonicalDemoOwnerId(b);
   return x < y ? [x, y] : [y, x];
+}
+
+/**
+ * Ordena un par de ids de perfil para la tabla real `friendships`
+ * (ronda 12, stream D): la migración 20261124050000 impone
+ * `CHECK (user_id_a < user_id_b)` y `UNIQUE (user_id_a, user_id_b)`.
+ * Sin ordenar, el ~50 % de los aceptes reales (requester_id >
+ * addressee_id como UUID) fallaban con violación del CHECK. La
+ * comparación es lexicográfica sobre el texto del UUID, igual que la
+ * que hace Postgres sobre `uuid` (los UUID texto comparan byte a
+ * byte en el mismo orden). El espejo demo (`pairKey`) ya ordenaba;
+ * aquí se ordena sin canonizar: en real los ids ya son `profiles.id`.
+ */
+export function sortFriendshipPair(a: string, b: string): [string, string] {
+  return a < b ? [a, b] : [b, a];
 }
 
 function localAreFriends(a: string, b: string): boolean {
@@ -535,21 +551,38 @@ export async function respondFriendRequest(
     }
     return { ok: true };
   }
+  // Ronda 12, stream D: en real el orden importa. Antes se marcaba
+  // la solicitud como "accepted" (update) ANTES de insertar la
+  // amistad, sin rollback: si el insert fallaba (p. ej. violación
+  // del CHECK user_id_a < user_id_b, ~50 % de los aceptes), la
+  // solicitud quedaba aceptada y la amistad NO existía. Ahora la
+  // amistad se crea PRIMERO (par ordenado) y solo tras un insert
+  // exitoso se marca la solicitud como aceptada; si el insert falla,
+  // la solicitud sigue "pending" y el error se devuelve.
   try {
-    const { data, error } = await supabase
+    const { data, error: fetchError } = await supabase
       .from("friend_requests")
-      .update({ status: response })
-      .eq("id", requestId)
       .select("requester_id,addressee_id,kind")
+      .eq("id", requestId)
       .single();
-    if (error) return { ok: false, error: error.message };
+    if (fetchError) return { ok: false, error: fetchError.message };
+    if (!data) return { ok: false, error: "Solicitud no encontrada" };
     if (response === "accepted" && data?.kind === "friendship") {
+      const [userIdA, userIdB] = sortFriendshipPair(
+        (data as { requester_id: string }).requester_id,
+        (data as { addressee_id: string }).addressee_id,
+      );
       const { error: fError } = await supabase.from("friendships").insert({
-        user_id_a: (data as { requester_id: string }).requester_id,
-        user_id_b: (data as { addressee_id: string }).addressee_id,
+        user_id_a: userIdA,
+        user_id_b: userIdB,
       });
       if (fError) return { ok: false, error: fError.message };
     }
+    const { error } = await supabase
+      .from("friend_requests")
+      .update({ status: response })
+      .eq("id", requestId);
+    if (error) return { ok: false, error: error.message };
     return { ok: true };
   } catch (err) {
     return {
@@ -681,6 +714,45 @@ export function resolveDemoProfileName(profileId: string): string {
 }
 
 /**
+ * Ronda 12, stream C: nombre visible SEGURO para un id demo.
+ *
+ * `resolveDemoProfileName` devuelve el id tal cual cuando nada lo
+ * resuelve (por diseño: nunca inventa un nombre). Eso está bien para
+ * comparar, pero NUNCA debe llegar a la UI: la cuenta anonr8test,
+ * borrada en el test de verificación ronda 11, seguía apareciendo
+ * en la lista de amistades de la pareja y como espectadora en
+ * "Acceso a tu galería limitada" con su UUID crudo
+ * "5bac1c86-1b5a-41b5-aa00-0001b5ac7c9d", porque el registro ya no
+ * la conocía, el roster no la trae y la semilla social no la cubre.
+ *
+ * Regla: si el nombre resuelto sigue teniendo forma de UUID, no es
+ * un nombre — es un id sin resolver. Una cuenta con lápida (borrada
+ * con `deleteLocalDemoAccount` desde esta ronda) es "Cuenta
+ * eliminada"; un id desconocido sin lápida (p. ej. una fila huérfana
+ * anterior a esta ronda, como la de anonr8test) es "Cuenta no
+ * disponible". En ambos casos la fila se conserva (el dueño aún
+ * puede eliminarla) pero jamás se enseña el UUID.
+ */
+export const DELETED_ACCOUNT_LABEL = "Cuenta eliminada";
+export const UNKNOWN_ACCOUNT_LABEL = "Cuenta no disponible";
+
+const UUID_LIKE_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function isUuidLike(value: string): boolean {
+  return UUID_LIKE_RE.test(value.trim());
+}
+
+export function resolveDemoDisplayName(profileId: string): string {
+  if (!profileId) return profileId;
+  const name = resolveDemoProfileName(profileId);
+  if (!isUuidLike(name)) return name;
+  return isDeletedDemoAccountId(profileId)
+    ? DELETED_ACCOUNT_LABEL
+    : UNKNOWN_ACCOUNT_LABEL;
+}
+
+/**
  * Amigos de un perfil (demo: datos semilla + pares locales).
  *
  * Ronda 11, stream C (v) — dos fallos del test de verificación ronda 10
@@ -746,7 +818,10 @@ export function listFriendsSync(
       // resuelve por el puente de cuentas demo
       // (resolveDemoProfileName), no por la semilla social: sin
       // esto el UUID del dueño salía crudo.
-      name: resolveDemoProfileName(id),
+      // Ronda 12, stream C: la versión SEGURA (resolveDemoDisplayName):
+      // un id sin resolver (cuenta borrada u huérfana) se etiqueta
+      // "Cuenta eliminada" / "Cuenta no disponible", nunca el UUID.
+      name: resolveDemoDisplayName(id),
       isOnline: d.isOnline,
       lastSeenAt: d.lastSeenAt,
       countryCode: d.countryCode,
@@ -763,10 +838,26 @@ export function listFriendsSync(
   });
 }
 
-/** Solicitudes de amistad pendientes RECIBIDAS por el usuario. */
+/**
+ * Solicitudes de amistad pendientes RECIBIDAS por el usuario.
+ *
+ * Ronda 12 (stream A, punto 2): por defecto solo las pendientes
+ * (lo que usan FriendRequestButton y el gate de solicitud: una
+ * aceptada/declinada ya no se puede responder). Con
+ * `includeDecided: true`, TAMBIÉN las aceptadas y declinadas: la
+ * bandeja (/requests y el gestor de acceso del perfil) se reconstruía
+ * en cada carga SOLO con pendientes, así que una solicitud de ver
+ * fotos aceptada DESAPARECÍA de Recibidas al recargar (o, si se
+ * volvía a pedir, reaparecía como "Pendiente" duplicada) mientras la
+ * cuenta atrás de la concesión seguía viva — bandeja y galería en
+ * desacuerdo. El almacén (`friend_requests_demo`) es la fuente de la
+ * decisión: con este flag la bandeja refleja su estado real y
+ * persistente.
+ */
 export function listIncomingRequestsSync(
   userId: string,
   kind: FriendRequestKind = "friendship",
+  opts?: { includeDecided?: boolean },
 ): FriendRequest[] {
   // Ronda 10, stream C (C1): se compara canonizado — una solicitud
   // guardada con el id de ficha/tarjeta del destinatario (o con el
@@ -777,7 +868,7 @@ export function listIncomingRequestsSync(
     (r) =>
       canonicalDemoOwnerId(r.toId) === ownerId &&
       r.kind === kind &&
-      r.status === "pending",
+      (opts?.includeDecided === true || r.status === "pending"),
   );
 }
 
@@ -914,12 +1005,70 @@ export function listAnonymousPhotoAccessGrantedBy(
       viewerId: req.fromId,
       viewerName:
         findLocalDemoAccountById(req.fromId)?.nickname ??
-        resolveDemoProfileName(req.fromId),
+        resolveDemoDisplayName(req.fromId),
       remainingMs,
       grantedAtMs: grantedAt,
     });
   }
   return granted.sort((a, b) => a.remainingMs - b.remainingMs);
+}
+
+export interface PhotoAccessGrantHeld {
+  ownerId: string;
+  ownerName: string;
+  /** Ms restantes del acceso (24 h desde la aceptación). */
+  remainingMs: number;
+  grantedAtMs: number;
+}
+
+/**
+ * Ronda 12 (stream A, punto 3a): accesos a la galería que ESTE
+ * espectador tiene concedidos y siguen vigentes (él es el viewer,
+ * no el dueño). Espejo de `listAnonymousPhotoAccessGrantedBy`: esa
+ * solo lista lo que el dueño concedió, así que en la propia pestaña
+ * "Ver Galería" del anónimo nunca aparecía la cuenta atrás del acceso
+ * que LE concedieron (p. ej. la pareja le aceptó ver sus fotos) — la
+ * lista de concedidos-por-él estaba vacía y la pestaña no mostraba
+ * ninguna cuenta atrás. Un acceso por dueño (el último concedido);
+ * los expirados no se listan.
+ */
+export function listPhotoAccessGrantedTo(
+  viewerId: string,
+  nowMs: number = Date.now(),
+): PhotoAccessGrantHeld[] {
+  if (!viewerId) return [];
+  const viewer = canonicalDemoOwnerId(viewerId);
+  const byOwner = new Map<string, FriendRequest>();
+  for (const req of readLocalRequests()) {
+    if (
+      req.kind !== "photo_access" ||
+      req.status !== "accepted" ||
+      canonicalDemoOwnerId(req.fromId) !== viewer
+    ) {
+      continue;
+    }
+    const ownerKey = canonicalDemoOwnerId(req.toId);
+    const prev = byOwner.get(ownerKey);
+    if (!prev || req.createdAt > prev.createdAt) {
+      byOwner.set(ownerKey, req);
+    }
+  }
+  const held: PhotoAccessGrantHeld[] = [];
+  for (const [ownerKey, req] of byOwner) {
+    const grantedAt = Date.parse(req.respondedAt ?? req.createdAt);
+    if (Number.isNaN(grantedAt)) continue;
+    const remainingMs = grantedAt + ANONYMOUS_PHOTO_ACCESS_TTL_MS - nowMs;
+    if (remainingMs <= 0) continue;
+    held.push({
+      ownerId: ownerKey,
+      ownerName:
+        findLocalDemoAccountById(ownerKey)?.nickname ??
+        resolveDemoProfileName(ownerKey),
+      remainingMs,
+      grantedAtMs: grantedAt,
+    });
+  }
+  return held.sort((a, b) => a.remainingMs - b.remainingMs);
 }
 
 /**
@@ -1077,6 +1226,19 @@ export function getPhotoAccessStatusSync(
         canonicalDemoOwnerId(r.toId) === owner,
     )
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  if (matches.length === 0) return "none";
+  // Ronda 12 (stream A, puntos 2 y 3b): una concesión VIVA (aceptada
+  // y dentro de las 24 h) manda sobre una pendiente posterior. Tras
+  // aceptar, el botón de solicitud (estado solo local, sin leer el
+  // almacén) permitía volver a pedir y se creaba una pendiente
+  // DUPLICADA: el "último manda" la leía como pendiente aunque el
+  // acceso ya estaba concedido — la bandeja decía "Pendiente" y la
+  // cuenta atrás del dueño seguía viva, y el espectador nunca veía la
+  // cuenta atrás ni el acceso. `hasPhotoAccess` y el TTL ya ignoran
+  // el duplicado (leen cualquier aceptada vigente); aquí se alinean.
+  if (getAnonymousPhotoAccessRemainingMs(viewerId, ownerId) !== null) {
+    return "accepted";
+  }
   const latest = matches[0];
   if (!latest) return "none";
   // Ronda 8 (punto 14): acceso concedido a un perfil anónimo y ya
@@ -1107,6 +1269,19 @@ export async function sendPhotoAccessRequest(
     const fromId = canonicalDemoOwnerId(viewerId);
     const toId = canonicalDemoOwnerId(ownerId);
     const requests = readLocalRequests();
+    // Ronda 12 (stream A, puntos 2 y 3b): con una concesión VIVA no
+    // se crea otra pendiente: el duplicado hacía que la bandeja
+    // volviera a decir "Pendiente" y el estado del espectador se
+    // leyera pendiente aunque el acceso ya estaba concedido (la
+    // cuenta atrás del dueño seguía viva). Una declinada o una
+    // concesión ya vencida (24 h) sí permiten volver a pedir.
+    if (getAnonymousPhotoAccessRemainingMs(fromId, toId) !== null) {
+      return {
+        ok: false,
+        error:
+          "Ya tienes acceso concedido a estas fotos: vence a las 24 h de concedido.",
+      };
+    }
     if (
       requests.some(
         (r) =>

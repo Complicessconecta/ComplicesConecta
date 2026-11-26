@@ -32,6 +32,15 @@
 --     insensible a mayúsculas. El paso de deduplicado TOCA DATOS
 --     (anula duplicados quedándose el perfil más antiguo): REVISAR
 --     antes de aplicar en producción (ver reporte del stream A).
+--     VERIFICACIÓN EN VIVO 2026-11-25 20:02-20:16 CST (proyecto
+--     axtvqnozatbmllvwzuim, solo SELECT): pre-chequeos en CERO —
+--     0 apodos duplicados en `couple_profiles` (`profiles` no tiene
+--     columna nickname todavía) y 0 solicitudes pendientes
+--     duplicadas (la tabla `friend_requests` aún no existe). El
+--     deduplicado es en la práctica un NO-OP una vez aplicada
+--     50001; el riesgo de esta migración baja de ALTO a BAJO según
+--     datos en vivo. La nota de revisión se conserva por
+--     precaución: recontar antes de aplicar si pasa tiempo.
 --   - Una sola solicitud pendiente por (requester, addressee, kind):
 --     sin esto dos "Solicitar ver fotos" en carrera duplicarían la
 --     fila pendiente en `friend_requests`.

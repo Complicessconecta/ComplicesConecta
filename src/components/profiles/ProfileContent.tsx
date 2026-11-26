@@ -14,7 +14,7 @@ import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import {
-  GrantedGalleryAccessList,
+  AnonymousOwnGalleryAccess,
   PhotoAccessCountdown,
 } from "@/components/profiles/shared/PhotoAccessCountdown";
 import { canonicalDemoOwnerId } from "@/lib/friends";
@@ -690,10 +690,16 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                       acceso, el aviso de pedirlo. Antes el formato era
                       "23 h 12 min" con tick de 30 s y el dueño siempre
                       veía el texto estático (test ronda 10: "sin cuenta
-                      atrás visible"). */}
+                      atrás visible").
+                      Ronda 12 (stream A, 3a): siendo el DUEÑO, la
+                      pestaña también muestra los accesos que LE
+                      concedieron a él (AnonymousOwnGalleryAccess): la
+                      lista de concedidos-por-él estaba vacía y la
+                      pestaña no mostraba ninguna cuenta atrás. */}
                   {isAnonymousGalleryOwner ? (
-                    <GrantedGalleryAccessList
+                    <AnonymousOwnGalleryAccess
                       ownerId={galleryOwnerId ?? ""}
+                      viewerId={galleryViewerId ?? ""}
                       className="mt-2 font-semibold text-white"
                     />
                   ) : (

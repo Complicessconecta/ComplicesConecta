@@ -75,6 +75,66 @@ export interface PerformanceReport {
 // THRESHOLDS
 // =====================================================
 
+// Ronda 19, stream A — la telemetría NO se mide a sí misma.
+//
+// Causa raíz del "Discover→perfil se queda en Cargando… 40+ s sin
+// que aparezca el panel de 15 s" (test dirigido ronda 18, PR #78,
+// DO NOT MERGE, 2026-11-26 08:30–08:53 CST; el tope de 15 s de la
+// ronda 18 funciona en jsdom y en carga directa, pero no en SPA):
+// el observer de `resource` de este servicio + `recordMetric` forman
+// un BUCLE DE REALIMENTACIÓN que satura el hilo principal.
+//
+// Cadena medida en Chromium real (preview local, 886 px):
+// 1. El observer dispara `recordMetric("resourceLoadTime")` por CADA
+//    recurso que carga la página (cada imagen de Discover, cada chunk,
+//    cada fetch).
+// 2. `recordMetric` persiste la métrica en PROD: `persistMetric`
+//    (getUser + insert en `app_metrics`) y `logMonitoringSession`
+//    (getUser + insert en `monitoring_sessions`).
+// 3. Cada una de esas peticiones ES un recurso nuevo: el fetch crea
+//    una entrada `resource` en Performance Timing y el observer vuelve
+//    a disparar → otra métrica → otras peticiones. Proporción medida:
+//    getUser:app_metrics = 2:1 exacto (2 getUser + 1 insert por
+//    métrica), 201 getUser/s y 100 inserts/s en /discover en reposo,
+//    106 POST/s de reportes CSP (`/api/csp-violation-report`) y el
+//    heartbeat de 100 ms con huecos de 0,6–1,8 s en reposo; tras el
+//    click en Ana el renderer deja de responder a CDP (la URL se queda
+//    en /discover 20+ s). Con el hilo así, el `setTimeout` de 15 s del
+//    tope de chunk (ronda 18) no puede disparar y la navegación ni
+//    siquiera llega a procesarse: el panel de error no aparece nunca.
+//    En carga directa el perfil gana la carrera (el chunk de 52 kB
+//    llega en ~3 s, antes de que el bucle sature el hilo); en SPA
+//    desde Discover el bucle YA está saturado cuando se hace click.
+// 4. El bucle se rompe en DOS sitios (cada uno basta por sí solo):
+//    (a) el observer ignora los recursos de telemetría —
+//    `isTelemetryResourceUrl` — porque medirlos es medir el propio
+//    tráfico que genera este servicio; (b) `recordMetric` NO persiste
+//    las métricas `resourceLoadTime` (son de alta frecuencia: una por
+//    recurso; persistirlas una a una es lo que convierte cada recurso
+//    en tráfico nuevo). Las métricas siguen en memoria para
+//    `generateReport`/`getMetrics`; solo deja de escribirse a
+//    Supabase una métrica por recurso.
+const TELEMETRY_RESOURCE_URL_SUBSTRINGS = [
+  "supabase.co", // getUser + app_metrics/monitoring_sessions (este servicio)
+  "datadoghq.com", // beacons de Datadog RUM / logs
+  "posthog", // PostHog (app.posthog.com y host propio)
+  "vercel-scripts.com", // Vercel Speed Insights
+  "/api/csp-violation-report", // reportes CSP (consecuencia del bucle)
+];
+
+/**
+ * ¿La URL es tráfico de telemetría (no contenido de la página)? Las
+ * entradas `resource` de estas URLs no se miden: cada métrica
+ * persistida genera peticiones a estas URLs, y medirlas realimenta el
+ * observer (ver nota de la ronda 19 arriba).
+ */
+export function isTelemetryResourceUrl(url: string): boolean {
+  return TELEMETRY_RESOURCE_URL_SUBSTRINGS.some((part) => url.includes(part));
+}
+
+/** Métricas que NO se persisten en Supabase (ver nota ronda 19). */
+const NON_PERSISTED_METRIC_NAMES = new Set(["resourceLoadTime"]);
+
 const DEFAULT_THRESHOLDS: PerformanceThreshold[] = [
   { metric: "pageLoadTime", warning: 2000, critical: 4000, unit: "ms" },
   { metric: "timeToInteractive", warning: 3000, critical: 5000, unit: "ms" },
@@ -162,6 +222,15 @@ export class PerformanceMonitoringService {
         for (const entry of list.getEntries()) {
           if (entry.entryType === "resource") {
             const resourceEntry = entry as PerformanceResourceTiming;
+            // Ronda 19, stream A: ignorar la telemetría (ver nota sobre
+            // TELEMETRY_RESOURCE_URL_SUBSTRINGS): cada métrica persistida
+            // genera peticiones a esas URLs y cada petición es una entrada
+            // `resource` nueva — medirlas realimenta el observer y satura
+            // el hilo principal (Discover→perfil atascado 40+ s, sin panel
+            // de 15 s, test dirigido ronda 18).
+            if (isTelemetryResourceUrl(resourceEntry.name)) {
+              continue;
+            }
             this.recordMetric({
               name: "resourceLoadTime",
               value: resourceEntry.duration,
@@ -202,7 +271,17 @@ export class PerformanceMonitoringService {
     // Check thresholds
     this.checkThresholds(fullMetric);
 
-    const shouldPersistToSupabase = import.meta.env.PROD;
+    // Ronda 19, stream A: `resourceLoadTime` NO se persiste (ver nota
+    // sobre TELEMETRY_RESOURCE_URL_SUBSTRINGS). Es una métrica por
+    // recurso y persistirla (getUser + insert en `app_metrics`, más
+    // getUser + insert en `monitoring_sessions`) crea el tráfico que
+    // el observer de `resource` vuelve a medir: el bucle saturaba el
+    // hilo principal y el tope de 15 s del chunk de /profile/:id no
+    // podía disparar en SPA desde Discover. La métrica sigue en
+    // memoria (`this.metrics`, `generateReport`); solo deja de
+    // escribirse una fila por recurso en Supabase.
+    const shouldPersistToSupabase =
+      import.meta.env.PROD && !NON_PERSISTED_METRIC_NAMES.has(metric.name);
 
     if (shouldPersistToSupabase) {
       this.persistMetric(fullMetric).catch((err) =>
@@ -610,4 +689,3 @@ export class PerformanceMonitoringService {
 // =====================================================
 
 export const performanceMonitoring = PerformanceMonitoringService.getInstance();
-

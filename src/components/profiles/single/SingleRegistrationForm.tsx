@@ -25,6 +25,7 @@ import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { logger } from "@/lib/logger";
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { createLocalDemoAccount } from "@/lib/demo-registration";
+import { checkIdentityRetained } from "@/lib/reportBlock";
 import { savePrivacySettingsExtra } from "@/lib/visibility";
 import { getZodiacSignFromDate } from "@/lib/zodiac";
 import {
@@ -271,6 +272,28 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         return;
       }
 
+      // Ronda 12 (stream D): identidad retenida tras baja por reporte
+      // (`retained_identities`, RPC `check_identity_retained`,
+      // migración 20261124050004). Solo cierra el registro cuando la
+      // RPC responde que SÍ está retenida; si la RPC falta o falla
+      // (migración sin aplicar) el registro continúa (fail-open con
+      // warning, ver `checkIdentityRetained`). En demo manda el
+      // espejo local `isIdentityRetainedDemo` (vía
+      // `createLocalDemoAccount`), no esta RPC.
+      const retained = await checkIdentityRetained(
+        formData.email,
+        formData.nickname,
+      );
+      if (retained.checked && retained.retained) {
+        toast({
+          variant: "destructive",
+          title: "Registro no permitido",
+          description:
+            "Esta identidad fue dada de baja por un reporte y no puede registrarse de nuevo.",
+        });
+        return;
+      }
+
       // Registrar usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -337,9 +360,12 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           .eq("user_id", authData.user.id);
 
         if (formData.birthDate) {
-          // La tabla `profiles` NO tiene columna `birth_date` ni
-          // `privacy_settings`: la fecha (y de ahí el signo) vive en
-          // local hasta que exista la migración. En demo es la fuente.
+          // Ronda 12 (stream D): comentario corregido — `profiles`
+          // NO tiene columna `birth_date`, pero `privacy_settings`
+          // SÍ existe desde 2026-11-24 (alta directa; la migración
+          // 20261124040000 es no-op sobre ella). La fecha (y de ahí
+          // el signo) se guarda en `privacy_settings` vía
+          // `savePrivacySettingsExtra`, con espejo local.
           savePrivacySettingsExtra(authData.user.id, "single", {
             birthDate: formData.birthDate,
           });

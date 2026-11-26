@@ -83,20 +83,20 @@ export function FriendsSection({
   return (
     <section
       aria-label={`Amistades de ${profileName}`}
-      className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-md p-4 sm:p-5"
+      className="rounded-2xl border border-slate-300 bg-white dark:border-white/15 dark:bg-white/5 backdrop-blur-md p-4 sm:p-5"
     >
-      <h3 className="text-white font-semibold flex items-center gap-2 mb-1">
+      <h3 className="text-slate-900 dark:text-white font-semibold flex items-center gap-2 mb-1">
         <Users className="w-5 h-5" aria-hidden="true" />
         Amistades
-        <span className="text-white/60 text-sm font-normal">
+        <span className="text-slate-500 dark:text-white/60 text-sm font-normal">
           ({friends.length})
         </span>
       </h3>
-      <p className="text-white/60 text-xs mb-4">
+      <p className="text-slate-500 dark:text-white/60 text-xs mb-4">
         Quién está en línea ahora y cuándo se conectó cada amigo por última vez.
       </p>
       {friends.length === 0 ? (
-        <p className="text-white/70 text-sm">
+        <p className="text-slate-500 dark:text-white/70 text-sm">
           {profileName} aún no tiene amigos agregados.
         </p>
       ) : (
@@ -116,17 +116,19 @@ export function FriendsSection({
               // tapar el nombre.
               <li
                 key={friend.id}
-                className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-white/5 border border-white/10 px-3 py-2"
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-slate-900/5 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-3 py-2"
               >
                 <div className="flex min-w-0 flex-1 basis-36 items-center gap-2">
                   <span
                     className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                      friend.isOnline ? "bg-emerald-400" : "bg-white/30"
+                      friend.isOnline
+                        ? "bg-emerald-400"
+                        : "bg-slate-400 dark:bg-white/30"
                     }`}
                     title={friend.isOnline ? "En línea" : "Fuera de línea"}
                     aria-label={friend.isOnline ? "En línea" : "Fuera de línea"}
                   />
-                  <span className="text-white font-medium truncate">
+                  <span className="text-slate-900 dark:text-white font-medium truncate">
                     {friend.name}
                   </span>
                   {country && (
@@ -142,7 +144,9 @@ export function FriendsSection({
                 <div className="flex items-center gap-2 shrink-0">
                   <span
                     className={`text-xs whitespace-nowrap ${
-                      friend.isOnline ? "text-emerald-300" : "text-white/60"
+                      friend.isOnline
+                        ? "text-emerald-700 dark:text-emerald-300"
+                        : "text-slate-500 dark:text-white/60"
                     }`}
                   >
                     {status}
@@ -152,7 +156,7 @@ export function FriendsSection({
                       type="button"
                       onClick={() => void handleRemove(friend)}
                       disabled={removingId === friend.id}
-                      className="inline-flex items-center gap-1 text-xs text-red-200 hover:text-red-100 border border-red-400/40 rounded-full px-2 py-1 disabled:opacity-50"
+                      className="inline-flex items-center gap-1 text-xs text-red-700 hover:text-red-800 border border-red-500/40 dark:text-red-200 dark:hover:text-red-100 dark:border-red-400/40 rounded-full px-2 py-1 disabled:opacity-50"
                       title="Eliminar de amigos"
                     >
                       <UserMinus className="w-3 h-3" aria-hidden="true" />

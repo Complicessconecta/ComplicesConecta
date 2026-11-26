@@ -11,9 +11,13 @@
  * hay acceso concedido (el padre debe ocultar el botón entonces,
  * con `hasPhotoAccess` de `src/lib/friends.ts`).
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Camera, ImagePlus } from "lucide-react";
-import { sendPhotoAccessRequest } from "@/lib/friends";
+import {
+  getPhotoAccessStatusSync,
+  sendPhotoAccessRequest,
+  type PhotoAccessStatus,
+} from "@/lib/friends";
 
 interface PhotoAccessRequestButtonProps {
   profileId: string;
@@ -42,8 +46,27 @@ export function PhotoAccessRequestButton({
 }: PhotoAccessRequestButtonProps) {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
+  // Ronda 12 (stream A, punto 3b): el botón solo vivía en `useState`
+  // local: al recargar volvía a "Solicitar ver fotos" aunque hubiera
+  // una pendiente o una concesión viva en el almacén, y tras aceptar
+  // se quedaba en "Solicitud de fotos enviada" (el padre nunca lo
+  // ocultaba). Ahora lee el estado guardado al montar: pendiente →
+  // píldora de enviada; concedido vigente → nada (el padre muestra la
+  // cuenta atrás y el acceso); sin nada / declinado → botón.
+  // En real (sin almacén demo) el estado es "none": mismo
+  // comportamiento que antes.
+  const [storedStatus, setStoredStatus] = useState<PhotoAccessStatus>("none");
+  useEffect(() => {
+    setStoredStatus(getPhotoAccessStatusSync(viewerId, profileId));
+  }, [viewerId, profileId]);
 
   if (isOwnProfile || !viewerId || !profileId || viewerId === profileId) {
+    return null;
+  }
+
+  // Acceso ya concedido y vigente: el botón no debe ofrecerse (el
+  // padre muestra la cuenta atrás / el acceso a las fotos).
+  if (storedStatus === "accepted") {
     return null;
   }
 
@@ -57,14 +80,19 @@ export function PhotoAccessRequestButton({
     );
     setBusy(false);
     if (!result.ok) {
+      // Con concesión viva el envío se rechaza en el lib: refrescar
+      // el estado guardado para que el botón desaparezca en vez de
+      // quedarse ofreciendo pedir lo que ya se tiene.
+      setStoredStatus(getPhotoAccessStatusSync(viewerId, profileId));
       window.alert(result.error ?? "No se pudo enviar la solicitud");
       return;
     }
     setSent(true);
+    setStoredStatus("pending");
     onSent?.();
   };
 
-  if (sent) {
+  if (sent || storedStatus === "pending") {
     return (
       <span
         className={`inline-flex items-center gap-1.5 rounded-full bg-white/10 text-white/80 border border-white/25 px-4 py-2.5 text-sm ${className}`}

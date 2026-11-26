@@ -491,7 +491,11 @@ export async function retainIdentityAfterBan(input: {
   userId: string;
   reason: string;
   reportId?: string;
-  bannedBy: string;
+  // Quién dio la baja, en espacio `profiles.id` (FK de
+  // `retained_identities.banned_by`). Nullable: quien llama puede no
+  // haber resuelto el id de perfil del moderador; en ese caso se
+  // guarda NULL antes que un auth uid que violaría la FK.
+  bannedBy?: string | null;
 }): Promise<{ ok: boolean; error?: string }> {
   if (!supabase) {
     return { ok: false, error: "Supabase no está disponible" };
@@ -503,7 +507,7 @@ export async function retainIdentityAfterBan(input: {
       user_id: input.userId,
       ban_reason: input.reason,
       report_id: input.reportId ?? null,
-      banned_by: input.bannedBy,
+      banned_by: input.bannedBy ?? null,
     });
     if (error) return { ok: false, error: error.message };
     return { ok: true };
@@ -515,6 +519,50 @@ export async function retainIdentityAfterBan(input: {
       ok: false,
       error: err instanceof Error ? err.message : "Error desconocido",
     };
+  }
+}
+
+/**
+ * ¿Este correo o apodo está retenido tras una baja por reporte?
+ * (ronda 12, stream D). Consulta real de `retained_identities` en
+ * el registro, vía la RPC `check_identity_retained` (migración
+ * 20261124050004): el cliente anon no puede leer la tabla directo
+ * por RLS, igual que el apodo usa `check_nickname_available`.
+ *
+ * DECISIÓN EXPLÍCITA — fail OPEN: si la RPC falta (migración sin
+ * aplicar en producción) o da error, se devuelve `checked: false`
+ * y el registro CONTINÚA. Bloquear el alta por un error de
+ * infraestructura dejaría fuera a usuarios legítimos; el chequeo
+ * solo cierra el registro cuando la RPC responde `retained: true`
+ * de forma positiva. Es el mismo patrón best-effort del validador
+ * de apodo (veredicto provisional cuando la RPC no está). Los
+ * errores se registran con warning para que no pasen en silencio.
+ * En demo no se usa: ahí manda `isIdentityRetainedDemo` (abajo).
+ */
+export async function checkIdentityRetained(
+  email: string,
+  username: string,
+): Promise<{ retained: boolean; checked: boolean }> {
+  if (!supabase) return { retained: false, checked: false };
+  try {
+    const { data, error } = await supabase.rpc("check_identity_retained", {
+      p_email: email,
+      p_username: username,
+    });
+    if (error) {
+      logger.warn(
+        "checkIdentityRetained: RPC no disponible, registro sin chequeo de retención",
+        { error: error.message },
+      );
+      return { retained: false, checked: false };
+    }
+    return { retained: data === true, checked: true };
+  } catch (err) {
+    logger.warn(
+      "checkIdentityRetained: error, registro sin chequeo de retención",
+      { error: err instanceof Error ? err.message : String(err) },
+    );
+    return { retained: false, checked: false };
   }
 }
 

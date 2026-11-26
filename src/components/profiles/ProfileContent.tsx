@@ -14,9 +14,10 @@ import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import {
-  formatAnonymousPhotoAccessRemaining,
-  getAnonymousGalleryAccessRemainingMs,
-} from "@/lib/anonymous";
+  GrantedGalleryAccessList,
+  PhotoAccessCountdown,
+} from "@/components/profiles/shared/PhotoAccessCountdown";
+import { canonicalDemoOwnerId } from "@/lib/friends";
 import { useSmartMatching,  type UserProfile, type PersonalityTraits, type MatchingPreferences, type ActivityMetrics, type VerificationStatus } from "@/lib/ai/smartMatching";
 import { ProfileNavTabs, type TabType } from "@/components/profiles/ProfileNavTabs";
 
@@ -179,29 +180,20 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   const { user, profile, isAuthenticated } = useAuth();
   const currentUserId = user?.id ?? profile?.id ?? "current-user";
 
-  // Ronda 10 (stream A, punto A6): cuenta atrás del acceso concedido
-  // a la galería limitada de un perfil anónimo (24 h desde la
-  // aceptación). Se re-calcula cada 30 s para que avance sin
-  // recargar; al expirar, el bloque vuelve al aviso de pedir acceso.
-  const [galleryAccessNowMs, setGalleryAccessNowMs] = useState(() =>
-    Date.now(),
-  );
-  useEffect(() => {
-    if (!isAnonymous) return;
-    const timer = window.setInterval(
-      () => setGalleryAccessNowMs(Date.now()),
-      30000,
-    );
-    return () => window.clearInterval(timer);
-  }, [isAnonymous]);
-  const galleryAccessRemainingMs =
-    isAnonymous && galleryViewerId && galleryOwnerId
-      ? getAnonymousGalleryAccessRemainingMs(
-          galleryViewerId,
-          galleryOwnerId,
-          galleryAccessNowMs,
-        )
-      : null;
+  // Ronda 11 (stream A, 1f): la cuenta atrás del acceso concedido a
+  // la galería limitada vive en PhotoAccessCountdown (tick de 1 s,
+  // HH:MM:SS). El bloque anterior calculaba los ms restantes con un
+  // tick de 30 s y formato "23 h 12 min" (cambia cada minuto): en un
+  // test corto parecía texto estático. Además, siendo el DUEÑO
+  // (viewer === owner) el helper devuelve null y siempre caía en el
+  // texto estático: el dueño ve ahora la lista de accesos que él
+  // concedió (GrantedGalleryAccessList).
+  const isAnonymousGalleryOwner =
+    isAnonymous &&
+    !!galleryViewerId &&
+    !!galleryOwnerId &&
+    canonicalDemoOwnerId(galleryViewerId) ===
+      canonicalDemoOwnerId(galleryOwnerId);
   const isAuthFn = typeof isAuthenticated === "function" ? isAuthenticated() : !!isAuthenticated;
   const loginLabel = "Configuración";
 
@@ -692,23 +684,30 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     públicas. Para ver el resto, pide acceso al dueño
                     del perfil.
                   </p>
-                  {/* Ronda 10 (stream A, punto A6): con acceso
-                      concedido y vigente, la cuenta atrás (24 h desde
-                      la aceptación); al expirar, vuelve el aviso de
-                      pedir acceso. */}
-                  {galleryAccessRemainingMs !== null ? (
-                    <p className="mt-2 font-semibold text-white">
-                      Acceso a la galería concedido:{" "}
-                      {formatAnonymousPhotoAccessRemaining(
-                        galleryAccessRemainingMs,
-                      )}{" "}
-                      · expira a las 24 h de concedido
-                    </p>
+                  {/* Ronda 11 (stream A, 1f): con acceso concedido y
+                      vigente, la cuenta atrás EN VIVO (1 s, HH:MM:SS);
+                      el dueño ve los accesos que él concedió; sin
+                      acceso, el aviso de pedirlo. Antes el formato era
+                      "23 h 12 min" con tick de 30 s y el dueño siempre
+                      veía el texto estático (test ronda 10: "sin cuenta
+                      atrás visible"). */}
+                  {isAnonymousGalleryOwner ? (
+                    <GrantedGalleryAccessList
+                      ownerId={galleryOwnerId ?? ""}
+                      className="mt-2 font-semibold text-white"
+                    />
                   ) : (
-                    <p className="mt-2">
-                      1 acceso concedido expira a las 24 h; al expirar
-                      tienes que volver a pedirlo.
-                    </p>
+                    <PhotoAccessCountdown
+                      viewerId={galleryViewerId ?? ""}
+                      ownerId={galleryOwnerId ?? ""}
+                      className="mt-2 font-semibold text-white"
+                      fallback={
+                        <p className="mt-2">
+                          1 acceso concedido expira a las 24 h; al expirar
+                          tienes que volver a pedirlo.
+                        </p>
+                      }
+                    />
                   )}
                 </div>
               </div>

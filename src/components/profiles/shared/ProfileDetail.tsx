@@ -420,7 +420,7 @@ const ProfileDetail = () => {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Profile Info */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="min-w-0 lg:col-span-2 space-y-6">
               {/* Profile Header */}
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
@@ -477,7 +477,7 @@ const ProfileDetail = () => {
                       </div>
                     </div>
 
-                    <div className="flex-1">
+                    <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-3 mb-2">
                         <h1 className="text-3xl font-bold text-white">
                           {profile.name}
@@ -511,7 +511,11 @@ const ProfileDetail = () => {
                         </TooltipProvider>
                       </div>
 
-                      <div className="flex items-center gap-4 text-white/80 mb-4">
+                      {/* Fila de ubicación / distancia / rating: sin wrap
+                          su ancho mínimo (nowrap de los tres bloques)
+                          empujaba la columna y la página desbordaba en
+                          horizontal a 886 px (ronda 11, stream C, i). */}
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-white/80 mb-4">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
                           <span>{profile.location}</span>
@@ -644,7 +648,7 @@ const ProfileDetail = () => {
             </div>
 
             {/* Action Sidebar */}
-            <div className="space-y-6">
+            <div className="min-w-0 space-y-6">
               {/* Action Buttons */}
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
@@ -667,7 +671,7 @@ const ProfileDetail = () => {
                           description: `¡Has dado like a ${profile.name}!`,
                         });
                       }}
-                      className="w-full bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg"
+                      className="w-full bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
                     >
                       <Heart className="h-5 w-5 mr-2" />
                       Me gusta
@@ -699,7 +703,7 @@ const ProfileDetail = () => {
                                 state: { profile },
                               });
                             }}
-                            className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg"
+                            className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
                           >
                             <MessageCircle className="h-5 w-5 mr-2" />
                             Enviar mensaje
@@ -715,7 +719,7 @@ const ProfileDetail = () => {
                             });
                           }}
                           title={chatCheck.reason}
-                          className="w-full bg-slate-500/40 hover:bg-slate-500/50 text-white px-6 py-3 text-lg border border-white/20"
+                          className="w-full bg-slate-500/40 hover:bg-slate-500/50 text-white px-6 py-3 text-lg border border-white/20 whitespace-normal h-auto min-h-11 text-center leading-snug"
                         >
                           <MessageCircle className="h-5 w-5 mr-2" />
                           Chat bloqueado: envía solicitud de amistad
@@ -726,7 +730,13 @@ const ProfileDetail = () => {
                     {/* Amistad y acceso a fotos (punto 4): solicitud de
                         amistad y solicitud para ver la galería. El botón
                         "Reportar perfil" de abajo sigue abriendo el
-                        diálogo; ReportBlockButtons solo aporta Bloquear. */}
+                        diálogo; ReportBlockButtons solo aporta Bloquear.
+                        Ronda 11, stream C (i): los botones de
+                        solicitud son píldoras `inline-flex` sin ancho:
+                        a 886 px quedaban a su ancho natural mientras
+                        los Button de arriba son `w-full`; con
+                        `w-full justify-center` todos ocupan la tarjeta
+                        y el texto no se recorta por la derecha. */}
                     <FriendRequestButton
                       profileId={String(profile.id)}
                       profileName={profile.name}
@@ -734,6 +744,7 @@ const ProfileDetail = () => {
                       viewerName={viewerName}
                       isOwnProfile={isOwnProfile}
                       isDemo={isDemo}
+                      className="w-full justify-center"
                     />
                     <PhotoAccessRequestButton
                       profileId={String(profile.id)}
@@ -741,6 +752,7 @@ const ProfileDetail = () => {
                       viewerId={viewerId}
                       isOwnProfile={isOwnProfile}
                       isDemo={isDemo}
+                      className="w-full justify-center"
                     />
                     <ReportBlockButtons
                       profileId={String(profile.id)}
@@ -759,7 +771,7 @@ const ProfileDetail = () => {
                         });
                         setShowReportDialog(true);
                       }}
-                      className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300"
+                      className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300 whitespace-normal h-auto min-h-11 text-center leading-snug"
                     >
                       Reportar perfil
                     </Button>

@@ -65,12 +65,12 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
       <div
         className={cn(
           "relative flex items-center gap-2 rounded-full px-4 py-2.5 sm:py-3 text-sm sm:text-base",
-          "bg-neutral-900/50 backdrop-blur-md border border-white/10",
-          value ? "bg-purple-900/20" : "",
+          "bg-white border border-slate-300 dark:bg-neutral-900/50 dark:border-white/10 backdrop-blur-md",
+          value ? "bg-purple-100 dark:bg-purple-900/20" : "",
         )}
       >
         {/* Placeholder animado */}
-        <div className="pointer-events-none absolute left-4 inset-y-0 flex items-center text-xs sm:text-sm text-zinc-500">
+        <div className="pointer-events-none absolute left-4 inset-y-0 flex items-center text-xs sm:text-sm text-slate-500 dark:text-zinc-500">
           <AnimatePresence mode="wait">
             {!value && (
               <motion.span
@@ -91,7 +91,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
           type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="relative z-10 w-full bg-transparent border-none outline-none text-white placeholder-transparent text-sm sm:text-base"
+          className="relative z-10 w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-transparent text-sm sm:text-base"
           aria-label="Buscar experiencias y usuarios"
         />
 

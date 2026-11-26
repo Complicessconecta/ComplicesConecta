@@ -368,8 +368,11 @@ describe("A7. Eliminar cuentas demo locales", () => {
   });
 
   it("el selector de /demo elimina con confirmación y libera el hueco", () => {
-    // jsdom no trae window.confirm: se define para el test.
-    window.confirm = vi.fn(() => true) as typeof window.confirm;
+    // Ronda 11 (stream A, 1h): la confirmación ya NO es window.confirm
+    // (se descarta en webviews y el borrado nunca ocurría, test ronda
+    // 10): ahora es un AlertDialog en la app. El clic en "Eliminar"
+    // solo abre el diálogo (la cuenta sigue listada); "Sí, eliminar"
+    // borra y libera el hueco; "Cancelar" no borra nada.
     createLocalDemoAccount({
       email: "anonr8test@demo.local",
       nickname: "anonr8test",
@@ -385,6 +388,19 @@ describe("A7. Eliminar cuentas demo locales", () => {
     fireEvent.click(
       screen.getByLabelText("Eliminar la cuenta demo anonr8test"),
     );
+    // El diálogo en la app aparece y la cuenta SIGUE listada.
+    expect(screen.getByText("¿Eliminar cuenta demo?")).toBeTruthy();
+    expect(screen.getByText("anonr8test")).toBeTruthy();
+    expect(canCreateAnonymousAccountOnDevice().allowed).toBe(false);
+    // Cancelar no borra.
+    fireEvent.click(screen.getByText("Cancelar"));
+    expect(screen.getByText("anonr8test")).toBeTruthy();
+    expect(canCreateAnonymousAccountOnDevice().allowed).toBe(false);
+    // Confirmar sí borra y libera el hueco.
+    fireEvent.click(
+      screen.getByLabelText("Eliminar la cuenta demo anonr8test"),
+    );
+    fireEvent.click(screen.getByText("Sí, eliminar"));
     expect(screen.queryByText("anonr8test")).toBeNull();
     expect(canCreateAnonymousAccountOnDevice().allowed).toBe(true);
   });

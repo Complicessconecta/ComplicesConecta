@@ -77,10 +77,8 @@ import {
   DEMO_WALLET_CHANGED_EVENT,
 } from "@/lib/demo-wallet";
 import { isAnonymousDemoProfile } from "@/lib/demo-registration";
-import {
-  formatAnonymousPhotoAccessRemaining,
-  getAnonymousExpiryInfo,
-} from "@/lib/anonymous";
+import { getAnonymousExpiryInfo } from "@/lib/anonymous";
+import { LiveCountdown } from "@/components/profiles/shared/PhotoAccessCountdown";
 import { listAnonymousPhotoAccessGrantedBy } from "@/lib/friends";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import {
@@ -2084,7 +2082,7 @@ const ProfileSingle: FC = () => {
                       {userNFTs.slice(0, 4).map((nft, index) => (
                         <div
                           key={nft.id || index}
-                          className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group min-w-0"
+                          className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 rounded-lg transition-all cursor-pointer group min-w-0"
                         >
                           <div className="aspect-square rounded mb-2 overflow-hidden relative">
                             {nft.image ? (
@@ -2098,16 +2096,30 @@ const ProfileSingle: FC = () => {
                                 <Images className="w-8 h-8 text-white/40" />
                               </div>
                             )}
-                            <div className="absolute top-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">
+                            <div className="absolute top-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap">
                               #{nft.token_id}
                             </div>
-                            <div className="absolute top-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">
+                            {/*
+                              Ronda 11 (stream D, punto v): la píldora CMPX
+                              estaba arriba a la izquierda y tapaba el
+                              texto "Cómplices Conecta" del arte del NFT.
+                              Baja a la esquina inferior con un degradado
+                              para que siga legible sin tapar el arte.
+                            */}
+                            <div className="absolute inset-x-0 bottom-0 h-8 bg-linear-to-t from-black/70 to-transparent pointer-events-none" />
+                            <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">
                               {nft.value ? `${nft.value} CMPX` : ""}
                             </div>
                           </div>
                           <div className="text-xs min-w-0">
+                            {/* RONDA 11 (stream B, B8): el título era `truncate`
+                                y "Cómplice Legendario" se veía como
+                                "Cómplice Leg…" en la lista de 4 columnas.
+                                La rejilla "Mis NFTs" muestra el título
+                                completo: aquí ahora envuelve hasta 2
+                                líneas (`line-clamp-2`) en vez de cortarse. */}
                             <div
-                              className="font-medium truncate"
+                              className="font-medium line-clamp-2"
                               title={nft.name || `NFT #${nft.token_id}`}
                             >
                               {nft.name || `NFT #${nft.token_id}`}
@@ -2116,18 +2128,18 @@ const ProfileSingle: FC = () => {
                               <span
                                 className={`text-[10px] capitalize shrink-0 ${
                                   nft.rarity === "legendary"
-                                    ? "text-yellow-400"
+                                    ? "text-yellow-600 dark:text-yellow-400"
                                     : nft.rarity === "epic"
-                                      ? "text-purple-400"
+                                      ? "text-purple-600 dark:text-purple-400"
                                       : nft.rarity === "rare"
-                                        ? "text-blue-400"
-                                        : "text-gray-400"
+                                        ? "text-blue-600 dark:text-blue-400"
+                                        : "text-slate-500 dark:text-gray-400"
                                 }`}
                               >
                                 {nft.rarity || "Común"}
                               </span>
                               {nft.chain && (
-                                <span className="text-white/50 text-[9px] truncate min-w-0">
+                                <span className="text-slate-400 dark:text-white/50 text-[9px] truncate min-w-0">
                                   {nft.chain}
                                 </span>
                               )}
@@ -2136,7 +2148,7 @@ const ProfileSingle: FC = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between mt-2 text-xs text-white/60">
+                    <div className="flex items-center justify-between mt-2 text-xs text-slate-500 dark:text-white/60">
                       <span>
                         Colección:{" "}
                         {userNFTs[0]?.collection || "CómplicesConecta"}
@@ -2158,7 +2170,7 @@ const ProfileSingle: FC = () => {
                             }
                             navigate("/nfts");
                           }}
-                          className="text-xs text-white/70 hover:text-white"
+                          className="text-xs text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white"
                         >
                           Ver todos (+{userNFTs.length - 4} más)
                         </Button>
@@ -2273,6 +2285,7 @@ const ProfileSingle: FC = () => {
             <SinglePrivacySection
               userId={user?.id ?? profile?.id ?? ""}
               isDemoMode={singleIsDemo}
+              isAnonymous={isAnonymous}
             />
           )}
 
@@ -2360,9 +2373,13 @@ const ProfileSingle: FC = () => {
                     {grantedGalleryAccess.map((access) => (
                       <li key={access.viewerId}>
                         {access.viewerName} ·{" "}
-                        {formatAnonymousPhotoAccessRemaining(
-                          access.remainingMs,
-                        )}{" "}
+                        {/* Ronda 11 (stream A, 1f): cuenta atrás EN VIVO
+                            (1 s, HH:MM:SS) en vez del texto "23 h 12 min"
+                            que solo cambiaba cada minuto. */}
+                        <LiveCountdown
+                          remainingMs={access.remainingMs}
+                          onExpire={() => setGalleryAccessNowMs(Date.now())}
+                        />{" "}
                         · expira a las 24 h de concedido
                       </li>
                     ))}

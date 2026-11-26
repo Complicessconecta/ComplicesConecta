@@ -169,16 +169,21 @@ export const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div>
+          <div className="min-w-0">
             <h4 className="text-lg font-semibold mb-4 text-primary">
               Contacto
             </h4>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-primary" />
+              {/* Ronda 11, stream C (i): el email es una cadena larga
+                  sin espacios: sin `min-w-0` + `break-all` su ancho
+                  mínimo empujaba la columna del footer fuera del
+                  viewport a 886 px (el enlace llegaba a x=940 y era
+                  el único elemento que desbordaba /profile/<id>). */}
+              <div className="flex min-w-0 items-center space-x-3">
+                <Mail className="h-4 w-4 shrink-0 text-primary" />
                 <a
                   href="mailto:complicesconectasw@outlook.es"
-                  className="text-background/80 hover:text-primary transition-colors"
+                  className="min-w-0 break-all text-background/80 hover:text-primary transition-colors"
                 >
                   complicesconectasw@outlook.es
                 </a>

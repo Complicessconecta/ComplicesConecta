@@ -105,9 +105,20 @@ import {
 // Alcance A (6 puntos sociales): nacionalidad, amistades, visibilidad,
 // reportar/bloquear y solicitudes de amistad/fotos (espejo de Single).
 import { NationalityBadge } from "@/components/profiles/shared/NationalityBadge";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { FriendsSection } from "@/components/profiles/shared/FriendsSection";
 import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
 import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
+import {
+  GrantedGalleryAccessList,
+  PhotoAccessCountdown,
+} from "@/components/profiles/shared/PhotoAccessCountdown";
+import {
+  canonicalDemoOwnerId,
+  getAnonymousPhotoAccessRemainingMs,
+  getPhotoAccessStatus,
+  getPhotoAccessStatusSync,
+} from "@/lib/friends";
 import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButtons";
 import { ProfileSocialSettings } from "@/components/profiles/shared/ProfileSocialSettings";
 import { getCountryByName, readCountryCodeLocal } from "@/lib/countries";
@@ -206,6 +217,12 @@ function ProfileCouple() {
   // llamadas y en el segundo 4, y React truena con el error #310
   // ("Rendered more hooks than during the previous render") → /404.
   const profileScore = useProfileScore(profile);
+  // Ronda 11, stream C (iii): el anónimo nace privado/invisible
+  // (espejo de ProfileSingle).
+  const isAnonymous = useMemo(
+    () => isAnonymousDemoProfile(authProfile),
+    [authProfile],
+  );
   const [loading, setLoading] = useState(true);
 
   // Ajustes de privacidad de la pareja que se está viendo (indicador de
@@ -215,6 +232,7 @@ function ProfileCouple() {
   const profilePrivacy = usePrivacySettings(
     user?.id ?? profile?.profile_id ?? "",
     "couple",
+    isAnonymous,
   );
   const profileZodiac1 = getProfileZodiacSign(profilePrivacy, 0);
   const profileZodiac2 = getProfileZodiacSign(profilePrivacy, 1);
@@ -381,6 +399,61 @@ function ProfileCouple() {
       (typeof window !== "undefined" &&
         window.localStorage.getItem("demo_authenticated") === "true")) &&
     getProfileType() === "couple";
+
+  /**
+   * Ronda 11 (stream A, 1f): sincronizar `privateImageAccess` con la
+   * solicitud de acceso a fotos YA guardada. Causa raíz de que en la
+   * galería de la pareja nunca se viera la cuenta atrás (test ronda
+   * 10): este estado nacía en "none" y SOLO se ponía en "pending" al
+   * enviar la solicitud desde el modal — la aceptación que llegaba a
+   * /requests no se reflejaba aquí jamás, así que el visitante con
+   * acceso concedido seguía viendo "Ver Fotos Privadas" → pedir de
+   * nuevo, y no había superficie donde mostrar la cuenta atrás.
+   * La aceptación también caduca a las 24 h (mismo TTL que la galería
+   * del anónimo): aceptada pero vencida se lee como "none" para que
+   * la cuenta atrás y el acceso no se contradigan.
+   * Nota: el dueño NO se detecta con `isOwnProfile` (aquí es
+   * `Boolean(user)`: cualquier sesión logueada), sino comparando los
+   * ids canonizados — la ficha es "demo-couple-456" y la sesión el
+   * uuid, y ambos canonizan al mismo id de usuario.
+   * Este bloque va DESPUÉS de `isDemoMode` a propósito: el array de
+   * dependencias lo lee en cada render y declararlo antes rompería
+   * con TDZ (ReferenceError en cada render).
+   */
+  const refreshPhotoAccessStatus = useCallback(() => {
+    const viewer = user?.id ?? "";
+    const owner = profile?.id ?? "";
+    if (!viewer || !owner) return;
+    if (canonicalDemoOwnerId(viewer) === canonicalDemoOwnerId(owner)) {
+      return;
+    }
+    const apply = (status: "none" | "pending" | "accepted" | "declined") => {
+      const remainingMs = getAnonymousPhotoAccessRemainingMs(viewer, owner);
+      if (status === "accepted" && remainingMs === null) {
+        // Aceptada pero con las 24 h vencidas: hay que volver a pedir.
+        setPrivateImageAccess("none");
+        return;
+      }
+      setPrivateImageAccess(
+        status === "accepted"
+          ? "approved"
+          : status === "pending"
+            ? "pending"
+            : status === "declined"
+              ? "denied"
+              : "none",
+      );
+    };
+    if (isDemoMode) {
+      apply(getPhotoAccessStatusSync(viewer, owner));
+    } else {
+      void getPhotoAccessStatus(viewer, owner, false).then(apply);
+    }
+  }, [user?.id, profile?.id, isDemoMode]);
+
+  useEffect(() => {
+    refreshPhotoAccessStatus();
+  }, [refreshPhotoAccessStatus]);
 
   // C6: resuelve las rutas de Storage (en el mismo orden que
   // `_shuffledCouplePrivateImages`) a URLs firmadas (1 h) solo cuando la
@@ -1918,6 +1991,29 @@ function ProfileCouple() {
                   </div>
                 </div>
 
+                {/* Ronda 11 (stream A, 1f): cuenta atrás EN VIVO del
+                    acceso concedido a la galería (24 h desde la
+                    aceptación, HH:MM:SS con tick de 1 s). El visitante
+                    con acceso aprobado la ve tickear aquí; el dueño ve
+                    a quiénes les concedió acceso y cuánto les queda.
+                    Sin esto, la aceptación no se reflejaba en la
+                    galería en absoluto (test ronda 10). */}
+                {!isOwnProfile && privateImageAccess === "approved" && (
+                  <div className="mt-3 rounded-xl border border-emerald-400/40 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-800 dark:text-emerald-200">
+                    <PhotoAccessCountdown
+                      viewerId={user?.id ?? ""}
+                      ownerId={profile?.id ?? ""}
+                      onExpire={refreshPhotoAccessStatus}
+                    />
+                  </div>
+                )}
+                {isOwnProfile && (
+                  <GrantedGalleryAccessList
+                    ownerId={profile?.id ?? ""}
+                    className="mt-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-600 dark:text-white/80"
+                  />
+                )}
+
                 {privateImageAccess === "denied" && (
                   <div className="text-center py-6">
                     <p className="text-slate-500 dark:text-white/70 text-sm">
@@ -2230,6 +2326,7 @@ function ProfileCouple() {
               <CouplePrivacySection
                 userId={user?.id ?? profile?.profile_id ?? ""}
                 isDemoMode={isDemoMode}
+                isAnonymous={isAnonymous}
               />
             )}
 
@@ -2246,6 +2343,7 @@ function ProfileCouple() {
                 userId={user?.id ?? profile?.profile_id ?? ""}
                 profileType="couple"
                 isDemo={isDemoMode}
+                isAnonymous={isAnonymous}
               />
             )}
 

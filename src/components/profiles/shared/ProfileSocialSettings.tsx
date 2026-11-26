@@ -12,18 +12,32 @@
  * Solo se muestra en el perfil propio. Las secciones de Privacidad
  * existentes (`SinglePrivacySection` / `CouplePrivacySection`) no se
  * tocan: este es el control social, junto a la sección de amistades.
+ *
+ * Ronda 11, stream C (iii): el select YA NO es un almacén propio.
+ * Lee y escribe el estado UNIFICADO (`readUnifiedInvisible` /
+ * `saveUnifiedInvisible` en `@/lib/visibility`), el mismo que el
+ * toggle "Modo invisible" y que la píldora del encabezado: mover
+ * cualquiera de los dos actualiza al otro en vivo (evento
+ * `complices:privacy-changed`) y ambos escriben los dos almacenes
+ * locales (`invisible` y `profile_visibility`), así que no pueden
+ * discrepar. En real, además, se espeja `invisible` en
+ * `privacy_settings` de la BD para que el toggle no discrepe tras
+ * recargar.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Globe, Lock, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import {
-  readVisibilityLocal,
-  readVisibilityLocalOrNull,
   visibilityDescription,
-  writeVisibilityLocal,
   type ProfileVisibility,
 } from "@/lib/profileVisibility";
+import {
+  PRIVACY_SETTINGS_CHANGED_EVENT,
+  readUnifiedInvisible,
+  saveInvisibleMirrorToDatabase,
+  saveUnifiedInvisible,
+} from "@/lib/visibility";
 import {
   readLocationSharingLocal,
   writeLocationSharingLocal,
@@ -48,19 +62,46 @@ export function ProfileSocialSettings({
   isDemo = false,
   isAnonymous = false,
 }: ProfileSocialSettingsProps) {
+  // Ronda 11, stream C (iii): el select lee el estado UNIFICADO
+  // (invisible ⟺ "private"), no su propio almacén. El default
+  // anónimo (privado) vive dentro de `readUnifiedInvisible`: sin nada
+  // guardado, el anónimo arranca en "🔒 Privado" y el resto en
+  // "🌐 Público"; una elección explícita guardada manda siempre.
   const [visibility, setVisibility] = useState<ProfileVisibility>(() =>
-    isAnonymous && readVisibilityLocalOrNull(userId) === null
+    readUnifiedInvisible(userId, profileType, isAnonymous)
       ? "private"
-      : readVisibilityLocal(userId),
+      : "public",
   );
   const [sharesLocation, setSharesLocation] = useState<boolean>(() =>
     readLocationSharingLocal(userId),
   );
   const [saving, setSaving] = useState(false);
 
+  // Ronda 11, stream C (iii): si el toggle "Modo invisible" cambia
+  // en la misma página, el select se actualiza en vivo (y viceversa:
+  // el toggle escucha el mismo evento).
+  useEffect(() => {
+    if (!userId) return;
+    const sync = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (!detail?.userId || detail.userId === userId) {
+        setVisibility(
+          readUnifiedInvisible(userId, profileType, isAnonymous)
+            ? "private"
+            : "public",
+        );
+      }
+    };
+    window.addEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, sync);
+    return () =>
+      window.removeEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, sync);
+  }, [userId, profileType, isAnonymous]);
+
   const saveVisibility = async (next: ProfileVisibility) => {
     setVisibility(next);
-    writeVisibilityLocal(userId, next);
+    // Ronda 11, stream C (iii): escribe AMBOS almacenes locales y
+    // avisa al toggle y a la píldora.
+    saveUnifiedInvisible(userId, profileType, next === "private", isAnonymous);
     if (isDemo || !supabase || !userId) return;
     setSaving(true);
     try {
@@ -79,6 +120,12 @@ export function ProfileSocialSettings({
           error: error.message,
         });
       }
+      // Espejo en BD de `invisible` para el toggle (best-effort).
+      await saveInvisibleMirrorToDatabase(
+        userId,
+        profileType,
+        next === "private",
+      );
     } catch (err) {
       logger.error("Error guardando visibilidad del perfil:", {
         error: err instanceof Error ? err.message : String(err),
@@ -113,9 +160,9 @@ export function ProfileSocialSettings({
   return (
     <section
       aria-label="Ajustes sociales del perfil"
-      className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-md p-4 sm:p-5"
+      className="rounded-2xl border border-slate-200 bg-white dark:border-white/15 dark:bg-white/5 backdrop-blur-md p-4 sm:p-5"
     >
-      <h3 className="text-white font-semibold flex items-center gap-2 mb-4">
+      <h3 className="text-slate-900 dark:text-white font-semibold flex items-center gap-2 mb-4">
         <Globe className="w-5 h-5" aria-hidden="true" />
         Amistad y privacidad del perfil
       </h3>
@@ -123,7 +170,7 @@ export function ProfileSocialSettings({
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-white font-medium flex items-center gap-2">
+            <p className="text-slate-900 dark:text-white font-medium flex items-center gap-2">
               {visibility === "private" ? (
                 <Lock className="w-4 h-4" aria-hidden="true" />
               ) : (
@@ -131,7 +178,7 @@ export function ProfileSocialSettings({
               )}
               Visibilidad del perfil
             </p>
-            <p className="text-white/60 text-xs">
+            <p className="text-slate-500 dark:text-white/60 text-xs">
               {visibilityDescription(visibility)}
             </p>
           </div>
@@ -142,7 +189,7 @@ export function ProfileSocialSettings({
             }
             disabled={saving}
             aria-label="Visibilidad del perfil"
-            className="bg-white/10 border border-white/20 text-white rounded-full px-3 py-2 text-sm disabled:opacity-50"
+            className="bg-slate-100 border border-slate-300 text-slate-900 dark:bg-white/10 dark:border-white/20 dark:text-white rounded-full px-3 py-2 text-sm disabled:opacity-50"
           >
             <option value="public">🌐 Público</option>
             <option value="private">🔒 Privado</option>
@@ -151,11 +198,11 @@ export function ProfileSocialSettings({
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-white font-medium flex items-center gap-2">
+            <p className="text-slate-900 dark:text-white font-medium flex items-center gap-2">
               <MapPin className="w-4 h-4" aria-hidden="true" />
               Geolocalización para matching
             </p>
-            <p className="text-white/60 text-xs">
+            <p className="text-slate-500 dark:text-white/60 text-xs">
               {sharesLocation
                 ? "Tu distancia aproximada (mín. 1 km, nunca la exacta) se muestra en Discover y en tu perfil."
                 : "Desactivada: nadie ve tu distancia."}
@@ -168,7 +215,9 @@ export function ProfileSocialSettings({
             aria-label="Geolocalización para matching"
             onClick={() => void saveSharing(!sharesLocation)}
             className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-              sharesLocation ? "bg-emerald-500" : "bg-white/20"
+              sharesLocation
+                ? "bg-emerald-500"
+                : "bg-slate-300 dark:bg-white/20"
             }`}
           >
             <span

@@ -310,9 +310,20 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { features } = useFeatures();
-  const { user, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   // Nombre del espectador para las solicitudes de amistad/fotos.
+  // Ronda 11, stream C (iv): `user` es el Auth user de Supabase y NO
+  // trae `first_name` (vive en `profile`): antes viewerName caía a
+  // `user.email` ("single@outlook.es") y la comprobación de amistad
+  // semilla (`getSocialDemoData(...).friendNames` trae "Sofía", no el
+  // email) nunca casaba, así que el chat con Carmen & Roberto mostraba
+  // "Enviar solicitud de amistad" aunque Sofía ya los tiene de amigos.
+  // Se lee primero del perfil (first_name / display_name) y solo
+  // después del email.
   const viewerName =
+    (profile as { first_name?: string; display_name?: string } | null)
+      ?.first_name ??
+    (profile as { display_name?: string } | null)?.display_name ??
     (user as { first_name?: string } | null)?.first_name ??
     user?.email ??
     "Tú";
@@ -1502,8 +1513,21 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                   botón de video. */}
               {selectedChat.roomType === "private" && user?.id && (
                 <div className="px-4 py-2 border-b border-white/10 flex flex-wrap items-center gap-2">
+                  {/* Ronda 11, stream C (iv): el botón recibía el id de
+                      SALA ("1"-"4"), no el del perfil del interlocutor:
+                      `getFriendStatus` comparaba la amistad con "3" y
+                      nunca casaba con el par guardado con el id del
+                      perfil ("demo-couple-456"), así que el chat con
+                      Carmen & Roberto mostraba "Enviar solicitud de
+                      amistad" aunque Sofía ya los tiene de amigos. Se
+                      pasa el id de perfil resuelto, igual que ya hace
+                      `PhotoAccessRequestButton` justo debajo: con
+                      amistad aceptada el botón muestra "Amigos ✓" y
+                      el CTA desaparece. */}
                   <FriendRequestButton
-                    profileId={String(selectedChat.id)}
+                    profileId={resolveChatPartnerProfileId(
+                      String(selectedChat.id),
+                    )}
                     profileName={selectedChat.name}
                     viewerId={String(user.id)}
                     viewerName={viewerName}

@@ -11,7 +11,12 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { logger } from "@/lib/logger";
-import { notifyPrivacySettingsChanged } from "@/lib/visibility";
+import {
+  notifyPrivacySettingsChanged,
+  PRIVACY_SETTINGS_CHANGED_EVENT,
+  readUnifiedInvisible,
+  saveUnifiedInvisible,
+} from "@/lib/visibility";
 import {
   ZODIAC_SIGNS,
   formatZodiacSign,
@@ -108,6 +113,12 @@ const ROWS: Array<{
 interface SinglePrivacySectionProps {
   userId: string;
   isDemoMode?: boolean;
+  /**
+   * Ronda 11, stream C (iii): el perfil anónimo nace privado/
+   * invisible. Sin esto el toggle arrancaba en OFF (default general)
+   * mientras la píldora y el select decían invisible/privado.
+   */
+  isAnonymous?: boolean;
 }
 
 /**
@@ -125,9 +136,15 @@ interface SinglePrivacySectionProps {
 export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
   userId,
   isDemoMode = false,
+  isAnonymous = false,
 }) => {
-  const [settings, setSettings] =
-    useState<SinglePrivacySettings>(DEFAULT_PRIVACY);
+  // Ronda 11, stream C (iii): el toggle "Modo invisible" lee el
+  // estado UNIFICADO (mismo que el select y la píldora), incluido el
+  // default anónimo: sin nada guardado, el anónimo arranca ON.
+  const [settings, setSettings] = useState<SinglePrivacySettings>(() => ({
+    ...DEFAULT_PRIVACY,
+    invisible: readUnifiedInvisible(userId, "single", isAnonymous),
+  }));
   // Confirmación en línea para quitar la marca de agua (ver toggle()).
   const [confirmWatermarkOff, setConfirmWatermarkOff] = useState(false);
   // Fecha de nacimiento y signo manual (claves extra del mismo JSON).
@@ -196,7 +213,14 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
         if (!raw) return;
         const parsed = JSON.parse(raw) as Partial<SinglePrivacySettings> &
           Partial<PrivacyExtras>;
-        setSettings({ ...DEFAULT_PRIVACY, ...parsed });
+        // Ronda 11, stream C (iii): `invisible` manda el estado
+        // unificado (puede venir del select): si los almacenes
+        // heredados discrepan, gana lo más privado.
+        setSettings({
+          ...DEFAULT_PRIVACY,
+          ...parsed,
+          invisible: readUnifiedInvisible(userId, "single", isAnonymous),
+        });
         setExtras({
           birthDate:
             typeof parsed.birthDate === "string" ? parsed.birthDate : "",
@@ -243,7 +267,13 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
           }
         });
         storedExtras.current = extras;
-        setSettings({ ...DEFAULT_PRIVACY, ...managed });
+        // Ronda 11, stream C (iii): `invisible` manda el estado
+        // unificado (ver comentario en loadFromLocalStorage).
+        setSettings({
+          ...DEFAULT_PRIVACY,
+          ...managed,
+          invisible: readUnifiedInvisible(userId, "single", isAnonymous),
+        });
         setExtras({
           birthDate:
             typeof record.birthDate === "string" ? record.birthDate : "",
@@ -260,7 +290,27 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [userId, isDemoMode]);
+  }, [userId, isDemoMode, isAnonymous]);
+
+  // Ronda 11, stream C (iii): si el select "Visibilidad del perfil"
+  // cambia en la misma página, el toggle se actualiza en vivo. Solo
+  // se sincroniza `invisible`: el resto de toggles sigue leyéndose de
+  // su propia fuente (en real, la BD).
+  useEffect(() => {
+    if (!userId) return;
+    const syncInvisible = (event: Event) => {
+      const detail = (event as CustomEvent<{ userId?: string }>).detail;
+      if (!detail?.userId || detail.userId === userId) {
+        const unified = readUnifiedInvisible(userId, "single", isAnonymous);
+        setSettings((prev) =>
+          prev.invisible === unified ? prev : { ...prev, invisible: unified },
+        );
+      }
+    };
+    window.addEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, syncInvisible);
+    return () =>
+      window.removeEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, syncInvisible);
+  }, [userId, isAnonymous]);
 
   if (!userId) return null;
 
@@ -273,6 +323,28 @@ export const SinglePrivacySection: React.FC<SinglePrivacySectionProps> = ({
     const next = { ...settings, [key]: nextValue };
     setSettings(next);
     saveAll(next, extras);
+    if (key === "invisible") {
+      // Ronda 11, stream C (iii): el toggle escribe TAMBIÉN el
+      // almacén del select (`profile_visibility`) y avisa, para que
+      // el select y la píldora se actualicen en vivo. En real, además
+      // se espeja la columna `visibility` (best-effort).
+      saveUnifiedInvisible(userId, "single", nextValue, isAnonymous, next);
+      if (!isDemoMode && supabase) {
+        void supabase
+          .from("profiles")
+          .update({
+            visibility: nextValue ? "private" : "public",
+          } as never)
+          .eq("id", userId)
+          .then(({ error }) => {
+            if (error) {
+              logger.error("Error guardando espejo visibility:", {
+                error: error.message,
+              });
+            }
+          });
+      }
+    }
     notifyPrivacySettingsChanged(userId);
     // Feedback inmediato: antes el cambio persistía pero sin ninguna
     // confirmación visible (full test 2026-11-24).

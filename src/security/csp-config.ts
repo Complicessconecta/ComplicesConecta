@@ -39,6 +39,7 @@ export const CSP_CONFIG = {
       "https://api.openai.com", // OpenAI
       "wss://axtvqnozatbmllvwzuim.supabase.co", // Supabase realtime
     ],
+    "worker-src": ["'self'", "blob:"],
     "media-src": ["'self'"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
@@ -77,6 +78,7 @@ export const CSP_CONFIG = {
       "https://api.openai.com", // OpenAI
       "wss://axtvqnozatbmllvwzuim.supabase.co", // Supabase realtime
     ],
+    "worker-src": ["'self'", "blob:"],
     "media-src": ["'self'"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
@@ -93,8 +95,10 @@ export const CSP_CONFIG = {
  */
 export function generateCSPHeader(isProduction: boolean = false): string {
   const config = isProduction ? CSP_CONFIG.production : CSP_CONFIG.development;
-  
+
+  // frame-ancestors only works as an HTTP header, not in a meta policy.
   const directives = Object.entries(config)
+    .filter(([directive]) => directive !== "frame-ancestors")
     .map(([directive, sources]) => {
       const sourceList = sources.join(' ');
       return `${directive} ${sourceList}`;

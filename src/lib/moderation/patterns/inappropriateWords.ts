@@ -1,10 +1,10 @@
 /**
- * Lista de palabras prohibidías para moderación de contenido
+ * Lista de palabras prohibidas para moderación de contenido
  * Manteniendo contexto swinger apropiado
  */
 
 export const INAPPROPRIATE_WORDS = new Set([
-  // Palabras explícitamente prohibidías (manteniendo contexto swinger apropiado)
+  // Palabras explícitamente prohibidas (manteniendo contexto swinger apropiado)
   "menor",
   "niño",
   "niña",
@@ -144,7 +144,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "ruleta",
   "blackjack",
   "póker",
-  "tragamonedías",
+  "tragamonedas",
   "slots",
   "apuestas deportivas",
   "bookmaker",
@@ -156,7 +156,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "giros gratis",
   "jackpot",
   "progresivo",
-  "máquina tragamonedías",
+  "máquina tragamonedas",
   "casino en vivo",
   "live casino",
   "dealer en vivo",
@@ -307,7 +307,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "localización",
   "geolocalización",
   "gps",
-  "coordenadías",
+  "coordenadas",
   "mapa",
   "ubicación exacta",
   "dirección exacta",
@@ -665,7 +665,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "binarias",
   "opciones binarias",
   "cripto",
-  "criptomonedías",
+  "criptomonedas",
   "bitcoin",
   "ethereum",
   "litecoin",
@@ -981,7 +981,7 @@ export const INAPPROPRIATE_WORDS = new Set([
   "localización",
   "geolocalización",
   "gps",
-  "coordenadías",
+  "coordenadas",
   "mapa",
   "ubicación exacta",
   "dirección exacta",

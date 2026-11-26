@@ -114,7 +114,7 @@ export const useAdminDashboard = (dateRange: string) => {
       const { count: reportsCount } = await supabase
         .from("reports")
         .select("id", { count: "exact", head: true })
-        .eq("resolved", false);
+        .in("status", ["pending", "reviewing"]);
       const { count: moderatorsCount } = await supabase
         .from("user_roles")
         .select("id", { count: "exact", head: true })

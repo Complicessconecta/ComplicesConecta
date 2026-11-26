@@ -4,17 +4,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Button } from "@/components/ui/buttons/Button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { Baby, Lock, Unlock, Shield, Clock } from "lucide-react";
+import { Baby, Lock, Unlock, Shield, Clock, X } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import "@/styles/ParentalControl.css";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { toast } from "@/hooks/useToast";
+import { isDemoMode } from "@/lib/app-config";
 
 interface ParentalControlProps {
   isLocked: boolean;
   onToggle: (locked: boolean) => void;
   onUnlock?: () => void;
   showLockScreen?: boolean;
+  // Cerrar el modal sin desbloquear (X, Escape, Cancelar). Sin onClose el
+  // modal no ofrece cierre: antes no había ninguna salida salvo el PIN
+  // correcto o recargar la página.
+  onClose?: () => void;
 }
 
 type RestrictionLevel = "soft" | "medium" | "strict";
@@ -66,10 +71,13 @@ export const ParentalControl = ({
   onToggle,
   onUnlock,
   showLockScreen = true,
+  onClose,
 }: ParentalControlProps) => {
   const [showPinInput, setShowPinInput] = useState(false);
   const [pin, setPin] = useState("");
-  const [savedPin] = usePersistedState("app_pin", import.meta.env.PROD ? "1234" : "");
+  // Sin PIN por defecto: en demo vale el PIN demo "1234" (ver handlePinSubmit);
+  // un usuario registrado debe configurar su propio PIN en Ajustes.
+  const [savedPin] = usePersistedState("app_pin", "");
   const [pinCreatedAt] = usePersistedState<number>("pin_created_at", Date.now());
   const [pinExpiresAt] = usePersistedState<number>("pin_expires_at", Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
   const [mustChangePin] = usePersistedState<boolean>("must_change_pin", import.meta.env.PROD);
@@ -130,9 +138,14 @@ export const ParentalControl = ({
   const handlePinSubmit = () => {
     if (lockoutUntil && Date.now() < lockoutUntil) return;
 
-    // Aceptar PIN default "1234" siempre como fallback
-    const isDefaultPin = pin === "1234";
-    const pinMatches = pin === savedPin || isDefaultPin;
+    // El PIN demo "1234" solo es válido en modo demo; fuera de demo
+    // un usuario registrado debe usar su propio PIN (o biometría).
+    const isDemo = isDemoMode();
+    const isDefaultPin = isDemo && pin === "1234";
+    // Un PIN "1234" guardado de antes (default viejo) no vale fuera de demo.
+    const effectiveSavedPin =
+      isDemo || savedPin !== "1234" ? savedPin : "";
+    const pinMatches = pin === effectiveSavedPin || isDefaultPin;
 
     if (pinMatches) {
       // Verificar expiración del PIN
@@ -173,7 +186,14 @@ export const ParentalControl = ({
       setAttempts(newAttempts);
       setPin("");
 
-      if (newAttempts >= 3) {
+      // Sin PIN configurado (y no es demo): orientar a crearlo.
+      if (!effectiveSavedPin && !isDemo) {
+        toast({
+          title: "Sin PIN configurado",
+          description: "Ve a Configuración > Seguridad para crear tu PIN.",
+          variant: "destructive",
+        });
+      } else if (newAttempts >= 3) {
         setLockoutUntil(Date.now() + 30000); // 30 seconds lockout
         toast({
           title: "Bloqueo temporal",
@@ -195,6 +215,23 @@ export const ParentalControl = ({
       handlePinSubmit();
     }
   };
+
+  // Cerrar el modal sin desbloquear: limpia el PIN y avisa al padre.
+  const handleClose = useCallback(() => {
+    setShowPinInput(false);
+    setPin("");
+    if (onClose) onClose();
+  }, [onClose]);
+
+  // Escape cierra el modal (solo cuando está abierto y hay onClose).
+  useEffect(() => {
+    if (!(isLocked && showLockScreen) || !onClose) return undefined;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isLocked, showLockScreen, onClose, handleClose]);
 
   const handleRestrictionChange = (level: RestrictionLevel) => {
     setRestrictionLevel(level);
@@ -222,9 +259,25 @@ export const ParentalControl = ({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
+          // Clic en el fondo cierra el modal sin desbloquear (solo con
+          // onClose: sin él no hay a dónde cerrar). El clic dentro de la
+          // tarjeta no cierra.
+          onClick={(e) => {
+            if (onClose && e.target === e.currentTarget) handleClose();
+          }}
           className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
-          <Card className="w-full max-w-sm bg-linear-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
+          <Card className="relative w-full max-w-sm bg-linear-to-br from-purple-950 via-purple-900 to-blue-950 backdrop-blur-2xl border border-purple-500/30 shadow-2xl shadow-purple-900/50 rounded-3xl">
+            {onClose && (
+              <button
+                type="button"
+                onClick={handleClose}
+                aria-label="Cerrar"
+                className="absolute top-3 right-3 p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
             <CardHeader className="text-center pb-4">
               <div
                 className="mx-auto mb-4 p-3 rounded-full w-fit border-2 border-red-500/40 parental-control-icon"
@@ -299,8 +352,14 @@ export const ParentalControl = ({
                   <div className="flex gap-2">
                     <Button
                       onClick={() => {
-                        setShowPinInput(false);
-                        setPin("");
+                        // Cancelar cierra el modal; sin onClose vuelve al
+                        // paso informativo (comportamiento anterior).
+                        if (onClose) {
+                          handleClose();
+                        } else {
+                          setShowPinInput(false);
+                          setPin("");
+                        }
                       }}
                       variant="outline"
                       className="flex-1 bg-white/5 backdrop-blur-sm border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 rounded-xl py-2.5 text-xs font-semibold"
@@ -417,7 +476,7 @@ export const ParentalControl = ({
         </div>
         <p className="text-xs text-zinc-300 leading-relaxed">
           Protección activa contra contenido sensible. Se requerirá PIN para
-          acceder a galerías privadías.
+          acceder a galerías privadas.
         </p>
       </div>
 
@@ -482,7 +541,13 @@ export const ParentalControl = ({
         <p className="mt-2 pt-2 border-t border-white/10">
           <strong>📌 PIN actual:</strong>{" "}
           <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">
-            {savedPin}
+            {savedPin
+              ? "••••"
+              : isDemoMode()
+                ? // Sin los dígitos: el PIN demo (1234) no debe mostrarse
+                  // en pantalla; el usuario lo sabe por /demo.
+                  "PIN demo activo"
+                : "Sin configurar"}
           </span>
           <br />
           <span className="text-zinc-200 text-[11px]">

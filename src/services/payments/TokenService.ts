@@ -235,12 +235,13 @@ export class TokenService {
       }
 
       // 2. Actualizar balance
+      const balanceUpdate =
+        type === "cmpx"
+          ? { cmpx_balance: newBalance, updated_at: new Date().toISOString() }
+          : { gtk_balance: newBalance, updated_at: new Date().toISOString() };
       const { error: updateError } = await supabase
         .from("user_token_balances")
-        .update({
-          [type === "cmpx" ? "cmpx_balance" : "gtk_balance"]: newBalance,
-          updated_at: new Date().toISOString(),
-        })
+        .update(balanceUpdate)
         .eq("user_id", userId);
 
       if (updateError) {

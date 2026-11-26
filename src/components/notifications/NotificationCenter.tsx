@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Bell, X, Check, Trash2, Settings, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -13,13 +14,22 @@ import { logger } from "@/lib/logger";
 interface NotificationCenterProps {
   userId: string;
   className?: string;
+  /**
+   * Ronda 8 (punto 10): en la pestaña "Notificaciones" del Dashboard
+   * la lista debe verse al entrar, no detrás de un segundo toque a la
+   * campana: sin esto la pestaña solo mostraba un icono de campana y
+   * parecía vacía/muerta. El Dashboard pasa `defaultOpen`.
+   */
+  defaultOpen?: boolean;
 }
 
 export function NotificationCenter({
   userId,
   className,
+  defaultOpen = false,
 }: NotificationCenterProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [showSettings, setShowSettings] = useState(false);
   const [preferences, setPreferences] = useState({
     push_notifications: true,
@@ -48,9 +58,21 @@ export function NotificationCenter({
       await markAsRead(notification.id);
     }
 
-    // Navigate to action URL if available
-    if (notification.action_url) {
-      window.location.href = notification.action_url;
+    // Ronda 8 (punto 10): navegar DENTRO del router y solo a rutas
+    // internas conocidas. Antes era `window.location.href = action_url`
+    // (recarga completa, fuera del router): con un action_url muerto
+    // (/achievements, /connections — rutas que no existen) el usuario
+    // aterrizaba en la página 404 del catch-all. Las URLs muertas ya
+    // se corrigieron en su origen (notifications.ts: /dashboard y
+    // /requests), y aquí una URL desconocida simplemente no navega en
+    // vez de romper la vista.
+    const actionUrl =
+      typeof notification.action_url === "string"
+        ? notification.action_url
+        : "";
+    if (actionUrl.startsWith("/")) {
+      setIsOpen(false);
+      navigate(actionUrl);
     }
   };
 
@@ -193,7 +215,7 @@ export function NotificationCenter({
                   className="h-7"
                 >
                   <Check className="h-3 w-3 mr-1" />
-                  Marcar todías como leídías
+                  Marcar todas como leídas
                 </Button>
               </div>
             )}

@@ -606,7 +606,7 @@ class InvitationsService {
 
       const userId = this.getCurrentUserId();
 
-      // Obtener todías las invitaciones del usuario
+      // Obtener todas las invitaciones del usuario
       const { data, error } = await supabase
         .from("invitations")
         .select("status")

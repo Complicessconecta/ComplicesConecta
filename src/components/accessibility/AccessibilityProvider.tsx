@@ -71,7 +71,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
   const [settings, setSettings] =
     useState<AccessibilitySettings>(defaultSettings);
 
-  // Cargar configuraciones guardadías
+  // Cargar configuraciones guardadas
   useEffect(() => {
     const savedSettings = safeGetItem<AccessibilitySettings>(
       "accessibility-settings",

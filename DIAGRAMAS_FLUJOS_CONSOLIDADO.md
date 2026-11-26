@@ -2,6 +2,27 @@
 
 # 📊 DIAGRAMAS DE FLUJOS v3.9.2 - COMPLICESCONECTA v3.9.2
 
+#> Actualización 24 Nov 2026 14:05
+#> - **Acción**: Edita
+#> - **Nombre del flujo**: Chat — persistencia de mensajes + navegación de hilo + compositor | Feed — like optimista con regla Wacko | Clubs — contenido real desde club_events/discounts/members (clubContentService) | Docs — /docs/* fuera del rewrite | Navegación — dock estable solo en perfil + botón de regreso global
+#> - **Ruta(s) afectada(s)**: `src/pages/Chat.tsx`, `src/features/chat/useRealtimeChat.ts`, `src/pages/Feed.tsx`, `src/pages/Discover.tsx`, `src/services/social/social/postsService.ts`, `src/demo/demoData.ts`, `src/services/clubs/clubContentService.ts`, `src/pages/ClubsDemo.tsx`, `src/pages/Clubs.tsx`, `src/pages/ClubsPublic.tsx`, `src/components/admin/panels/ClubAdminPanel.tsx`, `src/pages/moderators/ModeratorDashboard.tsx`, `vercel.json`, `src/components/layout/MainLayout.tsx`, `src/App.tsx`, `src/pages/Settings.tsx`
+#> - **Resumen breve**: Chat: los mensajes enviados se guardan en `localStorage` (`chat_messages:<roomId>`) en demo y en Supabase con filtro `room_id` en real (antes `loadMessages` mezclaba todas las salas); la flecha ← vuelve a la lista; a ≤500 px un solo panel. Feed: like optimista con la regla de Wacko (rojo +1 / sin color −1, persistencia demo, sin error en demo) + compositor + compartir real. Clubs: nuevo `clubContentService` lee/escribe `club_events`, `club_discounts`, `club_members` (timeout 3 s + respaldo demo; creación en demo a `localStorage`) y lo usan ClubsDemo, ClubAdminPanel (crear evento), ModeratorDashboard (conteos) y ClubsPublic (galería/eventos/descuentos/contacto); antes ningún archivo de `src/` consultaba esas tablas. Docs: `/docs/*` queda fuera del rewrite catch-all de `vercel.json` (antes servía `index.html`). Navegación: dock de 10 iconos solo en rutas de perfil (`showDock = isProfileRoute`, sin depender de `isDemo()`); `Outlet key={pathname}` fuerza remontaje por ruta; `BackButton` global en páginas sin dock.
+#> - **Justificación**: El full test 13:07–13:21 mostró que el chat perdía los mensajes al navegar (lo más grave), el like no funcionaba en demo, el dock cambiaba de 10 a 5 iconos en el mismo perfil, varias páginas no tenían forma de regresar, las tablas de clubs de la migración 20261124030000 no tenían ningún lector/escritor (los eventos del demo vivían en memoria) y los documentos legales se servían como `index.html` (el "fin del 404" del PR #70 era falso). Sin estos cambios, el pre-lanzamiento seguiría con chat roto, clubs sin datos reales y docs inaccesibles.
+
+#> Actualización 24 Nov 2026 12:48
+#> - **Acción**: Edita
+#> - **Nombre del flujo**: Registro de club — aceptación de términos de uso (TermsModalClub) + moderación de clubs + panel admin de club con datos reales
+#> - **Ruta(s) afectada(s)**: `src/pages/Clubs.tsx`, `src/components/modals/TermsModalClub.tsx`, `docs/legal/TERMINOS_USO_CLUBS.md`, `src/pages/moderators/ModeratorDashboard.tsx`, `src/components/admin/panels/ClubAdminPanel.tsx`, `src/pages/ClubsDemo.tsx`, `src/components/admin/AnalyticsDashboard.tsx`, `src/pages/admin/Admin.tsx`, `src/pages/ClubsPublic.tsx`, `src/components/legal/ClubConsentManager.tsx`, `supabase/migrations/20261124030000_create_club_events_discounts_members.sql`
+#> - **Resumen breve**: El registro de club ahora exige aceptar los Términos de Uso para Clubs (TermsModalClub) antes de enviar la solicitud a `club_applications`; sin aceptación, el botón Enviar abre el modal en vez de enviar. La contraseña temporal se genera con `crypto.getRandomValues` (antes `Math.random()`). Nuevas tablas `club_events`, `club_discounts`, `club_members` (+ `club_id` en `user_consents`) con RLS. `ClubAdminPanel` (antes código muerto en ClubsDemo, `showAdminPanel` nunca era true) ahora se abre con el botón "Panel Admin" y lee/escribe clubs reales de Supabase. ModeratorDashboard tiene pestaña "Clubs" (aprobar/rechazar solicitudes, activar/desactivar clubs). Admin.tsx y AnalyticsDashboard leen datos reales de Supabase (antes mock). ClubsPublic y Clubs.tsx cargan clubs reales con respaldo al catálogo público si Supabase falla o está vacío.
+#> - **Justificación**: Pre-lanzamiento, Clubs/Admin/Moderadores deben estar completos con datos reales (regla de Wacko 24 Nov 2026). Un club no puede registrarse sin aceptar sus términos (documento y modal no existían); el panel admin de club era inalcanzable y mock; la moderación de clubs no existía. La contraseña temporal con `Math.random()` estaba marcada como insegura en la auditoría forense.
+
+#> Actualización 24 Nov 2026 11:49
+#> - **Acción**: Edita
+#> - **Nombre del flujo**: Demo — Resolución de identidad demo y redirección de editores (single ↔ couple)
+#> - **Ruta(s) afectada(s)**: `src/lib/app-config.ts`, `src/features/auth/useAuth.ts`, `src/pages/profiles/single/EditProfileSingle.tsx`, `src/pages/profiles/couple/EditProfileCouple.tsx`
+#> - **Resumen breve**: `useAuth.signIn` (rama demo) sobrescribía `demo_user` con un objeto forma-Profile sin `accountType` ni `type`; el gate del editor pedía `accountType === "single" || type === "single"` y siempre era falso, así que el editor caía en `generateMockSingle/Couple` (persona aleatoria en cada carga). Ahora `resolveDemoAccountType()` resuelve el tipo desde accountType/type/profile_type/relationship_type/email; el editor muestra la identidad demo real (Sofía, 28 / Carmen & Roberto), con redirección cruzada single↔couple y sin sesión → /auth. `getProfileType()` corregido (el engrane abría el editor de single en sesión de pareja). Llamadas a `generateMockSingle/Couple` eliminadas del editor.
+#> - **Justificación**: La identidad demo debe ser única y consistente entre perfil y editor (regla de espejo single/pareja y demo/producción). Sin este fix, el editor demo mostraba otra persona en cada carga y la edición demo era inutilizable.
+
 #> Actualización 26 Ene 2026 20:05
 #> - **Acción**: Agrega
 #> - **Nombre del flujo**: Demo Club (vista completa + acceso desde perfiles demo)
@@ -1603,7 +1624,10 @@ flowchart TD
     G --> H{Validación}
 
     H -->|Datos Incompletos| B
-    H -->|Datos Completos| I[Guardar en BD<br/>club_applications]
+    H -->|Datos Completos| H2{¿Términos de club<br/>aceptados?}
+    H2 -->|No| H3[Modal TermsModalClub<br/>Términos de Uso para Clubs]
+    H3 -->|Aceptar| I[Guardar en BD<br/>club_applications]
+    H2 -->|Sí| I[Guardar en BD<br/>club_applications]
     I --> J[Enviar Email<br/>complicesconectasw@outlook.es]
     J --> K[Estado: Pending]
 

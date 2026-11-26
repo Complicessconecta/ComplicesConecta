@@ -1,9 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from "lucide-react";
+import {
+  Heart,
+  Flame,
+  RefreshCw,
+  Filter,
+  Star,
+  Home,
+  User,
+  Search,
+  Sliders,
+} from "lucide-react";
 import SuperLikesModal from "@/components/modals/SuperLikesModal";
 import PremiumModal from "@/components/modals/PremiumModal";
 import CompatibilityModal from "@/components/modals/CompatibilityModal";
@@ -11,9 +21,12 @@ import EventsModal from "@/components/modals/EventsModal";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { pickProfileImage, type Gender } from "@/lib/media";
+import { pickProfileImage, type Gender, type ProfileType } from "@/lib/media";
 import { calculateDistance, getLocationDisplay } from "@/lib/distance-utils";
-import { type CoupleProfileWithPartners, getAllCoupleProfiles } from "@/services/social/couple/CoupleProfilesService";
+import {
+  type CoupleProfileWithPartners,
+  getAllCoupleProfiles,
+} from "@/services/social/couple/CoupleProfilesService";
 import { generateDemoProfiles, type DemoProfile } from "@/demo/demoData";
 import { safeGetItem } from "@/lib/safe-storage";
 import { generateFilterDemoCards, type FilterDemoCard } from "@/lib/infoCards";
@@ -21,6 +34,20 @@ import { FilterDemoCard as FilterDemoCardComponent } from "@/components/ui/Filte
 import { supabase } from "@/integrations/supabase/client";
 import CoupleProfileCard from "@/components/profiles/couple/CoupleProfileCard";
 import { AnimatedProfileCard } from "@/components/profiles/shared/AnimatedProfileCard";
+import { DistanceBadge } from "@/components/profiles/shared/DistanceBadge";
+import { readLocationSharingLocal } from "@/lib/geolocation";
+import {
+  getBlockedProfileIds,
+  getBlockedProfileIdsSync,
+} from "@/lib/reportBlock";
+import { getSocialDemoData } from "@/demo/socialDemoData";
+import {
+  ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+  canAnonymousChat,
+  isViewerAnonymous,
+} from "@/lib/anonymous";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
+import { areFriendsSync } from "@/lib/friends";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { motion } from "framer-motion";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
@@ -30,11 +57,20 @@ import type { Profile, Filters } from "@/types/discover.types";
 import { generalInterests } from "@/constants/discover/generalInterests";
 import { explicitInterests } from "@/constants/discover/explicitInterests";
 import { generateRandomProfiles } from "@/utils/discover/generateRandomProfiles";
+import {
+  PRIVACY_SETTINGS_CHANGED_EVENT,
+  readDemoProfilePrivacySettings,
+  readPrivacySettingsSync,
+  shouldShowInDiscover,
+  type PrivacySettings,
+} from "@/lib/visibility";
 
 const normalizeGender = (value: unknown): Gender => {
   const raw = typeof value === "string" ? value.trim().toLowerCase() : "";
-  if (raw === "male" || raw === "m" || raw === "hombre" || raw === "man") return "male";
-  if (raw === "female" || raw === "f" || raw === "mujer" || raw === "woman") return "female";
+  if (raw === "male" || raw === "m" || raw === "hombre" || raw === "man")
+    return "male";
+  if (raw === "female" || raw === "f" || raw === "mujer" || raw === "woman")
+    return "female";
   return "unknown";
 };
 
@@ -43,8 +79,31 @@ export const Discover = () => {
   const { toast } = useToast();
   const [_isMobile] = useState(false);
   const { location } = useGeolocation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   const [matchedIds, setMatchedIds] = useState<Set<string>>(new Set());
+
+  // Contador "Likes" de la tarjeta de stats (regla de Wacko: marcar +1,
+  // desmarcar −1). Antes era un literal 12 que nunca cambiaba.
+  const [likedProfileIds, setLikedProfileIds] = useState<Set<string>>(
+    new Set(),
+  );
+  const [likesGiven, setLikesGiven] = useState(12);
+
+  // Alterna el contador "Likes" al marcar/desmarcar un perfil.
+  const toggleLikesGiven = (profileId: number | string) => {
+    const key = String(profileId);
+    const isLiking = !likedProfileIds.has(key);
+    setLikedProfileIds((prev) => {
+      const next = new Set(prev);
+      if (isLiking) {
+        next.add(key);
+      } else {
+        next.delete(key);
+      }
+      return next;
+    });
+    setLikesGiven((v) => v + (isLiking ? 1 : -1));
+  };
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [demoProfiles, setDemoProfiles] = useState<DemoProfile[]>([]);
@@ -59,6 +118,12 @@ export const Discover = () => {
   const [filteredCoupleProfiles, setFilteredCoupleProfiles] = useState<
     CoupleProfileWithPartners[]
   >([]);
+  // Perfiles ocultos por bloqueo (punto 15b): unión de los que el
+  // espectador bloqueó y los que lo bloquearon a él. Ni unos ni otros
+  // aparecen en los resultados (ver efecto abajo y `applyFilters`).
+  const [hiddenProfileIds, setHiddenProfileIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [showFilters, setShowFilters] = useState(false);
   const [showCouples, setShowCouples] = useState(false);
 
@@ -76,6 +141,84 @@ export const Discover = () => {
     online: false,
     relationshipType: [],
   });
+
+  // Ronda 8 (punto 9): re-aplicar los filtros cuando cambia cualquier
+  // ajuste de privacidad (p. ej. la pareja se pone invisible en su
+  // perfil y vuelve a Discover): sin esto el filtro solo corría al
+  // cambiar filtros/listas y la tarjeta invisible seguía visible
+  // hasta recargar. Las secciones de Privacidad disparan este evento
+  // al guardar (ver visibility.ts).
+  const [privacyVersion, setPrivacyVersion] = useState(0);
+  useEffect(() => {
+    const bump = () => setPrivacyVersion((v) => v + 1);
+    window.addEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, bump);
+    return () =>
+      window.removeEventListener(PRIVACY_SETTINGS_CHANGED_EVENT, bump);
+  }, []);
+
+  // Ajustes de privacidad DEL ESPECTADOR (no del perfil listado): el
+  // toggle "Acceso a perfiles sin verificar" de su propia sección de
+  // Privacidad decide el arranque del filtro de verificados — si lo
+  // tiene desactivado, Discover arranca mostrando SOLO verificados.
+  // Demo: localStorage; real pareja: couple_profiles.privacy_settings;
+  // real single: local (profiles no tiene la columna; ver visibility.ts).
+  const viewerPrivacy: PrivacySettings | null = useMemo(() => {
+    if (!user?.id) return null;
+    const type = user.email === "pareja@outlook.es" ? "couple" : "single";
+    return readPrivacySettingsSync(user.id, type);
+  }, [user?.id, user?.email]);
+
+  // Geolocalización del ESPECTADOR (punto 3): si la tiene desactivada,
+  // ninguna distancia se muestra en las tarjetas (ver DistanceBadge).
+  const viewerSharesLocation = useMemo(
+    () => readLocationSharingLocal(user?.id ?? ""),
+    [user?.id],
+  );
+
+  // Bloqueos del espectador (punto 15b): primero la lectura local
+  // síncrona (demo: localStorage `profile_blocks_demo`) para no
+  // mostrar ni un instante un perfil bloqueado, y después el
+  // refresco real desde `profile_blocks`. El conjunto es la unión de
+  // los que el espectador bloqueó y los que lo bloquearon: en ambos
+  // casos el perfil no aparece en sus resultados (ver `applyFilters`).
+  useEffect(() => {
+    if (!user?.id) {
+      setHiddenProfileIds(new Set());
+      return;
+    }
+    const viewerId = String(user.id);
+    const demoAuth =
+      safeGetItem<string>("demo_authenticated", {
+        validate: true,
+        defaultValue: "false",
+      }) === "true";
+    const isDemoUser =
+      user.email === "single@outlook.es" || user.email === "pareja@outlook.es";
+    const isDemo = demoAuth && isDemoUser;
+    const local = getBlockedProfileIdsSync(viewerId);
+    setHiddenProfileIds(new Set([...local.blockedByMe, ...local.blockedMe]));
+    let cancelled = false;
+    void getBlockedProfileIds(viewerId, isDemo).then(
+      ({ blockedByMe, blockedMe }) => {
+        if (cancelled) return;
+        setHiddenProfileIds(new Set([...blockedByMe, ...blockedMe]));
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, user?.email]);
+
+  // Arrancar el filtro de verificados desde el ajuste del espectador.
+  useEffect(() => {
+    if (viewerPrivacy && viewerPrivacy.allowUnverified === false) {
+      setFilters((prev) =>
+        prev.verified ? prev : { ...prev, verified: true },
+      );
+    }
+    // Solo al montar / cambiar de usuario, no en cada cambio de filtros.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   // Determinar si el usuario es demo/producción
   const isDemoOrProduction = () => {
@@ -110,9 +253,42 @@ export const Discover = () => {
     }
   }, []);
 
+  // El interruptor "Mostrar perfiles sin verificar" de Discover es el
+  // control en vivo de la misma preferencia que el toggle
+  // `allowUnverified` de Privacidad: activado = se ven verificados y
+  // no verificados; desactivado = solo verificados. La invisibilidad
+  // del perfil listado se aplica siempre encima (ver visibility.ts).
+  const effectiveViewerPrivacy: PrivacySettings | null = useMemo(() => {
+    if (!viewerPrivacy) return null;
+    return { ...viewerPrivacy, allowUnverified: !filters.verified };
+  }, [viewerPrivacy, filters.verified]);
+
+  // Ronda 9 (stream A, punto 3): los perfiles anónimos solo aparecen
+  // en Discover para espectadores VERIFICADOS. La sesión demo es
+  // verificada (useAuth marca is_verified en demo_user).
+  const viewerIsVerified: boolean =
+    (profile as { is_verified?: boolean } | null)?.is_verified === true ||
+    (user as { is_verified?: boolean } | null)?.is_verified === true;
+
   // Aplicar filtros
   useEffect(() => {
     const applyFilters = () => {
+      // Filtro "Tipo de Relación": "Pareja" deja solo parejas, "Soltero/a"
+      // solo singles. "Abierto" y "Poliamoroso" no tienen campo en los
+      // datos, así que no filtran por sí solos.
+      const relationshipMatch = (
+        profileType: ProfileType | undefined,
+      ): boolean => {
+        const selected = filters.relationshipType;
+        if (selected.length === 0) return true;
+        const wantsCouple = selected.includes("Pareja");
+        const wantsSingle = selected.includes("Soltero/a");
+        if (!wantsCouple && !wantsSingle) return true;
+        if (profileType === "couple") return wantsCouple;
+        if (profileType === "single") return wantsSingle;
+        return true;
+      };
+
       // Filtrar perfiles demo
       const filteredDemo = demoProfiles.filter((profile) => {
         const ageMatch =
@@ -124,17 +300,43 @@ export const Discover = () => {
           filters.interests.some((interest) =>
             profile.interests.includes(interest),
           );
-        const verifiedMatch = !filters.verified || profile.isVerified;
+        // Verificados (según el interruptor) + invisibles (nunca aparecen).
+        // Ronda 8 (punto 9): antes solo se pasaba `{id, isVerified}` y el
+        // comentario admitía que la invisibilidad "actúa cuando el perfil
+        // trae privacySettings/invisible" — pero los perfiles demo NUNCA
+        // los traen y su id de tarjeta tampoco es la llave de los ajustes
+        // del dueño, así que una pareja invisible seguía en Discover
+        // (Carmen & Roberto, tarjeta 6 de 20). Ahora se leen los ajustes
+        // del dueño con el puente de identidad demo (visibility.ts).
+        const visibilityMatch = shouldShowInDiscover(
+          {
+            id: profile.id,
+            isVerified: profile.isVerified,
+            privacySettings: readDemoProfilePrivacySettings(
+              profile.id,
+              profile.profileType,
+              profile.name,
+            ),
+          },
+          effectiveViewerPrivacy,
+          { viewerIsVerified },
+        );
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
+        const relationshipTypeMatch = relationshipMatch(profile.profileType);
+        // Bloqueo (punto 15b): ni los que el espectador bloqueó ni
+        // los que lo bloquearon aparecen en sus resultados.
+        const notBlocked = !hiddenProfileIds.has(String(profile.id));
 
         return (
           ageMatch &&
           distanceMatch &&
           interestsMatch &&
-          verifiedMatch &&
+          visibilityMatch &&
           premiumMatch &&
-          onlineMatch
+          onlineMatch &&
+          relationshipTypeMatch &&
+          notBlocked
         );
       });
 
@@ -153,7 +355,7 @@ export const Discover = () => {
           if (profile.distance !== undefined) {
             distanceMatch = profile.distance <= filters.distance;
           } else {
-            // Si no tiene distancia pero tiene coordenadías, calcularla
+            // Si no tiene distancia pero tiene coordenadas, calcularla
             // Esto se maneja en loadRealProfiles, as que aqu solo verificamos la distancia ya calculada
             distanceMatch = true; // Permitir si no hay distancia disponible
           }
@@ -164,17 +366,45 @@ export const Discover = () => {
           filters.interests.some((interest) =>
             profile.interests.includes(interest),
           );
-        const verifiedMatch = !filters.verified || profile.isVerified;
+        // Verificados (según el interruptor) + invisibles (nunca aparecen).
+        // Real single: `profiles` no tiene columna `privacy_settings`
+        // (migración 20261124040000 sin aplicar), así que la invisibilidad
+        // se lee del respaldo local del dueño (`single_privacy:<userId>`,
+        // la misma llave que escribe su sección de Privacidad); si la
+        // fuente trajera `privacySettings`, manda ella.
+        const visibilityMatch = shouldShowInDiscover(
+          {
+            id: profile.id,
+            isVerified: profile.isVerified,
+            is_anonymous: (profile as unknown as { is_anonymous?: boolean })
+              .is_anonymous,
+            privacySettings:
+              (
+                profile as unknown as {
+                  privacySettings?: PrivacySettings | null;
+                }
+              ).privacySettings ??
+              readPrivacySettingsSync(String(profile.id), "single"),
+          },
+          effectiveViewerPrivacy,
+          { viewerIsVerified },
+        );
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
+        const relationshipTypeMatch = relationshipMatch(profile.profileType);
+        // Bloqueo (punto 15b): ni los que el espectador bloqueó ni
+        // los que lo bloquearon aparecen en sus resultados.
+        const notBlocked = !hiddenProfileIds.has(String(profile.id));
 
         return (
           ageMatch &&
           distanceMatch &&
           interestsMatch &&
-          verifiedMatch &&
+          visibilityMatch &&
           premiumMatch &&
-          onlineMatch
+          onlineMatch &&
+          relationshipTypeMatch &&
+          notBlocked
         );
       });
 
@@ -189,24 +419,49 @@ export const Discover = () => {
         // Filtro de distancia para parejas
         let distanceMatch = true;
         if (location && couple.location) {
-          // Calcular distancia - los perfiles de pareja pueden no tener coordenadías exactas
-          // Usar la distancia calculada previamente o permitir el match si no hay coordenadías
-          distanceMatch = true; // Por ahora permitir todos si no hay coordenadías precisas
+          // Calcular distancia - los perfiles de pareja pueden no tener coordenadas exactas
+          // Usar la distancia calculada previamente o permitir el match si no hay coordenadas
+          distanceMatch = true; // Por ahora permitir todos si no hay coordenadas precisas
         }
 
         // Los perfiles de pareja no tienen interests en el tipo actual, permitir match
         const interestsMatch = filters.interests.length === 0;
-        const verifiedMatch = !filters.verified || couple.is_verified;
+        // Verificados (según el interruptor) + invisibles (nunca aparecen).
+        // La invisibilidad de parejas se aplica desde
+        // `couple_profiles.privacy_settings` (vía el servicio); si la
+        // fuente no la trae (columna ausente o fila mock), cae al
+        // respaldo local del dueño (`couple_privacy:<id>`, la misma
+        // llave que escribe su sección de Privacidad).
+        const visibilityMatch = shouldShowInDiscover(
+          {
+            id: couple.id,
+            is_verified: couple.is_verified ?? false,
+            privacySettings:
+              couple.privacy_settings ??
+              readPrivacySettingsSync(String(couple.id), "couple"),
+          },
+          effectiveViewerPrivacy,
+          { viewerIsVerified },
+        );
         const premiumMatch = !filters.premium || couple.is_premium;
         const onlineMatch = !filters.online || couple.isOnline;
+        // Las parejas solo pasan el filtro "Pareja" (o sin filtro de tipo).
+        const relationshipTypeMatch = relationshipMatch("couple");
+        // Bloqueo (punto 15b): se compara el id tal cual se listó.
+        // Límite conocido: los bloqueos se guardan contra
+        // `profiles.id` y el id de pareja es de `couple_profiles`;
+        // un bloqueo guardado con ese mismo id sí la oculta.
+        const notBlocked = !hiddenProfileIds.has(String(couple.id));
 
         return (
           ageMatch &&
           distanceMatch &&
           interestsMatch &&
-          verifiedMatch &&
+          visibilityMatch &&
           premiumMatch &&
-          onlineMatch
+          onlineMatch &&
+          relationshipTypeMatch &&
+          notBlocked
         );
       });
 
@@ -214,7 +469,17 @@ export const Discover = () => {
     };
 
     applyFilters();
-  }, [filters, demoProfiles, profiles, coupleProfiles, location]);
+  }, [
+    filters,
+    demoProfiles,
+    profiles,
+    coupleProfiles,
+    location,
+    effectiveViewerPrivacy,
+    hiddenProfileIds,
+    // Ronda 8 (punto 9): re-filtrar al cambiar ajustes de privacidad.
+    privacyVersion,
+  ]);
 
   // Función para cargar perfiles reales desde Supabase
   const loadRealProfiles = useCallback(async () => {
@@ -265,48 +530,57 @@ export const Discover = () => {
 
         // Convertir perfiles de Supabase al formato esperado
         const convertedProfiles: Profile[] = realProfiles.map(
-          (profile: any) => {
+          (profile: any, index: number) => {
             const normalizedGender = normalizeGender(profile.gender);
-            return ({
-            id: profile.id,
-            name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
-            age: profile.age || 25,
-            location: getLocationDisplay(location), // Ubicacin real implementada con useGeolocation
-            distance: calculateDistance(
-              location,
-              profile.latitude && profile.longitude
-                ? { latitude: profile.latitude, longitude: profile.longitude }
-                : null,
-            ), // Clculo de distancia implementado con coordenadías reales
-            interests: Array.isArray(profile.interests)
-              ? profile.interests
-              : [], // Sistema de intereses conectado con Supabase
-            image: pickProfileImage(
-              {
-                id: profile.id,
-                name: profile.first_name,
-                type: "single",
-                gender: normalizedGender,
-              },
-              usedImages,
-            ), // Avatar URL desde Supabase profiles
-            bio: profile.bio || "Sin descripcin",
-            isOnline: profile.is_online || false,
-            lastActive: profile.last_active
-              ? new Date(profile.last_active).toLocaleString("es-ES", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  day: "numeric",
-                  month: "short",
-                })
-              : "Hace 1 hora",
-            isVerified: profile.is_premium || false,
-            isPremium: profile.is_premium || false,
-            rating: 4.5,
-            matchScore: Math.floor(Math.random() * 40) + 60,
-            profileType: (profile.account_type as any) || "single",
-            gender: normalizedGender === "unknown" ? undefined : normalizedGender,
-            });
+            return {
+              id: profile.id,
+              name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
+              age: profile.age || 25,
+              location: getLocationDisplay(location), // Ubicacin real implementada con useGeolocation
+              distance: calculateDistance(
+                location,
+                profile.latitude && profile.longitude
+                  ? { latitude: profile.latitude, longitude: profile.longitude }
+                  : null,
+              ), // Clculo de distancia implementado con coordenadas reales
+              interests: Array.isArray(profile.interests)
+                ? profile.interests
+                : [], // Sistema de intereses conectado con Supabase
+              image: pickProfileImage(
+                {
+                  id: profile.id,
+                  name: profile.first_name,
+                  type: "single",
+                  gender: normalizedGender,
+                },
+                usedImages,
+              ), // Avatar URL desde Supabase profiles
+              bio: profile.bio || "Sin descripcin",
+              isOnline: profile.is_online || false,
+              lastActive: profile.last_active
+                ? new Date(profile.last_active).toLocaleString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    day: "numeric",
+                    month: "short",
+                  })
+                : "Hace 1 hora",
+              // CORRECCIÓN: verificado es `is_verified`, no `is_premium`
+              // (antes todo perfil premium contaba como verificado y ningún
+              // perfil verificado no-premium aparecía con el filtro).
+              isVerified: profile.is_verified || false,
+              // Ronda 9 (stream A, punto 3): el flag anónimo viaja a la
+              // tarjeta (insignia "Anónimo") y al filtro de Discover.
+              isAnonymous:
+                (profile as unknown as { is_anonymous?: boolean })
+                  .is_anonymous ?? false,
+              isPremium: profile.is_premium || false,
+              rating: 4.5,
+              matchScore: 60 + ((index * 7) % 40),
+              profileType: (profile.account_type as any) || "single",
+              gender:
+                normalizedGender === "unknown" ? undefined : normalizedGender,
+            };
           },
         );
 
@@ -421,9 +695,49 @@ export const Discover = () => {
     user?.id,
   ]);
 
+  // Ronda 10 (stream A, puntos A4/A8): el espectador es una cuenta
+  // anónima (marca en `profile` o registro local de este navegador).
+  // La heurística no se aplica al `user` pelado (sin tipo ni datos,
+  // p. ej. una pareja @demo.local): sin tipo no se distingue de un
+  // anónimo legado.
+  const viewerIsAnonymous =
+    isAnonymousDemoProfile(profile) ||
+    (user?.id ? isViewerAnonymous(user.id) : false);
+
+  const notifyAnonymousLikeBlocked = () => {
+    toast({
+      title: "Like no disponible",
+      description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+    });
+  };
+
   const handleLike = async (profileId: number | string) => {
     if (!isAuthenticated() || !user) {
       setShowPremiumModal(true);
+      return;
+    }
+
+    // Ronda 10 (stream A, punto A8): el like anónimo está bloqueado
+    // con mensaje claro (sin toast de error). La tarjeta ya no
+    // alterna a "Te Gusta" (ver AnimatedProfileCard), y este gate
+    // cubre además el corazón flotante y cualquier otro llamador.
+    if (viewerIsAnonymous) {
+      notifyAnonymousLikeBlocked();
+      return;
+    }
+
+    // MODO DEMO: like local, sin Supabase ni matchService. La tarjeta ya
+    // muestra el corazón rojo; aquí solo se confirma la acción y nunca se
+    // muestra "Error — No se pudo procesar el like".
+    if (
+      user.email === "single@outlook.es" ||
+      user.email === "pareja@outlook.es"
+    ) {
+      toggleLikesGiven(profileId);
+      toast({
+        title: "Like enviado!",
+        description: "Le has dado like a este perfil.",
+      });
       return;
     }
 
@@ -456,6 +770,7 @@ export const Discover = () => {
           });
         }
       }
+      toggleLikesGiven(profileId);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -469,11 +784,22 @@ export const Discover = () => {
   };
 
   const handleViewProfile = (profileId: number | string) => {
+    // El id que se navega es el id REAL del perfil (uuid string de demo o
+    // de Supabase), nunca el id numérico derivado de la tarjeta, que no
+    // igualaba a ningún perfil. ProfileDetail lo resuelve desde
+    // location.state.profile.
+    const id = profileId.toString();
     const profile =
-      profiles.find((p) => p.id === profileId.toString()) ||
-      demoProfiles.find((p) => p.id === profileId.toString());
+      profiles.find((p) => p.id === id) ||
+      demoProfiles.find((p) => p.id === id);
     if (profile) {
       navigate(`/profile/${profile.id}`, { state: { profile } });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Perfil no encontrado",
+        description: "No se pudo abrir este perfil.",
+      });
     }
   };
 
@@ -487,12 +813,40 @@ export const Discover = () => {
       logger.error("Error: profileId inválido", { profileId });
       return;
     }
-    // Mantener flujo demo sin gating de match
+    // Ronda 10 (stream A, punto A4): gate ANTES de navegar. Si el
+    // espectador o el destino es anónimo, solo hay chat con amistad
+    // aceptada: sin ella no se abre el hilo ni el compositor. Antes
+    // se navegaba a /chat/:id y el bloqueo solo saltaba al enviar
+    // (test ronda 9).
+    const targetProfile = [...filteredProfiles, ...filteredDemoProfiles].find(
+      (p) => String(p.id) === String(profileId),
+    );
+    const chatCheck = canAnonymousChat({
+      senderIsAnonymous: viewerIsAnonymous,
+      recipientIsAnonymous:
+        (targetProfile as { isAnonymous?: boolean } | undefined)
+          ?.isAnonymous === true,
+      areFriends: areFriendsSync(
+        String(user?.id ?? ""),
+        String(profileId),
+        String(profile?.first_name ?? user?.email ?? ""),
+        targetProfile?.name ?? "",
+      ),
+    });
+    if (!chatCheck.allowed) {
+      toast({
+        title: "Chat bloqueado",
+        description: chatCheck.reason,
+      });
+      return;
+    }
+    // Mantener flujo demo sin gating de match: abrir el hilo con esa
+    // persona (/chat/:id del perfil), no /chat-info.
     if (
       user?.email === "single@outlook.es" ||
       user?.email === "pareja@outlook.es"
     ) {
-      navigate("/chat-info");
+      navigate(`/chat/${profileId}`);
       return;
     }
 
@@ -536,12 +890,24 @@ export const Discover = () => {
   };
 
   const handleRefresh = () => {
-    const newProfiles = generateRandomProfiles();
-    setProfiles(newProfiles);
-    setFilteredProfiles(newProfiles);
+    // Recarga la MISMA lista estable en ambos modos (ronda 6, punto 15):
+    // los demo canónicos (orden y datos estables) y los de fallback, que
+    // ahora se generan con semilla fija en vez de Math.random/uuidv4.
+    const isDemoUser =
+      user?.email === "single@outlook.es" ||
+      user?.email === "pareja@outlook.es";
+    if (isDemoUser) {
+      const demos = generateDemoProfiles(20);
+      setDemoProfiles(demos);
+      setFilteredDemoProfiles(demos);
+    } else {
+      const newProfiles = generateRandomProfiles();
+      setProfiles(newProfiles);
+      setFilteredProfiles(newProfiles);
+    }
     toast({
       title: "Perfiles actualizados",
-      description: "Se han cargado nuevos perfiles para ti.",
+      description: "Se recargó la lista de perfiles.",
     });
   };
 
@@ -559,26 +925,26 @@ export const Discover = () => {
       <div className="relative z-10"></div>
 
       {/* Header con navegacin */}
-      <div className="bg-white/10 backdrop-blur-md border-b border-white/20 p-4 shadow-lg relative z-10">
+      <div className="bg-white/80 dark:bg-white/10 backdrop-blur-md border-b border-slate-200 dark:border-white/20 p-4 shadow-lg relative z-10">
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center space-x-2 sm:space-x-4">
             <Button
               onClick={() => navigate("/")}
-              className="text-white hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
             >
               <Home className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
               <span className="hidden sm:inline">Inicio</span>
             </Button>
             <Button
               onClick={() => navigate("/profile")}
-              className="text-white hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent border-none"
             >
               <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
               <span className="hidden sm:inline">Perfil</span>
             </Button>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Search className="h-5 w-5 sm:h-6 sm:w-6" />
             <span className="hidden sm:inline">Descubrir</span>
           </h1>
@@ -586,7 +952,7 @@ export const Discover = () => {
           <div className="flex items-center space-x-1 sm:space-x-2">
             <Button
               onClick={() => setShowCouples(!showCouples)}
-              className={`p-2 sm:px-4 bg-transparent hover:bg-white/20 ${showCouples ? "text-purple-300 bg-white/20" : "text-white"}`}
+              className={`p-2 sm:px-4 bg-transparent hover:bg-slate-100 dark:hover:bg-white/20 ${showCouples ? "text-purple-700 bg-purple-100 dark:text-purple-300 dark:bg-white/20" : "text-slate-800 dark:text-white"}`}
             >
               <span className="hidden sm:inline">
                 {showCouples ? "Singles" : "Parejas"}
@@ -595,14 +961,14 @@ export const Discover = () => {
             </Button>
             <Button
               onClick={() => setShowFilters(!showFilters)}
-              className="text-white hover:bg-white/20 p-2 sm:px-4 bg-transparent"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent"
             >
               <Filter className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
               <span className="hidden sm:inline">Filtros</span>
             </Button>
             <Button
               onClick={handleRefresh}
-              className="text-white hover:bg-white/20 p-2 bg-transparent"
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 bg-transparent"
             >
               <RefreshCw className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
@@ -621,18 +987,30 @@ export const Discover = () => {
         >
           <GlassCard className="text-center p-4">
             <Heart className="h-6 w-6 mx-auto mb-2 text-red-500" />
-            <div className="text-2xl font-bold text-white">12</div>
-            <div className="text-sm text-white/80">Likes</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              {likesGiven}
+            </div>
+            <div className="text-sm text-slate-500 dark:text-white/80">
+              Likes
+            </div>
           </GlassCard>
           <GlassCard className="text-center p-4">
             <Flame className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-            <div className="text-2xl font-bold text-white">5</div>
-            <div className="text-sm text-white/80">Super Likes</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              5
+            </div>
+            <div className="text-sm text-slate-500 dark:text-white/80">
+              Super Likes
+            </div>
           </GlassCard>
           <GlassCard className="text-center p-4">
             <Star className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
-            <div className="text-2xl font-bold text-white">0</div>
-            <div className="text-sm text-white/80">Matches</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+              0
+            </div>
+            <div className="text-sm text-slate-500 dark:text-white/80">
+              Matches
+            </div>
           </GlassCard>
         </motion.div>
 
@@ -650,15 +1028,15 @@ export const Discover = () => {
                 variant="colored"
               >
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Sliders className="h-5 w-5 text-purple-300" />
-                  <span className="text-white drop-shadow-lg font-bold">
+                  <Sliders className="h-5 w-5 text-purple-700 dark:text-purple-300" />
+                  <span className="text-slate-900 dark:text-white drop-shadow-lg font-bold">
                     Filtros Avanzados:
                   </span>
                 </h3>
 
                 {/* Edad */}
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-white mb-3">
+                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
                     Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
                   </label>
                   <Slider
@@ -678,7 +1056,7 @@ export const Discover = () => {
 
                 {/* Distancia */}
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-white mb-3">
+                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
                     Distancia: {filters.distance} km
                   </label>
                   <Slider
@@ -698,22 +1076,22 @@ export const Discover = () => {
 
                 {/* Intereses */}
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-white mb-3">
+                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
                     Intereses
                     {isDemoOrProduction() && (
-                      <span className="ml-2 text-xs text-purple-300">
-                        (Demo/Produccin)
+                      <span className="ml-2 text-xs text-purple-700 dark:text-purple-300">
+                        (Demo/Producción)
                       </span>
                     )}
                   </label>
-                  <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-3 bg-white/20 rounded-lg border border-white/30">
+                  <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-3 bg-slate-100 dark:bg-white/20 rounded-lg border border-slate-300 dark:border-white/30">
                     {availableInterests.map((interest: string) => (
                       <Badge
                         key={interest}
                         className={`cursor-pointer text-xs font-medium transition-all duration-200 hover:scale-105 ${
                           filters.interests.includes(interest)
                             ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg"
-                            : "border-white/60 text-white hover:border-white hover:bg-white/20 border bg-transparent"
+                            : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/60 dark:text-white dark:hover:border-white dark:hover:bg-white/20 border bg-transparent"
                         }`}
                         onClick={() => {
                           setFilters((prev) => ({
@@ -730,10 +1108,10 @@ export const Discover = () => {
                   </div>
                 </div>
 
-                {/* Tipo de Relacion */}
+                {/* Tipo de Relación */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-purple-800 mb-3">
-                    Tipo de Relacion
+                  <label className="block text-sm font-medium text-slate-800 dark:text-white mb-3">
+                    Tipo de Relación
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {["Pareja", "Soltero/a", "Abierto", "Poliamoroso"].map(
@@ -746,7 +1124,7 @@ export const Discover = () => {
                             className={`cursor-pointer text-xs p-2 text-center transition-all duration-200 ${
                               isSelected
                                 ? "bg-purple-600 text-white border-purple-600 hover:bg-purple-700"
-                                : "border-purple-300 text-purple-700 hover:border-purple-500 hover:bg-purple-50 border bg-transparent"
+                                : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/40 dark:text-white dark:hover:border-white dark:hover:bg-white/10 border bg-transparent"
                             }`}
                             onClick={() => {
                               setFilters((prev) => ({
@@ -767,22 +1145,30 @@ export const Discover = () => {
                   </div>
                 </div>
 
-                {/* Verificacion */}
+                {/* Verificación: activado = se ven verificados Y no
+                    verificados; desactivado = SOLO verificados. Es el
+                    mismo ajuste que "Acceso a perfiles sin verificar"
+                    de Privacidad; aquí se controla en vivo. */}
                 <div className="mb-4">
-                  <label className="flex items-center gap-2 text-sm font-medium text-purple-800 cursor-pointer">
+                  <label className="flex items-center gap-2 text-sm font-medium text-slate-800 dark:text-white cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={filters.verified}
+                      checked={!filters.verified}
                       className="w-4 h-4 text-purple-600 border-purple-300 rounded focus:ring-purple-500"
                       onChange={(e) => {
                         setFilters((prev) => ({
                           ...prev,
-                          verified: e.target.checked,
+                          verified: !e.target.checked,
                         }));
                       }}
                     />
-                    Solo perfiles verificados
+                    Mostrar perfiles sin verificar
                   </label>
+                  <p className="text-xs text-slate-500 dark:text-white/70 mt-1 ml-6">
+                    {filters.verified
+                      ? "Solo se muestran perfiles verificados."
+                      : "Se muestran perfiles verificados y sin verificar."}
+                  </p>
                 </div>
 
                 {/* Boton Limpiar Filtros */}
@@ -866,20 +1252,38 @@ export const Discover = () => {
                           profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
+                          partnerAge={profile.partnerAge}
                           location={profile.location}
                           image={profile.image}
                           bio={profile.bio}
                           interests={profile.interests}
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
+                          isVerified={profile.isVerified ?? false}
+                          isAnonymous={profile.isAnonymous ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
                           onLike={handleLike}
+                          isViewerAnonymous={viewerIsAnonymous}
+                          onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
                           onMessage={handleMessage}
                           onViewProfile={handleViewProfile}
                         />
+                        {/* Distancia APROXIMADA para matching (punto 3):
+                            nunca la exacta, mínimo 1 km; oculta si el
+                            perfil o el espectador desactivaron la
+                            geolocalización. */}
+                        <div className="flex justify-center mt-2">
+                          <DistanceBadge
+                            distanceKm={profile.distance}
+                            profileSharesLocation={
+                              getSocialDemoData(profile.name).sharesLocation
+                            }
+                            viewerSharesLocation={viewerSharesLocation}
+                          />
+                        </div>
                       </motion.div>
                     ))}
 
@@ -898,20 +1302,34 @@ export const Discover = () => {
                           profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
+                          partnerAge={profile.partnerAge}
                           location={profile.location}
                           image={profile.image}
                           bio={profile.bio}
                           interests={profile.interests}
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
+                          isVerified={profile.isVerified ?? false}
+                          isAnonymous={profile.isAnonymous ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
                           onLike={handleLike}
+                          isViewerAnonymous={viewerIsAnonymous}
+                          onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
                           onMessage={handleMessage}
                           onViewProfile={handleViewProfile}
                         />
+                        <div className="flex justify-center mt-2">
+                          <DistanceBadge
+                            distanceKm={profile.distance}
+                            profileSharesLocation={
+                              getSocialDemoData(profile.name).sharesLocation
+                            }
+                            viewerSharesLocation={viewerSharesLocation}
+                          />
+                        </div>
                       </motion.div>
                     ))}
 
@@ -927,25 +1345,39 @@ export const Discover = () => {
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                       >
                         <AnimatedProfileCard
-                          id={parseInt(profile.id)}
+                          id={index + 1}
                           profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
+                          partnerAge={profile.partnerAge}
                           location={profile.location}
                           image={profile.image}
                           bio={profile.bio}
                           interests={profile.interests}
                           isOnline={profile.isOnline}
                           isPremium={profile.isPremium}
+                          isVerified={profile.isVerified ?? false}
+                          isAnonymous={profile.isAnonymous ?? false}
                           isPrivate={false}
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
                           onLike={handleLike}
+                          isViewerAnonymous={viewerIsAnonymous}
+                          onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
                           onMessage={handleMessage}
                           canMessage={matchedIds.has(profile.id.toString())}
                           onViewProfile={handleViewProfile}
                         />
+                        {/* Distancia APROXIMADA para matching (punto 3):
+                            nunca la exacta, mínimo 1 km; oculta si el
+                            espectador desactivó la geolocalización. */}
+                        <div className="flex justify-center mt-2">
+                          <DistanceBadge
+                            distanceKm={profile.distance}
+                            viewerSharesLocation={viewerSharesLocation}
+                          />
+                        </div>
                       </motion.div>
                     ))}
                 </>
@@ -975,4 +1407,3 @@ export const Discover = () => {
     </div>
   );
 };
-

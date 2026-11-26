@@ -22,7 +22,11 @@ export const useProfileScore = (profile: any): ProfileScore => {
         score: 0,
         level: "new",
         label: "Nuevo / Creciendo",
-        color: "text-blue-400",
+        // RONDA 7 (punto 3): los colores de score eran claros fijos
+        // (`text-blue-400`...): sobre la píldora clara en tema claro no
+        // se leían. Ahora cada nivel tiene su tono oscuro en claro y el
+        // claro original en oscuro.
+        color: "text-blue-600 dark:text-blue-400",
         icon: "🌱",
       };
 
@@ -38,28 +42,28 @@ export const useProfileScore = (profile: any): ProfileScore => {
 
     let level: ProfileScoreLevel = "new";
     let label = "Nuevo / Creciendo";
-    let color = "text-blue-400";
+    let color = "text-blue-600 dark:text-blue-400";
     let icon = "🌱";
 
     if (score >= 90) {
       level = "safe";
       label = "Seguro / Amigable";
-      color = "text-green-500";
+      color = "text-green-600 dark:text-green-400";
       icon = "🛡️";
     } else if (score >= 70) {
       level = "new";
       label = "Nuevo / Creciendo";
-      color = "text-blue-400";
+      color = "text-blue-600 dark:text-blue-400";
       icon = "🌱";
     } else if (score >= 50) {
       level = "warning";
       label = "Precaución";
-      color = "text-yellow-500";
+      color = "text-yellow-600 dark:text-yellow-400";
       icon = "⚠️";
     } else {
       level = "danger";
       label = "No Recomendado";
-      color = "text-red-500";
+      color = "text-red-600 dark:text-red-400";
       icon = "🚫";
     }
 

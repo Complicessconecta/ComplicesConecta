@@ -1,5 +1,5 @@
 Listado de rutas de carpetas para el volumen WACKO
-El número de serie del volumen es D8CF-CDD4
+El nÃºmero de serie del volumen es D8CF-CDD4
 C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   App.tsx
 |   debug.tsx
@@ -253,6 +253,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       InvitationDialog.tsx
 |   |       
 |   +---layout
+|   |       BottomNavigation.tsx
 |   |       index.ts
 |   |       MainLayout.tsx
 |   |       
@@ -285,6 +286,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       ImageModal.tsx
 |   |       index.ts
 |   |       InstallAppModal.tsx
+|   |       LogoutModal.tsx
 |   |       PremiumModal.tsx
 |   |       SharedTermsModal.tsx
 |   |       SmartMatchingModal.tsx
@@ -293,6 +295,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       SuperLikesModal.tsx
 |   |       TermsModalAuth.tsx
 |   |       TermsModalCouple.tsx
+|   |       TermsModalClub.tsx
 |   |       TermsModalSingle.tsx
 |   |       ThemeInfoModal.tsx
 |   |       UnifiedModal.tsx
@@ -336,16 +339,21 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |   ProfileNavTabs.tsx
 |   |   |   
 |   |   +---couple
+|   |   |       CoupleAboutSection.tsx
 |   |   |       CoupleCard.tsx
 |   |   |       CoupleDashboard.tsx
 |   |   |       CoupleDisputeManager.tsx
 |   |   |       CoupleImageGallery.tsx
 |   |   |       CoupleImageUpload.tsx
+|   |   |       CoupleLookingForSection.tsx
 |   |   |       CouplePhotoSection.tsx
+|   |   |       CouplePreferencesSection.tsx
 |   |   |       CouplePreNuptialAgreement.tsx
+|   |   |       CouplePrivacySection.tsx
 |   |   |       CoupleProfileCard.tsx
 |   |   |       CoupleProfileHeader.tsx
 |   |   |       CoupleRegistrationForm.tsx
+|   |   |       CoupleSubscriptionCard.tsx
 |   |   |       index.ts
 |   |   |       NicknameValidator.tsx
 |   |   |       PasswordValidator.tsx
@@ -356,7 +364,10 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       AnimatedProfileCard.tsx
 |   |   |       CollapsedUserProfile.tsx
 |   |   |       DiscoverProfileCard.tsx
+|   |   |       DistanceBadge.tsx
 |   |   |       EnhancedGallery.tsx
+|   |   |       FriendRequestButton.tsx
+|   |   |       FriendsSection.tsx
 |   |   |       Gallery.tsx
 |   |   |       ImageGallery.tsx
 |   |   |       ImageModal.tsx
@@ -364,11 +375,14 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       index.ts
 |   |   |       InterestsSelector.tsx
 |   |   |       MainProfileCard.tsx
+|   |   |       NationalityBadge.tsx
 |   |   |       NFTGalleryManager.tsx
 |   |   |       ParentalControl.tsx
+|   |   |       PhotoAccessRequestButton.tsx
 |   |   |       PrivateImageGallery.tsx
 |   |   |       PrivateImageRequest.tsx
 |   |   |       PrivateImageRequestsManager.tsx
+|   |   |       PrivateProfileGate.tsx
 |   |   |       profile.ts
 |   |   |       ProfileAnalytics.tsx
 |   |   |       ProfileDetail.tsx
@@ -381,10 +395,13 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |       ProfileReportsPanel.tsx
 |   |   |       Profiles.tsx
 |   |   |       ProfileSettings.tsx
+|   |   |       ProfileSocialSettings.tsx
 |   |   |       ProfileStats.tsx
 |   |   |       ProfileTabs.tsx
 |   |   |       ProfileThemeDemo.tsx
 |   |   |       ProfileThemeShowcase.tsx
+|   |   |       ProtectedMedia.tsx
+|   |   |       ReportBlockButtons.tsx
 |   |   |       ReportProfileDialog.tsx
 |   |   |       ShareProfile.tsx
 |   |   |       useProfileQuery.ts
@@ -395,8 +412,19 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |           NicknameValidator.tsx
 |   |           PasswordValidator.tsx
 |   |           ProfileSingle.test.tsx
+|   |           SingleAboutSection.tsx
 |   |           SingleCard.tsx
+|   |           SingleDashboard.tsx
+|   |           SingleImageGallery.tsx
+|   |           SingleImageUpload.tsx
+|   |           SingleLookingForSection.tsx
+|   |           SinglePhotoSection.tsx
+|   |           SinglePreferencesSection.tsx
+|   |           SinglePrivacySection.tsx
+|   |           SingleProfileCard.tsx
+|   |           SingleProfileHeader.tsx
 |   |           SingleRegistrationForm.tsx
+|   |           SingleSubscriptionCard.tsx
 |   |           
 |   +---reservations
 |   |       QRCodeGenerator.tsx
@@ -424,6 +452,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       NotificationSettings.tsx
 |   |       PinSettings.tsx
 |   |       PrivacySettings.tsx
+|   |       settingsStorage.ts
 |   |       
 |   +---sharing
 |   |       TikTokShareButton.tsx
@@ -657,6 +686,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       demoData.ts
 |       DemoProvider.tsx
 |       RealProvider.tsx
+|       socialDemoData.ts
 |       
 +---entities
 |       club.ts
@@ -735,6 +765,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 +---integrations
 |   +---supabase
 |   |       client.ts
+|   |       security-helpers.ts
 |   |       types.ts
 |   |       
 |   \---wallet
@@ -756,6 +787,8 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   app-config.ts
 |   |   asset-loader.ts
 |   |   capture-console-errors.ts
+|   |   chatLimits.ts
+|   |   countries.ts
 |   |   data.ts
 |   |   demo-uuid.ts
 |   |   distance-utils.ts
@@ -763,6 +796,8 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   env-utils.ts
 |   |   errorHandling.ts
 |   |   features.ts
+|   |   friends.ts
+|   |   geolocation.ts
 |   |   image-optimization.ts
 |   |   images.ts
 |   |   imageService.ts
@@ -776,8 +811,11 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   mobile.ts
 |   |   multimediaSecurity.ts
 |   |   notifications.ts
+|   |   profileCompleteness.ts
+|   |   profileVisibility.ts
 |   |   redis-cache.ts
 |   |   report-export.ts
+|   |   reportBlock.ts
 |   |   requests.ts
 |   |   roles.ts
 |   |   safe-storage.ts
@@ -790,8 +828,10 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   tokenPremium.ts
 |   |   userAgent.ts
 |   |   validation.ts
+|   |   visibility.ts
 |   |   visual-validation.ts
 |   |   wallet-silencer.ts
+|   |   zodiac.ts
 |   |   
 |   +---ai
 |   |       contentModeration.ts
@@ -831,7 +871,6 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       
 |   +---security
 |   |   |   androidSecurity.ts
-|   |   |   dataEncryption.ts
 |   |   |   encryptionConfig.ts
 |   |   |   fileValidator.ts
 |   |   |   index.ts
@@ -843,6 +882,8 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |           
 |   +---storage
 |   |       index.ts
+|   |       private-media.ts
+|   |       secure-storage.ts
 |   |       
 |   +---supabase
 |   |       index.ts
@@ -876,6 +917,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   Clubs.tsx
 |   |   ClubsComingSoon.tsx
 |   |   ClubsDemo.tsx
+|   |   ClubsPublic.tsx
 |   |   Construction.tsx
 |   |   Dashboard.tsx
 |   |   Demo.tsx
@@ -893,7 +935,6 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   LeyOlimpia.tsx
 |   |   Marketplace.tsx
 |   |   Matches.tsx
-|   |   ModeratorDashboard.tsx
 |   |   ModeratorRequest.tsx
 |   |   Moderators.tsx
 |   |   News.tsx
@@ -905,6 +946,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   ProjectInfo.tsx
 |   |   Requests.tsx
 |   |   Security.tsx
+|   |   Settings.tsx
 |   |   Shop.tsx
 |   |   Stories.tsx
 |   |   StoriesInfo.tsx
@@ -925,7 +967,6 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       Admin.tsx
 |   |       AdminAnalytics.tsx
 |   |       AdminCareerApplications.tsx
-|   |       AdminDashboard.tsx
 |   |       AdminModerators.tsx
 |   |       AdminPartners.tsx
 |   |       AdminProduction.tsx
@@ -950,13 +991,16 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |               ProfileSingle.tsx
 |               
 +---security
+|       certificate-pinning.ts
+|       console-cleanup.ts
+|       csp-config.ts
 |       owasp-checklist.ts
+|       session-pinning.ts
 |       
 +---services
 |   |   index.ts
 |   |   moderatorTimer.ts
 |   |   
-|   +---admin
 |   +---ai
 |   |       AIIntegrationService.ts
 |   |       ConsentVerificationService.ts
@@ -992,13 +1036,16 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |   permanentBan.ts
 |   |   |   
 |   |   +---auth
-|   |   |       ContentProtectionService.ts
-|   |   |       MFAService.ts
-|   |   |       SecurityAuditService.ts
-|   |   |       SecurityService.ts
-|   |   |       UserIdentificationService.ts
-|   |   |       UserVerificationService.ts
-|   |   |       
+|   |   |   |   ContentProtectionService.ts
+|   |   |   |   MFAService.ts
+|   |   |   |   SecurityAuditService.ts
+|   |   |   |   SecurityService.ts
+|   |   |   |   UserIdentificationService.ts
+|   |   |   |   UserVerificationService.ts
+|   |   |   |   
+|   |   |   \---__tests__
+|   |   |           SecurityService.test.ts
+|   |   |           
 |   |   +---mfa
 |   |   |       MFAService.ts
 |   |   |       
@@ -1014,6 +1061,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   +---chat
 |   |       ChatRoomService.ts
 |   |       index.ts
+|   |       
+|   +---clubs
+|   |       clubContentService.ts
 |   |       
 |   +---core
 |   |   |   AdvancedCacheService.ts
@@ -1144,12 +1194,11 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |           WalletService.ts
 |           
 +---shared
-|   +---lib
-|   |       cn.ts
-|   |       format.ts
-|   |       validation.ts
-|   |       
-|   \---ui
+|   \---lib
+|           cn.ts
+|           format.ts
+|           validation.ts
+|           
 +---styles
 |       AccessibilityAudit.css
 |       AnalyticsDashboard.css
@@ -1243,6 +1292,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |       biometric-auth.test.ts
 |   |       media-access.test.ts
 |   |       
+|   +---services
+|   |       seedDemoNFTs.test.ts
+|   |       
 |   +---setup
 |   |       playwright-setup.ts
 |   |       test-utils.tsx
@@ -1263,6 +1315,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   |   Neo4jService.test.ts
 |   |   |   performance.test.ts
 |   |   |   PerformanceMonitoringService.test.ts
+|   |   |   pin-validation.test.ts
 |   |   |   postsService.test.ts
 |   |   |   ProfileReportService.test.ts
 |   |   |   PushNotificationService.test.ts
@@ -1296,6 +1349,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       chat-limits.ts
 |       chat-summary.types.ts
 |       content-moderation.types.ts
+|       datadog.d.ts
 |       discover.types.ts
 |       global.d.ts
 |       google.types.ts
@@ -1304,6 +1358,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |       react.types.ts
 |       security.types.ts
 |       storybook.d.ts
+|       supabase-auth.d.ts
 |       supabase-custom.ts
 |       supabase-extended.ts
 |       supabase-extensions.ts

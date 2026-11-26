@@ -83,7 +83,7 @@ const authenticateWithBiometric = async () => {
           ? "Autenticación cancelada"
           : (error as Error).name === "InvalidStateError"
             ? "Credencial no válida"
-            : "No hay credenciales biométricas registradías",
+            : "No hay credenciales biométricas registradas",
     };
   }
 };
@@ -382,7 +382,7 @@ describe("Biometric Authentication Library", () => {
       const result = await authenticateWithBiometric();
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe("No hay credenciales biométricas registradías");
+      expect(result.error).toBe("No hay credenciales biométricas registradas");
     });
   });
 
@@ -636,7 +636,7 @@ describe("BiometricSettings Component", () => {
     render(React.createElement(BiometricSettings, { userId: "test-user-id" }));
 
     await waitFor(() => {
-      expect(screen.getByText("Credenciales Registradías")).toBeInTheDocument();
+      expect(screen.getByText("Credenciales Registradas")).toBeInTheDocument();
       expect(screen.getByText("Credencial #1")).toBeInTheDocument();
     });
   });

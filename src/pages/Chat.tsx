@@ -1,5 +1,26 @@
-import { useState, useEffect, type ChangeEvent, type KeyboardEvent } from "react";
-import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from "react";
+import {
+  MessageCircle,
+  Video,
+  MoreVertical,
+  ArrowLeft,
+  Heart,
+  Send,
+  Lock,
+  Globe,
+  UserPlus,
+  Smile,
+  Paperclip,
+  Mic,
+  X,
+  Camera,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -7,7 +28,12 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
-import { mockPrivacySettings } from "@/lib/data";
+import {
+  canSendMessageTo,
+  canStartVideoCall,
+  loadRecipientPrivacy,
+  readRecipientPrivacySync,
+} from "@/lib/chatLimits";
 import { invitationService } from "@/lib/invitations";
 // Tipos reemplazados con tipos locales para compatibilidad
 export interface SimpleChatRoom {
@@ -30,8 +56,22 @@ export interface SimpleChatMessage {
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { ConsentIndicator } from "@/components/chat/ConsentIndicator";
+import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
+import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
+import {
+  areFriendsSync,
+  getPhotoAccessStatus,
+  type PhotoAccessStatus,
+} from "@/lib/friends";
+import {
+  findLocalDemoAccountById,
+  isAnonymousDemoProfile,
+} from "@/lib/demo-registration";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
-import { safeGetItem } from "@/lib/safe-storage";
+import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
+import { EmojiPicker } from "@/components/chat/EmojiPicker";
+import { ChatFileUpload } from "@/components/chat/ChatFileUpload";
+import { VoiceRecorder } from "@/components/chat/VoiceRecorder";
 import { useRealtimeChat } from "@/features/chat/useRealtimeChat";
 import { matchService } from "@/services/social";
 import { tokenService } from "@/services/payments/TokenService";
@@ -59,11 +99,234 @@ export interface Message {
   type: "text" | "image";
 }
 
-const Chat = () => {
+// NOTA: estos arrays viven a nivel de módulo (no dentro del componente)
+// para que su identidad sea estable entre renders. El efecto de
+// sincronización de rooms depende de ellos; si se recrearan en cada
+// render, el efecto dispararía _setRooms en bucle y las transiciones
+// de navegación del Router nunca harían commit (la URL cambia pero
+// la vista se queda atorada en el chat).
+// Private chats - conexiones verificadías
+const privateChats: ChatUser[] = [
+  {
+    id: "1",
+    name: "Anabella & Julio",
+    image:
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Están libres este fin de semana? 🔥💕",
+    timestamp: "5 min",
+    isOnline: true,
+    unreadCount: 2,
+    isPrivate: true,
+    roomType: "private",
+  },
+  {
+    id: "2",
+    name: "Sofia",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Me encantó conocerlos en la fiesta 🎉✨",
+    timestamp: "1 h",
+    isOnline: true,
+    unreadCount: 0,
+    isPrivate: true,
+    roomType: "private",
+  },
+  {
+    id: "3",
+    name: "Carmen & Roberto",
+    image:
+      "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Vienen al evento VIP del sábado? 🌟",
+    timestamp: "3 h",
+    isOnline: false,
+    unreadCount: 0,
+    isPrivate: true,
+    roomType: "private",
+  },
+  {
+    id: "4",
+    name: "Raúl",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Qué tal si nos vemos para tomar algo? 🍷",
+    timestamp: "2 h",
+    isOnline: false,
+    unreadCount: 1,
+    isPrivate: true,
+    roomType: "private",
+  },
+];
+
+// Public chats - salas comunitarias
+const publicChats: ChatUser[] = [
+  {
+    id: "101",
+    name: "🌍 Sala General Lifestyle",
+    image:
+      "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Bienvenidos a la comunidad swinger!",
+    timestamp: "10 min",
+    isOnline: true,
+    unreadCount: 5,
+    isPrivate: false,
+    roomType: "public",
+  },
+  {
+    id: "102",
+    name: "💕 Parejas CDMX",
+    image:
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Evento swinger este sábado en Polanco 🎊",
+    timestamp: "30 min",
+    isOnline: true,
+    unreadCount: 12,
+    isPrivate: false,
+    roomType: "public",
+  },
+  {
+    id: "103",
+    name: "💫 Singles Lifestyle",
+    image:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
+    lastMessage: "Alguien para intercambio hoy?",
+    timestamp: "1 h",
+    isOnline: true,
+    unreadCount: 3,
+    isPrivate: false,
+    roomType: "public",
+  },
+  {
+    id: "104",
+    name: "🔒 Eventos Privados",
+    image:
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=100&h=100&fit=crop&crop=faces",
+    lastMessage: "Club exclusivo abre sus puertas",
+    timestamp: "2 h",
+    isOnline: true,
+    unreadCount: 8,
+    isPrivate: false,
+    roomType: "public",
+  },
+];
+
+// Nº de miembros ESTABLE por sala pública (antes: Math.random() en cada
+// render, el contador cambiaba 30→57→37 sin motivo).
+const PUBLIC_ROOM_MEMBERS: Record<string, number> = {
+  "101": 42,
+  "102": 57,
+  "103": 28,
+  "104": 19,
+};
+
+/**
+ * Sala de chat → id del PERFIL del interlocutor (ronda 7, punto 12).
+ *
+ * Los ids de `privateChats` son de SALA ("1"-"4"), no de perfil: la
+ * solicitud de ver fotos se guardaba con toId = id de sala, mientras
+ * la misma solicitud desde el perfil se guarda con toId = id del
+ * perfil (UUID o "demo-couple-456"). Eran dos llaves distintas para
+ * la misma persona: la solicitud enviada en el chat no aparecía como
+ * enviada al abrir el perfil (y viceversa), y /requests tampoco la
+ * encontraba por perfil. La sala 3 es Carmen & Roberto, cuya ficha
+ * demo usa el id "demo-couple-456" (el mismo que produce Compartir);
+ * las demás salas no tienen ficha de perfil propia en el repo, así
+ * que conservan su id de sala (consistencia interna del chat).
+ */
+const CHAT_ROOM_PROFILE_IDS: Record<string, string> = {
+  "3": "demo-couple-456",
+};
+
+function resolveChatPartnerProfileId(chatId: string): string {
+  return CHAT_ROOM_PROFILE_IDS[chatId] ?? chatId;
+}
+
+// Persistencia demo: mensajes enviados por sala en localStorage.
+const chatMessagesKey = (chatId: string) => `chat_messages:${chatId}`;
+
+const readPersistedChatMessages = (chatId: string): SimpleChatMessage[] => {
+  try {
+    // safeGetItem YA parsea el JSON cuando el valor empieza por "[" o
+    // "{": lo que devuelve aquí ya es el array, no un string. El
+    // JSON.parse(raw) anterior lo volvía a parsear ("[object Object]")
+    // y siempre caía en el catch → []. Por eso los mensajes enviados
+    // se veían al enviarlos (estado) pero desaparecían al navegar y
+    // volver (la recarga leía []), y cada envío sobrescribía los
+    // anteriores (persistía [último] sobre []). Verificado con
+    // simulación en /tmp (prove_chat_persist.js).
+    const stored: unknown = safeGetItem(chatMessagesKey(chatId), {
+      defaultValue: "",
+    });
+    if (Array.isArray(stored)) return stored as SimpleChatMessage[];
+    if (typeof stored === "string" && stored) {
+      const parsed: unknown = JSON.parse(stored);
+      return Array.isArray(parsed) ? (parsed as SimpleChatMessage[]) : [];
+    }
+    return [];
+  } catch {
+    return [];
+  }
+};
+
+const writePersistedChatMessages = (
+  chatId: string,
+  msgs: SimpleChatMessage[],
+): void => {
+  safeSetItem(chatMessagesKey(chatId), JSON.stringify(msgs));
+};
+
+// Historial semilla de cada hilo demo (lo que ya veía el usuario antes de
+// escribir nada). Los mensajes enviados se añaden encima desde localStorage.
+const getSeedMessages = (chatId: string): SimpleChatMessage[] => [
+  {
+    id: "1",
+    sender_id: chatId,
+    sender_name: "Demo User",
+    room_id: chatId,
+    content: "Hola! Cómo están?",
+    created_at: new Date().toISOString(),
+    message_type: "text",
+  },
+  {
+    id: "2",
+    sender_id: "0",
+    sender_name: "Tú",
+    room_id: chatId,
+    content: "Muy bien! Y ustedes?",
+    created_at: new Date().toISOString(),
+    message_type: "text",
+  },
+  {
+    id: "3",
+    sender_id: chatId,
+    sender_name: "Demo User",
+    room_id: chatId,
+    content: "Genial, les interesa conocernos mejor?",
+    created_at: new Date().toISOString(),
+    message_type: "text",
+  },
+];
+
+const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { features } = useFeatures();
-  const { user, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
+  // Nombre del espectador para las solicitudes de amistad/fotos.
+  // Ronda 11, stream C (iv): `user` es el Auth user de Supabase y NO
+  // trae `first_name` (vive en `profile`): antes viewerName caía a
+  // `user.email` ("single@outlook.es") y la comprobación de amistad
+  // semilla (`getSocialDemoData(...).friendNames` trae "Sofía", no el
+  // email) nunca casaba, así que el chat con Carmen & Roberto mostraba
+  // "Enviar solicitud de amistad" aunque Sofía ya los tiene de amigos.
+  // Se lee primero del perfil (first_name / display_name) y solo
+  // después del email.
+  const viewerName =
+    (profile as { first_name?: string; display_name?: string } | null)
+      ?.first_name ??
+    (profile as { display_name?: string } | null)?.display_name ??
+    (user as { first_name?: string } | null)?.first_name ??
+    user?.email ??
+    "Tú";
   const { id: chatPartnerId } = useParams<{ id: string }>();
   const [_rooms, _setRooms] = useState<SimpleChatRoom[]>([]);
   const [_selectedRoom, _setSelectedRoom] = useState<SimpleChatRoom | null>(
@@ -82,6 +345,14 @@ const Chat = () => {
   );
   const [isProduction, setIsProduction] = useState(false);
   const [selectedChat, setSelectedChat] = useState<ChatUser | null>(null);
+  // Estado persistido de la solicitud de ver fotos del hilo abierto
+  // (punto 7): null = aún no leído. Se lee al abrir el hilo (ver
+  // efecto abajo) desde el mismo almacén que la solicitud de amistad
+  // (`friend_requests` kind='photo_access' en real, localStorage
+  // `friend_requests_demo` en demo), para que al reabrir la
+  // conversación no vuelva a "Solicitar ver fotos" cuando ya se envió.
+  const [photoAccessStatus, setPhotoAccessStatus] =
+    useState<PhotoAccessStatus | null>(null);
   const [activeTab, setActiveTab] = useState<"private" | "public">("private");
   const [_realRooms, _setRealRooms] = useState<any[]>([]);
   const [_realMessages, _setRealMessages] = useState<SimpleChatMessage[]>([]);
@@ -91,6 +362,40 @@ const Chat = () => {
   );
   const [galleryProcessing, setGalleryProcessing] = useState(false);
   const galleryPrice = 100;
+
+  // Vista previa (lastMessage) por hilo: en demo se restaura desde los
+  // mensajes enviados persistidos en localStorage, para que no se pierda
+  // al navegar y volver.
+  const [lastMessageByChat, setLastMessageByChat] = useState<
+    Record<string, string>
+  >(() => {
+    const overrides: Record<string, string> = {};
+    [...privateChats, ...publicChats].forEach((chat) => {
+      const stored = readPersistedChatMessages(chat.id);
+      const last = stored[stored.length - 1];
+      if (last) overrides[chat.id] = last.content;
+    });
+    return overrides;
+  });
+
+  // Paneles del compositor (emoji / adjuntar / audio)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+
+  // Galería privada del hilo: colapsada por defecto — antes se renderizaba
+  // siempre entre el header y los mensajes y comía ~250 px del hilo (en la
+  // captura se veía solapada con el primer mensaje). Los botones Galería /
+  // Privada la abren; el panel tiene su propio cierre.
+  const [showPrivateGallery, setShowPrivateGallery] = useState(false);
+  const galleryRef = useRef<HTMLDivElement>(null);
+
+  // Clave de la última navegación a la que ya se le aplicó la
+  // auto-selección de hilo (desde ProfileDetail o ?user=): sin este
+  // guard, pulsar "Volver" en el hilo (setSelectedChat(null)) hacía
+  // que el efecto de abajo volviera a correr con los mismos parámetros
+  // y reabriera el hilo al instante — "Volver" parecía no navegar.
+  const profileChatAppliedRef = useRef<string | null>(null);
 
   const getGalleryOwnerId = (): string | null => {
     // Producción: el dueño del contenido privado del chat 1:1 es el partner
@@ -117,7 +422,9 @@ const Chat = () => {
         throw error;
       }
 
-      const ids = Array.isArray(data) ? data.map((r: any) => String(r.profile_id)) : [];
+      const ids = Array.isArray(data)
+        ? data.map((r: any) => String(r.profile_id))
+        : [];
       setUnlockedGalleries(new Set(ids));
 
       // Mantener un espejo en estado legacy (compatibilidad/telemetría)
@@ -130,7 +437,30 @@ const Chat = () => {
   };
 
   const handleUnlockGalleryItem = async (itemId: string): Promise<void> => {
-    if (!user || !selectedChat) return;
+    if (!selectedChat) return;
+
+    // Demo: sin usuario real ni backend, el desbloqueo se simula — antes
+    // el botón "Desbloquear (100 CMPX)" no hacía nada en demo (retorno
+    // silencioso por falta de user).
+    if (!isProduction) {
+      setGalleryProcessing(true);
+      try {
+        setUnlockedGalleries((prev) => {
+          const next = new Set(prev);
+          next.add(itemId);
+          return next;
+        });
+        toast({
+          title: "Galería desbloqueada (demo)",
+          description: "Desbloqueo simulado: 100 CMPX (demo, sin cargo real).",
+        });
+      } finally {
+        setGalleryProcessing(false);
+      }
+      return;
+    }
+
+    if (!user) return;
     try {
       setGalleryProcessing(true);
       const ownerId = getGalleryOwnerId();
@@ -225,7 +555,7 @@ const Chat = () => {
           if (matchId) {
              setActiveRoomId(matchId);
           } else {
-             logger.warn("No match found for chat", { partnerId: selectedChat.id });
+            logger.warn("No match found for chat", { partnerId: selectedChat.id });
              setActiveRoomId(null);
           }
         } catch (err) {
@@ -266,76 +596,28 @@ const Chat = () => {
     _setRealMessages(mapped);
   }, [realtimeMessages, isProduction, activeRoomId]);
 
-  const handleUnlockGallery = async () => {
-    if (!user || !selectedChat) return;
-    try {
-      setGalleryProcessing(true);
-      const ownerId = getGalleryOwnerId();
-      if (!ownerId) {
-        throw new Error("No se pudo determinar el dueño de la galería.");
-      }
-
-      const balance = await tokenService.getBalance(user.id);
-      if (!balance || balance.cmpx < galleryPrice) {
-        toast({
-          title: "CMPX insuficientes",
-          description: "Compra tokens en el Shop.",
-          variant: "destructive",
-        });
-        return;
-      }
-      const metadata: Record<string, string | number | boolean> = {
-        gallery_owner_id: ownerId,
-      };
-      if (chatPartnerId) {
-        metadata.chat_partner_id = chatPartnerId;
-      }
-      const spent = await tokenService.spendTokens(
-        user.id,
-        "cmpx",
-        galleryPrice,
-        "Desbloqueo galería privada",
-        metadata,
-      );
-      if (!spent) throw new Error("No se pudo realizar el cobro");
-
-      // Persistir desbloqueo para este usuario y el perfil dueño
-      if (supabase) {
-        const { error } = await (supabase as any)
-          .from("gallery_unlocks")
-          .insert({ user_id: user.id, profile_id: ownerId });
-        if (error && error.code !== "23505") {
-          throw error;
-        }
-      }
-
-      await recordGalleryCommission({
-        galleryId: `profile-${ownerId}`,
-        creatorId: ownerId,
-        transactionType: "purchase",
-        amountCMPX: galleryPrice,
-      });
-      setUnlockedGalleries((prev) => {
-        const next = new Set(prev);
-        next.add(ownerId);
-        return next;
-      });
-      toast({
-        title: "Galería desbloqueada",
-        description: "Disfruta el contenido privado.",
-      });
-    } catch (error) {
-      logger.error("Error desbloqueando galería", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-      toast({
-        title: "Error",
-        description: "No se pudo desbloquear la galería.",
-        variant: "destructive",
-      });
-    } finally {
-      setGalleryProcessing(false);
+  // Vista previa de un hilo en la lista: último mensaje enviado (demo, desde
+  // localStorage) o último mensaje real (producción, sala seleccionada).
+  const previewFor = (chat: ChatUser): string => {
+    const sent = lastMessageByChat[chat.id];
+    if (sent) return sent;
+    if (isProduction && selectedChat?.id === chat.id && realtimeMessages.length > 0) {
+      const last = realtimeMessages[realtimeMessages.length - 1];
+      if (last?.content) return String(last.content);
     }
+    return chat.lastMessage;
+  };
+
+  // Un hilo con historial (semilla demo o mensajes reales) no se bloquea:
+  // si ya hay conversación, el usuario es participante de ese hilo.
+  const threadHasHistory = (chat: ChatUser): boolean => {
+    if (!isProduction) {
+      return (
+        getSeedMessages(chat.id).length > 0 ||
+        readPersistedChatMessages(chat.id).length > 0
+      );
+    }
+    return realtimeMessages.length > 0 || _realMessages.length > 0;
   };
 
   // Cargar desbloqueos persistidos (producción)
@@ -436,43 +718,35 @@ const Chat = () => {
     }
   };
 
-  // Load messages for a specific chat
+  // Load messages for a specific chat (demo: semilla + enviados persistidos
+  // en localStorage, para que sobrevivan a navegar y volver).
   const loadMessages = (chatId: string) => {
-    const mockMessages: SimpleChatMessage[] = [
-      {
-        id: "1",
-        sender_id: chatId,
-        sender_name: "Demo User",
-        room_id: chatId,
-        content: "Hola! Cómo están?",
-        created_at: new Date().toISOString(),
-        message_type: "text",
-      },
-      {
-        id: "2",
-        sender_id: "0",
-        sender_name: "Tú",
-        room_id: chatId,
-        content: "Muy bien! Y ustedes?",
-        created_at: new Date().toISOString(),
-        message_type: "text",
-      },
-      {
-        id: "3",
-        sender_id: chatId,
-        sender_name: "Demo User",
-        room_id: chatId,
-        content: "Genial, les interesa conocernos mejor?",
-        created_at: new Date().toISOString(),
-        message_type: "text",
-      },
-    ];
-    setMessages(mockMessages);
+    setMessages([
+      ...getSeedMessages(chatId),
+      ...readPersistedChatMessages(chatId),
+    ]);
   };
 
   // Check chat access permissions for private chats
   useEffect(() => {
     const checkChatAccess = async () => {
+      // En demo el acceso es libre: no dejar que la verificación por
+      // invitación (IDs mock sin invitación "chat" aceptada) pise a false
+      // el mapa que el efecto de modo demo pone a true. Sin este guard,
+      // todos los privados demo acababan bloqueados (p. ej. /chat/1).
+      const demoAuth = safeGetItem<string>("demo_authenticated", {
+        validate: true,
+        defaultValue: "false",
+      });
+      if (demoAuth === "true") {
+        const demoAccessMap: { [key: string]: boolean } = {};
+        [...privateChats, ...publicChats].forEach((chat) => {
+          demoAccessMap[chat.id] = true;
+        });
+        setHasChatAccess(demoAccessMap);
+        return;
+      }
+
       const currentUserId = "1"; // Mock current user ID
       const accessMap: { [key: string]: boolean } = {};
 
@@ -495,9 +769,15 @@ const Chat = () => {
   }, []);
 
   // Get user from URL params or Navigation State
+  // La auto-selección de hilo solo se aplica UNA VEZ por navegación
+  // (profileChatAppliedRef, clave = location.key). Sin el guard, al
+  // pulsar "Volver" (setSelectedChat(null)) el efecto re-corría con
+  // los mismos parámetros y reabría el hilo al instante.
   useEffect(() => {
     // Handle navigation from ProfileDetail
     if (chatPartnerId && location.state?.profile && !selectedChat) {
+      if (profileChatAppliedRef.current === location.key) return;
+      profileChatAppliedRef.current = location.key;
       const profile = location.state.profile;
       const chatUser: ChatUser = {
         id: String(profile.id),
@@ -516,14 +796,44 @@ const Chat = () => {
       return;
     }
 
+    // Carga directa de /chat/<id> (ronda 6, punto 16): antes el hilo
+    // solo se resolvía con location.state (navegación desde el perfil)
+    // o ?user=, así que /chat/3 directo dejaba selectedChat en null y
+    // la página mostraba la LISTA de chats en vez del hilo. Ahora el id
+    // de la URL se resuelve contra las listas canónicas (privados 1-4,
+    // públicos 101-104); si no existe, se queda en la lista.
+    // NOTA DE ESPACIO DE IDS: estos ids son de SALA de chat, no de
+    // perfil — /chat/3 es "Carmen & Roberto" (sala privada 3) mientras
+    // /profile/3 es Ana (perfil legacy 3). No se pueden unificar sin
+    // salas reales (Supabase) que mapeen sala ↔ perfil; ver reporte.
+    if (chatPartnerId && !selectedChat) {
+      if (profileChatAppliedRef.current === location.key) return;
+      profileChatAppliedRef.current = location.key;
+      const allChats = [...privateChats, ...publicChats];
+      const found = allChats.find((chat) => chat.id === chatPartnerId);
+      if (found) {
+        setSelectedChat(found);
+        setActiveTab(found.roomType);
+        loadMessages(found.id);
+        return;
+      }
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
-    const roomType =
-      (urlParams.get("room") as "private" | "public") || "private";
-
-    setActiveTab(roomType);
+    // Solo imponer el tab desde la URL cuando viene explícito (?room=...).
+    // Antes se forzaba "private" en cada cambio de selectedChat: el tab
+    // Público necesitaba dos clics (el primero lo revertía este efecto)
+    // y al abrir una sala pública la lista volvía a los privados.
+    if (urlParams.has("room")) {
+      const roomType =
+        (urlParams.get("room") as "private" | "public") || "private";
+      setActiveTab(roomType);
+    }
 
     if (userId) {
+      if (profileChatAppliedRef.current === location.key) return;
+      profileChatAppliedRef.current = location.key;
       const allChats = [...privateChats, ...publicChats];
       const user = allChats.find((chat) => chat.id.toString() === userId);
       if (user) {
@@ -532,110 +842,6 @@ const Chat = () => {
       }
     }
   }, [chatPartnerId, location.key, selectedChat]);
-
-  // Private chats - conexiones verificadías
-  const privateChats: ChatUser[] = [
-    {
-      id: "1",
-      name: "Anabella & Julio",
-      image:
-        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Están libres este fin de semana? 🔥💕",
-      timestamp: "5 min",
-      isOnline: true,
-      unreadCount: 2,
-      isPrivate: true,
-      roomType: "private",
-    },
-    {
-      id: "2",
-      name: "Sofia",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Me encantó conocerlos en la fiesta 🎉✨",
-      timestamp: "1 h",
-      isOnline: true,
-      unreadCount: 0,
-      isPrivate: true,
-      roomType: "private",
-    },
-    {
-      id: "3",
-      name: "Carmen & Roberto",
-      image:
-        "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Vienen al evento VIP del sábado? 🌟",
-      timestamp: "3 h",
-      isOnline: false,
-      unreadCount: 0,
-      isPrivate: true,
-      roomType: "private",
-    },
-    {
-      id: "4",
-      name: "Ral",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Qué tal si nos vemos para tomar algo? 🍷",
-      timestamp: "2 h",
-      isOnline: false,
-      unreadCount: 1,
-      isPrivate: true,
-      roomType: "private",
-    },
-  ];
-
-  // Public chats - salas comunitarias
-  const publicChats: ChatUser[] = [
-    {
-      id: "101",
-      name: "🌍 Sala General Lifestyle",
-      image:
-        "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Bienvenidos a la comunidad swinger!",
-      timestamp: "10 min",
-      isOnline: true,
-      unreadCount: 5,
-      isPrivate: false,
-      roomType: "public",
-    },
-    {
-      id: "102",
-      name: "💕 Parejas CDMX",
-      image:
-        "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Evento swinger este sábado en Polanco 🎊",
-      timestamp: "30 min",
-      isOnline: true,
-      unreadCount: 12,
-      isPrivate: false,
-      roomType: "public",
-    },
-    {
-      id: "103",
-      name: "💫 Singles Lifestyle",
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Alguien para intercambio hoy?",
-      timestamp: "1 h",
-      isOnline: true,
-      unreadCount: 3,
-      isPrivate: false,
-      roomType: "public",
-    },
-    {
-      id: "104",
-      name: "🔒 Eventos Privados",
-      image:
-        "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Club exclusivo abre sus puertas",
-      timestamp: "2 h",
-      isOnline: true,
-      unreadCount: 8,
-      isPrivate: false,
-      roomType: "public",
-    },
-  ];
 
   useEffect(() => {
     const sourceChats = activeTab === "private" ? privateChats : publicChats;
@@ -701,6 +907,39 @@ const Chat = () => {
     }
   }, [selectedChat, isProduction]);
 
+  // Solicitud de ver fotos (punto 7): al abrir un hilo privado se
+  // lee el estado persistido, igual que `FriendRequestButton` hace
+  // con la amistad al montar. Sin esta lectura, el botón de fotos
+  // solo guardaba `sent` en su propio useState y al reabrir la
+  // conversación volvía a "Solicitar ver fotos" aunque la solicitud
+  // ya estaba guardada. El botón en sí (`PhotoAccessRequestButton`,
+  // fuera del alcance de este stream) no se toca: es este padre el
+  // que muestra la píldora "Solicitud de fotos enviada" cuando el
+  // estado leído es pendiente, y oculta el botón cuando ya hay
+  // acceso concedido.
+  // Ronda 7, punto 12: el dueño NO es el id de sala
+  // (`selectedChat.id` = "1"-"4") sino el id del PERFIL del
+  // interlocutor (ver `resolveChatPartnerProfileId`): con el id de
+  // sala, la solicitud del chat y la del perfil eran dos registros
+  // distintos y el estado no persistía entre superficies.
+  useEffect(() => {
+    setPhotoAccessStatus(null);
+    if (!selectedChat || selectedChat.roomType !== "private" || !user?.id) {
+      return;
+    }
+    let cancelled = false;
+    void getPhotoAccessStatus(
+      String(user.id),
+      resolveChatPartnerProfileId(String(selectedChat.id)),
+      !isProduction,
+    ).then((status) => {
+      if (!cancelled) setPhotoAccessStatus(status);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedChat, user?.id, isProduction]);
+
   // Iniciar monitoreo de consentimiento cuando se selecciona un chat
   useEffect(() => {
     if (!selectedChat || !user?.id || !isProduction || !activeRoomId) return;
@@ -730,7 +969,7 @@ const Chat = () => {
     };
   }, [selectedChat, user?.id, isProduction, activeRoomId, startMonitoring, stopMonitoring]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!selectedChat || !newMessage.trim()) return;
 
     // Bloquear envio si el chat est pausado por bajo consenso
@@ -740,9 +979,93 @@ const Chat = () => {
         title: "Chat pausado",
         description:
           verification?.pauseReason ||
-          "El chat est pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.",
+          "El chat está pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.",
       });
       return;
+    }
+
+    // Ronda 9 (stream A, punto 4): si el remitente O el destinatario
+    // es una cuenta anónima, no hay chat ni media hasta que el otro
+    // lado acepte la amistad. Aplica siempre (no depende del toggle
+    // de privacidad) y solo en hilos privados; las salas públicas
+    // siempre permiten. El destinatario anónimo se resuelve en el
+    // registro local demo; fuera de demo, sin registro, no se bloquea
+    // por falta de datos (no hay falsos bloqueos).
+    // Ronda 12 (stream A, punto 1): el gate comparaba la amistad con
+    // el id de SALA ("3"), no con el id del PERFIL del interlocutor:
+    // la amistad aceptada se guarda con ids canónicos de perfil (la
+    // pareja es 48bb1f12-…), así que `areFriendsSync(anónimo, "3")`
+    // siempre era false y el envío fallaba con "Sin permisos" aunque
+    // /chat/3 mostrara "✓ Amigos" (ese botón SÍ usa el id de perfil
+    // resuelto, ronda 11 stream C). Es el mismo puente
+    // (`resolveChatPartnerProfileId`) que ya usan el estado de acceso
+    // a fotos y los botones de este hilo; el nombre va como 4º
+    // argumento para el fallback de la amistad semilla.
+    if (selectedChat.roomType === "private") {
+      const partnerProfileId = resolveChatPartnerProfileId(
+        String(selectedChat.id),
+      );
+      const senderIsAnonymous =
+        isAnonymousDemoProfile(user) ||
+        findLocalDemoAccountById(user?.id ?? "")?.isAnonymous === true;
+      const recipientIsAnonymous =
+        findLocalDemoAccountById(partnerProfileId)?.isAnonymous === true;
+      if (senderIsAnonymous || recipientIsAnonymous) {
+        const friends = areFriendsSync(
+          user?.id ?? "",
+          partnerProfileId,
+          undefined,
+          selectedChat.name,
+        );
+        const limit = canSendMessageTo({
+          recipientPrivacy: null,
+          senderIsVerified: false,
+          senderIsAnonymous,
+          recipientIsAnonymous,
+          areFriends: friends,
+        });
+        if (!limit.allowed) {
+          toast({
+            title: "Sin permisos",
+            description: limit.reason,
+          });
+          return;
+        }
+      }
+    }
+
+    // Enforcement del toggle "Limitar el envío de mensajes" del
+    // destinatario (antes: mockPrivacySettings, siempre "everyone").
+    // Solo aplica a hilos privados; las salas públicas siempre permiten.
+    // Sin datos de privacidad del destinatario se permite (sin falsos
+    // bloqueos). El remitente se considera verificado solo si su perfil
+    // lo indica (el usuario demo es verificado).
+    // En demo la privacidad vive en localStorage: lectura síncrona. El
+    // loader async hace un round-trip a Supabase en cada envío y el
+    // primer toque parecía no hacer nada mientras esperaba la red.
+    if (features.messagingPrivacy && selectedChat.roomType === "private") {
+      const recipientPrivacy = isProduction
+        ? await loadRecipientPrivacy(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          )
+        : readRecipientPrivacySync(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          );
+      const limit = canSendMessageTo({
+        recipientPrivacy,
+        senderIsVerified: Boolean(
+          (user as { is_verified?: boolean } | null | undefined)?.is_verified,
+        ),
+      });
+      if (!limit.allowed) {
+        toast({
+          title: "Sin permisos",
+          description: limit.reason,
+        });
+        return;
+      }
     }
 
     // Usar datos reales en produccin, mock en demo
@@ -754,22 +1077,18 @@ const Chat = () => {
     }
 
     // Lgica para modo demo
-    if (selectedChat.isPrivate && !hasChatAccess[selectedChat.id]) {
+    // Un hilo con historial no se bloquea por falta de invitación: si ya
+    // hay conversación, el usuario es participante (mismo flujo en single
+    // y en pareja; el bloqueo solo aplica a hilos privados sin historial).
+    if (
+      selectedChat.isPrivate &&
+      !hasChatAccess[selectedChat.id] &&
+      !threadHasHistory(selectedChat)
+    ) {
       toast({
         title: "Acceso Denegado",
         description:
           "No tienes acceso a este chat privado. Necesitas una invitación aceptada.",
-      });
-      return;
-    }
-
-    // Verificar permisos de mensajera segn configuracin de privacidad
-    const canSendMessage = checkMessagePermissions(selectedChat);
-    if (!canSendMessage) {
-      toast({
-        title: "Sin Permisos",
-        description:
-          "No puedes enviar mensajes a este usuario según su configuración de privacidad.",
       });
       return;
     }
@@ -784,53 +1103,125 @@ const Chat = () => {
       message_type: "text",
     };
 
+    // Persistir el mensaje enviado (demo): sobrevive a navegar y volver.
+    // La vista previa del hilo se actualiza con el mismo mensaje.
+    const persisted = [
+      ...readPersistedChatMessages(selectedChat.id.toString()),
+      message,
+    ];
+    writePersistedChatMessages(selectedChat.id.toString(), persisted);
+    setLastMessageByChat((prev) => ({
+      ...prev,
+      [selectedChat.id]: message.content,
+    }));
+
     setMessages((prev) => [...prev, message]);
     setNewMessage("");
+    setShowEmojiPicker(false);
+    setShowFileUpload(false);
+    setShowVoiceRecorder(false);
   };
 
-  const checkMessagePermissions = (chat: ChatUser) => {
-    if (!features.messagingPrivacy) return true;
-
-    // Para chats pblicos, siempre permitir
-    if (chat.roomType === "public") return true;
-
-    // Para chats privados, verificar configuracin
-    const userPrivacySettings = mockPrivacySettings; // En produccin, obtener del usuario especfico
-
-    switch (userPrivacySettings.allowMessages) {
-      case "everyone":
-        return true;
-      case "connections_only":
-        // Verificar si hay conexin aceptada (simulado)
-        return true; // Por ahora siempre true para demo
-      case "none":
-        return false;
-      default:
-        return true;
+  // Galería privada del hilo: la abre/cierra de verdad. Antes el botón
+  // "Galería" disparaba un desbloqueo silencioso (sin efecto en demo) y un
+  // toast que afirmaba mostrar la galería sin mostrar nada; el botón
+  // "Privada" solo mostraba ese mismo toast. En salas públicas no hay
+  // galería privada: respuesta honesta en vez de no hacer nada.
+  const togglePrivateGallery = () => {
+    if (!selectedChat) return;
+    if (selectedChat.roomType !== "private") {
+      toast({
+        title: "Sin galería privada",
+        description:
+          "Las salas públicas no tienen galería privada. Usa el chat privado de un match.",
+      });
+      return;
     }
+    setShowPrivateGallery((v) => !v);
+  };
+
+  // Videollamada con el hilo seleccionado (o lobby si no hay hilo):
+  // gate del toggle "Chat de video" del destinatario. Antes este
+  // botón solo existía en la cabecera de la LISTA; dentro de la
+  // conversación no había forma de iniciar video. Lo usan el botón
+  // de la lista y el nuevo botón del header del hilo. En demo la
+  // privacidad se lee síncrona de localStorage (sin round-trip a
+  // Supabase en cada toque). El flujo real de videollamada (WebRTC)
+  // no existe aún: el gate queda listo para cuando exista.
+  const handleVideoCall = async () => {
+    // Si hay un hilo privado seleccionado, la llamada es con ese
+    // perfil. Estar dentro del hilo ya implica match (en producción
+    // verifyMatch lo exige; en demo el acceso está concedido), por
+    // eso hasMatch: true. Sin hilo seleccionado se abre el lobby.
+    if (selectedChat?.roomType === "private") {
+      const recipientPrivacy = isProduction
+        ? await loadRecipientPrivacy(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          )
+        : readRecipientPrivacySync(
+            selectedChat.id.toString(),
+            selectedChat.name.includes("&") ? "couple" : "single",
+          );
+      const call = canStartVideoCall({
+        recipientPrivacy,
+        hasMatch: true,
+      });
+      if (!call.allowed) {
+        toast({
+          title: "Videollamada no disponible",
+          description: call.reason,
+        });
+        return;
+      }
+    }
+    navigate("/video-chat");
   };
 
   return (
-    <div className="flex flex-col h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
+    // embedded: dentro del dock flotante (ChatFab) el alto es el del dock
+    // (420px); con h-screen el hilo se desbordaba y se solapaba/recortaba.
+    <div
+      className={`flex flex-col ${embedded ? "h-full" : "h-screen"} bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden`}
+    >
       <DecorativeHearts />
 
-      {/* Background decorativo uniforme */}
-      <div className="fixed inset-0 z-0 bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
+      {/* Background decorativo uniforme: ABSOLUTE, no `fixed` (ronda 7,
+          punto 6): `fixed inset-0` escapaba del contenedor del Chat y
+          pintaba sobre TODA la página, incluido el encabezado propio
+          de /chat-intimo ("Chat Íntimo" / "Cerrar" quedaban invisibles
+          y sin clic bajo el degradado opaco). La raíz es `relative`,
+          así que `absolute inset-0` cubre exactamente el Chat: el
+          cuerpo del dock (420 px), la página /chat (h-screen) o el
+          área de contenido de /chat-intimo (h-full). */}
+      <div className="absolute inset-0 z-0 bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
         <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
       </div>
 
       <div
-        className={`relative z-10 flex h-screen ${hasActiveSession ? "pt-4" : "pt-16"} ${hasActiveSession ? "pb-4" : "pb-20"}`}
+        className={`relative z-10 flex ${embedded ? "h-full" : "h-screen"} ${hasActiveSession ? "pt-4" : "pt-16"} ${hasActiveSession ? "pb-4" : "pb-20"}`}
       >
-        {/* Chat List Sidebar */}
-        <div className="w-full sm:w-80 shrink-0 bg-linear-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex flex-col">
+        {/* Chat List Sidebar: en móvil es UN solo panel — lista O hilo,
+            nunca los dos partidos. Con hilo abierto la lista se oculta. */}
+        <div
+          className={`${selectedChat ? "hidden sm:flex" : "flex"} w-full sm:w-80 shrink-0 bg-linear-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex-col`}
+        >
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center gap-3 mb-4">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-white/20 p-2 sm:hidden"
-                onClick={() => navigate("/feed")}
+                // Visible siempre (antes sm:hidden): sin hilo es la salida
+                // de la lista hacia el feed; en el hilo manda el botón del
+                // header del hilo.
+                className="text-white hover:bg-white/20 p-2"
+                aria-label="Volver"
+                onClick={() => {
+                  // Dentro de un hilo: volver a la LISTA de conversaciones,
+                  // no a /feed. Solo sin hilo abierto se sale al feed.
+                  if (selectedChat) setSelectedChat(null);
+                  else navigate("/feed");
+                }}
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -843,6 +1234,9 @@ const Chat = () => {
                     variant="ghost"
                     size="sm"
                     className="text-white hover:bg-white/10"
+                    aria-label="Videollamada"
+                    title="Videollamada"
+                    onClick={handleVideoCall}
                   >
                     <Video className="h-4 w-4" />
                   </Button>
@@ -850,16 +1244,17 @@ const Chat = () => {
                     variant="ghost"
                     size="sm"
                     className="text-white hover:bg-white/10"
+                    aria-label="Más opciones"
+                    title="Más opciones"
+                    onClick={() =>
+                      toast({
+                        title: "Opciones del chat",
+                        description:
+                          "Más opciones (silenciar, archivar, bloquear) próximamente.",
+                      })
+                    }
                   >
                     <MoreVertical className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-white hover:bg-white/10 md:hidden"
-                    onClick={() => setSelectedChat(null)}
-                  >
-                    <ArrowLeft className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -884,13 +1279,11 @@ const Chat = () => {
               >
                 <Lock className="h-4 w-4" />
                 Privado
-                {privateChats.reduce((acc, chat) => acc + chat.unreadCount, 0) >
-                  0 && (
+                {/* Badge = nº real de hilos privados (antes sumaba los no
+                    leídos: decía 3 y la lista muestra 4 hilos). */}
+                {privateChats.length > 0 && (
                   <Badge className="bg-red-500 text-white text-xs">
-                    {privateChats.reduce(
-                      (acc, chat) => acc + chat.unreadCount,
-                      0,
-                    )}
+                    {privateChats.length}
                   </Badge>
                 )}
               </Button>
@@ -910,7 +1303,7 @@ const Chat = () => {
                 }}
               >
                 <Globe className="h-4 w-4" />
-                Pblico
+                Público
                 {publicChats.reduce((acc, chat) => acc + chat.unreadCount, 0) >
                   0 && (
                   <Badge className="bg-red-500 text-white text-xs">
@@ -980,7 +1373,7 @@ const Chat = () => {
                             </span>
                           </div>
                           <p className="text-sm text-white/90 truncate font-medium">
-                            {chat.lastMessage}
+                            {previewFor(chat)}
                           </p>
                         </div>
                         {chat.unreadCount > 0 && (
@@ -998,7 +1391,7 @@ const Chat = () => {
             {activeTab === "public" && (
               <div className="mt-4">
                 <div className="text-white font-semibold text-sm mb-3 px-2 drop-shadow-lg">
-                  Salas plicas de la comunidad
+                  Salas públicas de la comunidad
                 </div>
                 <div className="space-y-2">
                   {publicChats.map((chat) => (
@@ -1040,7 +1433,7 @@ const Chat = () => {
                             </span>
                           </div>
                           <p className="text-sm text-white/90 truncate font-medium">
-                            {chat.lastMessage}
+                            {previewFor(chat)}
                           </p>
                         </div>
                         {chat.unreadCount > 0 && (
@@ -1059,7 +1452,10 @@ const Chat = () => {
 
         {/* rea de chat */}
         <div
-          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 flex flex-col bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 backdrop-blur-sm`}
+          // min-w-0: sin él, el panel no encoge por debajo del ancho de su
+          // contenido y dentro del dock flotante (28-42rem) el texto de la
+          // derecha ("Selecciona una conversación") quedaba recortado.
+          className={`${selectedChat ? "block" : "hidden md:block"} flex-1 min-w-0 flex flex-col bg-linear-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 backdrop-blur-sm`}
         >
           {selectedChat ? (
             <>
@@ -1069,7 +1465,10 @@ const Chat = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="md:hidden text-white hover:bg-white/10 mr-2"
+                    // Visible siempre (antes md:hidden): en el hilo vuelve
+                    // a la LISTA de conversaciones, también en escritorio.
+                    className="text-white hover:bg-white/10 mr-2"
+                    aria-label="Volver a la lista de chats"
                     onClick={() => setSelectedChat(null)}
                   >
                     <ArrowLeft className="h-4 w-4" />
@@ -1098,14 +1497,95 @@ const Chat = () => {
                     </div>
                     <p className="text-sm text-white/90 drop-shadow-md">
                       {selectedChat.roomType === "public"
-                        ? `Sala pblica  ${Math.floor(Math.random() * 50) + 10} miembros activos`
+                        ? `Sala pública ${PUBLIC_ROOM_MEMBERS[selectedChat.id] ?? 24} miembros activos`
                         : selectedChat.isOnline
-                          ? "En lnea"
-                          : `ltima vez ${selectedChat.timestamp}`}
+                          ? "En línea"
+                          : `Última vez ${selectedChat.timestamp}`}
                     </p>
                   </div>
+                  {/* Videollamada DENTRO de la conversación: antes el
+                      botón de video solo existía en la cabecera de la
+                      lista; en el hilo no había forma de llamar. Mismo
+                      gate (toggle "Chat de video" del destinatario). */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/10 shrink-0"
+                    aria-label="Videollamada"
+                    title="Videollamada"
+                    onClick={handleVideoCall}
+                  >
+                    <Video className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
+
+              {/* Solicitudes de amistad y de ver fotos (punto 4): solo en
+                  chats privados (no en salas públicas). Son píldoras con
+                  texto, por eso van en una fila bajo el encabezado y no
+                  dentro de él: en móvil no caben junto al nombre y al
+                  botón de video. */}
+              {selectedChat.roomType === "private" && user?.id && (
+                <div className="px-4 py-2 border-b border-white/10 flex flex-wrap items-center gap-2">
+                  {/* Ronda 11, stream C (iv): el botón recibía el id de
+                      SALA ("1"-"4"), no el del perfil del interlocutor:
+                      `getFriendStatus` comparaba la amistad con "3" y
+                      nunca casaba con el par guardado con el id del
+                      perfil ("demo-couple-456"), así que el chat con
+                      Carmen & Roberto mostraba "Enviar solicitud de
+                      amistad" aunque Sofía ya los tiene de amigos. Se
+                      pasa el id de perfil resuelto, igual que ya hace
+                      `PhotoAccessRequestButton` justo debajo: con
+                      amistad aceptada el botón muestra "Amigos ✓" y
+                      el CTA desaparece. */}
+                  <FriendRequestButton
+                    profileId={resolveChatPartnerProfileId(
+                      String(selectedChat.id),
+                    )}
+                    profileName={selectedChat.name}
+                    viewerId={String(user.id)}
+                    viewerName={viewerName}
+                    isOwnProfile={
+                      String(selectedChat.id) === String(user.id)
+                    }
+                    isDemo={!isProduction}
+                  />
+                  {/* Solicitud de ver fotos (punto 7): si el estado
+                      persistido es "pending", se muestra la píldora
+                      "Solicitud de fotos enviada" (misma que muestra
+                      el botón tras enviar) en vez del botón; si es
+                      "accepted" no se muestra nada (ya hay acceso, el
+                      botón no debe ofrecerse). En "none"/"declined" o
+                      mientras se lee (null), va el botón, que al
+                      enviar muestra su propia píldora de enviado. */}
+                  {photoAccessStatus === "pending" ? (
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full bg-white/10 text-white/80 border border-white/25 px-4 py-2.5 text-sm"
+                      title="Solicitud para ver las fotos enviada, pendiente de respuesta"
+                    >
+                      <Camera className="w-4 h-4" aria-hidden="true" />
+                      Solicitud de fotos enviada
+                    </span>
+                  ) : photoAccessStatus === "accepted" ? null : (
+                    <PhotoAccessRequestButton
+                      profileId={resolveChatPartnerProfileId(
+                        String(selectedChat.id),
+                      )}
+                      profileName={selectedChat.name}
+                      viewerId={String(user.id)}
+                      isOwnProfile={
+                        String(selectedChat.id) === String(user.id)
+                      }
+                      isDemo={!isProduction}
+                      // Ronda 7, punto 12: al enviar, el padre pasa a
+                      // "pending" de inmediato (confirmación visible
+                      // aunque el botón se remonte); el estado
+                      // persistido se re-lee al reabrir el hilo.
+                      onSent={() => setPhotoAccessStatus("pending")}
+                    />
+                  )}
+                </div>
+              )}
 
               {/* Indicador de consentimiento */}
               {isProduction && selectedChat && user?.id && (
@@ -1126,7 +1606,30 @@ const Chat = () => {
                 </div>
               )}
 
-              {selectedChat?.roomType === "private" && (
+              {/* Galería privada: colapsada por defecto; la abren los
+                  botones Galería / Privada del compositor. Acotada
+                  (max-h + scroll interno) para que nunca empuje ni tape
+                  los mensajes del hilo. */}
+              {selectedChat?.roomType === "private" && showPrivateGallery && (
+                <div
+                  ref={galleryRef}
+                  className="shrink-0 max-h-[38%] overflow-y-auto px-4 py-3 border-b border-white/10 bg-purple-950/40"
+                >
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-sm font-semibold text-white truncate">
+                      Galería privada de {selectedChat.name}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-white/70 hover:text-white hover:bg-white/10 h-7 px-2 shrink-0"
+                      aria-label="Cerrar galería"
+                      onClick={() => setShowPrivateGallery(false)}
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Cerrar
+                    </Button>
+                  </div>
                 <PrivateGallery
                   galleryItems={[
                     {
@@ -1142,6 +1645,7 @@ const Chat = () => {
                   unlockingItemId={galleryProcessing ? "1" : null}
                   onUnlock={handleUnlockGalleryItem}
                 />
+                </div>
               )}
 
               {/* Messages */}
@@ -1209,7 +1713,12 @@ const Chat = () => {
                                 : "text-white/90 drop-shadow-sm"
                             }`}
                           >
-                            {message.created_at}
+                            {/* Igual que la rama de mensajes reales: hora
+                              local HH:MM, no el ISO crudo. */}
+                            {new Date(message.created_at).toLocaleTimeString(
+                              "es-ES",
+                              { hour: "2-digit", minute: "2-digit" },
+                            )}
                           </p>
                         </div>
                       </div>
@@ -1217,8 +1726,13 @@ const Chat = () => {
               </div>
 
               {/* Input para enviar mensajes */}
-              <div className="p-4 border-t border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30 chat-input">
-                {selectedChat?.isPrivate && !hasChatAccess[selectedChat.id] ? (
+              <div className="p-4 border-t border-white/10 bg-linear-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30 chat-input relative">
+                {/* El bloqueo solo aplica a hilos privados sin historial ni
+                    acceso: con historial el usuario ya es participante y el
+                    compositor debe aparecer (igual en single y en pareja). */}
+                {selectedChat?.isPrivate &&
+                !hasChatAccess[selectedChat.id] &&
+                !threadHasHistory(selectedChat) ? (
                   <div className="text-center space-y-4 bg-linear-to-br from-purple-900/50 via-purple-800/50 to-blue-900/50 rounded-lg p-6 border border-white/20">
                     <div className="flex items-center justify-center text-white mb-3">
                       <Lock className="h-6 w-6 mr-2" />
@@ -1227,8 +1741,8 @@ const Chat = () => {
                       </span>
                     </div>
                     <p className="text-sm text-white/90 mb-6 leading-relaxed max-w-sm mx-auto">
-                      Necesitas una invitacin aceptada para chatear con{" "}
-                      {selectedChat?.name}. Puedes enviar una invitacin o
+                      Necesitas una invitación aceptada para chatear con{" "}
+                      {selectedChat?.name}. Puedes enviar una invitación o
                       esperar a que te enven una.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -1250,7 +1764,7 @@ const Chat = () => {
                         className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
                         <UserPlus className="h-4 w-4 mr-2" />
-                        Aceptar invitacin
+                        Aceptar invitación
                       </Button>
                       <Button
                         onClick={() => {
@@ -1271,27 +1785,65 @@ const Chat = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {/* Botones de galera y solicitudes */}
+                    {/* Paneles del compositor: se abren sobre el input */}
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-full left-2 mb-2 z-20 max-w-[calc(100vw-2rem)]">
+                        <EmojiPicker
+                          onEmojiSelect={(emoji) =>
+                            setNewMessage((prev) => prev + emoji)
+                          }
+                          onClose={() => setShowEmojiPicker(false)}
+                          className="max-w-[calc(100vw-2rem)]"
+                        />
+                      </div>
+                    )}
+                    {showFileUpload && (
+                      <div className="absolute bottom-full left-2 mb-2 z-20 max-w-[calc(100vw-2rem)]">
+                        <ChatFileUpload
+                          onFileSelect={(files) => {
+                            setShowFileUpload(false);
+                            if (isProduction) {
+                              toast({
+                                title: "Subida no disponible",
+                                description:
+                                  "El envío de archivos aún no está conectado en producción.",
+                              });
+                            } else {
+                              toast({
+                                title: "Archivos recibidos (demo)",
+                                description: `${files.length} archivo(s) seleccionado(s): ${files.map((f) => f.name).join(", ")}. Envío real pendiente.`,
+                              });
+                            }
+                          }}
+                          onCancel={() => setShowFileUpload(false)}
+                          className="max-w-[calc(100vw-2rem)]"
+                        />
+                      </div>
+                    )}
+                    {showVoiceRecorder && (
+                      <div className="absolute bottom-full left-2 mb-2 z-20 max-w-[calc(100vw-2rem)]">
+                        <VoiceRecorder
+                          onAudioReady={(_blob, duration) => {
+                            setShowVoiceRecorder(false);
+                            toast({
+                              title: isProduction
+                                ? "Nota de voz no disponible"
+                                : "Nota de voz grabada (demo)",
+                              description: isProduction
+                                ? "El envío de audio aún no está conectado en producción."
+                                : `Audio de ${duration}s listo. Envío real pendiente.`,
+                            });
+                          }}
+                          onCancel={() => setShowVoiceRecorder(false)}
+                          className="max-w-[calc(100vw-2rem)]"
+                        />
+                      </div>
+                    )}
+                    {/* Botones de galería y solicitudes */}
                     <div className="flex flex-wrap gap-2 justify-center">
                       <Button
-                        onClick={() => {
-                          if (selectedChat?.roomType === "private") {
-                            handleUnlockGallery().catch((err) => {
-                              logger.error("Error en handleUnlockGallery", {
-                                error: err,
-                              });
-                            });
-                            toast({
-                              title: "Galería Privada",
-                              description: `Ver galería privada de ${selectedChat.name}`,
-                            });
-                          } else {
-                            toast({
-                              title: "Galería Pública",
-                              description: "Ver galería pública de la sala",
-                            });
-                          }
-                        }}
+                        onClick={togglePrivateGallery}
+                        aria-expanded={showPrivateGallery}
                         variant="outline"
                         className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
@@ -1307,29 +1859,64 @@ const Chat = () => {
                         <span className="truncate">Solicitudes</span>
                       </Button>
                       <Button
-                        onClick={() => {
-                          if (selectedChat?.roomType === "private") {
-                            toast({
-                              title: "Galera Privada",
-                              description:
-                                "Accediendo a galera privada con " +
-                                selectedChat.name,
-                            });
-                          } else {
-                            toast({
-                              title: "Galera Pblica",
-                              description:
-                                "Accediendo a galera pblica de la sala",
-                            });
-                          }
-                        }}
+                        onClick={togglePrivateGallery}
+                        aria-expanded={showPrivateGallery}
                         variant="outline"
                         className="flex-1 border-green-400/50 text-green-300 hover:bg-green-500/20 text-xs py-2"
                       >
                         <Globe className="h-3 w-3 mr-1" />
                         {selectedChat?.roomType === "private"
                           ? "Privada"
-                          : "Pblica"}
+                          : "Pública"}
+                      </Button>
+                    </div>
+
+                    {/* Barra de herramientas del compositor: emoji, adjuntar, audio */}
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Emojis"
+                        title="Emojis"
+                        disabled={isPaused}
+                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        onClick={() => {
+                          setShowFileUpload(false);
+                          setShowVoiceRecorder(false);
+                          setShowEmojiPicker((v) => !v);
+                        }}
+                      >
+                        <Smile className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Adjuntar archivo"
+                        title="Adjuntar archivo"
+                        disabled={isPaused}
+                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        onClick={() => {
+                          setShowEmojiPicker(false);
+                          setShowVoiceRecorder(false);
+                          setShowFileUpload((v) => !v);
+                        }}
+                      >
+                        <Paperclip className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label="Grabar audio"
+                        title="Grabar audio"
+                        disabled={isPaused}
+                        className="text-white hover:bg-white/10 h-8 w-8 p-0"
+                        onClick={() => {
+                          setShowEmojiPicker(false);
+                          setShowFileUpload(false);
+                          setShowVoiceRecorder((v) => !v);
+                        }}
+                      >
+                        <Mic className="h-4 w-4" />
                       </Button>
                     </div>
 
@@ -1351,6 +1938,7 @@ const Chat = () => {
                         disabled={isPaused}
                       />
                       <Button
+                        type="button"
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() || isPaused}
                         gradient={true}
@@ -1361,15 +1949,15 @@ const Chat = () => {
                     </div>
                     {isPaused && (
                       <p className="text-xs text-white/70 mt-2 text-center">
-                        El chat est pausado por bajo consenso. El envo de
-                        mensajes est bloqueado.
+                        El chat está pausado por bajo consenso. El envío de
+                        mensajes está bloqueado.
                       </p>
                     )}
                   </div>
                 )}
                 {selectedChat?.roomType === "public" && (
                   <p className="text-xs text-white/50 mt-2 px-1">
-                    Los mensajes en salas plicas son visibles para todos los
+                    Los mensajes en salas públicas son visibles para todos los
                     miembros
                   </p>
                 )}
@@ -1380,12 +1968,12 @@ const Chat = () => {
               <div className="text-center text-white">
                 <MessageCircle className="h-16 w-16 mx-auto mb-4 text-white opacity-80 drop-shadow-lg" />
                 <h3 className="text-xl font-semibold mb-2 text-white drop-shadow-md">
-                  Selecciona una conversacin
+                  Selecciona una conversación
                 </h3>
                 <p className="mb-4 text-white/90 drop-shadow-md">
                   {activeTab === "private"
                     ? "Elige un chat privado para conversar de forma segura"
-                    : "nete a una sala pblica para conocer la comunidad"}
+                    : "Únete a una sala pública para conocer la comunidad"}
                 </p>
                 <div className="flex items-center justify-center text-sm space-x-4">
                   <div className="flex items-center text-white/90">
@@ -1397,7 +1985,7 @@ const Chat = () => {
                   <div className="flex items-center text-white/90">
                     <Globe className="h-4 w-4 mr-1 text-green-300" />
                     <span className="drop-shadow-md">
-                      Salas pblicas moderadías
+                      Salas públicas moderadas
                     </span>
                   </div>
                 </div>

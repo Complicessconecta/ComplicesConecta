@@ -11,6 +11,10 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import {
+  formatGenderLabel,
+  formatInterestedInLabel,
+} from "@/lib/profileLabels";
 
 interface Invitation {
   id: string;
@@ -410,7 +414,7 @@ const AdminProduction = () => {
       const totalTokens = tokenData?.length || 0;
       const stakedTokens = getMetricValue("staked_tokens");
 
-      logger.info("📊 Estadísticas cargadías:", {
+      logger.info("📊 Estadísticas cargadas:", {
         totalUsers: totalUsers || 0,
         premiumUsers: premiumUsers || 0,
         activeUsers: activeUsers || 0,
@@ -489,11 +493,12 @@ const AdminProduction = () => {
         type: inv.type || "profile",
         status: inv.status || "pending",
         created_at: inv.created_at,
-        decided_at: inv.decided_at || null,
+        decided_at:
+          inv.status && inv.status !== "pending" ? inv.updated_at || null : null,
       }));
 
       setInvitations(mappedInvitations);
-      logger.info(" Cargando invitaciones, total encontradías:", {
+      logger.info(" Cargando invitaciones, total encontradas:", {
         count: data?.length || 0,
       });
     } catch (_error) {
@@ -657,11 +662,11 @@ const AdminProduction = () => {
                   <p className="text-2xl font-bold text-purple-400">{auditReport.totalActions}</p>
                 </div>
                 <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-                  <h3 className="text-white font-semibold mb-2">Aprobadías</h3>
+                  <h3 className="text-white font-semibold mb-2">Aprobadas</h3>
                   <p className="text-2xl font-bold text-green-400">{auditReport.approvedActions}</p>
                 </div>
                 <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
-                  <h3 className="text-white font-semibold mb-2">Rechazadías</h3>
+                  <h3 className="text-white font-semibold mb-2">Rechazadas</h3>
                   <p className="text-2xl font-bold text-red-400">{auditReport.rejectedActions}</p>
                 </div>
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
@@ -752,11 +757,11 @@ const AdminProduction = () => {
               <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
                 <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-400" />
-                  Acciones Aprobadías
+                  Acciones Aprobadas
                 </h3>
                 <p className="text-2xl font-bold text-green-400">127</p>
                 <p className="text-white/60 text-sm">
-                  Decisiones validadías hoy
+                  Decisiones validadas hoy
                 </p>
               </div>
 
@@ -772,17 +777,17 @@ const AdminProduction = () => {
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
                 <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                   <XCircle className="h-5 w-5 text-red-400" />
-                  Acciones Rechazadías
+                  Acciones Rechazadas
                 </h3>
                 <p className="text-2xl font-bold text-red-400">8</p>
-                <p className="text-white/60 text-sm">Decisiones revertidías</p>
+                <p className="text-white/60 text-sm">Decisiones revertidas</p>
               </div>
             </div>
 
             <div className="mt-6 flex gap-4">
               <Button className="bg-green-600 hover:bg-green-700 text-white">
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Aprobar Todías las Pendientes
+                Aprobar Todas las Pendientes
               </Button>
               <Button className="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10 border bg-transparent">
                 <Eye className="h-4 w-4 mr-2" />
@@ -978,12 +983,13 @@ const AdminProduction = () => {
                           </div>
                           <p>
                             <strong>Género:</strong>{" "}
-                            {(profile as any).gender || "No especificado"}
+                            {formatGenderLabel((profile as any).gender)}
                           </p>
                           <p>
                             <strong>Interesado en:</strong>{" "}
-                            {(profile as any).interested_in ||
-                              "No especificado"}
+                            {formatInterestedInLabel(
+                              (profile as any).interested_in,
+                            )}
                           </p>
                         </div>
                       </div>
@@ -1114,7 +1120,7 @@ const AdminProduction = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-white/70">
-                        Recompensas distribuidías:
+                        Recompensas distribuidas:
                       </span>
                       <span className="text-white font-semibold">
                         {stats.rewardsDistributed.toLocaleString()}

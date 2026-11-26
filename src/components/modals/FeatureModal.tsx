@@ -45,7 +45,7 @@ const featureData = {
     title: "Eventos Swinger Exclusivos",
     description: "Acceso VIP a la mejor vida nocturna lifestyle",
     features: [
-      "🎉 Fiestas privadías en clubs exclusivos",
+      "🎉 Fiestas privadas en clubs exclusivos",
       "🏖️ Descuentos exclusivos en clubs lifestyle",
       "🍾 Eventos VIP solo para miembros verificados",
       "🎭 Fiestas temáticas y de disfraces",

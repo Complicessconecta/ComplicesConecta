@@ -6,17 +6,46 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Camera, X, Users, MapPin, AlertCircle, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Navigation } from "@/components/Navigation";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
-import { generateMockCouple } from "@/lib/data";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from "@/lib/logger";
+import { resolveDemoAccountType } from "@/lib/app-config";
+import { supabase } from "@/integrations/supabase/client";
 import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfileTheme";
 import { motion } from "framer-motion";
 
 const EditProfileCouple = () => {
+  // Valores que el perfil de pareja ya muestra en demo (ProfileCouple):
+  // los títulos de intereses de respaldo, la bio visible y las galerías
+  // actual (3 públicas + 4 privadas). El editor debe precargarlos: antes
+  // dejaba bio e intereses en [] y Guardar escribía [] en demo_user, con
+  // lo que el perfil perdía los intereses y el "Completo" bajaba de 83% a
+  // 67% (full test 2026-11-24).
+  const DEMO_COUPLE_INTEREST_TITLES = [
+    "Lifestyle Exclusivo",
+    "Eventos VIP",
+    "Privacidad Total",
+    "Verificación Real",
+    "Chat Encriptado",
+    "Match Inteligente",
+  ] as const;
+  const DEMO_COUPLE_BIO =
+    "Una pareja aventurera que busca nuevas experiencias y conexiones auténticas.";
+  const DEMO_PARTNER_BIO = "Usuario de demostración.";
+  const DEMO_COUPLE_PUBLIC_IMAGES = [
+    "/assets/people/couple/c1.jpg",
+    "/assets/people/couple/c2.jpg",
+    "/assets/people/couple/c3.jpg",
+  ];
+  const DEMO_COUPLE_PRIVATE_IMAGES = [
+    "/assets/people/couple/privado/privadocouple1.jpg",
+    "/assets/people/couple/privado/privadocouple2.jpg",
+    "/assets/people/couple/privado/privadocouple3.jpg",
+    "/assets/people/couple/privado/privadocouple4.jpg",
+  ];
+
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [formData, setFormData] = useState({
@@ -93,6 +122,79 @@ const EditProfileCouple = () => {
 
   const availableInterests = SAFE_INTERESTS;
 
+  // Poblar el formulario con la identidad demo guardada en `demo_user`.
+  // Los campos que el demo no trae usan los valores canónicos del perfil
+  // demo (Carmen 25 / Roberto 28, CDMX, México), los mismos que muestra
+  // ProfileCouple. Nunca se inventa una pareja: sin identidad usable no
+  // se genera ningún mock.
+  const applyCoupleDemoIdentity = (user: any) => {
+    const asString = (value: unknown): string =>
+      typeof value === "string" ? value : "";
+    const asStringArray = (value: unknown): string[] =>
+      Array.isArray(value) &&
+      value.every((item) => typeof item === "string")
+        ? (value as string[])
+        : [];
+    const partner = (stored: any, firstName: string, age: string, fallbackInterests: string[]) => {
+      const nameParts = asString(stored?.name).split(" ");
+      const storedInterests = asStringArray(stored?.interests);
+      return {
+        firstName:
+          asString(stored?.firstName) ||
+          asString(stored?.first_name) ||
+          nameParts[0] ||
+          firstName,
+        lastName:
+          asString(stored?.lastName) ||
+          asString(stored?.last_name) ||
+          nameParts.slice(1).join(" "),
+        nickname: asString(stored?.nickname),
+        age:
+          stored?.age !== undefined && stored?.age !== null
+            ? String(stored.age)
+            : age,
+        profession: asString(stored?.profession),
+        // Sin bio guardada, la que el perfil ya muestra en demo.
+        bio: asString(stored?.bio) || DEMO_PARTNER_BIO,
+        avatar: asString(stored?.avatar) || asString(stored?.avatar_url),
+        // Sin intereses guardados, los que el perfil ya muestra en demo:
+        // Guardar sin cambios no debe escribir [] y bajar el "Completo".
+        interests:
+          storedInterests.length > 0 ? storedInterests : fallbackInterests,
+        publicImages: asStringArray(stored?.publicImages),
+        privateImages: asStringArray(stored?.privateImages),
+      };
+    };
+
+    const storedInterests = asStringArray(user.interests);
+    setProfile(user);
+    setFormData({
+      coupleName:
+        asString(user.name) ||
+        asString(user.coupleName) ||
+        asString(user.couple_name) ||
+        "Carmen & Roberto",
+      location: asString(user.location) || "CDMX, México",
+      // Sin bio guardada, la que el perfil ya muestra en demo.
+      bio: asString(user.bio) || asString(user.couple_bio) || DEMO_COUPLE_BIO,
+      interests:
+        storedInterests.length > 0
+          ? storedInterests
+          : [...DEMO_COUPLE_INTEREST_TITLES],
+      explicitInterests: asStringArray(user.explicitInterests),
+      partner1: partner(user.partner1, "Carmen", "25", [
+        DEMO_COUPLE_INTEREST_TITLES[0],
+        DEMO_COUPLE_INTEREST_TITLES[2],
+        DEMO_COUPLE_INTEREST_TITLES[4],
+      ]),
+      partner2: partner(user.partner2, "Roberto", "28", [
+        DEMO_COUPLE_INTEREST_TITLES[1],
+        DEMO_COUPLE_INTEREST_TITLES[3],
+        DEMO_COUPLE_INTEREST_TITLES[5],
+      ]),
+    });
+  };
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -106,86 +208,58 @@ const EditProfileCouple = () => {
         }
 
         const user = JSON.parse(demoUser);
-        let profileData;
 
-        // Si es perfil pareja, usar datos del usuario demo
-        if (user.accountType === "couple") {
-          profileData = user;
-        } else {
-          // Para otros tipos, generar perfil mock
-          profileData = generateMockCouple();
+        // El demo_user guardado cambia de forma según quién lo escribió
+        // (ver EditProfileSingle): resolver el tipo con todas las
+        // variantes o el editor cae en el mock aleatorio.
+        const demoType =
+          resolveDemoAccountType(user) ??
+          (localStorage.getItem("userType") === "couple"
+            ? "couple"
+            : localStorage.getItem("userType") === "single"
+              ? "single"
+              : null);
+
+        // Sesión de single en el editor de pareja: ir al editor de single,
+        // nunca mostrar un mock aleatorio.
+        if (demoType === "single") {
+          navigate("/edit-profile-single");
+          return;
         }
 
-        setProfile(profileData);
-        setFormData({
-          coupleName: profileData.name || profileData.coupleName || "",
-          location: profileData.location || "",
-          bio: profileData.bio || "",
-          interests: profileData.interests || [],
-          explicitInterests: [],
-          partner1: {
-            firstName: profileData.partner1?.name?.split(" ")[0] || "",
-            lastName: profileData.partner1?.name?.split(" ")[1] || "",
-            nickname: profileData.partner1?.nickname || "",
-            age: profileData.partner1?.age?.toString() || "",
-            profession: profileData.partner1?.profession || "",
-            bio: profileData.partner1?.bio || "",
-            avatar: profileData.partner1?.avatar || "",
-            interests: profileData.partner1?.interests || [],
-            publicImages: profileData.partner1?.publicImages || [],
-            privateImages: profileData.partner1?.privateImages || [],
-          },
-          partner2: {
-            firstName: profileData.partner2?.name?.split(" ")[0] || "",
-            lastName: profileData.partner2?.name?.split(" ")[1] || "",
-            nickname: profileData.partner2?.nickname || "",
-            age: profileData.partner2?.age?.toString() || "",
-            profession: profileData.partner2?.profession || "",
-            bio: profileData.partner2?.bio || "",
-            avatar: profileData.partner2?.avatar || "",
-            interests: profileData.partner2?.interests || [],
-            publicImages: profileData.partner2?.publicImages || [],
-            privateImages: profileData.partner2?.privateImages || [],
-          },
-        });
+        if (demoType === "couple") {
+          applyCoupleDemoIdentity(user);
+          return;
+        }
+
+        // Sesión demo sin tipo resoluble: ir a /auth, no inventar persona.
+        navigate("/auth");
       } catch (error) {
         logger.error("Error cargando perfil de pareja:", {
           error: String(error),
         });
-        // Fallback con perfil demo
-        const fallbackProfile = generateMockCouple();
-        setProfile(fallbackProfile);
-        setFormData({
-          coupleName: fallbackProfile.coupleName || "",
-          location: fallbackProfile.location || "",
-          bio: fallbackProfile.bio || "",
-          interests: fallbackProfile.interests || [],
-          explicitInterests: [],
-          partner1: {
-            firstName: fallbackProfile.partner1?.name?.split(" ")[0] || "",
-            lastName: fallbackProfile.partner1?.name?.split(" ")[1] || "",
-            nickname: "",
-            age: fallbackProfile.partner1?.age?.toString() || "",
-            profession: fallbackProfile.partner1?.profession || "",
-            bio: fallbackProfile.partner1?.bio || "",
-            avatar: fallbackProfile.partner1?.avatar || "",
-            interests: fallbackProfile.partner1?.interests || [],
-            publicImages: [],
-            privateImages: [],
-          },
-          partner2: {
-            firstName: fallbackProfile.partner2?.name?.split(" ")[0] || "",
-            lastName: fallbackProfile.partner2?.name?.split(" ")[1] || "",
-            nickname: "",
-            age: fallbackProfile.partner2?.age?.toString() || "",
-            profession: fallbackProfile.partner2?.profession || "",
-            bio: fallbackProfile.partner2?.bio || "",
-            avatar: fallbackProfile.partner2?.avatar || "",
-            interests: fallbackProfile.partner2?.interests || [],
-            publicImages: [],
-            privateImages: [],
-          },
-        });
+        // En caso de error, si hay sesión demo intentar con la identidad
+        // guardada; si no, ir a /auth. Nunca un mock aleatorio.
+        try {
+          const demoUser = localStorage.getItem("demo_user");
+          if (
+            localStorage.getItem("demo_authenticated") === "true" &&
+            demoUser
+          ) {
+            const user = JSON.parse(demoUser);
+            if (resolveDemoAccountType(user) === "couple") {
+              applyCoupleDemoIdentity(user);
+              return;
+            }
+            if (resolveDemoAccountType(user) === "single") {
+              navigate("/edit-profile-single");
+              return;
+            }
+          }
+        } catch {
+          // demo_user corrupto: caer a /auth
+        }
+        navigate("/auth");
       }
     };
 
@@ -276,8 +350,129 @@ const EditProfileCouple = () => {
     logger.error("Error subiendo imagen", { error });
   };
 
-  const handleSave = () => {
-    logger.info("Guardando perfil de pareja:", formData);
+  const handleRemoveGalleryImage = (
+    partner: "partner1" | "partner2",
+    type: "public" | "private",
+    url: string,
+  ) => {
+    const key = type === "public" ? "publicImages" : "privateImages";
+    setFormData((prev) => ({
+      ...prev,
+      [partner]: {
+        ...prev[partner],
+        [key]: prev[partner][key].filter((u) => u !== url),
+      },
+    }));
+  };
+
+  // Fotos actuales de la pareja (las que ya muestra el perfil) + las
+  // añadidas en esta sesión. Las actuales son de solo lectura aquí: el
+  // editor antes mostraba las zonas vacías aunque el perfil tiene
+  // contenido. Solo las añadidas se pueden quitar (X).
+  const renderGalleryStrip = (
+    currentImages: string[],
+    addedImages: string[],
+    partner: "partner1" | "partner2",
+    type: "public" | "private",
+  ) => {
+    const all = [...currentImages, ...addedImages];
+    if (all.length === 0) return null;
+    return (
+      <div className="flex flex-wrap gap-2 mt-3">
+        {all.map((url) => {
+          const isAdded = addedImages.includes(url);
+          return (
+            <div
+              key={`${type}-${url}`}
+              className="relative w-16 h-16 rounded-lg overflow-hidden border border-white/20"
+            >
+              <img
+                src={url}
+                alt="Foto de la pareja"
+                className="w-full h-full object-cover"
+              />
+              {isAdded && (
+                <button
+                  type="button"
+                  aria-label="Quitar foto añadida"
+                  onClick={() =>
+                    handleRemoveGalleryImage(partner, type, url)
+                  }
+                  className="absolute top-0.5 right-0.5 p-0.5 rounded-full bg-black/70 text-white hover:bg-black/90"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const handleSave = async () => {
+    // Antes solo registraba y navegaba: la selección de intereses se perdía
+    // y el perfil seguía mostrando los títulos demo. Ahora persiste en la
+    // misma fuente que lee el perfil.
+    const demoAuth =
+      typeof window !== "undefined" &&
+      window.localStorage.getItem("demo_authenticated") === "true";
+    if (demoAuth) {
+      try {
+        const demoUser = JSON.parse(
+          window.localStorage.getItem("demo_user") || "{}",
+        );
+        // Guardar el formulario COMPLETO en la misma fuente que lee el
+        // perfil y el editor: antes solo se persistían los intereses y
+        // cualquier cambio de bio, nombre, ubicación o fotos se perdía al
+        // guardar (y Guardar sin cambios escribía intereses []).
+        const updatedUser = {
+          ...demoUser,
+          name: formData.coupleName,
+          coupleName: formData.coupleName,
+          couple_name: formData.coupleName,
+          location: formData.location,
+          bio: formData.bio,
+          couple_bio: formData.bio,
+          interests: formData.interests ?? [],
+          explicitInterests: formData.explicitInterests ?? [],
+          partner1: {
+            ...(demoUser.partner1 ?? {}),
+            ...formData.partner1,
+            interests: formData.partner1?.interests ?? [],
+          },
+          partner2: {
+            ...(demoUser.partner2 ?? {}),
+            ...formData.partner2,
+            interests: formData.partner2?.interests ?? [],
+          },
+        };
+        window.localStorage.setItem("demo_user", JSON.stringify(updatedUser));
+        logger.info("Perfil de pareja guardado (demo)");
+      } catch (error) {
+        logger.error("Error guardando perfil de pareja en demo", {
+          error: String(error),
+        });
+      }
+      navigate("/profile-couple");
+      return;
+    }
+    // Producción: mismas columnas que lee el perfil (couple_profiles).
+    if (profile?.id && supabase) {
+      const { error } = await supabase
+        .from("couple_profiles")
+        .update({
+          his_interests: formData.partner1?.interests ?? [],
+          her_interests: formData.partner2?.interests ?? [],
+          couple_interests: formData.interests ?? [],
+        })
+        .eq("id", profile.id);
+      if (error) {
+        logger.error("Error guardando intereses de pareja", {
+          error: error.message,
+        });
+      }
+    }
     navigate("/profile-couple");
   };
 
@@ -294,23 +489,32 @@ const EditProfileCouple = () => {
 
   return (
     <div className={`min-h-screen ${themeConfig.backgroundClass} pb-20`}>
-      {/* Header */}
+      {/* Header: con wrap; en móvil el título ocupa su propia línea para
+          que "Volver al perfil" + "Guardar" no lo recorten ("E..."). */}
       <div className="bg-white/10 backdrop-blur-md border-b border-white/20 p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <Button
             onClick={() => navigate("/profile-couple")}
-            className="text-white hover:bg-white/20 bg-transparent border-none"
+            className="shrink-0 whitespace-nowrap text-white hover:bg-white/20 bg-transparent border-none"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver al perfil
           </Button>
-          <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+          {/* Punto 14b (ronda 7): el título llevaba `text-gray-900` fijo,
+              casi negro sobre el fondo oscuro del tema dark
+              (`from-gray-900 via-gray-800 to-black`): ilegible. Mismo
+              patrón que la línea ~1080 del archivo: gris oscuro solo en
+              tema claro, blanco en el resto (como el h1 de
+              EditProfileSingle, que ya usa `text-white`). */}
+          <h1
+            className={`order-3 w-full text-center text-xl font-bold ${demoTheme === "light" ? "text-gray-900" : "text-white"} flex items-center justify-center gap-2 sm:order-none sm:w-auto sm:flex-1`}
+          >
             <Users className="h-5 w-5" />
             Editar Perfil de Pareja
           </h1>
           <Button
             onClick={handleSave}
-            className="bg-linear-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white"
+            className="shrink-0 whitespace-nowrap bg-linear-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white"
           >
             <Save className="h-4 w-4 mr-2" />
             Guardar
@@ -412,7 +616,7 @@ const EditProfileCouple = () => {
                   type="button"
                   onClick={handleLocationDetection}
                   disabled={locationStatus === "loading"}
-                  className="w-full border border-gray-300 bg-transparent hover:bg-gray-100 text-gray-700 px-3 py-1 text-sm"
+                  className="w-full border border-gray-300 bg-white hover:bg-gray-100 text-gray-900 dark:border-white/25 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white px-3 py-1 text-sm"
                 >
                   <MapPin className="h-4 w-4 mr-2" />
                   {locationStatus === "loading"
@@ -555,11 +759,17 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PUBLIC_IMAGES,
+                      formData.partner1.publicImages,
+                      "partner1",
+                      "public",
+                    )}
                   </div>
                 </div>
                 <div>
                   <p className="text-xs text-white/80 mb-2">
-                    Imágenes Privadías
+                    Imágenes Privadas
                   </p>
                   <div className="border-2 border-dashed border-fuchsia-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-fuchsia-400 mb-2" />
@@ -576,6 +786,12 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PRIVATE_IMAGES,
+                      formData.partner1.privateImages,
+                      "partner1",
+                      "private",
+                    )}
                   </div>
                 </div>
               </div>
@@ -727,11 +943,17 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PUBLIC_IMAGES,
+                      formData.partner2.publicImages,
+                      "partner2",
+                      "public",
+                    )}
                   </div>
                 </div>
                 <div>
                   <p className="text-xs text-white/80 mb-2">
-                    Imágenes Privadías
+                    Imágenes Privadas
                   </p>
                   <div className="border-2 border-dashed border-blue-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-blue-400 mb-2" />
@@ -748,6 +970,12 @@ const EditProfileCouple = () => {
                         className="w-full h-full"
                       />
                     </div>
+                    {renderGalleryStrip(
+                      DEMO_COUPLE_PRIVATE_IMAGES,
+                      formData.partner2.privateImages,
+                      "partner2",
+                      "private",
+                    )}
                   </div>
                 </div>
               </div>
@@ -953,7 +1181,7 @@ const EditProfileCouple = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">
-                  Aparecer en búsquedías
+                  Aparecer en búsquedas
                 </span>
                 <input
                   type="checkbox"
@@ -964,20 +1192,18 @@ const EditProfileCouple = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">
-                  Solo parejas verificadías
+                  Solo parejas verificadas
                 </span>
                 <input
                   type="checkbox"
                   className="rounded bg-white/20 border-white/30"
-                  title="Solo mostrar parejas verificadías"
+                  title="Solo mostrar parejas verificadas"
                 />
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-
-      <Navigation />
     </div>
   );
 };

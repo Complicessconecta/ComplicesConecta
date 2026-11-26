@@ -25,7 +25,8 @@ const Premium = () => {
   );
   const [demoUser, _setDemoUser] = usePersistedState<any>("demo_user", null);
 
-  const isDemoUser = demoAuth === "true" && !!demoUser;
+  // demoAuth viene de usePersistedState (JSON.parse): "true" llega como boolean true.
+  const isDemoUser = String(demoAuth) === "true" && !!demoUser;
 
   useEffect(() => {
     // Verificar autenticación (demo o real)
@@ -57,7 +58,7 @@ const Premium = () => {
     {
       icon: Calendar,
       title: "Eventos Exclusivos",
-      description: "Fiestas privadías y orgas VIP",
+      description: "Fiestas privadas y orgías VIP",
       color: "from-amber-500 to-orange-500",
     },
     {
@@ -103,7 +104,7 @@ const Premium = () => {
               Experiencias ntimas Exclusivas
             </div>
             <p className="text-xl text-white max-w-3xl mx-auto">
-              Accede a la lite swinger con funciones premium, eventos VIP y el
+              Accede a la élite swinger con funciones premium, eventos VIP y el
               sistema de tokens CMPX.
               <strong className="text-accent">
                 {" "}
@@ -372,7 +373,7 @@ const Premium = () => {
               </p>
               <Badge variant="secondary" className="bg-accent/20 text-accent">
                 <Sparkles className="h-4 w-4 mr-1" />
-                Prximamente
+                Próximamente
               </Badge>
             </CardContent>
           </Card>
@@ -429,8 +430,8 @@ const Premium = () => {
                       Eventos VIP Exclusivos
                     </h4>
                     <p className="text-sm text-white">
-                      Invitaciones a fiestas privadías, orgas y clubs swinger de
-                      lite
+                      Invitaciones a fiestas privadas, orgías y clubs swinger de
+                      élite
                     </p>
                   </div>
                 </div>
@@ -438,10 +439,10 @@ const Premium = () => {
                   <Shield className="h-5 w-5 text-accent mt-1" />
                   <div>
                     <h4 className="font-medium text-foreground">
-                      Privacidad Mxima
+                      Privacidad Máxima
                     </h4>
                     <p className="text-sm text-white">
-                      Modo incgnito y proteccin avanzada de identidad
+                      Modo incógnito y protección avanzada de identidad
                     </p>
                   </div>
                 </div>

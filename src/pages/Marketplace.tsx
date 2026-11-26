@@ -24,7 +24,7 @@ const Marketplace = () => {
       id: 1,
       name: "Paquete Premium Mensual",
       description:
-        "Acceso completo a todías las funciones premium por 30 días. Incluye matches ilimitados, mensajes prioritarios y eventos VIP.",
+        "Acceso completo a todas las funciones premium por 30 días. Incluye matches ilimitados, mensajes prioritarios y eventos VIP.",
       price: 299,
       currency: "CMPX",
       category: "premium",
@@ -32,7 +32,7 @@ const Marketplace = () => {
         "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&crop=center",
       rating: 4.9,
       reviews: 1247,
-      badge: "Ms Popular",
+      badge: "Más Popular",
       features: [
         "Matches ilimitados",
         "Mensajes prioritarios",
@@ -116,7 +116,7 @@ const Marketplace = () => {
       id: 6,
       name: "Paquete de Tokens CMPX",
       description:
-        "Compra tokens CMPX para usar en todías las funciones premium de la plataforma.",
+        "Compra tokens CMPX para usar en todas las funciones premium de la plataforma.",
       price: 500,
       currency: "CMPX",
       category: "premium",
@@ -140,7 +140,7 @@ const Marketplace = () => {
 
   const getBadgeColor = (badge: string) => {
     switch (badge) {
-      case "Ms Popular":
+      case "Más Popular":
         return "bg-green-500/80";
       case "Recomendado":
         return "bg-blue-500/80";
@@ -319,7 +319,7 @@ const Marketplace = () => {
                     </h3>
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    Acceso completo a todías las funciones premium, eventos VIP,
+                    Acceso completo a todas las funciones premium, eventos VIP,
                     y beneficios exclusivos por 3 meses.
                   </p>
                   <div className="flex items-center justify-between">

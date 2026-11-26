@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Check, X, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -11,20 +11,75 @@ import { supabase } from "@/integrations/supabase/client";
 interface NicknameValidatorProps {
   value: string;
   onChange: (value: string) => void;
-  onValidationChange: (isValid: boolean, isAvailable: boolean) => void;
+  /**
+   * (isValid, isAvailable, checkStatus).
+   * - isValid: el FORMATO es válido (3–20 caracteres, [a-zA-Z0-9_-]).
+   * - isAvailable: se puede continuar con este apodo.
+   * - checkStatus: "available" (servidor lo confirmó libre),
+   *   "taken" (servidor o lista local dice que está usado),
+   *   "unverified" (el servidor NO pudo verificar: formato válido y no
+   *   reservado, se permite continuar para no bloquear el registro;
+   *   la confirmación definitiva es la RPC cuando la migración
+   *   20261124050001 esté aplicada) o "invalid" (formato no válido).
+   * El tercer parámetro es opcional: los formularios que solo miran
+   * (isValid, isAvailable) siguen funcionando igual.
+   */
+  onValidationChange: (
+    isValid: boolean,
+    isAvailable: boolean,
+    checkStatus?: "available" | "taken" | "unverified" | "invalid",
+  ) => void;
   className?: string;
   label?: string;
   placeholder?: string;
   required?: boolean;
 }
 
+type NicknameCheckStatus =
+  "idle" | "checking" | "available" | "taken" | "unverified" | "invalid";
+
 interface ValidationState {
   isChecking: boolean;
   isValid: boolean;
   isAvailable: boolean;
+  /** De dónde salió el veredicto (ver onValidationChange). */
+  checkStatus: NicknameCheckStatus;
   message: string;
   suggestions: string[];
 }
+
+/**
+ * Apodos reservados del sistema / demo: no se pueden registrar aunque
+ * el servidor no responda. Los nombres de los perfiles demo (Ana,
+ * Carlos, …) no hace falta listarlos: llevan espacios o "&" y el
+ * formato ya los rechaza.
+ */
+const RESERVED_NICKNAMES = new Set([
+  "admin",
+  "administrador",
+  "moderador",
+  "soporte",
+  "support",
+  "demo",
+  "demouser",
+  "sistema",
+  "system",
+  "complicesconecta",
+  "root",
+]);
+
+const isReservedNickname = (nickname: string): boolean =>
+  RESERVED_NICKNAMES.has(nickname.trim().toLowerCase());
+
+/**
+ * Ronda 9, stream D: cota máxima de la verificación contra el
+ * servidor. Pasado este tiempo sin respuesta, el checker emite el
+ * veredicto provisional en vez de girar sin fin (test ronda 8: el
+ * spinner no terminaba y "Continuar" quedaba deshabilitado >8 s).
+ * El debounce del efecto (500 ms) va aparte: el paso 1 resuelve
+ * como muy tarde a los ~5,5 s.
+ */
+export const NICKNAME_CHECK_TIMEOUT_MS = 5000;
 
 export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
   value,
@@ -39,9 +94,35 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
     isChecking: false,
     isValid: false,
     isAvailable: false,
+    checkStatus: "idle",
     message: "",
     suggestions: [],
   });
+
+  /**
+   * Ronda 9, stream D — causa raíz del registro bloqueado (test ronda 8:
+   * el checker giraba sin fin y "Continuar" quedaba deshabilitado con
+   * todos los campos llenos, apodos anonr8test y termr8zz99, >8 s):
+   *
+   * 1. Los dos formularios de registro pasan `onValidationChange` como
+   *    arrow inline: su identidad cambiaba en CADA render del padre.
+   *    `checkAvailability` dependía de él (useCallback) y el efecto de
+   *    debounce dependía de ambos, así que cada render del padre
+   *    reiniciaba el temporizador de 500 ms y relanzaba la verificación;
+   *    cada veredicto re-renderizaba al padre y el ciclo no terminaba.
+   *    El callback ahora vive en un ref y `checkAvailability` es
+   *    estable: el efecto solo depende del valor del apodo.
+   * 2. Sin cota de espera: si la RPC o la consulta directa se quedaban
+   *    colgadas (red, cliente sin backend), el spinner no terminaba
+   *    nunca. Ahora la verificación corre contra un timeout de 5 s y
+   *    cae al veredicto provisional.
+   */
+  const onValidationChangeRef = useRef(onValidationChange);
+  onValidationChangeRef.current = onValidationChange;
+  /** Generación de la verificación en curso: un veredicto de un apodo
+   * que ya cambió no se aplica (evita que un resultado tardío pise el
+   * estado del apodo actual). */
+  const checkGenerationRef = useRef(0);
 
   // Validar formato del nickname
   const validateFormat = (
@@ -99,90 +180,211 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
     return suggestions.slice(0, 3); // Solo mostrar 3 sugerencias
   };
 
-  // Verificar disponibilidad en base de datos
-  const checkAvailability = useCallback(
-    async (nickname: string) => {
-      if (!nickname.trim()) return;
+  // Verificar disponibilidad en base de datos.
+  //
+  // Camino del error que bloqueaba el registro (test 2026-11-24):
+  //  1. La RPC `check_nickname_available` NO existe en producción
+  //     (migración 20261124050001 sin aplicar) -> PostgREST PGRST202.
+  //  2. El respaldo (consulta directa a profiles.nickname) también
+  //     falla: la columna tampoco existe en producción (error 42703)
+  //     y, aunque existiera, RLS exige sesión y en registro aún no
+  //     hay (anon no lee profiles).
+  //  3. El catch anterior marcaba isAvailable=false con CUALQUIER
+  //     error, y ambos formularios exigen isValid && isAvailable
+  //     para "Continuar" -> registro bloqueado con cualquier apodo.
+  //
+  // Orden de resolución (la primera que responde manda):
+  //  a. RPC pública (migración 20261124050001 aplicada): veredicto
+  //     definitivo del servidor, salta RLS (SECURITY DEFINER).
+  //  b. Consulta directa (solo donde RLS lo permite: local/dev).
+  //  c. Si el servidor NO responde (migración sin aplicar, RLS o
+  //     red): NO se bloquea. Se valida formato + lista local de
+  //     reservados y se marca "unverified": el formulario permite
+  //     continuar y el mensaje lo dice con honestidad (ámbar, no
+  //     verde). La unicidad definitiva la da el servidor cuando la
+  //     migración esté aplicada (RPC + índice único 20261124050002);
+  //     hasta entonces un duplicado es posible pero el registro ya
+  //     no queda bloqueado, que es el bloqueador mayor del test.
+  //  Ronda 9, stream D: (d) sin backend configurado no se intenta
+  //     nada contra el servidor (veredicto provisional inmediato) y
+  //     (e) toda verificación corre contra un timeout de 5 s: el
+  //     paso 1 SIEMPRE resuelve en tiempo acotado.
+  const checkAvailability = useCallback(async (nickname: string) => {
+    if (!nickname.trim()) return;
 
-      const formatValidation = validateFormat(nickname);
-      if (!formatValidation.isValid) {
+    const formatValidation = validateFormat(nickname);
+    if (!formatValidation.isValid) {
+      setValidation((prev) => ({
+        ...prev,
+        isChecking: false,
+        isValid: false,
+        isAvailable: false,
+        checkStatus: "invalid",
+        message: formatValidation.message,
+        suggestions: [],
+      }));
+      onValidationChangeRef.current(false, false, "invalid");
+      return;
+    }
+
+    // Nueva generación: los veredictos de una verificación anterior
+    // (otro apodo) se descartan al llegar. `settled` evita que un
+    // resultado tardío del servidor pise el veredicto provisional
+    // que ya emitió el timeout.
+    const generation = ++checkGenerationRef.current;
+    let settled = false;
+    const stillCurrent = () =>
+      !settled && checkGenerationRef.current === generation;
+
+    setValidation((prev) => ({
+      ...prev,
+      isChecking: true,
+      checkStatus: "checking",
+    }));
+
+    const reportAvailable = (available: boolean) => {
+      if (!stillCurrent()) return;
+      settled = true;
+      if (available) {
         setValidation((prev) => ({
           ...prev,
           isChecking: false,
-          isValid: false,
-          isAvailable: false,
-          message: formatValidation.message,
+          isValid: true,
+          isAvailable: true,
+          checkStatus: "available",
+          message: "✅ Apodo disponible",
           suggestions: [],
         }));
-        onValidationChange(false, false);
-        return;
-      }
-
-      setValidation((prev) => ({ ...prev, isChecking: true }));
-
-      try {
-        // Verificar en tabla profiles
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("nickname")
-          .ilike("nickname", nickname.trim())
-          .limit(1);
-
-        if (error) {
-          console.error("Error checking nickname availability:", error);
-          setValidation((prev) => ({
-            ...prev,
-            isChecking: false,
-            isValid: true,
-            isAvailable: false,
-            message: "Error al verificar disponibilidad",
-            suggestions: [],
-          }));
-          onValidationChange(true, false);
-          return;
-        }
-
-        const isAvailable = !data || data.length === 0;
-
-        if (isAvailable) {
-          setValidation((prev) => ({
-            ...prev,
-            isChecking: false,
-            isValid: true,
-            isAvailable: true,
-            message: "✅ Apodo disponible",
-            suggestions: [],
-          }));
-          onValidationChange(true, true);
-        } else {
-          const suggestions = generateSuggestions(nickname);
-          setValidation((prev) => ({
-            ...prev,
-            isChecking: false,
-            isValid: true,
-            isAvailable: false,
-            message: "❌ Este apodo ya está en uso",
-            suggestions,
-          }));
-          onValidationChange(true, false);
-        }
-      } catch (error) {
-        console.error("Error checking nickname:", error);
+        onValidationChangeRef.current(true, true, "available");
+      } else {
+        const suggestions = generateSuggestions(nickname);
         setValidation((prev) => ({
           ...prev,
           isChecking: false,
           isValid: true,
           isAvailable: false,
-          message: "Error al verificar disponibilidad",
-          suggestions: [],
+          checkStatus: "taken",
+          message: "❌ Este apodo ya está en uso",
+          suggestions,
         }));
-        onValidationChange(true, false);
+        onValidationChangeRef.current(true, false, "taken");
       }
-    },
-    [onValidationChange],
-  );
+    };
 
-  // Debounce para evitar muchas consultas
+    // (c) Veredicto provisional sin servidor: formato válido y no
+    // reservado -> se permite continuar, marcado como no verificado.
+    const reportUnverified = () => {
+      if (!stillCurrent()) return;
+      settled = true;
+      if (isReservedNickname(nickname)) {
+        const suggestions = generateSuggestions(nickname);
+        setValidation((prev) => ({
+          ...prev,
+          isChecking: false,
+          isValid: true,
+          isAvailable: false,
+          checkStatus: "taken",
+          message: "❌ Este apodo está reservado",
+          suggestions,
+        }));
+        onValidationChangeRef.current(true, false, "taken");
+        return;
+      }
+      setValidation((prev) => ({
+        ...prev,
+        isChecking: false,
+        isValid: true,
+        isAvailable: true,
+        checkStatus: "unverified",
+        message:
+          "⚠️ No se pudo verificar en el servidor (migración pendiente): formato válido y no reservado. Puedes continuar; la disponibilidad definitiva se confirma cuando la verificación del servidor esté activa.",
+        suggestions: [],
+      }));
+      onValidationChangeRef.current(true, true, "unverified");
+    };
+
+    // Ronda 9, stream D: sin backend configurado (preview sin
+    // VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY) no hay servidor al
+    // que preguntar: ni RPC ni consulta directa. Veredicto
+    // provisional inmediato, sin depender del stub.
+    if (!isSupabaseConfigured) {
+      reportUnverified();
+      return;
+    }
+
+    const serverCheck = (async (): Promise<void> => {
+      try {
+        // (a) Disponibilidad vía RPC pública check_nickname_available
+        // (migración 20261124050001). SECURITY DEFINER (salta RLS) y
+        // solo devuelve un booleano.
+        // Sin tipos generados aún para la RPC: cast a any hasta que el
+        // coordinador agregue su firma a supabase-generated.ts.
+        const { data: rpcAvailable, error: rpcError } = await (
+          supabase as any
+        ).rpc("check_nickname_available", {
+          p_nickname: nickname.trim(),
+        });
+
+        if (!rpcError && typeof rpcAvailable === "boolean") {
+          reportAvailable(rpcAvailable);
+          return;
+        }
+
+        // (b) Respaldo a la consulta directa, que funciona donde RLS
+        // lo permite (local/dev). CUALQUIER error de la RPC (función
+        // inexistente PGRST202/42883, RLS, red) cae aquí; si la
+        // consulta directa también falla, se pasa al veredicto
+        // provisional (c) en vez de bloquear el registro.
+        try {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("nickname")
+            .ilike("nickname", nickname.trim())
+            .limit(1);
+          if (error) throw error;
+          reportAvailable(!data || data.length === 0);
+        } catch (directError) {
+          console.warn(
+            "Nickname check sin servidor (RPC y consulta directa fallaron); se permite continuar con verificación provisional:",
+            rpcError ?? directError,
+          );
+          reportUnverified();
+        }
+      } catch (error) {
+        // Ni siquiera se pudo intentar la verificación (p. ej. el
+        // cliente Supabase no responde): mismo veredicto provisional,
+        // nunca bloquear el registro por un fallo de red/servidor.
+        console.warn(
+          "Nickname check: error inesperado, verificación provisional:",
+          error,
+        );
+        reportUnverified();
+      }
+    })();
+
+    // Cota de espera: la verificación SIEMPRE resuelve (disponible /
+    // usado / provisional) antes de NICKNAME_CHECK_TIMEOUT_MS, aunque
+    // la red o el cliente se queden colgados. Sin esto el paso 1 del
+    // registro podía girar sin fin (test ronda 8).
+    const outcome = await Promise.race([
+      serverCheck.then((): "done" => "done"),
+      new Promise<"timeout">((resolve) =>
+        setTimeout(() => resolve("timeout"), NICKNAME_CHECK_TIMEOUT_MS),
+      ),
+    ]);
+    if (outcome === "timeout") {
+      console.warn(
+        "Nickname check: tiempo agotado, verificación provisional:",
+        nickname,
+      );
+      reportUnverified();
+    }
+  }, []);
+
+  // Debounce para evitar muchas consultas. `checkAvailability` es
+  // estable (el callback del padre vive en un ref): el efecto solo
+  // depende del valor, así que un render del padre ya no reinicia el
+  // temporizador ni relanza la verificación (ronda 9, stream D).
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (value.trim()) {
@@ -192,15 +394,16 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
           isChecking: false,
           isValid: false,
           isAvailable: false,
+          checkStatus: "idle",
           message: "",
           suggestions: [],
         });
-        onValidationChange(false, false);
+        onValidationChangeRef.current(false, false, "invalid");
       }
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [value, checkAvailability, onValidationChange]);
+  }, [value, checkAvailability]);
 
   const handleSuggestionClick = (suggestion: string) => {
     onChange(suggestion);
@@ -209,9 +412,17 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
   const getInputBorderColor = () => {
     if (!value.trim()) return "border-white/20";
     if (validation.isChecking) return "border-yellow-400";
-    if (validation.isValid && validation.isAvailable) return "border-green-400";
+    if (validation.checkStatus === "available") return "border-green-400";
+    // Sin verificación del servidor: ámbar (advertencia, no error).
+    if (validation.checkStatus === "unverified") return "border-amber-400";
     if (!validation.isValid || !validation.isAvailable) return "border-red-400";
     return "border-white/20";
+  };
+
+  const getMessageColor = () => {
+    if (validation.checkStatus === "available") return "text-green-400";
+    if (validation.checkStatus === "unverified") return "text-amber-400";
+    return "text-red-400";
   };
 
   return (
@@ -231,26 +442,19 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
           {validation.isChecking && (
             <Loader2 className="h-4 w-4 text-yellow-400 animate-spin" />
           )}
+          {!validation.isChecking && validation.checkStatus === "available" && (
+            <Check className="h-4 w-4 text-green-400" />
+          )}
           {!validation.isChecking &&
-            validation.isValid &&
-            validation.isAvailable && (
-              <Check className="h-4 w-4 text-green-400" />
-            )}
-          {!validation.isChecking &&
-            (!validation.isValid || !validation.isAvailable) &&
+            (validation.checkStatus === "taken" ||
+              validation.checkStatus === "invalid") &&
             value.trim() && <X className="h-4 w-4 text-red-400" />}
         </div>
       </div>
 
       {/* Mensaje de validación */}
       {validation.message && (
-        <div
-          className={`mt-2 text-sm ${
-            validation.isValid && validation.isAvailable
-              ? "text-green-400"
-              : "text-red-400"
-          }`}
-        >
+        <div className={`mt-2 text-sm ${getMessageColor()}`}>
           {validation.message}
         </div>
       )}

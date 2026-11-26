@@ -87,7 +87,9 @@ describe("TokenDashboard", () => {
         // screen.debug(); // Uncomment to debug
         // Verificar que el componente renderiza correctamente
         expect(screen.getByText("GTK")).toBeInTheDocument();
-        expect(screen.getByText("1000")).toBeInTheDocument(); // totalCMPX = 500 + 500
+        // El total poseído ES cmpxBalance (500): el staking (500) es una
+        // parte del total, no un extra — antes total = 500 + 500 = 1000.
+        expect(screen.getByText("500")).toBeInTheDocument(); // totalCMPX = cmpxBalance
       });
 
       testLogger.info("Test de balance completado exitosamente");

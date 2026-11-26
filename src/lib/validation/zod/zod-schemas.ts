@@ -171,7 +171,7 @@ export const InterestsSchema = z.object({
   social: z
     .array(
       z.enum([
-        "Fiestas privadías",
+        "Fiestas privadas",
         "Clubs swingers",
         "Eventos temáticos",
         "Cenas íntimas",

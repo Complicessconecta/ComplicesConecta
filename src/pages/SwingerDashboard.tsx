@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
@@ -35,7 +34,7 @@ const SwingerDashboard = () => {
       icon: MessageSquare,
       title: "Chat íntimo Encriptado",
       description:
-        "Conversaciones privadías entre parejas con encriptación militar para máxima discreción",
+        "Conversaciones privadas entre parejas con encriptación militar para máxima discreción",
       status: "Activo",
     },
     {
@@ -47,9 +46,9 @@ const SwingerDashboard = () => {
     },
     {
       icon: Calendar,
-      title: "Fiestas Privadías VIP",
+      title: "Fiestas Privadas VIP",
       description:
-        "Acceso exclusivo a eventos swinger, even privadías y clubs de intercambio",
+        "Acceso exclusivo a eventos swinger, even privadas y clubs de intercambio",
       status: "Premium",
     },
   ];
@@ -57,8 +56,6 @@ const SwingerDashboard = () => {
   return (
     <div className="min-h-dvh relative overflow-x-hidden">
       <div className="relative z-10">
-        <Navigation />
-
         <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
           <div className="mb-6">
@@ -90,7 +87,7 @@ const SwingerDashboard = () => {
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Parejas Registradías
+                  Parejas Registradas
                 </CardTitle>
                 <Heart className="h-4 w-4 text-primary" fill="currentColor" />
               </CardHeader>
@@ -168,7 +165,7 @@ const SwingerDashboard = () => {
                   {swingerStats.monthlyEvents}
                 </div>
                 <p className="text-xs text-white/80">
-                  Fiestas privadías y encuentros
+                  Fiestas privadas y encuentros
                 </p>
               </CardContent>
             </Card>
@@ -185,7 +182,7 @@ const SwingerDashboard = () => {
                   {swingerStats.satisfactionRate}/5
                 </div>
                 <p className="text-xs text-white/80">
-                  Experiencias swinger valoradías
+                  Experiencias swinger valoradas
                 </p>
               </CardContent>
             </Card>
@@ -294,7 +291,7 @@ const SwingerDashboard = () => {
                           feature.title === "Encuentros Gelocalizados"
                         ) {
                           navigate("/discover");
-                        } else if (feature.title === "Fiestas Privadías VIP") {
+                        } else if (feature.title === "Fiestas Privadas VIP") {
                           navigate("/events");
                         }
                       }}
@@ -336,7 +333,7 @@ const SwingerDashboard = () => {
             <CardContent className="text-center space-y-6">
               <p className="text-white/90 text-lg max-w-2xl mx-auto">
                 Accede a la élite swinger: fiestas VIP exclusivas, parejas
-                verificadías premium y experiencias íntimas que transformarán tu
+                verificadas premium y experiencias íntimas que transformarán tu
                 vida sexual.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

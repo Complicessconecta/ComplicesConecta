@@ -186,7 +186,7 @@ export class WebVitalsMonitor {
       // Importación dinámica para evitar errores de build
       const { getCLS, getFID, getFCP, getLCP, getTTFB } = await getWebVitals();
 
-      // Registrar observadores para todías las métricas
+      // Registrar observadores para todas las métricas
       getCLS(handleMetric);
       getFID(handleMetric);
       getFCP(handleMetric);

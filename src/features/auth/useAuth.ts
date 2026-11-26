@@ -4,8 +4,20 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
-import { getAppConfig, DEMO_CREDENTIALS, handleDemoAuth, clearDemoAuth, isProductionAdmin } from "@/lib/app-config";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import {
+  findLocalDemoAccount,
+  restoreLocalDemoSession,
+  seedAnonymousPrivacyDefaults,
+} from "@/lib/demo-registration";
+import {
+  getAppConfig,
+  DEMO_CREDENTIALS,
+  handleDemoAuth,
+  clearDemoAuth,
+  isProductionAdmin,
+  resolveDemoAccountType,
+} from "@/lib/app-config";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -42,6 +54,20 @@ function safeParseDemoUser<T>(data: T): Profile | null {
     });
     return null;
   }
+}
+
+// Ronda 8 (punto 14): ¿es esta sesión una sesión MOCK demo?
+// Las sesiones demo locales llevan access_token "demo-..." (la pone
+// handleDemoAuth: "demo-access-token"; el login local:
+// "demo-token-<ts>"). Una sesión real de Supabase lleva un JWT
+// ("eyJ..."), así que el prefijo las distingue sin ambigüedad.
+// Sin esto, `session?.user` trataba la sesión mock como real y
+// `isDemo()`/`isDemoMode()`/`getProfileType()` valían distinto
+// antes del login (sin sesión) que después (sesión mock puesta):
+// la etiqueta Cuenta/DEMO alternaba entre renders.
+function isDemoSession(session: Session | null): boolean {
+  const token = (session as { access_token?: unknown } | null)?.access_token;
+  return typeof token === "string" && token.startsWith("demo-");
 }
 
 export const useAuth = () => {
@@ -101,17 +127,90 @@ export const useAuth = () => {
             parsedDemoUser.first_name ||
             "Demo User") as string,
           email: (parsedDemoUser.email || "") as string | null,
+          // Ronda 6 (registro demo local): una cuenta demo recién creada
+          // trae sus propios datos en `demo_user` (edad, bio, intereses,
+          // género, apodo, nombre de pareja). Sin esto, loadProfile los
+          // tiraba y el perfil mostraba los fallbacks de Sofía (28 años,
+          // su foto y su bio) aunque el apodo fuera otro.
+          age:
+            typeof parsedDemoUser.age === "number" ? parsedDemoUser.age : null,
+          bio:
+            typeof parsedDemoUser.bio === "string" ? parsedDemoUser.bio : null,
+          avatar_url:
+            typeof parsedDemoUser.avatar_url === "string"
+              ? parsedDemoUser.avatar_url
+              : null,
+          gender:
+            typeof parsedDemoUser.gender === "string"
+              ? parsedDemoUser.gender
+              : null,
+          interested_in:
+            typeof parsedDemoUser.interested_in === "string"
+              ? parsedDemoUser.interested_in
+              : null,
+          interests: Array.isArray(parsedDemoUser.interests)
+            ? (parsedDemoUser.interests as string[])
+            : null,
+          nickname:
+            typeof parsedDemoUser.nickname === "string"
+              ? parsedDemoUser.nickname
+              : null,
+          couple_name:
+            typeof parsedDemoUser.couple_name === "string"
+              ? parsedDemoUser.couple_name
+              : null,
+          his_name:
+            typeof parsedDemoUser.his_name === "string"
+              ? parsedDemoUser.his_name
+              : null,
+          his_age:
+            typeof parsedDemoUser.his_age === "number"
+              ? parsedDemoUser.his_age
+              : null,
+          her_name:
+            typeof parsedDemoUser.her_name === "string"
+              ? parsedDemoUser.her_name
+              : null,
+          her_age:
+            typeof parsedDemoUser.her_age === "number"
+              ? parsedDemoUser.her_age
+              : null,
           // C3: el perfil demo NUNCA es admin. role forzado a "user" y
           // profile_type limitado a "single"/"couple": un demo_user forjado
           // con role/accountType "admin" en localStorage no escala privilegios.
+          // El tipo se resuelve con resolveDemoAccountType: el demo_user
+          // guardado puede tener forma de Profile (profile_type /
+          // relationship_type) sin `accountType`; leer solo accountType
+          // hacía que una pareja resolviera como single.
           role: "user",
-          profile_type: (parsedDemoUser.accountType === "couple"
-            ? "couple"
-            : "single") as string,
+          // Ronda 8 (punto 14): la marca de cuenta anónima viaja al
+          // perfil cargado; sin esto el perfil single no puede
+          // distinguirla de la Sofía canónica.
+          is_anonymous: parsedDemoUser.is_anonymous === true,
+          profile_type: (resolveDemoAccountType(parsedDemoUser) ??
+            "single") as string,
           is_demo: true,
-          is_verified: true,
+          // Ronda 10 (stream A, punto A2): el anónimo NO es verificado
+          // (no pasó World ID / KYC). Antes TODOS los perfiles demo
+          // forzaban `is_verified: true` y el perfil anónimo mostraba
+          // "✓ Verificado" en vez de la insignia "Anónimo".
+          is_verified: parsedDemoUser.is_anonymous === true ? false : true,
           is_premium: false,
         };
+
+        // Ronda 10 (stream A, punto A1): siembra la privacidad con la
+        // que nace el anónimo (privado/invisible) al cargar su sesión:
+        // cubre cuentas creadas antes de esta ronda (anonr8test) y el
+        // barrido de `single_privacy:*` que hace el logout. Solo
+        // escribe si el dueño no fijó nada aún.
+        if (parsedDemoUser.is_anonymous === true) {
+          seedAnonymousPrivacyDefaults(
+            demoProfile.id,
+            (resolveDemoAccountType(parsedDemoUser) ?? "single") as
+              | "single"
+              | "couple",
+          );
+        }
 
         logger.info("🎭 Perfil demo cargado en useAuth:", {
           displayName: demoProfile.display_name,
@@ -164,10 +263,10 @@ export const useAuth = () => {
 
       // Usar la vista unificada vw_profiles_unified para consultar ambas tablas según account_type
       const result = await supabase
-        .from("vw_profiles_unified")
+        .from("profiles")
         .select("*")
-        .eq("id", userId)
-        .single();
+        .eq("user_id", userId)
+        .maybeSingle();
 
       const { data, error } = result;
 
@@ -183,11 +282,8 @@ export const useAuth = () => {
       }
 
       if (data) {
-        // Manejar tanto array como objeto único
-        const profileData = Array.isArray(data) ? data[0] : data;
-
-        // CORRECCIÓN: Validar campos requeridos
-        if (!profileData || (Array.isArray(data) && data.length === 0)) {
+        const profileData = data;
+        if (!profileData) {
           logger.info("🔍 Perfil no encontrado o vacío", { userId });
           setProfile(null);
           return;
@@ -208,7 +304,7 @@ export const useAuth = () => {
           firstName: profileData?.first_name,
           email: profileData?.email,
         });
-        let resolvedRole = profileData?.role;
+        let resolvedRole = profileData.role || "user";
         try {
           const { data: isAdminRpc, error: adminError } = await supabase.rpc("is_admin");
           if (adminError) {
@@ -224,8 +320,11 @@ export const useAuth = () => {
           });
         }
 
-        const resolvedProfile = {
+        const resolvedProfile: Profile = {
           ...profileData,
+          created_at: profileData.created_at ?? undefined,
+          interested_in: profileData.interested_in?.join(", ") ?? null,
+          updated_at: profileData.updated_at ?? undefined,
           role: resolvedRole,
         };
 
@@ -240,9 +339,10 @@ export const useAuth = () => {
         try {
           setDatadogUser(
             resolvedProfile?.id || userId,
-            resolvedProfile?.email,
-            resolvedProfile?.display_name ||
-              resolvedProfile?.first_name,
+            resolvedProfile?.email ?? undefined,
+            resolvedProfile?.display_name ??
+              resolvedProfile?.first_name ??
+              undefined,
           );
         } catch (error) {
           logger.error("❌ Error actualizando usuario en Datadog RUM:", {
@@ -521,7 +621,10 @@ export const useAuth = () => {
             first_name: demoAuth.user.first_name || "Demo",
             last_name: "",
             name: demoAuth.user.first_name || "Demo",
-            age: 25,
+            // Edad demo canónica de Sofía (28): la misma que muestra el
+            // perfil (ProfileSingle usa 28 como fallback en demo). Antes
+            // era 25 y el editor la mostraba distinta al perfil.
+            age: 28,
             bio: null,
             gender: "female",
             interested_in: "men",
@@ -531,7 +634,13 @@ export const useAuth = () => {
             profile_type: demoAuth.user.accountType || "single",
             role: demoAuth.user.role || "user",
             display_name: demoAuth.user.first_name || "Demo User",
-            avatar_url: null,
+            // Avatar demo canónico según el tipo de cuenta (antes null y
+            // caía a iniciales): Sofía para single, silueta de pareja
+            // al atardecer para pareja.
+            avatar_url:
+              demoAuth.user.accountType === "couple"
+                ? "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop"
+                : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
             email: demoAuth.user.email || "",
             location: null,
             is_online: false,
@@ -551,6 +660,58 @@ export const useAuth = () => {
           logger.info("✅ Sesión demo iniciada", { email });
           return { user: demoAuth.user, session: demoAuth.session };
         }
+      }
+
+      // RONDA 7 (punto 1): sin Supabase configurado, el login NO debe
+      // llamar a supabase.auth: el stub siempre rechaza con "Supabase
+      // not configured - using stub client" (caso PruebaR6, ID
+      // 4388c9fb, creada en el registro demo de la ronda 6 y luego
+      // sin sesión tras el logout). Se resuelve la cuenta demo creada
+      // en local en este navegador (por email o apodo) y se restaura
+      // su sesión con sus propios datos, no con el perfil canónico
+      // de Sofía. El login real sigue necesitando VITE_SUPABASE_URL
+      // + VITE_SUPABASE_ANON_KEY en Vercel (Preview + Production).
+      if (!isSupabaseConfigured) {
+        const localAccount = findLocalDemoAccount(email);
+        if (localAccount) {
+          logger.info("🎭 Cuenta demo local encontrada - restaurando sesión", {
+            email,
+          });
+          restoreLocalDemoSession(localAccount.profile);
+
+          const mockUser: User = {
+            id: localAccount.profile.id,
+            email: localAccount.profile.email || "",
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            app_metadata: { provider: "email", providers: ["email"] },
+            user_metadata: {},
+            aud: "authenticated",
+          };
+          const mockSession: Session = {
+            user: mockUser,
+            access_token: `demo-token-${Date.now()}`,
+            expires_in: 3600,
+            token_type: "bearer",
+            refresh_token: "demo-refresh-token",
+          } as Session;
+
+          _setDemoUser(localAccount.profile);
+          setUser(mockUser);
+          setSession(mockSession);
+          await loadProfile(localAccount.profile.id);
+          logger.info("✅ Sesión demo local restaurada", { email });
+          return { user: mockUser, session: mockSession };
+        }
+        logger.info(
+          "🎭 Sin Supabase y sin cuenta demo local para este correo",
+          {
+            email,
+          },
+        );
+        throw new Error(
+          "Cuenta no encontrada en este navegador. Sin Supabase configurado solo se puede entrar con una cuenta demo creada antes en este navegador; el acceso real necesita las variables de Supabase en Vercel.",
+        );
       }
 
       // Verificar si es credencial de producción (admin)
@@ -644,6 +805,20 @@ export const useAuth = () => {
   };
 
   const getProfileType = () => {
+    // Sesión real tiene prioridad sobre flags demo obsoletos: si hay una
+    // sesión de Supabase, el tipo de perfil es el real, no el del
+    // `demo_user` guardado en localStorage. Sin esto, un usuario real que
+    // antes probó el demo seguía resolviendo como demo y el botón Perfil
+    // del dock lo lanzaba a los perfiles demo.
+    // Ronda 8 (punto 14): una sesión MOCK demo (access_token
+    // "demo-...": la crean handleDemoAuth y el login local) NO es una
+    // sesión real: antes `session?.user` la trataba como real y
+    // `isDemoMode()`/`getProfileType()` cambiaban de valor entre el
+    // login (sesión mock puesta) y la recarga (sesión null), lo que
+    // hacía alternar la etiqueta Cuenta/DEMO.
+    if (session?.user && !isDemoSession(session)) {
+      return profile?.profile_type || "single";
+    }
     // Misma lectura fresca que isDemo(): el estado `demoUser` de esta
     // instancia puede estar obsoleto si el demo se activó por SPA después
     // de montar (MainLayout/Navigation). Sin esto, un demo de pareja
@@ -656,7 +831,12 @@ export const useAuth = () => {
     const activeDemoUser = storedDemoUser ?? demoUser;
     if (activeDemoUser) {
       const parsedDemoUser = safeParseDemoUser(activeDemoUser); // VALIDADO
-      return parsedDemoUser?.accountType || "single";
+      // Resolver con todas las variantes (accountType / profile_type /
+      // relationship_type / email): el demo_user guardado no siempre trae
+      // `accountType` y leer solo ese campo hacía que una pareja
+      // resolviera como "single" (el engranaje abría el editor de single
+      // estando en sesión de pareja).
+      return resolveDemoAccountType(parsedDemoUser) ?? "single";
     }
     return profile?.profile_type || "single";
   };
@@ -695,6 +875,10 @@ export const useAuth = () => {
   };
 
   const isDemo = () => {
+    // Sesión real tiene prioridad: con sesión de Supabase activa no hay
+    // modo demo, aunque queden flags demo obsoletos en localStorage.
+    // (Ver isDemoSession: la sesión mock demo no cuenta como real.)
+    if (session?.user && !isDemoSession(session)) return false;
     const sessionFlags = StorageManager.getSessionFlags();
     // Leer demo_user directo de localStorage en cada llamada: useAuth es
     // un hook por componente (sin estado compartido) y cada instancia lee
@@ -743,6 +927,10 @@ export const useAuth = () => {
   };
 
   const isDemoMode = () => {
+    // Sesión real tiene prioridad: con sesión de Supabase activa no hay
+    // modo demo, aunque queden flags demo obsoletos en localStorage.
+    // (Ver isDemoSession: la sesión mock demo no cuenta como real.)
+    if (session?.user && !isDemoSession(session)) return false;
     const sessionFlags = StorageManager.getSessionFlags();
     return sessionFlags.demo_authenticated;
   };

@@ -213,7 +213,7 @@ const GuidelinesPage = () => {
                     <li> Las fotos deben ser tuyas o de tu pareja</li>
                     <li>
                       {" "}
-                      Evita contenido excesivamente explcito en fotos pblicas
+                      Evita contenido excesivamente explcito en fotos públicas
                     </li>
                     <li> Respeta los derechos de autor</li>
                   </ul>
@@ -226,7 +226,7 @@ const GuidelinesPage = () => {
                     <li> Sé respetuoso desde el primer mensaje</li>
                     <li> No envíes contenido no solicitado</li>
                     <li> Respeta si alguien no responde o declina</li>
-                    <li> Mantén las conversaciones apropiadías al contexto</li>
+                    <li> Mantén las conversaciones apropiadas al contexto</li>
                     <li> No compartas información de contacto de terceros</li>
                   </ul>
                 </div>

@@ -4,9 +4,14 @@ import { Send, Smile, Paperclip, Mic, Image } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { cn } from "@/shared/lib/cn";
+import { EmojiPicker } from "@/components/chat/EmojiPicker";
+import { ChatFileUpload } from "@/components/chat/ChatFileUpload";
+import { VoiceRecorder } from "@/components/chat/VoiceRecorder";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
+  onSendFiles?: (files: File[]) => void;
+  onSendAudio?: (blob: Blob, duration: number) => void;
   placeholder?: string;
   disabled?: boolean;
   className?: string;
@@ -15,6 +20,8 @@ interface ChatInputProps {
 
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSendMessage,
+  onSendFiles,
+  onSendAudio,
   placeholder = "Escribe tu mensaje...",
   disabled = false,
   className,
@@ -22,6 +29,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -56,6 +66,36 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         className,
       )}
     >
+      {showEmojiPicker && (
+        <div className="absolute bottom-full left-2 mb-2 z-20">
+          <EmojiPicker
+            onEmojiSelect={(emoji) => setMessage((prev) => prev + emoji)}
+            onClose={() => setShowEmojiPicker(false)}
+          />
+        </div>
+      )}
+      {showFileUpload && (
+        <div className="absolute bottom-full left-2 mb-2 z-20">
+          <ChatFileUpload
+            onFileSelect={(files) => {
+              setShowFileUpload(false);
+              onSendFiles?.(files);
+            }}
+            onCancel={() => setShowFileUpload(false)}
+          />
+        </div>
+      )}
+      {showVoiceRecorder && (
+        <div className="absolute bottom-full left-2 mb-2 z-20">
+          <VoiceRecorder
+            onAudioReady={(blob, duration) => {
+              setShowVoiceRecorder(false);
+              onSendAudio?.(blob, duration);
+            }}
+            onCancel={() => setShowVoiceRecorder(false)}
+          />
+        </div>
+      )}
       {/* Botones de herramientas */}
       <div className="flex items-center gap-1">
         <Button
@@ -63,6 +103,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           size="sm"
           className="h-8 w-8 p-0 hover:bg-pink-100 transition-colors"
           disabled={disabled}
+          onClick={() => {
+            setShowFileUpload(false);
+            setShowVoiceRecorder(false);
+            setShowEmojiPicker((v) => !v);
+          }}
         >
           <Smile className="h-4 w-4 text-gray-500" />
         </Button>
@@ -72,6 +117,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           size="sm"
           className="h-8 w-8 p-0 hover:bg-pink-100 transition-colors"
           disabled={disabled}
+          onClick={() => {
+            setShowEmojiPicker(false);
+            setShowVoiceRecorder(false);
+            setShowFileUpload(true);
+          }}
         >
           <Paperclip className="h-4 w-4 text-gray-500" />
         </Button>
@@ -81,6 +131,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           size="sm"
           className="h-8 w-8 p-0 hover:bg-pink-100 transition-colors"
           disabled={disabled}
+          onClick={() => {
+            setShowEmojiPicker(false);
+            setShowVoiceRecorder(false);
+            setShowFileUpload(true);
+          }}
         >
           <Image className="h-4 w-4 text-gray-500" />
         </Button>
@@ -151,6 +206,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         size="sm"
         className="h-8 w-8 p-0 hover:bg-pink-100 transition-colors"
         disabled={disabled}
+        onClick={() => {
+          setShowEmojiPicker(false);
+          setShowFileUpload(false);
+          setShowVoiceRecorder((v) => !v);
+        }}
       >
         <Mic className="h-4 w-4 text-gray-500" />
       </Button>

@@ -13,6 +13,7 @@ import { ChartBarIcon, ExclamationTriangleIcon, CheckCircleIcon, ClockIcon, Serv
 import { performanceMonitoring } from "@/services";
 import { errorAlertService, type ErrorAlert } from "@/services/core/ErrorAlertService";
 import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 import { AlertConfigPanel } from "@/components/admin/AlertConfigPanel";
 import { ExportButton } from "@/components/admin/ExportButton";
 import { DesktopNotificationSettings } from "@/components/admin/DesktopNotificationSettings";
@@ -104,12 +105,64 @@ export const AnalyticsDashboard: React.FC = () => {
     "overview" | "config" | "moderation" | "historical"
   >("overview");
 
+  // Métricas de negocio reales de Supabase (antes el dashboard solo mostraba
+  // rendimiento del cliente). Se cargan una vez al montar.
+  const [business, setBusiness] = useState({
+    totalUsers: 0,
+    totalClubs: 0,
+    pendingClubApplications: 0,
+    totalMatches: 0,
+    pendingReports: 0,
+    worldIdVerified: 0,
+  });
+
+  const loadBusinessMetrics = async () => {
+    if (!supabase) return;
+    try {
+      const [
+        { count: totalUsers },
+        { count: totalClubs },
+        { count: pendingClubApplications },
+        { count: totalMatches },
+        { count: pendingReports },
+        { count: worldIdVerified },
+      ] = await Promise.all([
+        supabase.from("profiles").select("*", { count: "exact", head: true }),
+        supabase.from("clubs").select("*", { count: "exact", head: true }),
+        supabase
+          .from("club_applications")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "pending"),
+        supabase.from("matches").select("*", { count: "exact", head: true }),
+        supabase
+          .from("reports")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "pending"),
+        supabase
+          .from("worldid_verifications")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true),
+      ]);
+      setBusiness({
+        totalUsers: totalUsers ?? 0,
+        totalClubs: totalClubs ?? 0,
+        pendingClubApplications: pendingClubApplications ?? 0,
+        totalMatches: totalMatches ?? 0,
+        pendingReports: pendingReports ?? 0,
+        worldIdVerified: worldIdVerified ?? 0,
+      });
+    } catch (error) {
+      logger.error("Error loading business metrics:", { error: String(error) });
+    }
+  };
+
   // =====================================================
   // EFFECTS
   // =====================================================
 
   useEffect(() => {
     loadMetrics();
+    loadBusinessMetrics();
 
     if (autoRefresh) {
       const interval = setInterval(loadMetrics, refreshInterval);
@@ -557,6 +610,39 @@ export const AnalyticsDashboard: React.FC = () => {
                   ✅ No unresolved alerts
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Métricas de negocio reales (Supabase) */}
+          <div className="bg-linear-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              📈 Métricas de negocio (Supabase)
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
+              <div>
+                <div className="text-2xl font-bold text-white">{business.totalUsers}</div>
+                <div className="text-white/60 text-xs">Usuarios</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">{business.totalClubs}</div>
+                <div className="text-white/60 text-xs">Clubs</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">{business.pendingClubApplications}</div>
+                <div className="text-white/60 text-xs">Solicitudes club pendientes</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">{business.totalMatches}</div>
+                <div className="text-white/60 text-xs">Matches</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">{business.pendingReports}</div>
+                <div className="text-white/60 text-xs">Reportes pendientes</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">{business.worldIdVerified}</div>
+                <div className="text-white/60 text-xs">World ID verificados</div>
+              </div>
             </div>
           </div>
         </>

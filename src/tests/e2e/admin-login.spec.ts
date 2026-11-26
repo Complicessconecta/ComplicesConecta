@@ -5,7 +5,7 @@ test.describe("Login de Administrador", () => {
     await page.goto("/auth");
   });
 
-  test("debe permitir login de admin con credenciales válidías", async ({
+  test("debe permitir login de admin con credenciales válidas", async ({
     page,
   }) => {
     // Cambiar a modo login

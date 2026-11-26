@@ -14,7 +14,18 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-0 z-100 flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-md",
+      // RONDA 7 (punto 10): el viewport YA NO es un overlay `fixed`:
+      // fijo arriba a la derecha tapaba siempre algo (el toast de tema
+      // tapaba el nombre/foto del perfil, "Perfiles actualizados" la
+      // barra superior, "Datos incompletos" el formulario de registro).
+      // Ahora es una zona EN FLUJO al inicio de <main> (MainLayout lo
+      // renderiza ahí): los avisos empujan el contenido hacia abajo
+      // mientras están visibles y no ocupan nada cuando no hay avisos
+      // (`empty:hidden`). Alineados a la derecha, ancho contenido
+      // (max-w-md). El fondo sólido según tema ya lo pone el Toast
+      // (`bg-background text-foreground`); los toasts siguen siendo
+      // transitorios (auto-cierre 3.5 s, ver hooks/useToast.ts).
+      "flex w-full max-w-md ml-auto flex-col gap-2 px-4 pt-2 empty:hidden",
       className,
     )}
     {...props}
@@ -23,7 +34,7 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-4 pr-8 shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full",
   {
     variants: {
       variant: {

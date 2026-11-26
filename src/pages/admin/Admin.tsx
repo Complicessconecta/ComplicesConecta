@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { Users,Shield, BarChart3, Plus, Trash2, Settings, Crown } from "lucide-react";
 
@@ -139,23 +140,16 @@ export const Admin = () => {
 
   const loadProfiles = async () => {
     try {
-      // Use mock data for demo mode to avoid infinite loops
-      const mockProfiles: Profile[] = [
-        {
-          id: "demo-1",
-          display_name: "Usuario Demo",
-          first_name: "Usuario",
-          last_name: "Demo",
-          email: "single@outlook.es",
-          is_verified: true,
-          is_premium: false,
-          created_at: new Date().toISOString(),
-          last_seen: new Date().toISOString(),
-          bio: "Perfil de demostracin",
-        },
-      ];
-
-      setProfiles(mockProfiles);
+      if (!supabase) return;
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(
+          "id, email, first_name, last_name, display_name, bio, avatar_url, is_verified, is_premium, created_at, last_seen",
+        )
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      setProfiles((data ?? []) as Profile[]);
     } catch (_error) {
       logger.error("Error loading profiles:", { error: String(_error) });
     } finally {
@@ -165,21 +159,69 @@ export const Admin = () => {
 
   const _loadStats = async () => {
     try {
-      // Mock stats for now - replace with actual queries
-      const mockStats: AppStats = {
-        totalUsers: 1250,
-        activeUsers: 890,
-        premiumUsers: 156,
-        totalMatches: 3420,
-        apkDownloads: 2100,
-        dailyVisits: 450,
-        totalTokens: 1000000,
-        stakedTokens: 250000,
-        worldIdVerified: 89,
-        rewardsDistributed: 15000,
-      };
+      if (!supabase) return;
+      // Conteos reales de Supabase (antes eran números inventados).
+      const [
+        { count: totalUsers },
+        { count: premiumUsers },
+        { count: totalMatches },
+        { count: worldIdVerified },
+        { count: totalClubs },
+        { count: pendingClubApplications },
+        { data: wallets },
+      ] = await Promise.all([
+        supabase.from("profiles").select("*", { count: "exact", head: true }),
+        supabase
+          .from("profiles")
+          .select("*", { count: "exact", head: true })
+          .eq("is_premium", true),
+        supabase.from("matches").select("*", { count: "exact", head: true }),
+        supabase
+          .from("worldid_verifications")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true),
+        supabase.from("clubs").select("*", { count: "exact", head: true }),
+        supabase
+          .from("club_applications")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "pending"),
+        supabase.from("wallet_balances").select("cmpx_balance, gtk_balance, cmpx_locked, gtk_locked"),
+      ]);
 
-      setStats(mockStats);
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const { count: activeUsers } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .gte("last_seen", thirtyDaysAgo);
+
+      const totalTokens = (wallets ?? []).reduce(
+        (acc, w) => acc + (w.cmpx_balance ?? 0) + (w.gtk_balance ?? 0),
+        0,
+      );
+      const stakedTokens = (wallets ?? []).reduce(
+        (acc, w) => acc + (w.cmpx_locked ?? 0) + (w.gtk_locked ?? 0),
+        0,
+      );
+
+      setStats({
+        totalUsers: totalUsers ?? 0,
+        activeUsers: activeUsers ?? 0,
+        premiumUsers: premiumUsers ?? 0,
+        totalMatches: totalMatches ?? 0,
+        // Sin fuente real en BD (no hay tabla de descargas ni de visitas):
+        apkDownloads: 0,
+        dailyVisits: 0,
+        totalTokens,
+        stakedTokens,
+        worldIdVerified: worldIdVerified ?? 0,
+        // Recompensas distribuidas: sin agregado fiable en BD por ahora.
+        rewardsDistributed: 0,
+      });
+      logger.info("Admin stats loaded", {
+        totalUsers,
+        totalClubs,
+        pendingClubApplications,
+      });
     } catch (_error) {
       logger.error("Error loading stats:", { error: String(_error) });
     } finally {
@@ -188,40 +230,30 @@ export const Admin = () => {
   };
 
   const _loadFAQs = async () => {
-    try {
-      // Mock FAQs for now
-      const mockFAQs: FAQItem[] = [
-        {
-          id: "1",
-          question: "Cmo funciona la verificacin?",
-          answer:
-            "La verificacin se realiza mediante WorldID y documentos oficiales.",
-          category: "general",
-          priority: 1,
-          created_at: new Date().toISOString(),
-        },
-      ];
-      setFaqs(mockFAQs);
-    } catch (_error) {
-      logger.error("Error loading FAQs:", { error: String(_error) });
-    }
+    // Sin tabla faqs en BD: la lista inicia vacía y lo agregado es solo
+    // local (handleAddFAQ). No se muestra un FAQ inventado.
+    setFaqs([]);
   };
 
   const _loadInvitations = async () => {
     try {
-      // Mock invitations for now
-      const mockInvitations: Invitation[] = [
-        {
-          id: "1",
-          from_profile: "user1@example.com",
-          to_profile: "user2@example.com",
-          type: "profile",
-          message: "Me gustara conectar contigo",
-          status: "pending",
-          created_at: new Date().toISOString(),
-        },
-      ];
-      setInvitations(mockInvitations);
+      if (!supabase) return;
+      const { data, error } = await supabase
+        .from("invitations")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      const mapped: Invitation[] = (data ?? []).map((row) => ({
+        id: row.id,
+        from_profile: row.from_profile ?? "",
+        to_profile: row.to_profile ?? "",
+        type: (row.type as Invitation["type"]) ?? "profile",
+        message: row.message ?? "",
+        status: (row.status as Invitation["status"]) ?? "pending",
+        created_at: row.created_at ?? new Date().toISOString(),
+      }));
+      setInvitations(mapped);
     } catch (_error) {
       logger.error("Error loading invitations:", { error: String(_error) });
     }
@@ -502,7 +534,7 @@ export const Admin = () => {
           <TabsContent value="stats">
             <Card>
               <CardHeader>
-                <CardTitle>Estadsticas Detalladías</CardTitle>
+                <CardTitle>Estadsticas Detalladas</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -534,7 +566,7 @@ export const Admin = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Recompensas distribuidías:</span>
+                        <span>Recompensas distribuidas:</span>
                         <span className="font-bold">
                           {stats.rewardsDistributed.toLocaleString()}
                         </span>
@@ -562,7 +594,7 @@ export const Admin = () => {
                       }
                     />
                     <Input
-                      placeholder="Categora"
+                      placeholder="Categoría"
                       value={newFaq.category}
                       onChange={(e) =>
                         setNewFaq({ ...newFaq, category: e.target.value })

@@ -91,9 +91,12 @@ export function SummaryButton({ chatId, className }: SummaryButtonProps) {
         />
       )}
 
-      {/* Error toast */}
+      {/* Error en flujo bajo el botón (RONDA 7, punto 2): antes era un
+          div `fixed bottom-4 right-4` que tapaba contenido en el chat.
+          Sigue siendo un aviso visible, pero empuja el flujo en vez de
+          flotar sobre la conversación. */}
       {error && !isModalOpen && (
-        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg">
+        <div className="relative mt-2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg">
           <p className="text-sm">{String(error)}</p>
           <button
             onClick={clearError}

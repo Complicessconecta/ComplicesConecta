@@ -1,5 +1,103 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 24 Nov 2026 - 14:05 (Ronda de fixes post full test)
+
+- **💬 Chat — persistencia y compositor completos:**
+  - Mensajes enviados persisten al navegar y volver (demo: `localStorage` `chat_messages:<roomId>`; real: `loadMessages` y realtime ahora filtran por `room_id`)
+  - Flecha ← del hilo vuelve a la LISTA (antes `/feed`); a ≤500 px un solo panel con compositor visible; pestaña Público al primer clic; contador de miembros fijo por sala; emoji/adjuntar/audio cableados; badge Privado = hilos reales (4); `/chat/1` como pareja ya no se bloquea con historial
+
+- **❤️ Feed/Discover — like con la regla de Wacko:**
+  - Corazón ROJO y contador +1 al dar me gusta, sin color y −1 al desmarcar; optimista con persistencia demo y sin "Error — No se pudo procesar el like" en demo
+  - Compositor en /feed; compartir real (Web Share / copiar enlace); Discover abre el perfil al clicar, filtro "Pareja" real, botón Chat abre el hilo; datos demo canónicos y estables
+
+- **👫 Perfiles espejo:**
+  - Pareja con "Galería de Fotos" pública (3 fotos); Reportar legible en perfiles propios y /profile/1; PIN persistente; editor de pareja carga valores existentes; Tokens canónicos (2000/1500/2)
+
+- **🧭 Dock y navegación:**
+  - Dock estable con 10 iconos solo en rutas de perfil; /feed con navegación; botón de regreso en páginas sin dock; Ley Olimpia y Moderadores sin recargar; /settings es Configuración de verdad; /swinger-dashboard ya no es 404
+
+- **🔒 Privacidad y ajustes:**
+  - 9 toggles con estado visual + toast; "Mostrar distancia" persiste (nuevo `settingsStorage.ts`)
+
+- **🏢 Clubs — tablas cableadas:**
+  - Nuevo `clubContentService.ts`: `club_events`, `club_discounts`, `club_members` se leen y escriben de verdad (ClubsDemo, ClubAdminPanel, ModeratorDashboard, ClubsPublic); sin Club Demo duplicado; filtros de ciudad/búsqueda corregidos; tabla admin legible y carga con timeout; portada con imagen verificada (adiós al "NO DISPONIBLE")
+
+- **📄 Docs y textos:**
+  - `vercel.json` excluye `/docs/*` del rewrite (los .md ya no sirven `index.html`); 93 correcciones de mojibake; "Reclamar 100 CMPX" acredita con toast; Solicitudes aceptadas persisten; Analytics con datos reales; landing sin splash falso; fotos/nombres coherentes
+
+- **✅ Verificaciones:**
+  - `tsc --noEmit` (TS 5.7.2): 21 errores en la rama (28 en master), 0 nuevos
+  - `vitest` con `VITE_SUPABASE_*` dummy: TokenDashboard 6/6; ProfileSingle y ProfileCouple con 1 fallo preexistente cada uno (iguales en master)
+  - `prettier --check`: 54 archivos tocados ya fallaban en master (0 nuevos); 3 archivos nuevos limpios
+  - ⚠️ Aplicar la migración `20261124030000` en producción (Supabase) — paso aparte, no en este PR
+  - ⚠️ Sin verificación interactiva en el navegador tras estos fixes — falta probarlo en el teléfono tras merge + deploy
+
+## 📅 Bitácora 24 Nov 2026 - 12:55 (Fixes video 7 + Clubs/Admin/Moderador completos)
+
+- **🎟️ Tokens — "Invalid Date" corregido:**
+  - El mock usaba `date` pero el render leía `created_at` → "Invalid Date" en las 4 transacciones; ahora el mock trae `created_at` + `token_type` y el render usa `created_at ?? date` con "—" si es inválido
+  - Balance demo ahora es el de `useTokens` (canónico: single 1250/850, pareja 2000/1500) en vez del mock estático 5000/2500; NFTs demo filtrados por tipo de cuenta (pareja 2, single 4); se quitó la línea engañosa "Balance: {tx.amount}"
+
+- **👫 Perfil pareja — espejo completado:**
+  - Agregadas "Solicitudes de Acceso" (`PrivateImageRequestsManager`), sección "Experiencias demo" y modal de reporte (`ReportProfileDialog` — el botón Reportar no hacía nada)
+  - Balances demo pareja 2000/1500 (antes 500/250); single 1250/850 (antes 500/250, GTK "500")
+  - "0% Completo" ya no es fijo: `computeProfileCompleteness()` calcula el % desde campos llenos (single y pareja)
+
+- **📰 Feed:**
+  - Timeout de 8 s en `getFeed` (antes se quedaba en "Cargando publicaciones..."); posts demo con Unsplash (antes `picsum.photos`, foto rota)
+  - Comentarios deshabilitados en demo de verdad (campo + botón deshabilitados, no solo el banner)
+
+- **🏢 Clubs / Admin / Moderador — pre-lanzamiento completo:**
+  - /clubs con respaldo al catálogo público si Supabase falla o está vacío (sin toast de error); /clubs-public con clubs reales
+  - Registro de club: contraseña temporal con `crypto.getRandomValues` (antes `Math.random()`); términos de uso para clubs (`TERMINOS_USO_CLUBS.md` + `TermsModalClub`) obligatorios antes de enviar; `club_applications` tipada (sin `as never`)
+  - `ClubConsentManager` persiste de verdad en `user_consents` (antes simulado)
+  - Migración nueva: `club_events`, `club_discounts`, `club_members` (+ `club_id` en `user_consents`) con RLS; tipos regenerados
+  - Admin con datos reales de Supabase; AnalyticsDashboard con métricas de negocio; Moderador con pestaña "Clubs"; `ClubAdminPanel` alcanzable (botón "Panel Admin") y con datos reales; duplicado `ModeratorDashboard.tsx` eliminado
+  - Legal: documentos de clubs incluidos; `public/docs/legal/` con los 9 documentos (fin del 404 en `/docs/legal/`); enlace `PRIVACY_POLICY.md` → `POLITICA_PRIVACIDAD.md`
+
+- **✅ Verificaciones:**
+  - `tsc --noEmit` (TS 5.7.2): 25 errores en la rama (28 en master), 0 nuevos
+  - `vitest` con `VITE_SUPABASE_*` dummy: TokenDashboard 6/6; ProfileSingle y ProfileCouple con 1 fallo preexistente cada uno (iguales en master limpio)
+  - `prettier --check`: archivos nuevos limpios; modificados ya fallaban en master
+  - ⚠️ Aplicar la migración `20261124030000` en producción (Supabase) — paso aparte, no en este PR
+  - ⚠️ Chat y modal de Animaciones "varias veces": no reproducidos en video/código — falta el momento exacto
+  - ⚠️ Sin verificación en vivo en producción — probar en teléfono tras merge + deploy
+
+---
+
+## 📅 Bitácora 24 Nov 2026 - 11:49 (Fix Editor Demo + Dock Config + Chat + Legibilidad)
+
+- **🎭 Editor Demo — identidad real:**
+  - Causa raíz: `useAuth.signIn` (rama demo) sobrescribía `demo_user` sin `accountType` ni `type`; el gate del editor siempre era falso y caía en `generateMockSingle/Couple` (persona aleatoria en cada carga)
+  - `resolveDemoAccountType()` en `app-config.ts` resuelve el tipo desde accountType/type/profile_type/relationship_type/email
+  - El editor muestra la identidad demo real: Sofía (28) / Carmen & Roberto; redirección cruzada single↔couple; sin sesión → /auth
+  - Llamadas a `generateMockSingle/Couple` eliminadas del editor
+  - `getProfileType()` corregido: el engrane ya no abre el editor de single en sesión de pareja
+  - Balance demo pareja 2000/1500; edad demo 28 (canónica)
+
+- **🧭 Dock Config:**
+  - El icono Config ahora abre el modal de Animaciones estando en el editor
+
+- **💬 Chat:**
+  - Horas en HH:MM (antes ISO crudo)
+  - Hilo `min-w-0` + dock más ancho; panel contenido en el viewport
+  - Botón Desbloquear nítido (blur solo en la foto)
+
+- **🎨 Legibilidad / Contraste:**
+  - Modal Animaciones sin duplicado "Movimiento Reducido" ni "Desde useBgMode"; botones Cerrar/Lenta/Rápida/Fijo/Vídeo legibles
+  - Contraste en Requests, modal de /profile-single, badge "Solo Dueño" e ID demo real
+  - La foto del editor ya no tapa el aviso "Sube una foto clara..."
+  - Encabezado single 28 años en demo
+
+- **✅ Verificaciones:**
+  - `tsc --noEmit` (TS 5.7.2): 28 errores en la rama, 0 nuevos respecto a master 11d857b (los 4 en archivos tocados son preexistentes; el conteo de 10 del reporte previo era solo el subconjunto WorldIDButton v4 + `privacy_settings`)
+  - `vitest`: profiles.test.ts 24/24
+  - `prettier --check`: mismos 13 archivos fallan en master y en la rama (preexistente)
+  - ⚠️ Banner "NO DISPONIBLE" en /clubs/demo: no existe como texto en el repo — falta re-verificación en vivo tras el merge
+  - ⚠️ Sin verificación en vivo en producción — probar en teléfono tras merge + deploy
+
+---
+
 ## 📅 Bitácora 4 Feb 2026 - 01:30 (Fix Críticos: Demos + Invalid Hook Call + Security + OOM)
 
 - **🎭 Modo Demo Estabilizado:**

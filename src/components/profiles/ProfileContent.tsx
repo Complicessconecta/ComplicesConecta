@@ -13,6 +13,11 @@ import CompatibilityModal from "@/components/modals/CompatibilityModal";
 import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
+import {
+  AnonymousOwnGalleryAccess,
+  PhotoAccessCountdown,
+} from "@/components/profiles/shared/PhotoAccessCountdown";
+import { canonicalDemoOwnerId } from "@/lib/friends";
 import { useSmartMatching,  type UserProfile, type PersonalityTraits, type MatchingPreferences, type ActivityMetrics, type VerificationStatus } from "@/lib/ai/smartMatching";
 import { ProfileNavTabs, type TabType } from "@/components/profiles/ProfileNavTabs";
 
@@ -122,6 +127,41 @@ interface ProfileContentProps {
   onUploadImage?: () => void;
   onDeletePost?: (postId: string) => void;
   onCommentPost?: (postId: string) => void;
+  /**
+   * Muestra el post de ejemplo de Ana. Solo es de Ana: /profile/3 lo
+   * deja en true (default) y los perfiles propio/de pareja lo pasan en
+   * false — antes el post de Ana salía en TODOS los perfiles y además
+   * el vacío "No hay posts aún" se mostraba debajo de él (punto 13).
+   */
+  showExamplePost?: boolean;
+  /**
+   * Ronda 8 (punto 14): el perfil ANÓNIMO no puede publicar posts
+   * (solo crear reseñas): con false se oculta "Crear Post" y se
+   * explica la regla en el vacío. Default true (resto de perfiles).
+   */
+  allowCreatePost?: boolean;
+  /**
+   * Ronda 8 (punto 14): el perfil ANÓNIMO no tiene NFTs: con false
+   * se ocultan "Crear NFT" y el botón de mintear de la galería.
+   * Default true (resto de perfiles).
+   */
+  allowNft?: boolean;
+  /**
+   * Ronda 9 (stream A, punto 1): perfil ANÓNIMO. Su galería es
+   * LIMITADA y propia: sin las fotos demo genéricas (2 públicas +
+   * 3 privadas borrosas "Click para solicitar" que no eran de nadie)
+   * y sin sección "Fotos Privadas" genérica. El resto de la galería
+   * exige solicitud de acceso (1 acceso, expira en 24 h).
+   */
+  isAnonymous?: boolean;
+  /**
+   * Ronda 10 (stream A, punto A6): quién ve la galería limitada y
+   * de quién es. Con acceso concedido y vigente, el bloque muestra
+   * la cuenta atrás (24 h desde la aceptación); sin acceso, el aviso
+   * de pedirlo. Sin estos ids no hay cuenta atrás que mostrar.
+   */
+  galleryViewerId?: string | undefined;
+  galleryOwnerId?: string | undefined;
 }
 
 export const ProfileContent: React.FC<ProfileContentProps> = ({
@@ -129,10 +169,31 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   onUploadImage,
   onDeletePost,
   onCommentPost,
+  showExamplePost = true,
+  allowCreatePost = true,
+  allowNft = true,
+  isAnonymous = false,
+  galleryViewerId,
+  galleryOwnerId,
 }) => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
   const currentUserId = user?.id ?? profile?.id ?? "current-user";
+
+  // Ronda 11 (stream A, 1f): la cuenta atrás del acceso concedido a
+  // la galería limitada vive en PhotoAccessCountdown (tick de 1 s,
+  // HH:MM:SS). El bloque anterior calculaba los ms restantes con un
+  // tick de 30 s y formato "23 h 12 min" (cambia cada minuto): en un
+  // test corto parecía texto estático. Además, siendo el DUEÑO
+  // (viewer === owner) el helper devuelve null y siempre caía en el
+  // texto estático: el dueño ve ahora la lista de accesos que él
+  // concedió (GrantedGalleryAccessList).
+  const isAnonymousGalleryOwner =
+    isAnonymous &&
+    !!galleryViewerId &&
+    !!galleryOwnerId &&
+    canonicalDemoOwnerId(galleryViewerId) ===
+      canonicalDemoOwnerId(galleryOwnerId);
   const isAuthFn = typeof isAuthenticated === "function" ? isAuthenticated() : !!isAuthenticated;
   const loginLabel = "Configuración";
 
@@ -165,7 +226,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         age: candidate?.age || 25,
         bio: candidate?.interests.join(" • ") || "Sin bio",
         location: candidate?.location.city,
-        avatar: `https://images.unsplash.com/photo-${match.userId === "match-1" ? "1494790108755-2616b612b786" : match.userId === "match-2" ? "1522071820081-009f0129c71c" : "1534528741775-53994a69daeb"}?w=400&h=400&fit=crop`,
+        avatar: `https://images.unsplash.com/photo-${match.userId === "match-1" ? "1531123897727-8f129e1688ce" : match.userId === "match-2" ? "1522071820081-009f0129c71c" : "1534528741775-53994a69daeb"}?w=400&h=400&fit=crop`,
         compatibility: match.totalScore,
         reasons: match.reasons.slice(0, 3),
         fullReasons: match.reasons,
@@ -206,7 +267,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
           <div className="space-y-4">
             {/* Posts Grid */}
             <div className="grid grid-cols-1 gap-4">
-              {/* Post Example - Perfil Single (Ana) */}
+              {/* Post Example - Perfil Single (Ana). Solo se renderiza
+                  cuando showExamplePost (es el post DE Ana: en /profile/3
+                  sí, en el perfil propio o de pareja no). */}
+              {showExamplePost && (
               <Card className="bg-white/10 backdrop-blur-md border-white/20">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3 mb-3">
@@ -238,7 +302,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   {/* Post Image */}
                   <div className="aspect-video bg-linear-to-br from-purple-400 to-fuchsia-600 rounded-lg mb-3 overflow-hidden">
                     <img
-                      src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop"
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=400&fit=crop"
                       alt="Post"
                       className="w-full h-full object-cover"
                       onError={(e) => {
@@ -321,6 +385,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   </div>
                 </CardContent>
               </Card>
+              )}
 
               {/* Post Demo Creado */}
               {demoPost && (
@@ -408,12 +473,15 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 </Card>
               )}
 
-              {/* Empty State */}
-              {!demoPost && (
+              {/* Empty State: solo cuando NO hay ningún post visible.
+                  Antes solo miraba `demoPost` y el post de ejemplo de Ana
+                  se renderizaba siempre: en /profile/3 salía el post de
+                  Ana seguido de "No hay posts aún" (punto 13). */}
+              {!demoPost && !showExamplePost && (
                 <div className="text-center py-12">
                   <Grid3X3 className="w-12 h-12 mx-auto mb-4 text-white/40" />
                   <p className="text-white/60 mb-4">No hay posts aún</p>
-                  {isOwnProfile && (
+                  {isOwnProfile && allowCreatePost && (
                     <Button
                       onClick={() => {
                         onUploadImage?.();
@@ -428,6 +496,12 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                       <Upload className="w-4 h-4 mr-2" />
                       Crear Post
                     </Button>
+                  )}
+                  {isOwnProfile && !allowCreatePost && (
+                    <p className="text-white/60 text-sm">
+                      Las cuentas anónimas no publican posts: solo pueden
+                      crear reseñas.
+                    </p>
                   )}
                 </div>
               )}
@@ -460,7 +534,9 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
       case "gallery":
         return (
           <div className="space-y-6">
-            {/* Add Photo / Mint NFT Actions */}
+            {/* Add Photo / Mint NFT Actions.
+                Ronda 8 (punto 14): sin NFTs en el perfil anónimo:
+                se ocultan "Crear NFT" y el minteo (queda "Subir Foto"). */}
             {isOwnProfile && (
               <div className="flex flex-wrap gap-4 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
                 <Button
@@ -471,36 +547,40 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   Subir Foto
                 </Button>
 
-                <input
-                  ref={nftFileInputRef}
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  aria-label="Seleccionar archivo de imagen NFT"
-                  title="Seleccionar archivo de imagen para NFT (JPEG, PNG, WebP)"
-                  placeholder="Imagen NFT"
-                  onChange={(e) => {
-                    const file = e.currentTarget.files?.[0];
-                    if (!file) return;
-                    setNftImageFile(file);
-                    logger.info("NFT image selected", {
-                      name: file.name,
-                      size: file.size,
-                      type: file.type,
-                    });
-                  }}
-                />
+                {allowNft && (
+                  <>
+                    <input
+                      ref={nftFileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      aria-label="Seleccionar archivo de imagen NFT"
+                      title="Seleccionar archivo de imagen para NFT (JPEG, PNG, WebP)"
+                      placeholder="Imagen NFT"
+                      onChange={(e) => {
+                        const file = e.currentTarget.files?.[0];
+                        if (!file) return;
+                        setNftImageFile(file);
+                        logger.info("NFT image selected", {
+                          name: file.name,
+                          size: file.size,
+                          type: file.type,
+                        });
+                      }}
+                    />
 
-                <Button
-                  onClick={() => nftFileInputRef.current?.click()}
-                  className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-                >
-                  Crear NFT
-                </Button>
+                    <Button
+                      onClick={() => nftFileInputRef.current?.click()}
+                      className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                    >
+                      Crear NFT
+                    </Button>
+                  </>
+                )}
               </div>
             )}
 
-            {isOwnProfile && nftImageFile && (
+            {isOwnProfile && allowNft && nftImageFile && (
               <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
                 <div className="text-sm text-white/80">
                   Imagen seleccionada:{" "}
@@ -528,44 +608,121 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               </div>
             )}
 
-            {/* Gallery Grid Pública */}
-            <div>
-              <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
-                <Upload className="w-4 h-4" />
-                Fotos Públicas
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="aspect-square bg-linear-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
-                    alt="Galería 1"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
-                    }}
-                  />
-                </div>
-                <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg overflow-hidden">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
-                    alt="Galería 2"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
-                    }}
-                  />
+            {/* Gallery Grid Pública.
+                Ronda 9 (stream A, punto 1): el perfil anónimo NO
+                muestra las 2 fotos demo genéricas (no son suyas): su
+                galería pública es limitada y propia; sin fotos subidas
+                aún, vacío explícito en vez de contenido ajeno. */}
+            {isAnonymous ? (
+              <div>
+                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Fotos Públicas
+                </h4>
+                <p className="text-center text-sm text-white/60 py-8">
+                  {isOwnProfile
+                    ? "Tu galería anónima aún no tiene fotos públicas. Sube tu primera foto con el botón de arriba."
+                    : "Este perfil anónimo aún no tiene fotos públicas."}
+                </p>
+              </div>
+            ) : (
+              <div>
+                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Fotos Públicas
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  <div className="aspect-square bg-linear-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
+                      alt="Galería 1"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
+                      }}
+                    />
+                  </div>
+                  <div className="aspect-square bg-linear-to-br from-purple-400 to-blue-600 rounded-lg overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
+                      alt="Galería 2"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face";
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Gallery Privada con Lock */}
-            <div>
+            {/* Gallery Privada con Lock.
+                Ronda 9 (stream A, punto 1): en el perfil anónimo NO
+                existe la sección genérica "Fotos Privadas" con 3 fotos
+                demo borrosas ("Click para solicitar") que no eran de
+                nadie (hallazgo del test ronda 8). En su lugar, la
+                superficie de galería LIMITADA: el resto de fotos exige
+                solicitud de acceso — 1 acceso que expira a las 24 h y
+                se vuelve a pedir al expirar (TTL en friends.ts). El
+                botón de solicitud vive en el perfil
+                (PhotoAccessRequestButton); aquí va el aviso, no fotos
+                ajenas. */}
+            {isAnonymous ? (
+              <div>
+                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  <span className="inline-flex items-center gap-2">
+                    <span>Galería limitada</span>
+                    <LockIcon className="w-4 h-4" />
+                  </span>
+                </h4>
+                <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+                  <p>
+                    Esta galería es limitada: solo se ven algunas fotos
+                    públicas. Para ver el resto, pide acceso al dueño
+                    del perfil.
+                  </p>
+                  {/* Ronda 11 (stream A, 1f): con acceso concedido y
+                      vigente, la cuenta atrás EN VIVO (1 s, HH:MM:SS);
+                      el dueño ve los accesos que él concedió; sin
+                      acceso, el aviso de pedirlo. Antes el formato era
+                      "23 h 12 min" con tick de 30 s y el dueño siempre
+                      veía el texto estático (test ronda 10: "sin cuenta
+                      atrás visible").
+                      Ronda 12 (stream A, 3a): siendo el DUEÑO, la
+                      pestaña también muestra los accesos que LE
+                      concedieron a él (AnonymousOwnGalleryAccess): la
+                      lista de concedidos-por-él estaba vacía y la
+                      pestaña no mostraba ninguna cuenta atrás. */}
+                  {isAnonymousGalleryOwner ? (
+                    <AnonymousOwnGalleryAccess
+                      ownerId={galleryOwnerId ?? ""}
+                      viewerId={galleryViewerId ?? ""}
+                      className="mt-2 font-semibold text-white"
+                    />
+                  ) : (
+                    <PhotoAccessCountdown
+                      viewerId={galleryViewerId ?? ""}
+                      ownerId={galleryOwnerId ?? ""}
+                      className="mt-2 font-semibold text-white"
+                      fallback={
+                        <p className="mt-2">
+                          1 acceso concedido expira a las 24 h; al expirar
+                          tienes que volver a pedirlo.
+                        </p>
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div>
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Upload className="w-4 h-4" />
                 <span className="inline-flex items-center gap-2">
-                  <span>Fotos Privadías</span>
+                  <span>Fotos Privadas</span>
                   <LockIcon className="w-4 h-4" />
                 </span>
               </h4>
@@ -575,7 +732,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadías",
+                      description: "Solicita acceso para ver fotos privadas",
                     })
                   }
                 >
@@ -596,7 +753,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadías",
+                      description: "Solicita acceso para ver fotos privadas",
                     })
                   }
                 >
@@ -614,7 +771,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   onClick={() =>
                     toast({
                       title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadías",
+                      description: "Solicita acceso para ver fotos privadas",
                     })
                   }
                 >
@@ -628,7 +785,8 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
+            )}
 
             {/* Upload Button for Own Profile */}
             {isOwnProfile && (
@@ -721,6 +879,16 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         activeTab={activeTab}
         onTabChange={setActiveTab}
         isOwnProfile={isOwnProfile}
+        // Punto 14d (ronda 7): el badge es la suma de lo que la pestaña
+        // "posts" realmente renderiza: el post de ejemplo de Ana (solo
+        // cuando showExamplePost) + el post demo creado con "Crear Post".
+        // Antes el badge era un 12 fijo y en el perfil propio decía 12
+        // mientras el contenido decía "No hay posts aún". Ahora: /profile/3
+        // (Ana) muestra 1 con su post; perfil propio/pareja muestra 0 con
+        // el vacío y el botón Crear Post, sin contradicción. El vacío sigue
+        // condicionado a `!demoPost && !showExamplePost`, que es exactamente
+        // lo mismo que este conteo (0).
+        postsCount={(showExamplePost ? 1 : 0) + (demoPost ? 1 : 0)}
       />
 
       {/* Tab Content */}

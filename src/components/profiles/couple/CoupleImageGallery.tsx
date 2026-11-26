@@ -56,7 +56,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 
     const fileArray = Array.from(files);
     if (images.length + fileArray.length > maxImages) {
-      onError(`Máximo ${maxImages} imágenes permitidías en la galería`);
+      onError(`Máximo ${maxImages} imágenes permitidas en la galería`);
       return;
     }
 
@@ -90,7 +90,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
       onImagesUpdated(updatedImages);
 
       toast({
-        title: "Imágenes subidías",
+        title: "Imágenes subidas",
         description: `${newImages.length} imagen(es) añadida(s) a la galería de pareja`,
       });
     } catch (_error) {
@@ -268,11 +268,15 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
               checked={newImagePublic}
               onCheckedChange={setNewImagePublic}
               disabled={disabled || isUploading}
+              // Colores explícitos: el Switch compartido usa tokens que en
+              // Tailwind v4 no resuelven (canales HSL sin hsl()); sin esto
+              // la perilla quedaba invisible y sin estado visual.
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
             <Label htmlFor="new-image-public" className="text-sm">
               {newImagePublic
                 ? "Nuevas imágenes públicas"
-                : "Nuevas imágenes privadías"}
+                : "Nuevas imágenes privadas"}
             </Label>
           </div>
         </div>
@@ -358,7 +362,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
       {/* Gallery Info */}
       <div className="text-center">
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Las imágenes públicas son visibles para todos. Las privadías requieren
+          Las imágenes públicas son visibles para todos. Las privadas requieren
           solicitud de acceso.
         </p>
       </div>

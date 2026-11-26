@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -18,7 +18,7 @@ import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { logger } from "@/lib/logger";
-import { isProductionAdmin } from "@/lib/app-config";
+import { isProductionAdmin, resolveDemoAccountType } from "@/lib/app-config";
 
 interface FormData {
   email: string;
@@ -110,6 +110,19 @@ const Auth = () => {
   useEffect(() => {
     console.log("activeTab cambió:", activeTab);
   }, [activeTab]);
+
+  // Ronda 6: /register y /signup redirigen a /auth?tab=signup: abrir
+  // directamente la pestaña de registro en vez de la de login.
+  const routerLocation = useLocation();
+  useEffect(() => {
+    const tab = new URLSearchParams(routerLocation.search).get("tab");
+    if (tab === "signup" || tab === "signin") {
+      setActiveTab(tab);
+    }
+    // Solo al entrar con el parámetro; el cambio manual de pestaña no
+    // debe re-ejecutarse por el search.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerLocation.search]);
 
   // C4/C5 (2026-11-19): eliminado el autofill de TestSprite
   // (VITE_TESTSPRITE_EMAIL / VITE_TESTSPRITE_PASSWORD). Ninguna credencial
@@ -317,6 +330,23 @@ const Auth = () => {
         }
         
         // Determinar navegación basada en DB, no metadata
+        // RONDA 7 (punto 1): sin Supabase la RPC de arriba falla
+        // contra el stub y el fallback era siempre /profile-single:
+        // una pareja demo restaurada caía en el perfil de single.
+        // El fallback lee el tipo de la sesión demo guardada.
+        const navigateToOwnProfile = () => {
+          try {
+            const raw = window.localStorage.getItem("demo_user");
+            const stored = raw ? (JSON.parse(raw) as unknown) : null;
+            navigate(
+              resolveDemoAccountType(stored) === "couple"
+                ? "/profile-couple"
+                : "/profile-single",
+            );
+          } catch {
+            navigate("/profile-single");
+          }
+        };
         setTimeout(async () => {
           try {
             // Consultar account_type real desde DB usando vista unificada
@@ -327,7 +357,7 @@ const Auth = () => {
             if (error) {
               logger.error("Error obteniendo account_type de DB:", { error: error.message });
               // Fallback a navegación por defecto
-              navigate("/profile-single");
+              navigateToOwnProfile();
               return;
             }
 
@@ -340,7 +370,7 @@ const Auth = () => {
           } catch (navError) {
             logger.error("Error en navegación post-login:", { error: String(navError) });
             // Fallback seguro
-            navigate("/profile-single");
+            navigateToOwnProfile();
           }
         }, 3000);
       } else {
@@ -508,14 +538,14 @@ const Auth = () => {
           </div>
         )}
         {/* Card con glassmorphism mejorado - más transparente para ver fondo */}
-        <Card className="bg-white/5 backdrop-blur-xl border-white/20 shadow-2xl rounded-2xl overflow-visible">
+        <Card className="bg-white dark:bg-white/5 backdrop-blur-xl border-slate-200 dark:border-white/20 shadow-2xl rounded-2xl overflow-visible">
           <CardHeader className="text-center">
             <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/")}
-                className="bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
+                className="bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-slate-700 hover:text-slate-900 dark:text-white/90 dark:hover:text-white border border-slate-300 hover:border-slate-400 dark:border-white/20 dark:hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver
@@ -525,7 +555,7 @@ const Auth = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowThemeModal(true)}
-                  className="h-9 px-4 bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
+                  className="h-9 px-4 bg-linear-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-slate-700 hover:text-slate-900 dark:text-white/90 dark:hover:text-white border border-slate-300 hover:border-slate-400 dark:border-white/20 dark:hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
                 >
                   Tema
                 </Button>
@@ -539,7 +569,7 @@ const Auth = () => {
                     }
                     navigate("/demo");
                   }}
-                  className="h-9 px-4 bg-linear-to-r from-pink-600/20 to-fuchsia-600/20 hover:from-pink-600/40 hover:to-fuchsia-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-fuchsia-500/30 transition-all duration-300 hover:scale-105"
+                  className="h-9 px-4 bg-linear-to-r from-pink-600/20 to-fuchsia-600/20 hover:from-pink-600/40 hover:to-fuchsia-600/40 text-slate-700 hover:text-slate-900 dark:text-white/90 dark:hover:text-white border border-slate-300 hover:border-slate-400 dark:border-white/20 dark:hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-fuchsia-500/30 transition-all duration-300 hover:scale-105"
                   data-testid="demo-mode-button"
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
@@ -551,7 +581,7 @@ const Auth = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => navigate("/clubs/demo")}
-                  className="h-9 px-4 bg-linear-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
+                  className="h-9 px-4 bg-linear-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/40 hover:to-blue-600/40 text-slate-700 hover:text-slate-900 dark:text-white/90 dark:hover:text-white border border-slate-300 hover:border-slate-400 dark:border-white/20 dark:hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
                   data-testid="clubs-demo-button"
                 >
                   <Building className="h-4 w-4 mr-2" />
@@ -580,7 +610,7 @@ const Auth = () => {
                         : "Ingresa tus credenciales de usuario",
                     });
                   }}
-                  className="h-9 px-4 bg-linear-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
+                  className="h-9 px-4 bg-linear-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-slate-700 hover:text-slate-900 dark:text-white/90 dark:hover:text-white border border-slate-300 hover:border-slate-400 dark:border-white/20 dark:hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
                   data-testid="toggle-auth-mode"
                 >
                   <Shield className="h-4 w-4 mr-2" />
@@ -588,25 +618,25 @@ const Auth = () => {
                 </Button>
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
+            <CardTitle className="text-3xl font-bold bg-linear-to-r from-purple-700 via-pink-600 to-blue-600 dark:from-purple-300 dark:via-pink-300 dark:to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
               ComplicesConecta
             </CardTitle>
-            <CardDescription className="text-white/90 font-medium text-lg">
+            <CardDescription className="text-slate-600 dark:text-white/90 font-medium text-lg">
               Conecta con personas afines en un entorno seguro y discreto
             </CardDescription>
 
             <div className="flex justify-center space-x-8 mt-6 mb-4">
               <div className="text-center">
                 <Shield className="h-6 w-6 text-green-400 mx-auto mb-1" />
-                <p className="text-xs text-white font-medium">Seguro</p>
+                <p className="text-xs text-slate-700 dark:text-white font-medium">Seguro</p>
               </div>
               <div className="text-center">
                 <Users className="h-6 w-6 text-blue-400 mx-auto mb-1" />
-                <p className="text-xs text-white font-medium">Comunidad</p>
+                <p className="text-xs text-slate-700 dark:text-white font-medium">Comunidad</p>
               </div>
               <div className="text-center">
                 <Sparkles className="h-6 w-6 text-purple-400 mx-auto mb-1" />
-                <p className="text-xs text-white font-medium">IA Match</p>
+                <p className="text-xs text-slate-700 dark:text-white font-medium">IA Match</p>
               </div>
             </div>
           </CardHeader>
@@ -617,14 +647,14 @@ const Auth = () => {
               className="w-full"
             >
               <TabsList
-                className={`grid w-full max-w-md mx-auto ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} gap-1 rounded-xl p-1 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg h-11 items-stretch`}
+                className={`grid w-full max-w-md mx-auto ${isAdminLoginMode ? "grid-cols-1" : "grid-cols-2"} gap-1 rounded-xl p-1 bg-slate-200 dark:bg-black/40 backdrop-blur-sm border border-slate-300 dark:border-white/20 shadow-lg h-11 items-stretch`}
               >
                 <TabsTrigger
                   value="signin"
                   data-testid="switch-to-login"
                   type="button"
                   onClick={() => setActiveTab("signin")}
-                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-full flex items-center justify-center rounded-lg"
+                  className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-slate-900/5 dark:data-[state=inactive]:bg-white/5 text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white/90 transition-all duration-300 w-full h-full flex items-center justify-center rounded-lg"
                 >
                   Iniciar Sesión
                 </TabsTrigger>
@@ -634,7 +664,7 @@ const Auth = () => {
                     data-testid="switch-to-register"
                     type="button"
                     onClick={() => setActiveTab("signup")}
-                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-white/5 text-white/70 hover:text-white/90 transition-all duration-300 w-full h-full flex items-center justify-center rounded-lg"
+                    className="data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 data-[state=inactive]:bg-slate-900/5 dark:data-[state=inactive]:bg-white/5 text-slate-600 hover:text-slate-900 dark:text-white/70 dark:hover:text-white/90 transition-all duration-300 w-full h-full flex items-center justify-center rounded-lg"
                   >
                     Registrarse
                   </TabsTrigger>
@@ -649,41 +679,41 @@ const Auth = () => {
                   data-testid="login-form"
                 >
                   <div>
-                    <Label htmlFor="email" className="text-white">Correo electrónico</Label>
+                    <Label htmlFor="email" className="text-slate-700 dark:text-white">Correo electrónico</Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       placeholder="tu@email.com"
-                      className="bg-white/10 border-white/20 text-white placeholder-white/70"
+                      className="bg-slate-900/5 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/70"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password" className="text-white">Contraseña</Label>
+                    <Label htmlFor="password" className="text-slate-700 dark:text-white">Contraseña</Label>
                     <Input
                       id="password"
                       type="password"
                       value={formData.password}
                       onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
                       placeholder="********"
-                      className="bg-white/10 border-white/20 text-white placeholder-white/70"
+                      className="bg-slate-900/5 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/70"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-3 items-stretch">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-stretch">
                     <Button
                       type="button"
                       onClick={() => {
                         setShowResetPassword(true);
                       }}
                       variant="outline"
-                      className="h-11 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      className="h-11 bg-slate-900/5 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-700 dark:text-white hover:bg-slate-900/10 dark:hover:bg-white/20 whitespace-nowrap text-xs sm:text-sm"
                     >
                       ¿Olvidaste tu contraseña?
                     </Button>
                     <Button
                       type="submit"
-                      className="h-11 bg-linear-to-r from-purple-600 to-blue-600 text-white"
+                      className="h-11 bg-linear-to-r from-purple-600 to-blue-600 text-white whitespace-nowrap"
                     >
                       Iniciar Sesión
                     </Button>

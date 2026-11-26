@@ -182,7 +182,7 @@ export class EmotionalAIService {
     return {
       score,
       reasons: [
-        `Detectadías ${positiveCount} interacciones positivas y ${negativeCount} negativas`,
+        `Detectadas ${positiveCount} interacciones positivas y ${negativeCount} negativas`,
       ],
       sentiment: score > 60 ? "positive" : score < 40 ? "negative" : "neutral",
       chemistry: score / 100,

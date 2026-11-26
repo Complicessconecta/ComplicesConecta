@@ -9,6 +9,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Wallet, Coins, Image as ImageIcon, Crown, Sparkles, TrendingUp, Lock, ExternalLink, X } from "lucide-react";
+import {
+  DEFAULT_DEMO_NFTS,
+  nftService,
+  DEMO_NFTS_CHANGED_EVENT,
+  DEMO_MINT_LIMIT,
+} from "@/services/payments/NFTService";
+import { useToast } from "@/hooks/useToast";
+import { ANONYMOUS_WALLET_BLOCKED_REASON } from "@/lib/anonymous";
+import { findLocalDemoAccountById } from "@/lib/demo-registration";
+import {
+  DEMO_WALLET_BALANCES,
+  getDemoWalletBalance,
+  DEMO_WALLET_CHANGED_EVENT,
+} from "@/lib/demo-wallet";
 
 /**
  * Interfaz para NFT mock
@@ -24,7 +38,18 @@ interface DemoNFT {
 
 interface DemoWalletProps {
   userId: string;
+  /** Tipo de cuenta demo: define los balances canónicos (useTokens).
+   * Antes los valores eran fijos de single (CMPX 1250 / GTK 500) y la
+   * pareja mostraba esos mismos números. */
+  accountType?: "single" | "couple";
 }
+
+/**
+ * Balances demo canónicos (ÚNICA fuente: @/lib/demo-wallet — la misma
+ * que useTokens, TokenDashboard y los perfiles). Antes vivían duplicados
+ * aquí y cada superficie podía decir otro número.
+ */
+const DEMO_BALANCES = DEMO_WALLET_BALANCES;
 
 /**
  * Interfaz para Token mock
@@ -40,14 +65,21 @@ interface DemoToken {
 /**
  * Componente de Wallet para perfiles demo
  */
-export function DemoWallet({ userId }: DemoWalletProps) {
+export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("0x1234...5678");
   const [balance, setBalance] = useState("0.00");
   const [showPolygonModal, setShowPolygonModal] = useState(false);
   const [selectedNft, setSelectedNft] = useState<DemoNFT | null>(null);
+  const { toast } = useToast();
 
-  const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
+  // Ronda 10 (stream A, punto A3): una cuenta anónima no tiene
+  // billetera: este componente nunca muestra los saldos canónicos
+  // (de Sofía o de la pareja) para su userId. Los llamadores ya lo
+  // filtran (ProfileSingle), pero la guarda vive también aquí: una
+  // sesión no hereda la cartera de otra por ningún camino.
+  const isAnonymousWallet =
+    findLocalDemoAccountById(userId)?.isAnonymous === true;
 
   const getImageForRarity = (rarity: DemoNFT["rarity"]): string => {
     switch (rarity) {
@@ -63,156 +95,167 @@ export function DemoWallet({ userId }: DemoWalletProps) {
     }
   };
 
+  // Única fuente de verdad en NFTService (DEFAULT_DEMO_NFTS); aquí solo se
+  // adapta is_couple -> isCouple para el estado local del componente.
+  // En pareja solo se muestran sus 2 NFTs (is_couple); en single los 4.
   const defaultDemoNFTs: DemoNFT[] = useMemo(
-    () => [
-      {
-        id: "nft-1",
-        name: "Cómplice Legendario",
-        rarity: "legendary",
-        image: "/assets/nfts/imagen4.gif",
-        value: 5000,
-        isCouple: false,
-      },
-      {
-        id: "nft-2",
-        name: "Cómplice Épico",
-        rarity: "epic",
-        image: "/assets/nfts/imagen3.jpg",
-        value: 2000,
-        isCouple: true,
-      },
-      {
-        id: "nft-3",
-        name: "Cómplice Raro",
-        rarity: "rare",
-        image: "/assets/nfts/imagen1.jpg",
-        value: 750,
-        isCouple: false,
-      },
-      {
-        id: "nft-4",
-        name: "Cómplice Común",
-        rarity: "common",
-        image: "/assets/nfts/imagen2.jpg",
-        value: 100,
-        isCouple: true,
-      },
-    ],
-    [],
+    () =>
+      // Ronda 10 (stream A, punto A3): el anónimo no tiene NFTs.
+      isAnonymousWallet
+        ? []
+        : DEFAULT_DEMO_NFTS.filter((nft) =>
+            accountType === "couple" ? nft.is_couple : true,
+          )
+            .slice(0, DEMO_BALANCES[accountType].nfts)
+            .map((nft) => ({
+              id: nft.id,
+              name: nft.name,
+              rarity: nft.rarity,
+              image: nft.image,
+              value: nft.value,
+              isCouple: nft.is_couple,
+            })),
+    [accountType, isAnonymousWallet],
   );
 
   const [demoNFTs, setDemoNFTs] = useState<DemoNFT[]>(defaultDemoNFTs);
 
+  // Colección demo: ÚNICA fuente `nftService.getUserNFTs` (punto 12) —
+  // la misma que leen el perfil y /tokens. Antes este componente leía
+  // localStorage por su cuenta y partía de los 4 defaults, así que su
+  // contador podía decir 1 mientras la estadística del perfil decía 0.
+  // También se recarga cuando otro sitio mintea en la misma página
+  // (evento `demo-nfts-changed`): sin esto el badge quedaba obsoleto
+  // tras mintear en el modal del perfil.
   useEffect(() => {
     if (!userId) return;
-    if (typeof window === "undefined") return;
-    try {
-      const raw = window.localStorage.getItem(getDemoNFTStorageKey(userId));
-      if (!raw) return;
-      const parsed: unknown = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return;
-      const normalized = parsed
-        .filter((item): item is Record<string, unknown> => Boolean(item))
-        .slice(0, 4)
-        .map((item, idx): DemoNFT => {
-          const rarityRaw = item.rarity;
-          const rarity: DemoNFT["rarity"] =
-            rarityRaw === "legendary" ||
-            rarityRaw === "epic" ||
-            rarityRaw === "rare" ||
-            rarityRaw === "common"
-              ? rarityRaw
-              : "common";
-
-          return {
-            id: typeof item.id === "string" ? item.id : `demo-nft-${userId}-${idx}`,
-            name:
-              typeof item.name === "string" && item.name
-                ? item.name
-                : "Cómplice Demo",
-            rarity,
-            image:
-              typeof item.image === "string" && item.image
-                ? item.image
-                : getImageForRarity(rarity),
-            value: typeof item.value === "number" ? item.value : 100,
-            isCouple: Boolean(item.is_couple ?? item.isCouple),
-          };
+    // Ronda 10 (stream A, punto A3): el anónimo no tiene NFTs.
+    if (isAnonymousWallet) {
+      setDemoNFTs([]);
+      return;
+    }
+    let cancelled = false;
+    const load = async () => {
+      try {
+        // demoFallback: DemoWallet solo se renderiza en perfiles demo;
+        // sin él, en el preview (VITE_APP_MODE != "demo") la lectura
+        // caía a la rama de Supabase y devolvía [] aunque la colección
+        // minteada estuviera guardada (punto 9).
+        const owned = await nftService.getUserNFTs(userId, {
+          demoFallback: true,
         });
-      if (normalized.length > 0) {
-        setDemoNFTs(normalized);
+        if (cancelled) return;
+        const normalized = owned
+          .filter((nft) => (accountType === "couple" ? nft.is_couple : true))
+          .map((nft, idx): DemoNFT => {
+            const rarityRaw = nft.rarity;
+            const rarity: DemoNFT["rarity"] =
+              rarityRaw === "legendary" ||
+              rarityRaw === "epic" ||
+              rarityRaw === "rare" ||
+              rarityRaw === "common"
+                ? rarityRaw
+                : "common";
+            return {
+              id: nft.id || `demo-nft-${userId}-${idx}`,
+              name: nft.name || "Cómplice Demo",
+              rarity,
+              image: nft.image || getImageForRarity(rarity),
+              value: typeof nft.value === "number" ? nft.value : 100,
+              isCouple: nft.is_couple,
+            };
+          });
+        if (normalized.length > 0) setDemoNFTs(normalized);
+      } catch {
+        // no-op: se quedan los defaults
       }
-    } catch {
-      // no-op
-    }
-  }, [userId]);
+    };
+    void load();
+    const onChanged = () => void load();
+    window.addEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
+    };
+  }, [userId, accountType, isAnonymousWallet]);
 
-  const writeDemoNFTs = (items: DemoNFT[]) => {
+  // Minteo demo por la vía compartida (nftService.mintDemoNFT, ronda 8,
+  // punto 4): el NFT nuevo es del tipo de la cuenta (isCouple en pareja)
+  // y se guarda junto a la semilla, sin recortarla. Antes se minteaba
+  // siempre `isCouple: false` y se persistía la vista recortada a 2, así
+  // que en pareja el NFT minteado se filtraba en todas las vistas, el
+  // re-corte expulsaba un NFT de pareja guardado y la pareja quedaba en
+  // 1 NFT. El contador se actualiza solo por el evento
+  // `demo-nfts-changed` (el `load` de arriba).
+  const handleMintDemoNft = async () => {
     if (!userId) return;
-    if (typeof window === "undefined") return;
-    const payload = items.map((nft) => ({
-      id: nft.id,
-      name: nft.name,
-      rarity: nft.rarity,
-      image: nft.image,
-      value: nft.value,
-      is_couple: nft.isCouple,
-      created_at: new Date().toISOString(),
-      token_id: items.length,
-      metadata_uri: "ipfs://demo-metadata-hash",
-    }));
-    window.localStorage.setItem(getDemoNFTStorageKey(userId), JSON.stringify(payload));
+    const created = await nftService.mintDemoNFT(userId, {
+      isCouple: accountType === "couple",
+      name: "NFT Demo Minteado",
+      description: "NFT demo minteado desde la wallet",
+    });
+    if (!created) {
+      toast({
+        title: "Límite demo alcanzado",
+        description: `Ya minteaste ${DEMO_MINT_LIMIT} NFTs en modo demo.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: "¡NFT minteado (DEMO)!",
+      description: `${created.name} se agregó a tu colección.`,
+    });
   };
 
-  const handleMintDemoNft = () => {
-    if (!userId) return;
-    const rarityRoll = Math.random();
-    let rarity: DemoNFT["rarity"] = "common";
-    let value = 100;
-    if (rarityRoll > 0.95) {
-      rarity = "legendary";
-      value = 5000;
-    } else if (rarityRoll > 0.8) {
-      rarity = "epic";
-      value = 1500;
-    } else if (rarityRoll > 0.5) {
-      rarity = "rare";
-      value = 500;
-    }
-
-    const next: DemoNFT[] = [
-      {
-        id: `demo-nft-${Date.now()}`,
-        name: "NFT Demo Minteado",
-        rarity,
-        image: getImageForRarity(rarity),
-        value,
-        isCouple: false,
-      },
-      ...demoNFTs,
-    ].slice(0, 4);
-
-    setDemoNFTs(next);
-    writeDemoNFTs(next);
-  };
-
-  // Tokens mock para demo
+  // Tokens demo canónicos según el tipo de cuenta (useTokens()).
+  // Se leen del saldo PERSISTIDO (@/lib/demo-wallet) y se re-leen
+  // cuando cambia (reclamo en /tokens): antes eran las constantes
+  // 1250/850 y el reclamo de 100 CMPX nunca se reflejaba aquí ni en
+  // el perfil (ronda 7, punto 8).
+  const [canonical, setCanonical] = useState(() =>
+    // Ronda 10 (stream A, punto A3): el anónimo no tiene saldos.
+    isAnonymousWallet
+      ? { cmpx: 0, gtk: 0, nfts: 0 }
+      : getDemoWalletBalance(accountType),
+  );
+  useEffect(() => {
+    setCanonical(
+      isAnonymousWallet
+        ? { cmpx: 0, gtk: 0, nfts: 0 }
+        : getDemoWalletBalance(accountType),
+    );
+    const onChanged = () =>
+      setCanonical(
+        isAnonymousWallet
+          ? { cmpx: 0, gtk: 0, nfts: 0 }
+          : getDemoWalletBalance(accountType),
+      );
+    window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    return () =>
+      window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+  }, [accountType, isAnonymousWallet]);
   const demoTokens: DemoToken[] = [
     {
       symbol: "CMPX",
-      balance: 1250,
+      balance: canonical.cmpx,
       value: 250,
       type: "cmpx",
       isPremium: false,
     },
     {
       symbol: "GTK",
-      balance: 500,
+      balance: canonical.gtk,
       value: 5000,
       type: "gtk",
       isPremium: true,
     },
   ];
+  // Staking derivado del GTK canónico (20% bloqueado, como en useTokens;
+  // rewards al 35% APY sobre lo bloqueado). Antes eran fijos 500/175 GTK
+  // aunque el balance fuera otro.
+  const gtkStaked = Math.round(canonical.gtk * 0.2);
+  const gtkRewards = Math.round(gtkStaked * 0.35);
 
   const rarityColors = {
     common: "from-gray-500 to-gray-600",
@@ -233,6 +276,31 @@ export function DemoWallet({ userId }: DemoWalletProps) {
     setWalletAddress("0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb");
     setBalance("1.25");
   };
+
+  // Ronda 10 (stream A, punto A3): estado bloqueado en vez de la
+  // cartera de otra cuenta (saldos, staking, NFTs). Va tras todos
+  // los hooks para no romper su orden.
+  if (isAnonymousWallet) {
+    return (
+      <div className="space-y-6">
+        <Card className="bg-amber-500/10 backdrop-blur-xl border-amber-400/40 shadow-2xl">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-white">
+              <div className="p-2 bg-amber-500/20 rounded-lg">
+                <Lock className="h-6 w-6 text-amber-300" />
+              </div>
+              Billetera desactivada en cuentas anónimas
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-white/80">
+              {ANONYMOUS_WALLET_BLOCKED_REASON}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -265,8 +333,13 @@ export function DemoWallet({ userId }: DemoWalletProps) {
                   <Wallet className="h-4 w-4 text-green-400" />
                   <span className="text-sm text-white/80">Conectado</span>
                 </div>
-                <Badge className="bg-green-500/20 text-green-200 border-green-400/40">
-                  {walletAddress}
+                <Badge
+                  className="bg-green-500/20 text-green-200 border-green-400/40 max-w-[150px] truncate"
+                  title={walletAddress}
+                >
+                  {walletAddress.length > 14
+                    ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`
+                    : walletAddress}
                 </Badge>
               </div>
               <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg border border-white/20">
@@ -347,11 +420,16 @@ export function DemoWallet({ userId }: DemoWalletProps) {
             <Sparkles className="mr-2 h-4 w-4" />
             Mintear NFT Demo
           </Button>
-          <div className="grid grid-cols-2 gap-4">
+          {/* La rejilla no puede desbordar el viewport (ronda 8, punto
+              3): cada tarjeta es `min-w-0` para que el contenido (fila de
+              badges sin salto) no fuerce la columna más ancha que su
+              parte — eso cortaba la 2ª tarjeta en el borde derecho y
+              arrastraba el desborde horizontal de la página. */}
+          <div className="grid grid-cols-2 gap-4 min-w-0">
             {demoNFTs.map((nft) => (
               <div
                 key={nft.id}
-                className="relative overflow-hidden rounded-xl bg-linear-to-br from-purple-900/30 to-blue-900/30 border border-white/20 hover:border-white/40 transition-all duration-300 group cursor-pointer"
+                className="relative overflow-hidden rounded-xl bg-linear-to-br from-purple-900/30 to-blue-900/30 border border-white/20 hover:border-white/40 transition-all duration-300 group cursor-pointer min-w-0"
                 role="button"
                 tabIndex={0}
                 onClick={() => setSelectedNft(nft)}
@@ -363,7 +441,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
                 }}
               >
                 <div className={`absolute inset-0 bg-linear-to-br ${rarityColors[nft.rarity]} opacity-20`} />
-                <div className="relative p-4 space-y-3">
+                <div className="relative p-4 space-y-3 min-w-0">
                   <div className="aspect-square rounded-lg bg-white/10 overflow-hidden">
                     <img
                       src={nft.image}
@@ -371,19 +449,28 @@ export function DemoWallet({ userId }: DemoWalletProps) {
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Badge className={`${rarityBadges[nft.rarity]} text-white text-xs`}>
+                  <div className="space-y-2 min-w-0">
+                    {/* RONDA 10 (stream B, B5): la fila era `flex
+                        items-center justify-between` con AMBOS badges
+                        `shrink-0` (rareza en mayúsculas + "PAREJA" con
+                        icono): en tarjetas angostas la suma superaba el
+                        ancho, flex no podía encogerlos y el
+                        `overflow-hidden` de la tarjeta recortaba la
+                        pastilla "PAREJA" ("✦ PAR"). Ahora las pastillas
+                        saltan de línea en vez de recortarse, más compactas,
+                        y el título lleva el nombre completo en `title`. */}
+                    <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+                      <Badge className={`${rarityBadges[nft.rarity]} text-white text-[10px] sm:text-xs px-2 shrink-0`}>
                         {nft.rarity.toUpperCase()}
                       </Badge>
                       {nft.isCouple && (
-                        <Badge className="bg-pink-500/20 text-pink-200 border-pink-400/40 text-xs">
+                        <Badge className="bg-pink-500/20 text-pink-200 border-pink-400/40 text-[10px] sm:text-xs px-2 shrink-0">
                           <Sparkles className="h-3 w-3 mr-1" />
                           PAREJA
                         </Badge>
                       )}
                     </div>
-                    <h4 className="font-semibold text-white text-sm">{nft.name}</h4>
+                    <h4 className="font-semibold text-white text-sm truncate" title={nft.name}>{nft.name}</h4>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         <Coins className="h-3 w-3 text-yellow-400" />
@@ -426,7 +513,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Tokens bloqueados</span>
-                <span className="font-semibold text-white">500 GTK</span>
+                <span className="font-semibold text-white">{gtkStaked} GTK</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Duración</span>
@@ -434,7 +521,7 @@ export function DemoWallet({ userId }: DemoWalletProps) {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Rewards acumulados</span>
-                <span className="font-semibold text-green-400">175 GTK</span>
+                <span className="font-semibold text-green-400">{gtkRewards} GTK</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Fecha de liberación</span>

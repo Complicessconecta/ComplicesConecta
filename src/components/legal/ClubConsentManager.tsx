@@ -3,6 +3,33 @@ import { CheckCircle, FileText, AlertTriangle, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
+
+/** SHA-256 en hex. Fallback a un hash simple si crypto.subtle no está disponible. */
+async function sha256Hex(input: string): Promise<string> {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.subtle) {
+      const data = new TextEncoder().encode(input);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+  } catch {
+    // Fallback abajo.
+  }
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
+}
 
 export interface ConsentDocument {
   id: string;
@@ -22,6 +49,52 @@ export interface UserConsent {
   accepted_at: string;
   ip_address: string;
   user_agent: string;
+}
+
+// Ronda 12 (stream D): respaldo local de consentimientos, mismo
+// patrón que `club_events_local:` / `club_discounts_local:` en
+// `clubContentService`. Sin la columna `user_consents.club_id`
+// (migración 20261124030000 sin aplicar) el insert en BD falla con
+// 42703 y antes el consentimiento se PERDÍA (solo `onConsentError`).
+// Ahora queda guardado en este dispositivo y el flujo continúa con
+// los consentimientos locales (id `local-...`). Límite conocido:
+// no hay sincronización posterior — al aplicar 30000 estos
+// consentimientos locales NO suben solos a BD, igual que los
+// eventos/descuentos locales.
+const LOCAL_CONSENTS_KEY = (userId: string, clubId: string) =>
+  `user_consents_local:${userId}:${clubId}`;
+
+function saveLocalConsents(
+  userId: string,
+  clubId: string,
+  consents: UserConsent[],
+): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(
+      LOCAL_CONSENTS_KEY(userId, clubId),
+      JSON.stringify(consents),
+    );
+  } catch {
+    // Sin almacenamiento: el consentimiento solo vive en esta sesión.
+  }
+}
+
+export function readLocalConsents(
+  userId: string,
+  clubId: string,
+): UserConsent[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(
+      LOCAL_CONSENTS_KEY(userId, clubId),
+    );
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as UserConsent[]) : [];
+  } catch {
+    return [];
+  }
 }
 
 interface ClubConsentManagerProps {
@@ -253,7 +326,9 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
     .filter(doc => doc.required)
     .every(doc => acceptedConsents.has(doc.id));
 
-  // Enviar consentimientos
+  // Enviar consentimientos: guardado real en public.user_consents (con
+  // club_id), no simulado. Antes solo llamaba onConsentComplete con objetos
+  // locales y nunca persistía nada.
   const handleSubmitConsents = async () => {
     if (!allRequiredAccepted) {
       onConsentError?.('Debes aceptar todos los documentos requeridos');
@@ -262,27 +337,84 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
 
     setSubmitting(true);
     try {
-      // Simular envío a backend
-      const consents: UserConsent[] = Array.from(acceptedConsents).map(consentId => {
-        const doc = documents.find(d => d.id === consentId);
-        return {
-          id: `consent-${Date.now()}-${Math.random()}`,
-          club_id: clubId,
-          user_id: userId,
-          consent_type: doc?.type || 'unknown',
-          consent_version: doc?.version || '1.0.0',
-          accepted_at: new Date().toISOString(),
-          ip_address: '127.0.0.1', // En producción, obtener IP real
-          user_agent: navigator.userAgent
-        };
-      });
+      const consentedAt = new Date().toISOString();
+      const rows = await Promise.all(
+        Array.from(acceptedConsents).map(async (consentId) => {
+          const doc = documents.find(d => d.id === consentId);
+          if (!doc) return null;
+          const consentHash = await sha256Hex(
+            `${userId}|${clubId}|${doc.id}|${doc.version}|${consentedAt}`,
+          );
+          const textHash = await sha256Hex(doc.content);
+          return {
+            user_id: userId,
+            club_id: clubId,
+            consent_type: doc.type,
+            version: doc.version,
+            consented_at: consentedAt,
+            consent_hash: consentHash,
+            consent_text_hash: textHash,
+            document_path: `clubs/${doc.id}-v${doc.version}`,
+            is_active: true,
+            user_agent: navigator.userAgent,
+            ip_address: null,
+          };
+        }),
+      );
+      const inserts = rows.filter((r): r is NonNullable<typeof r> => r !== null);
+      if (inserts.length === 0) {
+        onConsentError?.('No hay consentimientos para guardar');
+        return;
+      }
 
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Ronda 12 (stream D): si el insert en BD falla (p. ej. falta
+      // `user_consents.club_id`, migración 30000 sin aplicar), el
+      // consentimiento ya no se pierde: se guarda local
+      // (`user_consents_local:`) y el flujo continúa con los
+      // consentimientos locales. Sin este respaldo, el error solo
+      // disparaba `onConsentError` y no quedaba registro del
+      // consentimiento en ningún lado.
+      let consents: UserConsent[];
+      try {
+        const { data, error } = await supabase
+          .from('user_consents')
+          .insert(inserts)
+          .select('id, club_id, user_id, consent_type, version, consented_at');
 
+        if (error) throw error;
+
+        consents = (data ?? []).map((row) => ({
+          id: row.id,
+          club_id: row.club_id ?? clubId,
+          user_id: row.user_id,
+          consent_type: row.consent_type,
+          consent_version: row.version,
+          accepted_at: row.consented_at,
+          ip_address: '',
+          user_agent: navigator.userAgent,
+        }));
+      } catch (dbError) {
+        logger.warn(
+          'Consentimientos de club no se pudieron guardar en BD, se guardan local',
+          { error: String(dbError), clubId },
+        );
+        consents = inserts.map((row, i) => ({
+          id: `local-${Date.now()}-${i}`,
+          club_id: row.club_id ?? clubId,
+          user_id: row.user_id,
+          consent_type: row.consent_type,
+          consent_version: row.version,
+          accepted_at: row.consented_at,
+          ip_address: '',
+          user_agent: navigator.userAgent,
+        }));
+        saveLocalConsents(userId, clubId, consents);
+      }
+
+      logger.info('Consentimientos de club guardados', { count: consents.length, clubId });
       onConsentComplete?.(consents);
     } catch (error) {
-      console.error('Error submitting consents:', error);
+      logger.error('Error submitting consents:', { error: String(error) });
       onConsentError?.('Error al guardar consentimientos');
     } finally {
       setSubmitting(false);
@@ -313,10 +445,18 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
           {documents.map((document) => (
             <Card key={document.id} className="border-l-4 border-l-blue-500">
               <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-semibold">{document.title}</h3>
+                {/* RONDA 10 (stream B, B4): la fila era `flex
+                    justify-between` con la columna izquierda `flex-1`
+                    SIN `min-w-0` y la fila de título sin salto de línea:
+                    título + badges "Requerido"/"vX.Y" forzaban un ancho
+                    mínimo y el botón "Ver" se recortaba en el borde
+                    derecho. Ahora la columna puede encogerse, el título
+                    salta de línea y en móvil el bloque Ver/Acepto baja
+                    debajo en vez de recortarse. */}
+                <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-3">
+                  <div className="min-w-0 w-full sm:flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-2 min-w-0">
+                      <h3 className="font-semibold min-w-0 break-words">{document.title}</h3>
                       <Badge variant={document.required ? "default" : "secondary"}>
                         {document.required ? "Requerido" : "Opcional"}
                       </Badge>
@@ -329,7 +469,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
                             document.type === 'privacy' ? 'Privacidad' : 'Aviso Legal'}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
                     <Button
                       variant="outline"
                       size="sm"
@@ -387,7 +527,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
       {/* Modal para ver documento completo */}
       {currentDocument && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="max-w-4xl max-h-[80vh] overflow-hidden">
+          <Card className="w-full max-w-4xl max-h-[80vh] overflow-hidden">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{currentDocument.title}</CardTitle>

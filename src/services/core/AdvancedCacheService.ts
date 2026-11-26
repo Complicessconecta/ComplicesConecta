@@ -1,6 +1,6 @@
 /**
  * AdvancedCacheService v3.5.0 - Sistema de caché avanzado con múltiples estrategias
- * Implementa técnicas avanzadías de caché:
+ * Implementa técnicas avanzadas de caché:
  * - Cache en memoria con LRU
  * - Cache persistente con IndexedDB
  * - Cache distribuido con Redis (futuro)
@@ -285,7 +285,7 @@ export class AdvancedCacheService {
         }
       }
 
-      // Eliminar claves encontradías
+      // Eliminar claves encontradas
       for (const key of keysToDelete) {
         await this.delete(key);
       }
@@ -304,7 +304,7 @@ export class AdvancedCacheService {
   }
 
   /**
-   * Invalida cache basado en reglas predefinidías
+   * Invalida cache basado en reglas predefinidas
    */
   async invalidateByRules(trigger: string): Promise<void> {
     try {
@@ -323,7 +323,7 @@ export class AdvancedCacheService {
         }
       }
 
-      // Eliminar claves encontradías
+      // Eliminar claves encontradas
       for (const key of keysToDelete) {
         await this.delete(key);
       }
@@ -365,7 +365,7 @@ export class AdvancedCacheService {
 
     const stats = {
       memoryEntries: this.memoryCache.size,
-      persistentEntries: 0, // TODO: Implementar conteo de entradías persistentes
+      persistentEntries: 0, // TODO: Implementar conteo de entradas persistentes
       memorySize: this.calculateMemorySize(),
       persistentSize: 0, // TODO: Implementar cálculo de tamaño persistente
       hitRate,
@@ -771,7 +771,7 @@ export class AdvancedCacheService {
   }
 
   /**
-   * Aplica límite de memoria y elimina entradías menos usadías
+   * Aplica límite de memoria y elimina entradas menos usadas
    */
   private enforceMemoryLimit(): void {
     const maxSizeBytes = this.config.maxMemorySize * 1024 * 1024;
@@ -879,7 +879,7 @@ export class AdvancedCacheService {
   }
 
   /**
-   * Genera predicciones basadías en patrones de acceso
+   * Genera predicciones basadas en patrones de acceso
    */
   private generatePredictions(accessPattern: string[]): CachePrediction[] {
     const predictions: CachePrediction[] = [];
@@ -890,7 +890,7 @@ export class AdvancedCacheService {
       patternCounts.set(pattern, (patternCounts.get(pattern) || 0) + 1);
     }
 
-    // Generar predicciones basadías en frecuencia y secuencias
+    // Generar predicciones basadas en frecuencia y secuencias
     for (const [pattern, count] of patternCounts) {
       const probability = Math.min(count / accessPattern.length, 1);
       const confidence = this.calculateConfidence(pattern, accessPattern);
@@ -993,7 +993,7 @@ export class AdvancedCacheService {
    * Política de evicción adaptativa
    */
   private evictEntries(): void {
-    const maxEntries = (this.config.maxMemorySize * 1024 * 1024) / 1024; // Entradías aproximadías
+    const maxEntries = (this.config.maxMemorySize * 1024 * 1024) / 1024; // Entradas aproximadas
     if (this.memoryCache.size <= maxEntries) return;
 
     const entriesToEvict = this.memoryCache.size - Math.floor(maxEntries * 0.8);
@@ -1163,7 +1163,7 @@ export class AdvancedCacheService {
   }
 
   /**
-   * Cache con dependencias - invalida entradías relacionadías
+   * Cache con dependencias - invalida entradas relacionadas
    */
   async invalidateByDependency(dependencyKey: string): Promise<void> {
     try {

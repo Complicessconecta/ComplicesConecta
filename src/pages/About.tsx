@@ -85,8 +85,8 @@ const About = () => {
                 </div>
                 <p className="text-white font-medium leading-relaxed">
                   Crear un espacio seguro donde parejas y solteros del lifestyle
-                  swinger puedan conectar de manera autntica, explorando nuevas
-                  experiencias con total discrecin y respeto mutuo.
+                  swinger puedan conectar de manera auténtica, explorando nuevas
+                  experiencias con total discreción y respeto mutuo.
                 </p>
               </CardContent>
             </Card>
@@ -102,7 +102,7 @@ const About = () => {
                 <p className="text-white font-medium leading-relaxed">
                   Convertirnos en una plataforma confiable para la comunidad
                   lifestyle en México, reconocida por brindar un ambiente
-                  seguro, tecnologa moderna y compromiso con la privacidad de
+                  seguro, tecnología moderna y compromiso con la privacidad de
                   nuestros usuarios.
                 </p>
               </CardContent>
@@ -197,7 +197,7 @@ const About = () => {
                 <div className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors">
                   <Eye className="h-8 w-8 text-fuchsia-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">
-                    Galerías NFT-Verificadías
+                    Galerías NFT-Verificadas
                   </h4>
                   <p className="text-gray-100 text-sm font-medium">
                     Perfiles y galerías como NFTs mintados con GTK tokens

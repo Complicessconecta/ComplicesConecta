@@ -16,7 +16,7 @@ const NotFound = () => {
   const [showLogs, setShowLogs] = useState(false);
 
   const sparkles = useMemo(() => {
-    // Generar posiciones determinísticas basadías en un seed
+    // Generar posiciones determinísticas basadas en un seed
     return Array.from({ length: 12 }, (_, i) => ({
       x: (i * 73) % 100,
       y: (i * 97) % 100,
@@ -130,19 +130,22 @@ const NotFound = () => {
           <div className="space-y-6">
             <div className="animate-fade-in-delay">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Pgina no encontrada
+                Página no encontrada
               </h2>
               <p className="text-white/80 text-lg leading-relaxed max-w-prose mx-auto">
                 Parece que este enlace se fue a una fiesta privada. No te
                 preocupes, te ayudamos a regresar al lugar correcto donde la
-                diversin nunca se detiene.
+                diversión nunca se detiene.
               </p>
             </div>
 
-            {/* Action Buttons */}
-            <div
-              className={`flex flex-col sm:flex-row gap-4 justify-center items-center transition-all duration-1000 delay-700 ${isVisible ? "animate-fade-in-delay-2" : "opacity-0 translate-y-5"}`}
-            >
+            {/* Action Buttons.
+                Ronda 8 (punto 15): los botones nacían con `opacity-0`
+                + fade de ~1 s con delay (parecían desvanecidos al
+                entrar). La animación de entrada se quitó solo de los
+                botones: son legibles desde el primer frame; el resto
+                de la página conserva su animación. */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button
                 asChild
                 size="lg"

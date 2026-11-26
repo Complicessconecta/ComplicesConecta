@@ -33,7 +33,7 @@ const FAQ = () => {
   });
 
   const faqCategories = {
-    verificacion: {
+    verificación: {
       title: "Verificación KYC",
       icon: UserCheck,
       color: "text-blue-500",
@@ -41,17 +41,17 @@ const FAQ = () => {
         {
           question: "¿Cómo funciona la verificación KYC?",
           answer:
-            "Utilizamos tecnologa blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadías accedan a la plataforma.",
+            "Utilizamos tecnología blockchain avanzada y verificación de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificación de documentos oficiales, selfie biométrica y verificación telefónica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
         },
         {
           question: "¿Qué documentos necesito para verificarme?",
           answer:
-            "Necesitas una identificacin oficial vigente (INE, pasaporte o cdula profesional) y una selfie clara. El proceso es completamente seguro y tus datos estn protegidos.",
+            "Necesitas una identificación oficial vigente (INE, pasaporte o cédula profesional) y una selfie clara. El proceso es completamente seguro y tus datos están protegidos.",
         },
         {
-          question: "Cunto tarda la verificacin?",
+          question: "Cuánto tarda la verificación?",
           answer:
-            "La verificacin KYC toma entre 24-48 horas hbiles. Los miembros Premium tienen verificacin prioritaria en menos de 12 horas.",
+            "La verificación KYC toma entre 24-48 horas hábiles. Los miembros Premium tienen verificación prioritaria en menos de 12 horas.",
         },
       ],
     },
@@ -63,39 +63,39 @@ const FAQ = () => {
         {
           question: "Es seguro el chat privado?",
           answer:
-            "Absolutamente. Todías las conversaciones estn encriptadías end-to-end con AES-GCM. Adems, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discrecin son nuestra mxima prioridad.",
+            "Absolutamente. Todas las conversaciones están encriptadas end-to-end con AES-GCM. Además, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discreción son nuestra máxima prioridad.",
         },
         {
-          question: "Cmo protegen mis datos personales?",
+          question: "¿Cómo protegen mis datos personales?",
           answer:
-            "Utilizamos encriptacin de grado militar y cumplimos con GDPR. Nunca compartimos tu informacin personal con terceros sin tu consentimiento explcito.",
+            "Utilizamos encriptación de grado militar y cumplimos con GDPR. Nunca compartimos tu información personal con terceros sin tu consentimiento explícito.",
         },
         {
-          question: "Puedo controlar quin ve mi perfil?",
+          question: "Puedo controlar quién ve mi perfil?",
           answer:
-            "S, tienes control total sobre tu privacidad. Puedes configurar quin puede ver tu perfil, fotos privadías y contactarte.",
+            "Sí, tienes control total sobre tu privacidad. Puedes configurar quién puede ver tu perfil, fotos privadas y contactarte.",
         },
       ],
     },
     galerias: {
-      title: "Galeras Privadías",
+      title: "Galerías Privadas",
       icon: GalleryHorizontal,
       color: "text-purple-500",
       faqs: [
         {
-          question: "Como funcionan las galeras privadías?",
+          question: "¿Cómo funcionan las galerías privadas?",
           answer:
-            "Las galeras privadías te permiten compartir fotos ntimas solo con personas que hayas autorizado. Tienes control total sobre quin puede acceder. Adems, puedes crear Galeras NFT-Verificadías usando tokens GTK, lo que garantiza autenticidad y verificacin de tus galeras.",
+            "Las galerías privadas te permiten compartir fotos íntimas solo con personas que hayas autorizado. Tienes control total sobre quién puede acceder. Además, puedes crear Galerías NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificación de tus galerías.",
         },
         {
-          question: "Como envio una invitacion de galera?",
+          question: "¿Cómo envío una invitación de galería?",
           answer:
-            "Desde cualquier perfil, puedes enviar una invitacion para acceder a tu galera privada. La persona debe aceptar la invitacion para ver tu contenido privado.",
+            "Desde cualquier perfil, puedes enviar una invitación para acceder a tu galería privada. La persona debe aceptar la invitación para ver tu contenido privado.",
         },
         {
-          question: "Puedo revocar el acceso a mi galera?",
+          question: "Puedo revocar el acceso a mi galería?",
           answer:
-            "S, puedes revocar el acceso a tu galera privada en cualquier momento desde tu configuracin de privacidad.",
+            "Sí, puedes revocar el acceso a tu galería privada en cualquier momento desde tu configuración de privacidad.",
         },
       ],
     },
@@ -105,19 +105,19 @@ const FAQ = () => {
       color: "text-fuchsia-500",
       faqs: [
         {
-          question: "Como funcionan las invitaciones?",
+          question: "¿Cómo funcionan las invitaciones?",
           answer:
-            "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadías o participar en eventos exclusivos.",
+            "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos.",
         },
         {
-          question: "Que tipos de invitaciones existen?",
+          question: "¿Qué tipos de invitaciones existen?",
           answer:
-            "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadías) y de chat (para conversaciones privadías).",
+            "Hay tres tipos: invitaciones de perfil (para conectar), de galería (para ver fotos privadas) y de chat (para conversaciones privadas).",
         },
         {
-          question: "Puedo rechazar una invitacin?",
+          question: "¿Puedo rechazar una invitación?",
           answer:
-            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadías no pueden volver a enviarte invitaciones del mismo tipo.",
+            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo.",
         },
       ],
     },
@@ -127,14 +127,14 @@ const FAQ = () => {
       color: "text-yellow-500",
       faqs: [
         {
-          question: "Como son los eventos VIP?",
+          question: "¿Cómo son los eventos VIP?",
           answer:
-            "Son fiestas privadías y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas ntimas y experiencias nicas para la comunidad swinger.",
+            "Son fiestas privadas y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas íntimas y experiencias únicas para la comunidad swinger.",
         },
         {
-          question: "Como puedo acceder a eventos VIP?",
+          question: "¿Cómo puedo acceder a eventos VIP?",
           answer:
-            "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadías en tu ubicación y preferencias.",
+            "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias.",
         },
         {
           question: "Los eventos son seguros y discretos?",
@@ -149,14 +149,14 @@ const FAQ = () => {
       color: "text-orange-500",
       faqs: [
         {
-          question: "Como son los tokens?",
+          question: "¿Cómo son los tokens?",
           answer:
             "Los tokens son nuestra moneda virtual que puedes usar para enviar regalos, destacar tu perfil y acceder a funciones premium especiales.",
         },
         {
-          question: "Como obtengo tokens?",
+          question: "¿Cómo obtengo tokens?",
           answer:
-            "Puedes comprar tokens o ganarlos completando tu perfil, verificndote, siendo activo en la comunidad y recibiendo valoraciones positivas.",
+            "Puedes comprar tokens o ganarlos completando tu perfil, verificándote, siendo activo en la comunidad y recibiendo valoraciones positivas.",
         },
         {
           question: "Los tokens caducan?",
@@ -171,48 +171,48 @@ const FAQ = () => {
       color: "text-red-500",
       faqs: [
         {
-          question: "Como puedo reportar un perfil?",
+          question: "¿Cómo puedo reportar un perfil?",
           answer:
-            "Puedes reportar cualquier perfil sospechoso directamente desde su pgina. Nuestro equipo de moderacin revisa todos los reportes en menos de 24 horas.",
+            "Puedes reportar cualquier perfil sospechoso directamente desde su página. Nuestro equipo de moderación revisa todos los reportes en menos de 24 horas.",
         },
         {
-          question: "Que hago si alguien me acosa?",
+          question: "¿Qué hago si alguien me acosa?",
           answer:
-            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidías rpidías para proteger a nuestra comunidad.",
+            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rápidas para proteger a nuestra comunidad.",
         },
         {
           question: "Hay moderadores activos?",
           answer:
-            "S, tenemos un equipo de moderacin 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad.",
+            "Sí, tenemos un equipo de moderación 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad.",
         },
       ],
     },
     soporte: {
-      title: "Soporte Tcnico",
+      title: "Soporte Técnico",
       icon: Zap,
       color: "text-cyan-500",
       faqs: [
         {
-          question: "Encontraste un error en la version Beta?",
+          question: "¿Encontraste un error en la versión Beta?",
           answer:
-            "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores ms abajo para ayudarnos a identificar y corregir cualquier problema que encuentres.",
+            "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores más abajo para ayudarnos a identificar y corregir cualquier problema que encuentres.",
         },
         {
-          question: "Problemas con la aplicacion movil?",
+          question: "Problemas con la aplicación móvil?",
           answer:
-            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app movil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
+            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app móvil, repórtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
         },
         {
           question: "Problemas con pagos o suscripciones?",
           answer:
-            "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contctanos inmediatamente a travs del formulario con todos los detalles de la transaccin.",
+            "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contáctanos inmediatamente a través del formulario con todos los detalles de la transacción.",
         },
       ],
     },
   };
 
   const handleSubmitFeedback = () => {
-    // Aqu se enviara el feedback al backend
+    // Aquí se enviará el feedback al backend
     logger.info("Feedback enviado:", { email, feedback, rating });
     toast({
       title: "Comentarios enviados!",
@@ -233,7 +233,7 @@ Tipo de Error: ${bugReport.type}
 Severidad: ${bugReport.severity}
 Dispositivo/Navegador: ${bugReport.device} - ${bugReport.browser}
 
-DESCRIPCIN DEL PROBLEMA:
+DESCRIPCIÓN DEL PROBLEMA:
 ${bugReport.description}
 
 PASOS PARA REPRODUCIR:
@@ -243,13 +243,13 @@ Email de contacto: ${bugReport.email}
 Fecha: ${new Date().toLocaleString()}
     `.trim();
 
-    const mailtoLink = `mailto:support@complicesconecta.com?subject=?? Reporte de Error Beta&body=${encodeURIComponent(emailBody)}`;
+    const mailtoLink = `mailto:support@complicesconecta.com?subject=🐛 Reporte de Error Beta&body=${encodeURIComponent(emailBody)}`;
     window.location.href = mailtoLink;
 
     toast({
       title: "Reporte enviado!",
       description:
-        "Se abrió tu cliente de email con el reporte. Envalo para que podamos ayudarte.",
+        "Se abrió tu cliente de email con el reporte. Envíalo para que podamos ayudarte.",
     });
 
     // Reset form
@@ -280,15 +280,17 @@ Fecha: ${new Date().toLocaleString()}
         <div className="absolute top-40 right-10 w-96 h-96 bg-linear-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-32 left-20 w-96 h-96 bg-linear-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
 
-        {/* Floating Hearts */}
-        <div className="absolute inset-0 overflow-hidden">
+        {/* Corazones flotantes: solo en la mitad inferior de la página
+            (top >= 35%): antes caían también sobre el encabezado y se
+            solapaban con el subtítulo. `aria-hidden`: decoración. */}
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
           {[...Array(8)].map((_, i) => (
             <Heart
               key={i}
               className={`absolute text-primary/10 animate-float-slow`}
               style={{
                 left: `${(i * 73) % 100}%`,
-                top: `${(i * 89) % 100}%`,
+                top: `${35 + ((i * 89) % 60)}%`,
                 animationDelay: `${i * 2}s`,
                 fontSize: `${((i * 2) % 20) + 10}px`,
               }}
@@ -299,7 +301,9 @@ Fecha: ${new Date().toLocaleString()}
       </div>
 
       <div className="relative z-10">
-        <main className="container mx-auto px-4 py-8">
+        {/* pt-14 en móvil: la píldora fija "Volver" de MainLayout tapaba
+            la "C" de "Centro de Ayuda". */}
+        <main className="container mx-auto px-4 pt-14 pb-8 sm:pt-8">
           {/* Page Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -308,8 +312,8 @@ Fecha: ${new Date().toLocaleString()}
                 FAQ & Comentarios
               </span>
             </h1>
-            <p className="text-xl text-white font-medium max-w-2xl mx-auto">
-              Encuentra respuestas a tus preguntas y aydanos a mejorar tu
+            <p className="text-xl text-slate-600 dark:text-white font-medium max-w-2xl mx-auto">
+              Encuentra respuestas a tus preguntas y ayúdanos a mejorar tu
               experiencia en ComplicesConecta
             </p>
           </div>
@@ -342,7 +346,7 @@ Fecha: ${new Date().toLocaleString()}
                               <span className="font-semibold">
                                 {category.title}
                               </span>
-                              <span className="text-sm text-white/80">
+                              <span className="text-sm text-slate-500 dark:text-white/80">
                                 ({category.faqs.length})
                               </span>
                             </div>
@@ -357,7 +361,7 @@ Fecha: ${new Date().toLocaleString()}
                                   <h4 className="font-medium text-foreground mb-2">
                                     {faq.question}
                                   </h4>
-                                  <p className="text-white/90 text-sm leading-relaxed">
+                                  <p className="text-slate-600 dark:text-white/90 text-sm leading-relaxed">
                                     {faq.answer}
                                   </p>
                                 </div>
@@ -377,19 +381,19 @@ Fecha: ${new Date().toLocaleString()}
               {/* Bug Report Form */}
               <Card className="bg-card/80 backdrop-blur-sm border border-red-200/70 dark:border-red-800/80">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl text-red-400">
+                  <CardTitle className="flex items-center gap-2 text-2xl text-red-600 dark:text-red-400">
                     <HelpCircle className="h-6 w-6" />
                     Reporte de Errores Beta
                   </CardTitle>
-                  <p className="text-white/90">
-                    Ayudanos a mejorar reportando errores, bugs o problemas que
+                  <p className="text-slate-600 dark:text-white/90">
+                    Ayúdanos a mejorar reportando errores, bugs o problemas que
                     encuentres
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Bug Type */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Tipo de Error
                     </label>
                     <Select
@@ -397,7 +401,7 @@ Fecha: ${new Date().toLocaleString()}
                         handleBugReportChange("type", value)
                       }
                     >
-                      <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
+                      <SelectTrigger className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/70">
                         <SelectValue placeholder="Selecciona el tipo de error" />
                       </SelectTrigger>
                       <SelectContent>
@@ -408,7 +412,7 @@ Fecha: ${new Date().toLocaleString()}
                         <SelectItem value="performance">
                           Problema de Rendimiento
                         </SelectItem>
-                        <SelectItem value="mobile">Error en Mvil</SelectItem>
+                        <SelectItem value="mobile">Error en Móvil</SelectItem>
                         <SelectItem value="payment">
                           Problema de Pagos
                         </SelectItem>
@@ -423,7 +427,7 @@ Fecha: ${new Date().toLocaleString()}
 
                   {/* Severity */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Severidad
                     </label>
                     <Select
@@ -431,12 +435,12 @@ Fecha: ${new Date().toLocaleString()}
                         handleBugReportChange("severity", value)
                       }
                     >
-                      <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
-                        <SelectValue placeholder="Qu tan grave es?" />
+                      <SelectTrigger className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/70">
+                        <SelectValue placeholder="¿Qué tan grave es?" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="critical">
-                          Critico - La app no funciona
+                          Crítico - La app no funciona
                         </SelectItem>
                         <SelectItem value="high">
                           Alto - Funcionalidad importante rota
@@ -454,7 +458,7 @@ Fecha: ${new Date().toLocaleString()}
                   {/* Device & Browser */}
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-sm font-medium text-white mb-2">
+                      <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                         Dispositivo
                       </label>
                       <Input
@@ -463,59 +467,59 @@ Fecha: ${new Date().toLocaleString()}
                         onChange={(e) =>
                           handleBugReportChange("device", e.target.value)
                         }
-                        className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
+                        className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-white mb-2">
+                      <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                         Navegador/App
                       </label>
                       <Input
-                        placeholder="Chrome, Safari, App mvil..."
+                        placeholder="Chrome, Safari, App móvil..."
                         value={bugReport.browser}
                         onChange={(e) =>
                           handleBugReportChange("browser", e.target.value)
                         }
-                        className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
+                        className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                       />
                     </div>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Descripción del Problema
                     </label>
                     <Textarea
-                      placeholder="Describe detalladamente qu error encontraste..."
+                      placeholder="Describe detalladamente qué error encontraste..."
                       value={bugReport.description}
                       onChange={(e) =>
                         handleBugReportChange("description", e.target.value)
                       }
                       rows={3}
-                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
+                      className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60 resize-none"
                     />
                   </div>
 
                   {/* Steps to reproduce */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       Pasos para Reproducir el Error
                     </label>
                     <Textarea
-                      placeholder="1. Entr a la seccin de... &#10;2. Hice clic en... &#10;3. Entonces apareci..."
+                      placeholder="1. Entré a la sección de... &#10;2. Hice clic en... &#10;3. Entonces apareció..."
                       value={bugReport.steps}
                       onChange={(e) =>
                         handleBugReportChange("steps", e.target.value)
                       }
                       rows={3}
-                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
+                      className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60 resize-none"
                     />
                   </div>
 
                   {/* Contact Email */}
                   <div>
-                    <label className="block text-sm font-medium text-white mb-2">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">
                       E-mail de Contacto
                     </label>
                     <Input
@@ -525,7 +529,7 @@ Fecha: ${new Date().toLocaleString()}
                       onChange={(e) =>
                         handleBugReportChange("email", e.target.value)
                       }
-                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
+                      className="bg-background/60 border-red-300/80 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/60"
                     />
                   </div>
 
@@ -539,7 +543,7 @@ Fecha: ${new Date().toLocaleString()}
                     Enviar Reporte de Error
                   </Button>
 
-                  <div className="text-xs text-white/90 bg-red-50 dark:bg-red-950/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="text-xs text-slate-700 dark:text-white/90 bg-red-50 dark:bg-red-950/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
                     <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400 inline mr-1" />
                     Este formulario abrir tu cliente de email con el reporte
                     pre-llenado para enviarlo a support@complicesconecta.com
@@ -554,7 +558,7 @@ Fecha: ${new Date().toLocaleString()}
                     <MessageSquare className="h-6 w-6 text-accent" />
                     💬 Comentarios Generales
                   </CardTitle>
-                  <p className="text-white/90">
+                  <p className="text-slate-600 dark:text-white/90">
                     Tu opinión nos ayuda a crear la mejor experiencia swinger
                   </p>
                 </CardHeader>
@@ -576,7 +580,7 @@ Fecha: ${new Date().toLocaleString()}
                             className={`h-6 w-6 ${
                               star <= rating
                                 ? "text-accent fill-current"
-                                : "text-white/60 hover:text-accent"
+                                : "text-slate-300 hover:text-accent dark:text-white/60 dark:hover:text-accent"
                             }`}
                           />
                         </button>
@@ -604,7 +608,7 @@ Fecha: ${new Date().toLocaleString()}
                       Tus comentarios y sugerencias
                     </label>
                     <Textarea
-                      placeholder="Cuntanos qu te gusta, qu mejoraras, o cualquier sugerencia para hacer ComplicesConecta an mejor..."
+                      placeholder="Cuéntanos qué te gusta, qué mejorarías, o cualquier sugerencia para hacer ComplicesConecta aún mejor..."
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
                       rows={4}
@@ -623,7 +627,7 @@ Fecha: ${new Date().toLocaleString()}
                   </Button>
 
                   {/* Privacy Note */}
-                  <div className="text-xs text-white/90 bg-muted/20 p-3 rounded-lg">
+                  <div className="text-xs text-slate-700 dark:text-white/90 bg-muted/20 p-3 rounded-lg">
                     <Crown className="h-4 w-4 text-accent inline mr-1" />
                     Tus comentarios son confidenciales y nos ayudan a mejorar la
                     experiencia para toda la comunidad swinger.

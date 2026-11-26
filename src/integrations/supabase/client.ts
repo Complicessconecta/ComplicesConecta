@@ -23,12 +23,30 @@ const safeLogger = logger || {
   error: (...args: SafeLogArg[]) => console.error("[ERROR]", ...args),
 };
 
+// Supabase clients need the project root, not the REST endpoint.
+// Ronda 9, stream E: sin variables (build local sin .env / preview sin
+// vars en Vercel) la URL es `undefined` y `.replace` truena en el
+// top-level del módulo. Este módulo lo evalúa al arrancar el chunk
+// pages-chat, importado estáticamente por el bundle principal, así que
+// el fallo deja la app en blanco en TODAS las rutas (ni /demo carga).
+// Devolver "" deja que `isPlaceholderUrl` (que ya contempla !url) lo
+// trate como stub, que es el comportamiento documentado para ese caso.
+const normalizeSupabaseUrl = (url: string | undefined): string => {
+  if (!url) return "";
+  const trimmedUrl = url.replace(/\/+$/, "");
+  return trimmedUrl.endsWith("/rest/v1")
+    ? trimmedUrl.slice(0, -"/rest/v1".length)
+    : trimmedUrl;
+};
+
 // Obtener las credenciales de Supabase desde variables de entorno con fallback a AppConfig
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || AppConfig.supabase.url;
+const supabaseUrl = normalizeSupabaseUrl(
+  import.meta.env.VITE_SUPABASE_URL || AppConfig.supabase.url,
+);
 const supabaseAnonKey =
   import.meta.env.VITE_SUPABASE_ANON_KEY || AppConfig.supabase.anonKey;
 
-// Validar que las variables de entorno estén configuradías
+// Validar que las variables de entorno estén configuradas
 const isPlaceholderUrl =
   !supabaseUrl ||
   (typeof supabaseUrl === "string" &&
@@ -42,6 +60,16 @@ const isPlaceholderKey =
   supabaseAnonKey.includes("your-supabase-anon-key-here") ||
   supabaseAnonKey.includes("your_supabase_anon_key_here") ||
   supabaseAnonKey.includes("placeholder-key");
+
+// ¿Hay credenciales reales de Supabase? En los previews de Vercel las
+// variables VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY no están
+// configuradas y el cliente es un stub cuya fetch siempre rechaza con
+// "Supabase not configured - using stub client". Los flujos de registro
+// y login deben consultar esto ANTES de llamar a supabase.auth y, si no
+// hay backend, crear la cuenta demo local en vez de fallar con ese
+// mensaje. Sin variables en Vercel, el registro real no puede funcionar:
+// hace falta que Wacko las ponga en su panel de Vercel (ver reporte).
+export const isSupabaseConfigured = !isPlaceholderUrl && !isPlaceholderKey;
 
 if (isPlaceholderUrl || isPlaceholderKey) {
   safeLogger.warn(
@@ -131,7 +159,7 @@ function getSupabaseClient(): SupabaseClient<Database> {
       return supabaseInstance;
     }
 
-    // Si las credenciales son válidías, crear el cliente normalmente
+    // Si las credenciales son válidas, crear el cliente normalmente
     const finalUrl = supabaseUrl!;
     const finalKey = supabaseAnonKey!;
 

@@ -29,7 +29,12 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/styles/android-grid.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { CrossBrowserOptimizer } from "@/components/ui/CrossBrowserOptimizer";
 import { AccessibilityEnhancer } from "@/components/ui/AccessibilityEnhancer";
 import { MobileOptimizer } from "@/components/ui/MobileOptimizer";
@@ -60,10 +65,12 @@ const ProfileDetail = lazy(
   () => import("@/pages/profiles/shared/ProfileDetail"),
 );
 const Chat = lazyWithDefault(() => import("@/pages/Chat"));
+const ChatIntimo = lazyWithDefault(() => import("@/pages/ChatIntimo"));
 const ChatInfo = lazyWithDefault(() => import("@/pages/ChatInfo"));
 const Matches = lazyWithDefault(() => import("@/pages/Matches"));
 const Requests = lazyWithDefault(() => import("@/pages/Requests"));
 const SwingerDashboard = lazyWithDefault(() => import("@/pages/SwingerDashboard"));
+const Settings = lazyWithDefault(() => import("@/pages/Settings"));
 const Premium = lazyWithDefault(() => import("@/pages/Premium"));
 const Dashboard = lazyWithDefault(() => import("@/pages/Dashboard"));
 
@@ -196,6 +203,11 @@ const App = () => {
                             {/* Main Layout wraps all pages except maybe standalone ones if any */}
                             <Route element={<MainLayout />}>
                               <Route path="/" element={<Index />} />
+                              {/* /landing es la misma landing pública que
+                                  "/" (ronda 6, punto 14): antes era 404.
+                                  Index ya redirige al perfil propio
+                                  cuando hay sesión. */}
+                              <Route path="/landing" element={<Index />} />
                             <Route
                               path="/auth"
                               element={
@@ -203,6 +215,26 @@ const App = () => {
                                   <Auth />
                                 </ProtectedRoute>
                               }
+                            />
+                            {/* Ronda 6: /register, /signup y /login eran 404
+                                (solo existía /auth). Redirigen al flujo que
+                                funciona; /register y /signup abren la
+                                pestaña de registro de /auth. */}
+                            <Route
+                              path="/register"
+                              element={
+                                <Navigate to="/auth?tab=signup" replace />
+                              }
+                            />
+                            <Route
+                              path="/signup"
+                              element={
+                                <Navigate to="/auth?tab=signup" replace />
+                              }
+                            />
+                            <Route
+                              path="/login"
+                              element={<Navigate to="/auth" replace />}
                             />
                             <Route path="/demo" element={<Demo />} />
                             <Route path="/faq" element={<FAQ />} />
@@ -258,6 +290,18 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
+                            {/* Ronda 6: /chat-intimo existía como idea pero
+                                era 404; abre el mismo chat íntimo del dock
+                                a pantalla completa, con "Cerrar" a
+                                /requests. */}
+                            <Route
+                              path="/chat-intimo"
+                              element={
+                                <ProtectedRoute>
+                                  <ChatIntimo />
+                                </ProtectedRoute>
+                              }
+                            />
                             <Route path="/chat-info" element={<ChatInfo />} />
                             <Route path="/matches" element={<Matches />} />
                             <Route path="/requests" element={<Requests />} />
@@ -283,7 +327,11 @@ const App = () => {
                                 </ProtectedRoute>
                               }
                             />
-                            <Route path="/settings" element={<SwingerDashboard />} />
+                            <Route path="/settings" element={<Settings />} />
+                            <Route
+                              path="/swinger-dashboard"
+                              element={<SwingerDashboard />}
+                            />
                             <Route path="/premium" element={<Premium />} />
                             <Route
                               path="/dashboard"
@@ -359,6 +407,15 @@ const App = () => {
                               element={<Guidelines />}
                             />
                             <Route path="/legal" element={<Legal />} />
+                            {/* Ronda 8 (punto 12/13a): /docs/legal/ no tenía
+                                ruta y caía en el catch-all 404 aunque el
+                                rewrite de Vercel sí sirve index.html. Es
+                                el mismo índice legal estilizado de /legal
+                                (React Router ignora la barra final, así que
+                                /docs/legal/ también casa). Los .md crudos
+                                de public/docs/legal/ se siguen sirviendo
+                                como estáticos y no pasan por el SPA. */}
+                            <Route path="/docs/legal" element={<Legal />} />
                             <Route
                               path="/ley-olimpia"
                               element={<LeyOlimpia />}
@@ -456,6 +513,16 @@ const App = () => {
                             />
                             <Route path="/investors" element={<Investors />} />
                             <Route path="/nfts" element={<NFTs />} />
+                            {/* Ronda 8 (punto 13): /404 NO existía como
+                                ruta. El ErrorBoundary raíz (main.tsx)
+                                redirige en producción a /404 ante
+                                cualquier error de render, así que un error
+                                en cualquier página terminaba en el
+                                catch-all "*" con la página 404. Con ruta
+                                propia, /404 es una ruta real y el error
+                                muestra la misma página 404 por diseño,
+                                no por un hueco del router. */}
+                            <Route path="/404" element={<NotFound />} />
                             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                             <Route path="*" element={<NotFound />} />
                           </Route>

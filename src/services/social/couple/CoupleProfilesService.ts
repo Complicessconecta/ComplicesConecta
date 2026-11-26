@@ -12,6 +12,7 @@
 
 import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
 import { advancedCoupleService } from "@/services/social/couple/AdvancedCoupleService";
+import type { PrivacySettings } from "@/lib/visibility";
 
 export type RelationshipType = "man-woman" | "man-man" | "woman-woman";
 
@@ -25,6 +26,8 @@ export interface CoupleProfileWithPartners {
   couple_images: string[] | null;
   is_verified: boolean | null;
   is_premium: boolean | null;
+  /** Ajustes de privacidad (jsonb) para enforcement en Discover. */
+  privacy_settings?: PrivacySettings | null;
   created_at: string;
   updated_at: string;
   profile_id?: string;
@@ -80,6 +83,7 @@ export async function getAllCoupleProfiles(
         couple_images,
         is_verified: profile.is_verified,
         is_premium: profile.is_premium,
+        privacy_settings: profile.privacy_settings ?? null,
         created_at: profile.created_at,
         updated_at: profile.updated_at,
         partner1_first_name: p1,

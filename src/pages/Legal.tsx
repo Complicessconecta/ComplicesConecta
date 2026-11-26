@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info } from "lucide-react";
+import { FileText, Shield, AlertTriangle, Users, BookOpen, Gavel,  Eye, Calendar, AlertCircle, CheckCircle2, Globe, Lock, ExternalLink, Info, Building, Gem, Coins } from "lucide-react";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
 const Legal: FC = () => {
@@ -18,12 +18,16 @@ const Legal: FC = () => {
         "Marco legal mexicano que tipifica como delito la violencia digital y la difusión de contenido íntimo sin consentimiento. ComplicesConecta cumple estrictamente con esta normativa.",
       icon: <Shield className="h-6 w-6" />,
       file: "LEY_OLIMPIA.md",
+      // Ronda 8 (punto 12): si el documento tiene página estilizada,
+      // "Ver Documento" navega a ella en vez de abrir el .md crudo.
+      // Sin styledRoute se sigue abriendo el .md (sigue servido).
+      styledRoute: "/ley-olimpia",
       lastUpdated: "2025-11-09",
       category: "Protección Legal",
       priority: true,
       details: [
         "Artículo 259 Tercero: Difusión de contenido íntimo sin consentimiento (3-6 años prisión)",
-        "Artículo 259 Quárto: Acoso digital (1-3 años prisión)",
+        "Artículo 259 Cuarto: Acoso digital (1-3 años prisión)",
         "Artículo 259 Quinto: Violación a la intimidad sexual (3-6 años prisión)",
         "Verificador IA de Consentimiento integrado en ComplicesConecta",
         "Canal de denuncias 24/7 disponible",
@@ -51,6 +55,8 @@ const Legal: FC = () => {
         "Condiciones de uso completas de la plataforma ComplicesConecta, derechos y obligaciones de usuarios.",
       icon: <FileText className="h-6 w-6" />,
       file: "TERMS_OF_SERVICE.md",
+      // Ronda 8 (punto 12): página estilizada v3.5.0 (Nov 2025).
+      styledRoute: "/terms",
       lastUpdated: "2025-11-08",
       category: "Términos",
       details: [
@@ -64,17 +70,64 @@ const Legal: FC = () => {
     {
       title: "Política de Privacidad",
       description:
-        "Cómo protegemos, Recopilamos y Manejamos tu información personal. Cumplimiento con GDPR y Normativas Mexicanas.",
+        "Cómo protegemos, recopilamos y manejamos tu información personal. Cumplimiento con GDPR y Normativas Mexicanas.",
       icon: <Lock className="h-6 w-6" />,
-      file: "PRIVACY_POLICY.md",
+      file: "POLITICA_PRIVACIDAD.md",
+      // Ronda 8 (punto 12): página estilizada v3.5.0 (Nov 2025).
+      styledRoute: "/privacy",
       lastUpdated: "2025-11-08",
       category: "Privacidad",
       details: [
         "Recopilación y uso de datos personales",
         "Derechos de los usuarios sobre sus datos",
-        "Medidías de seguridad implementadías",
+        "Medidas de seguridad implementadas",
         "Compartición de datos con terceros",
         "Cumplimiento GDPR y Normativas Mexicanas",
+      ],
+    },
+    {
+      title: "Términos de Uso para Clubs",
+      description:
+        "Condiciones para registrar y operar un club en ComplicesConecta: registro y verificación, mayoría de edad (+18), seguridad y consentimiento, eventos y descuentos.",
+      icon: <Building className="h-6 w-6" />,
+      file: "TERMINOS_USO_CLUBS.md",
+      lastUpdated: "2026-11-24",
+      category: "Clubs",
+      details: [
+        "Registro y verificación del club",
+        "Mayoría de edad (+18) y acceso",
+        "Seguridad, consentimiento y conducta",
+        "Eventos, descuentos y miembros",
+        "Suspensión y terminación",
+      ],
+    },
+    {
+      title: "Política de Privacidad para Clubs",
+      description:
+        "Cómo se recopilan, usan y protegen los datos de los clubs, sus propietarios y representantes, y cómo se comparten de forma controlada con los usuarios.",
+      icon: <Shield className="h-6 w-6" />,
+      file: "CLUBS_PRIVACY_POLICY.md",
+      lastUpdated: "2026-01-26",
+      category: "Clubs",
+      details: [
+        "Datos de propietarios y del club",
+        "Compartición controlada con usuarios",
+        "Consentimiento para el perfil público del club",
+        "Derechos del club sobre sus datos",
+      ],
+    },
+    {
+      title: "Aviso Legal para Clubs",
+      description:
+        "Descargo de responsabilidad específico para clubs: la plataforma es de intermediación y el club es responsable de sus instalaciones, eventos y cumplimiento normativo.",
+      icon: <AlertTriangle className="h-6 w-6" />,
+      file: "CLUBS_LEGAL_DISCLAIMER.md",
+      lastUpdated: "2026-01-26",
+      category: "Clubs",
+      details: [
+        "La plataforma es de intermediación",
+        "Responsabilidad del club sobre sus eventos",
+        "Cumplimiento normativo local",
       ],
     },
     {
@@ -107,6 +160,88 @@ const Legal: FC = () => {
         "Responsabilidades de desarrolladores",
         "Políticas de rate limiting",
         "Cumplimiento de seguridad",
+      ],
+    },
+    {
+      title: "Términos y Condiciones de Uso",
+      description:
+        "Términos y condiciones de uso de la plataforma (v1.0 BETA): aceptación, descripción del servicio para adultos (+18) y fase beta gratuita.",
+      icon: <FileText className="h-6 w-6" />,
+      file: "TERMINOS_Y_CONDICIONES.md",
+      lastUpdated: "2025-11-16",
+      category: "Términos",
+      details: [
+        "Aceptación de los términos al usar la plataforma",
+        "Servicio exclusivo para adultos mayores de 18 años",
+        "Fase BETA gratuita (Nov 2025 - Abr 2026)",
+        "Funcionalidades sujetas a cambio sin previo aviso",
+      ],
+    },
+    {
+      title: "Deslinde de Responsabilidad",
+      description:
+        "Qué NO cubre la plataforma: encuentros offline, verificación de identidad más allá de lo técnico y seguridad de encuentros físicos; tu responsabilidad al conocer a alguien en persona.",
+      icon: <AlertTriangle className="h-6 w-6" />,
+      file: "DESLINDE_RESPONSABILIDAD.md",
+      lastUpdated: "2025-11-16",
+      category: "Responsabilidad",
+      details: [
+        "No organizamos ni supervisamos encuentros",
+        "Verifica la identidad con videollamada previa",
+        "Reúnete en lugar público y concurrido",
+        "Avisa a un amigo o familiar dónde estarás",
+      ],
+    },
+    {
+      title: "Condiciones de NFTs",
+      description:
+        "Condiciones técnicas de los NFTs v3.7.0: mint individual y de pareja, venta secundaria, staking y revocación con derecho al olvido (Ley Olimpia).",
+      icon: <Gem className="h-6 w-6" />,
+      file: "NFT_CONDITIONS.md",
+      lastUpdated: "2025-11-13",
+      category: "NFTs",
+      details: [
+        "Mint individual gratis o 100 CMPX; de pareja 1000 GTK",
+        "Venta secundaria con 5% de fee de aplicación",
+        "Staking de NFTs: 15-35% APY en CMPX",
+        "Revocación en 72h (derecho al olvido, Ley Olimpia)",
+        "Metadata en IPFS (Pinata)",
+      ],
+    },
+    {
+      title: "Responsabilidad Legal - Tokens CMPX/GTK",
+      description:
+        "Aviso legal del sistema de tokens CMPX/GTK: créditos internos sin valor monetario real en beta, marco regulatorio, KYC/AML y descargo de responsabilidad.",
+      icon: <Coins className="h-6 w-6" />,
+      file: "TOKENS_LEGAL.md",
+      // Ronda 9 (stream C): página estilizada /tokens-legal, que
+      // renderiza este mismo .md. Sin fecha en el documento: se usa la
+      // fecha del repo (último commit que tocó el archivo, 2026-11-24).
+      styledRoute: "/tokens-legal",
+      lastUpdated: "2026-11-24",
+      category: "Tokens",
+      details: [
+        "CMPX sin valor monetario real durante la beta",
+        "No son instrumentos financieros regulados",
+        "KYC y monitoreo anti-lavado (AML)",
+        "Jurisdicción México; regulador CONDUSEF",
+      ],
+    },
+    {
+      title: "Términos de Servicio - Blockchain",
+      description:
+        "Anexo blockchain de los términos: tokens premium no transferibles, CMPX/GTK/NFTs en Polygon y conversión unidireccional e irreversible.",
+      icon: <Globe className="h-6 w-6" />,
+      file: "TERMS_OF_SERVICE-BLOCKCHAIN.md",
+      // Ronda 9 (stream C): el documento es un anexo sin fecha propia;
+      // se usa la fecha del repo (último commit que tocó el archivo,
+      // 2026-11-24).
+      lastUpdated: "2026-11-24",
+      category: "Blockchain",
+      details: [
+        "Tokens premium no transferibles, solo en app",
+        "CMPX/GTK/NFTs en Polygon, transferibles",
+        "Conversión unidireccional e irreversible",
       ],
     },
   ];
@@ -251,7 +386,7 @@ const Legal: FC = () => {
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-red-400" />
-                      Artículo 259 Quárto
+                      Artículo 259 Cuarto
                     </h5>
                     <p className="text-white/80 text-sm mb-2">
                       Acoso digital y hostigamiento
@@ -306,7 +441,7 @@ const Legal: FC = () => {
                       <CheckCircle2 className="h-4 w-4 text-green-400 shrink-0 mt-0.5" />
                       <span>
                         <strong>Cooperación con autoridades:</strong>{" "}
-                        Colaboración directa con fiscalías especializadías
+                        Colaboración directa con fiscalías especializadas
                       </span>
                     </li>
                   </ul>
@@ -403,7 +538,9 @@ const Legal: FC = () => {
                       <Button
                         className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30"
                         onClick={() =>
-                          safeOpenUrl(`/docs/legal/${doc.file}`)
+                          doc.styledRoute
+                            ? navigate(doc.styledRoute)
+                            : safeOpenUrl(`/docs/legal/${doc.file}`)
                         }
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />

@@ -3,17 +3,40 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
-import { PasswordValidator, isPasswordValid } from "@/components/auth/PasswordValidator";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import {
+  PasswordValidator,
+  isPasswordValid,
+} from "@/components/auth/PasswordValidator";
 import { NicknameValidator } from "@/components/auth/NicknameValidator";
 import { InterestsSelector } from "@/components/auth/InterestsSelector";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { Users } from "lucide-react";
 import { toast } from "@/hooks/useToast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import { createLocalDemoAccount } from "@/lib/demo-registration";
+import { checkIdentityRetained } from "@/lib/reportBlock";
 import { logger } from "@/lib/logger";
+import { getZodiacSignFromDate } from "@/lib/zodiac";
+import {
+  COUNTRIES,
+  DEFAULT_COUNTRY_CODE,
+  getCountryByCode,
+  writeCountryCodeLocal,
+} from "@/lib/countries";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -23,6 +46,8 @@ interface CoupleRegistrationData {
   hisFirstName: string;
   hisLastName: string;
   hisAge: string;
+  /** Fecha de nacimiento ISO (opcional): de aquí se deriva el signo. */
+  hisBirthDate: string;
   hisGender: string;
   hisInterests: string[];
 
@@ -30,11 +55,15 @@ interface CoupleRegistrationData {
   herFirstName: string;
   herLastName: string;
   herAge: string;
+  /** Fecha de nacimiento ISO (opcional): de aquí se deriva el signo. */
+  herBirthDate: string;
   herGender: string;
   herInterests: string[];
 
   // Información compartida
   coupleNickname: string;
+  /** País de origen de la pareja (código ISO): la nacionalidad se muestra en el perfil. */
+  countryCode: string;
   email: string;
   phone: string;
   password: string;
@@ -95,14 +124,17 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     hisFirstName: "",
     hisLastName: "",
     hisAge: "",
+    hisBirthDate: "",
     hisGender: "",
     hisInterests: [],
     herFirstName: "",
     herLastName: "",
     herAge: "",
+    herBirthDate: "",
     herGender: "",
     herInterests: [],
     coupleNickname: "",
+    countryCode: DEFAULT_COUNTRY_CODE,
     email: "",
     phone: "",
     password: "",
@@ -194,7 +226,9 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     return /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(name) && name.trim().length >= 2;
   };
 
-  const validateEmailUnique = async (email: string): Promise<{ isValid: boolean; message?: string }> => {
+  const validateEmailUnique = async (
+    email: string,
+  ): Promise<{ isValid: boolean; message?: string }> => {
     // Validación básica de formato
     if (!validateEmail(email)) {
       return { isValid: false, message: "Formato de email inválido" };
@@ -256,6 +290,65 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     setIsLoading(true);
 
     try {
+      // Ronda 6: sin Supabase configurado (preview sin variables en
+      // Vercel), el cliente es un stub y signUp siempre falla con
+      // "Supabase not configured - using stub client". El registro demo
+      // no depende de Supabase: se crea la cuenta local y se entra
+      // directo al perfil. La recarga completa es necesaria para que
+      // useAuth relea el `demo_user` nuevo de localStorage.
+      if (!isSupabaseConfigured) {
+        const { userId } = createLocalDemoAccount({
+          email: formData.email,
+          nickname: formData.coupleNickname,
+          accountType: "couple",
+          firstName: formData.hisFirstName,
+          lastName: formData.hisLastName,
+          age: parseInt(formData.hisAge),
+          bio: formData.bio,
+          interests: [...formData.hisInterests, ...formData.herInterests],
+          countryCode: formData.countryCode,
+          birthDate: formData.hisBirthDate || undefined,
+          gender: formData.hisGender || undefined,
+          interestedIn: formData.interestedIn,
+          partnerFirstName: formData.herFirstName,
+          partnerAge: parseInt(formData.herAge),
+          partnerBirthDate: formData.herBirthDate || undefined,
+        });
+        logger.info("✅ Cuenta demo local de pareja creada (sin Supabase)", {
+          userId,
+        });
+        toast({
+          title: "¡Cuenta demo creada!",
+          description:
+            "Sin conexión a Supabase en este preview: tu cuenta se creó en este navegador para probar el flujo.",
+          duration: 5000,
+        });
+        window.location.href = "/profile-couple";
+        return;
+      }
+
+      // Ronda 12 (stream D): identidad retenida tras baja por reporte
+      // (`retained_identities`, RPC `check_identity_retained`,
+      // migración 20261124050004). Solo cierra el registro cuando la
+      // RPC responde que SÍ está retenida; si la RPC falta o falla
+      // (migración sin aplicar) el registro continúa (fail-open con
+      // warning, ver `checkIdentityRetained`). En demo manda el
+      // espejo local `isIdentityRetainedDemo` (vía
+      // `createLocalDemoAccount`), no esta RPC.
+      const retained = await checkIdentityRetained(
+        formData.email,
+        formData.coupleNickname,
+      );
+      if (retained.checked && retained.retained) {
+        toast({
+          variant: "destructive",
+          title: "Registro no permitido",
+          description:
+            "Esta identidad fue dada de baja por un reporte y no puede registrarse de nuevo.",
+        });
+        return;
+      }
+
       // Registrar usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -293,6 +386,21 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             her_gender: formData.herGender,
             her_interests: formData.herInterests,
             is_verified: false,
+            // País de origen: `couple_profiles.country` (texto) ya
+            // existe en la BD; el código ISO va en `country_code`
+            // (migración 20261124050000, aún sin aplicar: se intenta
+            // aparte sin romper el registro si la columna no existe).
+            country: getCountryByCode(formData.countryCode)?.name ?? null,
+            // Fechas de nacimiento en privacy_settings (jsonb): de ahí se
+            // derivan los signos zodiacales de cada integrante.
+            privacy_settings: {
+              ...(formData.hisBirthDate
+                ? { birthDate: formData.hisBirthDate }
+                : {}),
+              ...(formData.herBirthDate
+                ? { birthDate2: formData.herBirthDate }
+                : {}),
+            },
           });
 
         // También crear un perfil básico en la tabla profiles para compatibilidad
@@ -322,6 +430,37 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           throw new Error("Error al crear el perfil de pareja");
         }
 
+        // Apodo en la columna `nickname`: la RPC
+        // `check_nickname_available` (migración 20261124050001) busca
+        // duplicados en profiles.nickname Y couple_profiles.nickname.
+        // Sin esta escritura, el apodo de pareja nunca quedaba en
+        // `nickname` (solo en `couple_name`) y la RPC lo reportaba
+        // siempre como disponible aunque ya existiera. Best-effort
+        // como el país: si la columna aún no existe en producción
+        // (migración sin aplicar), el registro ya quedó creado y no
+        // se rompe.
+        try {
+          await supabase
+            .from("couple_profiles")
+            .update({ nickname: formData.coupleNickname })
+            .eq("user_id", authData.user.id);
+        } catch {
+          // Columna aún sin aplicar: el apodo queda en couple_name.
+        }
+
+        // Código ISO del país: local siempre + intento en BD
+        // (`country_code`, migración 20261124050000) sin romper el
+        // registro si la columna aún no existe en producción.
+        writeCountryCodeLocal(authData.user.id, formData.countryCode);
+        try {
+          await supabase
+            .from("couple_profiles")
+            .update({ country_code: formData.countryCode } as never)
+            .eq("user_id", authData.user.id);
+        } catch {
+          // Columna aún sin aplicar: el país queda en local.
+        }
+
         toast({
           title: "¡Registro exitoso!",
           description:
@@ -344,7 +483,8 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         });
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Error desconocido";
+      const message =
+        error instanceof Error ? error.message : "Error desconocido";
 
       logger.error("❌ Error en registro de pareja", {
         error: message,
@@ -431,7 +571,36 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
               max="99"
               required
             />
+            {formData.hisAge && parseInt(formData.hisAge) < 18 && (
+              <p className="text-red-400 text-sm mt-1">
+                Debe ser mayor de 18 años
+              </p>
+            )}
           </div>
+          <div>
+            <Label className="text-white">
+              Fecha de nacimiento (opcional, para su signo)
+            </Label>
+            <Input
+              type="date"
+              value={formData.hisBirthDate}
+              onChange={(e) =>
+                handleInputChange("hisBirthDate", e.target.value)
+              }
+              className="bg-white/10 text-white placeholder:text-white/80 border-white/20 [color-scheme:dark]"
+              max={new Date().toISOString().slice(0, 10)}
+            />
+            {formData.hisBirthDate &&
+              getZodiacSignFromDate(formData.hisBirthDate) && (
+                <p className="text-white/70 text-sm mt-1">
+                  Su signo:{" "}
+                  {getZodiacSignFromDate(formData.hisBirthDate)?.symbol}{" "}
+                  {getZodiacSignFromDate(formData.hisBirthDate)?.name}
+                </p>
+              )}
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-white">Género *</Label>
             <Select
@@ -512,7 +681,36 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
               max="99"
               required
             />
+            {formData.herAge && parseInt(formData.herAge) < 18 && (
+              <p className="text-red-400 text-sm mt-1">
+                Debe ser mayor de 18 años
+              </p>
+            )}
           </div>
+          <div>
+            <Label className="text-white">
+              Fecha de nacimiento (opcional, para su signo)
+            </Label>
+            <Input
+              type="date"
+              value={formData.herBirthDate}
+              onChange={(e) =>
+                handleInputChange("herBirthDate", e.target.value)
+              }
+              className="bg-white/10 text-white placeholder:text-white/80 border-white/20 [color-scheme:dark]"
+              max={new Date().toISOString().slice(0, 10)}
+            />
+            {formData.herBirthDate &&
+              getZodiacSignFromDate(formData.herBirthDate) && (
+                <p className="text-white/70 text-sm mt-1">
+                  Su signo:{" "}
+                  {getZodiacSignFromDate(formData.herBirthDate)?.symbol}{" "}
+                  {getZodiacSignFromDate(formData.herBirthDate)?.name}
+                </p>
+              )}
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-white">Género *</Label>
             <Select
@@ -534,6 +732,32 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             </Select>
           </div>
         </div>
+      </div>
+
+      <div>
+        <Label className="text-white">País de origen *</Label>
+        <Select
+          value={formData.countryCode}
+          onValueChange={(value: string) =>
+            handleInputChange("countryCode", value)
+          }
+        >
+          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectValue placeholder="Selecciona su país" />
+          </SelectTrigger>
+          <SelectContent>
+            {COUNTRIES.map((country) => (
+              <SelectItem key={country.code} value={country.code}>
+                {country.flag} {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-white/70 text-sm mt-1">
+          Su nacionalidad aparecerá en el perfil como{" "}
+          {getCountryByCode(formData.countryCode)?.flag}{" "}
+          {getCountryByCode(formData.countryCode)?.name}.
+        </p>
       </div>
 
       <NicknameValidator
@@ -607,9 +831,11 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           className={`bg-white/10 text-white placeholder:text-white/80 ${
             formData.email && !validateEmail(formData.email)
               ? "border-red-400"
-              : formData.email && !emailValidation.isValid && !emailValidation.isValidating
-              ? "border-yellow-400"
-              : "border-white/20"
+              : formData.email &&
+                  !emailValidation.isValid &&
+                  !emailValidation.isValidating
+                ? "border-yellow-400"
+                : "border-white/20"
           }`}
           placeholder="pareja@email.com"
           required
@@ -617,15 +843,25 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         {formData.email && !validateEmail(formData.email) && (
           <p className="text-red-400 text-sm mt-1">Email inválido</p>
         )}
-        {formData.email && validateEmail(formData.email) && emailValidation.isValidating && (
-          <p className="text-yellow-400 text-sm mt-1">Validando email...</p>
-        )}
-        {formData.email && validateEmail(formData.email) && !emailValidation.isValidating && !emailValidation.isValid && emailValidation.message && (
-          <p className="text-yellow-400 text-sm mt-1">{emailValidation.message}</p>
-        )}
-        {formData.email && validateEmail(formData.email) && emailValidation.isValid && (
-          <p className="text-green-400 text-sm mt-1">✓ Email válido</p>
-        )}
+        {formData.email &&
+          validateEmail(formData.email) &&
+          emailValidation.isValidating && (
+            <p className="text-yellow-400 text-sm mt-1">Validando email...</p>
+          )}
+        {formData.email &&
+          validateEmail(formData.email) &&
+          !emailValidation.isValidating &&
+          !emailValidation.isValid &&
+          emailValidation.message && (
+            <p className="text-yellow-400 text-sm mt-1">
+              {emailValidation.message}
+            </p>
+          )}
+        {formData.email &&
+          validateEmail(formData.email) &&
+          emailValidation.isValid && (
+            <p className="text-green-400 text-sm mt-1">✓ Email válido</p>
+          )}
       </div>
 
       <div>

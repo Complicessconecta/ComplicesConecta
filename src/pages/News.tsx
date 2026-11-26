@@ -45,7 +45,7 @@ const News: FC = () => {
       icon: <Brain className="h-6 w-6" />,
       highlights: [
         "✅ Verificador IA de Consentimiento en Chats - Servicio + Migración + Integración",
-        "✅ Galerías NFT-Verificadías - Servicio + Migración + UI completa",
+        "✅ Galerías NFT-Verificadas - Servicio + Migración + UI completa",
         "✅ Matching Predictivo con Graphs Sociales - Neo4j + IA integrado",
         "✅ Eventos Virtuales Sostenibles con Tokens - Servicio completo",
         "✅ Neo4j Graph Database 100% operativo - Docker + Scripts + Sincronización",
@@ -74,7 +74,7 @@ const News: FC = () => {
         "Google S2 Geosharding implementado - Cell ID generation (niveles 10-20)",
         "Database Migration - s2_cell_id y s2_level agregados a profiles",
         "Backfill Script preparado - Batch processing (100 perfiles/vez)",
-        "Mejoras de performance esperadías: 50-100x ms rpido en queries geogrficas",
+        "Mejoras de performance esperadas: 50-100x ms rpido en queries geogrficas",
         "AI Model Metrics - Seguimiento completo de predicciones ML",
       ],
       color: "from-blue-500 to-cyan-600",
@@ -93,7 +93,7 @@ const News: FC = () => {
       highlights: [
         "Performance Monitoring Service - Mtricas Web Vitals (LCP, FCP, FID, CLS, TTFB)",
         "Error Alert Service - Captura automtica con categorizacin inteligente",
-        "Analytics Dashboard - 4 pestaas (Overview, Moderacin, Histrico, Configuracin)",
+        "Analytics Dashboard - 4 pestaas (Overview, Moderación, Histrico, Configuracin)",
         "Historical Charts con Recharts - Line, Area, Composed, Bar charts",
         "Sistema de Webhooks - Slack, Discord, Custom con rate limiting",
         "Integracin Sentry completa - Error tracking + Source maps + Session Replay",
@@ -178,7 +178,7 @@ const News: FC = () => {
         "Sistema de autenticacin y perfiles (single/pareja)",
         "Base de datos con RLS y polticas de seguridad",
         "UI/UX inicial con Tailwind CSS",
-        "Funcionalidades core: matches, chat, galera",
+        "Funcionalidades core: matches, chat, galería",
       ],
       color: "from-gray-500 to-slate-600",
     },
@@ -270,7 +270,7 @@ const News: FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-white/90 leading-relaxed text-base sm:text-lg">
-                Descubre todías las mejoras, nuevas funcionalidades y
+                Descubre todas las mejoras, nuevas funcionalidades y
                 optimizaciones que hemos implementado desde el lanzamiento de
                 ComplicesConecta. Cada actualizacin est diseada para mejorar tu
                 experiencia, la seguridad de la plataforma y el rendimiento del
@@ -388,7 +388,7 @@ const News: FC = () => {
           ))}
         </div>
 
-        {/* Estadsticas de Desarrollo mejoradías */}
+        {/* Estadsticas de Desarrollo mejoradas */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -488,7 +488,7 @@ const News: FC = () => {
           </Card>
         </motion.div>
 
-        {/* Prximas Actualizaciones mejoradías */}
+        {/* Prximas Actualizaciones mejoradas */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -509,7 +509,7 @@ const News: FC = () => {
                   "Integracin MongoDB Atlas para analytics avanzados",
                   "Sistema de video chat P2P con WebRTC",
                   "Marketplace de productos premium",
-                  "Notificaciones push nativas mejoradías",
+                  "Notificaciones push nativas mejoradas",
                   "Expansin internacional (ms pases)",
                   "App iOS nativa para iPhone y iPad",
                 ].map((item, idx) => (
@@ -561,7 +561,7 @@ const News: FC = () => {
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-3 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
                   <Eye className="h-4 w-4 mr-2" />
-                  Conocer Ms
+                  Conocer Más
                 </Button>
               </div>
             </CardContent>

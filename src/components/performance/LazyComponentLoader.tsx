@@ -74,7 +74,7 @@ export const LazyComponentLoader: React.FC<LazyLoaderProps> = ({
   );
 };
 
-// Función helper para crear componentes lazy con opciones avanzadías
+// Función helper para crear componentes lazy con opciones avanzadas
 export function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<any>,
   options: LazyComponentOptions = {},

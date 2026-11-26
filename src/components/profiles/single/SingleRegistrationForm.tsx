@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/useToast";
@@ -12,7 +23,17 @@ import { InterestsSelector } from "@/components/auth/InterestsSelector";
 import { NicknameValidator } from "@/components/auth/NicknameValidator";
 import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
 import { logger } from "@/lib/logger";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import { createLocalDemoAccount } from "@/lib/demo-registration";
+import { checkIdentityRetained } from "@/lib/reportBlock";
+import { savePrivacySettingsExtra } from "@/lib/visibility";
+import { getZodiacSignFromDate } from "@/lib/zodiac";
+import {
+  COUNTRIES,
+  DEFAULT_COUNTRY_CODE,
+  getCountryByCode,
+  writeCountryCodeLocal,
+} from "@/lib/countries";
 
 // Configuración de Supabase
 // Usar el cliente singleton compartido para evitar múltiples instancias en HMR
@@ -23,6 +44,10 @@ interface SingleRegistrationData {
   firstName: string;
   lastName: string;
   age: string;
+  /** Fecha de nacimiento ISO (opcional): de aquí se deriva el signo. */
+  birthDate: string;
+  /** País de origen (código ISO): la nacionalidad se muestra en el perfil. */
+  countryCode: string;
   nickname: string;
   useRealName: boolean;
 
@@ -94,6 +119,8 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
     firstName: "",
     lastName: "",
     age: "",
+    birthDate: "",
+    countryCode: DEFAULT_COUNTRY_CODE,
     nickname: "",
     useRealName: false,
     gender: "",
@@ -211,6 +238,62 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
     setIsLoading(true);
 
     try {
+      // Ronda 6: sin Supabase configurado (preview sin variables en
+      // Vercel), el cliente es un stub y signUp siempre falla con
+      // "Supabase not configured - using stub client". El registro demo
+      // no depende de Supabase: se crea la cuenta local y se entra
+      // directo al perfil. La recarga completa es necesaria para que
+      // useAuth relea el `demo_user` nuevo de localStorage.
+      if (!isSupabaseConfigured) {
+        const { userId } = createLocalDemoAccount({
+          email: formData.email,
+          nickname: formData.nickname,
+          accountType: "single",
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          age: parseInt(formData.age),
+          bio: formData.bio,
+          interests: formData.interests,
+          countryCode: formData.countryCode,
+          birthDate: formData.birthDate || undefined,
+          gender: formData.gender || undefined,
+          interestedIn: formData.interestedIn,
+        });
+        logger.info("✅ Cuenta demo local creada (sin Supabase):", {
+          userId,
+        });
+        toast({
+          title: "¡Cuenta demo creada!",
+          description:
+            "Sin conexión a Supabase en este preview: tu cuenta se creó en este navegador para probar el flujo.",
+          duration: 5000,
+        });
+        window.location.href = "/profile-single";
+        return;
+      }
+
+      // Ronda 12 (stream D): identidad retenida tras baja por reporte
+      // (`retained_identities`, RPC `check_identity_retained`,
+      // migración 20261124050004). Solo cierra el registro cuando la
+      // RPC responde que SÍ está retenida; si la RPC falta o falla
+      // (migración sin aplicar) el registro continúa (fail-open con
+      // warning, ver `checkIdentityRetained`). En demo manda el
+      // espejo local `isIdentityRetainedDemo` (vía
+      // `createLocalDemoAccount`), no esta RPC.
+      const retained = await checkIdentityRetained(
+        formData.email,
+        formData.nickname,
+      );
+      if (retained.checked && retained.retained) {
+        toast({
+          variant: "destructive",
+          title: "Registro no permitido",
+          description:
+            "Esta identidad fue dada de baja por un reporte y no puede registrarse de nuevo.",
+        });
+        return;
+      }
+
       // Registrar usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -240,7 +323,6 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           first_name: formData.firstName,
           last_name: formData.lastName,
           display_name: formData.nickname,
-          nickname: formData.nickname,
           email: formData.email,
           phone: formData.phone,
           account_type: "single",
@@ -268,6 +350,41 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           userId: authData.user.id,
         });
 
+        // El apodo también va en la columna `nickname` (la usa la RPC
+        // `check_nickname_available` para detectar duplicados). Best-effort:
+        // si la columna aún no existe (migración 20261124050001 sin
+        // aplicar), el registro ya quedó creado y no se rompe.
+        await supabase
+          .from("profiles")
+          .update({ nickname: formData.nickname })
+          .eq("user_id", authData.user.id);
+
+        if (formData.birthDate) {
+          // Ronda 12 (stream D): comentario corregido — `profiles`
+          // NO tiene columna `birth_date`, pero `privacy_settings`
+          // SÍ existe desde 2026-11-24 (alta directa; la migración
+          // 20261124040000 es no-op sobre ella). La fecha (y de ahí
+          // el signo) se guarda en `privacy_settings` vía
+          // `savePrivacySettingsExtra`, con espejo local.
+          savePrivacySettingsExtra(authData.user.id, "single", {
+            birthDate: formData.birthDate,
+          });
+        }
+
+        // País de origen: la columna `country_code` es de la migración
+        // 20261124050000 (aún sin aplicar en producción). Se guarda en
+        // local siempre y se intenta en BD sin romper el registro si
+        // la columna aún no existe.
+        writeCountryCodeLocal(authData.user.id, formData.countryCode);
+        try {
+          await supabase
+            .from("profiles")
+            .update({ country_code: formData.countryCode } as never)
+            .eq("user_id", authData.user.id);
+        } catch {
+          // Columna aún sin aplicar: el país queda en local.
+        }
+
         toast({
           title: "¡Registro exitoso!",
           description: "Se ha enviado un código de verificación a tu email.",
@@ -278,7 +395,8 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         setShowEmailVerification(true);
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Error desconocido";
+      const message =
+        error instanceof Error ? error.message : "Error desconocido";
       toast({
         variant: "destructive",
         title: "Error al registrarse",
@@ -309,7 +427,15 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue placeholder="Selecciona tu identidad" />
           </SelectTrigger>
-          <SelectContent>
+          {/* RONDA 9 (stream B): la lista se ancla abajo del gatillo
+              y no colisiona hacia arriba: antes Radix la volteaba y tapaba
+              el encabezado "Registro Single". */}
+          <SelectContent
+            side="bottom"
+            sideOffset={4}
+            avoidCollisions={false}
+            className="max-h-60"
+          >
             {IDENTITY_OPTIONS.map((option) => (
               <SelectItem key={option} value={option}>
                 {option}
@@ -377,6 +503,54 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
             Debes ser mayor de 18 años
           </p>
         )}
+      </div>
+
+      <div>
+        <Label className="text-white">
+          Fecha de nacimiento (opcional, para tu signo zodiacal)
+        </Label>
+        <Input
+          type="date"
+          value={formData.birthDate}
+          onChange={(e) => handleInputChange("birthDate", e.target.value)}
+          className="bg-white/10 text-white placeholder:text-white/80 border-white/20 [color-scheme:dark]"
+          max={new Date().toISOString().slice(0, 10)}
+        />
+        {formData.birthDate && (
+          <p className="text-white/70 text-sm mt-1">
+            Tu signo:{" "}
+            {getZodiacSignFromDate(formData.birthDate)
+              ? `${getZodiacSignFromDate(formData.birthDate)?.symbol} ${getZodiacSignFromDate(formData.birthDate)?.name}`
+              : "fecha no válida"}
+            . Puedes ocultarlo en Privacidad.
+          </p>
+        )}
+      </div>
+
+      <div>
+        <Label className="text-white">País de origen *</Label>
+        <Select
+          value={formData.countryCode}
+          onValueChange={(value: string) =>
+            handleInputChange("countryCode", value)
+          }
+        >
+          <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectValue placeholder="Selecciona tu país" />
+          </SelectTrigger>
+          <SelectContent>
+            {COUNTRIES.map((country) => (
+              <SelectItem key={country.code} value={country.code}>
+                {country.flag} {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-white/70 text-sm mt-1">
+          Tu nacionalidad aparecerá en tu perfil como{" "}
+          {getCountryByCode(formData.countryCode)?.flag}{" "}
+          {getCountryByCode(formData.countryCode)?.name}.
+        </p>
       </div>
 
       <NicknameValidator

@@ -20,6 +20,9 @@ export function Toaster() {
           </Toast>
         );
       })}
+      {/* RONDA 6 (punto 17): el viewport vive arriba con margen (ver
+          ui/toast.tsx); el offset inferior del dock de la ronda 5 ya no
+          aplica y se eliminó la prop `dockOffset`. */}
       <ToastViewport />
     </ToastProvider>
   );

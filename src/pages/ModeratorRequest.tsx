@@ -148,7 +148,7 @@ const ModeratorRequest = () => {
                     <li> Si eres aprobado, recibirs un enlace de activacin</li>
                     <li>
                       {" "}
-                      Podrs acceder al panel de moderacin una vez activado
+                      Podrs acceder al panel de moderación una vez activado
                     </li>
                   </ul>
                 </div>
@@ -183,12 +183,12 @@ const ModeratorRequest = () => {
             Solicitud de Moderador
           </h1>
           <p className="text-white/80">
-            nete a nuestro equipo de moderacin y ayuda a mantener la comunidad
+            nete a nuestro equipo de moderación y ayuda a mantener la comunidad
             segura
           </p>
         </div>
 
-        {/* Informacin detallada sobre el rol */}
+        {/* Información detallada sobre el rol */}
         <Card className="bg-white/10 backdrop-blur-sm border-white/20 mb-6">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
@@ -196,7 +196,7 @@ const ModeratorRequest = () => {
               Programa de Moderadores ComplicesConecta
             </CardTitle>
             <CardDescription className="text-white/80">
-              nete a nuestro equipo de moderacin y ayuda a crear un espacio
+              nete a nuestro equipo de moderación y ayuda a crear un espacio
               seguro y respetuoso para todos
             </CardDescription>
           </CardHeader>
@@ -301,7 +301,7 @@ const ModeratorRequest = () => {
                   </li>
                   <li>
                     {" "}
-                    <strong>Experiencia:</strong> Moderacin online, atencin al
+                    <strong>Experiencia:</strong> Moderación online, atencin al
                     cliente o psicologa
                   </li>
                   <li>
@@ -329,7 +329,7 @@ const ModeratorRequest = () => {
                     Compensacin
                   </h4>
                   <p className="text-white/70">
-                    Tokens CMPX mensuales segn horas dedicadías
+                    Tokens CMPX mensuales segn horas dedicadas
                   </p>
                 </div>
                 <div>
@@ -345,7 +345,7 @@ const ModeratorRequest = () => {
                     Experiencia
                   </h4>
                   <p className="text-white/70">
-                    Certificado de moderacin y referencias profesionales
+                    Certificado de moderación y referencias profesionales
                   </p>
                 </div>
               </div>
@@ -399,11 +399,11 @@ const ModeratorRequest = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Informacin personal */}
+              {/* Información personal */}
               <div className="space-y-4">
                 <h3 className="text-white font-semibold flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  Informacin Personal
+                  Información Personal
                 </h3>
 
                 <div>
@@ -453,14 +453,14 @@ const ModeratorRequest = () => {
                     value={formData.experience}
                     onChange={handleInputChange}
                     className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
-                    placeholder="Describe tu experiencia en moderacin, administracin de comunidades, atencin al cliente, etc."
+                    placeholder="Describe tu experiencia en moderación, administracin de comunidades, atencin al cliente, etc."
                     rows={3}
                   />
                 </div>
 
                 <div>
                   <label className="text-white text-sm mb-2 block">
-                    Experiencia Previa en Moderacin
+                    Experiencia Previa en Moderación
                   </label>
                   <textarea
                     name="previousModeration"
@@ -503,7 +503,7 @@ const ModeratorRequest = () => {
                     value={formData.motivation}
                     onChange={handleInputChange}
                     className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
-                    placeholder="Explica tu motivacin para unirte al equipo de moderacin y cmo planeas contribuir a la comunidad."
+                    placeholder="Explica tu motivacin para unirte al equipo de moderación y cmo planeas contribuir a la comunidad."
                     rows={4}
                     required
                   />
@@ -524,7 +524,7 @@ const ModeratorRequest = () => {
                     title="Acepto los términos y condiciones"
                   />
                   <label className="text-white/80 text-sm">
-                    Acepto los trminos y condiciones del programa de moderacin.
+                    Acepto los trminos y condiciones del programa de moderación.
                     Entiendo que como moderador debo mantener la
                     confidencialidad, actuar de manera imparcial y seguir las
                     polticas de la comunidad. *
@@ -554,7 +554,7 @@ const ModeratorRequest = () => {
               </div>
 
               <p className="text-white/60 text-xs text-center">
-                * Campos obligatorios. Tu informacin ser revisada por nuestro
+                * Campos obligatorios. Tu información ser revisada por nuestro
                 equipo.
               </p>
             </form>

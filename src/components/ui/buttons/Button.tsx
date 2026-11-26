@@ -31,7 +31,7 @@ const buttonVariants = cva(
         premium:
           "bg-premium-gradient text-white hover:shadow-premium transform hover:scale-105 transition-all duration-300 font-bold",
 
-        // Variantes de estado mejoradías
+        // Variantes de estado mejoradas
         success:
           "bg-success text-success-foreground hover:bg-success/90 shadow-soft",
         warning:
@@ -69,17 +69,17 @@ export interface ButtonProps
   asChild?: boolean;
   children?: React.ReactNode;
 
-  // Props heredadías de UnifiedButton
+  // Props heredadas de UnifiedButton
   gradient?: boolean;
   ripple?: boolean;
   loading?: boolean;
   loadingText?: string;
 
-  // Props heredadías de AnimatedButton
+  // Props heredadas de AnimatedButton
   motionProps?: HTMLMotionProps<"button">;
 
   /**
-   * Control de animaciones integradías
+   * Control de animaciones integradas
    * - 'hover': escala suave al hacer hover/tap (por defecto)
    * - 'tap': solo efecto en tap
    * - 'pulse': animación continua de pulso

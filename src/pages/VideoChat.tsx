@@ -13,9 +13,12 @@ const VideoChat = () => {
   const [participants, setParticipants] = useState([
     {
       id: 1,
-      name: "Mara Elena",
+      name: "María Elena",
+      // Antes: photo-1494790108755-2616b612b786, que devuelve 404 en
+      // Unsplash (verificado con HEAD) y por eso el avatar salía roto.
+      // Retrato de mujer verificado (HTTP 200), fuera de los pools.
       avatar:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop&crop=face",
       isVideoOn: true,
       isMicOn: true,
       isHost: true,
@@ -34,20 +37,20 @@ const VideoChat = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Simular inicializacin de video
+    // Simular inicialización de video
     if (videoRef.current) {
-      videoRef.current.srcObject = null; // En produccin sera el stream real
+      videoRef.current.srcObject = null; // En producción sería el stream real
     }
   }, []);
 
   const toggleVideo = () => {
     setIsVideoOn(!isVideoOn);
-    // En produccin aqu se manejara el stream de video
+    // En producción aquí se manejaría el stream de video
   };
 
   const toggleMic = () => {
     setIsMicOn(!isMicOn);
-    // En produccin aqu se manejara el audio
+    // En producción aquí se manejaría el audio
   };
 
   const startCall = () => {
@@ -61,7 +64,7 @@ const VideoChat = () => {
       isMicOn: true,
       isHost: false,
     }]);
-    // En produccin aqu se iniciara la llamada WebRTC
+    // En producción aquí se iniciaría la llamada WebRTC
   };
 
   const endCall = () => {
@@ -72,14 +75,14 @@ const VideoChat = () => {
   const callHistory = [
     {
       id: 1,
-      participants: ["Mara Elena", "Carlos & Ana"],
+      participants: ["María Elena", "Carlos & Ana"],
       duration: "15:32",
       date: "Hoy",
       type: "video",
     },
     {
       id: 2,
-      participants: ["Sofa", "Roberto"],
+      participants: ["Sofía", "Roberto"],
       duration: "8:45",
       date: "Ayer",
       type: "video",
@@ -117,7 +120,7 @@ const VideoChat = () => {
               </h1>
             </div>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Llamadías de video seguras y privadías con tecnologa WebRTC para
+              Llamadas de video seguras y privadas con tecnología WebRTC para
               conexiones auténticas
             </p>
           </div>
@@ -351,7 +354,7 @@ const VideoChat = () => {
           {/* Call History */}
           <section className="mt-16">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">
-              Historial de Llamadías
+              Historial de Llamadas
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {callHistory.map((call) => (

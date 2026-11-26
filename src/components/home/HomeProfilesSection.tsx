@@ -21,7 +21,7 @@ export const HomeProfilesSection = ({
   const fallbackFemaleImage =
     femaleImages[0] ??
     femaleImages[1] ??
-    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=500&h=700&fit=crop&crop=face&auto=format&q=80";
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=700&fit=crop&crop=face&auto=format&q=80";
   const fallbackMaleImage =
     maleImages[0] ??
     maleImages[1] ??
@@ -36,13 +36,13 @@ export const HomeProfilesSection = ({
       location: "Ciudad de México",
       interests: [
         "Intercambio de Parejas",
-        "Fiestas Privadías",
+        "Fiestas Privadas",
         "Encuentros Íntimos",
       ],
       image: femaleImages[0] ?? fallbackFemaleImage, // Forzar pool women/*
       rating: 4.9,
       isOnline: true,
-      bio: "Apasionada por la naturaleza y la creatividad. Buscando a alguien con quien compartir aventuras y conversaciones profundías.",
+      bio: "Apasionada por la naturaleza y la creatividad. Buscando a alguien con quien compartir aventuras y conversaciones profundas.",
       profession: "Arquitecta",
       verified: true,
       gender: "female" as const,
@@ -90,7 +90,7 @@ export const HomeProfilesSection = ({
       location: "Puebla",
       interests: [
         "Encuentros Casuales",
-        "Fantasías Compartidías",
+        "Fantasías Compartidas",
         "Vida Nocturna Liberal",
       ],
       image: maleImages[1] ?? fallbackMaleImage, // Forzar pool men/* (diferente a Antonio)
@@ -117,7 +117,11 @@ export const HomeProfilesSection = ({
             <p className="text-xl md:text-2xl text-white/95 max-w-4xl mx-auto leading-relaxed animate-slide-up font-medium px-4">
               La plataforma{" "}
               <strong className="text-purple-300">más exclusiva</strong> para la
-              comunidad lifestyle mexicana.
+              comunidad lifestyle mexicana.{" "}
+              {/* Punto 11 (ronda 7): el <br> de abajo es `hidden md:block`:
+                  en móvil no hay salto de línea y el texto quedaba
+                  "mexicana.Conexiones" sin espacio. El {" "} explícito lo
+                  separa en todos los anchos; en md+ el salto lo absorbe. */}
               <br className="hidden md:block" />
               <span className="text-purple-200">
                 Conexiones auténticas, experiencias únicas.

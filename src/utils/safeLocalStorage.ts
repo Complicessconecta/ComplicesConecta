@@ -21,7 +21,7 @@ export const localStorageSchemas = {
 };
 
 /**
- * Tipo para las claves válidías de localStorage
+ * Tipo para las claves válidas de localStorage
  */
 export type LocalStorageKey = keyof typeof localStorageSchemas | string;
 
@@ -236,7 +236,7 @@ export function safeClear(): boolean {
 }
 
 /**
- * Obtiene todías las claves de localStorage de forma segura
+ * Obtiene todas las claves de localStorage de forma segura
  *
  * @returns Array de claves o array vacío si hay error
  */

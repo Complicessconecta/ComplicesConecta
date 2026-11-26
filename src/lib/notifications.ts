@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { trackEvent } from "@/config/posthog.config";
 import { oneSignalService } from "@/services/notifications/OneSignalService";
+import type { Json } from "@/types/supabase-generated";
 
 export interface CreateNotificationParams {
   userId: string;
@@ -28,6 +29,36 @@ export interface CreateNotificationParams {
   scheduledFor?: string;
   expiresAt?: string;
   groupKey?: string;
+}
+
+type JsonRecord = { [key: string]: Json | undefined };
+
+const getJsonRecord = (value: Json | null | undefined): JsonRecord =>
+  value !== null &&
+  value !== undefined &&
+  typeof value === "object" &&
+  !Array.isArray(value)
+    ? value
+    : {};
+
+const getJsonString = (value: Json | undefined) =>
+  typeof value === "string" ? value : undefined;
+
+export function normalizeNotificationData<T extends { data?: Json | null }>(
+  notification: T,
+) {
+  const payload = getJsonRecord(notification.data);
+  return {
+    ...notification,
+    action_url: getJsonString(payload.action_url),
+    sender_id: getJsonString(payload.sender_id),
+    sender_name: getJsonString(payload.sender_name),
+    priority: getJsonString(payload.priority),
+    scheduled_for: getJsonString(payload.scheduled_for),
+    expires_at: getJsonString(payload.expires_at),
+    group_key: getJsonString(payload.group_key),
+    metadata: payload.metadata,
+  };
 }
 
 export interface NotificationPreferences {
@@ -94,14 +125,16 @@ export class NotificationService {
         type: params.type,
         title: params.title,
         message: params.message,
-        action_url: params.actionUrl || null,
-        sender_id: params.senderId || null,
-        sender_name: params.senderName || null,
-        metadata: params.metadata || null,
-        priority: params.priority || "normal",
-        scheduled_for: params.scheduledFor || null,
-        expires_at: params.expiresAt || null,
-        group_key: params.groupKey || null,
+        data: {
+          action_url: params.actionUrl ?? null,
+          sender_id: params.senderId ?? null,
+          sender_name: params.senderName ?? null,
+          metadata: params.metadata ?? null,
+          priority: params.priority ?? "normal",
+          scheduled_for: params.scheduledFor ?? null,
+          expires_at: params.expiresAt ?? null,
+          group_key: params.groupKey ?? null,
+        },
         read: false,
         created_at: new Date().toISOString(),
       };
@@ -219,6 +252,13 @@ export class NotificationService {
 
   /**
    * Notify user about an achievement
+   *
+   * Ronda 8 (punto 10): el actionUrl era "/achievements" y NO EXISTE
+   * esa ruta (ni página) en el router: al tocar la notificación, el
+   * `window.location.href` del centro de notificaciones hacía una
+   * navegación completa a una ruta sin match y el catch-all mostraba
+   * la página 404. Los logros viven en la pestaña "Logros" del
+   * Dashboard (/dashboard), así que esa es la ruta correcta.
    */
   static async notifyAchievement(
     userId: string,
@@ -230,7 +270,7 @@ export class NotificationService {
       type: "achievement",
       title: `¡Logro desbloqueado! 🏆`,
       message: `${achievementTitle}: ${achievementDescription}`,
-      actionUrl: "/achievements",
+      actionUrl: "/dashboard",
       metadata: { achievement_title: achievementTitle },
     });
   }
@@ -255,6 +295,11 @@ export class NotificationService {
 
   /**
    * Notify user about a connection request
+   *
+   * Ronda 8 (punto 10): el actionUrl era "/connections" y NO EXISTE
+   * esa ruta en el router (mismo 404 que /achievements, ver
+   * notifyAchievement). Las solicitudes de conexión/amistad viven en
+   * /requests, así que esa es la ruta correcta.
    */
   static async notifyConnectionRequest(
     userId: string,
@@ -266,7 +311,7 @@ export class NotificationService {
       type: "request",
       title: "Nueva solicitud de conexión",
       message: `${requesterUserName} quiere conectarse contigo`,
-      actionUrl: `/connections`,
+      actionUrl: `/requests`,
       senderId: requesterUserId,
       senderName: requesterUserName,
       metadata: { request_type: "connection" },
@@ -458,7 +503,7 @@ export class NotificationService {
         .from("notifications")
         .update({
           read: true,
-          updated_at: new Date().toISOString(),
+          read_at: new Date().toISOString(),
         })
         .eq("id", Number(notificationId))
         .eq("user_id", userId);
@@ -493,7 +538,7 @@ export class NotificationService {
         .from("notifications")
         .update({
           read: true,
-          updated_at: new Date().toISOString(),
+          read_at: new Date().toISOString(),
         })
         .eq("user_id", userId)
         .eq("read", false);
@@ -575,7 +620,7 @@ export class NotificationService {
       }
 
       return {
-        notifications: data || [],
+        notifications: (data || []).map(normalizeNotificationData),
         total: (data || []).length,
       };
     } catch (error) {
@@ -652,7 +697,9 @@ export class NotificationService {
             logger.info("🔔 Nueva notificación recibida:", {
               notification: payload.new,
             });
-            handler.onNewNotification(payload.new);
+            handler.onNewNotification(
+              normalizeNotificationData(payload.new),
+            );
             this.updateUnreadCount(userId, handler);
           },
         )
@@ -755,7 +802,11 @@ export class NotificationService {
         badge: "/badge-72x72.png",
         tag: notification.id,
         data: {
-          url: notification.action_url,
+          url:
+            notification.action_url ||
+            getJsonString(
+              getJsonRecord(notification.data).action_url,
+            ),
           notificationId: notification.id,
         },
         // actions: [
@@ -770,8 +821,14 @@ export class NotificationService {
         //     icon: '/icons/dismiss.png'
         //   }
         // ],
-        requireInteraction: notification.priority === "urgent",
-        silent: notification.priority === "low",
+        requireInteraction:
+          (notification.priority ||
+            getJsonString(getJsonRecord(notification.data).priority)) ===
+          "urgent",
+        silent:
+          (notification.priority ||
+            getJsonString(getJsonRecord(notification.data).priority)) ===
+          "low",
       });
 
       logger.info("📱 Push notification sent:", {
@@ -804,7 +861,7 @@ export class NotificationService {
         .from("notifications")
         .select("*")
         .eq("user_id", userId)
-        .eq("group_key", groupKey)
+        .contains("data", { group_key: groupKey })
         .eq("read", false)
         .order("created_at", { ascending: false })
         .limit(limit);
@@ -836,8 +893,13 @@ export class NotificationService {
       if (existingGroup.length > 0) {
         // Update existing grouped notification
         const existingNotification = existingGroup[0];
-        const updatedCount =
-          (existingNotification.metadata?.count || 1) + notifications.length;
+        const existingData = getJsonRecord(existingNotification.data);
+        const existingMetadata = getJsonRecord(existingData.metadata);
+        const existingCount =
+          typeof existingMetadata.count === "number"
+            ? existingMetadata.count
+            : 1;
+        const updatedCount = existingCount + notifications.length;
 
         if (!supabase) {
           logger.error("Supabase no está disponible");
@@ -848,16 +910,18 @@ export class NotificationService {
           .from("notifications")
           .update({
             message: `${updatedCount} nuevas notificaciones`,
-            metadata: {
-              ...existingNotification.metadata,
-              count: updatedCount,
-              latest_notifications: notifications.map((n) => ({
-                type: n.type,
-                title: n.title,
-                sender: n.senderName,
-              })),
+            data: {
+              ...existingData,
+              metadata: {
+                ...existingMetadata,
+                count: updatedCount,
+                latest_notifications: notifications.map((n) => ({
+                  type: n.type,
+                  title: n.title,
+                  sender: n.senderName ?? null,
+                })),
+              },
             },
-            updated_at: new Date().toISOString(),
           })
           .eq("id", existingNotification.id);
 
@@ -935,8 +999,8 @@ export class NotificationService {
         .from("notifications")
         .select("*")
         .eq("read", false)
-        .not("scheduled_for", "is", null)
-        .lte("scheduled_for", now);
+        .filter("data->>scheduled_for", "not.is", "null")
+        .filter("data->>scheduled_for", "lte", now);
 
       if (error) {
         logger.error("Error processing scheduled notifications:", {
@@ -960,7 +1024,7 @@ export class NotificationService {
         }
       }
 
-      logger.info("⏰ Procesadías notificaciones programadías:", {
+      logger.info("⏰ Procesadas notificaciones programadas:", {
         count: (data || []).length,
       });
     } catch (error) {
@@ -1108,15 +1172,15 @@ export class NotificationService {
       const { error } = await supabase
         .from("notifications")
         .delete()
-        .not("expires_at", "is", null)
-        .lte("expires_at", now);
+        .filter("data->>expires_at", "not.is", "null")
+        .filter("data->>expires_at", "lte", now);
 
       if (error) {
         logger.error("Error cleaning up expired notifications:", {
           error: error.message,
         });
       } else {
-        logger.info("🧹 Notificaciones expiradías eliminadías");
+        logger.info("🧹 Notificaciones expiradas eliminadas");
       }
     } catch (error) {
       logger.error("Error in cleanupExpiredNotifications:", {

@@ -71,9 +71,7 @@ export function SummaryModal({
           summary_id: summary.id,
           user_id: user.id,
           is_helpful: isHelpful,
-          feedback: isHelpful ? "Resumen útil" : "Resumen no útil",
-          rating: isHelpful ? 5 : 1,
-          created_at: new Date().toISOString(),
+          feedback_text: isHelpful ? "Resumen útil" : "Resumen no útil",
         });
       }
     } catch (error) {

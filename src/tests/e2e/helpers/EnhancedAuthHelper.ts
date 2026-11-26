@@ -368,7 +368,7 @@ export class EnhancedAuthHelper {
    * Configurar interceptores de red
    */
   private async setupNetworkInterceptors(): Promise<void> {
-    // Interceptar llamadías a Supabase
+    // Interceptar llamadas a Supabase
     await this.page.route("**/auth/v1/**", async (route) => {
       const url = route.request().url();
 
@@ -390,7 +390,7 @@ export class EnhancedAuthHelper {
       }
     });
 
-    // Interceptar llamadías a API
+    // Interceptar llamadas a API
     await this.page.route("**/rest/v1/**", async (route) => {
       // Mock de respuestas de API según sea necesario
       await route.continue();

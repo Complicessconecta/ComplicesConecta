@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Footer } from "@/components/Footer";
 import { Gamification } from "@/components/gamification/Gamification";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import { useTokens } from "@/hooks/useTokens";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Trophy, Bell, TrendingUp } from "lucide-react";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -28,8 +29,22 @@ const DashboardCore = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  // Analytics con datos reales de la sesión (useTokens): antes la pestaña
+  // era un placeholder ("Esta sección mostrará estadísticas...").
+  const {
+    balance: tokenBalance,
+    transactions: tokenTransactions,
+    pendingRewards,
+    hasActiveStaking,
+  } = useTokens();
 
   // Función robusta para cargar perfil
+  // Ronda 7, punto 8: el login demo nunca escribe `user-profile`
+  // (escribe `demo_user` + `userType` + `demo_authenticated`), así que
+  // en demo el perfil quedaba en null y el encabezado decía siempre
+  // "Usuario Test · single" aunque la sesión fuera de una pareja o de
+  // otro usuario. El demo es la segunda fuente; `user-profile` (real)
+  // sigue mandando cuando existe.
   const loadUserProfile = useCallback(() => {
     try {
       const userProfileData = localStorage.getItem("user-profile");
@@ -37,6 +52,36 @@ const DashboardCore = () => {
         const profile = JSON.parse(userProfileData);
         setUserProfile(profile);
         debugLog("✅ Dashboard: Perfil cargado", profile);
+        return true;
+      }
+      const demoUserRaw = localStorage.getItem("demo_user");
+      if (demoUserRaw) {
+        const demoUser = JSON.parse(demoUserRaw) as Record<string, unknown>;
+        const demoType = localStorage.getItem("userType");
+        const name =
+          (typeof demoUser.display_name === "string" &&
+            demoUser.display_name) ||
+          (typeof demoUser.name === "string" && demoUser.name) ||
+          (typeof demoUser.nickname === "string" && demoUser.nickname) ||
+          [demoUser.first_name, demoUser.last_name]
+            .filter((v) => typeof v === "string" && v)
+            .join(" ") ||
+          "Usuario Demo";
+        const accountType =
+          demoUser.profile_type ??
+          demoUser.accountType ??
+          demoUser.relationship_type;
+        const userType: "single" | "couple" =
+          accountType === "couple" || demoType === "couple"
+            ? "couple"
+            : "single";
+        const profile: UserProfile = {
+          name,
+          userType,
+          email: typeof demoUser.email === "string" ? demoUser.email : "",
+        };
+        setUserProfile(profile);
+        debugLog("✅ Dashboard: Perfil demo cargado", profile);
         return true;
       }
     } catch (error) {
@@ -185,21 +230,21 @@ const DashboardCore = () => {
           <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-1 sm:p-2 max-w-2xl mx-auto text-xs sm:text-sm">
             <TabsTrigger
               value="gamification"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <Trophy className="h-4 w-4 mr-2" />
               Logros
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <Bell className="h-4 w-4 mr-2" />
               Notificaciones
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
-              className="rounded-xl text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+              className="rounded-xl text-white data-[state=inactive]:text-white/70 data-[state=inactive]:hover:text-white data-[state=active]:bg-linear-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
             >
               <TrendingUp className="h-4 w-4 mr-2" />
               Analytics
@@ -211,20 +256,47 @@ const DashboardCore = () => {
           </TabsContent>
 
           <TabsContent value="notifications" className="space-y-6">
-            <NotificationCenter userId={userProfile?.name || "demo-user"} />
+            {/* Ronda 8 (punto 10): la lista se abre por defecto en la
+                pestaña (antes solo se veía la campana y la pestaña
+                parecía vacía); el clic en una notificación navega por
+                el router a su ruta (ver NotificationCenter). */}
+            <NotificationCenter
+              userId={userProfile?.name || "demo-user"}
+              defaultOpen
+            />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <div className="text-center py-12">
-              <TrendingUp className="h-16 w-16 text-white/60 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2 text-white">
-                Analytics Detallados
-              </h3>
-              <p className="text-white/80">
-                Esta sección mostrará estadísticas avanzadías de tu perfil y
-                actividad
-              </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[
+                { label: "CMPX disponibles", value: tokenBalance.cmpxBalance },
+                { label: "CMPX en staking", value: tokenBalance.cmpxStaked },
+                { label: "GTK", value: tokenBalance.gtkBalance },
+                {
+                  label: "Transacciones",
+                  value: tokenTransactions.length,
+                },
+                {
+                  label: "Recompensas pendientes",
+                  value: pendingRewards.length,
+                },
+                {
+                  label: "Staking activo",
+                  value: hasActiveStaking ? "Sí" : "No",
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 text-center"
+                >
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-sm text-white/70">{stat.label}</p>
+                </div>
+              ))}
             </div>
+            <p className="text-white/60 text-sm text-center">
+              Datos de tu sesión actual (demo o real según tu cuenta).
+            </p>
           </TabsContent>
         </Tabs>
       </main>

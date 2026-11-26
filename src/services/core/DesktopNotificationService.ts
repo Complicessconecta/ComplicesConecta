@@ -307,7 +307,7 @@ export class DesktopNotificationService {
 
       this.showNotification({
         title: "✅ Test Notification",
-        body: "Notificaciones configuradías correctamente",
+        body: "Notificaciones configuradas correctamente",
         tag: "test",
         icon: "/icon-success.png",
       });

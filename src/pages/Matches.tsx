@@ -5,6 +5,12 @@ import { motion } from "framer-motion";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { safeGetItem } from "@/lib/safe-storage";
+import { formatApproximateDistance } from "@/lib/geolocation";
+import {
+  DEMO_COUPLE_CARMEN_ROBERTO,
+  SOFIA_CANONICAL_PHOTO,
+} from "@/demo/demoData";
+import { generateDemoUUID } from "@/lib/demo-uuid";
 
 // Professional profile images from Unsplash - Production ready
 // Removed local imports that fail in production
@@ -13,6 +19,18 @@ export interface Match {
   id: number;
   name: string;
   age: number;
+  /** Etiqueta de edad a mostrar ("25 y 28 años" en parejas). */
+  ageLabel?: string;
+  /**
+   * Id estable del perfil para /profile/<profileId>. Los ids numéricos
+   * de match (1-6) chocaban con la lista legacy de ProfileDetail
+   * (1-4: Ana, Antonio...), así que /profile/3 mostraba a Carmen &
+   * Roberto al navegar desde aquí y a Ana al cargar directo. Carmen &
+   * Roberto usa su UUID del roster de Discover; los demás, un id
+   * estable propio (el wrapper no los resuelve, pero el detalle usa
+   * el perfil del state cuando el id coincide con la URL).
+   */
+  profileId: string;
   image: string;
   compatibility: number;
   mutualInterests: string[];
@@ -28,15 +46,25 @@ const Matches = () => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading] = useState(false);
 
+  // Datos demo de matches. Edades y fotos canónicas (ronda 5):
+  // Carmen & Roberto 25 y 28 años (DEMO_COUPLE_CARMEN_ROBERTO, la
+  // misma fuente que Discover y su perfil propio — antes decía 35) y
+  // su foto es la del pool de pareja; Sofía 28 años (antes 29) con su
+  // foto canónica. Anabella & Julio y Miguel & Elena no están en el
+  // roster: sus fotos son dos parejas juntas verificadas por vista
+  // (Wikimedia Commons, novios abrazándose / caminando), distintas de
+  // las del pool para no reutilizarlas entre perfiles. Las distancias
+  // se muestran aproximadas (ver MatchCard).
   const [demoMatches] = useState<Match[]>([
     {
       id: 1,
+      profileId: "match-anabella-julio",
       name: "Anabella & Julio",
       age: 32,
       image:
-        "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=400&h=600&fit=crop",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/A_wedding_bride_and_groom_01.jpg/500px-A_wedding_bride_and_groom_01.jpg",
       compatibility: 98,
-      mutualInterests: ["Fiestas Privadías", "Intercambio", "Eventos VIP"],
+      mutualInterests: ["Fiestas Privadas", "Intercambio", "Eventos VIP"],
       distance: 1.2,
       matchedAt: "Hace 2 horas",
       hasUnreadMessage: true,
@@ -44,12 +72,12 @@ const Matches = () => {
     },
     {
       id: 2,
-      name: "Sofia",
-      age: 29,
-      image:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=600&fit=crop&crop=face&v=2",
+      profileId: "demo-single-1",
+      name: "Sofía",
+      age: 28,
+      image: SOFIA_CANONICAL_PHOTO,
       compatibility: 94,
-      mutualInterests: ["Unicornio", "Experiencias Nuevas", "Discrecin"],
+      mutualInterests: ["Unicornio", "Experiencias Nuevas", "Discreción"],
       distance: 3.5,
       matchedAt: "Ayer",
       hasUnreadMessage: true,
@@ -57,15 +85,16 @@ const Matches = () => {
     },
     {
       id: 3,
+      profileId: generateDemoUUID("demo-profile-6"),
       name: "Carmen & Roberto",
-      age: 35,
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+      age: DEMO_COUPLE_CARMEN_ROBERTO.partner1.age,
+      ageLabel: DEMO_COUPLE_CARMEN_ROBERTO.ageLabel,
+      image: DEMO_COUPLE_CARMEN_ROBERTO.mainImage,
       compatibility: 91,
       mutualInterests: [
         "Intercambio Suave",
         "Clubs Exclusivos",
-        "Parejas Verificadías",
+        "Parejas Verificadas",
       ],
       distance: 5.8,
       matchedAt: "Hace 3 días",
@@ -74,7 +103,8 @@ const Matches = () => {
     },
     {
       id: 4,
-      name: "Raul",
+      profileId: "match-raul",
+      name: "Raúl",
       age: 26,
       image:
         "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face",
@@ -87,12 +117,13 @@ const Matches = () => {
     },
     {
       id: 5,
+      profileId: "match-valentina",
       name: "Valentina",
       age: 27,
       image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=600&fit=crop&crop=face",
       compatibility: 96,
-      mutualInterests: ["Lifestyle", "Aventuras", "Discrecin Total"],
+      mutualInterests: ["Lifestyle", "Aventuras", "Discreción Total"],
       distance: 4.2,
       matchedAt: "Hace 5 horas",
       hasUnreadMessage: true,
@@ -100,10 +131,11 @@ const Matches = () => {
     },
     {
       id: 6,
+      profileId: "match-miguel-elena",
       name: "Miguel & Elena",
       age: 34,
       image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=600&fit=crop&crop=face",
+        "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Bride_and_groom_at_wedding_party.jpg/500px-Bride_and_groom_at_wedding_party.jpg",
       compatibility: 92,
       mutualInterests: [
         "Parejas Swinger",
@@ -121,7 +153,7 @@ const Matches = () => {
     "all",
   );
 
-  // Detectar modo de operacin (demo vs produccin)
+  // Detectar modo de operación (demo vs producción)
   useEffect(() => {
     const demoAuth = safeGetItem<string>("demo_authenticated", {
       validate: true,
@@ -129,18 +161,18 @@ const Matches = () => {
     });
     const isDemo = demoAuth === "true";
 
-    // SIEMPRE usar datos demo para respetar la lgica de negocio
-    // No cargar datos reales hasta que el sistema est completamente implementado
+    // SIEMPRE usar datos demo para respetar la lógica de negocio
+    // No cargar datos reales hasta que el sistema esté completamente implementado
     if (matches.length === 0) {
       setMatches(demoMatches);
-      logger.info("?? Matches demo cargados (respetando lgica de negocio):", {
+      logger.info("✅ Matches demo cargados (respetando lógica de negocio):", {
         count: demoMatches.length,
         isDemo,
       });
     }
   }, [matches.length]);
 
-  const currentMatches = matches; // Siempre usar datos demo para respetar lgica de negocio
+  const currentMatches = matches; // Siempre usar datos demo para respetar lógica de negocio
   const filteredMatches = currentMatches.filter((match) => {
     switch (filter) {
       case "new":
@@ -183,18 +215,23 @@ const Matches = () => {
     // Abrir el detalle del perfil. ProfileDetail lee el :id y el perfil
     // del state (lo adapta con valores por defecto). Antes solo hacía un
     // log y el botón no hacía nada visible.
+    // Se navega con match.profileId (id estable), NO con el id numérico
+    // del match: /profile/3 es Ana en la lista legacy y Carmen &
+    // Roberto en Matches, así que la misma URL mostraba dos personas
+    // distintas según se llegara con state o directo.
     const match = matches.find((m) => m.id === matchId);
     if (!match) {
       logger.warn("View profile: match no encontrado", { matchId });
       return;
     }
     logger.info("View profile:", { matchId });
-    navigate(`/profile/${match.id}`, {
+    navigate(`/profile/${match.profileId}`, {
       state: {
         profile: {
-          id: match.id,
+          id: match.profileId,
           name: match.name,
           age: match.age,
+          ageLabel: match.ageLabel,
           location: "Ciudad de México",
           interests: match.mutualInterests,
           image: match.image,
@@ -392,7 +429,7 @@ const MatchCard = ({
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             const fallback =
-              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
+              "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=400&h=600&fit=crop&crop=face";
             if (target.src !== fallback) target.src = fallback;
           }}
         />
@@ -411,9 +448,12 @@ const MatchCard = ({
             <div>
               <h3 className="text-xl font-bold text-white">{match.name}</h3>
               <div className="flex items-center text-sm text-gray-200">
-                <span>{match.age} años</span>
+                <span>{match.ageLabel ?? `${match.age} años`}</span>
                 <span className="mx-2">•</span>
-                <span>{match.distance} km</span>
+                {/* Distancia APROXIMADA (mínimo 1 km, sin decimales), igual
+                    que en Discover: antes salía la exacta con decimal
+                    ("1.2 km", "3.5 km"...). */}
+                <span>{formatApproximateDistance(match.distance)}</span>
               </div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full text-sm text-white">
@@ -468,7 +508,7 @@ const MatchCard = ({
         {/* Fecha del match */}
         <div className="mt-3 text-center">
           <span className="text-xs text-gray-400">
-            Conectado {match.matchedAt.toLowerCase()}
+            {`Conectado ${match.matchedAt.toLowerCase()}`}
           </span>
         </div>
       </div>

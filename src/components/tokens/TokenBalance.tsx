@@ -180,15 +180,22 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center gap-2 p-3 bg-linear-to-r from-green-900/30 to-blue-900/30 rounded-lg">
-            <code className="flex-1 text-lg font-mono text-white bg-black/30 px-3 py-2 rounded">
+          {/* RONDA 10 (stream B, B3): el <code> era `flex-1` sin `min-w-0`
+              ni `truncate`: los hijos flex no se encogen por defecto y el
+              código rebosaba su pastilla. Ahora se trunca con el valor
+              completo en `title` y el botón copiar no se comprime. */}
+          <div className="flex items-center gap-2 p-3 bg-linear-to-r from-green-900/30 to-blue-900/30 rounded-lg min-w-0">
+            <code
+              title={balance.referralCode}
+              className="flex-1 min-w-0 truncate text-lg font-mono text-white bg-black/30 px-3 py-2 rounded"
+            >
               {balance.referralCode}
             </code>
             <Button
               variant="ghost"
               size="sm"
               onClick={copyReferralCode}
-              className="text-white hover:bg-white/10"
+              className="text-white hover:bg-white/10 shrink-0"
             >
               {copied ? (
                 <Check className="h-4 w-4" />
@@ -257,7 +264,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5 text-purple-400" />
-            Galerías NFT-Verificadías
+            Galerías NFT-Verificadas
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

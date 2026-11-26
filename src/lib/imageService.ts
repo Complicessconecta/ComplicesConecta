@@ -1,7 +1,7 @@
 // src/lib/imageService.ts
 /**
  * Servicio de imágenes dinámicas para perfiles
- * Reemplaza URLs hardcodeadías con generación dinámica
+ * Reemplaza URLs hardcodeadas con generación dinámica
  */
 
 export interface ImageConfig {
@@ -25,7 +25,6 @@ const MALE_IMAGE_IDS = [
   "1507003211169-0a1dd7228f2d", // Hombre profesional
   "1472099645785-5658abf4ff4e", // Hombre casual
   "1500648767791-00dcc994a43e", // Hombre joven
-  "1507003211169-0a1dd7228f2d", // Hombre maduro (reemplazada - la anterior devolvía 404, usando profesional como fallback)
 ];
 
 const FEMALE_IMAGE_IDS = [
@@ -38,12 +37,12 @@ const FEMALE_IMAGE_IDS = [
 
 const COUPLE_IMAGE_IDS = [
   "1511795409834-ef04bbd61622", // Pareja abrazada
-  "1516589178581-6cd7833ae3b2", // Pareja sonriendo
+  "1606216794074-735e91aa2c92", // Pareja de boda caminando de la mano
   "1551218808-94e220e084d2", // Pareja elegante
   "1571019613454-1cb2f99b2d8b", // Pareja casual
 ];
 
-// Coordenadías de ciudades mexicanas
+// Coordenadas de ciudades mexicanas
 export const MEXICAN_CITIES: CityCoordinates[] = [
   { name: "CDMX", lat: 19.4326, lng: -99.1332, range: 0.1 },
   { name: "Guadalajara", lat: 20.6597, lng: -103.3496, range: 0.1 },
@@ -109,7 +108,7 @@ export const getRandomProfileImage = (
 };
 
 /**
- * Genera coordenadías aleatorias para una ciudad mexicana
+ * Genera coordenadas aleatorias para una ciudad mexicana
  */
 export const getRandomMexicanCoordinates = (): {
   lat: number;

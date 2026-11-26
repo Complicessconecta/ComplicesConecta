@@ -1,8 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Eye, Lock, Unlock, Trash2, Sparkles } from "lucide-react";
 import { getUserImages, deleteImage, ImageUpload } from "@/lib/images";
 import { useToast } from "@/hooks/useToast";
@@ -10,18 +15,30 @@ import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { tokenService } from "@/services";
 import { supabase } from "@/integrations/supabase/client";
+import { noDownloadProps } from "@/components/profiles/shared/ProtectedMedia";
+import { readWatermarkForProfile } from "@/lib/visibility";
 
 interface ImageGalleryProps {
   images: string[];
   profileId?: string;
   isOwner?: boolean;
+  /** Marca de agua forzada; si no se pasa, se lee del ajuste del dueño. */
+  watermark?: boolean;
+  ownerName?: string;
 }
 
 export function ImageGallery({
   images: _images,
   profileId = "",
   isOwner = false,
+  watermark,
+  ownerName = "ComplicesConecta",
 }: ImageGalleryProps) {
+  // Marca de agua del dueño (toggle de Privacidad).
+  const watermarkOn = useMemo(
+    () => watermark ?? readWatermarkForProfile(profileId),
+    [watermark, profileId],
+  );
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState<ImageUpload[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageUpload | null>(null);
@@ -50,7 +67,11 @@ export function ImageGallery({
       if (error) throw error;
 
       if (data) {
-        setUnlockedProfiles(data.map((item) => item.profile_id).filter((id): id is string => id !== null));
+        setUnlockedProfiles(
+          data
+            .map((item) => item.profile_id)
+            .filter((id): id is string => id !== null),
+        );
       }
     } catch (error) {
       logger.error("Error loading unlocked galleries:", { error });
@@ -138,14 +159,12 @@ export function ImageGallery({
       if (success) {
         // Persistir el desbloqueo en la base de datos
         if (supabase) {
-          const { error } = await supabase
-            .from("gallery_unlocks")
-            .insert({ 
-              user_id: user.id, 
-              profile_id: profileId,
-              target_profile_id: profileId,
-              gallery_item_id: profileId 
-            } as any);
+          const { error } = await supabase.from("gallery_unlocks").insert({
+            user_id: user.id,
+            profile_id: profileId,
+            target_profile_id: profileId,
+            gallery_item_id: profileId,
+          } as any);
           if (error) throw new Error("No se pudo registrar el desbloqueo.");
         }
 
@@ -153,7 +172,7 @@ export function ImageGallery({
         toast({
           title: "Galería Desbloqueada",
           description:
-            "Ahora tienes acceso a todías las imágenes privadías de este perfil.",
+            "Ahora tienes acceso a todas las imágenes privadas de este perfil.",
         });
       } else {
         throw new Error("La transacción de tokens falló.");
@@ -209,13 +228,15 @@ export function ImageGallery({
                 isOwner={isOwner}
                 onView={setSelectedImage}
                 onDelete={handleDeleteImage}
+                watermark={watermarkOn}
+                ownerName={ownerName}
               />
             ))}
           </div>
         </div>
       )}
 
-      {/* Imágenes privadías */}
+      {/* Imágenes privadas */}
       {privateImages.length > 0 && (
         <div>
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -231,6 +252,8 @@ export function ImageGallery({
                 onView={setSelectedImage}
                 onDelete={handleDeleteImage}
                 isUnlocked={unlockedProfiles.includes(profileId)}
+                watermark={watermarkOn}
+                ownerName={ownerName}
               />
             ))}
           </div>
@@ -263,7 +286,7 @@ export function ImageGallery({
                 <h4 className="font-semibold">Galería Privada</h4>
                 <p className="text-sm text-muted-foreground">
                   Desbloquea la galería por {GALLERY_UNLOCK_COST} CMPX para ver
-                  todías las imágenes.
+                  todas las imágenes.
                 </p>
               </div>
               <Button
@@ -299,6 +322,7 @@ export function ImageGallery({
               <img
                 src={selectedImage.url}
                 alt={selectedImage.title || "Imagen"}
+                {...noDownloadProps(isOwner)}
                 className="w-full max-h-60 sm:max-h-80 lg:max-h-96 object-contain rounded-lg"
               />
               {selectedImage.description && (
@@ -337,6 +361,8 @@ interface ImageCardProps {
   onView: (image: ImageUpload) => void;
   onDelete: (imageId: string) => void;
   isUnlocked?: boolean;
+  watermark?: boolean;
+  ownerName?: string;
 }
 
 function ImageCard({
@@ -345,12 +371,18 @@ function ImageCard({
   onView,
   onDelete,
   isUnlocked = false,
+  watermark = false,
+  ownerName = "ComplicesConecta",
 }: ImageCardProps) {
   // Determinar si la imagen está bloqueada (privada y no desbloqueada por el usuario)
   const isLocked = !isOwner && !image.is_public && !isUnlocked;
 
   return (
-    <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow relative">
+    <Card
+      className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow relative"
+      onContextMenu={!isOwner ? (e) => e.preventDefault() : undefined}
+      onDragStart={!isOwner ? (e) => e.preventDefault() : undefined}
+    >
       <div
         className="relative aspect-square"
         onClick={() => !isLocked && onView(image)}
@@ -358,10 +390,23 @@ function ImageCard({
         <img
           src={image.url}
           alt={image.title || "Imagen"}
+          {...noDownloadProps(isOwner)}
           className={`w-full h-full object-cover transition-all duration-300 ${
             isLocked ? "blur-xl filter blur-[20px] scale-110" : ""
           }`}
         />
+
+        {/* Marca de agua del dueño (toggle de Privacidad). */}
+        {watermark && !isLocked && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
+          >
+            <span className="rotate-[-24deg] whitespace-nowrap text-[11px] font-bold text-white/35 select-none">
+              {ownerName} • {ownerName} • {ownerName}
+            </span>
+          </div>
+        )}
 
         {/* Overlay de Bloqueo para contenido privado */}
         {isLocked && (
@@ -440,4 +485,3 @@ function ImageCard({
     </Card>
   );
 }
-

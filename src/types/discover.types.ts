@@ -4,6 +4,8 @@ export interface Profile {
   id: string;
   name: string;
   age: number;
+  // Edad del segundo miembro (parejas demo): se muestra "25 y 28 años".
+  partnerAge?: number;
   location: string;
   distance: number;
   interests: string[];
@@ -13,6 +15,12 @@ export interface Profile {
   lastActive: string;
   isVerified: boolean;
   isPremium: boolean;
+  /**
+   * Ronda 9 (stream A, punto 3): perfil anónimo (columna real
+   * `is_anonymous`). Solo visible en Discover para espectadores
+   * verificados, con insignia "Anónimo".
+   */
+  isAnonymous?: boolean;
   rating: number;
   matchScore: number;
   profileType: ProfileType;

@@ -14,7 +14,13 @@ export default defineConfig(({ mode }) => {
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
           try {
-            if (!req.url || req.method !== "GET") return next();
+            if (
+              !req.url ||
+              req.method !== "GET" ||
+              req.headers.upgrade?.toLowerCase() === "websocket"
+            ) {
+              return next();
+            }
 
             const url = req.url.split("?")[0];
             if (

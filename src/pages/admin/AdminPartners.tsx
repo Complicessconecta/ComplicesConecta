@@ -228,7 +228,6 @@ const AdminPartners = () => {
     try {
       const { error } = await supabase.from("club_verifications").insert({
         club_id: clubId,
-        user_id: user.id,
         verified_by: user.id,
         verification_type: "admin",
         status,

@@ -4,6 +4,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Star, Heart, MessageCircle, Zap, Calendar, Target, Award, Crown, Flame } from "lucide-react";
+import { useAuth } from "@/features/auth/useAuth";
+
+/**
+ * Ronda 8 (punto 15): el "(Tú)" del leaderboard estaba hardcodeado
+ * en "María G." (rango 3) aunque la usuaria es Sofía. La marca
+ * ahora se resuelve por el primer nombre del perfil en sesión
+ * ("Sofia K.", rango 5, para la demo de Sofía); si el nombre no
+ * coincide con ninguna fila, nadie lleva "(Tú)" en vez de marcar a
+ * otra persona. Comparación sin acentos ni mayúsculas.
+ */
+const normalizeFirstName = (name: string): string =>
+  name
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(/\s+/)[0] ?? "";
 
 // Mock gamification data
 const mockAchievements = [
@@ -84,6 +101,10 @@ const getRarityColor = (rarity: string) => {
 
 export const Gamification = () => {
   const [_selectedTab, _setSelectedTab] = useState("achievements");
+  const { profile } = useAuth();
+  const currentFirstName = normalizeFirstName(
+    profile?.first_name ?? profile?.display_name ?? "",
+  );
 
   const experiencePercentage =
     (mockStats.experience / mockStats.nextLevelExp) * 100;
@@ -332,54 +353,56 @@ export const Gamification = () => {
             {[
               { rank: 1, name: "Ana M.", points: 1250, avatar: "A" },
               { rank: 2, name: "Carlos R.", points: 1180, avatar: "C" },
-              {
-                rank: 3,
-                name: "María G.",
-                points: 1050,
-                avatar: "M",
-                isCurrentUser: true,
-              },
+              { rank: 3, name: "María G.", points: 1050, avatar: "M" },
               { rank: 4, name: "Diego L.", points: 980, avatar: "D" },
               { rank: 5, name: "Sofia K.", points: 920, avatar: "S" },
-            ].map((user) => (
-              <div
-                key={user.rank}
-                className={`flex items-center justify-between p-3 rounded-lg border ${
-                  user.isCurrentUser
-                    ? "bg-purple-500/20 border-purple-400/30"
-                    : "bg-white/10 backdrop-blur-sm border-white/20"
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      user.rank === 1
-                        ? "bg-yellow-400/30 text-yellow-200 border border-yellow-400/50"
-                        : user.rank === 2
-                          ? "bg-gray-400/30 text-gray-200 border border-gray-400/50"
-                          : user.rank === 3
-                            ? "bg-orange-400/30 text-orange-200 border border-orange-400/50"
-                            : "bg-white/20 text-white border border-white/30"
-                    }`}
-                  >
-                    {user.rank}
-                  </div>
-                  <div className="w-8 h-8 bg-linear-to-br from-purple-400 to-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                    {user.avatar}
-                  </div>
-                  <div>
-                    <p
-                      className={`font-medium ${user.isCurrentUser ? "text-purple-300" : "text-white"}`}
+            ].map((user) => {
+              // Ronda 8 (punto 15): "(Tú)" es la fila cuyo primer
+              // nombre coincide con el perfil en sesión, no una fila
+              // fija del mock.
+              const isCurrentUser =
+                currentFirstName.length > 0 &&
+                normalizeFirstName(user.name) === currentFirstName;
+              return (
+                <div
+                  key={user.rank}
+                  className={`flex items-center justify-between p-3 rounded-lg border ${
+                    isCurrentUser
+                      ? "bg-purple-500/20 border-purple-400/30"
+                      : "bg-white/10 backdrop-blur-sm border-white/20"
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        user.rank === 1
+                          ? "bg-yellow-400/30 text-yellow-200 border border-yellow-400/50"
+                          : user.rank === 2
+                            ? "bg-gray-400/30 text-gray-200 border border-gray-400/50"
+                            : user.rank === 3
+                              ? "bg-orange-400/30 text-orange-200 border border-orange-400/50"
+                              : "bg-white/20 text-white border border-white/30"
+                      }`}
                     >
-                      {user.name} {user.isCurrentUser && "(Tú)"}
-                    </p>
+                      {user.rank}
+                    </div>
+                    <div className="w-8 h-8 bg-linear-to-br from-purple-400 to-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                      {user.avatar}
+                    </div>
+                    <div>
+                      <p
+                        className={`font-medium ${isCurrentUser ? "text-purple-300" : "text-white"}`}
+                      >
+                        {user.name} {isCurrentUser && "(Tú)"}
+                      </p>
+                    </div>
                   </div>
+                  <p className="font-semibold text-white">
+                    {user.points.toLocaleString()} pts
+                  </p>
                 </div>
-                <p className="font-semibold text-white">
-                  {user.points.toLocaleString()} pts
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <Button
             variant="outline"

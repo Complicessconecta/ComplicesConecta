@@ -1,5 +1,4 @@
 import type { Database } from "@/types/supabase-generated";
-import { getAssetUrl } from "@/utils/assetLoader";
 
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -24,8 +23,13 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
   user_id: "demo-single-1",
   name: "Sofía Demo",
   display_name: "Sofía Demo",
+  nickname: "sofia_demo",
+  country_code: "MX",
+  location_sharing_enabled: true,
+  visibility: "public",
   email: "sofia.demo@complicesconecta.app",
   phone: "+525500000001",
+  privacy_settings: null,
   profile_theme: "Clásico",
   sexual_orientation: ["Heterosexual"],
   age: 28,
@@ -34,7 +38,8 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
   last_seen: null,
   two_factor_enabled: false,
   is_demo: true,
-  avatar_url: getAssetUrl("img/demo-single-avatar.jpg"),
+  avatar_url:
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
   bio: "Explorando conexiones auténticas en el lifestyle swinger. Disfruto de experiencias discretas, respeto mutuo y encuentros sofisticados.",
   location: "Ciudad de México, México",
   gender: "female",
@@ -106,7 +111,7 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
     "Soft Swap",
     "Cenas Románticas",
     "Viajes en Grupo",
-    "Fiestas Privadías",
+    "Fiestas Privadas",
     "Conexión Emocional",
     "Diversión Segura",
   ],
@@ -118,8 +123,13 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   user_id: "demo-couple-1",
   name: "Ana & Luis Demo",
   display_name: "Ana & Luis Demo",
+  nickname: "ana_luis_demo",
+  country_code: "MX",
+  location_sharing_enabled: true,
+  visibility: "public",
   email: "pareja.demo@complicesconecta.app",
   phone: "+525500000002",
+  privacy_settings: null,
   profile_theme: "Clásico",
   sexual_orientation: ["Heterosexual"],
   age: 32,
@@ -128,7 +138,8 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   last_seen: null,
   two_factor_enabled: false,
   is_demo: true,
-  avatar_url: getAssetUrl("img/demo-couple-avatar.jpg"),
+  avatar_url:
+    "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
   bio: "Pareja abierta de Ciudad de México explorando el lifestyle con reglas claras, respeto y mucha complicidad.",
   location: "Ciudad de México, México",
   gender: "couple",
@@ -136,7 +147,7 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
     "Intercambio de Parejas",
     "Cenas Románticas",
     "Viajes en Grupo",
-    "Fiestas Privadías",
+    "Fiestas Privadas",
     "Conexión Emocional",
     "Diversión Segura",
   ],

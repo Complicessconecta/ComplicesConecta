@@ -7,12 +7,35 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/features/auth/useAuth";
 import { validateStaking } from "@/lib/validation/zod/zod-schemas";
-import { shouldUseRealSupabase, getAppConfig } from "@/lib/app-config";
+import {
+  shouldUseRealSupabase,
+  getAppConfig,
+  resolveCurrentDemoAccountType,
+} from "@/lib/app-config";
+import {
+  getDemoWalletBalance,
+  deriveDemoWalletView,
+  creditDemoWallet,
+  DEMO_WALLET_CHANGED_EVENT,
+  type DemoAccountType,
+} from "@/lib/demo-wallet";
+import {
+  findLocalDemoAccountById,
+  isAnonymousDemoProfile,
+} from "@/lib/demo-registration";
+import {
+  ANONYMOUS_WALLET_BLOCKED_REASON,
+  isViewerAnonymous,
+} from "@/lib/anonymous";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { TokenService, type TokenTransaction as ServiceTokenTransaction } from "@/services";
+import { toast } from "@/hooks/useToast";
+import {
+  TokenService,
+  type TokenTransaction as ServiceTokenTransaction,
+} from "@/services";
 
-// Interfaces simplificadías para demo vs real
+// Interfaces simplificadas para demo vs real
 export interface TokenBalance {
   cmpx: number;
   gtk: number;
@@ -81,13 +104,71 @@ const mapTransactionType = (
 };
 
 export const useTokens = () => {
-  const { user, isDemo, appMode: _appMode } = useAuth();
+  const { user, isDemo, appMode: _appMode, profile } = useAuth();
   const [balance, setBalance] = useState<TokenBalance>({ cmpx: 0, gtk: 0 });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [stakingRecords, setStakingRecords] = useState<StakingRecord[]>([]);
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [loading, setLoading] = useState(false);
   const config = getAppConfig();
+
+  // Tipo de cuenta demo del usuario actual (misma resolución que
+  // loadTokenData y que TokenDashboard: perfil cargado → `user` →
+  // `demo_user`/`userType` de localStorage; la cuenta demo premium
+  // legacy conserva su balance histórico 5000/3000 y NO se persiste
+  // por aquí). Lo necesitan los reclamos para acreditar el saldo
+  // persistido (@/lib/demo-wallet) en vez de solo el estado local
+  // del hook (ronda 7, punto 8).
+  //
+  // Ronda 9, stream D: antes el tipo salía de
+  // `user.email.includes("couple")`, que no cubre `pareja@outlook.es`
+  // ni las cuentas `@demo.local` creadas por registro, y de una
+  // lectura de `demo_user` que solo miraba `accountType`: una pareja
+  // acreditaba (y leía) el saldo de single (test ronda 8).
+  const resolveDemoKind = useCallback((): {
+    accountType: DemoAccountType;
+    isPremiumDemo: boolean;
+  } => {
+    const accountType =
+      resolveCurrentDemoAccountType(profile, user) ?? "single";
+    return {
+      accountType,
+      isPremiumDemo: user?.email?.includes("premium") ?? false,
+    };
+  }, [user, profile]);
+
+  // Ronda 10 (stream A, punto A3): ¿la sesión actual es una cuenta
+  // ANÓNIMA? Su billetera está bloqueada: no tiene saldos, ni
+  // recompensas, ni staking, ni referidos. Se calcula una vez por
+  // usuario/perfil y lo usan la carga demo, el listener de cambios y
+  // las acciones. La heurística NO se aplica al `user` pelado (sin
+  // tipo ni datos, p. ej. una pareja @demo.local): sin tipo no se
+  // distingue de un anónimo legado; el `profile` sí trae el tipo y
+  // el registro local / `demo_user` son señales fiables.
+  const isAnonymousUser =
+    isAnonymousDemoProfile(profile) ||
+    findLocalDemoAccountById(user?.id ?? "")?.isAnonymous === true ||
+    (user?.id ? isViewerAnonymous(user.id) : false);
+
+  // El saldo demo persistido puede cambiar fuera de este hook (reclamo
+  // en /tokens, otra instancia del hook): re-leerlo cuando cambie para
+  // que todas las superficies muestren el mismo número.
+  useEffect(() => {
+    if (!isDemo()) return;
+    // Ronda 10 (stream A, punto A3): el anónimo no hereda el saldo
+    // canónico de nadie (ni el de Sofía): su saldo es cero y no se
+    // re-lee el persistido.
+    if (isAnonymousUser) return;
+    const onChanged = () => {
+      const { accountType, isPremiumDemo } = resolveDemoKind();
+      if (isPremiumDemo) return;
+      const canonical = getDemoWalletBalance(accountType);
+      setBalance({ cmpx: canonical.cmpx, gtk: canonical.gtk });
+    };
+    window.addEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+    return () =>
+      window.removeEventListener(DEMO_WALLET_CHANGED_EVENT, onChanged);
+  }, [isDemo, resolveDemoKind, isAnonymousUser]);
 
   const tokenService = TokenService.getInstance();
 
@@ -112,28 +193,43 @@ export const useTokens = () => {
       if (isDemo()) {
         logger.info(" Cargando datos de tokens demo", { user: user.email });
 
-        // Balance demo basado en el tipo de usuario
-        let demoBalance: TokenBalance = { cmpx: 1250, gtk: 850 };
-
-        // Ajustar balance según el usuario demo
-        if (user.email?.includes("couple")) {
-          demoBalance = { cmpx: 2000, gtk: 1500 };
-        } else if (user.email?.includes("premium")) {
-          demoBalance = { cmpx: 5000, gtk: 3000 };
+        // Ronda 10 (stream A, punto A3): la cuenta ANÓNIMA no tiene
+        // billetera. Causa raíz del fallo del test ronda 9: esta rama
+        // asignaba el saldo canónico single (Sofía: CMPX 1250/850,
+        // 4 NFTs, staking, referidos) a CUALQUIER sesión demo single,
+        // incluida la anónima. Solo estaban bloqueados reclamar y
+        // staking; la VISUALIZACIÓN heredaba la cartera de Sofía.
+        // El anónimo queda en ceros y sin transacciones, staking ni
+        // recompensas: ninguna sesión hereda la cartera de otra.
+        if (isAnonymousUser) {
+          setBalance({ cmpx: 0, gtk: 0 });
+          setTransactions([]);
+          setStakingRecords([]);
+          setRewards([]);
+          setLoading(false);
+          return;
         }
 
-        // Intentar obtener balance personalizado del localStorage
-        const storedUser = localStorage.getItem("demo_user");
-        if (storedUser) {
-          try {
-            const parsedUser = JSON.parse(storedUser);
-            if (parsedUser.accountType === "couple") {
-              demoBalance = { cmpx: 2000, gtk: 1500 };
-            }
-          } catch {
-            logger.warn("Error parsing demo user for balance");
-          }
-        }
+        // Balance demo canónico por tipo de cuenta (ÚNICA fuente:
+        // @/lib/demo-wallet — single 1250/850, pareja 2000/1500).
+        // Antes los literales vivían aquí duplicados y cada superficie
+        // tenía los suyos (TokenDashboard: MOCK 5000/2500).
+        //
+        // Ronda 9, stream D: el tipo se resuelve igual que en
+        // TokenDashboard (`resolveCurrentDemoAccountType`); el
+        // `email.includes("couple")` anterior no cubría
+        // `pareja@outlook.es` ni las cuentas `@demo.local`, así que
+        // una pareja leía el saldo de single en /tokens (test r8).
+        const demoAccountType: DemoAccountType =
+          resolveCurrentDemoAccountType(profile, user) ?? "single";
+        // Cuenta demo premium legacy (sin usuario demo canónico con ese
+        // correo): conserva su balance histórico 5000/3000.
+        const isPremiumDemo = user.email?.includes("premium") ?? false;
+
+        const canonical = getDemoWalletBalance(demoAccountType);
+        const demoBalance: TokenBalance = isPremiumDemo
+          ? { cmpx: 5000, gtk: 3000 }
+          : { cmpx: canonical.cmpx, gtk: canonical.gtk };
 
         setBalance(demoBalance);
         setLoading(false);
@@ -216,7 +312,9 @@ export const useTokens = () => {
         ];
         setRewards(mockRewards);
 
-        logger.info("Datos de tokens demo cargados - Balance:", { ...demoBalance });
+        logger.info("Datos de tokens demo cargados - Balance:", {
+          ...demoBalance,
+        });
       } else {
         // Cargar datos reales desde Supabase usando TokenService
         logger.info(
@@ -316,6 +414,13 @@ export const useTokens = () => {
   const processReferral = async (referredUserId: string) => {
     if (!user) return false;
 
+    // Ronda 10 (stream A, punto A3): sin referidos en cuentas
+    // anónimas (la billetera está desactivada hasta verificar).
+    if (isAnonymousUser) {
+      logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, { referredUserId });
+      return false;
+    }
+
     if (isDemo() || !shouldUseRealSupabase()) {
       logger.info(" Simulando procesamiento de referido en modo demo");
       // Simular recompensa por referido
@@ -354,6 +459,18 @@ export const useTokens = () => {
     duration: number,
   ) => {
     if (!user) return false;
+
+    // Ronda 9 (stream A, punto 7): sin staking en cuentas anónimas
+    // hasta verificar (World ID / KYC). Mismo bloqueo que en
+    // `claimReward`. La señal es `isAnonymousUser` (arriba): no se
+    // aplica la heurística al `user` pelado (ver A3).
+    if (isAnonymousUser) {
+      logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, {
+        tokenType,
+        amount,
+      });
+      return false;
+    }
 
     if (isDemo() || !shouldUseRealSupabase()) {
       logger.info(" Simulando staking en modo demo:", {
@@ -438,6 +555,19 @@ export const useTokens = () => {
   const claimReward = async (rewardId: string) => {
     if (!user) return false;
 
+    // Ronda 9 (stream A, punto 7): la billetera está desactivada en
+    // cuentas anónimas — sin recompensas hasta verificar (World ID /
+    // KYC). Se corta ANTES de marcar la recompensa como reclamada y
+    // de tocar el saldo: si no, el reclamo quedaba marcado y el saldo
+    // local subía aunque la billetera estuviera bloqueada. La
+    // recompensa de World ID (`claimWorldIdReward`) NO se bloquea: es
+    // la que se concede AL verificar, es decir, el camino de
+    // conversión mismo. La señal es `isAnonymousUser` (arriba).
+    if (isAnonymousUser) {
+      logger.info(ANONYMOUS_WALLET_BLOCKED_REASON, { rewardId });
+      return false;
+    }
+
     if (isDemo() || !shouldUseRealSupabase()) {
       logger.info("🎭 Reclamando recompensa en modo demo:", { rewardId });
 
@@ -457,6 +587,16 @@ export const useTokens = () => {
         ...prev,
         [reward.token_type]: prev[reward.token_type] + reward.amount,
       }));
+
+      // Persistir el reclamo en la fuente canónica para que el perfil
+      // y /tokens lo vean también (ronda 7, punto 8): antes solo vivía
+      // en este estado local y se perdía al navegar.
+      const { accountType, isPremiumDemo } = resolveDemoKind();
+      if (!isPremiumDemo) {
+        creditDemoWallet(accountType, {
+          [reward.token_type]: reward.amount,
+        } as { cmpx?: number; gtk?: number });
+      }
 
       // Añadir transacción
       const newTransaction: Transaction = {
@@ -494,25 +634,15 @@ export const useTokens = () => {
     setLoading(true);
     await loadTokenData();
 
-    // Mostrar feedback visual al usuario
-    if (typeof window !== "undefined") {
-      // Crear notificación temporal
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300";
-      notification.textContent = "✅ Balance actualizado correctamente";
-      document.body.appendChild(notification as Node);
-
-      // Remover después de 3 segundos
-      setTimeout(() => {
-        notification.style.opacity = "0";
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification as Node);
-          }
-        }, 300);
-      }, 3000);
-    }
+    // Mostrar feedback visual al usuario por el canal de toasts Radix
+    // (zona en flujo de MainLayout). RONDA 7 (punto 10): antes se creaba
+    // un div `fixed top-4 right-4` a mano con document.createElement que
+    // tapaba el texto superior de la página de tokens (el "claim toast"
+    // del test) y vivía fuera del sistema de toasts.
+    toast({
+      title: "Balance actualizado",
+      description: "✅ Balance actualizado correctamente",
+    });
   }, [config.mode, loadTokenData]);
 
   // Helper functions for the Tokens page
@@ -529,7 +659,7 @@ export const useTokens = () => {
     refreshTokenData();
   };
 
-  // Funciones adicionales requeridías por los componentes
+  // Funciones adicionales requeridas por los componentes
   const startStaking = async (amount: number) => {
     return await stakeTokens("cmpx", amount, 30);
   };
@@ -576,44 +706,56 @@ export const useTokens = () => {
 
   const claimWorldIdReward = async () => {
     logger.info("🌍 Reclamando recompensa World ID");
-    // Mock implementation for demo
+    // Demo: la recompensa se acredita de inmediato (+100 CMPX) y queda
+    // marcada como reclamada. Antes solo añadía una recompensa "Pendiente"
+    // de 500 CMPX sin tocar el saldo ni avisar: el botón parecía no hacer
+    // nada (ni toast ni cambio de saldo).
     if (isDemo()) {
       const worldIdReward: Reward = {
         id: `world-id-${Date.now()}`,
         user_id: user?.id || "",
         type: "world_id",
         token_type: "cmpx",
-        amount: 500,
+        amount: 100,
         description: "Recompensa por verificación World ID",
-        claimed: false,
+        claimed: true,
         expires_at: null,
         created_at: new Date().toISOString(),
       };
       setRewards((prev) => [worldIdReward, ...prev]);
+      setBalance((prev) => ({ ...prev, cmpx: prev.cmpx + 100 }));
+      // Persistir el +100 CMPX en la fuente canónica (ronda 7, punto
+      // 8): antes solo vivía en este estado local y el perfil seguía
+      // en 1250 tras reclamar en /tokens.
+      // Ronda 10 (stream A, punto A3): NO acreditar al bucket
+      // canónico single si quien verifica es anónimo: ese bucket es
+      // el de Sofía y la verificación del anónimo lo inflaría.
+      const { accountType, isPremiumDemo } = resolveDemoKind();
+      if (!isPremiumDemo && !isAnonymousUser) {
+        creditDemoWallet(accountType, { cmpx: 100 });
+      }
       return true;
     }
     return false;
   };
 
-  // Propiedades computadías
+  // Propiedades computadas
   const pendingRewards = rewards.filter((r) => !r.claimed);
   const hasPendingRewards = pendingRewards.length > 0;
   const hasActiveStaking = stakingRecords.some((s) => s.status === "active");
   const isWorldIdEligible = true; // Mock for demo
   const error = null; // Mock for demo
 
-  // Balance con propiedades específicas
+  // Balance con propiedades específicas. La vista se deriva del total
+  // con deriveDemoWalletView (ÚNICA fuente: @/lib/demo-wallet): el
+  // staking es una PARTE del total, no un extra — antes TokenDashboard
+  // sumaba disponible + staking y el "total" se inflaba (1250 + 375).
+  const walletView = deriveDemoWalletView(balance.cmpx, balance.gtk);
   const enhancedBalance = {
     balance: {
-      cmpxBalance: balance.cmpx,
-      cmpxStaked: balance.cmpx * 0.3, // 30% staked demo
-      gtkBalance: balance.gtk,
-      gtkStaked: balance.gtk * 0.2, // 20% staked demo
+      ...walletView,
       cmpx: balance.cmpx,
       gtk: balance.gtk,
-      monthlyEarned: balance.cmpx * 0.05, // 5% monthly earnings demo
-      monthlyRemaining: 1000 - balance.cmpx * 0.05, // Monthly limit demo
-      monthlyLimit: 1000,
       totalReferrals: 3, // Demo referrals
       referralCode: `REF${user?.id || "DEMO"}`,
     },
@@ -628,7 +770,7 @@ export const useTokens = () => {
     loading,
     error,
 
-    // Propiedades computadías
+    // Propiedades computadas
     pendingRewards,
     hasPendingRewards,
     hasActiveStaking,
@@ -657,6 +799,10 @@ export const useTokens = () => {
     // Información del modo
     isDemo: isDemo(),
     appMode: config.mode,
+
+    // Ronda 10 (stream A, punto A3): la billetera está bloqueada para
+    // la sesión actual (cuenta anónima). TokenDashboard lo usa para
+    // mostrar el estado bloqueado en vez de saldos ajenos.
+    isAnonymousWalletBlocked: isAnonymousUser,
   };
 };
-

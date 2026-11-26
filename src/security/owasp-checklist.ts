@@ -85,11 +85,11 @@ export const owaspChecklist: Record<string, OWASPCheck> = {
   "A6-VulnerableComponents": {
     id: "A6",
     name: "Vulnerable Components",
-    description: "Uso de librerías con vulnerabilidades conocidías",
+    description: "Uso de librerías con vulnerabilidades conocidas",
     status: "PASS",
     checks: [
       "✅ npm audit sin vulnerabilidades críticas",
-      "✅ Dependencias actualizadías",
+      "✅ Dependencias actualizadas",
       "✅ Monitoreo de vulnerabilidades",
       "✅ Política de actualización",
     ],
@@ -101,7 +101,7 @@ export const owaspChecklist: Record<string, OWASPCheck> = {
     description: "Fallos en autenticación y gestión de sesión",
     status: "PARTIAL",
     checks: [
-      "✅ Contraseñas hasheadías (Supabase)",
+      "✅ Contraseñas hasheadas (Supabase)",
       "✅ Session management seguro",
       "✅ Logout funcional",
       "⏳ MFA implementado",

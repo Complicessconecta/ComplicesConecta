@@ -39,7 +39,7 @@ const Info = () => {
       icon: <Star className="h-6 w-6" />,
       title: "Experiencia Premium",
       description:
-        "Interfaz elegante, eventos exclusivos y funcionalidades avanzadías.",
+        "Interfaz elegante, eventos exclusivos y funcionalidades avanzadas.",
       color: "text-yellow-400",
     },
     {
@@ -219,7 +219,7 @@ const Info = () => {
                     variant="outline"
                     className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
                   >
-                    Ms Informacin
+                    Más Información
                   </Button>
                 </div>
               </CardContent>

@@ -67,7 +67,7 @@ export const AdvancedFilters = ({
   };
 
   const availableInterests = [
-    "Fiestas Privadías",
+    "Fiestas Privadas",
     "Intercambio de Parejas",
     "Eventos VIP",
     "Discreción Total",
@@ -75,7 +75,7 @@ export const AdvancedFilters = ({
     "Terceras Personas",
     "Intercambio Suave",
     "Clubs Exclusivos",
-    "Parejas Verificadías",
+    "Parejas Verificadas",
     "Lifestyle Swinger",
     "Naturaleza",
     "Viajes",
@@ -103,9 +103,22 @@ export const AdvancedFilters = ({
   ];
 
   return (
-    <Card className="w-full max-w-md">
+    // Colores explícitos (no tokens bg-card/foreground): en Tailwind v4
+    // esos tokens no resolvían y el panel quedaba con texto morado
+    // oscuro sobre fondo morado oscuro, casi ilegible (full test).
+    // RONDA 5 — NOTA: el texto ilegible que Wacko confirmó con captura
+    // ("Mostrar perfiles sin verificar", "Tipo de Relacion",
+    // "Solo se muestran perfiles verificados.", "(Demo/Produccin)") NO
+    // vive en este componente: es el panel de filtros EN LÍNEA de
+    // src/pages/Discover.tsx:896,924-927,963-984 (text-purple-800 sobre
+    // fondo morado oscuro, sin acentos). Discover.tsx NO está en el
+    // alcance de este stream; el fix va ahí con las mismas clases
+    // explícitas de este archivo. Este componente ya trae todos sus
+    // textos explícitos y sus acentos correctos ("Tipo de relación
+    // buscada"); aquí solo se endurecieron los dos botones.
+    <Card className="w-full max-w-md bg-white text-slate-900 border-slate-200 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between text-slate-900 dark:text-white">
           <span className="flex items-center gap-2">
             <Sliders className="h-5 w-5" />
             Filtros Avanzados
@@ -119,7 +132,7 @@ export const AdvancedFilters = ({
       <CardContent className="space-y-6">
         {/* Edad */}
         <div className="space-y-3">
-          <Label className="flex items-center gap-2">
+          <Label className="flex items-center gap-2 text-slate-800 dark:text-slate-100">
             <Heart className="h-4 w-4" />
             Edad: {filters.ageRange?.[0] ?? 18} - {filters.ageRange?.[1] ?? 65}{" "}
             años
@@ -138,7 +151,7 @@ export const AdvancedFilters = ({
 
         {/* Distancia */}
         <div className="space-y-3">
-          <Label className="flex items-center gap-2">
+          <Label className="flex items-center gap-2 text-slate-800 dark:text-slate-100">
             <MapPin className="h-4 w-4" />
             Distancia: {filters.distance?.[0] ?? 25} km
           </Label>
@@ -158,7 +171,7 @@ export const AdvancedFilters = ({
 
         {/* Intereses */}
         <div className="space-y-3">
-          <Label>Intereses</Label>
+          <Label className="text-slate-800 dark:text-slate-100">Intereses</Label>
           <div className="grid grid-cols-2 gap-2">
             {availableInterests.map((interest) => (
               <div key={interest} className="flex items-center space-x-2">
@@ -173,7 +186,7 @@ export const AdvancedFilters = ({
                     updateFilter("interests", newInterests);
                   }}
                 />
-                <Label htmlFor={interest} className="text-sm cursor-pointer">
+                <Label htmlFor={interest} className="text-sm cursor-pointer text-slate-800 dark:text-slate-100">
                   {interest}
                 </Label>
               </div>
@@ -185,7 +198,7 @@ export const AdvancedFilters = ({
 
         {/* Educación */}
         <div className="space-y-3">
-          <Label className="flex items-center gap-2">
+          <Label className="flex items-center gap-2 text-slate-800 dark:text-slate-100">
             <GraduationCap className="h-4 w-4" />
             Educación
           </Label>
@@ -193,7 +206,7 @@ export const AdvancedFilters = ({
             value={filters.education}
             onValueChange={(value) => updateFilter("education", value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-white text-slate-900 border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600">
               <SelectValue placeholder="Selecciona nivel educativo" />
             </SelectTrigger>
             <SelectContent>
@@ -210,7 +223,7 @@ export const AdvancedFilters = ({
 
         {/* Profesión */}
         <div className="space-y-3">
-          <Label className="flex items-center gap-2">
+          <Label className="flex items-center gap-2 text-slate-800 dark:text-slate-100">
             <Briefcase className="h-4 w-4" />
             Área profesional
           </Label>
@@ -218,7 +231,7 @@ export const AdvancedFilters = ({
             value={filters.profession}
             onValueChange={(value) => updateFilter("profession", value)}
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-white text-slate-900 border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600">
               <SelectValue placeholder="Selecciona área profesional" />
             </SelectTrigger>
             <SelectContent>
@@ -240,7 +253,7 @@ export const AdvancedFilters = ({
 
         {/* Tipo de relación */}
         <div className="space-y-3">
-          <Label>Tipo de relación buscada</Label>
+          <Label className="text-slate-800 dark:text-slate-100">Tipo de relación buscada</Label>
           <div className="space-y-2">
             {relationshipTypes.map((type) => (
               <div key={type} className="flex items-center space-x-2">
@@ -255,7 +268,7 @@ export const AdvancedFilters = ({
                     updateFilter("relationshipType", newTypes);
                   }}
                 />
-                <Label htmlFor={type} className="text-sm cursor-pointer">
+                <Label htmlFor={type} className="text-sm cursor-pointer text-slate-800 dark:text-slate-100">
                   {type}
                 </Label>
               </div>
@@ -265,7 +278,7 @@ export const AdvancedFilters = ({
 
         {/* Estilo de vida */}
         <div className="space-y-3">
-          <Label>Estilo de vida</Label>
+          <Label className="text-slate-800 dark:text-slate-100">Estilo de vida</Label>
           <div className="grid grid-cols-2 gap-2">
             {lifestyleOptions.map((lifestyle) => (
               <div key={lifestyle} className="flex items-center space-x-2">
@@ -280,7 +293,7 @@ export const AdvancedFilters = ({
                     updateFilter("lifestyle", newLifestyle);
                   }}
                 />
-                <Label htmlFor={lifestyle} className="text-sm cursor-pointer">
+                <Label htmlFor={lifestyle} className="text-sm cursor-pointer text-slate-800 dark:text-slate-100">
                   {lifestyle}
                 </Label>
               </div>
@@ -292,7 +305,7 @@ export const AdvancedFilters = ({
 
         {/* Altura */}
         <div className="space-y-3">
-          <Label>
+          <Label className="text-slate-800 dark:text-slate-100">
             Altura: {filters.height?.[0] ?? 140}cm -{" "}
             {filters.height?.[1] ?? 220}cm
           </Label>
@@ -311,12 +324,12 @@ export const AdvancedFilters = ({
         {/* Otros filtros */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label>Fumar</Label>
+            <Label className="text-slate-800 dark:text-slate-100">Fumar</Label>
             <Select
               value={filters.smoking}
               onValueChange={(value) => updateFilter("smoking", value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-white text-slate-900 border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600">
                 <SelectValue placeholder="Fumar" />
               </SelectTrigger>
               <SelectContent>
@@ -328,12 +341,12 @@ export const AdvancedFilters = ({
           </div>
 
           <div className="space-y-2">
-            <Label>Beber</Label>
+            <Label className="text-slate-800 dark:text-slate-100">Beber</Label>
             <Select
               value={filters.drinking}
               onValueChange={(value) => updateFilter("drinking", value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-white text-slate-900 border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600">
                 <SelectValue placeholder="Beber" />
               </SelectTrigger>
               <SelectContent>
@@ -348,10 +361,22 @@ export const AdvancedFilters = ({
 
         {/* Botones de acción */}
         <div className="flex gap-2 pt-4">
-          <Button variant="outline" onClick={handleReset} className="flex-1">
+          {/* RONDA 5: colores explícitos en ambos temas. La variante
+              "outline" del Button usa tokens (border-primary / bg-background)
+              que en este panel quedaban poco legibles; con clases explícitas
+              el contraste es real en claro y en oscuro. */}
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            className="flex-1 bg-white text-slate-900 border-slate-300 hover:bg-slate-100 dark:bg-slate-800 dark:text-white dark:border-slate-600 dark:hover:bg-slate-700"
+          >
             Limpiar
           </Button>
-          <Button variant="default" onClick={() => {}} className="flex-1">
+          <Button
+            variant="default"
+            onClick={() => {}}
+            className="flex-1 bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-600 dark:hover:bg-purple-500"
+          >
             Aplicar Filtros
           </Button>
         </div>

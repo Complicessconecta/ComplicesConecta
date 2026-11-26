@@ -20,9 +20,9 @@ export const Footer = () => {
               </h3>
             </div>
             <p className="text-background/80 mb-4 leading-relaxed">
-              MX<strong>Primera app lifestyle en México</strong> con
-              implementación completa de Ley Olimpia. Plataforma Proximante líder para
-              conexiones auténticas con máxima Protección Digital.
+              Primera app lifestyle en México con implementación completa de
+              Ley Olimpia. Plataforma próximamente líder para conexiones
+              auténticas con máxima Protección Digital.
             </p>
             <div className="flex space-x-3">
               <Button
@@ -169,16 +169,21 @@ export const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div>
+          <div className="min-w-0">
             <h4 className="text-lg font-semibold mb-4 text-primary">
               Contacto
             </h4>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-primary" />
+              {/* Ronda 11, stream C (i): el email es una cadena larga
+                  sin espacios: sin `min-w-0` + `break-all` su ancho
+                  mínimo empujaba la columna del footer fuera del
+                  viewport a 886 px (el enlace llegaba a x=940 y era
+                  el único elemento que desbordaba /profile/<id>). */}
+              <div className="flex min-w-0 items-center space-x-3">
+                <Mail className="h-4 w-4 shrink-0 text-primary" />
                 <a
                   href="mailto:complicesconectasw@outlook.es"
-                  className="text-background/80 hover:text-primary transition-colors"
+                  className="min-w-0 break-all text-background/80 hover:text-primary transition-colors"
                 >
                   complicesconectasw@outlook.es
                 </a>
@@ -192,7 +197,7 @@ export const Footer = () => {
                   className="text-background/80 hover:text-primary transition-all duration-300 hover:scale-105 transform flex items-center space-x-2 group"
                 >
                   <span className="group-hover:animate-pulse">
-                    Proximamente: Soporte atravez de WhatsApp y Telegram
+                    Proximamente: Soporte a través de WhatsApp y Telegram
                   </span>
                 </button>
               </div>
@@ -205,11 +210,12 @@ export const Footer = () => {
                 <input
                   type="email"
                   placeholder="Tu email"
-                  className="flex-1 px-3 py-2 bg-background/10 border border-background/20 rounded-md text-background placeholder-background/60 focus:outline-none focus:border-primary"
+                  className="flex-1 min-w-0 px-3 py-2 bg-background/10 border border-background/20 rounded-md text-background placeholder-background/60 focus:outline-none focus:border-primary"
                 />
                 <Button
                   {...({ variant: "love" } as any)}
                   size="sm"
+                  className="shrink-0 whitespace-nowrap"
                   onClick={() => {
                     const email = (
                       document.querySelector(

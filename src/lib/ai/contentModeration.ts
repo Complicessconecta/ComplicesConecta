@@ -162,7 +162,7 @@ class ContentModerationEngine {
     const flags: ModerationFlag[] = [];
     const text = content.content.toLowerCase();
 
-    // 1. Verificar palabras inapropiadías
+    // 1. Verificar palabras inapropiadas
     const inappropriateFlags = this.checkInappropriateLanguage(text);
     flags.push(...inappropriateFlags);
 

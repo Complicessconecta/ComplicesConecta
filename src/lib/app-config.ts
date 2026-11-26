@@ -20,7 +20,7 @@ export interface AppConfig {
   };
 }
 
-// Cache para evitar múltiples llamadías y logs repetitivos
+// Cache para evitar múltiples llamadas y logs repetitivos
 let cachedConfig: AppConfig | null = null;
 
 // Obtener configuración desde variables de entorno
@@ -30,8 +30,7 @@ export const getAppConfig = (): AppConfig => {
   }
 
   const mode = (import.meta.env.VITE_APP_MODE || "production") as
-    | "demo"
-    | "production";
+    "demo" | "production";
 
   // Usar modo configurado directamente
   const realMode = mode;
@@ -67,11 +66,8 @@ export const getAppConfig = (): AppConfig => {
   return cachedConfig;
 };
 
-// Credenciales demo permitidías (SOLO para demo)
-export const DEMO_CREDENTIALS = [
-  "single@outlook.es",
-  "pareja@outlook.es",
-];
+// Credenciales demo permitidas (SOLO para demo)
+export const DEMO_CREDENTIALS = ["single@outlook.es", "pareja@outlook.es"];
 
 // C4/C5 (2026-11-19): las contraseñas demo/admin/producción se eliminaron del
 // bundle. No existe ninguna función que lea VITE_*_PASSWORD en el cliente.
@@ -89,7 +85,9 @@ export const getProductionAdminEmails = (): string[] => {
   const primary = (import.meta.env.VITE_ADMIN_EMAIL as string | undefined)
     ?.trim()
     .toLowerCase();
-  const secondary = (import.meta.env.VITE_PROD_ADMIN_EMAIL_2 as string | undefined)
+  const secondary = (
+    import.meta.env.VITE_PROD_ADMIN_EMAIL_2 as string | undefined
+  )
     ?.trim()
     .toLowerCase();
 
@@ -102,7 +100,7 @@ export const isDemoCredential = (email: string): boolean => {
     // Validar formato de email con Zod
     const emailSchema = z.string().email();
     emailSchema.parse(email);
-    
+
     const normalizedEmail = email.toLowerCase().trim();
     return DEMO_CREDENTIALS.includes(normalizedEmail);
   } catch (error) {
@@ -154,10 +152,10 @@ export const handleDemoAuth = (
     accountType: finalAccountType,
     first_name:
       email === "single@outlook.es"
-          ? "Sofía"
-          : email === "pareja@outlook.es"
-            ? "Carmen & Roberto"
-              : email.split("@")[0],
+        ? "Sofía"
+        : email === "pareja@outlook.es"
+          ? "Carmen & Roberto"
+          : email.split("@")[0],
     is_demo: true,
     created_at: new Date().toISOString(),
   };
@@ -180,11 +178,143 @@ export const handleDemoAuth = (
   return { user: demoUser, session: demoSession };
 };
 
+// Tipo de cuenta demo guardado en `demo_user` (localStorage).
+//
+// El objeto cambia de forma según quién lo escribió: handleDemoAuth lo
+// guarda con `accountType`, pero el signIn de useAuth lo reescribe con
+// forma de Profile (`profile_type` / `relationship_type`, sin
+// `accountType`). Leer solo `accountType` hacía que una sesión de pareja
+// resolviera como single (el editor single mostraba un mock aleatorio, el
+// engranaje abría el editor equivocado y el balance demo era el de single).
+// Resolver con todas las variantes conocidas; el email es el último
+// respaldo (la identidad demo siempre trae su email).
+export type DemoAccountType = "single" | "couple";
+
+export const resolveDemoAccountType = (
+  user: unknown,
+): DemoAccountType | null => {
+  if (!user || typeof user !== "object") return null;
+  const u = user as Record<string, unknown>;
+  for (const key of [
+    "accountType",
+    "type",
+    "profile_type",
+    "relationship_type",
+  ]) {
+    const value = u[key];
+    if (typeof value === "string") {
+      const normalized = value.trim().toLowerCase();
+      if (normalized === "couple") return "couple";
+      if (normalized === "single") return "single";
+    }
+  }
+  const email = typeof u.email === "string" ? u.email.toLowerCase().trim() : "";
+  if (email === "pareja@outlook.es") return "couple";
+  if (email === "single@outlook.es") return "single";
+  return null;
+};
+
+/**
+ * Ronda 9, stream D: tipo de cuenta de la SESIÓN demo actual, leído
+ * de localStorage (`demo_user` y, como respaldo, la clave `userType`
+ * que escriben `handleDemoAuth` y `restoreLocalDemoSession`).
+ *
+ * Por qué hace falta: en la ruta de inicialización de `useAuth` el
+ * `user` (mock) se construye solo con `{id, email}` — sin
+ * `accountType` ni `profile_type` — y el `email.includes("couple")`
+ * de `useTokens` tampoco cubre `pareja@outlook.es` ni las cuentas
+ * `@demo.local` creadas por registro. Una sesión de pareja resolvía
+ * como single y /tokens mostraba la wallet de Sofía (test ronda 8:
+ * CMPX 1350 / GTK 850 / 4 NFTs en sesión de pareja, en vez de
+ * 2000 / 1500 / 2). Las páginas de perfil no caían en esto porque
+ * hardcodean su propio tipo ("single"/"couple").
+ */
+export const resolveStoredDemoAccountType = (): DemoAccountType | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem("demo_user");
+    if (raw) {
+      const parsed: unknown = JSON.parse(raw);
+      const fromUser = resolveDemoAccountType(parsed);
+      if (fromUser) return fromUser;
+    }
+    const rawUserType = window.localStorage.getItem("userType");
+    if (rawUserType) {
+      // El valor puede venir entrecomillado ('"couple"'): el setter
+      // de usePersistedState de DemoSelector serializa con
+      // JSON.stringify, mientras los lectores comparan en crudo.
+      const userType = rawUserType.replace(/^"|"$/g, "");
+      if (userType === "couple" || userType === "single") return userType;
+    }
+  } catch {
+    // demo_user corrupto o sin almacenamiento: sin veredicto.
+  }
+  return null;
+};
+
+/**
+ * Tipo de cuenta demo del usuario actual, en orden de fiabilidad:
+ * perfil cargado (`useAuth` lo resuelve desde `demo_user`) → `user`
+ * de la sesión → `demo_user`/`userType` de localStorage. `null` si
+ * ninguna fuente dice el tipo (el llamador decide el fallback).
+ */
+export const resolveCurrentDemoAccountType = (
+  profile: unknown,
+  user: unknown,
+): DemoAccountType | null =>
+  resolveDemoAccountType(profile) ??
+  resolveDemoAccountType(user) ??
+  resolveStoredDemoAccountType();
+
+// Claves demo conocidas (exactas) y prefijos de datos demo por
+// conversación/usuario. /demo promete que los datos demo no se guardan
+// tras cerrar sesión; antes solo se borraban 3 claves y todo lo demás
+// (chats, ajustes de privacidad, NFTs demo, wallet demo, historias)
+// persistía tras el logout. Los ajustes de privacidad por cuenta
+// (`single_privacy:<userId>` / `couple_privacy:<userId>`) NO se borran:
+// la visibilidad (modo invisible) es un ajuste de la CUENTA y debe
+// sobrevivir al logout y al cambio de sesión, igual que los saldos demo
+// (`cc_demo_wallet_balances_v1`) — ronda 10, stream C (C2). Borrarlos
+// hacía que al volver a entrar el encabezado volviera a "👁️ Visible"
+// aunque la pareja se hubiera puesto invisible en sesión.
+const DEMO_STORAGE_KEYS = [
+  "demo_authenticated",
+  "demo_user",
+  "demo-user",
+  "demo_stories",
+  "userType",
+  "wallet_demo_created",
+] as const;
+
+const DEMO_STORAGE_PREFIXES = [
+  "demo_",
+  "demo-",
+  "chat_messages:",
+  "demo_nfts:",
+  "demo_nfts_updated:",
+] as const;
+
 // Función para limpiar sesión demo
 export const clearDemoAuth = () => {
-  localStorage.removeItem("demo_authenticated");
-  localStorage.removeItem("userType");
-  localStorage.removeItem("demo_user");
+  try {
+    DEMO_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+    // Barrido por prefijo (claves por chat/usuario, p. ej.
+    // chat_messages:<id>, demo_nfts:<uid>). Los ajustes de privacidad
+    // por cuenta (`single_privacy:` / `couple_privacy:`) NO se barren:
+    // sobreviven al logout por diseño (ronda 10, stream C, C2).
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) keys.push(key);
+    }
+    keys.forEach((key) => {
+      if (DEMO_STORAGE_PREFIXES.some((prefix) => key.startsWith(prefix))) {
+        localStorage.removeItem(key);
+      }
+    });
+  } catch {
+    // Sin almacenamiento: nada que limpiar.
+  }
   logger.info("🧹 Sesión demo limpiada");
 };
 
@@ -241,8 +371,7 @@ export const appConfig = getAppConfig();
 // Log de configuración inicial
 logger.info("🚀 ComplicesConecta iniciado", { modo: appConfig.mode });
 if (appConfig.mode === "demo") {
-  logger.info("🎭 Modo demo activo - credenciales de prueba habilitadías");
+  logger.info("🎭 Modo demo activo - credenciales de prueba habilitadas");
 } else {
   logger.info("🔐 Modo producción activo - autenticación real requerida");
 }
-

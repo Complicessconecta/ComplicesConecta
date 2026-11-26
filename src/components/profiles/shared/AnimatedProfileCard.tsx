@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { cn } from "@/shared/lib/cn";
+import { ANONYMOUS_LIKE_BLOCKED_MESSAGE } from "@/lib/anonymous";
 import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
 
 interface ProfileCardProps {
@@ -12,6 +13,8 @@ interface ProfileCardProps {
   profileId?: string;
   name: string;
   age: number;
+  // Edad del segundo miembro (parejas): se muestra "25 y 28 años".
+  partnerAge?: number | undefined;
   location: string;
   image: string;
   images?: string[];
@@ -19,9 +22,28 @@ interface ProfileCardProps {
   interests?: string[];
   isOnline?: boolean;
   isPremium?: boolean;
+  isVerified?: boolean;
+  /**
+   * Ronda 9 (stream A, punto 3): perfil anónimo: insignia "Anónimo"
+   * junto a la de verificado. Solo lo ven espectadores verificados
+   * (el filtro vive en shouldShowInDiscover).
+   * Ronda 10 (stream A, punto A2): el anónimo NO es verificado: la
+   * insignia "✓ Verificado" se suprime cuando `isAnonymous` es true
+   * (antes salían las dos a la vez).
+   */
+  isAnonymous?: boolean;
   isPrivate?: boolean;
   lastSeen?: string;
   onLike?: (id: number | string) => void;
+  /**
+   * Ronda 10 (stream A, punto A8): el espectador es una cuenta
+   * anónima. Su like está bloqueado: el botón no alterna a
+   * "Te Gusta" y avisa con `onAnonymousLikeBlocked` (mensaje claro,
+   * sin toast de error). Sin esto, la tarjeta alternaba optimista y
+   * el error llegaba después desde el padre.
+   */
+  isViewerAnonymous?: boolean;
+  onAnonymousLikeBlocked?: () => void;
   onMessage?: (id: number | string) => void;
   onViewProfile?: (id: number | string) => void;
   className?: string;
@@ -34,6 +56,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     profileId,
     name,
     age,
+    partnerAge,
     location,
     image,
     images = [],
@@ -41,9 +64,13 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     interests = [],
     isOnline = false,
     isPremium = false,
+    isVerified = false,
+    isAnonymous = false,
     isPrivate = false,
     lastSeen,
     onLike,
+    isViewerAnonymous = false,
+    onAnonymousLikeBlocked,
     onMessage,
     onViewProfile,
     className = "",
@@ -53,6 +80,12 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
     const [isLiked, setIsLiked] = React.useState(false);
     const [showViews, setShowViews] = React.useState(false);
+    // Si la foto (Unsplash) no carga, no dejar el degradado borroso: mostrar
+    // un avatar con la inicial. Se resetea al cambiar de foto/perfil.
+    const [imageError, setImageError] = React.useState(false);
+    React.useEffect(() => {
+      setImageError(false);
+    }, [currentImageIndex, image]);
     const viewCount = React.useMemo(() => ((id * 97) % 500) + 50, [id]);
 
     const allImages = [image, ...images];
@@ -67,9 +100,16 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     }, []);
 
     const handleLike = React.useCallback(() => {
+      // Ronda 10 (stream A, punto A8): el like anónimo se bloquea
+      // ANTES de alternar el estado: si no, el botón queda en
+      // "Te Gusta" aunque el like no se registró.
+      if (isViewerAnonymous) {
+        onAnonymousLikeBlocked?.();
+        return;
+      }
       setIsLiked(!isLiked);
       onLike?.(profileId ?? id);
-    }, [isLiked, onLike, id, profileId]);
+    }, [isLiked, onLike, id, profileId, isViewerAnonymous, onAnonymousLikeBlocked]);
 
     const nextImage = React.useCallback(() => {
       setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
@@ -99,20 +139,42 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        <Card className="overflow-hidden bg-linear-to-br from-white/10 to-white/5 backdrop-blur-md border-white/20 shadow-xl">
-          {/* Image Container */}
-          <div className="relative aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] overflow-hidden">
+        <Card className="overflow-hidden bg-white dark:bg-white/5 backdrop-blur-md border-slate-200 dark:border-white/20 shadow-xl">
+          {/* Image Container: clicar la foto abre el perfil */}
+          <div
+            className="relative aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] overflow-hidden cursor-pointer"
+            onClick={() => onViewProfile?.(profileId ?? id)}
+            role="button"
+            aria-label={`Ver perfil de ${name}`}
+            title={`Ver perfil de ${name}`}
+          >
             <AnimatePresence mode="wait">
-              <motion.img
-                key={currentImageIndex}
-                src={allImages[currentImageIndex]}
-                alt={`${name} - ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-              />
+              {imageError ? (
+                <motion.div
+                  key={`fallback-${currentImageIndex}`}
+                  className="w-full h-full flex items-center justify-center bg-linear-to-br from-purple-500 to-fuchsia-500"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <span className="text-6xl font-bold text-white/90">
+                    {name.charAt(0).toUpperCase()}
+                  </span>
+                </motion.div>
+              ) : (
+                <motion.img
+                  key={currentImageIndex}
+                  src={allImages[currentImageIndex]}
+                  alt={`${name} - ${currentImageIndex + 1}`}
+                  className="w-full h-full object-cover"
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  onError={() => setImageError(true)}
+                />
+              )}
             </AnimatePresence>
 
             {/* Online Status */}
@@ -164,13 +226,19 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
               >
                 <button
                   type="button"
-                  onClick={prevImage}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prevImage();
+                  }}
                   className="flex-1 bg-linear-to-r from-black/20 to-transparent hover:from-black/40 transition-all duration-300"
                   aria-label="Imagen anterior"
                 />
                 <button
                   type="button"
-                  onClick={nextImage}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextImage();
+                  }}
                   className="flex-1 bg-gradient-to-l from-black/20 to-transparent hover:from-black/40 transition-all duration-300"
                   aria-label="Siguiente imagen"
                 />
@@ -184,7 +252,10 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   <button
                     key={index}
                     type="button"
-                    onClick={() => setCurrentImageIndex(index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentImageIndex(index);
+                    }}
                     className={cn(
                       "w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 touch-manipulation",
                       index === currentImageIndex
@@ -214,21 +285,45 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
           <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
             {/* Name and Age */}
             <div className="flex items-center justify-between">
-              <motion.h3
-                className="text-base sm:text-lg font-bold text-white truncate"
-                layoutId={`name-${id}`}
-              >
-                {name}, {age}
-              </motion.h3>
+              <div className="flex min-w-0 items-center gap-2">
+                <motion.h3
+                  className="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate cursor-pointer hover:underline"
+                  layoutId={`name-${id}`}
+                  onClick={() => onViewProfile?.(profileId ?? id)}
+                  title={`Ver perfil de ${name}`}
+                >
+                  {name}, {age}
+                  {partnerAge ? ` y ${partnerAge}` : ""}
+                </motion.h3>
+                {/* Insignia de perfil verificado (nunca en un anónimo:
+                    el anónimo no pasó World ID / KYC; ver A2). */}
+                {isVerified && !isAnonymous && (
+                  <Badge
+                    className="shrink-0 bg-blue-500 text-white border-0 text-[10px] sm:text-xs"
+                    title="Perfil verificado"
+                  >
+                    ✓ Verificado
+                  </Badge>
+                )}
+                {/* Ronda 9 (stream A, punto 3): insignia de anónimo */}
+                {isAnonymous && (
+                  <Badge
+                    className="shrink-0 bg-slate-600 text-white border-0 text-[10px] sm:text-xs"
+                    title="Perfil anónimo: solo visible para cuentas verificadas"
+                  >
+                    Anónimo
+                  </Badge>
+                )}
+              </div>
               {!isOnline && lastSeen && (
-                <span className="text-xs text-white/60 hidden sm:inline">
+                <span className="text-xs text-slate-500 dark:text-white/60 hidden sm:inline">
                   {lastSeen}
                 </span>
               )}
             </div>
 
             {/* Location */}
-            <div className="flex items-center gap-1 text-white/80">
+            <div className="flex items-center gap-1 text-slate-600 dark:text-white/80">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
               <span className="text-xs sm:text-sm truncate">{location}</span>
             </div>
@@ -236,7 +331,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
             {/* Bio */}
             {bio && (
               <motion.p
-                className="text-xs sm:text-sm text-white/90 line-clamp-2 sm:line-clamp-3"
+                className="text-xs sm:text-sm text-slate-600 dark:text-white/90 line-clamp-2 sm:line-clamp-3"
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 transition={{ delay: 0.1 }}
@@ -257,7 +352,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   <Badge
                     key={index}
                     variant="secondary"
-                    className="inline-flex items-center text-xs bg-white/10 text-white border-white/20 px-2 py-1 leading-snug max-w-full whitespace-normal break-words"
+                    className="inline-flex items-center text-xs bg-slate-900/5 text-slate-700 border-slate-300 dark:bg-white/10 dark:text-white dark:border-white/20 px-2 py-1 leading-snug max-w-full whitespace-normal break-words"
                   >
                     {interest}
                   </Badge>
@@ -265,7 +360,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 {interests.length > 3 && (
                   <Badge
                     variant="secondary"
-                    className="inline-flex items-center text-xs bg-white/10 text-white border-white/20 px-2 py-1 leading-snug"
+                    className="inline-flex items-center text-xs bg-slate-900/5 text-slate-700 border-slate-300 dark:bg-white/10 dark:text-white dark:border-white/20 px-2 py-1 leading-snug"
                   >
                     +{interests.length - 3}
                   </Badge>
@@ -284,10 +379,15 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 variant="ghost"
                 size="sm"
                 onClick={handleLike}
+                title={
+                  isViewerAnonymous
+                    ? ANONYMOUS_LIKE_BLOCKED_MESSAGE
+                    : "Me gusta"
+                }
                 className={`flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation ${
                   isLiked
-                    ? "bg-red-500/30 text-red-400 hover:bg-red-500/40 border border-red-500/50"
-                    : "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20"
+                    ? "bg-red-500/15 text-red-600 hover:bg-red-500/25 border border-red-500/50 dark:bg-red-500/30 dark:text-red-400 dark:hover:bg-red-500/40"
+                    : "bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 active:bg-slate-900/15 border border-slate-300 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/30 dark:border-white/20"
                 }`}
               >
                 <motion.div
@@ -317,10 +417,10 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 className={cn(
                   "flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation",
                   canMessage && !isPrivate
-                    ? "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20"
+                    ? "bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 active:bg-slate-900/15 border border-slate-300 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/30 dark:border-white/20"
                     : isPrivate && !canMessage
-                      ? "bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-500/40"
-                      : "bg-white/5 text-white/50 cursor-not-allowed",
+                      ? "bg-yellow-500/15 text-yellow-700 hover:bg-yellow-500/25 border border-yellow-500/40 dark:bg-yellow-500/20 dark:text-yellow-300 dark:hover:bg-yellow-500/30"
+                      : "bg-slate-900/5 text-slate-400 cursor-not-allowed dark:bg-white/5 dark:text-white/50",
                 )}
               >
                 <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
@@ -342,13 +442,15 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                     return;
                   }
                   setShowViews(!showViews);
-                  onViewProfile?.(id);
+                  // El id que se pasa es el id REAL del perfil (profileId),
+                  // no el numérico derivado: ese nunca igualaba a ningún perfil.
+                  onViewProfile?.(profileId ?? id);
                 }}
                 className={cn(
                   "relative transition-all duration-300 px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation group",
                   isPrivate && !canMessage
-                    ? "bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-500/40"
-                    : "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20"
+                    ? "bg-yellow-500/15 text-yellow-700 hover:bg-yellow-500/25 border border-yellow-500/40 dark:bg-yellow-500/20 dark:text-yellow-300 dark:hover:bg-yellow-500/30"
+                    : "bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 active:bg-slate-900/15 border border-slate-300 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/30 dark:border-white/20"
                 )}
                 title={`${isPrivate && !canMessage ? "Perfil privado - Solicitar acceso" : `${viewCount} visualizaciones`}`}
               >

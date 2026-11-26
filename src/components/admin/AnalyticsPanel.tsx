@@ -363,7 +363,7 @@ export function AnalyticsPanel() {
 
       if (response.success && response.metrics) {
         setTokenMetrics(response.metrics);
-        logger.info("✅ Métricas de tokens cargadías");
+        logger.info("✅ Métricas de tokens cargadas");
       } else {
         setTokenError(response.error || "Error cargando métricas de tokens");
         logger.warn("⚠️ Error cargando métricas de tokens:", { error: response.error });

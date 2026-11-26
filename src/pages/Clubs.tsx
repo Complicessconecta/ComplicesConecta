@@ -12,10 +12,14 @@ import { MapPin, Star, CheckCircle, FileText, Shield, Search, Globe, Camera, Awa
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
+import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { logger } from "@/lib/logger";
 import type { Database } from "@/types/supabase-generated";
 import type { Club as ClubEntity } from "@/entities/club";
-import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
+import { PUBLIC_CLUBS, type PublicClub } from "./ClubsPublic";
+import { TermsModalClub } from "@/components/modals/TermsModalClub";
+import ClubConsentManager from "@/components/legal/ClubConsentManager";
+import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews, ExpandableClubDescription } from "@/components/clubs";
 
 type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
 
@@ -48,6 +52,76 @@ interface Club extends Omit<
   review_count: number;
   check_in_count: number;
   check_in_radius_meters: number | null;
+}
+
+/**
+ * Fallback cuando Supabase no devuelve clubs (tabla vacía, RLS o error de
+ * red): muestra los clubs públicos del catálogo en vez de un toast de error
+ * y una página vacía (el video muestra "No se pudieron cargar los clubs").
+ * Los campos de BD que el catálogo no tiene se rellenan con valores demo.
+ */
+function mapPublicClubToClub(c: PublicClub): Club {
+  const now = new Date().toISOString();
+  return {
+    id: c.id,
+    slug: c.slug,
+    name: c.name,
+    description: c.description,
+    address: c.address,
+    city: c.city,
+    state: c.state,
+    country: "México",
+    email: null,
+    phone: null,
+    website: null,
+    logo_url: null,
+    cover_image_url: c.coverImage,
+    latitude: 19.4326,
+    longitude: -99.1332,
+    is_active: true,
+    is_featured: c.tier === "premium",
+    is_verified: true,
+    verified_at: now,
+    verified_by: null,
+    created_at: now,
+    updated_at: now,
+    created_by: null,
+    rating_average: c.rating,
+    rating_count: c.reviews,
+    review_count: c.reviews,
+    total_reviews: c.reviews,
+    check_in_count: c.checkIns,
+    check_in_radius_meters: 500,
+    average_rating: c.rating,
+    bayesian_score: c.rating,
+    membership_tier: c.tier,
+    metadata: null,
+    stripe_account_id: null,
+    total_revenue_cmpx: null,
+    total_revenue_usd: null,
+    vibe_status: c.vibe,
+    vibe_status_updated_at: now,
+  };
+}
+
+/**
+ * Sin duplicados por nombre normalizado: el catálogo público trae "Club
+ * Demo CómplicesConecta" y la tabla clubs de BD puede traer el mismo club
+ * como "Club Demo", y la lista mostraba Club Demo dos veces. Dos nombres
+ * son el mismo club si uno es prefijo del otro ("club demo" ⊂ "club demo
+ * cómplicesconecta"); la primera ocurrencia manda (BD antes que catálogo).
+ */
+function dedupeClubs(list: Club[]): Club[] {
+  const seen: string[] = [];
+  return list.filter((club) => {
+    const key = club.name.trim().toLowerCase();
+    if (
+      seen.some((prev) => prev === key || prev.startsWith(key) || key.startsWith(prev))
+    )
+      return false;
+    seen.push(key);
+    return true;
+  });
 }
 
 const toClubEntity = (club: Club): ClubEntity => {
@@ -134,7 +208,7 @@ const DEMO_ANALYTICS = {
 };
 
 export const Clubs = () => {
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  const { user, profile, isAuthenticated, isAdmin } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { slug } = useParams<{ slug?: string }>();
@@ -153,6 +227,10 @@ export const Clubs = () => {
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // Términos de uso para clubs: el registro exige aceptar los términos y la
+  // política de privacidad para clubs (TermsModalClub).
+  const [showClubTermsModal, setShowClubTermsModal] = useState(false);
+  const [clubTermsAccepted, setClubTermsAccepted] = useState(false);
   const [selectedClub, setSelectedClub] = useState<ClubEntity | null>(null);
 
   // Formulario de registro de club
@@ -254,7 +332,9 @@ export const Clubs = () => {
     }
 
     if (slug === "demo") {
-      setSelectedClub(DEMO_CLUB);
+      // Demo en modo creador/admin: la vista pública es /clubs-public/demo;
+      // /clubs/demo muestra el panel de administración del club.
+      navigate("/clubs/demo", { replace: true });
       return;
     }
 
@@ -286,6 +366,20 @@ export const Clubs = () => {
 
         if (!bySlugError && bySlug) {
           setSelectedClub(toClubEntity(bySlug as Club));
+          return;
+        }
+
+        // Respaldo del catálogo público (ronda 7, punto 7): "Eden Noir"
+        // solo vive en PUBLIC_CLUBS, no en la tabla clubs. Sin este
+        // paso, /clubs/eden-noir no resolvía nunca el detalle y la
+        // página mostraba la lista genérica; la búsqueda sí lo
+        // encontraba en la lista mezclada, pero el detalle era
+        // inalcanzable. El catálogo manda por slug cuando la BD no
+        // tiene el club (la BD sigue mandando cuando sí lo tiene, por
+        // el `found` de arriba).
+        const catalog = PUBLIC_CLUBS.find((c) => c.slug === slug);
+        if (catalog) {
+          setSelectedClub(toClubEntity(mapPublicClubToClub(catalog)));
         }
       } catch (error) {
         logger.error("Error loading club profile:", {
@@ -357,18 +451,33 @@ export const Clubs = () => {
 
       if (error) throw error;
 
-      setClubs((data || []) as Club[]);
+      // Sin clubs en BD (tabla vacía / RLS): mostrar el catálogo público
+      // en vez de una página vacía.
+      if (!data || data.length === 0) {
+        logger.warn("No clubs in Supabase, using public catalog fallback");
+        setClubs(dedupeClubs(PUBLIC_CLUBS.map(mapPublicClubToClub)));
+        return;
+      }
+
+      // El catálogo público se MEZCLA con las filas de BD (la BD manda):
+      // antes, si la tabla traía filas, el catálogo se descartaba entero y
+      // "Eden Noir" (que solo vive en el catálogo) no aparecía en /clubs
+      // ni en la búsqueda. Sin clubs en BD se usa solo el catálogo (abajo).
+      setClubs(
+        dedupeClubs([
+          ...((data || []) as Club[]),
+          ...PUBLIC_CLUBS.map(mapPublicClubToClub),
+        ]),
+      );
       logger.info("Clubs loaded successfully", { count: data?.length });
     } catch (error) {
-      logger.error("Error loading clubs:", {
+      logger.error("Error loading clubs, using public catalog fallback:", {
         error: error instanceof Error ? error.message : JSON.stringify(error),
         stack: error instanceof Error ? error.stack : undefined,
       });
-      toast({
-        title: "Error",
-        description: "No se pudieron cargar los clubs",
-        variant: "destructive",
-      });
+      // Fallback al catálogo público: la página sigue mostrando clubs y no
+      // se muestra un toast de error destructivo por un fallo de red/RLS.
+      setClubs(dedupeClubs(PUBLIC_CLUBS.map(mapPublicClubToClub)));
     } finally {
       setLoading(false);
     }
@@ -396,18 +505,20 @@ export const Clubs = () => {
   const filterClubs = () => {
     let filtered = clubs;
 
+    // La búsqueda compara nombre y ciudad (no descripción ni dirección):
+    // buscar "Eden" no debe dejar a "Club Demo" solo porque su descripción
+    // o dirección comparta una palabra.
     if (searchQuery) {
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (club) =>
-          club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (club.address && club.address.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          (club.description &&
-            club.description.toLowerCase().includes(searchQuery.toLowerCase())),
+          club.name.toLowerCase().includes(q) ||
+          (club.city && club.city.toLowerCase().includes(q)),
       );
     }
 
     if (selectedCity !== "all") {
-      filtered = filtered.filter((club) => club.address === selectedCity);
+      filtered = filtered.filter((club) => club.city === selectedCity);
     }
 
     setFilteredClubs(filtered);
@@ -459,7 +570,9 @@ export const Clubs = () => {
     }
   };
 
-  const cities = [...new Set(clubs.map((club) => club.address).filter((loc): loc is string => Boolean(loc)))];
+  // El filtro "Ciudad" ofrece ciudades (club.city), no direcciones
+  // completas: antes listaba "Av. Insurgentes Sur 123" y similares.
+  const cities = [...new Set(clubs.map((club) => club.city).filter((c): c is string => Boolean(c)))];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -471,15 +584,36 @@ export const Clubs = () => {
 
   const handleClubSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Sin aceptar los términos de club no se envía: abrir el modal.
+    if (!clubTermsAccepted) {
+      setShowClubTermsModal(true);
+      return;
+    }
+    await submitClubApplication();
+  };
+
+  const submitClubApplication = async () => {
     setSubmitting(true);
 
     try {
-      // Generar contraseña temporal aleatoria (12 caracteres)
+      // Generar contraseña temporal aleatoria (12 caracteres) con
+      // crypto.getRandomValues (CSPRNG). Math.random() NO es seguro para
+      // credenciales (auditoría forense). Muestreo por rechazo para evitar
+      // sesgo de módulo (2^32 % 70 = 46).
       const generateTempPassword = () => {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+        const randomValues = new Uint32Array(12);
+        crypto.getRandomValues(randomValues);
+        const maxValid = Math.floor(0xffffffff / chars.length) * chars.length;
         let password = '';
-        for (let i = 0; i < 12; i++) {
-          password += chars.charAt(Math.floor(Math.random() * chars.length));
+        for (const value of randomValues) {
+          let v = value;
+          while (v >= maxValid) {
+            const refill = new Uint32Array(1);
+            crypto.getRandomValues(refill);
+            v = refill[0] as number;
+          }
+          password += chars.charAt(v % chars.length);
         }
         return password;
       };
@@ -489,7 +623,7 @@ export const Clubs = () => {
 
       // Guardar en base de datos usando cast para evitar error de tipos
       const { data, error } = await supabase!
-        .from("club_applications" as never)
+        .from("club_applications")
         .insert([
           {
             owner_name: clubForm.ownerName,
@@ -522,7 +656,7 @@ export const Clubs = () => {
             temp_password: tempPassword,
             temp_password_expires_at: tempPasswordExpiresAt.toISOString(),
             temp_password_used: false,
-          } as never,
+          },
         ])
         .select()
         .single();
@@ -612,7 +746,7 @@ export const Clubs = () => {
               <Button
                 variant="outline"
                 onClick={() => navigate("/clubs")}
-                className="border-white/30 text-white hover:bg-white/10"
+                className="border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
               >
                 Volver
               </Button>
@@ -625,7 +759,40 @@ export const Clubs = () => {
               reviews={DEMO_REVIEWS}
               averageRating={selectedClub.rating_average}
               totalReviews={selectedClub.rating_count}
+              clubId={String(selectedClub.id)}
+              currentUserName={
+                profile?.display_name ?? user?.email ?? "Tú"
+              }
+              isAnonymous={isAnonymousDemoProfile(profile)}
             />
+
+            {/* Consentimiento del club: el usuario acepta los documentos del
+                club (términos, privacidad, descargo) y queda guardado en
+                public.user_consents con club_id. */}
+            {user?.id && (
+              <ClubConsentManager
+                clubId={selectedClub.id}
+                userId={user.id}
+                onConsentComplete={(consents) => {
+                  logger.info("Consentimientos del club aceptados", {
+                    clubId: selectedClub.id,
+                    count: consents.length,
+                  });
+                  toast({
+                    title: "Consentimiento guardado",
+                    description: "Tus consentimientos para este club quedaron registrados.",
+                    variant: "default",
+                  });
+                }}
+                onConsentError={(error) => {
+                  toast({
+                    title: "Error",
+                    description: error,
+                    variant: "destructive",
+                  });
+                }}
+              />
+            )}
             {selectedClub.id === "demo" && (
               <ClubProfileAdmin analytics={DEMO_ANALYTICS} clubId={selectedClub.id} />
             )}
@@ -659,16 +826,22 @@ export const Clubs = () => {
           <Badge className="bg-linear-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
             🏢 CLUBS VERIFICADOS
           </Badge>
-          <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
+          {/* RONDA 11 (stream B, B3): el hero y la tarjeta de
+              verificación eran `text-white` sobre cristal `bg-white/10`:
+              en tema claro el fondo es lavanda claro y el texto blanco
+              era ilegible. Ahora el fondo de la tarjeta es blanco opaco
+              en claro (oscuro translúcido en oscuro) y los textos
+              llevan su variante clara. */}
+          <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-slate-900 dark:text-white mb-6 leading-tight">
             Clubs
             <span className="bg-linear-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               {" "}
               Verificados
             </span>
           </h1>
-          <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-slate-600 dark:text-white/80 max-w-3xl mx-auto mb-8">
             Descubre clubs auténticos con check-ins geolocalizados, reseñas
-            verificadías y sistema de watermark automático
+            verificadas y sistema de watermark automático
           </p>
         </motion.div>
 
@@ -679,15 +852,15 @@ export const Clubs = () => {
           transition={{ delay: 0.2 }}
           className="mb-12"
         >
-          <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 shadow-2xl">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
+              <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
                 <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                   <Verified className="h-6 w-6 text-white" />
                 </div>
                 Sistema de Clubs Verificados
               </CardTitle>
-              <CardDescription className="text-white/70 text-lg">
+              <CardDescription className="text-slate-600 dark:text-white/70 text-lg">
                 Proceso riguroso de verificación para garantizar clubs
                 auténticos y experiencias seguras
               </CardDescription>
@@ -696,7 +869,7 @@ export const Clubs = () => {
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Proceso de Verificación */}
                 <div>
-                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <Target className="h-5 w-5 text-green-400" />
                     Proceso de Verificación
                   </h4>
@@ -704,16 +877,16 @@ export const Clubs = () => {
                     {clubSystemInfo.verificationProcess.map((step, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
+                        className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10"
                       >
                         <div className="p-2 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg text-white shrink-0">
                           {step.icon}
                         </div>
                         <div>
-                          <h5 className="font-semibold text-white">
+                          <h5 className="font-semibold text-slate-900 dark:text-white">
                             {step.step}
                           </h5>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             {step.description}
                           </p>
                         </div>
@@ -724,7 +897,7 @@ export const Clubs = () => {
 
                 {/* Beneficios */}
                 <div>
-                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-purple-400" />
                     Beneficios de Verificación
                   </h4>
@@ -732,16 +905,16 @@ export const Clubs = () => {
                     {clubSystemInfo.benefits.map((benefit, index) => (
                       <div
                         key={index}
-                        className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
+                        className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10"
                       >
                         <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white shrink-0">
                           {benefit.icon}
                         </div>
                         <div>
-                          <h5 className="font-semibold text-white">
+                          <h5 className="font-semibold text-slate-900 dark:text-white">
                             {benefit.title}
                           </h5>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             {benefit.description}
                           </p>
                         </div>
@@ -784,7 +957,7 @@ export const Clubs = () => {
                     className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
                   >
                     <option value="all" className="bg-purple-900">
-                      Todías las ciudades
+                      Todas las ciudades
                     </option>
                     {cities.map((city) => (
                       <option key={city} value={city || ""} className="bg-purple-900">
@@ -1082,9 +1255,11 @@ export const Clubs = () => {
                         </div>
 
                         {DEMO_CLUB.description && (
-                          <p className="text-white/80 text-sm mb-4 line-clamp-2">
-                            {DEMO_CLUB.description}
-                          </p>
+                          <ExpandableClubDescription
+                            text={DEMO_CLUB.description}
+                            className="mb-4"
+                            textClassName="text-white/80 text-sm"
+                          />
                         )}
 
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
@@ -1112,7 +1287,7 @@ export const Clubs = () => {
 
                         <div className="flex gap-2">
                           <Button
-                            onClick={() => navigate(`/clubs-public/${DEMO_CLUB.slug}`)}
+                            onClick={() => navigate("/clubs/demo")}
                             className="flex-1 bg-linear-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />
@@ -1188,9 +1363,11 @@ export const Clubs = () => {
                         </div>
 
                         {club.description && (
-                          <p className="text-white/80 text-sm mb-4 line-clamp-2">
-                            {club.description}
-                          </p>
+                          <ExpandableClubDescription
+                            text={club.description}
+                            className="mb-4"
+                            textClassName="text-white/80 text-sm"
+                          />
                         )}
 
                         {/* Estadísticas */}
@@ -1630,6 +1807,25 @@ export const Clubs = () => {
               </div>
             </div>
 
+            {/* Términos de uso para clubs (obligatorios para registrar) */}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setShowClubTermsModal(true)}
+                className="text-sm text-purple-300 hover:text-purple-200 underline underline-offset-2"
+              >
+                {clubTermsAccepted
+                  ? "✓ Términos de Uso para Clubs aceptados (ver)"
+                  : "Leer y aceptar los Términos de Uso para Clubs"}
+              </button>
+              {!clubTermsAccepted && (
+                <p className="text-xs text-white/60 mt-1">
+                  Debes aceptar los términos y la política de privacidad para
+                  clubs para enviar la solicitud.
+                </p>
+              )}
+            </div>
+
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"
@@ -1659,6 +1855,18 @@ export const Clubs = () => {
             </div>
           </form>
         </Modal>
+
+        {/* Modal de términos de uso para clubs */}
+        <TermsModalClub
+          isOpen={showClubTermsModal}
+          onClose={() => setShowClubTermsModal(false)}
+          onAccept={() => {
+            setClubTermsAccepted(true);
+            setShowClubTermsModal(false);
+            // Aceptados: enviar la solicitud de inmediato.
+            void submitClubApplication();
+          }}
+        />
           </>
         )}
       </div>

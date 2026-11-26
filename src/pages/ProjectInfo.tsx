@@ -33,7 +33,7 @@ export default function ProjectInfo() {
               Volver
             </Button>
             <h1 className="text-3xl font-bold text-white">
-              Informacin del Proyecto
+              Información del Proyecto
             </h1>
           </div>
 
@@ -137,7 +137,7 @@ export default function ProjectInfo() {
                     <li> Video chat P2P con WebRTC</li>
                     <li> Push notifications nativas</li>
                     <li> Sistema de conexiones y privacidad</li>
-                    <li> Galerías privadías con NFT</li>
+                    <li> Galerías privadas con NFT</li>
                     <li> Perfiles de pareja avanzados</li>
                     <li> Eventos VIP exclusivos</li>
                     <li> Sistema de tokens CMPX y GTK</li>
@@ -196,7 +196,7 @@ export default function ProjectInfo() {
                   </h2>
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> ? Verificador IA de Consentimiento en Chats</li>
-                    <li> ? Galeras NFT-Verificadías con GTK</li>
+                    <li> ? Galerías NFT-Verificadas con GTK</li>
                     <li> ? Matching Predictivo con Graphs Sociales (Neo4j)</li>
                     <li> ? Eventos Virtuales Sostenibles con Tokens</li>
                     <li> ? Neo4j Graph Database 100% operativo</li>
@@ -221,8 +221,8 @@ export default function ProjectInfo() {
                   </h2>
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> ?? Perfiles de pareja completos</li>
-                    <li> ??? Galeras pblicas y privadías</li>
-                    <li> ?? Sistema de verificacin</li>
+                    <li> ??? Galerías públicas y privadas</li>
+                    <li> ?? Sistema de verificación</li>
                     <li> ?? Eventos y experiencias</li>
                   </ul>
 
@@ -244,7 +244,7 @@ export default function ProjectInfo() {
 
                   <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4 mb-6">
                     <h2 className="text-2xl font-bold text-blue-400 mb-2">
-                      ?? nete al Equipo de Moderacin
+                      ?? nete al Equipo de Moderación
                     </h2>
                     <p className="text-white">
                       Aydanos a mantener ComplicesConecta como una comunidad
@@ -259,7 +259,7 @@ export default function ProjectInfo() {
                     <li> Revisar reportes de usuarios y contenido</li>
                     <li> Mantener un ambiente seguro y respetuoso</li>
                     <li> Aplicar las polticas de la comunidad</li>
-                    <li> Asistir a usuarios con dudías o problemas</li>
+                    <li> Asistir a usuarios con dudas o problemas</li>
                     <li> Colaborar con el equipo de desarrollo</li>
                   </ul>
 
@@ -271,7 +271,7 @@ export default function ProjectInfo() {
                     <li> Tokens CMPX adicionales mensuales</li>
                     <li> Badge especial de Moderador</li>
                     <li> Participacin en decisiones de la comunidad</li>
-                    <li> Experiencia en moderacin de plataformas</li>
+                    <li> Experiencia en moderación de plataformas</li>
                   </ul>
 
                   <h2 className="text-2xl font-bold text-white mb-4">
@@ -293,14 +293,14 @@ export default function ProjectInfo() {
             </CardContent>
           </Card>
 
-          {/* Informacin Sensible Protegida */}
+          {/* Información Sensible Protegida */}
           <Card className="bg-white/10 backdrop-blur-md border-white/20 mt-6">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Lock className="h-5 w-5 text-yellow-400" />
                   <span className="text-white font-medium">
-                    Informacin Tcnica Detallada
+                    Información Tcnica Detallada
                   </span>
                 </div>
                 <Dialog>
@@ -312,7 +312,7 @@ export default function ProjectInfo() {
                   <DialogContent className="bg-gray-900 border-white/20 max-w-4xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
                       <DialogTitle className="text-white">
-                        Informacin Tcnica del Proyecto
+                        Información Tcnica del Proyecto
                       </DialogTitle>
                     </DialogHeader>
                     <div className="text-white/90 space-y-4">
@@ -484,7 +484,7 @@ const ModeratorApplicationModal = () => {
 
       toast({
         title: "Solicitud enviada exitosamente!",
-        description: `Tu solicitud para moderador ha sido registrada. Te contactaremos en las prximas 48 horas.`,
+        description: `Tu solicitud para moderador ha sido registrada. Te contactaremos en las próximas 48 horas.`,
         duration: 7000,
       });
 
@@ -566,12 +566,12 @@ const ModeratorApplicationModal = () => {
           </div>
 
           <div>
-            <Label className="text-white">Experiencia en Moderacin *</Label>
+            <Label className="text-white">Experiencia en Moderación *</Label>
             <Textarea
               value={formData.experiencia}
               onChange={(e) => handleInputChange("experiencia", e.target.value)}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50 min-h-[80px]"
-              placeholder="Describe tu experiencia previa en moderacin o gestin de comunidades..."
+              placeholder="Describe tu experiencia previa en moderación o gestin de comunidades..."
               required
             />
           </div>
@@ -584,7 +584,7 @@ const ModeratorApplicationModal = () => {
               value={formData.motivacion}
               onChange={(e) => handleInputChange("motivacion", e.target.value)}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50 min-h-[80px]"
-              placeholder="Cuntanos tu motivacin para ser parte del equipo de moderacin..."
+              placeholder="Cuntanos tu motivacin para ser parte del equipo de moderación..."
               required
             />
           </div>

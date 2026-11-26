@@ -78,19 +78,34 @@ const IMAGE_POOLS = {
     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face",
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
   ],
+  // Pool de parejas: SOLO fotos de pareja juntas, verificadas una a
+  // una por vista (no por el comentario que traían). Revisión ronda 5
+  // (2026-11-24): de las 8 anteriores, 3 NO eran pareja junta y se
+  // sacaron — 1522098543979 son dos hombres en la playa, 1516589178581
+  // son dos manos formando un corazón (esa era la foto que se repetía
+  // como post de Ana y avatar del chat) y 1465495976277 son solo manos
+  // con anillos y ramo, sin caras. Las 3 de reemplazo se verificaron
+  // por vista: 1519741497674 novios con ramo, 1532712938310 novios
+  // caminando de la mano en la montaña y 1591604466107 retrato de
+  // novios. 8 fotos distintas para 6 parejas demo + perfiles
+  // aleatorios, sin reutilizar hasta agotar el pool.
   couple: [
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=400&fit=crop",
+    // Pareja de boda caminando de la mano
     "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop",
+    // Pareja en silueta al atardecer
+    "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
+    // Pareja en bicicleta tomados de la mano al atardecer
+    "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&h=400&fit=crop",
+    // Novios soltando globos en boda
+    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=400&fit=crop",
+    // Novios besándose en boda
+    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop",
+    // Novios con ramo, a contraluz
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+    // Novios caminando de la mano en la montaña
+    "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=400&h=400&fit=crop",
+    // Retrato de novios con ramo
+    "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=400&fit=crop",
   ],
 };
 
@@ -138,8 +153,13 @@ export function pickProfileImage(
     attempts++;
   }
 
-  // Fallback: usar cualquier imagen del pool si todías están usadías
-  for (const img of pool) {
+  // Fallback: pool agotado (más perfiles que fotos). Antes devolvía
+  // siempre pool[0], así que TODOS los perfiles extra compartían la
+  // misma foto; ahora se reparte en rotación para no concentrar la
+  // reutilización en una sola imagen.
+  for (let i = 0; i < pool.length; i++) {
+    const img = pool[poolCounters[poolKey] % pool.length];
+    poolCounters[poolKey]++;
     if (img) {
       selectedImage = img;
       used.add(selectedImage);
@@ -186,4 +206,3 @@ export function getImageUsageStats() {
     },
   };
 }
-

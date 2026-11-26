@@ -24,7 +24,7 @@ const ALLOWED_MIME_TYPES = {
   audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp4"],
 } as const;
 
-// Extensiones permitidías por categoría
+// Extensiones permitidas por categoría
 const ALLOWED_EXTENSIONS = {
   images: ["jpg", "jpeg", "png", "webp", "avif", "gif"],
   documents: ["pdf", "txt", "doc", "docx"],

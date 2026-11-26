@@ -3,14 +3,70 @@
  * Perfiles mock para desarrollo y testing
  */
 
-import { v4 as uuidv4 } from "uuid";
+import { generateDemoUUID } from "@/lib/demo-uuid";
 import { pickProfileImage, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
 import { getAutoInterests } from "@/lib/lifestyle-interests";
+
+/**
+ * Datos canónicos de la pareja demo (UNA sola fuente, ronda 5):
+ * Carmen & Roberto, 25 y 28 años (los mismos que la semilla demo de
+ * `ProfileCouple.tsx`). Antes cada sitio decía una edad distinta:
+ * 31 en el roster de Discover, 35 en Matches, 25/28 en el perfil
+ * propio. La foto principal es la que les asigna el pool de pareja
+ * (2ª del pool, silueta al atardecer) — la misma en Discover, Matches
+ * y su perfil propio, nunca la de otra pareja.
+ */
+export const DEMO_COUPLE_CARMEN_ROBERTO = {
+  name: "Carmen & Roberto",
+  partner1: { name: "Carmen", age: 25 },
+  partner2: { name: "Roberto", age: 28 },
+  /** "25 y 28 años". */
+  ageLabel: "25 y 28 años",
+  mainImage:
+    "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
+} as const;
+
+/**
+ * Foto canónica de Sofía (single demo, 28 años, id 609dcb3b…): retrato
+ * verificado, la misma en su avatar, su galería pública y Matches.
+ * Antes su avatar apuntaba a `img/demo-single-avatar.jpg` (no existe)
+ * y su galería pública eran 3 mujeres distintas.
+ */
+export const SOFIA_CANONICAL_PHOTO =
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face";
+
+/** Id base de la foto canónica de Sofía, para derivar encuadres. */
+export const SOFIA_CANONICAL_PHOTO_ID = "1494790108377-be9c29b29330";
+
+/**
+ * Fotos públicas de Sofía (3 DISTINTAS, del pool de retratos femeninos
+ * de @/lib/media): la canónica (la misma que su avatar) + 2 retratos
+ * distintos del pool. Antes eran 3 recortes (face/top/entropy) de la
+ * MISMA foto canónica y en el perfil se veían como la misma imagen
+ * repetida 3 veces. Recortes distintos no bastan si se ven iguales.
+ */
+export const SOFIA_PUBLIC_PHOTOS = [
+  SOFIA_CANONICAL_PHOTO,
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
+] as const;
+
+export const SOFIA_PUBLIC_PHOTOS_FULL = [
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&h=900&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=900&h=900&fit=crop&crop=face",
+] as const;
+
+/** Etiqueta de edad de una pareja ("25 y 28 años"). */
+export const formatCoupleAgeLabel = (age: number, partnerAge: number): string =>
+  `${age} y ${partnerAge} años`;
 
 export interface DemoProfile {
   id: string;
   name: string;
   age: number;
+  /** Edad del segundo miembro (solo parejas, p. ej. Carmen 25 / Roberto 28). */
+  partnerAge?: number;
   location: string;
   distance: number;
   interests: string[];
@@ -20,6 +76,12 @@ export interface DemoProfile {
   lastActive: string;
   isVerified: boolean;
   isPremium: boolean;
+  /**
+   * Ronda 10 (stream A, punto A2): perfil anónimo en el roster demo
+   * (la tarjeta muestra la insignia "Anónimo" y nunca "✓ Verificado").
+   * Opcional: los perfiles demo semilla no son anónimos.
+   */
+  isAnonymous?: boolean;
   rating: number;
   matchScore: number;
   profileType: ProfileType;
@@ -29,66 +91,79 @@ export interface DemoProfile {
   isDemo: true;
 }
 
+/**
+ * Roster canónico de perfiles demo de Discover.
+ * DETERMINISTA: nombres únicos (sin repetidos), género coherente con el
+ * nombre — Ana es mujer y lleva foto de mujer, Francisco es hombre y
+ * lleva foto de hombre —, ids estables entre cargas (generateDemoUUID con
+ * seed fijo, nunca uuidv4 ni Math.random), y contadores/orden fijos.
+ * Las parejas se nombran "X & Y" para que el filtro "Pareja" las distinga.
+ */
+const DEMO_ROSTER: Array<{
+  name: string;
+  gender: Gender;
+  profileType: ProfileType;
+  age: number;
+  /** Edad del segundo miembro (solo parejas). */
+  partnerAge?: number;
+  location: string;
+}> = [
+  { name: "Ana", gender: "female", profileType: "single", age: 26, location: "Guadalajara" },
+  { name: "Francisco", gender: "male", profileType: "single", age: 34, location: "Ciudad de México" },
+  { name: "María & Juan", gender: "unknown", profileType: "couple", age: 29, location: "Guadalajara" },
+  { name: "Carlos", gender: "male", profileType: "single", age: 32, location: "Monterrey" },
+  { name: "Laura", gender: "female", profileType: "single", age: 27, location: "Puebla" },
+  { name: "Carmen & Roberto", gender: "unknown", profileType: "couple", age: 25, partnerAge: 28, location: "Ciudad de México" },
+  { name: "Miguel", gender: "male", profileType: "single", age: 35, location: "Tijuana" },
+  { name: "Lucía", gender: "female", profileType: "single", age: 24, location: "Mérida" },
+  { name: "Javier & Elena", gender: "unknown", profileType: "couple", age: 33, location: "Querétaro" },
+  { name: "David", gender: "male", profileType: "single", age: 30, location: "León" },
+  { name: "Cristina", gender: "female", profileType: "single", age: 28, location: "Monterrey" },
+  { name: "Alejandro", gender: "male", profileType: "single", age: 36, location: "Guadalajara" },
+  { name: "Rosa & Daniel", gender: "unknown", profileType: "couple", age: 30, location: "Puebla" },
+  { name: "Isabel", gender: "female", profileType: "single", age: 25, location: "Ciudad de México" },
+  { name: "Rafael", gender: "male", profileType: "single", age: 38, location: "Torreón" },
+  { name: "Pilar", gender: "female", profileType: "single", age: 29, location: "San Luis Potosí" },
+  { name: "Sergio & Teresa", gender: "unknown", profileType: "couple", age: 34, location: "Cuernavaca" },
+  { name: "Manuel", gender: "male", profileType: "single", age: 41, location: "Mexicali" },
+  { name: "Dolores", gender: "female", profileType: "single", age: 33, location: "Aguascalientes" },
+  { name: "Pablo & Raquel", gender: "unknown", profileType: "couple", age: 27, location: "Mérida" },
+];
+
+/**
+ * Fotos de pareja VERIFICADAS por vista, una a una: cada URL es una
+ * foto distinta de una pareja junta (no símbolos ni fotos sueltas).
+ * Revisión ronda 5 (2026-11-24): se sacaron 1522098543979 (dos
+ * hombres en la playa), 1516589178581 (dos manos formando un corazón
+ * — esa era la foto que se repetía como post de Ana y avatar del
+ * chat) y 1465495976277 (solo manos con anillos, sin caras). Reemplazos
+ * verificados por vista: 1519741497674 novios con ramo, 1532712938310
+ * novios caminando de la mano en la montaña y 1591604466107 retrato
+ * de novios. Mismo pool que el "couple" de @/lib/media (8 fotos para
+ * 6 parejas demo, sin repetir hasta agotar la lista).
+ */
+export const DEMO_COUPLE_IMAGES = [
+  "https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&h=400&fit=crop",
+];
+
+/** Foto de pareja verificada, sin repetir hasta agotar la lista. */
+const pickVerifiedCoupleImage = (coupleIndex: number, used: Set<string>): string => {
+  const unused = DEMO_COUPLE_IMAGES.find((url) => !used.has(url));
+  const url = unused ?? DEMO_COUPLE_IMAGES[coupleIndex % DEMO_COUPLE_IMAGES.length]!;
+  used.add(url);
+  return url;
+};
+
 export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
-  const nombres = [
-    "Alejandro",
-    "María",
-    "Carlos",
-    "Ana",
-    "José",
-    "Laura",
-    "Miguel",
-    "Carmen",
-    "Antonio",
-    "Isabel",
-    "Manuel",
-    "Pilar",
-    "Francisco",
-    "Dolores",
-    "David",
-    "Cristina",
-    "Javier",
-    "Rosa",
-    "Daniel",
-    "Antonia",
-    "Rafael",
-    "Francisca",
-    "José Luis",
-    "Lucía",
-    "Jesús",
-    "Mercedes",
-    "Ángel",
-    "Josefa",
-    "Marcos",
-    "Elena",
-    "Pedro",
-    "Teresa",
-    "Sergio",
-    "Raquel",
-    "Pablo",
-    "Manuela",
-  ];
-
-  const ubicaciones = [
-    "Ciudad de México",
-    "Guadalajara",
-    "Monterrey",
-    "Puebla",
-    "Tijuana",
-    "León",
-    "Juárez",
-    "Torreón",
-    "Querétaro",
-    "San Luis Potosí",
-    "Mérida",
-    "Mexicali",
-    "Aguascalientes",
-    "Cuernavaca",
-    "Saltillo",
-  ];
-
   const bios = [
-    "Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones auténticas y experiencias compartidías.",
+    "Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones auténticas y experiencias compartidas.",
     "Pareja liberal en busca de otras parejas afines para intercambios. Discreción y comunicación abierta son clave.",
     "Nuevo en el lifestyle swinger, pero con muchas ganas de conocer gente interesante y vivir nuevas experiencias.",
     "Experiencia en el lifestyle, buscando parejas y singles para momentos únicos. Siempre con respeto mutuo.",
@@ -100,49 +175,69 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
 
   resetImageCounters();
 
-  return Array.from({ length: count }, (_, _i) => {
-    const profileType: ProfileType = Math.random() > 0.7 ? "couple" : "single";
-    const gender: Gender = Math.random() > 0.5 ? "male" : "female";
+  // Un solo `used` compartido por toda la tanda: sin fotos repetidas
+  // hasta agotar el pool de cada categoría.
+  const usedImages = new Set<string>();
+  const experienceLevels = ["principiante", "intermedio", "experimentado"];
+
+  // Índice de pareja para rotar las fotos de pareja verificadas.
+  let coupleIndex = 0;
+
+  return Array.from({ length: count }, (_, i) => {
+    const entry = DEMO_ROSTER[i % DEMO_ROSTER.length]!;
+    const profileType: ProfileType = entry.profileType;
+    const gender: Gender = entry.gender;
     const partnerGender: Gender = gender === "male" ? "female" : "male";
 
-    // Nivel de experiencia aleatorio para intereses más variados
-    const experienceLevels = ["principiante", "intermedio", "experimentado"];
+    // Nivel de experiencia determinista por posición.
     const experienceLevel =
-      experienceLevels[Math.floor(Math.random() * experienceLevels.length)];
+      experienceLevels[i % experienceLevels.length]!;
 
-    // Generar intereses automáticos apropiados para el lifestyle swinger
-    const interests = getAutoInterests(profileType, experienceLevel, gender);
+    // Intereses automáticos apropiados para el lifestyle swinger
+    // (getAutoInterests es determinista). Las parejas no tienen género
+    // único: se pasa undefined.
+    const interests = getAutoInterests(
+      profileType,
+      experienceLevel,
+      gender === "unknown" ? undefined : gender,
+    );
 
-    const selectedName = nombres[Math.floor(Math.random() * nombres.length)];
-    const selectedLocation = ubicaciones[Math.floor(Math.random() * ubicaciones.length)];
-    const selectedBio = bios[Math.floor(Math.random() * bios.length)];
-
-    const profile: any = {
-      id: uuidv4(),
-      name: selectedName ?? "Usuario",
-      age: Math.floor(Math.random() * 20) + 25,
-      location: selectedLocation ?? "Ubicación no especificada",
-      distance: Math.floor(Math.random() * 50) + 1,
+    const profile: DemoProfile = {
+      id: generateDemoUUID(`demo-profile-${i + 1}`),
+      name: entry.name,
+      age: entry.age,
+      // Edad del segundo miembro (parejas): la del roster canónico.
+      ...(entry.partnerAge !== undefined
+        ? { partnerAge: entry.partnerAge }
+        : {}),
+      location: entry.location,
+      distance: 3 + ((i * 11) % 47),
       interests,
-      image: pickProfileImage(
-        {
-          id: uuidv4(),
-          name: selectedName ?? "Usuario",
-          type: profileType,
-          gender,
-        },
-        new Set(),
-      ),
-      bio: selectedBio ?? "Sin bio disponible",
-      isOnline: Math.random() > 0.3,
-      lastActive: `Hace ${Math.floor(Math.random() * 60)} min`,
-      isVerified: Math.random() > 0.4,
-      isPremium: Math.random() > 0.7,
-      rating: Math.floor(Math.random() * 2) + 4,
-      matchScore: Math.floor(Math.random() * 30) + 70,
+      // Las parejas NO usan pickProfileImage: su pool "couple" de
+      // @/lib/media está contaminado con fotos de una sola persona y
+      // las tarjetas de pareja salían con foto de un solo hombre.
+      image:
+        profileType === "couple"
+          ? pickVerifiedCoupleImage(coupleIndex++, usedImages)
+          : pickProfileImage(
+              {
+                id: generateDemoUUID(`demo-profile-${i + 1}`),
+                name: entry.name,
+                type: profileType,
+                gender,
+              },
+              usedImages,
+            ),
+      bio: bios[i % bios.length] ?? "Sin bio disponible",
+      isOnline: i % 3 !== 0,
+      lastActive: `Hace ${((i * 7) % 50) + 5} min`,
+      isVerified: i % 4 !== 0,
+      isPremium: i % 5 === 0,
+      rating: 4 + (i % 2) * 0.5,
+      matchScore: 70 + ((i * 7) % 28),
       profileType,
       gender,
-      theme: Math.random() > 0.5 ? "romantic" : "adventurous",
+      theme: i % 2 === 0 ? "romantic" : "adventurous",
       isDemo: true as const,
     };
 
@@ -182,7 +277,7 @@ export const demoProfiles = [
         minted_at: "2025-06-15T10:30:00Z",
         images_count: 12,
         description:
-          "Galería NFT verificada de experiencias compartidías en el lifestyle",
+          "Galería NFT verificada de experiencias compartidas en el lifestyle",
       },
     ],
   },
@@ -283,17 +378,17 @@ export const demoProfiles = [
         minted_at: "2025-08-10T16:45:00Z",
         images_count: 20,
         description:
-          "Galería NFT verificada de encuentros y experiencias compartidías",
+          "Galería NFT verificada de encuentros y experiencias compartidas",
       },
       {
         id: "nft-demo-couple-2",
-        gallery_name: "Fiestas Privadías",
+        gallery_name: "Fiestas Privadas",
         is_verified: true,
         nft_network: "polygon",
         nft_token_id: "#22222",
         minted_at: "2025-09-05T11:20:00Z",
         images_count: 15,
-        description: "Galería NFT de fiestas privadías y eventos exclusivos",
+        description: "Galería NFT de fiestas privadas y eventos exclusivos",
       },
     ],
   },

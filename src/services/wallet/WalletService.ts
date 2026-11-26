@@ -153,14 +153,17 @@ export class WalletService {
     try {
       const wallet = await this.getOrCreateWallet(userId);
 
-      const balanceField = tokenType === 'cmpx' ? 'cmpx_balance' : 'gtk_balance';
       const currentBalance = tokenType === 'cmpx' ? wallet.cmpxBalance : wallet.gtkBalance;
       const newBalance = currentBalance + amount;
+      const balanceUpdate =
+        tokenType === "cmpx"
+          ? { cmpx_balance: newBalance, last_sync: new Date().toISOString() }
+          : { gtk_balance: newBalance, last_sync: new Date().toISOString() };
 
       // Actualizar balance
       const { data: updatedWallet, error: updateError } = await supabase
         .from('wallet_balances')
-        .update({ [balanceField]: newBalance, last_sync: new Date().toISOString() })
+        .update(balanceUpdate)
         .eq('user_id', userId)
         .select()
         .single();
@@ -216,7 +219,6 @@ export class WalletService {
         throw new Error('Wallet not found');
       }
 
-      const balanceField = tokenType === 'cmpx' ? 'cmpx_balance' : 'gtk_balance';
       const currentBalance = tokenType === 'cmpx' ? wallet.cmpxBalance : wallet.gtkBalance;
 
       if (currentBalance < amount) {
@@ -224,11 +226,15 @@ export class WalletService {
       }
 
       const newBalance = currentBalance - amount;
+      const balanceUpdate =
+        tokenType === "cmpx"
+          ? { cmpx_balance: newBalance, last_sync: new Date().toISOString() }
+          : { gtk_balance: newBalance, last_sync: new Date().toISOString() };
 
       // Actualizar balance
       const { data: updatedWallet, error: updateError } = await supabase
         .from('wallet_balances')
-        .update({ [balanceField]: newBalance, last_sync: new Date().toISOString() })
+        .update(balanceUpdate)
         .eq('user_id', userId)
         .select()
         .single();

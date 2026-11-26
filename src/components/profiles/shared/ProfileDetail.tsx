@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
@@ -9,10 +10,34 @@ import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
+import { ReportDialog } from "@/components/dialogs/ReportDialog";
 import { toast } from "@/hooks/useToast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { clsx } from "clsx";
 import { useProfileScore } from "@/features/profile/useProfileScore";
+import { NationalityBadge } from "@/components/profiles/shared/NationalityBadge";
+import { DistanceBadge } from "@/components/profiles/shared/DistanceBadge";
+import { FriendRequestButton } from "@/components/profiles/shared/FriendRequestButton";
+import { PhotoAccessRequestButton } from "@/components/profiles/shared/PhotoAccessRequestButton";
+import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButtons";
+import { FriendsSection } from "@/components/profiles/shared/FriendsSection";
+import { PrivateProfileGate } from "@/components/profiles/shared/PrivateProfileGate";
+import { getSocialDemoData } from "@/demo/socialDemoData";
+import { formatCoupleAgeLabel } from "@/demo/demoData";
+import {
+  readVisibilityLocalOrNull,
+  fetchProfileVisibility,
+  resolveProfileVisibility,
+  isProfileGated,
+} from "@/lib/profileVisibility";
+import { resolveDemoOwnerIdentity } from "@/lib/visibility";
+import { areFriendsSync, canonicalDemoOwnerId } from "@/lib/friends";
+import {
+  ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+  canAnonymousChat,
+  isViewerAnonymous,
+} from "@/lib/anonymous";
+import { readLocationSharingLocal } from "@/lib/geolocation";
 
 // Helper for class names if cn is not available globally or imported
 function cn(...inputs: (string | undefined | null | false)[]) {
@@ -22,11 +47,154 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 // Professional profile images from Unsplash - Production ready
 // Removed local imports that fail in production
 
+// Perfiles legacy de ids numéricos 1-4 (lista local del detalle).
+// Exportada para que el wrapper de /profile/:id resuelva por URL con
+// la MISMA fuente: antes el wrapper no conocía estos ids y /profile/3
+// directo mostraba a Ana mientras que al navegar desde Matches con
+// state mostraba a Carmen & Roberto (el id 3 de match). Ahora la URL
+// manda siempre: /profile/3 es Ana en los dos casos.
+export const LEGACY_NUMERIC_PROFILES = [
+  {
+    id: 1,
+    name: "Demo User",
+    age: 28,
+    location: "Ciudad de México",
+    interests: [
+      "Lifestyle Swinger",
+      "Mentalidad Abierta",
+      "Experiencias Nuevas",
+      "Conexiones Auténticas",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+    rating: 4.8,
+    isOnline: true,
+    bio: "Explorando el lifestyle con mentalidad abierta. Busco conexiones auténticas y experiencias únicas.",
+    profession: "Profesional Independiente",
+    education: "Universidad Nacional Autónoma de México",
+    languages: ["Español"],
+    hobbies: [
+      "Fotografía Sensual",
+      "Baile",
+      "Cenas Íntimas",
+      "Eventos Sociales",
+    ],
+    lookingFor:
+      "Personas con mentalidad abierta para compartir experiencias del lifestyle",
+    images: [
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+  {
+    id: 2,
+    name: "Antonio",
+    age: 34,
+    location: "Ciudad de México",
+    interests: [
+      "Lifestyle Swinger",
+      "Intercambio de Parejas",
+      "Eventos Lifestyle",
+      "Mentalidad Abierta",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face&auto=format&q=80",
+    rating: 4.9,
+    isOnline: false,
+    bio: "Chef profesional del lifestyle. Me encanta crear experiencias culinarias íntimas y ambientes sensuales.",
+    profession: "Chef",
+    education: "Escuela de Hostelería de Ciudad de México",
+    languages: ["Español"],
+    hobbies: [
+      "Cocina Afrodisíaca",
+      "Cenas Íntimas",
+      "Degustación de Vinos",
+      "Masajes Relajantes",
+    ],
+    lookingFor:
+      "Parejas y personas del lifestyle para compartir experiencias culinarias sensuales",
+    images: [
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+  {
+    id: 3,
+    name: "Ana",
+    age: 26,
+    location: "Guadalajara",
+    interests: [
+      "Fiestas Temáticas",
+      "Clubs Privados",
+      "Experiencias Nuevas",
+      "Ambiente Sensual",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
+    rating: 4.7,
+    isOnline: true,
+    bio: "Artista del lifestyle. Exploro la sensualidad a través del arte y busco conexiones creativas auténticas.",
+    profession: "Artista",
+    education: "Bellas Artes - Universidad de Guadalajara",
+    languages: ["Español"],
+    hobbies: [
+      "Arte Erótico",
+      "Fotografía Sensual",
+      "Baile Contemporáneo",
+      "Literatura Erótica",
+    ],
+    lookingFor:
+      "Personas creativas del lifestyle que aprecien el arte sensual y las experiencias únicas",
+    images: [
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+  {
+    id: 4,
+    name: "Diego",
+    age: 30,
+    location: "Monterrey",
+    interests: [
+      "Arte Erótico",
+      "Fotografía Erótica",
+      "Ambiente Sensual",
+      "Conexiones Auténticas",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+    rating: 4.8,
+    isOnline: true,
+    bio: "Desarrollador del lifestyle tech. Combino mi pasión por la tecnología con experiencias sensuales auténticas.",
+    profession: "Desarrollador",
+    education: "Ingeniería Informática - Universidad de Monterrey",
+    languages: ["Español"],
+    hobbies: [
+      "Fotografía Erótica",
+      "Tecnología Sensual",
+      "Spa de Parejas",
+      "Eventos Exclusivos",
+    ],
+    lookingFor:
+      "Parejas y personas del lifestyle tech que valoren la innovación y la sensualidad",
+    images: [
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+    ],
+  },
+];
+
 const ProfileDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  // Modal de reporte (mismo componente legible que en los perfiles
+  // propios): antes el botón "Reportar perfil" solo mostraba un toast.
+  const [showReportDialog, setShowReportDialog] = useState(false);
 
   // Verificar autenticación demo
   const demoAuth = localStorage.getItem("demo_authenticated");
@@ -44,161 +212,69 @@ const ProfileDetail = () => {
     }
   }
 
-  // Demo profile data for beta
-  const allProfiles = [
-    {
-      id: 1,
-      name: "Demo User",
-      age: 28,
-      location: "Ciudad de México",
-      interests: [
-        "Lifestyle Swinger",
-        "Mentalidad Abierta",
-        "Experiencias Nuevas",
-        "Conexiones Auténticas",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-      rating: 4.8,
-      isOnline: true,
-      bio: "Explorando el lifestyle con mentalidad abierta. Busco conexiones auténticas y experiencias únicas.",
-      profession: "Profesional Independiente",
-      education: "Universidad Nacional Autónoma de México",
-      languages: ["Español"],
-      hobbies: [
-        "Fotografía Sensual",
-        "Baile",
-        "Cenas Íntimas",
-        "Eventos Sociales",
-      ],
-      lookingFor:
-        "Personas con mentalidad abierta para compartir experiencias del lifestyle",
-      images: [
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-    {
-      id: 2,
-      name: "Antonio",
-      age: 34,
-      location: "Ciudad de México",
-      interests: [
-        "Lifestyle Swinger",
-        "Intercambio de Parejas",
-        "Eventos Lifestyle",
-        "Mentalidad Abierta",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face&auto=format&q=80",
-      rating: 4.9,
-      isOnline: false,
-      bio: "Chef profesional del lifestyle. Me encanta crear experiencias culinarias íntimas y ambientes sensuales.",
-      profession: "Chef",
-      education: "Escuela de Hostelería de Ciudad de México",
-      languages: ["Español"],
-      hobbies: [
-        "Cocina Afrodisíaca",
-        "Cenas Íntimas",
-        "Degustación de Vinos",
-        "Masajes Relajantes",
-      ],
-      lookingFor:
-        "Parejas y personas del lifestyle para compartir experiencias culinarias sensuales",
-      images: [
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-    {
-      id: 3,
-      name: "Ana",
-      age: 26,
-      location: "Guadalajara",
-      interests: [
-        "Fiestas Temáticas",
-        "Clubs Privados",
-        "Experiencias Nuevas",
-        "Ambiente Sensual",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
-      rating: 4.7,
-      isOnline: true,
-      bio: "Artista del lifestyle. Exploro la sensualidad a través del arte y busco conexiones creativas auténticas.",
-      profession: "Artista",
-      education: "Bellas Artes - Universidad de Guadalajara",
-      languages: ["Español"],
-      hobbies: [
-        "Arte Erótico",
-        "Fotografía Sensual",
-        "Baile Contemporáneo",
-        "Literatura Erótica",
-      ],
-      lookingFor:
-        "Personas creativas del lifestyle que aprecien el arte sensual y las experiencias únicas",
-      images: [
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-    {
-      id: 4,
-      name: "Diego",
-      age: 30,
-      location: "Monterrey",
-      interests: [
-        "Arte Erótico",
-        "Fotografía Erótica",
-        "Ambiente Sensual",
-        "Conexiones Auténticas",
-      ],
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-      rating: 4.8,
-      isOnline: true,
-      bio: "Desarrollador del lifestyle tech. Combino mi pasión por la tecnología con experiencias sensuales auténticas.",
-      profession: "Desarrollador",
-      education: "Ingeniería Informática - Universidad de Monterrey",
-      languages: ["Español"],
-      hobbies: [
-        "Fotografía Erótica",
-        "Tecnología Sensual",
-        "Spa de Parejas",
-        "Eventos Exclusivos",
-      ],
-      lookingFor:
-        "Parejas y personas del lifestyle tech que valoren la innovación y la sensualidad",
-      images: [
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-      ],
-    },
-  ];
-
   const stateProfile = location.state?.profile;
 
-  // Adapt state profile to local shape if needed
-  const adaptedStateProfile = stateProfile
-    ? {
-        ...stateProfile,
-        profession: stateProfile.profession || "Miembro de la comunidad",
-        education: stateProfile.education || "No especificado",
-        languages: stateProfile.languages || ["Español"],
-        hobbies: stateProfile.hobbies || stateProfile.interests || [],
-        lookingFor: stateProfile.lookingFor || "Conexiones auténticas",
-        images: stateProfile.images || [stateProfile.image],
-        rating: stateProfile.rating || 4.5,
-      }
-    : null;
+  // Adapt state profile to local shape if needed. La URL manda: el
+  // perfil del state solo vale si su id coincide con el :id de la URL.
+  // Sin esta guarda, /profile/3 con state de Matches (Carmen &
+  // Roberto, id 3 de match) mostraba a la pareja, y /profile/3 directo
+  // mostraba a Ana (id 3 legacy): la misma URL, dos personas distintas
+  // según cómo se llegara. Matches ya navega con profileId estable;
+  // si algún otro flujo pasa un state con id distinto, se ignora y
+  // resuelve por URL.
+  const stateMatchesUrl =
+    stateProfile != null && String(stateProfile.id) === String(id ?? "");
+  const adaptedStateProfile =
+    stateMatchesUrl && stateProfile
+      ? {
+          ...stateProfile,
+          // Edad de pareja ("25 y 28 años"): el perfil que llega por
+          // state (Discover/Matches) es un DemoProfile con `partnerAge`
+          // pero sin `ageLabel`, y el detalle caía en `${age} años` →
+          // "25 años" para Carmen & Roberto. Se deriva aquí para que los
+          // dos sitios que la muestran (insignia del encabezado e
+          // "Información rápida") usen la etiqueta de pareja.
+          ageLabel:
+            stateProfile.ageLabel ??
+            (typeof stateProfile.partnerAge === "number" &&
+            typeof stateProfile.age === "number"
+              ? formatCoupleAgeLabel(stateProfile.age, stateProfile.partnerAge)
+              : undefined),
+          profession: stateProfile.profession || "Miembro de la comunidad",
+          education: stateProfile.education || "No especificado",
+          languages: stateProfile.languages || ["Español"],
+          hobbies: stateProfile.hobbies || stateProfile.interests || [],
+          lookingFor: stateProfile.lookingFor || "Conexiones auténticas",
+          images: stateProfile.images || [stateProfile.image],
+          rating: stateProfile.rating || 4.5,
+        }
+      : null;
 
   const profile =
-    adaptedStateProfile || allProfiles.find((p) => p.id === parseInt(id || ""));
+    adaptedStateProfile ||
+    LEGACY_NUMERIC_PROFILES.find((p) => p.id === parseInt(id || ""));
 
   const profileScore = useProfileScore(profile);
+
+  // COORDINATOR (integración ronda 8): estos hooks VAN ANTES del
+  // `if (!profile)` de abajo. Estaban después y la primera render
+  // en frío (/profile/<uuid> sin state) retornaba antes de ellos;
+  // cuando la resolución (D, pasos 2c/2d) re-navegaba con el perfil
+  // en state, el segundo render llamaba MÁS hooks y React lanzaba
+  // "Rendered more hooks than during the previous render" — el test
+  // r8-stream-d lo cazó (Sofía en frío). El efecto se salta si aún
+  // no hay perfil; la dependencia es `profile?.id`.
+  const [dbVisibility, setDbVisibility] = useState<string | null>(null);
+  useEffect(() => {
+    if (!profile) return;
+    let alive = true;
+    fetchProfileVisibility(String(profile.id)).then((v) => {
+      if (alive) setDbVisibility(v);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [profile?.id]);
 
   if (!profile) {
     return (
@@ -219,6 +295,110 @@ const ProfileDetail = () => {
     );
   }
 
+  // Espectador y datos sociales (amistad, reporte/bloqueo, nacionalidad,
+  // distancia, perfil privado): el perfil que se ve es ajeno casi siempre;
+  // si el id coincide con el del espectador, es el propio.
+  const demoUserParsed = (() => {
+    try {
+      return demoUser
+        ? (JSON.parse(demoUser) as {
+            id?: string;
+            first_name?: string;
+            email?: string;
+          })
+        : null;
+    } catch {
+      return null;
+    }
+  })();
+  const viewerId = String(demoUserParsed?.id ?? user?.id ?? "demo-viewer");
+  const viewerName = String(demoUserParsed?.first_name ?? user?.email ?? "Tú");
+  const isDemo = demoAuth === "true" || Boolean(demoUser);
+  // Ronda 12, stream C: el dueño tiene TRES ids distintos según
+  // dónde se mire (sesión `generateDemoUserUUID(email)`, ficha
+  // `demo-couple-456` / `demo-single-1`, tarjeta de Discover
+  // `generateDemoUUID("demo-profile-N")`). Comparar los ids crudos
+  // (`profile.id === viewerId`) NO reconocía al dueño cuando abría
+  // su propio perfil desde su tarjeta de Discover (p. ej. la pareja
+  // abriendo /profile/20e31658-…): `isOwnProfile` era false y, si el
+  // perfil estaba en privado, el GATE LE CERABA SU PROPIO PERFIL
+  // (veía "Solicitar ver perfil" para verse a sí mismo). La
+  // comparación canonizada resuelve cualquier alias a su id de
+  // usuario; fuera de demo devuelve el id tal cual, sin cambios.
+  const isOwnProfile =
+    canonicalDemoOwnerId(String(profile.id)) === canonicalDemoOwnerId(viewerId);
+  const socialDemo = getSocialDemoData(profile.name);
+  const countryCode =
+    (profile as { country_code?: string | null }).country_code ??
+    socialDemo.countryCode;
+  // Visibilidad efectiva: la BD manda (perfiles reales), luego lo que el
+  // dueño guardó en local, y si no hay nada, la semilla demo del perfil.
+  // Sin el fetch a BD, un perfil real puesto en privado nunca se cerraba.
+  // Ronda 8 (punto 11): el local se leía con el id de la TARJETA
+  // (`demo-profile-6`, `demo-couple-456`…), pero el dueño guarda su
+  // visibilidad con su id de USUARIO (`profile_visibility:<userId>`):
+  // el gate existía pero nunca se disparaba para las cuentas demo
+  // (la pareja puesta en privada se seguía viendo entera desde la
+  // otra cuenta). El puente de identidad demo resuelve el id del
+  // dueño antes de leer; fuera de demo devuelve null y se usa el id
+  // del perfil tal cual.
+  // (dbVisibility vive arriba, antes del `if (!profile)`: ver nota
+  // del coordinador — hooks después de un return temprano rompen
+  // el orden de hooks en frío.)
+  const visibilityOwnerId =
+    resolveDemoOwnerIdentity(String(profile.id), profile.name)?.userId ??
+    String(profile.id);
+  const profileVisibility = resolveProfileVisibility({
+    dbVisibility,
+    storedVisibility: readVisibilityLocalOrNull(visibilityOwnerId),
+    seedVisibility: socialDemo.visibility,
+    // Ronda 9 (stream A, punto 2): el perfil anónimo es privado por
+    // defecto: no-amigos ven solo la tarjeta mínima + solicitud.
+    isAnonymous:
+      (profile as { is_anonymous?: unknown }).is_anonymous === true,
+  });
+  // RONDA 7 (punto 18): el 4º argumento es el NOMBRE del perfil: la
+  // semilla demo de amistades se keyea por nombre (ver friends.ts).
+  // Sin él, el id numérico legacy ("3") o el UUID del roster caían
+  // al fallback sin amigos y Sofía resultaba "no amiga" de Ana.
+  const isFriend = areFriendsSync(
+    viewerId,
+    String(profile.id),
+    viewerName,
+    profile.name,
+  );
+  const gated = isProfileGated({
+    visibility: profileVisibility,
+    isOwner: isOwnProfile,
+    isFriend,
+  });
+
+  // Perfil privado y espectador no amigo: solo la pantalla de solicitud
+  // (como Twitter). El dueño y los amigos aceptados ven el perfil completo.
+  if (gated) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+        <main className="container mx-auto px-4 py-8 max-w-3xl">
+          <Button
+            onClick={() => navigate("/discover")}
+            className="text-white bg-white/10 border border-white/30 hover:bg-white/20 mb-6"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver a Discover
+          </Button>
+          <PrivateProfileGate
+            profileId={String(profile.id)}
+            profileName={profile.name}
+            viewerId={viewerId}
+            viewerName={viewerName}
+            isDemo={isDemo}
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
@@ -232,7 +412,13 @@ const ProfileDetail = () => {
 
       <div className="relative z-10">
         <div className="px-4 pt-4">
-          <ProfileContent />
+          {/* El post de ejemplo de ProfileContent ES de Ana: solo se
+              renderiza en su perfil (showExamplePost default true) y el
+              vacío "No hay posts aún" solo sale cuando no hay ningún post
+              visible (punto 13, ronda 6). Antes el post se renderizaba
+              siempre y el vacío miraba solo `demoPost`, así que en
+              /profile/3 salían los dos a la vez. */}
+          {profile.name === "Ana" && <ProfileContent />}
         </div>
         <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
@@ -246,7 +432,7 @@ const ProfileDetail = () => {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Profile Info */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="min-w-0 lg:col-span-2 space-y-6">
               {/* Profile Header */}
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
@@ -257,22 +443,32 @@ const ProfileDetail = () => {
                           src={profile.image}
                           alt={profile.name}
                           onError={(e) => {
-                            // Si la imagen falla, usar fallback de Unsplash
+                            // Si la imagen falla, usar fallback de Unsplash.
+                            // DETERMINISTA por nombre (antes era
+                            // Math.random: la misma URL mostraba caras
+                            // distintas en cada carga).
                             const fallbackImages = [
-                              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
+                              "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
                               "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
                               "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
                             ];
                             const defaultFallback =
-                              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face&auto=format&q=80";
-                            const randomFallback: string =
+                              "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&h=400&fit=crop&crop=face&auto=format&q=80";
+                            const nameHash = profile.name
+                              .split("")
+                              .reduce(
+                                (acc: number, ch: string) =>
+                                  acc + ch.charCodeAt(0),
+                                0,
+                              );
+                            const deterministicFallback: string =
                               fallbackImages[
-                                Math.floor(
-                                  Math.random() * fallbackImages.length,
-                                )
+                                nameHash % fallbackImages.length
                               ] ?? defaultFallback;
-                            if (e.currentTarget.src !== randomFallback) {
-                              e.currentTarget.src = randomFallback;
+                            if (
+                              e.currentTarget.src !== deterministicFallback
+                            ) {
+                              e.currentTarget.src = deterministicFallback;
                             } else {
                               // Si también falla el fallback, ocultar imagen y mostrar fallback
                               e.currentTarget.style.display = "none";
@@ -293,20 +489,23 @@ const ProfileDetail = () => {
                       </div>
                     </div>
 
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-3 mb-2">
                         <h1 className="text-3xl font-bold text-white">
                           {profile.name}
                         </h1>
-                        <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm">
-                          {profile.age} años
+                        <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm whitespace-nowrap shrink-0">
+                          {(
+                            profile as { ageLabel?: string }
+                          ).ageLabel ?? `${profile.age} años`}
                         </Badge>
+                        <NationalityBadge countryCode={countryCode} />
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
                               <Badge
                                 className={cn(
-                                  "profile-badge flex items-center gap-1",
+                                  "profile-badge flex items-center gap-1 whitespace-nowrap shrink-0",
                                   profileScore.color,
                                 )}
                               >
@@ -324,11 +523,28 @@ const ProfileDetail = () => {
                         </TooltipProvider>
                       </div>
 
-                      <div className="flex items-center gap-4 text-white/80 mb-4">
+                      {/* Fila de ubicación / distancia / rating: sin wrap
+                          su ancho mínimo (nowrap de los tres bloques)
+                          empujaba la columna y la página desbordaba en
+                          horizontal a 886 px (ronda 11, stream C, i). */}
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-white/80 mb-4">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
                           <span>{profile.location}</span>
                         </div>
+                        <DistanceBadge
+                          distanceKm={
+                            (
+                              profile as {
+                                distance?: number | null;
+                              }
+                            ).distance ?? null
+                          }
+                          profileSharesLocation={socialDemo.sharesLocation}
+                          viewerSharesLocation={readLocationSharingLocal(
+                            viewerId,
+                          )}
+                        />
                         <div className="flex items-center gap-1">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                           <span>{profile.rating}</span>
@@ -406,6 +622,15 @@ const ProfileDetail = () => {
                 </CardContent>
               </Card>
 
+              {/* Amistades (punto 2): en línea / última conexión y, si es
+                  el dueño, "Eliminar de amigos". */}
+              <FriendsSection
+                profileId={String(profile.id)}
+                profileName={profile.name}
+                isOwnProfile={isOwnProfile}
+                isDemo={isDemo}
+              />
+
               {/* Photo Gallery */}
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
@@ -435,50 +660,130 @@ const ProfileDetail = () => {
             </div>
 
             {/* Action Sidebar */}
-            <div className="space-y-6">
+            <div className="min-w-0 space-y-6">
               {/* Action Buttons */}
               <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <Button
                       onClick={() => {
+                        // Ronda 10 (stream A, punto A8): el like anónimo
+                        // está bloqueado con mensaje claro (sin toast de
+                        // error y sin fingir que se envió).
+                        if (isViewerAnonymous(viewerId)) {
+                          toast({
+                            title: "Like no disponible",
+                            description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+                          });
+                          return;
+                        }
                         logger.info("Me gusta", { profileName: profile.name });
                         toast({
                           title: "Like enviado",
                           description: `¡Has dado like a ${profile.name}!`,
                         });
                       }}
-                      className="w-full bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg"
+                      className="w-full bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
                     >
                       <Heart className="h-5 w-5 mr-2" />
                       Me gusta
                     </Button>
 
-                    <Button
-                      onClick={() => {
-                        logger.info("Enviando mensaje a", {
-                          profileName: profile.name,
-                        });
-                        navigate(`/chat/${profile.id}`, { state: { profile } });
-                      }}
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg"
-                    >
-                      <MessageCircle className="h-5 w-5 mr-2" />
-                      Enviar mensaje
-                    </Button>
+                    {(() => {
+                      // Ronda 10 (stream A, punto A4): gate ANTES de
+                      // navegar. Si el espectador o el perfil es
+                      // anónimo, solo hay chat con amistad aceptada:
+                      // el botón muestra el estado bloqueado y NO
+                      // navega a /chat/:id. La solicitud de amistad
+                      // (FriendRequestButton, justo debajo) es el
+                      // camino para desbloquearlo.
+                      const chatCheck = canAnonymousChat({
+                        senderIsAnonymous: isViewerAnonymous(viewerId),
+                        recipientIsAnonymous:
+                          (profile as { is_anonymous?: unknown })
+                            .is_anonymous === true,
+                        areFriends: isFriend,
+                      });
+                      if (chatCheck.allowed) {
+                        return (
+                          <Button
+                            onClick={() => {
+                              logger.info("Enviando mensaje a", {
+                                profileName: profile.name,
+                              });
+                              navigate(`/chat/${profile.id}`, {
+                                state: { profile },
+                              });
+                            }}
+                            className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
+                          >
+                            <MessageCircle className="h-5 w-5 mr-2" />
+                            Enviar mensaje
+                          </Button>
+                        );
+                      }
+                      return (
+                        <Button
+                          onClick={() => {
+                            toast({
+                              title: "Chat bloqueado",
+                              description: chatCheck.reason,
+                            });
+                          }}
+                          title={chatCheck.reason}
+                          className="w-full bg-slate-500/40 hover:bg-slate-500/50 text-white px-6 py-3 text-lg border border-white/20 whitespace-normal h-auto min-h-11 text-center leading-snug"
+                        >
+                          <MessageCircle className="h-5 w-5 mr-2" />
+                          Chat bloqueado: envía solicitud de amistad
+                        </Button>
+                      );
+                    })()}
+
+                    {/* Amistad y acceso a fotos (punto 4): solicitud de
+                        amistad y solicitud para ver la galería. El botón
+                        "Reportar perfil" de abajo sigue abriendo el
+                        diálogo; ReportBlockButtons solo aporta Bloquear.
+                        Ronda 11, stream C (i): los botones de
+                        solicitud son píldoras `inline-flex` sin ancho:
+                        a 886 px quedaban a su ancho natural mientras
+                        los Button de arriba son `w-full`; con
+                        `w-full justify-center` todos ocupan la tarjeta
+                        y el texto no se recorta por la derecha. */}
+                    <FriendRequestButton
+                      profileId={String(profile.id)}
+                      profileName={profile.name}
+                      viewerId={viewerId}
+                      viewerName={viewerName}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={isDemo}
+                      className="w-full justify-center"
+                    />
+                    <PhotoAccessRequestButton
+                      profileId={String(profile.id)}
+                      profileName={profile.name}
+                      viewerId={viewerId}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={isDemo}
+                      className="w-full justify-center"
+                    />
+                    <ReportBlockButtons
+                      profileId={String(profile.id)}
+                      profileName={profile.name}
+                      viewerId={viewerId}
+                      isOwnProfile={isOwnProfile}
+                      isDemo={isDemo}
+                      onReport={() => setShowReportDialog(true)}
+                      showReport={false}
+                    />
 
                     <Button
                       onClick={() => {
                         logger.info("Reportando perfil de", {
                           profileName: profile.name,
                         });
-                        toast({
-                          title: "Perfil reportado",
-                          description:
-                            "Gracias por ayudarnos a mantener la comunidad segura.",
-                        });
+                        setShowReportDialog(true);
                       }}
-                      className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300"
+                      className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300 whitespace-normal h-auto min-h-11 text-center leading-snug"
                     >
                       Reportar perfil
                     </Button>
@@ -495,7 +800,10 @@ const ProfileDetail = () => {
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-white/80">Edad:</span>
-                      <span className="text-white">{profile.age} años</span>
+                      <span className="text-white">
+                        {(profile as { ageLabel?: string }).ageLabel ??
+                          `${profile.age} años`}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-white/80">Ubicación:</span>
@@ -577,6 +885,20 @@ const ProfileDetail = () => {
         </main>
 
         <Footer />
+        <ReportDialog
+          isOpen={showReportDialog}
+          onOpenChange={setShowReportDialog}
+          profileId={String(profile.id)}
+          profileName={profile.name}
+          onReport={(reason) => {
+            logger.info("Reporte enviado desde detalle de perfil", { reason });
+            toast({
+              title: "Perfil reportado",
+              description:
+                "Gracias por ayudarnos a mantener la comunidad segura.",
+            });
+          }}
+        />
       </div>
     </div>
   );

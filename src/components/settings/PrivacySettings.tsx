@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader,  CardTitle } from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -9,23 +9,43 @@ import { logger } from "@/lib/logger";
 import { dataPrivacyService } from "@/services";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
+import { loadSettingsStateRemote, saveSettingsState } from "@/components/settings/settingsStorage";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
+const DEFAULT_PRIVACY = {
+  profile_visibility: "everyone",
+  show_online_status: true,
+  show_distance: true,
+  show_age: true,
+  auto_approve_matches: true,
+  block_screenshots: false,
+  incognito_mode: false,
+};
 
 export const PrivacySettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isDeletingMatches, setIsDeletingMatches] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
-  const [privacy, setPrivacy] = useState({
-    profile_visibility: "everyone",
-    show_online_status: true,
-    show_distance: true,
-    show_age: true,
-    auto_approve_matches: true,
-    block_screenshots: false,
-    incognito_mode: false,
-  });
+  const [privacy, setPrivacy] = useState(DEFAULT_PRIVACY);
+
+  // Cargar los valores guardados (localStorage en demo, BD en real).
+  // Antes el estado siempre arrancaba en los defaults y Guardar solo
+  // mostraba un toast sin persistir: al recargar todo se perdía.
+  useEffect(() => {
+    if (!user?.id || loaded) return;
+    let cancelled = false;
+    void loadSettingsStateRemote(user.id, DEFAULT_PRIVACY).then((stored) => {
+      if (cancelled) return;
+      setPrivacy(stored);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, loaded]);
 
   const handlePrivacyChange = (key: string, value: boolean | string) => {
     setPrivacy((prev) => ({ ...prev, [key]: value }));
@@ -33,10 +53,10 @@ export const PrivacySettings = () => {
 
   const handleSave = () => {
     logger.info("Privacy settings saved:", privacy);
-    // TODO: Implementar guardado en backend
+    void saveSettingsState(user?.id, privacy);
     toast({
       title: "Configuración guardada",
-      description: "Tus preferencias de privacidad han sido guardadías",
+      description: "Tus preferencias de privacidad han sido guardadas",
     });
   };
 
@@ -372,7 +392,7 @@ export const PrivacySettings = () => {
                         <li>Tu historial de matches</li>
                         <li>Tus mensajes (anonimizados)</li>
                         <li>Tus posts y stories</li>
-                        <li>Todías tus preferencias</li>
+                        <li>Todas tus preferencias</li>
                       </ul>
                       <strong className="block mt-3 text-destructive">
                         Esta acción NO se puede deshacer.

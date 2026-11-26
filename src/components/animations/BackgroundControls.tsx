@@ -132,8 +132,8 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
         </div>
         <p className="text-white/50 text-xs ml-8">
           {localPrefs.particlesEnabled
-            ? "✓ Partículas activadías"
-            : "✗ Partículas desactivadías"}
+            ? "✓ Partículas activadas"
+            : "✗ Partículas desactivadas"}
         </p>
       </div>
 
@@ -172,8 +172,8 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({
         </div>
         <p className="text-white/50 text-xs ml-8">
           {localPrefs.transparenciesEnabled
-            ? "✓ Transparencias activadías (glassmorphism)"
-            : "✗ Transparencias desactivadías (fondo sólido)"}
+            ? "✓ Transparencias activadas (glassmorphism)"
+            : "✗ Transparencias desactivadas (fondo sólido)"}
         </p>
       </div>
 

@@ -1,11 +1,51 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Building, CheckCircle, MapPin, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
+import { ExpandableClubDescription } from "@/components/clubs/ExpandableClubDescription";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import type { Database } from "@/types/supabase-generated";
+import {
+  loadClubDiscounts,
+  loadClubEvents,
+  type ClubDiscountItem,
+  type ClubEventItem,
+} from "@/services/clubs/clubContentService";
 
-interface PublicClub {
+/** Fotos de galería del club (la portada + 3 verificadas en Unsplash). */
+const CLUB_GALLERY_PHOTOS = [
+  "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800",
+  "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=800",
+  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800",
+];
+
+type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
+
+/** Fila de BD → club público. Sin clubs en BD se usa el catálogo PUBLIC_CLUBS. */
+function mapClubRowToPublicClub(row: ClubRow): PublicClub {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    description: row.description ?? "",
+    address: row.address,
+    city: row.city,
+    state: row.state ?? "",
+    rating: row.rating_average ?? 0,
+    reviews: row.review_count ?? row.rating_count ?? 0,
+    checkIns: row.check_in_count ?? 0,
+    coverImage:
+      row.cover_image_url ??
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200",
+    vibe: row.vibe_status ?? "✨ Lifestyle",
+    tier: row.membership_tier === "premium" ? "premium" : "free",
+  };
+}
+
+export interface PublicClub {
   id: string;
   slug: string;
   name: string;
@@ -21,7 +61,7 @@ interface PublicClub {
   tier: "free" | "premium";
 }
 
-const PUBLIC_CLUBS: PublicClub[] = [
+export const PUBLIC_CLUBS: PublicClub[] = [
   {
     id: "demo",
     slug: "demo",
@@ -35,7 +75,7 @@ const PUBLIC_CLUBS: PublicClub[] = [
     reviews: 128,
     checkIns: 420,
     coverImage:
-      "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200",
     vibe: "🔥 On Fire",
     tier: "free",
   },
@@ -52,7 +92,7 @@ const PUBLIC_CLUBS: PublicClub[] = [
     reviews: 186,
     checkIns: 980,
     coverImage:
-      "https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200",
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200",
     vibe: "🔥 On Fire",
     tier: "premium",
   },
@@ -72,6 +112,27 @@ const PUBLIC_CLUBS: PublicClub[] = [
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200",
     vibe: "✨ Soft Glow",
     tier: "premium",
+  },
+  {
+    // Ronda 6: "Noche VIP Lounge" solo existía en el mock del panel de
+    // admin (sin foto) y no en el catálogo público, así que no aparecía
+    // en /clubs ni en /clubs-public ni en la búsqueda. Foto distinta a
+    // las de Club Demo, Eden Noir, Luna Roja y Mystic Garden.
+    id: "public-4",
+    slug: "noche-vip-lounge",
+    name: "Noche VIP Lounge",
+    description:
+      "Lounge nocturno con pista VIP, barra de autor y noches temáticas para parejas y singles.",
+    address: "Av. Chapultepec 210",
+    city: "Guadalajara",
+    state: "JAL",
+    rating: 4.5,
+    reviews: 134,
+    checkIns: 234,
+    coverImage:
+      "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200",
+    vibe: "🍸 Noche VIP",
+    tier: "free",
   },
   {
     id: "public-3",
@@ -96,10 +157,71 @@ export const ClubsPublic = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug?: string }>();
 
+  // Clubs reales de Supabase; sin datos (tabla vacía / RLS / error) se usa
+  // el catálogo público. Antes la página solo mostraba el hardcode.
+  const [clubs, setClubs] = useState<PublicClub[]>(PUBLIC_CLUBS);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("clubs")
+          .select("*")
+          .eq("is_active", true)
+          .order("is_featured", { ascending: false })
+          .order("rating_average", { ascending: false });
+        if (error) throw error;
+        if (!cancelled && data && data.length > 0) {
+          // El catálogo público se MEZCLA con las filas de BD (la BD
+          // manda por slug): antes, si la tabla traía filas, el catálogo
+          // se descartaba entero y "Eden Noir" (que solo vive en el
+          // catálogo) no aparecía en /clubs-public ni en la búsqueda.
+          const dbClubs = data.map(mapClubRowToPublicClub);
+          const dbSlugs = new Set(dbClubs.map((c) => c.slug));
+          const merged = [
+            ...dbClubs,
+            ...PUBLIC_CLUBS.filter((c) => !dbSlugs.has(c.slug)),
+          ];
+          setClubs(merged);
+          logger.info("ClubsPublic loaded from Supabase + catálogo", {
+            count: merged.length,
+          });
+        }
+      } catch (error) {
+        logger.warn("ClubsPublic: Supabase no disponible, usando catálogo público", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selectedClub = useMemo(() => {
     if (!slug) return null;
-    return PUBLIC_CLUBS.find((club) => club.slug === slug) ?? null;
-  }, [slug]);
+    return clubs.find((club) => club.slug === slug) ?? null;
+  }, [slug, clubs]);
+
+  // Contenido del club seleccionado: eventos y descuentos reales
+  // (club_events / club_discounts) con respaldo demo. Antes el detalle
+  // solo mostraba la cabecera y quedaba vacío debajo.
+  const [detailEvents, setDetailEvents] = useState<ClubEventItem[]>([]);
+  const [detailDiscounts, setDetailDiscounts] = useState<ClubDiscountItem[]>([]);
+  useEffect(() => {
+    if (!selectedClub) return;
+    let cancelled = false;
+    void loadClubEvents(selectedClub.id).then(({ items }) => {
+      if (!cancelled) setDetailEvents(items);
+    });
+    void loadClubDiscounts(selectedClub.id).then(({ items }) => {
+      if (!cancelled) setDetailDiscounts(items);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedClub]);
 
   return (
     <div className="min-h-screen bg-transparent p-4 sm:p-6">
@@ -107,7 +229,15 @@ export const ClubsPublic = () => {
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => navigate("/clubs-public")}
+            // Único "Volver" de la página (la píldora fija global ya no
+            // se renderiza en /clubs-public). Antes navegaba SIEMPRE a
+            // "/clubs-public": en el detalle era correcto, pero en la
+            // lista era un no-op a la misma ruta ("Volver no navega").
+            // Ahora: en el detalle vuelve a la lista; en la lista
+            // vuelve a /clubs.
+            onClick={() =>
+              slug ? navigate("/clubs-public") : navigate("/clubs")
+            }
             className="border-white/30 text-white hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -182,10 +312,117 @@ export const ClubsPublic = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Galería */}
+            <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-white mb-4">Galería</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {/* La portada no se repite en la galería: la foto de
+                      Eden Noir (1514525253161) también estaba en
+                      CLUB_GALLERY_PHOTOS y salía dos veces en su detalle.
+                      La comparación es por id de foto (sin el query ?w=),
+                      porque la portada usa ?w=1200 y la galería ?w=800. */}
+                  {[selectedClub.coverImage, ...CLUB_GALLERY_PHOTOS.filter((u) => {
+                    const idOf = (url: string) =>
+                      url.split("photo-")[1]?.split("?")[0] ?? url;
+                    return idOf(u) !== idOf(selectedClub.coverImage);
+                  })].slice(0, 4).map((url, i) => (
+                    <img
+                      key={i}
+                      src={url}
+                      alt={`${selectedClub.name} — foto ${i + 1}`}
+                      className="w-full h-40 object-cover rounded-xl"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Eventos */}
+            <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-white mb-4">Próximos eventos</h3>
+                {detailEvents.length === 0 ? (
+                  <p className="text-white/60">Sin eventos publicados por ahora.</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {detailEvents.map((ev) => (
+                      <li key={ev.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                        <div className="min-w-0">
+                          <p className="text-white font-semibold truncate">{ev.title}</p>
+                          <p className="text-white/60 text-sm">
+                            {new Date(ev.date).toLocaleDateString("es-MX")}
+                            {ev.startTime ? ` · ${ev.startTime}` : ""}
+                            {ev.location ? ` · ${ev.location}` : ""}
+                          </p>
+                        </div>
+                        <Badge className="bg-fuchsia-600 text-white shrink-0">
+                          {ev.isVip ? "VIP" : `$${ev.price}`}
+                        </Badge>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Descuentos + contacto */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Descuentos</h3>
+                  {detailDiscounts.length === 0 ? (
+                    <p className="text-white/60">Sin descuentos activos por ahora.</p>
+                  ) : (
+                    <ul className="space-y-3">
+                      {detailDiscounts.map((d) => (
+                        <li key={d.id} className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 px-4 py-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-white font-mono font-bold">{d.code}</span>
+                            <Badge className="bg-fuchsia-600 text-white">
+                              {d.discountPercent !== null
+                                ? `${d.discountPercent}% OFF`
+                                : d.discountAmount !== null
+                                  ? `$${d.discountAmount} OFF`
+                                  : "Promo"}
+                            </Badge>
+                          </div>
+                          {d.description && (
+                            <p className="text-white/70 text-sm mt-1">{d.description}</p>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </CardContent>
+              </Card>
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Contacto</h3>
+                  <p className="text-white/80 flex items-start gap-2">
+                    <MapPin className="h-4 w-4 mt-1 shrink-0" />
+                    <span>
+                      {selectedClub.address}, {selectedClub.city}, {selectedClub.state}
+                    </span>
+                  </p>
+                  <p className="text-white/60 text-sm mt-3">
+                    Nivel {selectedClub.tier === "premium" ? "Premium" : "Gratuito"} · {selectedClub.vibe}
+                  </p>
+                  <Button
+                    onClick={() => navigate("/clubs")}
+                    className="mt-4 w-full bg-linear-to-r from-purple-600 to-fuchsia-600 text-white"
+                  >
+                    Ver en el directorio de clubs
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {PUBLIC_CLUBS.map((club) => (
+            {clubs.map((club) => (
               <Card
                 key={club.id}
                 className="bg-white/10 backdrop-blur-xl border-white/20 overflow-hidden"
@@ -214,9 +451,13 @@ export const ClubsPublic = () => {
                       {club.city}, {club.state}
                     </div>
                   </div>
-                  <p className="text-white/70 text-sm line-clamp-2">
-                    {club.description}
-                  </p>
+                  {/* Ronda 12 (stream B, 1a): la intro iba con
+                      `line-clamp-2` sin vía para leerla completa
+                      ("…iluminació…"). Ahora se expande/contrae. */}
+                  <ExpandableClubDescription
+                    text={club.description}
+                    textClassName="text-white/70 text-sm"
+                  />
                   <div className="flex items-center gap-3 text-white/80 text-sm">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 text-yellow-300" />

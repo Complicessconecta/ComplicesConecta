@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Lock, Unlock, Check, X } from "lucide-react";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { ImageWithFallback } from "@/components/ui";
+import { ProtectedMedia } from "@/components/profiles/shared/ProtectedMedia";
+import { readWatermarkForProfile } from "@/lib/visibility";
 
 interface PrivateImage {
   id: string;
@@ -53,6 +55,12 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
   const [showRequestDialog, setShowRequestDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  // Marca de agua del dueño (toggle de Privacidad).
+  const watermarkOn = useMemo(
+    () => readWatermarkForProfile(profileId),
+    [profileId],
+  );
+
   const pendingRequests = accessRequests.filter(
     (req) => req.status === "pending",
   );
@@ -94,7 +102,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Lock className="h-5 w-5 text-purple-400" />
-            <h3 className="font-semibold text-white">Imágenes Privadías</h3>
+            <h3 className="font-semibold text-white">Imágenes Privadas</h3>
             <Badge
               variant="secondary"
               className="bg-purple-500/20 text-purple-300"
@@ -131,7 +139,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                     </p>
                     {request.message && (
                       <p className="text-xs text-white/70 mt-1">
-                        "{request.message}"
+                        {request.message}
                       </p>
                     )}
                     <p className="text-xs text-white/50 mt-2">
@@ -166,33 +174,39 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
             <Lock className="h-12 w-12 text-white/30 mx-auto mb-4" />
             <p className="text-white/60">
               {isOwner
-                ? "No has subido imágenes privadías"
-                : "No hay imágenes privadías disponibles"}
+                ? "No has subido imágenes privadas"
+                : "No hay imágenes privadas disponibles"}
             </p>
           </div>
         ) : (
           <>
             {hasAccess || isOwner ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {images.map((image) => (
-                  <div
-                    key={image.id}
-                    className="relative aspect-square cursor-pointer group"
-                    onClick={() => handleImageClick(image.id)}
-                  >
-                    <ImageWithFallback
-                      src={image.thumbnail || image.url}
-                      alt="Imagen privada"
-                      fallbackType="private"
-                      fallbackText="Imagen no disponible"
-                      className="w-full h-full rounded-lg overflow-hidden"
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-                      <Eye className="h-6 w-6 text-white" />
+              <ProtectedMedia
+                isOwner={isOwner}
+                watermark={watermarkOn}
+                watermarkText={profileName}
+              >
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.map((image) => (
+                    <div
+                      key={image.id}
+                      className="relative aspect-square cursor-pointer group"
+                      onClick={() => handleImageClick(image.id)}
+                    >
+                      <ImageWithFallback
+                        src={image.thumbnail || image.url}
+                        alt="Imagen privada"
+                        fallbackType="private"
+                        fallbackText="Imagen no disponible"
+                        className="w-full h-full rounded-lg overflow-hidden"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+                        <Eye className="h-6 w-6 text-white" />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </ProtectedMedia>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {images.map((image) => (
@@ -235,11 +249,13 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
           </>
         )}
 
-        {/* Modal de imagen ampliada */}
+        {/* Modal de imagen ampliada (sin descarga para visitantes) */}
         {selectedImage && (
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-xl z-50 flex items-center justify-center p-4"
             onClick={() => setSelectedImage(null)}
+            onContextMenu={!isOwner ? (e) => e.preventDefault() : undefined}
+            onDragStart={!isOwner ? (e) => e.preventDefault() : undefined}
           >
             <div
               className="relative max-w-4xl max-h-full w-full"
@@ -273,4 +289,3 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
 };
 
 export default PrivateImageGallery;
-

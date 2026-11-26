@@ -95,14 +95,14 @@ test.describe("Sistema de Imágenes", () => {
     await expect(page.locator('[data-testid="gallery-image"]')).toBeVisible();
   });
 
-  test("debe solicitar acceso a imágenes privadías", async ({ page }) => {
+  test("debe solicitar acceso a imágenes privadas", async ({ page }) => {
     await page.goto("/profiles");
 
-    // Acceder a perfil con imágenes privadías
+    // Acceder a perfil con imágenes privadas
     await page.locator('[data-testid="profile-card"]').first().click();
     await page.click('[data-testid="gallery-tab"]');
 
-    // Intentar ver imágenes privadías
+    // Intentar ver imágenes privadas
     await page.click('[data-testid="private-images-section"]');
 
     // Verificar solicitud de acceso

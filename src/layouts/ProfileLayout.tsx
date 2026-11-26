@@ -3,77 +3,132 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { useAuth } from "@/features/auth/useAuth";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const ProfileLayout: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, signOut, isDemoMode } = useAuth();
 
+  // ID real del usuario demo (primeros 8 caracteres del UUID guardado en
+  // demo_user). Antes era un placeholder fijo "demo-use • xxxx-xxx-xx"
+  // que parecía un dato enmascarado sin serlo; si no hay demo_user, la
+  // línea no se muestra.
+  const demoUserId = (() => {
+    try {
+      const raw = window.localStorage.getItem("demo_user");
+      if (!raw) return "";
+      const parsed = JSON.parse(raw) as { id?: unknown };
+      return typeof parsed.id === "string" ? parsed.id.slice(0, 8) : "";
+    } catch {
+      return "";
+    }
+  })();
+
   return (
     <>
-      {isDemoMode() && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-60">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                className="demo-user-heartbeat bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-2 rounded-2xl shadow-2xl shadow-purple-500/30 border border-white/20 backdrop-blur-md hover:[animation-play-state:paused] w-full max-w-xs"
-              >
-                <span className="flex flex-col items-center leading-tight">
-                  <span className="text-sm font-bold">Demo User</span>
-                  <span className="text-[10px] text-white/90">
-                    ID: demo-use • xxxx-xxx-xx
-                  </span>
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[180px]">
-              <DropdownMenuLabel>
-                {isDemoMode() ? "DEMO" : isAuthenticated() ? "Sesión Activa" : "Cuenta"}
-              </DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => {
-                  if (isDemoMode()) {
-                    navigate("/profile");
-                    return;
-                  }
-                  if (isAuthenticated()) {
-                    navigate("/profile");
-                    return;
-                  }
-                  navigate("/auth");
-                }}
-              >
-                Ver Mi Perfil
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => {
-                  if (isDemoMode()) {
-                    await signOut();
-                    return;
-                  }
-                  if (!isAuthenticated()) {
-                    navigate("/auth");
-                    return;
-                  }
-                  if (window.confirm("¿Cerrar sesión?")) {
-                    try {
-                      await signOut();
-                    } catch {
-                      // no-op
-                    }
-                    navigate("/");
-                  }
-                }}
-              >
-                Cerrar Sesión
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      )}
-
       {/* Contenido de perfil sin bloqueo por defecto */}
       <main className="relative z-10 min-h-dvh pb-20 lg:pb-0 safe-area-pt safe-area-inset">
+        {/* Barra demo en flujo (no fija): la píldora flotante
+            "Demo User" (fixed top-4 left-4) tapaba los títulos de las
+            pantallas de perfil (p. ej. "Editar perfil de la pareja" y el
+            ID). En flujo empuja el contenido hacia abajo sin tapar nada;
+            el menú (Ver Mi Perfil / Cerrar Sesión) se conserva. */}
+        {isDemoMode() && (
+          <div className="relative z-10 flex items-center justify-between gap-2 border-b border-purple-900/20 bg-purple-900 dark:bg-purple-950 dark:border-white/10 px-3 py-1">
+            {/* RONDA 7 (punto 3): la barra era `bg-purple-950/60`
+                (morado translúcido): en tema claro el fondo claro se
+                transparentaba y el "Demo User / ID" blanco quedaba
+                lavado sobre lavanda. Ahora es morado SÓLIDO en claro
+                (texto blanco legible) y translúcido solo en oscuro.
+                RONDA 10 (stream B, B1): en oscuro seguía siendo
+                translúcido (`dark:bg-purple-950/60`): ahora SÓLIDO
+                también en oscuro. */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="demo-user-heartbeat h-auto bg-transparent px-2 py-1 text-xs font-semibold text-white hover:bg-white/10">
+                  <span className="flex items-center gap-1.5 leading-none">
+                    <span
+                      className="inline-block h-2 w-2 rounded-full bg-green-400"
+                      aria-hidden="true"
+                    />
+                    Demo User
+                    {demoUserId && (
+                      <span className="font-normal text-white/70">
+                        ID: {demoUserId}
+                      </span>
+                    )}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              {/* RONDA 10 (stream B, B1): el menú era TRANSPARENTE en
+                  ambos temas: `bg-purple-900/95 backdrop-blur-xl` deja
+                  ver el contenido de detrás (fotos, degradado) y se leía
+                  como transparente con los textos solapados. Fondo
+                  SÓLIDO opaco (morado-950, a juego con la barra demo) sin
+                  blur, en ambos temas. */}
+              <DropdownMenuContent
+                align="start"
+                sideOffset={8}
+                collisionPadding={8}
+                className="min-w-[180px] bg-purple-950 border border-purple-500/30 text-white shadow-xl"
+              >
+                <DropdownMenuLabel className="text-white font-semibold">
+                  {isDemoMode()
+                    ? "DEMO"
+                    : isAuthenticated()
+                      ? "Sesión Activa"
+                      : "Cuenta"}
+                </DropdownMenuLabel>
+                <DropdownMenuItem
+                  className="text-white hover:bg-purple-700/50 cursor-pointer focus:bg-purple-700/50 focus:text-white"
+                  onClick={() => {
+                    if (isDemoMode()) {
+                      navigate("/profile");
+                      return;
+                    }
+                    if (isAuthenticated()) {
+                      navigate("/profile");
+                      return;
+                    }
+                    navigate("/auth");
+                  }}
+                >
+                  Ver Mi Perfil
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-white hover:bg-purple-700/50 cursor-pointer focus:bg-purple-700/50 focus:text-white"
+                  onClick={async () => {
+                    if (isDemoMode()) {
+                      await signOut();
+                      return;
+                    }
+                    if (!isAuthenticated()) {
+                      navigate("/auth");
+                      return;
+                    }
+                    if (window.confirm("¿Cerrar sesión?")) {
+                      try {
+                        await signOut();
+                      } catch {
+                        // no-op
+                      }
+                      navigate("/");
+                    }
+                  }}
+                >
+                  Cerrar Sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <span className="text-[10px] text-white/50">Modo demostración</span>
+          </div>
+        )}
         <Outlet />
       </main>
 

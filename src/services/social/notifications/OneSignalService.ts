@@ -185,10 +185,10 @@ class OneSignalService {
           {
             user_id: userId,
             device_token: subscriptionId,
-            platform: "web",
-            provider: "onesignal",
+            device_type: "web",
+            device_info: { provider: "onesignal", platform: "web" },
             is_active: true,
-            updated_at: new Date().toISOString(),
+            last_used_at: new Date().toISOString(),
           },
           {
             onConflict: "user_id,device_token",
@@ -232,7 +232,7 @@ class OneSignalService {
         .from("user_device_tokens")
         .select("device_token")
         .eq("user_id", userId)
-        .eq("provider", "onesignal")
+        .contains("device_info", { provider: "onesignal" })
         .eq("is_active", true)
         .single();
 
@@ -293,7 +293,7 @@ class OneSignalService {
   }
 
   /**
-   * Verifica si las notificaciones están habilitadías
+   * Verifica si las notificaciones están habilitadas
    */
   async isSubscribed(): Promise<boolean> {
     try {

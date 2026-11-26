@@ -368,7 +368,7 @@ export class APMService {
   }
 
   /**
-   * Monitorea llamadías a APIs
+   * Monitorea llamadas a APIs
    */
   private monitorAPICalls(): void {
     // Override fetch to monitor API calls
@@ -586,7 +586,7 @@ export class APMService {
   }
 
   /**
-   * Calcula métricas agregadías
+   * Calcula métricas agregadas
    */
   private calculateErrorRate(): number {
     const errorMetrics = this.metrics.get("application_error") || [];

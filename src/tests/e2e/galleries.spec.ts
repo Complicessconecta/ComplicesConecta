@@ -1,5 +1,5 @@
 /**
- * SEMANA 3: Galerías Privadías/Públicas - 30 tests
+ * SEMANA 3: Galerías Privadas/Públicas - 30 tests
  * Upload, precios, pagos, watermark, moderación
  */
 
@@ -72,7 +72,7 @@ test.describe("Galerías - Pagar para Ver", () => {
     await page.waitForLoadState("networkidle");
   });
 
-  test("debe mostrar candado en fotos privadías", async ({ page }) => {
+  test("debe mostrar candado en fotos privadas", async ({ page }) => {
     const lockedPhoto = await page
       .locator('[data-locked="true"], [class*="locked"]')
       .first();

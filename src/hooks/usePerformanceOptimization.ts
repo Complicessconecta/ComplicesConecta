@@ -1,6 +1,6 @@
 /**
  * Performance Hook - Hook optimizado para performance
- * Implementa técnicas avanzadías de optimización de React
+ * Implementa técnicas avanzadas de optimización de React
  */
 
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";

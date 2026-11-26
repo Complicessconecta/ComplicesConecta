@@ -428,7 +428,7 @@ export const SecurityPanel = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todías las alertas</SelectItem>
+                    <SelectItem value="all">Todas las alertas</SelectItem>
                     <SelectItem value="open">Abiertas</SelectItem>
                     <SelectItem value="investigating">Investigando</SelectItem>
                     <SelectItem value="resolved">Resueltas</SelectItem>

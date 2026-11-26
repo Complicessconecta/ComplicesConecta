@@ -107,7 +107,7 @@ class RAGService {
       // 4. Generar respuesta con IA
       const aiResponse = await this.generateAnswer(request.question, context, request.userId);
 
-      // 5. Generar preguntas relacionadías
+      // 5. Generar preguntas relacionadas
       const relatedQuestions = await this.generateRelatedTopics(request.question, searchResults);
 
       const endTime = performance.now();
@@ -386,7 +386,7 @@ class RAGService {
   }
 
   /**
-   * Generar preguntas relacionadías
+   * Generar preguntas relacionadas
    */
   private async generateRelatedTopics(
     _originalQuestion: string,
@@ -395,11 +395,11 @@ class RAGService {
     // Extraer temas clave de los resultados
     const topics = searchResults.map(r => r.chunk.metadata.title);
 
-    // Generar preguntas relacionadías basadías en los temas
+    // Generar preguntas relacionadas basadas en los temas
     const relatedQuestions = [
       `¿Cómo funciona ${topics[0]} en CómplicesConecta?`,
       `¿Cuáles son los beneficios de ${topics[1] || 'la plataforma'}?`,
-      `¿Qué medidías de seguridad implementa CómplicesConecta?`,
+      `¿Qué medidas de seguridad implementa CómplicesConecta?`,
       `¿Cómo puedo empezar a usar ${topics[2] || 'las características principales'}?`,
       `¿Qué requisitos necesito para ${topics[0] || 'usar la plataforma'}?`
     ];

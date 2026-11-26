@@ -108,7 +108,6 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-      <NotificationContainer />
     </NotificationContext.Provider>
   );
 };
@@ -213,7 +212,10 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
       animate="animate"
       exit="exit"
       layout
-      className={`relative overflow-hidden rounded-lg shadow-lg backdrop-blur-sm bg-white/10 border border-white/20 p-4 mb-3 max-w-sm`}
+      // RONDA 6 (punto 17): fondo SÓLIDO según tema (antes bg-white/10
+      // casi transparente con texto blanco: en tema claro era ilegible
+      // y dejaba ver el texto de la página por detrás).
+      className={`relative overflow-hidden rounded-lg shadow-lg backdrop-blur-sm bg-white text-slate-900 border border-slate-200 dark:bg-slate-900 dark:text-white dark:border-slate-700 p-4 mb-3 max-w-sm`}
     >
       {/* Animated background gradient */}
       <motion.div
@@ -239,17 +241,19 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
         </motion.div>
 
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-white truncate">
+          <h4 className="text-sm font-semibold truncate">
             {notification.title}
           </h4>
-          <p className="text-xs text-white/80 mt-1">{notification.message}</p>
+          <p className="text-xs text-slate-600 dark:text-white/80 mt-1">
+            {notification.message}
+          </p>
 
           {notification.action && (
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={notification.action.onClick}
-              className="mt-2 px-3 py-1 bg-white/20 hover:bg-white/30 rounded text-xs text-white font-medium transition-colors"
+              className="mt-2 px-3 py-1 bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/20 dark:hover:bg-white/30 rounded text-xs font-medium transition-colors"
             >
               {notification.action.label}
             </motion.button>
@@ -260,7 +264,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => removeNotification(notification.id)}
-          className="text-white/60 hover:text-white transition-colors"
+          className="text-slate-400 hover:text-slate-900 dark:text-white/60 dark:hover:text-white transition-colors"
         >
           <X className="w-4 h-4" />
         </motion.button>
@@ -270,7 +274,17 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({
 };
 
 // Notification container
-const NotificationContainer: React.FC = () => {
+// RONDA 7 (punto 10): este contenedor YA NO se renderiza dentro del
+// provider como overlay `fixed` abajo a la derecha (tapaba el contenido
+// inferior de cada página): MainLayout lo monta EN FLUJO al inicio de
+// <main>, junto al Toaster Radix, en la misma zona de avisos. Sin
+// notificaciones no ocupa nada (`empty:hidden`); con notificaciones
+// empuja el contenido hacia abajo en vez de cubrirlo. El fondo sólido
+// según tema ya lo tiene NotificationItem.
+// (Hoy ningún código llama a addNotification — ver informe ronda 7 —
+// así que el contenedor vive vacío; el cambio es para que tampoco tape
+// nada cuando un productor empiece a usarlo.)
+export const NotificationContainer: React.FC = () => {
   // CRÍTICO: Los hooks deben llamarse siempre, no condicionalmente
   // Usar useContext directamente y manejar el caso undefined después
   const context = React.useContext(NotificationContext);
@@ -283,7 +297,7 @@ const NotificationContainer: React.FC = () => {
   const { notifications } = context;
 
   return (
-    <div className="fixed top-4 right-4 z-50 pointer-events-none">
+    <div className="flex w-full max-w-xs ml-auto flex-col gap-2 px-4 pt-2 empty:hidden">
       <AnimatePresence mode="popLayout">
         {notifications.map((notification) => (
           <div key={notification.id} className="pointer-events-auto">

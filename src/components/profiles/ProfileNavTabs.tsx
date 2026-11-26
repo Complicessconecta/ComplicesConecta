@@ -16,19 +16,30 @@ interface ProfileNavTabsProps {
   activeTab: TabType;
   onTabChange: (tab: TabType) => void;
   isOwnProfile?: boolean;
+  /**
+   * Posts que la pestaña realmente renderiza. Antes era un 12 fijo para
+   * TODOS los perfiles, mientras el contenido solo mostraba el post de
+   * ejemplo de Ana (o ninguno): en el perfil propio la pestaña decía
+   * "Ver Posts 12" y el contenido "No hay posts aún" (punto 14d, ronda 7;
+   * mismo patrón contradictorio de /profile/3 antes del punto 13).
+   * El llamador lo calcula desde lo que renderiza; el default 12 solo
+   * conserva el comportamiento anterior si alguien no lo pasa.
+   */
+  postsCount?: number;
 }
 
 export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   activeTab,
   onTabChange,
   isOwnProfile = false,
+  postsCount = 12,
 }) => {
   const allTabs = [
     {
       id: "posts",
       label: "Posts",
       icon: Grid3X3,
-      count: 12,
+      count: postsCount,
       visible: true,
     },
     {

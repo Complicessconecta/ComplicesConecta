@@ -96,7 +96,7 @@ export const BetaBanner = ({ embedded = false }: BetaBannerProps) => {
                     </h3>
                   </div>
 
-                  <p className="text-white/90 text-xs sm:text-sm truncate">
+                  <p className="text-white/90 text-xs sm:text-sm">
                     Únete gratis y obtén beneficios premium de por vida 🎉
                   </p>
                 </div>

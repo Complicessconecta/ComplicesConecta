@@ -242,8 +242,9 @@ export class ReportService {
         .from("reports")
         .update({
           status: "resolved",
-          resolution: resolution, // Asumiendo que existe este campo o similar
-          resolved_at: new Date().toISOString(),
+          resolution_notes: resolution,
+          reviewed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         })
         .eq("id", reportId);
 

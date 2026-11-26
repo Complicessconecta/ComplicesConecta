@@ -80,7 +80,7 @@ const LeyOlimpia: React.FC = () => {
                       🔒 Protección Avanzada
                     </h4>
                     <p className="text-sm">
-                      Implementamos medidías técnicas para prevenir la difusión
+                      Implementamos medidas técnicas para prevenir la difusión
                       no consensuada.
                     </p>
                   </div>
@@ -106,12 +106,12 @@ const LeyOlimpia: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Medidías de Protección */}
+            {/* Medidas de Protección */}
             <Card className="bg-white/10 border-cyan-400/30">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Shield className="w-5 h-5 text-cyan-400 mr-2" />
-                  Medidías de Protección Implementadas
+                  Medidas de Protección Implementadas
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90">
@@ -189,7 +189,7 @@ const LeyOlimpia: React.FC = () => {
                     }
                   >
                     <Phone className="w-4 h-4 mr-2" />
-                    WhatsApp Urgente "PROXIMANENTE Q2O26"
+                    WhatsApp Urgente "PRÓXIMAMENTE Q2 2026"
                   </Button>
                 </div>
                 <p className="text-xs text-center text-white/70">

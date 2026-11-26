@@ -95,7 +95,7 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
     "Terceras Personas",
 
     // Niveles de experiencia
-    "Parejas Experimentadías",
+    "Parejas Experimentadas",
     "Principiantes Curiosos",
     "Mentalidad Abierta",
     "Sin Prejuicios",
@@ -108,11 +108,11 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
     "Experiencias Nuevas",
     "Conexiones Auténticas",
     "Diversión Adulta",
-    "Aventuras Compartidías",
+    "Aventuras Compartidas",
 
     // Lugares y eventos mexicanos
     "Clubs Swinger México",
-    "Fiestas Privadías CDMX",
+    "Fiestas Privadas CDMX",
     "Encuentros Guadalajara",
     "Eventos Monterrey",
     "Reuniones Íntimas",
@@ -157,7 +157,7 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
   const apellido =
     apellidos[Math.floor((Math.random() * Date.now()) % apellidos.length)];
 
-  // Generar coordenadías aleatorias para ciudades mexicanas
+  // Generar coordenadas aleatorias para ciudades mexicanas
   const coordinates = getRandomMexicanCoordinates();
 
   // Generar imágenes dinámicas
@@ -258,7 +258,7 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     "Terceras Personas",
 
     // Niveles de experiencia
-    "Parejas Experimentadías",
+    "Parejas Experimentadas",
     "Principiantes Curiosos",
     "Mentalidad Abierta",
     "Sin Prejuicios",
@@ -271,11 +271,11 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     "Experiencias Nuevas",
     "Conexiones Auténticas",
     "Diversión Adulta",
-    "Aventuras Compartidías",
+    "Aventuras Compartidas",
 
     // Lugares y eventos mexicanos
     "Clubs Swinger México",
-    "Fiestas Privadías CDMX",
+    "Fiestas Privadas CDMX",
     "Encuentros Guadalajara",
     "Eventos Monterrey",
     "Reuniones Íntimas",
@@ -316,7 +316,7 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
 
   // Imágenes reales de Unsplash para parejas demo
   const coupleImages = [
-    "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400",
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=400",
     "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400",
     "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400",
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",

@@ -28,7 +28,7 @@ const TemplateDemo: React.FC = () => {
         {
           title: "Apps",
           items: [
-            { label: "Todías", icon: LayoutGrid },
+            { label: "Todas", icon: LayoutGrid },
             { label: "Actualizaciones", icon: RefreshCw, badge: 3 },
           ],
         },

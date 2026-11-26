@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Heart, Search, User, MessageSquare, Calendar, Building2, Shield, HelpCircle, Info, DollarSign, Settings, Menu, ShoppingBag, FileText, Lock, Crown, ChevronDown, MoreHorizontal, Scale, Image, Home, BookOpen, Users, Sparkles } from "lucide-react";
 import { BetaBanner } from "@/components/BetaBanner";
 import { Button } from "@/components/ui/buttons/Button";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/features/auth/useAuth";
@@ -101,7 +103,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     { name: "Noticias", path: "/news", icon: FileText, category: "Contenido & Empresa" },
     { name: "Carreras", path: "/careers", icon: Building2, category: "Contenido & Empresa" },
     { name: "Inversionistas", path: "/invest", icon: DollarSign, category: "Contenido & Empresa" },
-    { name: "Inversores", path: "/investors", icon: DollarSign, category: "Contenido & Empresa" },
     { name: "Donaciones", path: "/donations", icon: DollarSign, category: "Contenido & Empresa" },
     { name: "Moderadores", path: "/moderators", icon: Users, category: "Contenido & Empresa" },
     { name: "Proyecto", path: "/project-info", icon: FileText, category: "Contenido & Empresa" },
@@ -154,7 +155,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   };
 
   // Ocultar HeaderNav cuando el usuario está autenticado
-  // Solo mostrar en páginas públicas (no autenticadías)
+  // Solo mostrar en páginas públicas (no autenticadas)
   if (hasSession) {
     return null;
   }
@@ -171,9 +172,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
   return (
     <>
-      {/* Header Principal con gradiente difuminado */}
+      {/* RONDA 6 (punto 2): el header YA NO es `fixed top-0`: fijo seguía
+          al hacer scroll en TODAS las páginas públicas y la luna y el
+          engranaje que viven en él se veían como botones flotantes que
+          tapaban contenido. Ahora es EN FLUJO (relative): ocupa su sitio
+          en la página y se va con el scroll. El cromo morado de marca se
+          conserva en ambos temas (texto blanco sobre morado = legible en
+          claro y en oscuro). */}
       <header
-        className={`header-nav-main fixed top-0 left-0 right-0 z-50 transition-all duration-300 safe-area-pt ${
+        className={`header-nav-main relative z-50 transition-all duration-300 safe-area-pt ${
           isScrolled
             ? "bg-linear-to-b from-purple-900/90 via-purple-800/85 to-transparent backdrop-blur-md border-b border-purple-500/20"
             : "bg-linear-to-b from-purple-900/95 via-purple-800/90 to-purple-700/80 backdrop-blur-sm border-b border-purple-400/30"
@@ -204,7 +211,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                     <Heart className="absolute top-1 right-0 w-2 h-2 text-pink-400 animate-heart-particle-2" fill="currentColor" />
                   </div>
                 </div>
-                <span className="font-black text-xl lg:text-2xl hidden sm:block bg-linear-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x">
+                <span className="font-black text-xl lg:text-2xl hidden sm:block bg-linear-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x whitespace-nowrap shrink-0">
                   ComplicesConecta
                 </span>
               </button>
@@ -242,7 +249,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-56 sm:w-64 bg-purple-900/95 border-purple-500/30 backdrop-blur-md max-h-[80vh] overflow-y-auto z-200 custom-scrollbar"
+                  className="w-56 sm:w-64 bg-purple-900 border-purple-500/30 max-h-[80vh] overflow-y-auto z-200 custom-scrollbar"
                   align="end"
                   sideOffset={5}
                 >
@@ -261,7 +268,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
 
                       return (
                         <div key={category}>
-                          <DropdownMenuLabel className="text-purple-300 text-xs font-semibold px-2 py-1.5 sticky top-0 bg-purple-900/95 z-10">
+                          <DropdownMenuLabel className="text-purple-300 text-xs font-semibold px-2 py-1.5 sticky top-0 bg-purple-900 z-10">
                             {category}
                           </DropdownMenuLabel>
                           {categoryItems.map((item) => {
@@ -310,6 +317,22 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                 >
                   <Sparkles className="h-5 w-5 text-white hover:text-purple-400 block" />
                 </button>
+                {/* RONDA 5: tema y animaciones EN FLUJO en el header (nunca
+                    flotantes). El header es cromo morado de marca en ambos
+                    temas, así que el ThemeToggle usa su tono "onDark". */}
+                <button
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new Event(OPEN_ANIMATION_SETTINGS_EVENT),
+                    )
+                  }
+                  className="p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                  title="Ajustes de animación y fondo"
+                  aria-label="Ajustes de animación y fondo"
+                >
+                  <Settings className="h-5 w-5 text-white hover:text-purple-400 block" />
+                </button>
+                <ThemeToggle />
               </div>
 
               {/* Botón de Login/Perfil - Muestra estado de autenticación */}
@@ -326,7 +349,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="bg-purple-900/95 backdrop-blur-xl border-purple-500/30 text-white w-56"
+                    className="bg-purple-900 border-purple-500/30 text-white w-56"
                   >
                     <DropdownMenuLabel className="text-white font-semibold">
                       {displayUserLabel}
@@ -476,6 +499,27 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                         <Settings className="h-5 w-5 text-white" />
                         <span>Configuración</span>
                       </button>
+                      {/* RONDA 5: tema y animaciones también en el menú móvil,
+                          en flujo dentro del Sheet, nunca flotantes. */}
+                      <div className="flex items-center gap-2 px-4 py-2">
+                        <ThemeToggle />
+                        <button
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            window.dispatchEvent(
+                              new Event(OPEN_ANIMATION_SETTINGS_EVENT),
+                            );
+                          }}
+                          className="p-2.5 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                          title="Ajustes de animación y fondo"
+                          aria-label="Ajustes de animación y fondo"
+                        >
+                          <Settings className="h-5 w-5 text-white block" />
+                        </button>
+                        <span className="text-white/70 text-sm">
+                          Tema y fondo
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </SheetContent>
@@ -491,10 +535,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
         )}
       </header>
 
-      {/* Espaciador para contenido */}
-      <div className="h-16"></div>
+      {/* RONDA 6: sin espaciador: el header ya es en flujo y ocupa su
+          propio sitio; el h-16 duplicaba el hueco superior. */}
 
-      {/* Animaciones personalizadías del corazón */}
+      {/* Animaciones personalizadas del corazón */}
       <style>{`
         @keyframes heartBeat {
           0%, 100% { transform: scale(1); }

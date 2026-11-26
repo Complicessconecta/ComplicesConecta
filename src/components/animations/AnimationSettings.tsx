@@ -13,14 +13,33 @@ interface AnimationSettingsProps {
   onClose: () => void;
 }
 
+// Evento para abrir el modal desde la barra de navegación: el botón
+// "Config" del dock apunta a la ruta del editor, así que estando ya en
+// esa ruta el tap no navega a ningún lado; en ese caso Navigation
+// dispara este evento y el botón flotante abre el mismo modal.
+export const OPEN_ANIMATION_SETTINGS_EVENT =
+  "complicesconecta:open-animation-settings";
+
 export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
   isOpen,
   onClose,
 }) => {
   // Hooks must be called at the top level, before any conditional returns
   const context = React.useContext(AnimationContext);
-  const { mode, setMode, reducedMotion, toggleReducedMotion } = useBgMode();
+  const { mode, setMode } = useBgMode();
   const { preferences, setParticlesEnabled } = useBackgroundPreferences();
+
+  // Escape cierra el modal (el overlay y el botón Cerrar ya lo hacían).
+  // Un solo overlay a la vez: el modal vive en un portal a document.body
+  // con z-50, centrado y fondo oscurecido (ver `modal` abajo).
+  React.useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
 
   // Si no hay provider, mostrar mensaje o retornar null
   if (!context) {
@@ -122,7 +141,15 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
                     }
                     size="sm"
                     onClick={() => updateConfig({ animationSpeed: speed })}
-                    className="capitalize"
+                    // La variante "default" usa los tokens primary (bg-primary
+                    // / text-primary-foreground), que en Tailwind v4 quedan
+                    // sin fondo legible sobre esta tarjeta oscura; los botones
+                    // no seleccionados llevan colores explícitos.
+                    className={
+                      config.animationSpeed === speed
+                        ? "capitalize"
+                        : "capitalize bg-white/15 text-white border border-white/20 hover:bg-white/25"
+                    }
                   >
                     {speed === "slow"
                       ? "Lenta"
@@ -202,7 +229,11 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
                   variant={mode === "static" ? "love" : "default"}
                   size="sm"
                   onClick={() => setMode("static")}
-                  className="capitalize"
+                  className={
+                    mode === "static"
+                      ? "capitalize"
+                      : "capitalize bg-white/15 text-white border border-white/20 hover:bg-white/25"
+                  }
                 >
                   Fijo
                 </Button>
@@ -210,7 +241,11 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
                   variant={mode === "particles" ? "love" : "default"}
                   size="sm"
                   onClick={() => setMode("particles")}
-                  className="capitalize"
+                  className={
+                    mode === "particles"
+                      ? "capitalize"
+                      : "capitalize bg-white/15 text-white border border-white/20 hover:bg-white/25"
+                  }
                 >
                   Partículas
                 </Button>
@@ -218,34 +253,15 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
                   variant={mode === "video" ? "love" : "default"}
                   size="sm"
                   onClick={() => setMode("video")}
-                  className="capitalize"
+                  className={
+                    mode === "video"
+                      ? "capitalize"
+                      : "capitalize bg-white/15 text-white border border-white/20 hover:bg-white/25"
+                  }
                 >
                   Vídeo
                 </Button>
               </div>
-            </div>
-
-            {/* Reduced Motion from useBgMode */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Eye className="w-5 h-5 text-blue-400" />
-                <div>
-                  <p className="text-white font-medium">Movimiento Reducido</p>
-                  <p className="text-white/60 text-sm">Desde useBgMode</p>
-                </div>
-              </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={toggleReducedMotion}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
-                  reducedMotion ? "bg-purple-600" : "bg-gray-600"
-                }`}
-              >
-                <motion.div
-                  animate={{ x: reducedMotion ? 24 : 0 }}
-                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
-                />
-              </motion.button>
             </div>
 
             {/* Animation Preview */}
@@ -269,7 +285,11 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
           </div>
 
           <div className="flex gap-3 mt-6">
-            <Button variant="default" onClick={onClose} className="flex-1">
+            <Button
+              variant="default"
+              onClick={onClose}
+              className="flex-1 bg-white/15 text-white border border-white/20 hover:bg-white/25"
+            >
               Cerrar
             </Button>
             <Button
@@ -300,21 +320,25 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
 };
 
 // Settings button component
+// RONDA 5: el engranaje flotante (`fixed bottom-4 left-4`) se ELIMINÓ:
+// seguía al hacer scroll y tapaba el compositor en /chat y los controles
+// en /video-chat. Este componente ahora es SOLO el host del modal: lo
+// abre el botón "Config" del dock (evento OPEN_ANIMATION_SETTINGS_EVENT),
+// el engranaje en flujo del HeaderNav (páginas públicas) y la fila
+// superior en flujo de MainLayout (rutas logueadas sin dock). El modal
+// en sí sigue siendo un overlay centrado bajo demanda, no un flotante.
 export const AnimationSettingsButton: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  return (
-    <>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 left-4 z-40 p-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-colors"
-      >
-        <Settings className="w-5 h-5" />
-      </motion.button>
+  // Abrir el modal cuando el botón "Config" del dock lo pide: estando ya
+  // en la ruta del editor, el tap no navega a ningún lado y Navigation
+  // dispara este evento para abrir el mismo modal del engranaje flotante.
+  React.useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener(OPEN_ANIMATION_SETTINGS_EVENT, open);
+    return () =>
+      window.removeEventListener(OPEN_ANIMATION_SETTINGS_EVENT, open);
+  }, []);
 
-      <AnimationSettings isOpen={isOpen} onClose={() => setIsOpen(false)} />
-    </>
-  );
+  return <AnimationSettings isOpen={isOpen} onClose={() => setIsOpen(false)} />;
 };

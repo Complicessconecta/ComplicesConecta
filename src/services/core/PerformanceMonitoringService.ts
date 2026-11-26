@@ -257,11 +257,16 @@ export class PerformanceMonitoringService {
 
       await supabase.from("monitoring_sessions").insert({
         user_id: user.id,
-        session_type: "performance",
-        start_time: metric.timestamp.toISOString(),
-        metrics: {
+        started_at: metric.timestamp.toISOString(),
+        user_agent: navigator.userAgent,
+        metadata: {
+          session_type: "performance",
           url: window.location.href,
-          user_agent: navigator.userAgent,
+          metric: {
+            name: metric.name,
+            value: metric.value,
+            unit: metric.unit || "number",
+          },
         },
       });
     } catch (error) {
@@ -290,7 +295,7 @@ export class PerformanceMonitoringService {
   }
 
   /**
-   * Obtener métricas filtradías
+   * Obtener métricas filtradas
    */
   getMetrics(filter?: {
     category?: PerformanceMetric["category"];
@@ -498,12 +503,14 @@ export class PerformanceMonitoringService {
       } = await supabase.auth.getUser();
 
       await supabase.from("app_metrics").insert({
-        user_id: user?.id || "00000000-0000-0000-0000-000000000000",
         metric_name: metric.name,
         metric_value: metric.value,
         metric_type: "counter",
-        timestamp: new Date().toISOString(),
-        tags: { unit: metric.unit || "number" },
+        recorded_at: new Date().toISOString(),
+        metadata: {
+          user_id: user?.id ?? null,
+          tags: { unit: metric.unit || "number" },
+        },
       });
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
@@ -560,7 +567,7 @@ export class PerformanceMonitoringService {
   }
 
   /**
-   * Persistir todías las métricas actuales en batch
+   * Persistir todas las métricas actuales en batch
    */
   async persistAllMetrics(): Promise<void> {
     try {
@@ -576,12 +583,14 @@ export class PerformanceMonitoringService {
       } = await supabase.auth.getUser();
 
       const metricsToInsert = this.metrics.map((metric) => ({
-        user_id: user?.id || "00000000-0000-0000-0000-000000000000",
         metric_name: metric.name,
         metric_value: metric.value,
         metric_type: "counter" as const,
-        timestamp: new Date().toISOString(),
-        tags: { unit: metric.unit || "number" },
+        recorded_at: new Date().toISOString(),
+        metadata: {
+          user_id: user?.id ?? null,
+          tags: { unit: metric.unit || "number" },
+        },
       }));
 
       if (metricsToInsert.length > 0) {

@@ -6,12 +6,15 @@ export const HeroSection = () => {
       {/* Main Content */}
       <div className="relative text-center px-4 max-w-6xl mx-auto w-full">
         <div className="animate-slide-up">
-          {/* Logo ComplicesConecta - Mejorado con gradiente y glow */}
+          {/* Logo ComplicesConecta - Mejorado con gradiente y glow.
+              En móvil el corazón + el nombre no cabían en una línea y el
+              título se cortaba ("ComplicesConect"): fila con wrap, corazón
+              y texto más chicos en móvil, nombre con break-words. */}
           <div className="mb-12 flex justify-center">
-            <div className="flex items-center space-x-6 group">
-              <div className="relative">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-6 group">
+              <div className="relative shrink-0">
                 <Heart
-                  className="text-red-500 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-pulse group-hover:text-red-400 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
+                  className="text-red-500 transition-all duration-300 h-10 w-10 sm:h-20 sm:w-20 animate-pulse group-hover:text-red-400 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
                   fill="currentColor"
                   stroke="white"
                   strokeWidth="2"
@@ -22,7 +25,7 @@ export const HeroSection = () => {
                 />
                 <div className="absolute inset-0 animate-float">
                   <Heart
-                    className="text-red-400 opacity-80 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 animate-ping drop-shadow-lg"
+                    className="text-red-400 opacity-80 transition-all duration-300 h-10 w-10 sm:h-20 sm:w-20 animate-ping drop-shadow-lg"
                     fill="currentColor"
                     stroke="white"
                     strokeWidth="1"
@@ -30,14 +33,14 @@ export const HeroSection = () => {
                 </div>
                 <div className="absolute inset-0 animate-pulse">
                   <Heart
-                    className="text-red-300 opacity-50 transition-all duration-300 h-16 w-16 sm:h-20 sm:w-20 drop-shadow-md"
+                    className="text-red-300 opacity-50 transition-all duration-300 h-10 w-10 sm:h-20 sm:w-20 drop-shadow-md"
                     fill="currentColor"
                     stroke="white"
                     strokeWidth="1"
                   />
                 </div>
               </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black bg-linear-to-r from-white via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)] transition-all duration-300 group-hover:scale-105 tracking-wide">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black bg-linear-to-r from-slate-900 via-pink-600 to-pink-500 dark:from-white dark:via-pink-200 dark:to-pink-300 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)] transition-all duration-300 group-hover:scale-105 tracking-wide break-words">
                 ComplicesConecta
               </h1>
             </div>
@@ -46,13 +49,13 @@ export const HeroSection = () => {
           {/* Main Headline - Con gradiente y glow */}
           <div className="mb-8">
             <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold mb-6 leading-tight tracking-tight">
-              <span className="block bg-linear-to-r from-white via-pink-100 to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
+              <span className="block bg-linear-to-r from-slate-900 via-pink-600 to-pink-500 dark:from-white dark:via-pink-100 dark:to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
                 Plataforma Social
               </span>
-              <span className="block bg-linear-to-r from-pink-200 via-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.6)]">
+              <span className="block bg-linear-to-r from-pink-700 via-pink-500 to-pink-400 dark:from-pink-200 dark:via-pink-300 dark:to-pink-400 bg-clip-text text-transparent drop-shadow-[0_4px_20px_rgba(236,72,153,0.6)]">
                 Exclusiva
               </span>
-              <span className="block bg-linear-to-r from-pink-300 via-pink-400 to-pink-500 bg-clip-text text-transparent text-3xl sm:text-4xl md:text-5xl font-medium mt-2 drop-shadow-xl">
+              <span className="block bg-linear-to-r from-pink-600 via-pink-600 to-pink-700 dark:from-pink-300 dark:via-pink-400 dark:to-pink-500 bg-clip-text text-transparent text-3xl sm:text-4xl md:text-5xl font-medium mt-2 drop-shadow-xl">
                 para Adultos +18
               </span>
             </h1>
@@ -60,10 +63,10 @@ export const HeroSection = () => {
 
           {/* Subtitle - Con gradiente */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-8 leading-relaxed">
-            <span className="bg-linear-to-r from-white via-pink-100 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
+            <span className="bg-linear-to-r from-slate-900 via-pink-600 to-pink-500 dark:from-white dark:via-pink-100 dark:to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
               Encuentra tu
             </span>
-            <span className="block bg-linear-to-r from-pink-200 via-pink-300 to-pink-400 bg-clip-text text-transparent font-bold drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)]">
+            <span className="block bg-linear-to-r from-pink-700 via-pink-500 to-pink-400 dark:from-pink-200 dark:via-pink-300 dark:to-pink-400 bg-clip-text text-transparent font-bold drop-shadow-[0_4px_20px_rgba(236,72,153,0.5)]">
               Conexión Perfecta
             </span>
           </h2>
@@ -79,13 +82,13 @@ export const HeroSection = () => {
             </div>
 
             <p className="text-lg sm:text-xl md:text-2xl leading-relaxed font-medium mb-4">
-              <span className="bg-linear-to-r from-white via-pink-50 to-pink-100 bg-clip-text text-transparent drop-shadow-lg">
+              <span className="bg-linear-to-r from-slate-900 via-pink-700 to-pink-600 dark:from-white dark:via-pink-50 dark:to-pink-100 bg-clip-text text-transparent drop-shadow-lg">
                 Conecta con personas afines de manera segura y discreta
               </span>
             </p>
 
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-light">
-              <span className="bg-linear-to-r from-pink-100 via-pink-200 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
+              <span className="bg-linear-to-r from-pink-700 via-pink-600 to-pink-500 dark:from-pink-100 dark:via-pink-200 dark:to-pink-300 bg-clip-text text-transparent drop-shadow-md">
                 Sistema de verificación KYC, chat encriptado y eventos exclusivos
                 para la comunidad lifestyle
               </span>
@@ -96,26 +99,26 @@ export const HeroSection = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-16 pt-8 border-t border-pink-500/20">
           <div className="text-center group">
-            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-600 to-pink-500 dark:from-pink-300 dark:to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
               BETA
             </div>
-            <div className="bg-linear-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
+            <div className="bg-linear-to-r from-pink-700 to-pink-600 dark:from-pink-100 dark:to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
               Versión de Prueba
             </div>
           </div>
           <div className="text-center group">
-            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-600 to-pink-500 dark:from-pink-300 dark:to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
               100%
             </div>
-            <div className="bg-linear-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
+            <div className="bg-linear-to-r from-pink-700 to-pink-600 dark:from-pink-100 dark:to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
               Funciones Gratis
             </div>
           </div>
           <div className="text-center group">
-            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-300 to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-2 group-hover:scale-110 transition-transform duration-300 bg-linear-to-r from-pink-600 to-pink-500 dark:from-pink-300 dark:to-pink-400 bg-clip-text text-transparent drop-shadow-lg">
               ∞
             </div>
-            <div className="bg-linear-to-r from-pink-100 to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
+            <div className="bg-linear-to-r from-pink-700 to-pink-600 dark:from-pink-100 dark:to-pink-200 bg-clip-text text-transparent font-semibold drop-shadow-lg">
               Posibilidades
             </div>
           </div>

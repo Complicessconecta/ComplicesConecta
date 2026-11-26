@@ -94,7 +94,7 @@ const StoriesContainer: React.FC = () => {
             userId: 3,
             content: {
               type: "image",
-              url: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=600&fit=crop&crop=faces&auto=format&q=80",
+              url: "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&h=600&fit=crop&crop=faces&auto=format&q=80",
             },
             createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
             expiresAt: new Date(Date.now() + 18 * 60 * 60 * 1000).toISOString(), // 18 hours from now
@@ -151,12 +151,12 @@ const StoriesContainer: React.FC = () => {
           },
         ];
 
-        logger.info("🎬 Demo stories cargadías:", { count: demoStories.length });
+        logger.info("🎬 Demo stories cargadas:", { count: demoStories.length });
         setStories(demoStories);
       } else {
         // Production stories from database
         const fetchedStories = await storyService.getStories();
-        logger.info("🎬 Stories cargadías:", { count: fetchedStories.length });
+        logger.info("🎬 Stories cargadas:", { count: fetchedStories.length });
         setStories(fetchedStories);
       }
     } catch (error) {
@@ -292,7 +292,7 @@ const StoriesContainer: React.FC = () => {
               </div>
               <div className="aspect-square bg-linear-to-br from-orange-500 to-red-500 rounded-lg relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
+                  src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                   alt="Momento especial"
                   className="w-full h-full object-cover"
                 />
@@ -373,7 +373,7 @@ const StoriesContainer: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-cyan-400" />
-                <span>Viajes y escapadías</span>
+                <span>Viajes y escapadas</span>
               </div>
               <div className="flex items-center gap-2">
                 <Crown className="h-4 w-4 text-orange-400" />

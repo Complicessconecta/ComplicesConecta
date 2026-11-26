@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Eye, Shield, Clock } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
+import {
+  getAnonymousPhotoAccessRemainingMs,
+  listIncomingRequestsSync,
+  respondFriendRequest,
+  resolveDemoDisplayName,
+} from "@/lib/friends";
+import { LiveCountdown } from "@/components/profiles/shared/PhotoAccessCountdown";
 
 interface AccessRequest {
   id: string;
@@ -14,6 +26,13 @@ interface AccessRequest {
   message: string;
   timestamp: number;
   status: "pending" | "approved" | "denied";
+  /**
+   * Ronda 9, stream D: solicitud real del almacén local
+   * (`friend_requests_demo`, kind `photo_access`). Aprobar/denegar
+   * responde en ese almacén; sin la marca se simularía y el acceso
+   * nunca se concedería de verdad.
+   */
+  isLocal?: boolean;
 }
 
 interface PrivateImageRequestsManagerProps {
@@ -47,7 +66,8 @@ export const PrivateImageRequestsManager: React.FC<
             requesterId: "user-123",
             requesterName: "María García",
             requesterAvatar: "/assets/people/single/1.jpg",
-            message: "Hola, me gustaría ver tus fotos privadías para conocerte mejor.",
+            message:
+              "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
             timestamp: Date.now() - 3600000, // Hace 1 hora
             status: "pending",
           },
@@ -63,8 +83,46 @@ export const PrivateImageRequestsManager: React.FC<
         ];
 
         setRequests(mockRequests);
+
+        // Ronda 9, stream D: solicitudes REALES de ver fotos enviadas
+        // a este perfil (almacén local `friend_requests_demo`, kind
+        // `photo_access`). Antes solo se veían las 2 mock (María García
+        // y Carlos López) y una solicitud enviada de verdad —p. ej. la
+        // del perfil anónimo a la pareja— nunca aparecía aquí ni se
+        // podía conceder (test ronda 8).
+        // Ronda 12 (stream A, punto 2): `includeDecided: true` — el
+        // gestor se reconstruía SOLO con pendientes, así que una
+        // solicitud aceptada desaparecía al recargar mientras la
+        // cuenta atrás de la concesión seguía viva (bandeja y galería
+        // en desacuerdo). Aceptadas y declinadas quedan visibles con
+        // su estado real del almacén.
+        const localRequests: AccessRequest[] = listIncomingRequestsSync(
+          profileId,
+          "photo_access",
+          { includeDecided: true },
+        ).map((req) => ({
+          id: req.id,
+          requesterId: req.fromId,
+          requesterName: resolveDemoDisplayName(req.fromId),
+          message: req.message ?? "Solicitud para ver la galería privada.",
+          timestamp: Date.parse(req.createdAt) || Date.now(),
+          status:
+            req.status === "accepted"
+              ? "approved"
+              : req.status === "declined"
+                ? "denied"
+                : "pending",
+          isLocal: true,
+        }));
+        setRequests((prev) => {
+          const seen = new Set(prev.map((r) => r.id));
+          return [...prev, ...localRequests.filter((r) => !seen.has(r.id))];
+        });
       } catch (error) {
-        logger.error("Error cargando solicitudes de acceso", { error, profileId });
+        logger.error("Error cargando solicitudes de acceso", {
+          error,
+          profileId,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -74,19 +132,50 @@ export const PrivateImageRequestsManager: React.FC<
   }, [profileId]);
 
   const handleApprove = async (requestId: string, requesterId: string) => {
+    // Ronda 9, stream D: solicitud local real — se responde en el
+    // almacén (`friend_requests_demo`): aceptar concede el acceso a
+    // la galería en serio (lo lee `hasPhotoAccess` / el gate).
+    const localRequest = requests.find((r) => r.id === requestId && r.isLocal);
+    if (localRequest) {
+      const result = await respondFriendRequest(requestId, "accepted", true);
+      if (!result.ok) {
+        logger.error("Error aprobando solicitud local de acceso", {
+          error: result.error,
+          requestId,
+        });
+        toast({
+          title: "Error",
+          description: result.error ?? "No se pudo aprobar la solicitud.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === requestId ? { ...req, status: "approved" } : req,
+        ),
+      );
+      toast({
+        title: "Solicitud aprobada",
+        description: "El usuario ahora puede ver tus imágenes privadas.",
+      });
+      onAccessGranted?.(requesterId);
+      return;
+    }
+
     try {
       // Simular aprobación (en producción sería una llamada a la API)
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === requestId ? { ...req, status: "approved" } : req
-        )
+          req.id === requestId ? { ...req, status: "approved" } : req,
+        ),
       );
 
       toast({
         title: "Solicitud aprobada",
-        description: "El usuario ahora puede ver tus imágenes privadías.",
+        description: "El usuario ahora puede ver tus imágenes privadas.",
       });
 
       onAccessGranted?.(requesterId);
@@ -101,19 +190,48 @@ export const PrivateImageRequestsManager: React.FC<
   };
 
   const handleDeny = async (requestId: string, requesterId: string) => {
+    // Ronda 9, stream D: mismo camino real que en handleApprove.
+    const localRequest = requests.find((r) => r.id === requestId && r.isLocal);
+    if (localRequest) {
+      const result = await respondFriendRequest(requestId, "declined", true);
+      if (!result.ok) {
+        logger.error("Error denegando solicitud local de acceso", {
+          error: result.error,
+          requestId,
+        });
+        toast({
+          title: "Error",
+          description: result.error ?? "No se pudo denegar la solicitud.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === requestId ? { ...req, status: "denied" } : req,
+        ),
+      );
+      toast({
+        title: "Solicitud denegada",
+        description: "El usuario no podrá ver tus imágenes privadas.",
+      });
+      onAccessDenied?.(requesterId);
+      return;
+    }
+
     try {
       // Simular denegación (en producción sería una llamada a la API)
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === requestId ? { ...req, status: "denied" } : req
-        )
+          req.id === requestId ? { ...req, status: "denied" } : req,
+        ),
       );
 
       toast({
         title: "Solicitud denegada",
-        description: "El usuario no podrá ver tus imágenes privadías.",
+        description: "El usuario no podrá ver tus imágenes privadas.",
       });
 
       onAccessDenied?.(requesterId);
@@ -142,9 +260,13 @@ export const PrivateImageRequestsManager: React.FC<
 
   if (isLoading) {
     return (
-      <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+      <Card
+        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      >
         <CardContent className="p-6">
-          <div className="text-center text-white/60">Cargando solicitudes...</div>
+          <div className="text-center text-white/60">
+            Cargando solicitudes...
+          </div>
         </CardContent>
       </Card>
     );
@@ -152,7 +274,9 @@ export const PrivateImageRequestsManager: React.FC<
 
   if (requests.length === 0) {
     return (
-      <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+      <Card
+        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      >
         <CardContent className="p-6">
           <div className="text-center text-white/60">
             <Eye className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -164,7 +288,9 @@ export const PrivateImageRequestsManager: React.FC<
   }
 
   return (
-    <Card className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}>
+    <Card
+      className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+    >
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-white flex items-center gap-2">
@@ -197,7 +323,10 @@ export const PrivateImageRequestsManager: React.FC<
                         alt={request.requesterName}
                         className="w-full h-full object-cover"
                         onError={() =>
-                          setAvatarErrors((prev) => ({ ...prev, [request.id]: true }))
+                          setAvatarErrors((prev) => ({
+                            ...prev,
+                            [request.id]: true,
+                          }))
                         }
                         draggable={false}
                       />
@@ -224,7 +353,9 @@ export const PrivateImageRequestsManager: React.FC<
                     )}
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => handleApprove(request.id, request.requesterId)}
+                        onClick={() =>
+                          handleApprove(request.id, request.requesterId)
+                        }
                         size="sm"
                         className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs"
                       >
@@ -232,7 +363,9 @@ export const PrivateImageRequestsManager: React.FC<
                         Aprobar
                       </Button>
                       <Button
-                        onClick={() => handleDeny(request.id, request.requesterId)}
+                        onClick={() =>
+                          handleDeny(request.id, request.requesterId)
+                        }
                         size="sm"
                         variant="outline"
                         className="flex-1 border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs"
@@ -248,45 +381,63 @@ export const PrivateImageRequestsManager: React.FC<
           </div>
         )}
 
-        {/* Solicitudes Aprobadías */}
+        {/* Solicitudes Aprobadas */}
         {approvedRequests.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">
-              Aprobadías
+              Aprobadas
             </p>
-            {approvedRequests.map((request) => (
-              <div
-                key={request.id}
-                className="bg-green-500/5 rounded-xl p-3 border border-green-500/20"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <Check className="h-4 w-4 text-green-400" />
+            {approvedRequests.map((request) => {
+              // Ronda 12 (stream A, punto 2): la concesión vive 24 h
+              // desde la aceptación: la fila aprobada muestra su
+              // cuenta atrás en vivo, igual que la galería del dueño.
+              // Sin ms restantes (concesión vencida) solo queda la
+              // insignia: el acceso ya no es vigente.
+              const remainingMs = getAnonymousPhotoAccessRemainingMs(
+                request.requesterId,
+                profileId,
+              );
+              return (
+                <div
+                  key={request.id}
+                  className="bg-green-500/5 rounded-xl p-3 border border-green-500/20"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <Check className="h-4 w-4 text-green-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">
+                          {request.requesterName}
+                        </p>
+                        <p className="text-xs text-white/60">
+                          {formatTimeAgo(request.timestamp)}
+                          {remainingMs !== null && (
+                            <>
+                              {" · "}
+                              <LiveCountdown remainingMs={remainingMs} />
+                              {" · expira a las 24 h de concedido"}
+                            </>
+                          )}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-white">
-                        {request.requesterName}
-                      </p>
-                      <p className="text-xs text-white/60">
-                        {formatTimeAgo(request.timestamp)}
-                      </p>
-                    </div>
+                    <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
+                      Acceso concedido
+                    </Badge>
                   </div>
-                  <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
-                    Acceso concedido
-                  </Badge>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
-        {/* Solicitudes Denegadías */}
+        {/* Solicitudes Denegadas */}
         {deniedRequests.length > 0 && (
           <div className="space-y-3">
             <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">
-              Denegadías
+              Denegadas
             </p>
             {deniedRequests.map((request) => (
               <div
@@ -321,4 +472,3 @@ export const PrivateImageRequestsManager: React.FC<
 };
 
 export default PrivateImageRequestsManager;
-

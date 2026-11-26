@@ -13,12 +13,16 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ className = 
   const navigate = useNavigate();
   const { isDemo } = useAuth();
 
-  // Solo mostrar en modo demo y en rutas de perfil
+  // Solo mostrar en modo demo y en rutas del perfil PROPIO.
+  // RONDA 5 — Regla de Wacko "dock solo en el perfil": antes el
+  // startsWith("/profile-") incluía cualquier ruta con ese prefijo;
+  // ahora la lista es explícita y no incluye /profile/<id> (perfil de
+  // otro usuario) ni /edit-profile-*. (Este dock ya no se renderiza
+  // desde MainLayout; se conserva alineado por si vuelve a usarse.)
   const shouldShow = isDemo() && (
     location.pathname === "/profile" ||
     location.pathname === "/profile-single" ||
-    location.pathname === "/profile-couple" ||
-    location.pathname.startsWith("/profile-")
+    location.pathname === "/profile-couple"
   );
 
   if (!shouldShow) return null;

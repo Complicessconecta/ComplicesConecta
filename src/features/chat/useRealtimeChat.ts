@@ -81,7 +81,9 @@ export const useRealtimeChat = ({
         return;
       }
 
-      // Usar tabla messages existente con estructura compatible
+      // Usar tabla messages existente con estructura compatible.
+      // Filtrar por sala: sin el filtro, al volver a un hilo se cargaban
+      // los mensajes de TODAS las salas mezclados (límite 100).
       const { data, error } = await (supabase as any)
         .from("messages")
         .select(
@@ -92,6 +94,7 @@ export const useRealtimeChat = ({
           created_at
         `,
         )
+        .eq("room_id", roomId)
         .order("created_at", { ascending: true })
         .limit(100);
 
@@ -262,7 +265,8 @@ export const useRealtimeChat = ({
 
     channelRef.current = channel;
 
-    // Escuchar nuevos mensajes
+    // Escuchar nuevos mensajes (solo de esta sala: sin filtro, los
+    // mensajes de cualquier sala se colaban en el hilo abierto).
     channel
       .on(
         "postgres_changes",
@@ -270,6 +274,7 @@ export const useRealtimeChat = ({
           event: "INSERT",
           schema: "public",
           table: "messages",
+          filter: `room_id=eq.${chatRoomId}`,
         },
         (payload) => {
           logger.info("New message received:", {

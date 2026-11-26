@@ -10,20 +10,45 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 
-// Interfaces importadías de @/types/supabase-messages
-
 interface Message {
   id: string;
   content: string;
   sender_id: string;
   sender_name: string;
-  created_at: string;
+  created_at: string | null;
   location?: {
     latitude: number;
     longitude: number;
     address?: string;
   };
 }
+
+const LOCATION_MARKER = "📍 Ubicación compartida:";
+const LOCATION_URL_PATTERN =
+  /https:\/\/maps\.google\.com\/\?q=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/;
+
+const getLocationUrl = (location: NonNullable<Message["location"]>) =>
+  `https://maps.google.com/?q=${location.latitude},${location.longitude}`;
+
+const parseLocation = (content: string): Message["location"] => {
+  const match = content.match(LOCATION_URL_PATTERN);
+  if (!match) return undefined;
+
+  const latitude = Number(match[1]);
+  const longitude = Number(match[2]);
+  if (
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude) ||
+    latitude < -90 ||
+    latitude > 90 ||
+    longitude < -180 ||
+    longitude > 180
+  ) {
+    return undefined;
+  }
+
+  return { latitude, longitude };
+};
 
 interface ChatWithLocationProps {
   conversationId: string;
@@ -60,28 +85,53 @@ export const ChatWithLocation = ({
 
       const { data, error } = await supabase
         .from("messages")
-        .select("*, sender:profiles!sender_id(*)")
-        .eq("conversation_id", conversationId)
+        .select("id, content, sender_id, created_at")
+        .eq("room_id", conversationId)
         .order("created_at", { ascending: true });
 
       if (error) throw error;
 
-      const formattedMessages = data.map((msg: any) => ({
-        id: msg.id,
-        content: msg.content,
-        sender_id: msg.sender_id,
-        sender_name:
-          `${msg.sender?.first_name || ""} ${msg.sender?.last_name || ""}`.trim() ||
-          "Usuario",
-        created_at: msg.created_at,
-        ...(msg.location_latitude && msg.location_longitude ? {
-          location: {
-            latitude: msg.location_latitude,
-            longitude: msg.location_longitude,
-            address: msg.location_address || undefined,
-          }
-        } : {}),
-      }));
+      const senderIds = [
+        ...new Set(
+          data
+            .map((message) => message.sender_id)
+            .filter((senderId): senderId is string => senderId !== null),
+        ),
+      ];
+      const profilesByUserId = new Map<
+        string,
+        { first_name: string | null; last_name: string | null; name: string }
+      >();
+
+      if (senderIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from("profiles")
+          .select("user_id, first_name, last_name, name")
+          .in("user_id", senderIds);
+
+        if (profilesError) throw profilesError;
+        for (const profile of profiles || []) {
+          profilesByUserId.set(profile.user_id, profile);
+        }
+      }
+
+      const formattedMessages: Message[] = data.map((msg) => {
+        const profile = msg.sender_id
+          ? profilesByUserId.get(msg.sender_id)
+          : undefined;
+        const location = parseLocation(msg.content);
+        return {
+          id: msg.id,
+          content: msg.content,
+          sender_id: msg.sender_id || "",
+          sender_name:
+            `${profile?.first_name || ""} ${profile?.last_name || ""}`.trim() ||
+            profile?.name ||
+            "Usuario",
+          created_at: msg.created_at,
+          ...(location ? { location } : {}),
+        };
+      });
 
       setMessages(formattedMessages);
     } catch (error) {
@@ -105,7 +155,7 @@ export const ChatWithLocation = ({
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `conversation_id=eq.${conversationId}`,
+          filter: `room_id=eq.${conversationId}`,
         },
         () => {
           fetchMessages(); // Refetch to get sender details
@@ -123,17 +173,10 @@ export const ChatWithLocation = ({
 
     setIsLoading(true);
     try {
-      const messageData = {
-        conversation_id: conversationId,
-        sender_id: currentUserId,
-        content: newMessage.trim() || "📍 Ubicación compartida",
-        ...(includeLocation &&
-          location && {
-            location_latitude: location.latitude,
-            location_longitude: location.longitude,
-            location_address: "Ubicación actual",
-          }),
-      };
+      const content =
+        includeLocation && location
+          ? `${newMessage.trim() ? `${newMessage.trim()}\n` : ""}${LOCATION_MARKER} ${getLocationUrl(location)}`
+          : newMessage.trim();
 
       if (!supabase) {
         logger.error("Supabase no está disponible");
@@ -145,17 +188,11 @@ export const ChatWithLocation = ({
         return;
       }
 
-      // Usar tabla chat_messages que existe en la BD
-      const { error } = await (supabase as any).from("chat_messages").insert([
-        {
-          conversation_id: messageData.conversation_id,
-          sender_id: messageData.sender_id,
-          content: messageData.content,
-          location_latitude: messageData.location_latitude,
-          location_longitude: messageData.location_longitude,
-          location_address: messageData.location_address,
-        },
-      ]);
+      const { error } = await supabase.from("messages").insert({
+        room_id: conversationId,
+        sender_id: currentUserId,
+        content,
+      });
 
       if (error) throw error;
 
@@ -210,7 +247,7 @@ export const ChatWithLocation = ({
   }, [conversationId, fetchMessages, subscribeToMessages]);
 
   return (
-    <Card className="h-[600px] flex flex-col">
+    <Card className="h-150 flex flex-col">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-3">
           <Avatar>
@@ -242,13 +279,28 @@ export const ChatWithLocation = ({
                       : "bg-muted"
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-sm">
+                    {message.location
+                      ? message.content
+                          .replace(LOCATION_URL_PATTERN, "")
+                          .replace(LOCATION_MARKER, "")
+                          .trim() || "📍 Ubicación compartida"
+                      : message.content}
+                  </p>
                   {message.location && (
                     <div className="mt-2 p-2 rounded bg-background/20 border">
                       <div className="flex items-center gap-2 text-xs">
                         <MapPin className="h-3 w-3" />
                         <span>Ubicación compartida</span>
                       </div>
+                      <a
+                        href={getLocationUrl(message.location)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-block text-xs underline"
+                      >
+                        Abrir mapa
+                      </a>
                       {location && (
                         <Badge variant="secondary" className="mt-1 text-xs">
                           {formatDistance(message.location)}
@@ -258,7 +310,9 @@ export const ChatWithLocation = ({
                   )}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {new Date(message.created_at).toLocaleTimeString()}
+                  {message.created_at
+                    ? new Date(message.created_at).toLocaleTimeString()
+                    : ""}
                 </div>
               </div>
             </div>

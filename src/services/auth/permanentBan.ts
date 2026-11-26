@@ -1,6 +1,7 @@
 // Servicio de Baneo Permanente con Huella Digital
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { retainIdentityAfterBan } from "@/lib/reportBlock";
 import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from "@/services/auth/digitalFingerprint";
 
 export interface PermanentBanData {
@@ -59,6 +60,16 @@ export const createPermanentBan = async (
 
     logger.info("✅ Baneo permanente creado", { banId: data.id });
 
+    // Ronda 12 (stream D): `createPermanentBan` es el único punto de
+    // entrada del baneo permanente (lo llama el ModeratorDashboard);
+    // aquí se retiene la identidad para que el baneado no se
+    // re-registre con otro nombre (`retained_identities`, migración
+    // 20261124050000; la consulta en registro es
+    // `checkIdentityRetained`). Es best-effort y NUNCA rompe el
+    // baneo: si el perfil no se puede leer o la tabla aún no existe,
+    // solo queda el warning y el baneo ya quedó creado.
+    await retainIdentityAfterPermanentBan(banData, _bannedBy);
+
     return data.id;
   } catch (error) {
     logger.error("Error creando baneo permanente:", {
@@ -66,6 +77,84 @@ export const createPermanentBan = async (
       userId: banData.userId,
     });
     throw error;
+  }
+};
+
+/**
+ * Retener la identidad del baneado tras un baneo permanente
+ * (ronda 12, stream D). Best-effort: nunca lanza; si algo falla
+ * solo queda un warning. El correo y el apodo se leen de `profiles`
+ * (el `userId` del baneo puede venir en espacio auth uid o en
+ * espacio `profiles.id`, así que se prueban los dos); `banned_by`
+ * se resuelve al `profiles.id` del moderador porque esa columna es
+ * FK a `profiles(id)` — un auth uid ahí violaría la FK, así que si
+ * no se resuelve se guarda NULL.
+ */
+export const retainIdentityAfterPermanentBan = async (
+  banData: PermanentBanData,
+  bannedBy: string,
+): Promise<void> => {
+  try {
+    if (!supabase) return;
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("email,nickname,display_name")
+      .eq("user_id", banData.userId)
+      .maybeSingle();
+    const row =
+      profile ??
+      (
+        await supabase
+          .from("profiles")
+          .select("email,nickname,display_name")
+          .eq("id", banData.userId)
+          .maybeSingle()
+      ).data;
+    const email = (row as { email?: string | null } | null)?.email;
+    const username =
+      (row as { nickname?: string | null; display_name?: string | null } | null)
+        ?.nickname ??
+      (row as { display_name?: string | null } | null)?.display_name ??
+      null;
+    if (!email || !username) {
+      logger.warn(
+        "Retención de identidad omitida: sin correo o apodo del baneado",
+        { userId: banData.userId },
+      );
+      return;
+    }
+    const { data: moderatorProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("user_id", bannedBy)
+      .maybeSingle();
+    const reportId =
+      banData.evidence &&
+      typeof banData.evidence.report_id === "string"
+        ? (banData.evidence.report_id as string)
+        : undefined;
+    const result = await retainIdentityAfterBan({
+      email,
+      username,
+      userId: banData.userId,
+      reason: banData.banReason,
+      // exactOptionalPropertyTypes: no pasar la clave cuando no hay
+      // report_id (un `string | undefined` explícito no compila).
+      ...(reportId ? { reportId } : {}),
+      bannedBy:
+        (moderatorProfile as { id?: string } | null)?.id ?? null,
+    });
+    if (!result.ok) {
+      logger.warn("No se pudo retener la identidad tras el baneo", {
+        userId: banData.userId,
+        error: result.error,
+      });
+    }
+  } catch (err) {
+    logger.warn("No se pudo retener la identidad tras el baneo", {
+      userId: banData.userId,
+      error: err instanceof Error ? err.message : String(err),
+    });
   }
 };
 

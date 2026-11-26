@@ -14,6 +14,8 @@ interface DiscoverProfile {
   first_name: string;
   last_name?: string | null;
   age: number;
+  // Edad del segundo miembro (parejas): se muestra "25 y 28 años".
+  partnerAge?: number;
   bio: string | null;
   gender: string;
   interested_in: string;
@@ -85,7 +87,7 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(
       [profile, onSuperLike],
     );
 
-    // Funciones puras memoizadías
+    // Funciones puras memoizadas
     const getLocationText = useCallback((): string => {
       if (profile.latitude && profile.longitude) {
         // En una implementación real, aquí se haría geocoding reverso
@@ -193,7 +195,10 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(
               )}
             </div>
             <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm overlay-text">
-              <span className="overlay-text">{profile.age} años</span>
+              <span className="overlay-text">
+                {profile.age}
+                {profile.partnerAge ? ` y ${profile.partnerAge}` : ""} años
+              </span>
               <span className="overlay-text">•</span>
               <div className="flex items-center gap-1">
                 <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
@@ -223,9 +228,9 @@ DiscoverProfileCard.displayName = "DiscoverProfileCard";
 // ✅ Memoización: Componente envuelto en React.memo, callbacks memoizados con useCallback
 // ✅ Imports: Agregado alias @/ para imports internos, importado tipos de Supabase
 // ✅ Null-safe: Manejo seguro de image_url, bio, rating, badges de verificación
-// ✅ Performance: Funciones puras memoizadías (getLocationText, getFullName)
+// ✅ Performance: Funciones puras memoizadas (getLocationText, getFullName)
 // ✅ Async cleanup: AbortController para prevenir memory leaks
 // ✅ Arquitectura: Mantenida ubicación en discover/, preparado para unificación con ProfileCard.tsx
-// ✅ Campos corregidos: Eliminado 'name' → 'first_name + last_name', 'location' → coordenadías
+// ✅ Campos corregidos: Eliminado 'name' → 'first_name + last_name', 'location' → coordenadas
 // ✅ Event handling: Agregado stopPropagation en botones para evitar conflictos con click del card
 

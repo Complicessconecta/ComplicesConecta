@@ -24,7 +24,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
     maxMembers: 100,
   });
 
-  // Cargar salas privadías del usuario
+  // Cargar salas privadas del usuario
   useEffect(() => {
     loadRooms();
   }, [userId]);
@@ -35,7 +35,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
       const userRooms = await ChatRoomService.getUserPrivateRooms(userId);
       setRooms(userRooms);
     } catch (error) {
-      logger.error("Error cargando salas privadías:", { error });
+      logger.error("Error cargando salas privadas:", { error });
     } finally {
       setLoading(false);
     }
@@ -50,9 +50,9 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
     }
 
     try {
-      // Solo usuarios premium pueden crear salas privadías
+      // Solo usuarios premium pueden crear salas privadas
       if (!isPremium) {
-        logger.warn("Solo usuarios premium pueden crear salas privadías");
+        logger.warn("Solo usuarios premium pueden crear salas privadas");
         return;
       }
 
@@ -128,10 +128,10 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
           <div>
             <CardTitle className="text-white flex items-center gap-2">
               <Lock className="h-5 w-5" />
-              Mis Salas Privadías
+              Mis Salas Privadas
             </CardTitle>
             <CardDescription className="text-white/70">
-              Gestiona tus salas de chat privadías
+              Gestiona tus salas de chat privadas
             </CardDescription>
           </div>
           {isPremium && (
@@ -217,7 +217,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
         {rooms.length === 0 ? (
           <div className="text-center py-8 text-white/70">
             <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No tienes salas privadías</p>
+            <p>No tienes salas privadas</p>
             {isPremium && (
               <p className="text-sm mt-2">Crea tu primera sala privada para empezar</p>
             )}
@@ -283,7 +283,7 @@ export const PrivateRoomManagement = ({ userId, isPremium }: PrivateRoomManageme
         {/* Mensaje para usuarios no premium */}
         {!isPremium && (
           <div className="text-center py-4 text-white/70 text-sm">
-            <p>Los usuarios premium pueden crear salas privadías</p>
+            <p>Los usuarios premium pueden crear salas privadas</p>
           </div>
         )}
       </CardContent>

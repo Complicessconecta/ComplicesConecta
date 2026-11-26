@@ -9,6 +9,7 @@ import { useDeviceCapability } from "@/hooks/useDeviceCapability";
 import { useBackgroundPreferences } from "@/hooks/useBackgroundPreferences";
 import { useBgMode } from "@/hooks/useBgMode";
 import { useAuth } from "@/features/auth/useAuth";
+import { useTheme } from "@/components/ui/ThemeProvider";
 import { logger } from "@/lib/logger";
 
 interface UnifiedBackgroundProps {
@@ -58,6 +59,20 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   const { reducedMotion } = useBgMode();
   const { profile } = useAuth();
 
+  // RONDA 5 — Tema claro: las partículas neón (cian/magenta/morado con
+  // líneas) están pensadas para fondo oscuro; sobre fondo claro ensucian
+  // la página y no se ve el cambio de tema. En claro se apagan; la
+  // nieve rosa de rutas públicas sí se mantiene (se lee bien en claro).
+  // useTheme con try/catch: este fondo también se usa fuera del
+  // ThemeProvider en algún montaje aislado; ahí se asume oscuro.
+  let actualTheme: "light" | "dark" = "dark";
+  try {
+    actualTheme = useTheme().actualTheme;
+  } catch {
+    actualTheme = "dark";
+  }
+  const isLightTheme = actualTheme === "light";
+
   const [backgroundImage, setBackgroundImage] = useState<string>(() =>
     getBackgroundImageByPath(location.pathname),
   );
@@ -96,7 +111,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
         ? "css"
         : "tsparticles";
 
-  // Rutas permitidías para partículas pesadías (neón) - EXPANDIDO para todías las páginas públicas principales
+  // Rutas permitidas para partículas pesadas (neón) - EXPANDIDO para todas las páginas públicas principales
   const ALLOW_HEAVY_ROUTES = new Set<string>([
     "/",
     "/demo",
@@ -120,7 +135,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     "/events",
     "/shop",
   ]);
-  // Fuera de rutas públicas, degradar tsparticles a CSS, excepto en rutas permitidías
+  // Fuera de rutas públicas, degradar tsparticles a CSS, excepto en rutas permitidas
   // RELAJADO: Permitir partículas en más rutas
   if (
     !isSnowRoute &&
@@ -259,7 +274,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   }, [forceNeon, preferences.particlesEnabled]);
 
   // ======================================================================
-// PARTÍCULAS BLANCAS (NIEVE) - CAMBIAdías A ROSA (#FF69B4)
+// PARTÍCULAS BLANCAS (NIEVE) - CAMBIAdas A ROSA (#FF69B4)
 // ======================================================================
 // Estas partículas blancas originales se cambiaron a rosa para
 // mantener la consistencia con el tema de la app.
@@ -300,7 +315,7 @@ const snowOptions = useMemo(
   );
 
 // ======================================================================
-// PARTÍCULAS DE NEÓN - MANTENIdías TAL CUAL (NO MODIFICAR)
+// PARTÍCULAS DE NEÓN - MANTENIdas TAL CUAL (NO MODIFICAR)
 // ======================================================================
 // Estas partículas neón se mantienen con sus colores originales
 // (cyan, magenta, morado) para el efecto de neón lifestyle.
@@ -349,12 +364,13 @@ const neonOptions = useMemo(
     isSnowRoute && variant === "tsparticles" && engineReady;
   const showCssParticles = variant === "css";
   const showNeonParticles =
+    !isLightTheme &&
     engineReady &&
     (forceNeon || preferences.particlesEnabled || forceImageAndNeon);
 
   // Fallback CSS: Mostrar partículas CSS si el motor no está listo pero se forzaron partículas
   const showFallbackParticles =
-    !engineReady && forceNeon && preferences.particlesEnabled;
+    !isLightTheme && !engineReady && forceNeon && preferences.particlesEnabled;
 
   // LOGGING: Diagnosticar por qué no se muestran las partículas
   if (import.meta.env.DEV) { console.log("🔍 ParticlesNeon Debug:",
@@ -414,8 +430,8 @@ const neonOptions = useMemo(
       <div
         className={`fixed inset-0 -z-30 bg-linear-to-br ${
           preferences.particlesEnabled
-            ? "from-slate-900 via-purple-950 to-slate-900"
-            : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
+            ? "from-slate-100 via-purple-100 to-slate-200 dark:from-slate-900 dark:via-purple-950 dark:to-slate-900"
+            : "from-[#f3f1f5] via-[#e9e7ee] to-[#dcd9e2] dark:from-[#0a0a0a] dark:via-[#111111] dark:to-[#1a1a1a]"
         } ${variant === "solid" ? "bg-(--cc-solid-bg)" : ""}`}
       >
         {/* Imagen de fondo con fade-in sólo cuando está cargada */}
@@ -424,12 +440,12 @@ const neonOptions = useMemo(
             src={resolvedBackground}
             alt=""
             aria-hidden="true"
-            className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-1200 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+            className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-1200 ${imageLoaded ? "dark:opacity-100 opacity-30" : "opacity-0"}`}
           />
         )}
 
-        {/* Overlay gradiente oscuro para legibilidad */}
-        <div className="fixed inset-0 -z-10 bg-linear-to-br from-black/40 via-black/30 to-black/40" />
+        {/* Overlay gradiente oscuro para legibilidad (claro en modo claro) */}
+        <div className="fixed inset-0 -z-10 bg-linear-to-br from-white/40 via-white/30 to-white/40 dark:from-black/40 dark:via-black/30 dark:to-black/40" />
 
         {/* Partículas neón globales (modo Lifestyle Swinger) */}
         {showNeonParticles && (

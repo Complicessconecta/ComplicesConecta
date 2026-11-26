@@ -1471,6 +1471,111 @@ export type Database = {
         }
         Relationships: []
       }
+      club_applications: {
+        Row: {
+          address: string | null
+          capacity: number | null
+          club_name: string
+          club_type: string | null
+          company_rfc: string | null
+          created_at: string
+          description: string | null
+          documents_url: string | null
+          email: string | null
+          hours: string | null
+          id: string
+          license: string | null
+          location: string | null
+          owner_age: number | null
+          owner_gender: string | null
+          owner_name: string
+          owner_rfc: string | null
+          phone: string | null
+          rep_email: string | null
+          rep_name: string | null
+          rep_phone: string | null
+          rep_position: string | null
+          state: string | null
+          status: string
+          temp_password: string | null
+          temp_password_expires_at: string | null
+          temp_password_used: boolean
+          updated_at: string
+          use_app_as_website: boolean
+          website: string | null
+          whatsapp: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          capacity?: number | null
+          club_name: string
+          club_type?: string | null
+          company_rfc?: string | null
+          created_at?: string
+          description?: string | null
+          documents_url?: string | null
+          email?: string | null
+          hours?: string | null
+          id?: string
+          license?: string | null
+          location?: string | null
+          owner_age?: number | null
+          owner_gender?: string | null
+          owner_name: string
+          owner_rfc?: string | null
+          phone?: string | null
+          rep_email?: string | null
+          rep_name?: string | null
+          rep_phone?: string | null
+          rep_position?: string | null
+          state?: string | null
+          status?: string
+          temp_password?: string | null
+          temp_password_expires_at?: string | null
+          temp_password_used?: boolean
+          updated_at?: string
+          use_app_as_website?: boolean
+          website?: string | null
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          capacity?: number | null
+          club_name?: string
+          club_type?: string | null
+          company_rfc?: string | null
+          created_at?: string
+          description?: string | null
+          documents_url?: string | null
+          email?: string | null
+          hours?: string | null
+          id?: string
+          license?: string | null
+          location?: string | null
+          owner_age?: number | null
+          owner_gender?: string | null
+          owner_name?: string
+          owner_rfc?: string | null
+          phone?: string | null
+          rep_email?: string | null
+          rep_name?: string | null
+          rep_phone?: string | null
+          rep_position?: string | null
+          state?: string | null
+          status?: string
+          temp_password?: string | null
+          temp_password_expires_at?: string | null
+          temp_password_used?: boolean
+          updated_at?: string
+          use_app_as_website?: boolean
+          website?: string | null
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       club_checkins: {
         Row: {
           club_id: string
@@ -1521,6 +1626,127 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_discounts: {
+        Row: {
+          club_id: string
+          code: string
+          created_at: string
+          description: string | null
+          discount_amount: number | null
+          discount_percent: number | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          updated_at: string
+          uses_count: number
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          club_id: string
+          code: string
+          created_at?: string
+          description?: string | null
+          discount_amount?: number | null
+          discount_percent?: number | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          club_id?: string
+          code?: string
+          created_at?: string
+          description?: string | null
+          discount_amount?: number | null
+          discount_percent?: number | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_discounts_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_events: {
+        Row: {
+          capacity: number | null
+          club_id: string
+          created_at: string
+          currency: string
+          description: string | null
+          end_time: string | null
+          event_date: string
+          id: string
+          is_active: boolean
+          is_vip: boolean
+          location: string | null
+          price: number | null
+          registered_count: number
+          start_time: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number | null
+          club_id: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          end_time?: string | null
+          event_date: string
+          id?: string
+          is_active?: boolean
+          is_vip?: boolean
+          location?: string | null
+          price?: number | null
+          registered_count?: number
+          start_time?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number | null
+          club_id?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          end_time?: string | null
+          event_date?: string
+          id?: string
+          is_active?: boolean
+          is_vip?: boolean
+          location?: string | null
+          price?: number | null
+          registered_count?: number
+          start_time?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_events_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
             referencedColumns: ["id"]
           },
         ]
@@ -1597,6 +1823,54 @@ export type Database = {
           {
             foreignKeyName: "club_flyers_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      club_members: {
+        Row: {
+          club_id: string
+          created_at: string
+          id: string
+          joined_at: string
+          role: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          club_id: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          club_id?: string
+          created_at?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "club_members_club_id_fkey"
+            columns: ["club_id"]
+            isOneToOne: false
+            referencedRelation: "clubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "club_members_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
             referencedColumns: ["id"]
@@ -3163,6 +3437,7 @@ export type Database = {
           city: string | null
           communication_preference: string | null
           country: string | null
+          country_code: string | null
           couple_age_range: string | null
           couple_availability: string | null
           couple_body_type: string | null
@@ -3194,6 +3469,7 @@ export type Database = {
           last_active: string | null
           latitude: number | null
           location: string | null
+          location_sharing_enabled: boolean | null
           longitude: number | null
           looking_for: string | null
           max_distance: number | null
@@ -3218,6 +3494,7 @@ export type Database = {
           updated_at: string
           user_id: string
           verification_level: number | null
+          visibility: string | null
         }
         Insert: {
           activities_interested?: string[] | null
@@ -3229,6 +3506,7 @@ export type Database = {
           city?: string | null
           communication_preference?: string | null
           country?: string | null
+          country_code?: string | null
           couple_age_range?: string | null
           couple_availability?: string | null
           couple_body_type?: string | null
@@ -3260,6 +3538,7 @@ export type Database = {
           last_active?: string | null
           latitude?: number | null
           location?: string | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
@@ -3284,6 +3563,7 @@ export type Database = {
           updated_at?: string
           user_id: string
           verification_level?: number | null
+          visibility?: string | null
         }
         Update: {
           activities_interested?: string[] | null
@@ -3295,6 +3575,7 @@ export type Database = {
           city?: string | null
           communication_preference?: string | null
           country?: string | null
+          country_code?: string | null
           couple_age_range?: string | null
           couple_availability?: string | null
           couple_body_type?: string | null
@@ -3326,6 +3607,7 @@ export type Database = {
           last_active?: string | null
           latitude?: number | null
           location?: string | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
@@ -3350,6 +3632,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           verification_level?: number | null
+          visibility?: string | null
         }
         Relationships: [
           {
@@ -4115,6 +4398,93 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      friend_requests: {
+        Row: {
+          addressee_id: string
+          created_at: string | null
+          decided_at: string | null
+          id: string
+          kind: string
+          message: string | null
+          requester_id: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          addressee_id: string
+          created_at?: string | null
+          decided_at?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          requester_id: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          addressee_id?: string
+          created_at?: string | null
+          decided_at?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          requester_id?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friend_requests_addressee_id_fkey"
+            columns: ["addressee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friend_requests_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      friendships: {
+        Row: {
+          created_at: string | null
+          id: string
+          user_id_a: string
+          user_id_b: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          user_id_a: string
+          user_id_b: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          user_id_a?: string
+          user_id_b?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "friendships_user_id_a_fkey"
+            columns: ["user_id_a"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "friendships_user_id_b_fkey"
+            columns: ["user_id_b"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6931,6 +7301,42 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string | null
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string | null
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_blocks_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_blocks_blocker_id_fkey"
+            columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_cache: {
         Row: {
           cache_key: string
@@ -7036,6 +7442,7 @@ export type Database = {
           blocked_reason: string | null
           city: string | null
           consent_status: string | null
+          country_code: string | null
           created_at: string | null
           display_name: string | null
           dispute_id: string | null
@@ -7063,16 +7470,19 @@ export type Database = {
           lifestyle_preferences: Json | null
           location: string | null
           location_preferences: Json | null
+          location_sharing_enabled: boolean | null
           longitude: number | null
           looking_for: string | null
           max_distance: number | null
           name: string
+          nickname: string | null
           personality_traits: Json | null
           phone: string | null
           phone_verified_at: string | null
           photo_verified: boolean | null
           photo_verified_at: string | null
           pin_hash: string | null
+          privacy_settings: Json | null
           profile_theme: string | null
           role: string | null
           s2_cell_id: string | null
@@ -7089,6 +7499,7 @@ export type Database = {
           updated_at: string | null
           user_id: string
           verification_level: string | null
+          visibility: string | null
           warnings_count: number | null
           world_id_nullifier_hash: string | null
           world_id_verified_at: string | null
@@ -7105,6 +7516,7 @@ export type Database = {
           blocked_reason?: string | null
           city?: string | null
           consent_status?: string | null
+          country_code?: string | null
           created_at?: string | null
           display_name?: string | null
           dispute_id?: string | null
@@ -7132,16 +7544,19 @@ export type Database = {
           lifestyle_preferences?: Json | null
           location?: string | null
           location_preferences?: Json | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
           name: string
+          nickname?: string | null
           personality_traits?: Json | null
           phone?: string | null
           phone_verified_at?: string | null
           photo_verified?: boolean | null
           photo_verified_at?: string | null
           pin_hash?: string | null
+          privacy_settings?: Json | null
           profile_theme?: string | null
           role?: string | null
           s2_cell_id?: string | null
@@ -7158,6 +7573,7 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           verification_level?: string | null
+          visibility?: string | null
           warnings_count?: number | null
           world_id_nullifier_hash?: string | null
           world_id_verified_at?: string | null
@@ -7174,6 +7590,7 @@ export type Database = {
           blocked_reason?: string | null
           city?: string | null
           consent_status?: string | null
+          country_code?: string | null
           created_at?: string | null
           display_name?: string | null
           dispute_id?: string | null
@@ -7201,16 +7618,19 @@ export type Database = {
           lifestyle_preferences?: Json | null
           location?: string | null
           location_preferences?: Json | null
+          location_sharing_enabled?: boolean | null
           longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
           name?: string
+          nickname?: string | null
           personality_traits?: Json | null
           phone?: string | null
           phone_verified_at?: string | null
           photo_verified?: boolean | null
           photo_verified_at?: string | null
           pin_hash?: string | null
+          privacy_settings?: Json | null
           profile_theme?: string | null
           role?: string | null
           s2_cell_id?: string | null
@@ -7227,6 +7647,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           verification_level?: string | null
+          visibility?: string | null
           warnings_count?: number | null
           world_id_nullifier_hash?: string | null
           world_id_verified_at?: string | null
@@ -7582,6 +8003,50 @@ export type Database = {
             columns: ["referrer_id"]
             isOneToOne: false
             referencedRelation: "users_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      retained_identities: {
+        Row: {
+          ban_reason: string
+          banned_at: string
+          banned_by: string | null
+          created_at: string | null
+          email: string
+          id: string
+          report_id: string | null
+          user_id: string
+          username: string
+        }
+        Insert: {
+          ban_reason: string
+          banned_at?: string
+          banned_by?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          report_id?: string | null
+          user_id: string
+          username: string
+        }
+        Update: {
+          ban_reason?: string
+          banned_at?: string
+          banned_by?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          report_id?: string | null
+          user_id?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "retained_identities_banned_by_fkey"
+            columns: ["banned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -9658,6 +10123,7 @@ export type Database = {
       }
       user_consents: {
         Row: {
+          club_id: string | null
           consent_hash: string
           consent_text_hash: string
           consent_type: string
@@ -9675,6 +10141,7 @@ export type Database = {
           version: string
         }
         Insert: {
+          club_id?: string | null
           consent_hash?: string
           consent_text_hash: string
           consent_type: string
@@ -9692,6 +10159,7 @@ export type Database = {
           version?: string
         }
         Update: {
+          club_id?: string | null
           consent_hash?: string
           consent_text_hash?: string
           consent_type?: string
@@ -11395,6 +11863,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      check_identity_retained: {
+        Args: { p_email: string; p_username: string }
+        Returns: boolean
+      }
+      check_nickname_available: {
+        Args: { p_nickname: string }
+        Returns: boolean
+      }
       check_rate_limit: {
         Args: {
           p_endpoint: string
@@ -11679,6 +12155,10 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_admin_or_moderator: { Args: never; Returns: boolean }
+      is_club_owner_or_admin: {
+        Args: { p_club_id: string }
+        Returns: boolean
+      }
       is_ip_blocked: { Args: { p_ip_address: string }; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       is_valid_email: { Args: { email: string }; Returns: boolean }
@@ -11766,7 +12246,8 @@ export type Database = {
       start_staking: {
         Args: {
           amount_param: number
-          duration_days?: number
+          duration_days: number
+          token_type_param: string
           user_id_param: string
         }
         Returns: Json
@@ -11818,12 +12299,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -11847,11 +12328,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -11872,11 +12353,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -11897,11 +12378,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -11914,11 +12395,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }

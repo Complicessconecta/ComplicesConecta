@@ -5,7 +5,7 @@
  * - Muestra lista de mensajes con formato adecuado
  * - Soporte para mensajes propios y ajenos
  * - Indicadores de tiempo y estado
- * - Soporte para ubicaciones compartidías
+ * - Soporte para ubicaciones compartidas
  *
  * @version 3.5.0
  */

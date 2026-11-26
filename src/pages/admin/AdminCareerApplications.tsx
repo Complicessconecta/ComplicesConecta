@@ -92,7 +92,7 @@ const AdminCareerApplications = () => {
       }
 
       setApplications(data || []);
-      logger.info("Solicitudes cargadías exitosamente:", {
+      logger.info("Solicitudes cargadas exitosamente:", {
         count: data?.length || 0,
       });
     } catch (error: any) {
@@ -293,7 +293,7 @@ const AdminCareerApplications = () => {
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2 text-sm sm:text-base">
                 <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
-                Filtros y Bsqueda
+                Filtros y Búsqueda
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -480,7 +480,7 @@ const AdminCareerApplications = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <h4 className="text-white font-semibold mb-2">
-                    Informacin Personal
+                    Información Personal
                   </h4>
                   <div className="space-y-2 text-white/80">
                     <p>
@@ -502,7 +502,7 @@ const AdminCareerApplications = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-semibold mb-2">
-                    Informacin Profesional
+                    Información Profesional
                   </h4>
                   <div className="space-y-2 text-white/80">
                     <p>

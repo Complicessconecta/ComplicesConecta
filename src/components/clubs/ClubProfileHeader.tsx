@@ -1,6 +1,7 @@
 import { Building, MapPin, Phone, Globe, Clock, Star, CheckCircle, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/cards/Card";
+import { ExpandableClubDescription } from "@/components/clubs/ExpandableClubDescription";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover/popover";
 import type { Club } from "@/entities/club";
 import { SafeImage } from "@/components/ui/SafeImage";
@@ -23,8 +24,8 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
     <Card
       className={
         isPremium
-          ? "bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-yellow-400/40 shadow-2xl shadow-yellow-500/20 overflow-hidden"
-          : "bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden"
+          ? "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-yellow-400/40 shadow-2xl shadow-yellow-500/20 overflow-hidden"
+          : "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden"
       }
     >
       {/* Cover Image */}
@@ -40,7 +41,7 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
           <>
             {/* Imagen de banner animada */}
             <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
-              backgroundImage: 'url(https://images.unsplash.com/photo-1516450177776-1a7fe1e85b60?w=1200&q=80)',
+              backgroundImage: 'url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200&q=80)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }} />
@@ -52,7 +53,7 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
         )}
 
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
+        <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
           {isDemoClub && (
             <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
               Admin
@@ -156,11 +157,19 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
               </span>
             </div>
 
-            {/* Description */}
+            {/* Description: ronda 12 (stream B, 1a) — antes era
+                `line-clamp-2` sin vía para leerla completa (la intro de
+                Eden Noir se cortaba en "…iluminació…"). Ahora se
+                expande/contrae con "Ver más" / "Ver menos". La tarjeta
+                es púrpura oscura en ambos temas, así que el botón usa
+                el morado claro en los dos. */}
             {club.description && (
-              <p className="text-white/80 mb-4 line-clamp-2">
-                {club.description}
-              </p>
+              <ExpandableClubDescription
+                text={club.description}
+                className="mb-4"
+                textClassName="text-white/80"
+                buttonClassName="text-purple-300 hover:text-purple-200"
+              />
             )}
 
             {/* Location & Contact */}

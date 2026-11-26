@@ -16,6 +16,7 @@ import { Camera, ImagePlus } from "lucide-react";
 import {
   getPhotoAccessStatusSync,
   sendPhotoAccessRequest,
+  FRIEND_REQUESTS_CHANGED_EVENT,
   type PhotoAccessStatus,
 } from "@/lib/friends";
 
@@ -59,6 +60,16 @@ export function PhotoAccessRequestButton({
   useEffect(() => {
     setStoredStatus(getPhotoAccessStatusSync(viewerId, profileId));
   }, [viewerId, profileId]);
+  // Ronda 14 (stream F, F3): si otra vista de la misma sesión cambia el
+  // almacén de solicitudes (envío/respuesta), re-leer: el estado del
+  // botón no puede quedarse en la foto del montaje.
+  useEffect(() => {
+    const refresh = () =>
+      setStoredStatus(getPhotoAccessStatusSync(viewerId, profileId));
+    window.addEventListener(FRIEND_REQUESTS_CHANGED_EVENT, refresh);
+    return () =>
+      window.removeEventListener(FRIEND_REQUESTS_CHANGED_EVENT, refresh);
+  }, [viewerId, profileId]);
 
   if (isOwnProfile || !viewerId || !profileId || viewerId === profileId) {
     return null;
@@ -95,7 +106,7 @@ export function PhotoAccessRequestButton({
   if (sent || storedStatus === "pending") {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full bg-white/10 text-white/80 border border-white/25 px-4 py-2.5 text-sm ${className}`}
+        className={`inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-white/10 text-slate-700 dark:text-white/80 border border-slate-300 dark:border-white/25 px-4 py-2.5 text-sm ${className}`}
         title="Solicitud para ver las fotos enviada, pendiente de respuesta"
       >
         <Camera className="w-4 h-4" aria-hidden="true" />
@@ -109,7 +120,7 @@ export function PhotoAccessRequestButton({
       type="button"
       onClick={() => void handleSend()}
       disabled={busy}
-      className={`inline-flex items-center gap-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl px-4 py-2.5 text-sm disabled:opacity-50 ${className}`}
+      className={`inline-flex items-center gap-2 rounded-full bg-white dark:bg-white/10 hover:bg-slate-100 dark:hover:bg-white/20 text-slate-900 dark:text-white border border-slate-300 dark:border-white/25 backdrop-blur-xl px-4 py-2.5 text-sm disabled:opacity-50 ${className}`}
       title={`Pedir a ${profileName} acceso para ver sus fotos`}
     >
       <ImagePlus className="w-4 h-4" aria-hidden="true" />

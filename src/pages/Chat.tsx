@@ -229,14 +229,25 @@ const PUBLIC_ROOM_MEMBERS: Record<string, number> = {
  * enviada al abrir el perfil (y viceversa), y /requests tampoco la
  * encontraba por perfil. La sala 3 es Carmen & Roberto, cuya ficha
  * demo usa el id "demo-couple-456" (el mismo que produce Compartir);
- * las demás salas no tienen ficha de perfil propia en el repo, así
- * que conservan su id de sala (consistencia interna del chat).
+ * la sala 2 es Sofía, cuya ficha demo usa "demo-single-1". Las
+ * demás salas no tienen ficha de perfil propia en el repo, así que
+ * conservan su id de sala (consistencia interna del chat).
+ *
+ * Ronda 14 (stream A): faltaba la sala 2. Sin ella, la solicitud de
+ * ver fotos (y la de amistad) enviada desde el chat de la pareja a
+ * Sofía se guardaba con toId = "2": el remitente la veía como
+ * enviada, pero la bandeja de Sofía —que lee con su UUID canónico—
+ * nunca la encontraba (test de verificación ronda 13, 23:30–23:58).
+ * Y como la solicitud real nunca llegaba, lo único aprobable en la
+ * bandeja eran las 2 mock, cuya aprobación es solo estado local: sin
+ * cuenta atrás HH:MM:SS y revertida a "2 pendientes" al remontar.
  */
 const CHAT_ROOM_PROFILE_IDS: Record<string, string> = {
+  "2": "demo-single-1",
   "3": "demo-couple-456",
 };
 
-function resolveChatPartnerProfileId(chatId: string): string {
+export function resolveChatPartnerProfileId(chatId: string): string {
   return CHAT_ROOM_PROFILE_IDS[chatId] ?? chatId;
 }
 

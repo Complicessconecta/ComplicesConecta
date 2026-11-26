@@ -246,10 +246,21 @@ function readLocalRequests(): FriendRequest[] {
   }
 }
 
+/**
+ * Ronda 14 (stream F, F3): aviso de que `friend_requests_demo` cambió
+ * (envío, respuesta, petición de acceso a fotos). Las listas
+ * (`Requests.tsx`, `FriendsSection`) y los botones cargaban una sola
+ * vez al montar: si la solicitud se enviaba desde otra vista de la
+ * misma sesión, la bandeja no se enteraba hasta recargar. Quien
+ * escribe suscribe y recarga; quien muta solo dispara el evento.
+ */
+export const FRIEND_REQUESTS_CHANGED_EVENT = "friend-requests-changed";
+
 function writeLocalRequests(requests: FriendRequest[]): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+    window.dispatchEvent(new Event(FRIEND_REQUESTS_CHANGED_EVENT));
   } catch {
     // Sin almacenamiento: el cambio solo vive en esta sesión.
   }
@@ -1322,4 +1333,88 @@ export async function sendPhotoAccessRequest(
       error: err instanceof Error ? err.message : "Error desconocido",
     };
   }
+}
+
+/**
+ * Solicitud de acceso a fotos SEMBRADA (demo) para un dueño.
+ *
+ * Ronda 15 (stream A): las 2 solicitudes semilla de la bandeja
+ * ("Solicitudes de Acceso": María García / Carlos López) vivían
+ * SOLO como objetos hardcodeados en `PrivateImageRequestsManager`
+ * (nunca entraban en `friend_requests_demo`), así que aprobarlas
+ * era solo `setState`: no escribía la concesión de 24 h que lee
+ * `getAnonymousPhotoAccessRemainingMs` (sin cuenta atrás HH:MM:SS
+ * en la fila aprobada) y al remontar se re-sembraban como
+ * pendientes ("2 pendientes" de nuevo; la aprobación se perdía
+ * también tras logout/re-login). La solicitud creada desde el chat
+ * sí pasa por `sendPhotoAccessRequest` → almacén real →
+ * `respondFriendRequest` → concesión con `respondedAt`, y por eso
+ * sí mostraba el contador y persistía.
+ *
+ * Este helper unifica los dos caminos: la semilla se escribe en el
+ * MISMO almacén (`friend_requests_demo`, kind `photo_access`) que
+ * una solicitud real, con el mismo `toId` canonizado, así que
+ * aprobarla pasa por el mismo `respondFriendRequest` y escribe la
+ * misma concesión. Idempotente: si ya existe una fila para ese
+ * (remitente → dueño, kind `photo_access`) no se duplica — una
+ * pendiente, una aceptada vigente o una declinada se dejan como
+ * están (la decisión del dueño manda); solo una aceptada YA
+ * EXPIRADA (24 h) vuelve a sembrarse como pendiente, porque el
+ * acceso vencido hay que volver a pedirlo y la semilla no tiene
+ * quién lo re-envíe.
+ */
+export interface SeededPhotoAccessRequest {
+  /** Id del solicitante semilla (p. ej. "user-123"). */
+  fromId: string;
+  message: string;
+  /** Minutos de antigüedad del `createdAt` inicial. */
+  createdMinutesAgo: number;
+}
+
+export function ensureSeededPhotoAccessRequests(
+  ownerId: string,
+  seeds: readonly SeededPhotoAccessRequest[],
+): FriendRequest[] {
+  if (!ownerId || seeds.length === 0) return [];
+  const toId = canonicalDemoOwnerId(ownerId);
+  const requests = readLocalRequests();
+  let changed = false;
+  const ensured: FriendRequest[] = [];
+  for (const seed of seeds) {
+    const fromId = canonicalDemoOwnerId(seed.fromId);
+    const existing = requests.find(
+      (r) =>
+        r.kind === "photo_access" &&
+        canonicalDemoOwnerId(r.fromId) === fromId &&
+        canonicalDemoOwnerId(r.toId) === toId,
+    );
+    if (existing) {
+      // Concesión vencida: la semilla vuelve a estar pendiente para
+      // poder concederse de nuevo (ver doc del helper).
+      if (existing.status === "accepted" && isPhotoAccessExpired(existing)) {
+        existing.status = "pending";
+        delete existing.respondedAt;
+        existing.createdAt = new Date().toISOString();
+        changed = true;
+      }
+      ensured.push(existing);
+      continue;
+    }
+    const row: FriendRequest = {
+      id: `seed-photo-${fromId}-to-${toId}`,
+      fromId,
+      toId,
+      kind: "photo_access",
+      status: "pending",
+      message: seed.message,
+      createdAt: new Date(
+        Date.now() - seed.createdMinutesAgo * 60_000,
+      ).toISOString(),
+    };
+    requests.push(row);
+    ensured.push(row);
+    changed = true;
+  }
+  if (changed) writeLocalRequests(requests);
+  return ensured;
 }

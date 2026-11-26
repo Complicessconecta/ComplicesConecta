@@ -35,4 +35,11 @@ export interface Filters {
   premium: boolean;
   online: boolean;
   relationshipType: string[];
+  /**
+   * Ronda 13 (stream B, B2): compatibilidad mínima exigida (0–100,
+   * contra `Profile.matchScore` / `DemoProfile.matchScore`). El
+   * control no existía en ningún panel de filtros (la cadena
+   * "Compatibilidad mínima" no estaba en el árbol): 0 = sin filtro.
+   */
+  minCompatibility: number;
 }

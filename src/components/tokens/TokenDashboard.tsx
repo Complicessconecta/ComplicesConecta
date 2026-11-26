@@ -720,9 +720,13 @@ export function TokenDashboard({
       {/* Mis NFTs (Wallet) */}
       <Card className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
-            <Sparkles className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
-            Mis NFTs (Wallet)
+          {/* Ronda 13 (stream B, B1): el encabezado nunca se trunca:
+              el título envuelve y la fila de estado también (antes los
+              dos `truncate` cortaban "NFTs en esta wallet" como
+              "NFTs en esta wal…" en angosto). */}
+          <CardTitle className="flex flex-wrap items-center gap-2 text-slate-900 dark:text-white">
+            <Sparkles className="h-5 w-5 shrink-0 text-yellow-600 dark:text-yellow-400" />
+            <span className="min-w-0 wrap-break-word">Mis NFTs (Wallet)</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
@@ -733,12 +737,12 @@ export function TokenDashboard({
           </p>
 
           {/* Estado de cuenta NFT */}
-          <div className="flex items-center justify-between gap-2 mb-4 text-xs text-slate-500 dark:text-white/70 min-w-0">
-            <span className="truncate">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-4 text-xs text-slate-500 dark:text-white/70 min-w-0">
+            <span className="min-w-0 wrap-break-word">
               NFTs en esta wallet:{" "}
               <span className="font-semibold text-slate-900 dark:text-white">{displayNfts.length}</span>
             </span>
-            <span className="truncate text-right shrink-0">
+            <span className="min-w-0 wrap-break-word">
               {/* Ronda 8, punto 7: "Galerías NFT verificadas: 4/4" junto a
                 "NFTs en esta wallet: 1" se contradecía porque el 4/4 no
                 contaba NFTs de la wallet: son las 4 galerías de EJEMPLO
@@ -756,60 +760,64 @@ export function TokenDashboard({
               {displayNfts.slice(0, 4).map((nft, index) => (
                 <div
                   key={nft.id || index}
-                  className="group relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/20 min-w-0"
+                  className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 rounded-lg transition-all cursor-pointer group min-w-0"
                 >
-                  <img
-                    src={
-                      nft.image ||
-                      nft.image_url ||
-                      MOCK_NFT_IMAGES[index % MOCK_NFT_IMAGES.length] ||
-                      MOCK_NFT_IMAGES[0]
-                    }
-                    alt={nft.name || "NFT"}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onError={(e) => {
-                      e.currentTarget.src = MOCK_NFT_IMAGES[0] || "";
-                    }}
-                  />
-                  {/* Badges */}
-                  {/*
-                    Ronda 11 (stream D, punto v): la píldora CMPX estaba
-                    arriba a la izquierda y tapaba el texto
-                    "Cómplices Conecta" del arte del NFT. Baja a la
-                    esquina inferior con un degradado para que siga
-                    legible sin tapar el arte.
-                  */}
-                  <div className="absolute inset-x-0 bottom-0 h-10 bg-linear-to-t from-black/70 to-transparent pointer-events-none" />
-                  <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-md rounded px-2 py-0.5 border border-white/20">
-                    <span className="text-[10px] text-white font-semibold">
-                      {nft.value ? `${nft.value} CMPX` : ""}
-                    </span>
+                  {/* Ronda 13 (stream B, B1): mismo patrón que la rejilla
+                      "Mis NFTs" del perfil (ronda 12, stream B, punto 2):
+                      el valor CMPX va DEBAJO del arte, nunca sobre él.
+                      La píldora inferior de la ronda 11 seguía tapando
+                      el texto del arte ("Cómplices Conecta" vive
+                      abajo); el degradado inferior y el overlay de
+                      hover también cubrían el arte, así que salen: el
+                      nombre, la rareza y la colección viven ahora
+                      debajo del arte, siempre visibles. Sobre el arte
+                      solo queda el #token, arriba a la derecha. */}
+                  <div className="aspect-square rounded mb-2 overflow-hidden relative">
+                    <img
+                      src={
+                        nft.image ||
+                        nft.image_url ||
+                        MOCK_NFT_IMAGES[index % MOCK_NFT_IMAGES.length] ||
+                        MOCK_NFT_IMAGES[0]
+                      }
+                      alt={nft.name || "NFT"}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        e.currentTarget.src = MOCK_NFT_IMAGES[0] || "";
+                      }}
+                    />
+                    <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md rounded-full px-2 py-0.5 border border-white/20">
+                      <span className="text-[10px] text-white font-mono">
+                        #{nft.token_id || index + 1}
+                      </span>
+                    </div>
                   </div>
-                  <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md rounded-full px-2 py-0.5 border border-white/20">
-                    <span className="text-[10px] text-white font-mono">
-                      #{nft.token_id || index + 1}
-                    </span>
-                  </div>
-                  {/* Hover info */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                    <p className="text-white font-bold text-sm truncate">
+                  <div className="text-xs min-w-0">
+                    <div
+                      className="font-medium text-slate-900 dark:text-white line-clamp-2"
+                      title={nft.name || "NFT Item"}
+                    >
                       {nft.name || "NFT Item"}
-                    </p>
-                    <div className="flex items-center justify-between mt-1">
+                    </div>
+                    <div className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                      <Coins className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      {nft.value ? `${nft.value} CMPX` : ""}
+                    </div>
+                    <div className="flex items-center justify-between gap-1 mt-1 min-w-0">
                       <span
-                        className={`text-[10px] capitalize ${
+                        className={`text-[10px] capitalize shrink-0 ${
                           nft.rarity === "legendary"
-                            ? "text-yellow-400"
+                            ? "text-yellow-600 dark:text-yellow-400"
                             : nft.rarity === "epic"
-                              ? "text-purple-400"
+                              ? "text-purple-600 dark:text-purple-400"
                               : nft.rarity === "rare"
-                                ? "text-blue-400"
-                                : "text-gray-400"
+                                ? "text-blue-600 dark:text-blue-400"
+                                : "text-slate-500 dark:text-gray-400"
                         }`}
                       >
                         {nft.rarity || "Common"}
                       </span>
-                      <span className="text-[9px] text-white/60">
+                      <span className="text-[9px] text-slate-500 dark:text-white/60 truncate min-w-0">
                         {nft.collection || "Cómplices"}
                       </span>
                     </div>

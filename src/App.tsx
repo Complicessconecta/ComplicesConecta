@@ -43,6 +43,7 @@ import { lazy } from "react";
 import { lazyWithDefault } from "@/utils/lazyWithDefault";
 import { AnimationProvider } from "@/components/animations/AnimationProvider";
 import { NotificationProvider } from "@/components/animations/NotificationSystem";
+import { APP_ROUTER_USE_TRANSITIONS } from "@/utils/routerConfig";
 import AdminRoute from "@/components/auth/AdminRoute";
 import ModeratorRoute from "@/components/auth/ModeratorRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -56,14 +57,17 @@ import NotFound from "@/pages/NotFound";
 import Events from "@/pages/Events";
 import { Discover } from "@/pages/Discover";
 import { Demo } from "@/pages/Demo";
+import { ProfileDetailRoute } from "@/pages/ProfileDetailRoute";
 
 // Lazy loaded pages for performance optimization - Core features
 const Profiles = lazyWithDefault(
   () => import("@/pages/profiles/shared/Profiles"),
 );
-const ProfileDetail = lazy(
-  () => import("@/pages/profiles/shared/ProfileDetail"),
-);
+// RONDA 18 (stream B): /profile/:id ya NO es un `lazy` pelado.
+// El chunk `pages-profiles` se quedaba colgado sin cota y el
+// PageLoader ("Cargando...") no tenía salida (test dirigido ronda 17,
+// PR #77, DO NOT MERGE). ProfileDetailRoute carga el chunk con tope
+// de 15 s y error con Reintentar; ver ese archivo.
 const Chat = lazyWithDefault(() => import("@/pages/Chat"));
 const ChatIntimo = lazyWithDefault(() => import("@/pages/ChatIntimo"));
 const ChatInfo = lazyWithDefault(() => import("@/pages/ChatInfo"));
@@ -198,7 +202,15 @@ const App = () => {
                   <AnimationProvider>
                     <NotificationProvider>
                       <AppFactory>
-                        <Router>
+                        {/* RONDA 17 (stream A): `useTransitions={false}`
+                            (ver src/utils/routerConfig.ts). Con el valor
+                            por defecto (`true`) cada navegación va en
+                            `startTransition` y, con el chunk destino en
+                            frío, React retiene la vista vieja sin
+                            loader — el síntoma de la ronda 16 en los 5
+                            caminos. En urgente, el fallback de
+                            MainLayout commitea de inmediato. */}
+                        <Router useTransitions={APP_ROUTER_USE_TRANSITIONS}>
                           <Routes>
                             {/* Main Layout wraps all pages except maybe standalone ones if any */}
                             <Route element={<MainLayout />}>
@@ -250,7 +262,7 @@ const App = () => {
                             >
                               <Route
                                 path="/profile/:id"
-                                element={<ProfileDetail />}
+                                element={<ProfileDetailRoute />}
                               />
                               <Route
                                 path="/profile"

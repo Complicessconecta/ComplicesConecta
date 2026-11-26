@@ -1,7 +1,7 @@
 {
   "name": "complices-conecta-sw",
   "private": true,
-  "version": "3.8.3",
+  "version": "4.0.0",
   "type": "module",
   "scripts": {
     "vercel-build": "npm run build",

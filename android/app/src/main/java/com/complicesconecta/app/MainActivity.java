@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.BridgeWebViewClient;
+import com.complicesconecta.app.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,13 +35,48 @@ public class MainActivity extends BridgeActivity {
 
         registerPlugin(ContentProtectionPlugin.class);
 
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE
-        );
+        if (BuildConfig.DEBUG) {
+            // Debug: Pausar/deshabilitar FLAG_SECURE para permitir capturas y grabación de pantalla
+            // y guardar logs de diagnóstico en /storage/emulated/0/Debugapk
+            initDebugLogging();
+        } else {
+            // Release: Habilitar protección de captura y grabación de pantalla (Ley Olimpia / seguridad)
+            getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            );
+        }
 
         if (checkAndRequestPermissions()) {
             initApp();
+        }
+    }
+
+    private void initDebugLogging() {
+        try {
+            java.io.File debugDir = new java.io.File("/storage/emulated/0/Debugapk");
+            if (!debugDir.exists()) {
+                debugDir.mkdirs();
+            }
+            java.io.File logFile = new java.io.File(debugDir, "debug_log.txt");
+            java.io.FileWriter writer = new java.io.FileWriter(logFile, true);
+            writer.append("--- App Started (Debug Mode v4.0.0) at ").append(new java.util.Date().toString()).append(" ---\n");
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            try {
+                java.io.File debugDir = new java.io.File(getExternalFilesDir(null), "Debugapk");
+                if (!debugDir.exists()) {
+                    debugDir.mkdirs();
+                }
+                java.io.File logFile = new java.io.File(debugDir, "debug_log.txt");
+                java.io.FileWriter writer = new java.io.FileWriter(logFile, true);
+                writer.append("--- App Started (Debug Mode v4.0.0 - Fallback Dir) at ").append(new java.util.Date().toString()).append(" ---\n");
+                writer.flush();
+                writer.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

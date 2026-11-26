@@ -792,6 +792,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   avatarFallback.ts
 |   |   capture-console-errors.ts
 |   |   chatLimits.ts
+|   |   clubDemoSession.ts
 |   |   countries.ts
 |   |   data.ts
 |   |   demo-registration.ts
@@ -818,6 +819,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 |   |   mobile.ts
 |   |   multimediaSecurity.ts
 |   |   notifications.ts
+|   |   profile-interests.ts
 |   |   profileCompleteness.ts
 |   |   profileLabels.ts
 |   |   profileVisibility.ts

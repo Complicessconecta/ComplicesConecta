@@ -29,7 +29,9 @@ export const SinglePreferencesSection: React.FC<
       </CardHeader>
       <CardContent>
         <div className="p-4 bg-slate-900/5 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10">
-          <p className="font-semibold text-white mb-3">{name}</p>
+          <p className="font-semibold text-slate-900 dark:text-white mb-3">
+            {name}
+          </p>
 
           {empty ? (
             <p className="text-xs text-slate-500 dark:text-white/50">

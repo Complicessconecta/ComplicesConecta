@@ -24,6 +24,7 @@ import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { openIntimateChat } from "@/lib/intimateChat";
 import {
+  FRIEND_REQUESTS_CHANGED_EVENT,
   listIncomingRequestsSync,
   listSentRequestsSync,
   respondFriendRequest,
@@ -365,6 +366,19 @@ const Requests = () => {
       loadInvitations();
     }
   }, [currentUserId, loadInvitations]);
+
+  // Ronda 14 (stream F, F3): la bandeja cargaba una sola vez al montar.
+  // Si la solicitud se enviaba desde un perfil de la misma sesión, la
+  // bandeja no se enteraba hasta recargar. Ahora se recarga cuando el
+  // almacén de solicitudes cambia (evento disparado en cada escritura).
+  useEffect(() => {
+    const reload = () => {
+      void loadInvitations();
+    };
+    window.addEventListener(FRIEND_REQUESTS_CHANGED_EVENT, reload);
+    return () =>
+      window.removeEventListener(FRIEND_REQUESTS_CHANGED_EVENT, reload);
+  }, [loadInvitations]);
 
   useEffect(() => {
     if (isDemoMode) {

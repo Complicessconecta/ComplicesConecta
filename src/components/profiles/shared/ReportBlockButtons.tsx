@@ -77,7 +77,7 @@ export function ReportBlockButtons({
         <button
           type="button"
           onClick={onReport}
-          className="inline-flex items-center gap-2 rounded-full bg-white/10 hover:bg-white/20 text-red-200 border border-red-400/40 backdrop-blur-xl px-4 py-2.5 text-sm"
+          className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-white/10 hover:bg-slate-100 dark:hover:bg-white/20 text-red-600 dark:text-red-200 border border-red-300 dark:border-red-400/40 backdrop-blur-xl px-4 py-2.5 text-sm"
           title={`Reportar a ${profileName}`}
         >
           <Flag className="w-4 h-4" aria-hidden="true" />
@@ -88,7 +88,7 @@ export function ReportBlockButtons({
         type="button"
         onClick={() => void handleBlockToggle()}
         disabled={busy}
-        className="inline-flex items-center gap-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl px-4 py-2.5 text-sm disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-white/10 hover:bg-slate-100 dark:hover:bg-white/20 text-slate-900 dark:text-white border border-slate-300 dark:border-white/25 backdrop-blur-xl px-4 py-2.5 text-sm disabled:opacity-50"
         title={
           blocked
             ? `${profileName} está bloqueado: no puede buscarte ni ver tu perfil. Toca para desbloquear.`
@@ -99,7 +99,7 @@ export function ReportBlockButtons({
         {busy ? "…" : blocked ? "Desbloquear" : "Bloquear"}
       </button>
       {blocked && (
-        <span className="self-center text-xs text-white/70">
+        <span className="self-center text-xs text-slate-500 dark:text-white/70">
           {profileName} no puede buscarte ni ver tu perfil.
         </span>
       )}

@@ -186,6 +186,19 @@ export const useRealtimeChat = ({
           metadata: metadata || {},
         };
 
+        // Ronda 14 (stream F, F3): el mensaje insertado se añadía SOLO
+        // vía onMessageSent (que Chat.tsx ni siquiera pasa) y aparecía en
+        // la lista solo cuando llegaba el eco de postgres_changes. Si el
+        // eco no llega, el mensaje enviado nunca se veía ("No se pudo
+        // cargar el chat" / lista que no se refresca). Ahora se añade
+        // al estado local nada más confirmarse el insert; el eco posterior
+        // lo descarta el guard de duplicados del handler de realtime.
+        setMessages((prev) =>
+          prev.some((m) => m.id === realtimeMessage.id)
+            ? prev
+            : [...prev, realtimeMessage],
+        );
+
         onMessageSent?.(realtimeMessage);
       } catch (error) {
         logger.error("Error in sendMessage:", { error: String(error) });

@@ -480,10 +480,12 @@ export default function ProfileDetail() {
 
   if (resolving) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-linear-to-br dark:from-purple-900 dark:via-purple-800 dark:to-blue-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white text-lg">Cargando perfil…</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 dark:border-white mx-auto mb-4"></div>
+          <p className="text-slate-900 dark:text-white text-lg">
+            Cargando perfil…
+          </p>
         </div>
       </div>
     );
@@ -494,12 +496,12 @@ export default function ProfileDetail() {
     // mismo "Perfil no encontrado" del interno, pero con Reintentar
     // (ronda 12, stream C): antes solo quedaba recargar la página.
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
+      <div className="min-h-screen bg-white dark:bg-linear-to-br dark:from-purple-900 dark:via-purple-800 dark:to-blue-900">
         <main className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
             Perfil no encontrado
           </h1>
-          <p className="text-white/70 text-sm mb-6">
+          <p className="text-slate-500 dark:text-white/70 text-sm mb-6">
             No pudimos cargar este perfil. Puede que el enlace esté
             desactualizado o que el perfil ya no exista.
           </p>
@@ -516,7 +518,7 @@ export default function ProfileDetail() {
             </Button>
             <Button
               onClick={() => navigate("/profiles")}
-              className="text-white bg-white/10 border border-white/30 hover:bg-white/20"
+              className="text-slate-900 dark:text-white bg-white dark:bg-white/10 border border-slate-300 dark:border-white/30 hover:bg-slate-100 dark:hover:bg-white/20"
             >
               Volver a perfiles
             </Button>

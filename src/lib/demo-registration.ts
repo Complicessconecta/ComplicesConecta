@@ -52,6 +52,143 @@ import type { Profile } from "@/types/supabase-custom";
  */
 const LOCAL_DEMO_ACCOUNTS_KEY = "cc_local_demo_accounts_v1";
 
+/**
+ * Ronda 12, stream C: cuentas demo locales ELIMINADAS (lápidas).
+ *
+ * `deleteLocalDemoAccount` borra la cuenta del registro, así que
+ * después ya no se puede distinguir "esa cuenta existió y se borró"
+ * de "ese id nunca existió". Sin esa distinción, las filas sociales
+ * huérfanas que quedaban (amistades/solicitudes de anonr8test,
+ * borrado en el test de verificación ronda 11) se seguían mostrando
+ * con el UUID crudo en las listas. La lápida guarda los userIds
+ * borrados (máx. 50, los más recientes) para que los resolutores de
+ * nombres los etiqueten "Cuenta eliminada" en vez de inventar un
+ * nombre o enseñar el UUID.
+ *
+ * La clave NO lleva prefijo `demo_` a propósito (igual que el
+ * registro): `clearDemoAuth` la barrería en cada logout y las
+ * lápidas perderían su sentido.
+ */
+const DELETED_DEMO_ACCOUNTS_KEY = "deleted_demo_accounts_v1";
+const MAX_DELETED_DEMO_ACCOUNTS = 50;
+
+export function isDeletedDemoAccountId(userId: string): boolean {
+  const needle = userId.trim();
+  if (!needle || typeof window === "undefined") return false;
+  try {
+    const raw = window.localStorage.getItem(DELETED_DEMO_ACCOUNTS_KEY);
+    if (!raw) return false;
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.includes(needle);
+  } catch {
+    return false;
+  }
+}
+
+function recordDeletedDemoAccount(userId: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const raw = window.localStorage.getItem(DELETED_DEMO_ACCOUNTS_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    const list = (Array.isArray(parsed) ? parsed : []).filter(
+      (x): x is string => typeof x === "string",
+    );
+    if (!list.includes(userId)) list.unshift(userId);
+    window.localStorage.setItem(
+      DELETED_DEMO_ACCOUNTS_KEY,
+      JSON.stringify(list.slice(0, MAX_DELETED_DEMO_ACCOUNTS)),
+    );
+  } catch {
+    // Sin almacenamiento: la lápida solo vive en esta sesión.
+  }
+}
+
+/**
+ * Ronda 12, stream C: purga de los registros sociales de una cuenta
+ * demo eliminada.
+ *
+ * `deleteLocalDemoAccount` borraba el registro y los ajustes, pero
+ * dejaba las filas que esa cuenta había creado en los almacenes
+ * sociales: `friend_requests_demo` (solicitudes enviadas/recibidas,
+ * incluidas las de acceso a fotos), `friendships_demo` (pares
+ * aceptados) y `removed_friends_demo` (eliminaciones). Esas filas
+ * huérfanas hacían que la cuenta borrada siguiera apareciendo en
+ * las listas de amistades y de acceso a la galería — con su UUID
+ * crudo, porque el registro ya no resolvía su nombre (caso
+ * anonr8test, test de verificación ronda 11).
+ *
+ * Las claves se duplican aquí a propósito con los mismos literales
+ * que `src/lib/friends.ts` (ese módulo importa de este, así que
+ * importar la purga desde allí sería un ciclo): los `send*` de
+ * friends.ts guardan los ids canonizados, así que comparar con el
+ * userId exacto casa con todas las filas de una cuenta local.
+ */
+function purgeDeletedDemoAccountSocialRecords(userId: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const rawRequests = window.localStorage.getItem("friend_requests_demo");
+    if (rawRequests) {
+      const parsed: unknown = JSON.parse(rawRequests);
+      if (Array.isArray(parsed)) {
+        window.localStorage.setItem(
+          "friend_requests_demo",
+          JSON.stringify(
+            parsed.filter(
+              (r) =>
+                !r ||
+                typeof r !== "object" ||
+                ((r as { fromId?: unknown }).fromId !== userId &&
+                  (r as { toId?: unknown }).toId !== userId),
+            ),
+          ),
+        );
+      }
+    }
+  } catch {
+    // Almacén corrupto: no se puede purgar, tampoco se rompe el borrado.
+  }
+  try {
+    const rawFriendships = window.localStorage.getItem("friendships_demo");
+    if (rawFriendships) {
+      const parsed: unknown = JSON.parse(rawFriendships);
+      if (Array.isArray(parsed)) {
+        window.localStorage.setItem(
+          "friendships_demo",
+          JSON.stringify(
+            parsed.filter(
+              (p) => !Array.isArray(p) || (p[0] !== userId && p[1] !== userId),
+            ),
+          ),
+        );
+      }
+    }
+  } catch {
+    // Igual que arriba.
+  }
+  try {
+    const rawRemoved = window.localStorage.getItem("removed_friends_demo");
+    if (rawRemoved) {
+      const parsed: unknown = JSON.parse(rawRemoved);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        const map = parsed as Record<string, unknown>;
+        delete map[userId];
+        for (const key of Object.keys(map)) {
+          const list = map[key];
+          if (Array.isArray(list)) {
+            map[key] = list.filter((x) => x !== userId);
+          }
+        }
+        window.localStorage.setItem(
+          "removed_friends_demo",
+          JSON.stringify(map),
+        );
+      }
+    }
+  } catch {
+    // Igual que arriba.
+  }
+}
+
 export interface LocalDemoAccountRecord {
   email: string;
   nickname: string;
@@ -267,6 +404,14 @@ export function deleteLocalDemoAccount(userId: string): {
     } catch {
       // demo_user corrupto: el registro ya se borró arriba.
     }
+    // Ronda 12, stream C: sin esto, las filas sociales de la cuenta
+    // (amistades, solicitudes, accesos a fotos) quedaban huérfanas y
+    // la cuenta borrada seguía apareciendo en las listas con su UUID
+    // crudo (caso anonr8test, test ronda 11). La lápida queda para
+    // que cualquier fila huérfana anterior a esta ronda se etiquete
+    // "Cuenta eliminada" en vez de enseñar el UUID.
+    recordDeletedDemoAccount(needle);
+    purgeDeletedDemoAccountSocialRecords(needle);
   } catch {
     return {
       deleted: false,

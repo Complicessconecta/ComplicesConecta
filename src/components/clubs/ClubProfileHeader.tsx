@@ -1,6 +1,7 @@
 import { Building, MapPin, Phone, Globe, Clock, Star, CheckCircle, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/cards/Card";
+import { ExpandableClubDescription } from "@/components/clubs/ExpandableClubDescription";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover/popover";
 import type { Club } from "@/entities/club";
 import { SafeImage } from "@/components/ui/SafeImage";
@@ -156,11 +157,19 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
               </span>
             </div>
 
-            {/* Description */}
+            {/* Description: ronda 12 (stream B, 1a) — antes era
+                `line-clamp-2` sin vía para leerla completa (la intro de
+                Eden Noir se cortaba en "…iluminació…"). Ahora se
+                expande/contrae con "Ver más" / "Ver menos". La tarjeta
+                es púrpura oscura en ambos temas, así que el botón usa
+                el morado claro en los dos. */}
             {club.description && (
-              <p className="text-white/80 mb-4 line-clamp-2">
-                {club.description}
-              </p>
+              <ExpandableClubDescription
+                text={club.description}
+                className="mb-4"
+                textClassName="text-white/80"
+                buttonClassName="text-purple-300 hover:text-purple-200"
+              />
             )}
 
             {/* Location & Contact */}

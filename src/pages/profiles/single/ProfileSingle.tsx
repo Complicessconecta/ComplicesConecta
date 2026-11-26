@@ -2099,17 +2099,14 @@ const ProfileSingle: FC = () => {
                             <div className="absolute top-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap">
                               #{nft.token_id}
                             </div>
-                            {/*
-                              Ronda 11 (stream D, punto v): la píldora CMPX
-                              estaba arriba a la izquierda y tapaba el
-                              texto "Cómplices Conecta" del arte del NFT.
-                              Baja a la esquina inferior con un degradado
-                              para que siga legible sin tapar el arte.
-                            */}
-                            <div className="absolute inset-x-0 bottom-0 h-8 bg-linear-to-t from-black/70 to-transparent pointer-events-none" />
-                            <div className="absolute bottom-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">
-                              {nft.value ? `${nft.value} CMPX` : ""}
-                            </div>
+                            {/* Ronda 12 (stream B, punto 2): la píldora
+                                CMPX ya NO va sobre el arte — ni arriba
+                                (ronda 11 la bajó) ni abajo: el texto del
+                                arte ("Cómplices Conecta", la wallet
+                                "…csw69") vive abajo y la píldora lo
+                                tapaba igual. El valor va DEBAJO del
+                                arte, como en DemoWallet /
+                                NFTWalletView. */}
                           </div>
                           <div className="text-xs min-w-0">
                             {/* RONDA 11 (stream B, B8): el título era `truncate`
@@ -2123,6 +2120,18 @@ const ProfileSingle: FC = () => {
                               title={nft.name || `NFT #${nft.token_id}`}
                             >
                               {nft.name || `NFT #${nft.token_id}`}
+                            </div>
+                            {/* Ronda 12 (stream B, punto 2): el valor
+                                CMPX va DEBAJO del arte, no sobre él
+                                (la píldora inferior tapaba el texto del
+                                arte). Mismo tratamiento que la rejilla
+                                de pareja (DemoWallet). */}
+                            <div className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                              <Coins
+                                className="h-3 w-3 shrink-0"
+                                aria-hidden="true"
+                              />
+                              {nft.value ? `${nft.value} CMPX` : ""}
                             </div>
                             <div className="flex items-center justify-between gap-1 mt-1 min-w-0">
                               <span
@@ -2188,7 +2197,7 @@ const ProfileSingle: FC = () => {
           {!isAnonymous && (
             <Card
               id="wallet"
-              className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl"
+              className="bg-white dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-2xl shadow-xl"
             >
               <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -2196,15 +2205,17 @@ const ProfileSingle: FC = () => {
                     <Wallet className="w-5 h-5 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs sm:text-sm text-white/70">
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-white/70">
                       Estado de cuenta NFT
                     </p>
-                    <p className="text-xs sm:text-sm text-white">
+                    <p className="text-xs sm:text-sm text-slate-900 dark:text-white">
                       CMPX:{" "}
                       <span className="font-semibold">
                         {tokenBalances.cmpx}
                       </span>
-                      <span className="mx-2 text-white/40">·</span>
+                      <span className="mx-2 text-slate-400 dark:text-white/40">
+                        ·
+                      </span>
                       NFTs:{" "}
                       <span className="font-semibold">{userNFTs.length}</span>
                     </p>

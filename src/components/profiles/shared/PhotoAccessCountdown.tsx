@@ -23,7 +23,10 @@ import {
   formatRemainingHHMMSS,
   getAnonymousGalleryAccessRemainingMs,
 } from "@/lib/anonymous";
-import { listAnonymousPhotoAccessGrantedBy } from "@/lib/friends";
+import {
+  listAnonymousPhotoAccessGrantedBy,
+  listPhotoAccessGrantedTo,
+} from "@/lib/friends";
 
 /**
  * Reloj en vivo: parte de `remainingMs` y descuenta cada segundo desde
@@ -168,6 +171,97 @@ export function GrantedGalleryAccessList({
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/**
+ * Ronda 12 (stream A, punto 3a): accesos a OTRAS galerías que ESTE
+ * espectador tiene concedidos y siguen vigentes, cada uno con su
+ * cuenta atrás en vivo. Es lo que faltaba en la propia pestaña "Ver
+ * Galería" del anónimo: el acceso que LE concedieron (p. ej. la
+ * pareja le aceptó ver sus fotos) no vive en su galería — la lista de
+ * accesos que ÉL concedió (GrantedGalleryAccessList) estaba vacía y
+ * la pestaña no mostraba ninguna cuenta atrás, solo título,
+ * descripción y "Subir Imagen". Null si no tiene ningún acceso.
+ */
+export function MyGrantedGalleryAccessList({
+  viewerId,
+  className,
+}: {
+  viewerId: string;
+  className?: string;
+}) {
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  const held = viewerId ? listPhotoAccessGrantedTo(viewerId, nowMs) : [];
+  useEffect(() => {
+    if (!viewerId) return;
+    const timer = window.setInterval(() => setNowMs(Date.now()), 30000);
+    return () => window.clearInterval(timer);
+  }, [viewerId]);
+  if (held.length === 0) return null;
+  return (
+    <div className={className}>
+      <p className="font-semibold">Accesos que te concedieron</p>
+      <ul className="mt-1 space-y-1">
+        {held.map((access) => (
+          <li key={access.ownerId}>
+            {access.ownerName} ·{" "}
+            <span className="font-semibold">
+              <LiveCountdown
+                remainingMs={access.remainingMs}
+                onExpire={() => setNowMs(Date.now())}
+              />
+            </span>{" "}
+            · expira a las 24 h de concedido
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/**
+ * Ronda 12 (stream A, punto 3a): el estado completo de la galería
+ * limitada del anónimo en su propia pestaña "Ver Galería": los
+ * accesos que ÉL concedió + los accesos que LE concedieron, cada uno
+ * con su cuenta atrás en vivo. Sin ningún acceso vigente, una línea
+ * explícita (no un hueco vacío): sin ella no se distingue "sin
+ * accesos" de "la cuenta atrás no carga".
+ */
+export function AnonymousOwnGalleryAccess({
+  ownerId,
+  viewerId,
+  className,
+}: {
+  ownerId: string;
+  viewerId: string;
+  className?: string;
+}) {
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = window.setInterval(() => setNowMs(Date.now()), 30000);
+    return () => window.clearInterval(timer);
+  }, []);
+  const grantedByMe = ownerId
+    ? listAnonymousPhotoAccessGrantedBy(ownerId, nowMs)
+    : [];
+  const grantedToMe = viewerId ? listPhotoAccessGrantedTo(viewerId, nowMs) : [];
+  if (grantedByMe.length === 0 && grantedToMe.length === 0) {
+    return (
+      <p className={className}>
+        Aún no hay accesos a la galería concedidos: cuando aceptes una solicitud
+        o te concedan acceso a otra galería, la cuenta atrás de 24 h aparecerá
+        aquí.
+      </p>
+    );
+  }
+  return (
+    <div className={className}>
+      {grantedByMe.length > 0 && <GrantedGalleryAccessList ownerId={ownerId} />}
+      {grantedToMe.length > 0 && (
+        <MyGrantedGalleryAccessList viewerId={viewerId} />
+      )}
     </div>
   );
 }

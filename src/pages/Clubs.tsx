@@ -19,7 +19,7 @@ import type { Club as ClubEntity } from "@/entities/club";
 import { PUBLIC_CLUBS, type PublicClub } from "./ClubsPublic";
 import { TermsModalClub } from "@/components/modals/TermsModalClub";
 import ClubConsentManager from "@/components/legal/ClubConsentManager";
-import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
+import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews, ExpandableClubDescription } from "@/components/clubs";
 
 type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
 
@@ -1255,9 +1255,11 @@ export const Clubs = () => {
                         </div>
 
                         {DEMO_CLUB.description && (
-                          <p className="text-white/80 text-sm mb-4 line-clamp-2">
-                            {DEMO_CLUB.description}
-                          </p>
+                          <ExpandableClubDescription
+                            text={DEMO_CLUB.description}
+                            className="mb-4"
+                            textClassName="text-white/80 text-sm"
+                          />
                         )}
 
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
@@ -1361,9 +1363,11 @@ export const Clubs = () => {
                         </div>
 
                         {club.description && (
-                          <p className="text-white/80 text-sm mb-4 line-clamp-2">
-                            {club.description}
-                          </p>
+                          <ExpandableClubDescription
+                            text={club.description}
+                            className="mb-4"
+                            textClassName="text-white/80 text-sm"
+                          />
                         )}
 
                         {/* Estadísticas */}

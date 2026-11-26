@@ -65,6 +65,20 @@ interface ClubProfileReviewsProps {
  */
 const USER_REVIEWS_STORAGE_PREFIX = "cc_club_reviews_v1:";
 
+/**
+ * Ronda 15 (stream C): evento que se dispara cada vez que el usuario
+ * escribe una reseña en un club. El encabezado del club
+ * (`ClubProfileHeader`) lo escucha para actualizar su conteo en vivo:
+ * antes mostraba el `rating_count` estático de la semilla (128) mientras
+ * la sección de reseñas ya decía 129 (test PR #74).
+ */
+export const USER_REVIEWS_CHANGED_EVENT = "cc:club-user-reviews-changed";
+
+/** Nº de reseñas escritas por el usuario en este club (persistidas). */
+export function countUserReviews(clubId: string | undefined): number {
+  return readUserReviews(clubId).length;
+}
+
 function readUserReviews(clubId: string | undefined): ClubReview[] {
   if (typeof window === "undefined" || !clubId) return [];
   try {
@@ -93,6 +107,11 @@ function saveUserReviews(clubId: string | undefined, reviews: ClubReview[]): voi
     window.localStorage.setItem(
       `${USER_REVIEWS_STORAGE_PREFIX}${clubId}`,
       JSON.stringify(reviews),
+    );
+    // Ronda 15 (stream C): avisar al encabezado del club para que su
+    // conteo pase a ser el vivo (ver USER_REVIEWS_CHANGED_EVENT).
+    window.dispatchEvent(
+      new CustomEvent(USER_REVIEWS_CHANGED_EVENT, { detail: { clubId } }),
     );
   } catch {
     // Sin almacenamiento: la reseña solo vive en esta vista.
@@ -313,10 +332,19 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
             moderación. */}
         <div className="bg-white/5 rounded-xl p-4 sm:p-5 mb-6 border border-white/10">
           <h4 className="text-white font-semibold mb-1">Escribe una reseña</h4>
-          <p className="text-white/60 text-xs mb-4">
+          <p className="text-white/60 text-xs mb-1">
             {isAnonymous
               ? "Tu reseña se publicará como «Reseña anónima» y quedará en revisión por moderación."
               : "Tu reseña se publicará con tu nombre visible."}
+          </p>
+          {/* Ronda 15, stream D (decisión D2): la guía afirmaba que
+              solo usuarios con check-in real podían reseñar, pero el
+              formulario nunca verificó ningún check-in. En beta las
+              reseñas están abiertas; la reseña verificada con
+              check-in real (50 m, WorldID) llega próximamente. */}
+          <p className="text-white/60 text-xs mb-4">
+            En beta, las reseñas están abiertas a todos los usuarios. La
+            reseña verificada con check-in real llega próximamente.
           </p>
           {!anonymousReviewCheck.allowed ? (
             <p className="text-sm text-amber-200 bg-amber-500/10 border border-amber-400/30 rounded-lg px-3 py-2">

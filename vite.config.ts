@@ -164,9 +164,9 @@ export default defineConfig(({ mode }) => {
         },
       },
       cssCodeSplit: true,
-      // Aumentar límite tras aplicar manualChunks para evitar warnings no accionables en producción
+      // Configuración de compatibilidad para Android WebViews (Android 10 - 17)
       chunkSizeWarningLimit: 6000,
-      target: "esnext",
+      target: "es2020",
       minify: "esbuild",
       esbuild: {
         drop: mode === "production" ? ["console", "debugger"] : [],

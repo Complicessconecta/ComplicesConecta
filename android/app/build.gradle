@@ -72,12 +72,12 @@ android {
 androidComponents {
     onVariants(selector().withBuildType("debug")) { variant ->
         variant.outputs.each { output ->
-            output.outputFileName.set("ComplicesConecta-Debugv4.0.0.apk")
+            output.outputFileName.set("complicesconecta-debug-4.0.0.apk")
         }
     }
     onVariants(selector().withBuildType("release")) { variant ->
         variant.outputs.each { output ->
-            output.outputFileName.set("ComplicesConecta.v4.0.0.apk")
+            output.outputFileName.set("ComplicesConecta-Release-4.0.0.apk")
         }
     }
 }

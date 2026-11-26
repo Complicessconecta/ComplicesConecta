@@ -36,11 +36,10 @@ try {
   });
 }
 
-// CRÍTICO: Validación temprana de variables de entorno (sin romper modo demo)
+// CRÍTICO: Validación temprana de variables de entorno (sin romper el arranque ni modo demo)
 (() => {
   const appMode = import.meta.env.VITE_APP_MODE;
   const isDemo = appMode === "demo";
-  const isProduction = import.meta.env.PROD === true;
 
   if (isDemo) return;
 
@@ -51,12 +50,7 @@ try {
 
   if (missing.length === 0) return;
 
-  const message = `Missing required environment variables: ${missing.join(", ")}`;
-
-  if (isProduction) {
-    throw new Error(message);
-  }
-
+  const message = `⚠️ Warning: Missing environment variables (${missing.join(", ")}). Falling back to demo/stub mode.`;
   console.warn(message);
 })();
 

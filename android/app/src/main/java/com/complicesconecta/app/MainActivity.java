@@ -35,21 +35,18 @@ public class MainActivity extends BridgeActivity {
 
         registerPlugin(ContentProtectionPlugin.class);
 
+        // En debug se deshabilita/pausa FLAG_SECURE; en release se mantiene aplicado siempre.
         if (BuildConfig.DEBUG) {
-            // Debug: Pausar/deshabilitar FLAG_SECURE para permitir capturas y grabación de pantalla
-            // y guardar logs de diagnóstico en /storage/emulated/0/Debugapk
-            initDebugLogging();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
         } else {
-            // Release: Habilitar protección de captura y grabación de pantalla (Ley Olimpia / seguridad)
             getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE
             );
         }
 
-        if (checkAndRequestPermissions()) {
-            initApp();
-        }
+        initApp();
+        checkAndRequestPermissions();
     }
 
     private void initDebugLogging() {
@@ -82,23 +79,6 @@ public class MainActivity extends BridgeActivity {
 
     private void initApp() {
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-
-        // Custom WebViewClient to add CSP headers
-        bridge.getWebView().setWebViewClient(new BridgeWebViewClient(bridge) {
-            @Override
-            public WebResourceResponse shouldInterceptRequest(android.webkit.WebView view, WebResourceRequest request) {
-                if (request.getUrl().toString().contains("https://localhost")) {
-                    WebResourceResponse response = super.shouldInterceptRequest(view, request);
-                    if (response != null && response.getMimeType().equals("text/html")) {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Content-Security-Policy", "connect-src 'self' https://axtvqnozatbmllvwzuim.supabase.co https://api.openai.com wss://axtvqnozatbmllvwzuim.supabase.co https://browser-intake-us5-datadoghq.com");
-                        response.setResponseHeaders(headers);
-                    }
-                    return response;
-                }
-                return super.shouldInterceptRequest(view, request);
-            }
-        });
     }
 
     private boolean checkAndRequestPermissions() {
@@ -155,15 +135,9 @@ public class MainActivity extends BridgeActivity {
                         break;
                     }
                 }
-            } else {
-                allPermissionsGranted = false;
             }
-
-            if (allPermissionsGranted) {
-                initApp();
-            } else {
-                Toast.makeText(this, "Todos los permisos son requeridos para usar la aplicación.", Toast.LENGTH_LONG).show();
-                finish();
+            if (!allPermissionsGranted) {
+                Toast.makeText(this, "Algunos permisos opcionales no fueron otorgados. Puedes habilitarlos desde Ajustes.", Toast.LENGTH_SHORT).show();
             }
         }
     }

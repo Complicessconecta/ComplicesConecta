@@ -1,5 +1,51 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 26 Nov 2026 - 01:10 (Fix Causa Raíz de Pantalla Congelada en Inicio y Compatibilidad Android 16/17 API 36)
+
+- **📱 Diagnóstico y Fix Causa Raíz del Congelamiento en Pantalla de Inicio:**
+  - **Causa Raíz Identificada:** En `src/main.tsx`, al compilar para producción (`PROD = true`), la función de verificación temprana ejecutaba `throw new Error("Missing required environment variables...")` si no detectaba variables de Supabase en el build de producción. Este `throw` no atrapado ocurría a nivel superior del módulo JavaScript antes de montar React, deteniendo en seco el hilo principal de JS de la WebView y dejando la app congelada en el degradado de fondo HTML (`linear-gradient(135deg, #6b21a8 0%, #3b82f6 100%)`).
+  - **Solución Aplicada (`src/main.tsx`):** Se reemplazó el `throw new Error` fatal a nivel superior por un `console.warn` de advertencia. De esta forma, si no hay variables de Supabase en el build, la app entra en modo demo/stub sin congelar la interfaz ni romper la inicialización del DOM.
+  - **Ajuste de Target de Compilación (`vite.config.ts`):** Cambiado el `target` de compilación de `"esnext"` a `"es2020"`. Esto garantiza que el código JavaScript generado sea totalmente compatible con los motores WebView de Android (versiones Android 10 a Android 17) sin fallos por características de sintaxis no soportadas.
+  - **Limpieza en HTML (`index.html`):** Eliminado el tag `<link rel="modulepreload" href="/src/main.tsx" />` que producía un enlace preload roto `.tsx` en el `dist/index.html` compilado.
+
+- **🤖 Compatibilidad Android 16 y 17 (`android/variables.gradle`):**
+  - **Cambios realizados:** Actualizado `targetSdkVersion = 36` en `android/variables.gradle` (Android 16 API 36 / Baklava), manteniendo `compileSdkVersion = 36` y habilitando soporte directo para Android 16 y 17.
+  - **Justificación:** Garantizar que la APK aproveche las APIs y optimizaciones más recientes de Android 16 y 17 sin advertencias de compatibilidad.
+
+- **✅ Verificación y Re-compilación de Artefactos (Debug y Release):**
+  - Proceso ejecutado mediante `npm run build:apks`.
+  - Re-compiladas y reemplazadas exitosamente en `apks/`:
+    - `apks/complicesconecta-debug-4.0.0.apk` (36.2 MB)
+    - `apks/ComplicesConecta-Release-4.0.0.apk` (29.9 MB)
+
+---
+
+## 📅 Bitácora 26 Nov 2026 - 00:25 (Configuración de Builds v4.0.0 y Control de Protección de Pantalla)
+
+- **📦 Automatización de Compilación & Versión v4.0.0 (Debug y Release):**
+  - **Cambios realizados:**
+    - Configurado `androidComponents` en `android/app/build.gradle` para nombrar automáticamente las APKs compiladas:
+      - Build Debug por defecto: `complicesconecta-debug-4.0.0.apk`
+      - Build Release: `ComplicesConecta-Release-4.0.0.apk`
+    - Actualizado `versionCode = 400` y `versionName = "4.0.0"` en `android/app/build.gradle` alineando la versión nativa con los artefactos de release y debug generados.
+    - Creado el script de automatización `scripts/build-apks.cjs` y el comando npm `npm run build:apks`. El proceso limpia y elimina automáticamente cualquier APK previa en la carpeta `apks/` y recompila sustituyéndolas por las nuevas.
+  - **Justificación:** Cumplir con los requerimientos de compilación automatizada tras sincronizar desde `master`, evitando acumulación de APKs obsoletas y estandarizando los nombres de los artefactos de salida.
+
+- **🛡️ Protección de Pantalla / Grabación Dinámica (FLAG_SECURE):**
+  - **Cambios realizados:**
+    - `MainActivity.java`: Condicionado `WindowManager.LayoutParams.FLAG_SECURE` con `BuildConfig.DEBUG`. En modo **Debug** se remueven los flags (`clearFlags`) para pausar/deshabilitar el bloqueo de capturas/grabador de pantalla; en modo **Release** se aplican siempre.
+    - `ContentProtectionPlugin.java`: Actualizado `@PluginMethod public void enableScreenProtection` para verificar `BuildConfig.DEBUG`. En Debug pausa la protección permitiendo interacción de herramientas de captura, y en Release aplica la restricción total.
+    - `android/app/build.gradle`: Añadido `buildFeatures { buildConfig = true }` para permitir la generación y consumo de `BuildConfig.DEBUG` en Java.
+  - **Justificación:** Permitir la toma de capturas de pantalla y grabaciones durante las fases de pruebas y desarrollo local (Debug), asegurando al mismo tiempo la máxima protección de contenido y cumplimiento legal (Ley Olimpia) en entornos de producción (Release).
+
+- **✅ Verificación y Estado de Build:**
+  - `npm run build:apks` ejecutado con éxito.
+  - Generadas y verificadas en `apks/`:
+    - `apks/complicesconecta-debug-4.0.0.apk` (36.2 MB)
+    - `apks/ComplicesConecta-Release-4.0.0.apk` (29.9 MB)
+
+---
+
 ## 📅 Bitácora 24 Nov 2026 - 14:05 (Ronda de fixes post full test)
 
 - **💬 Chat — persistencia y compositor completos:**

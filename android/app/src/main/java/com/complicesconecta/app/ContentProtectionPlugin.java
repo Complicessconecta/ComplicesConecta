@@ -30,12 +30,26 @@ public class ContentProtectionPlugin extends Plugin {
     public void enableScreenProtection(PluginCall call) {
         getBridge().getActivity().runOnUiThread(() -> {
             try {
-                // FLAG_SECURE previene screenshots y grabación de pantalla
+                if (BuildConfig.DEBUG) {
+                    // En debug se deshabilita/pausa la protección de pantalla
+                    getBridge().getActivity().getWindow().clearFlags(
+                        WindowManager.LayoutParams.FLAG_SECURE
+                    );
+                    if (call != null) {
+                        JSObject ret = new JSObject();
+                        ret.put("success", true);
+                        ret.put("message", "Screen protection paused in Debug mode");
+                        call.resolve(ret);
+                    }
+                    return;
+                }
+
+                // FLAG_SECURE previene screenshots y grabación de pantalla (en Release se mantiene aplicado)
                 getBridge().getActivity().getWindow().setFlags(
                     WindowManager.LayoutParams.FLAG_SECURE,
                     WindowManager.LayoutParams.FLAG_SECURE
                 );
-                
+
                 if (call != null) {
                     JSObject ret = new JSObject();
                     ret.put("success", true);
@@ -60,7 +74,7 @@ public class ContentProtectionPlugin extends Plugin {
                 getBridge().getActivity().getWindow().clearFlags(
                     WindowManager.LayoutParams.FLAG_SECURE
                 );
-                
+
                 JSObject ret = new JSObject();
                 ret.put("success", true);
                 ret.put("message", "Screen protection disabled");
@@ -83,13 +97,13 @@ public class ContentProtectionPlugin extends Plugin {
                     android.provider.Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
                     0
                 );
-                
+
                 boolean isDeveloperMode = developerMode != 0;
-                
+
                 JSObject ret = new JSObject();
                 ret.put("enabled", isDeveloperMode);
-                ret.put("message", isDeveloperMode ? 
-                    "Developer mode is enabled" : 
+                ret.put("message", isDeveloperMode ?
+                    "Developer mode is enabled" :
                     "Developer mode is disabled");
                 call.resolve(ret);
             } catch (Exception e) {
@@ -107,11 +121,11 @@ public class ContentProtectionPlugin extends Plugin {
             try {
                 int flags = getBridge().getActivity().getWindow().getAttributes().flags;
                 boolean isProtected = (flags & WindowManager.LayoutParams.FLAG_SECURE) != 0;
-                
+
                 JSObject ret = new JSObject();
                 ret.put("protected", isProtected);
-                ret.put("message", isProtected ? 
-                    "Screen protection is active" : 
+                ret.put("message", isProtected ?
+                    "Screen protection is active" :
                     "Screen protection is inactive");
                 call.resolve(ret);
             } catch (Exception e) {

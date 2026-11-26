@@ -5,6 +5,7 @@ import { ExpandableClubDescription } from "@/components/clubs/ExpandableClubDesc
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover/popover";
 import type { Club } from "@/entities/club";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { useLiveReviewCount } from "@/components/clubs/ClubProfileReviews";
 
 interface ClubProfileHeaderProps {
   club: Club;
@@ -20,12 +21,25 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
   const isPremium = club.membership_tier === "premium";
   const isDemoClub = club.id === "demo";
 
+  // Ronda 15 (stream C): conteo VIVO de reseñas. El `rating_count` del
+  // club es la semilla estática (128 en Eden Noir) y la sección de
+  // reseñas suma las que escribe el usuario (129 tras publicar una):
+  // el encabezado mostraba 128 mientras la sección decía 129 (test
+  // PR #74). Ronda 16 (stream C): el conteo vive ahora en el hook
+  // compartido `useLiveReviewCount` (misma fuente y mismo evento que
+  // la tarjeta de la lista, `LiveClubReviewCount`).
+  const clubId = String(club.id);
+  const liveReviewCount = useLiveReviewCount(clubId, club.rating_count);
+
   return (
     <Card
       className={
+        // Ronda 15 (stream C): el gradiente translúcido (`/40`) con
+        // texto blanco era blanco sobre claro en tema claro (misma
+        // clase de bug que la wallet demo). Opaco en ambos temas.
         isPremium
-          ? "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-yellow-400/40 shadow-2xl shadow-yellow-500/20 overflow-hidden"
-          : "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden"
+          ? "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border border-yellow-400/40 shadow-2xl shadow-yellow-500/20 overflow-hidden"
+          : "bg-purple-950 dark:bg-card bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border-white/20 shadow-2xl overflow-hidden"
       }
     >
       {/* Cover Image */}
@@ -54,7 +68,12 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
 
         {/* Badges */}
         <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
-          {isDemoClub && (
+          {/* Ronda 15, stream B: la insignia "Admin" marca la vista de
+              creador, no el club demo en sí. Antes se pintaba siempre
+              que `club.id === "demo"`, también en la vista pública, y
+              el visitante veía "Admin" sin sesión ni admin. Solo se
+              muestra con `isOwner` (la rama admin de ClubsDemo). */}
+          {isDemoClub && isOwner && (
             <Badge className="bg-purple-500/90 text-white border border-purple-300/40">
               Admin
             </Badge>
@@ -149,7 +168,7 @@ export const ClubProfileHeader: React.FC<ClubProfileHeaderProps> = ({
                 </span>
               </div>
               <span className="text-white/60">
-                ({club.rating_count} reseñas)
+                ({liveReviewCount} reseñas)
               </span>
               <span className="text-white/40">•</span>
               <span className="text-white/60">

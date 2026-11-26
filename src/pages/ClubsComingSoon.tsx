@@ -33,13 +33,13 @@ const ClubsComingSoon = () => {
         icon: <Globe className="h-5 w-5" />,
       },
       {
-        title: "Check-ins Verificados",
-        description: "Sistema de check-in geolocalizado (radio 50m)",
+        title: "Check-ins Verificados (próximamente)",
+        description: "Check-in geolocalizado (radio 50 m) con WorldID — próximamente",
         icon: <MapPin className="h-5 w-5" />,
       },
       {
         title: "Reseñas Auténticas",
-        description: "Solo usuarios con check-in real pueden reseñar",
+        description: "En beta, las reseñas están abiertas a todos los usuarios; la verificación con check-in llega próximamente",
         icon: <Star className="h-5 w-5" />,
       },
       {
@@ -199,10 +199,10 @@ const ClubsComingSoon = () => {
                     <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <MapPin className="h-5 w-5 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-white">Check-ins Verificados</h3>
+                    <h3 className="text-lg font-semibold text-white">Check-ins Verificados (próximamente)</h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Sistema geolocalizado (radio 50m) con WorldID para verificación auténtica
+                    Check-in geolocalizado (radio 50 m) con WorldID — próximamente
                   </p>
                 </div>
 
@@ -214,7 +214,7 @@ const ClubsComingSoon = () => {
                     <h3 className="text-lg font-semibold text-white">Reseñas Auténticas</h3>
                   </div>
                   <p className="text-white/70 text-sm ml-11">
-                    Solo usuarios con check-in real pueden reseñar, garantizando opiniones genuinas
+                    En beta, las reseñas están abiertas a todos los usuarios; la reseña verificada con check-in real llega próximamente
                   </p>
                 </div>
 

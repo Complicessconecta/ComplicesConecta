@@ -44,53 +44,43 @@ const Settings = () => {
               if (typeof idx === "number" && idx > 0) navigate(-1);
               else navigate("/");
             }}
-            className="border-white/30 text-white hover:bg-white/10 mb-6"
+            className="border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10 mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver al Inicio
           </Button>
 
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2">
             Configuración
           </h1>
-          <p className="text-white/70 mb-8">
+          <p className="text-slate-600 dark:text-white/70 mb-8">
             Gestiona tu privacidad, ubicación, notificaciones y seguridad.
           </p>
 
           <Tabs value={tab} onValueChange={setTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 bg-white/10 backdrop-blur-sm border-white/20">
-              <TabsTrigger
-                value="privacy"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70"
-              >
+            {/* Ronda 15 (stream C): sin overrides de color — los
+                defaults de TabsList/TabsTrigger ya son opacos en ambos
+                temas (ronda 10, B2). Los overrides `text-white/70` y
+                `data-[state=active]:text-white` dejaban la pestaña
+                activa blanca sobre fondo blanco en tema claro. */}
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5">
+              <TabsTrigger value="privacy">
                 <Shield className="h-4 w-4 mr-1.5" />
                 Privacidad
               </TabsTrigger>
-              <TabsTrigger
-                value="location"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70"
-              >
+              <TabsTrigger value="location">
                 <MapPin className="h-4 w-4 mr-1.5" />
                 Ubicación
               </TabsTrigger>
-              <TabsTrigger
-                value="notifications"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70"
-              >
+              <TabsTrigger value="notifications">
                 <Bell className="h-4 w-4 mr-1.5" />
                 Avisos
               </TabsTrigger>
-              <TabsTrigger
-                value="pin"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70"
-              >
+              <TabsTrigger value="pin">
                 <KeyRound className="h-4 w-4 mr-1.5" />
                 PIN
               </TabsTrigger>
-              <TabsTrigger
-                value="biometric"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70"
-              >
+              <TabsTrigger value="biometric">
                 <Fingerprint className="h-4 w-4 mr-1.5" />
                 Biometría
               </TabsTrigger>

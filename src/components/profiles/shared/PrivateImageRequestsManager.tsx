@@ -261,10 +261,10 @@ export const PrivateImageRequestsManager: React.FC<
   if (isLoading) {
     return (
       <Card
-        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+        className={`bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 ${className}`}
       >
         <CardContent className="p-6">
-          <div className="text-center text-white/60">
+          <div className="text-center text-slate-500 dark:text-white/60">
             Cargando solicitudes...
           </div>
         </CardContent>
@@ -275,10 +275,10 @@ export const PrivateImageRequestsManager: React.FC<
   if (requests.length === 0) {
     return (
       <Card
-        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+        className={`bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 ${className}`}
       >
         <CardContent className="p-6">
-          <div className="text-center text-white/60">
+          <div className="text-center text-slate-500 dark:text-white/60">
             <Eye className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No hay solicitudes de acceso pendientes</p>
           </div>
@@ -289,15 +289,15 @@ export const PrivateImageRequestsManager: React.FC<
 
   return (
     <Card
-      className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      className={`bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 ${className}`}
     >
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
             <Shield className="h-5 w-5 text-purple-400" />
             Solicitudes de Acceso
           </CardTitle>
-          <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+          <Badge className="bg-purple-500/15 text-purple-800 border-purple-500/40 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30">
             {pendingRequests.length} pendientes
           </Badge>
         </div>
@@ -307,13 +307,13 @@ export const PrivateImageRequestsManager: React.FC<
         {/* Solicitudes Pendientes */}
         {pendingRequests.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-white/70 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-slate-500 dark:text-white/70 uppercase tracking-wider">
               Pendientes
             </p>
             {pendingRequests.map((request) => (
               <div
                 key={request.id}
-                className="bg-white/5 rounded-xl p-4 border border-white/10"
+                className="bg-slate-900/5 dark:bg-white/5 rounded-xl p-4 border border-slate-200 dark:border-white/10"
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-pink-500 flex items-center justify-center shrink-0 overflow-hidden">
@@ -338,16 +338,16 @@ export const PrivateImageRequestsManager: React.FC<
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-semibold text-white truncate">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
                         {request.requesterName}
                       </p>
-                      <div className="flex items-center gap-1 text-xs text-white/60">
+                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-white/60">
                         <Clock className="h-3 w-3" />
                         {formatTimeAgo(request.timestamp)}
                       </div>
                     </div>
                     {request.message && (
-                      <p className="text-xs text-white/70 mb-3 line-clamp-2">
+                      <p className="text-xs text-slate-600 dark:text-white/70 mb-3 line-clamp-2">
                         {request.message}
                       </p>
                     )}
@@ -368,7 +368,7 @@ export const PrivateImageRequestsManager: React.FC<
                         }
                         size="sm"
                         variant="outline"
-                        className="flex-1 border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs"
+                        className="flex-1 border-red-500/30 text-red-600 hover:bg-red-500/10 dark:text-red-400 text-xs"
                       >
                         <X className="h-3 w-3 mr-1" />
                         Denegar
@@ -384,7 +384,7 @@ export const PrivateImageRequestsManager: React.FC<
         {/* Solicitudes Aprobadas */}
         {approvedRequests.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-wider">
               Aprobadas
             </p>
             {approvedRequests.map((request) => {
@@ -408,10 +408,10 @@ export const PrivateImageRequestsManager: React.FC<
                         <Check className="h-4 w-4 text-green-400" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-slate-900 dark:text-white">
                           {request.requesterName}
                         </p>
-                        <p className="text-xs text-white/60">
+                        <p className="text-xs text-slate-500 dark:text-white/60">
                           {formatTimeAgo(request.timestamp)}
                           {remainingMs !== null && (
                             <>
@@ -423,7 +423,7 @@ export const PrivateImageRequestsManager: React.FC<
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
+                    <Badge className="bg-green-500/15 text-green-700 border-green-500/30 dark:bg-green-500/20 dark:text-green-300 dark:border-green-500/30 text-xs">
                       Acceso concedido
                     </Badge>
                   </div>
@@ -436,7 +436,7 @@ export const PrivateImageRequestsManager: React.FC<
         {/* Solicitudes Denegadas */}
         {deniedRequests.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">
               Denegadas
             </p>
             {deniedRequests.map((request) => (
@@ -450,15 +450,15 @@ export const PrivateImageRequestsManager: React.FC<
                       <X className="h-4 w-4 text-red-400" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-medium text-slate-900 dark:text-white">
                         {request.requesterName}
                       </p>
-                      <p className="text-xs text-white/60">
+                      <p className="text-xs text-slate-500 dark:text-white/60">
                         {formatTimeAgo(request.timestamp)}
                       </p>
                     </div>
                   </div>
-                  <Badge className="bg-red-500/20 text-red-300 border-red-500/30 text-xs">
+                  <Badge className="bg-red-500/15 text-red-700 border-red-500/30 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 text-xs">
                     Acceso denegado
                   </Badge>
                 </div>

@@ -140,6 +140,7 @@ export const Discover = () => {
     premium: false,
     online: false,
     relationshipType: [],
+    minCompatibility: 0,
   });
 
   // Ronda 8 (punto 9): re-aplicar los filtros cuando cambia cualquier
@@ -324,6 +325,10 @@ export const Discover = () => {
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
         const relationshipTypeMatch = relationshipMatch(profile.profileType);
+        // Compatibilidad mínima (ronda 13, stream B, B2): contra el
+        // `matchScore` 0–100 del perfil; 0 = sin filtro.
+        const compatibilityMatch =
+          profile.matchScore >= filters.minCompatibility;
         // Bloqueo (punto 15b): ni los que el espectador bloqueó ni
         // los que lo bloquearon aparecen en sus resultados.
         const notBlocked = !hiddenProfileIds.has(String(profile.id));
@@ -336,6 +341,7 @@ export const Discover = () => {
           premiumMatch &&
           onlineMatch &&
           relationshipTypeMatch &&
+          compatibilityMatch &&
           notBlocked
         );
       });
@@ -392,6 +398,10 @@ export const Discover = () => {
         const premiumMatch = !filters.premium || profile.isPremium;
         const onlineMatch = !filters.online || profile.isOnline;
         const relationshipTypeMatch = relationshipMatch(profile.profileType);
+        // Compatibilidad mínima (ronda 13, stream B, B2): igual que
+        // en los perfiles demo (contra `matchScore`, 0 = sin filtro).
+        const compatibilityMatch =
+          profile.matchScore >= filters.minCompatibility;
         // Bloqueo (punto 15b): ni los que el espectador bloqueó ni
         // los que lo bloquearon aparecen en sus resultados.
         const notBlocked = !hiddenProfileIds.has(String(profile.id));
@@ -404,6 +414,7 @@ export const Discover = () => {
           premiumMatch &&
           onlineMatch &&
           relationshipTypeMatch &&
+          compatibilityMatch &&
           notBlocked
         );
       });
@@ -447,6 +458,9 @@ export const Discover = () => {
         const onlineMatch = !filters.online || couple.isOnline;
         // Las parejas solo pasan el filtro "Pareja" (o sin filtro de tipo).
         const relationshipTypeMatch = relationshipMatch("couple");
+        // Compatibilidad mínima (ronda 13, stream B, B2): las parejas
+        // NO tienen `matchScore`, así que el filtro no las toca
+        // (pasan siempre); solo filtra singles demo y reales.
         // Bloqueo (punto 15b): se compara el id tal cual se listó.
         // Límite conocido: los bloqueos se guardan contra
         // `profiles.id` y el id de pareja es de `couple_profiles`;
@@ -1074,6 +1088,38 @@ export const Discover = () => {
                   />
                 </div>
 
+                {/* Compatibilidad mínima — Ronda 13 (stream B, B2):
+                    el control no existía en el panel (la cadena no
+                    estaba en el árbol ni en `Filters`): solo se veía
+                    en escritorio ancho según el reporte, y a 886 px
+                    el panel solo mostraba Edad, Distancia, Intereses,
+                    Tipo de Relación y "Mostrar perfiles sin
+                    verificar". Mismo patrón que Edad/Distancia
+                    (Slider Radix, colores explícitos en ambos temas)
+                    y mismo cableado que esos filtros en
+                    `applyFilters` (contra `matchScore`, 0–100). El
+                    0 inicial no filtra nada. Las parejas no tienen
+                    `matchScore`: el filtro no las toca. */}
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
+                    Compatibilidad mínima: {filters.minCompatibility}%
+                  </label>
+                  <Slider
+                    value={[filters.minCompatibility]}
+                    onValueChange={(value: number[]) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        minCompatibility: value[0] ?? prev.minCompatibility,
+                      }))
+                    }
+                    min={0}
+                    max={100}
+                    step={1}
+                    aria-label="Compatibilidad mínima"
+                    className="w-full"
+                  />
+                </div>
+
                 {/* Intereses */}
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
@@ -1184,6 +1230,7 @@ export const Discover = () => {
                       premium: false,
                       online: false,
                       relationshipType: [],
+                      minCompatibility: 0,
                     });
                   }}
                 >

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent,  CardHeader, CardTitle} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-import { Input } from "@/components/ui/forms/Input";
 import { Badge } from "@/components/ui/badge";
 import { Bot, Send, User, Sparkles, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -83,14 +82,14 @@ export const TokenAiChat: React.FC = () => {
   };
 
   return (
-    <Card className="bg-linear-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-md border-white/20 shadow-xl h-[500px] flex flex-col">
-      <CardHeader className="border-b border-white/10 pb-3">
-        <CardTitle className="flex items-center gap-2 text-white text-lg">
+    <Card className="bg-white dark:bg-linear-to-br dark:from-indigo-900/40 dark:to-purple-900/40 backdrop-blur-md border-slate-200 dark:border-white/20 shadow-xl h-[500px] flex flex-col">
+      <CardHeader className="border-b border-slate-200 dark:border-white/10 pb-3">
+        <CardTitle className="flex items-center gap-2 text-slate-900 dark:text-white text-lg">
           <Bot className="h-5 w-5 text-cyan-400" />
           Asistente Token IA
           <Badge
             variant="secondary"
-            className="bg-cyan-500/20 text-cyan-300 text-[10px] ml-2 border-cyan-500/30"
+            className="bg-cyan-500/15 text-cyan-700 text-[10px] ml-2 border-cyan-500/30 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30"
           >
             BETA
           </Badge>
@@ -111,7 +110,7 @@ export const TokenAiChat: React.FC = () => {
                 className={`max-w-[80%] rounded-2xl p-3 text-sm ${
                   msg.sender === "user"
                     ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white rounded-tr-none shadow-lg shadow-purple-900/20"
-                    : "bg-white/10 text-white/90 rounded-tl-none border border-white/10"
+                    : "bg-slate-900/5 text-slate-800 dark:bg-white/10 dark:text-white/90 rounded-tl-none border border-slate-200 dark:border-white/10"
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1 opacity-70 text-[10px] uppercase tracking-wider">
@@ -134,9 +133,11 @@ export const TokenAiChat: React.FC = () => {
               animate={{ opacity: 1 }}
               className="flex justify-start"
             >
-              <div className="bg-white/10 rounded-2xl rounded-tl-none p-3 border border-white/10 flex items-center gap-2">
+              <div className="bg-slate-900/5 dark:bg-white/10 rounded-2xl rounded-tl-none p-3 border border-slate-200 dark:border-white/10 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
-                <span className="text-xs text-white/60">Escribiendo...</span>
+                <span className="text-xs text-slate-500 dark:text-white/60">
+                  Escribiendo...
+                </span>
               </div>
             </motion.div>
           )}
@@ -144,24 +145,37 @@ export const TokenAiChat: React.FC = () => {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-black/20 border-t border-white/10">
+        <div className="p-4 bg-slate-50 dark:bg-black/20 border-t border-slate-200 dark:border-white/10">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSendMessage();
             }}
-            className="flex gap-2"
+            className="flex gap-2 items-end"
           >
-            <Input
+            {/* Ronda 13 (stream A, A4): el <Input> de una línea
+                truncaba el placeholder ("Pregunta sobre tus tokens
+                o…") y el texto largo. Un <textarea> de 2 filas
+                envuelve el placeholder y el mensaje; Enter envía,
+                Shift+Enter salta de línea. */}
+            <textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
               placeholder="Pregunta sobre tus tokens o NFTs..."
-              className="bg-white/5 border-white/10 text-white placeholder-white/40 focus:ring-cyan-500/50 focus:border-cyan-500/50 rounded-xl"
+              rows={2}
+              aria-label="Pregunta al asistente de tokens"
+              className="flex w-full rounded-xl border border-slate-300 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 resize-none"
             />
             <Button
               type="submit"
               disabled={!inputText.trim() || isTyping}
-              className="bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl w-12 px-0"
+              className="bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl w-12 h-10 px-0 shrink-0"
             >
               <Send className="w-5 h-5" />
             </Button>

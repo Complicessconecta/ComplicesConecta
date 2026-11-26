@@ -9,7 +9,7 @@
  *
  * No se muestra en el perfil propio ni sin espectador.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, UserPlus, X } from "lucide-react";
 import {
   getFriendStatus,
@@ -51,6 +51,12 @@ export function FriendRequestButton({
   const [status, setStatus] = useState<FriendStatus>("none");
   const [incomingId, setIncomingId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Ronda 14 (stream F, F3): la carga inicial es async; si resolvía
+  // DESPUÉS de un envío correcto, pisaba "pending_sent" con el estado
+  // viejo ("none") y el botón volvía a ofrecer enviar. Una vez que el
+  // usuario muta (enviar/responder), la carga inicial ya no manda: el
+  // estado lo confirma la re-lectura tras el éxito.
+  const mutatedRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -61,7 +67,7 @@ export function FriendRequestButton({
       viewerName,
       profileName,
     ).then((value) => {
-      if (cancelled) return;
+      if (cancelled || mutatedRef.current) return;
       setStatus(value);
       if (value === "pending_received") {
         // Ronda 10, stream C (C1): la solicitud puede venir de la
@@ -98,7 +104,17 @@ export function FriendRequestButton({
       window.alert(result.error ?? "No se pudo enviar la solicitud");
       return;
     }
+    mutatedRef.current = true;
     setStatus("pending_sent");
+    // Re-leer el almacén: confirma que lo enviado es lo que el sistema
+    // ve (y no un optimista que el backend rechazó en silencio).
+    void getFriendStatus(
+      viewerId,
+      profileId,
+      isDemo,
+      viewerName,
+      profileName,
+    ).then((fresh) => setStatus(fresh));
   };
 
   const handleRespond = async (response: "accepted" | "declined") => {
@@ -114,14 +130,26 @@ export function FriendRequestButton({
       window.alert(result.error ?? "No se pudo responder la solicitud");
       return;
     }
+    mutatedRef.current = true;
     setStatus(response === "accepted" ? "friends" : "none");
     setIncomingId(null);
+    void getFriendStatus(
+      viewerId,
+      profileId,
+      isDemo,
+      viewerName,
+      profileName,
+    ).then((fresh) => setStatus(fresh));
   };
 
   if (status === "friends") {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/40 px-4 py-2.5 text-sm ${className}`}
+        // Ronda 15 (stream C): `text-emerald-200` sobre el fondo claro
+        // de la tarjeta en tema claro era ilegible (pastilla "✓ Amigos"
+        // del perfil público de Ana, test PR #74). Verde oscuro en
+        // claro, claro en oscuro.
+        className={`inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-200 border border-emerald-500/40 dark:border-emerald-400/40 px-4 py-2.5 text-sm ${className}`}
         title={`Tú y ${profileName} son amigos`}
       >
         <Check className="w-4 h-4" aria-hidden="true" />
@@ -133,7 +161,7 @@ export function FriendRequestButton({
   if (status === "pending_sent") {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full bg-white/10 text-white/80 border border-white/25 px-4 py-2.5 text-sm ${className}`}
+        className={`inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-white/10 text-slate-700 dark:text-white/80 border border-slate-300 dark:border-white/25 px-4 py-2.5 text-sm ${className}`}
         title="Solicitud de amistad enviada, pendiente de respuesta"
       >
         <UserPlus className="w-4 h-4" aria-hidden="true" />
@@ -158,7 +186,7 @@ export function FriendRequestButton({
           type="button"
           onClick={() => void handleRespond("declined")}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/25 px-4 py-2.5 text-sm disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-white/10 hover:bg-slate-100 dark:hover:bg-white/20 text-slate-900 dark:text-white border border-slate-300 dark:border-white/25 px-4 py-2.5 text-sm disabled:opacity-50"
         >
           <X className="w-4 h-4" aria-hidden="true" />
           Rechazar

@@ -69,7 +69,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
 
   return (
     <div
-      className="flex border-b border-white/20 w-full overflow-x-auto scrollbar-hide"
+      className="flex border-b border-slate-200 dark:border-white/20 w-full overflow-x-auto scrollbar-hide"
       role="tablist"
       aria-orientation="horizontal"
     >
@@ -80,15 +80,15 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
         const commonClassName = cn(
           "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors relative min-h-[48px] min-w-[100px]",
           isActive
-            ? "text-white border-b-2 border-fuchsia-400"
-            : "text-white/60 hover:text-white/80",
+            ? "text-slate-900 dark:text-white border-b-2 border-fuchsia-500 dark:border-fuchsia-400"
+            : "text-slate-500 dark:text-white/60 hover:text-slate-900 dark:hover:text-white/80",
         );
 
         const badgeClassName = cn(
           "text-xs px-2 py-0.5 rounded-full transition-colors",
           isActive
-            ? "bg-fuchsia-500/20 text-fuchsia-300"
-            : "bg-white/10 text-white/50",
+            ? "bg-fuchsia-500/20 text-fuchsia-600 dark:text-fuchsia-300"
+            : "bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-white/50",
         );
 
         if (isActive) {

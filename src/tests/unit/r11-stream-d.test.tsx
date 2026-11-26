@@ -22,10 +22,14 @@
  *     local, roster; sin coincidencia devuelve el id tal cual.
  * D5. Tema claro, parte unit-testeable: etiquetas localizadas
  *     (profileLabels) sin crudo en inglés, con mayúsculas y listas.
- * D6. Píldora CMPX del grid "Mis NFTs" (punto v): en TokenDashboard
- *     (misma arte y misma píldora que el grid de Sofía en
+ * D6. Valor CMPX del grid "Mis NFTs" (punto v): en TokenDashboard
+ *     (misma arte y mismo valor que el grid de Sofía en
  *     ProfileSingle) la píldora ya no va arriba a la izquierda
  *     (tapaba el texto "Cómplices Conecta" del arte) sino abajo.
+ *     Ronda 13 (stream B, B1) actualiza D6: la píldora inferior
+ *     de la ronda 11 seguía tapando el texto del arte (vive
+ *     abajo), así que el valor va DEBAJO del arte, en flujo
+ *     normal, nunca sobre él.
  *
  * Solapes con otros streams (el coordinador puede dedupar en la
  * integración): D1 cubre lo mismo que el stream A de ronda 11
@@ -724,26 +728,38 @@ describe("D5. Tema claro (unit-testeable): etiquetas sin crudo en inglés", () =
 });
 
 /* ------------------------------------------------------------------ */
-/* D6. Píldora CMPX del grid "Mis NFTs" (punto v)                      */
+/* D6. Valor CMPX del grid "Mis NFTs" (punto v, ronda 13 B1)          */
 /* ------------------------------------------------------------------ */
 
-describe("D6. Píldora CMPX del grid Mis NFTs (punto v)", () => {
-  it("la píldora CMPX va abajo del arte, no arriba a la izquierda", () => {
+describe("D6. Valor CMPX del grid Mis NFTs (punto v, ronda 13 B1)", () => {
+  it("el valor CMPX va debajo del arte, nunca sobre él", () => {
     render(
       <BrowserRouter>
         <TokenDashboard isDemoMode />
       </BrowserRouter>,
     );
-    // Las 4 píldoras de valor de los NFTs demo canónicos
+    // Los 4 valores de los NFTs demo canónicos
     // (5000 / 2000 / 750 / 100 CMPX): el resto de "N CMPX" de la
-    // página son estadísticas y no son la píldora sobre el arte.
+    // página son estadísticas y no son el valor del NFT.
     const badges = screen.getAllByText(/^(5000|2000|750|100) CMPX$/);
     expect(badges).toHaveLength(4);
     for (const badge of badges) {
-      const pill = badge.parentElement;
-      expect(pill).not.toBeNull();
-      expect(pill?.className).toContain("bottom-");
-      expect(pill?.className).not.toContain("top-");
+      // Ronda 13 (stream B, B1): la píldora `absolute bottom-2`
+      // de la ronda 11 seguía tapando el texto del arte
+      // ("Cómplices Conecta" vive abajo), así que el valor va
+      // DEBAJO del arte, en flujo normal: sin ancestro
+      // posicionado encima del arte y fuera del cuadro del arte.
+      expect(badge.closest(".absolute")).toBeNull();
+      expect(badge.closest(".aspect-square")).toBeNull();
+      // Y el valor viene DESPUÉS del arte en el DOM (debajo, no encima).
+      const card = badge.closest(".group");
+      expect(card).not.toBeNull();
+      const art = card!.querySelector(".aspect-square");
+      expect(art).not.toBeNull();
+      expect(
+        art!.compareDocumentPosition(badge) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
     }
     // La píldora de token_id sigue arriba a la derecha.
     const tokenIds = screen.getAllByText(/^#\d+$/);

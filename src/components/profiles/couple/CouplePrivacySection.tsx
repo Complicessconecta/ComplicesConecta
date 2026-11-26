@@ -51,6 +51,12 @@ export interface CouplePrivacySettings {
   watermark: boolean;
   limitMessages: boolean;
   videoChat: boolean;
+  show_online_status: boolean;
+  show_distance: boolean;
+  show_age: boolean;
+  auto_approve_matches: boolean;
+  block_screenshots: boolean;
+  incognito_mode: boolean;
 }
 
 const DEFAULT_PRIVACY: CouplePrivacySettings = {
@@ -63,6 +69,12 @@ const DEFAULT_PRIVACY: CouplePrivacySettings = {
   watermark: false,
   limitMessages: false,
   videoChat: true,
+  show_online_status: true,
+  show_distance: true,
+  show_age: true,
+  auto_approve_matches: true,
+  block_screenshots: false,
+  incognito_mode: false,
 };
 
 const ROWS: Array<{
@@ -114,6 +126,40 @@ const ROWS: Array<{
     key: "videoChat",
     label: "Chat de video",
     description: "Permitir videollamadas con tus matches.",
+  },
+  // Ronda 14 (stream F, F4): las 6 opciones de
+  // /settings → Privacidad (las mismas claves del almacén
+  // privacy_settings) también aquí, para que el control exista
+  // donde el usuario lo busca en su perfil.
+  {
+    key: "show_online_status",
+    label: "Mostrar estado en línea",
+    description: "Que otros vean cuándo estás en línea.",
+  },
+  {
+    key: "show_distance",
+    label: "Mostrar distancia",
+    description: "Mostrar tu distancia aproximada en tu perfil.",
+  },
+  {
+    key: "show_age",
+    label: "Mostrar edad",
+    description: "Mostrar tu edad en tu perfil.",
+  },
+  {
+    key: "auto_approve_matches",
+    label: "Aprobar matches automáticamente",
+    description: "Aceptar matches nuevos sin pedir confirmación.",
+  },
+  {
+    key: "block_screenshots",
+    label: "Bloquear capturas de pantalla",
+    description: "Intentar impedir capturas de pantalla de tu perfil.",
+  },
+  {
+    key: "incognito_mode",
+    label: "Modo incógnito",
+    description: "Navegar sin dejar rastro en las visitas recientes.",
   },
 ];
 
@@ -206,6 +252,13 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
           saveToLocalStorage(next, nextExtras);
         } else {
           storedExtras.current = merged;
+          // Ronda 13, stream D (D3): espejo local también en éxito.
+          // Las galerías y `usePrivacySettings` leen SOLO localStorage
+          // (`readWatermarkForProfile` / `readLocalSettings`); sin este
+          // espejo, en real la marca de agua quedaba en la BD pero las
+          // galerías seguían viéndola apagada (en demo no se notaba:
+          // ahí todo es local).
+          saveToLocalStorage(next, nextExtras);
         }
       });
   };
@@ -553,11 +606,16 @@ export const CouplePrivacySection: React.FC<CouplePrivacySectionProps> = ({
                   onChange={(e) =>
                     saveExtras({ ...extras, [person.signKey]: e.target.value })
                   }
+                  // Ronda 13 (stream B, B3): igual que en
+                  // SinglePrivacySection — el texto de un `<option>`
+                  // nativo NO envuelve y en angosto se cortaba sin el
+                  // paréntesis de cierre; etiqueta acortada a una que
+                  // cabe siempre, frase completa en `title` y en el
+                  // párrafo de ayuda de arriba.
+                  title="Automático (según fecha de nacimiento)"
                   className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 [color-scheme:light] dark:border-white/20 dark:bg-white/10 dark:text-white dark:[color-scheme:dark]"
                 >
-                  <option value="">
-                    Automático (según fecha de nacimiento)
-                  </option>
+                  <option value="">Automático (según fecha)</option>
                   {ZODIAC_SIGNS.map((sign) => (
                     <option key={sign.id} value={sign.id}>
                       {sign.symbol} {sign.name}

@@ -53,6 +53,8 @@ import {
   nftService,
   seedDemoNFTs,
   DEMO_NFTS_CHANGED_EVENT,
+  DEMO_MINT_LIMIT,
+  countMintedDemoNFTs,
 } from "@/services/payments/NFTService";
 import {
   getDemoWalletBalance,
@@ -123,6 +125,11 @@ import { ReportBlockButtons } from "@/components/profiles/shared/ReportBlockButt
 import { ProfileSocialSettings } from "@/components/profiles/shared/ProfileSocialSettings";
 import { getCountryByName, readCountryCodeLocal } from "@/lib/countries";
 import { getSocialDemoData } from "@/demo/socialDemoData";
+import {
+  DEMO_USER_CHANGED_EVENT,
+  resolveDemoInterestList,
+  resolveSavedCoupleDemoInterests,
+} from "@/lib/profile-interests";
 // Espejo de Single: gestor de solicitudes de acceso, reporte y experiencias.
 import { PrivateImageRequestsManager } from "@/components/profiles/shared/PrivateImageRequestsManager";
 import { ReportDialog } from "@/components/dialogs/ReportDialog";
@@ -296,7 +303,6 @@ function ProfileCouple() {
     }
     // Solo al montar: el valor leído de localStorage en el primer render
     // es la fuente; reaccionar a cambios posteriores lo re-bloquearía.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isBiometricUnlocking, setIsBiometricUnlocking] = useState(false);
@@ -1091,33 +1097,43 @@ function ProfileCouple() {
   // la selección en `demo_user` (localStorage) y el perfil la refleja. Si
   // aún no se ha editado nada, se usan los títulos demo. En producción se
   // leen las columnas reales (his/her/couple_interests).
-  // ESTE useMemo VA AQUÍ ARRIBA, antes de los early returns de
+  // Ronda 14 (stream F, F2/F3): igual que en ProfileSingle — un `[]`
+  // guardado anulaba el fallback (`??` no dispara con array vacío) y la
+  // lectura era de un solo uso al montar. Ahora pasa por el resolver
+  // compartido y se re-lee cuando el editor guarda en la misma sesión
+  // (evento demo-user-changed).
+  // ESTE bloque VA AQUÍ ARRIBA, antes de los early returns de
   // loading/perfil: si se declara después, en el primer render (cargando)
-  // no se ejecuta y en el segundo sí → React truena con el error #310
-  // ("Rendered more hooks than during the previous render") → /404.
+  // un hook no se ejecuta y en el segundo sí → React truena con el error
+  // #310 ("Rendered more hooks than during the previous render") → /404.
+  const [demoUserVersion, setDemoUserVersion] = useState(0);
+  useEffect(() => {
+    const onChanged = () => setDemoUserVersion((v) => v + 1);
+    window.addEventListener(DEMO_USER_CHANGED_EVENT, onChanged);
+    return () => window.removeEventListener(DEMO_USER_CHANGED_EVENT, onChanged);
+  }, []);
   const savedDemoInterests = useMemo(() => {
     if (!isDemoMode || typeof window === "undefined") return null;
     try {
       const raw = window.localStorage.getItem("demo_user");
       if (!raw) return null;
-      const parsed = JSON.parse(raw) as {
-        interests?: unknown;
-        partner1?: { interests?: unknown };
-        partner2?: { interests?: unknown };
-      };
-      const asStringArray = (v: unknown): string[] | null =>
-        Array.isArray(v) && v.every((x) => typeof x === "string")
-          ? (v as string[])
+      const parsed: unknown = JSON.parse(raw);
+      // Ronda 15, stream D: igual que en ProfileSingle — la clave
+      // durable (`profile_interests:<id>`) manda sobre `demo_user`,
+      // que el re-seed del login reconstruye sin intereses.
+      const userId =
+        parsed && typeof parsed === "object"
+          ? (parsed as { id?: unknown }).id
           : null;
-      return {
-        couple: asStringArray(parsed.interests),
-        his: asStringArray(parsed.partner1?.interests),
-        her: asStringArray(parsed.partner2?.interests),
-      };
+      return resolveSavedCoupleDemoInterests(
+        typeof userId === "string" ? userId : null,
+        parsed,
+      );
     } catch {
       return null;
     }
-  }, [isDemoMode]);
+    // demoUserVersion: re-leer cuando el editor guarda (ver arriba).
+  }, [isDemoMode, demoUserVersion]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -1391,7 +1407,7 @@ function ProfileCouple() {
       {
         name: profile.partner1_first_name,
         likes: isDemoMode
-          ? (savedDemoInterests?.his ?? [
+          ? resolveDemoInterestList(savedDemoInterests?.his, [
               DEMO_INTEREST_TITLES[0],
               DEMO_INTEREST_TITLES[2],
               DEMO_INTEREST_TITLES[4],
@@ -1402,7 +1418,7 @@ function ProfileCouple() {
       {
         name: profile.partner2_first_name,
         likes: isDemoMode
-          ? (savedDemoInterests?.her ?? [
+          ? resolveDemoInterestList(savedDemoInterests?.her, [
               DEMO_INTEREST_TITLES[1],
               DEMO_INTEREST_TITLES[3],
               DEMO_INTEREST_TITLES[5],
@@ -1422,7 +1438,9 @@ function ProfileCouple() {
       ? `${coupleDetails.age_range_min} a ${coupleDetails.age_range_max} años`
       : null;
   const coupleLikes = isDemoMode
-    ? (savedDemoInterests?.couple ?? [...DEMO_INTEREST_TITLES])
+    ? resolveDemoInterestList(savedDemoInterests?.couple, [
+        ...DEMO_INTEREST_TITLES,
+      ])
     : (coupleDetails?.couple_interests ?? []);
   const coupleDislikes = isDemoMode
     ? []
@@ -1557,9 +1575,15 @@ function ProfileCouple() {
           </div>
         </div>
 
-        {/* Contenido principal centrado */}
-        <div className="flex-1 pb-20 px-2 sm:px-4 overflow-y-auto custom-scrollbar">
-          <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 py-4">
+        {/* Contenido principal centrado — ronda 14 (stream F, F1):
+            antes había DOS contenedores `flex-1` con scroll propio: el
+            primero solo llevaba la fila de iconos (Compartir, Reportar,
+            Ajustes, Tokens) y el segundo la tarjeta del perfil. Ese
+            primer bloque era el hueco vacío encima de la tarjeta. Ahora
+            un solo contenedor con la fila de iconos directamente encima
+            de la tarjeta. */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="max-w-4xl mx-auto p-2 sm:p-4 space-y-4 sm:space-y-6">
             <div className="flex gap-1 sm:gap-2">
               {/* Compartir (punto 17): abre el menú con TikTok,
                   Facebook, WhatsApp, X y "Más opciones" (compartir
@@ -1605,11 +1629,6 @@ function ProfileCouple() {
                 <Crown className="h-4 w-4 text-slate-700 dark:text-white" />
               </Button>
             </div>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="max-w-4xl mx-auto p-2 sm:p-4 space-y-4 sm:space-y-6">
             {/* Información principal de la pareja */}
             <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 text-slate-900 dark:text-white">
               <CardContent className="p-4 sm:p-6">
@@ -2259,12 +2278,27 @@ function ProfileCouple() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-4">
+                    {/* Ronda 14 (stream F, F7): mismo estado de límite que
+                        el botón de la wallet: sin contador visible, en el
+                        tope (4/4) el clic solo devolvía un toast y el
+                        minteo "parecía desactivado". La cuenta es la
+                        canónica (solo minteados por el usuario). */}
                     <Button
                       onClick={() => handleRequestCoupleNFT("pareja@demo.com")}
-                      className="bg-fuchsia-500/10 hover:bg-fuchsia-600/20 text-fuchsia-700 border-fuchsia-500/40 dark:bg-fuchsia-500/20 dark:hover:bg-fuchsia-600/30 dark:text-fuchsia-200 dark:border-fuchsia-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
+                      disabled={
+                        countMintedDemoNFTs(coupleNFTs) >= DEMO_MINT_LIMIT
+                      }
+                      title={
+                        countMintedDemoNFTs(coupleNFTs) >= DEMO_MINT_LIMIT
+                          ? `Límite demo alcanzado: ya minteaste ${DEMO_MINT_LIMIT} NFTs de pareja`
+                          : `Crear un NFT de pareja (${countMintedDemoNFTs(coupleNFTs)}/${DEMO_MINT_LIMIT} minteados)`
+                      }
+                      className="bg-fuchsia-500/10 hover:bg-fuchsia-600/20 text-fuchsia-700 border-fuchsia-500/40 dark:bg-fuchsia-500/20 dark:hover:bg-fuchsia-600/30 dark:text-fuchsia-200 dark:border-fuchsia-400/30 flex items-center gap-2 text-sm px-3 py-2 border disabled:opacity-50"
                     >
                       <Heart className="w-4 h-4" />
-                      Crear NFT de Pareja
+                      {countMintedDemoNFTs(coupleNFTs) >= DEMO_MINT_LIMIT
+                        ? `Límite demo alcanzado (${countMintedDemoNFTs(coupleNFTs)}/${DEMO_MINT_LIMIT})`
+                        : `Crear NFT de Pareja (${countMintedDemoNFTs(coupleNFTs)}/${DEMO_MINT_LIMIT})`}
                     </Button>
                   </div>
 

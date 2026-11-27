@@ -425,7 +425,11 @@ const Profiles: React.FC = () => {
       let userLocation = { lat: 19.4326, lng: -99.1332 }; // Ciudad de México como referencia por defecto
 
       // Si es usuario real, usar su ubicación del perfil
-      if (userType === "real" && profile?.location && typeof profile.location === 'string') {
+      if (
+        userType === "real" &&
+        profile?.location &&
+        typeof profile.location === "string"
+      ) {
         // Mapear ubicaciones conocidas a coordenadas
         const locationMap: { [key: string]: { lat: number; lng: number } } = {
           "Ciudad de México": { lat: 19.4326, lng: -99.1332 },
@@ -965,4 +969,3 @@ const Profiles: React.FC = () => {
 };
 
 export default Profiles;
-

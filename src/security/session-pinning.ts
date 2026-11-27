@@ -74,7 +74,7 @@ export class BrowserFingerprintGenerator {
       localStorage: this.checkLocalStorage(),
       indexedDb: this.checkIndexedDB(),
       openDatabase: this.checkOpenDatabase(),
-      cpuClass: navigator.cpuClass || 'unknown',
+      cpuClass: navigator.cpuClass || "unknown",
       hardwareConcurrency: navigator.hardwareConcurrency || 1,
       deviceMemory: navigator.deviceMemory || 0,
       canvas: await this.getCanvasFingerprint(),
@@ -101,7 +101,7 @@ export class BrowserFingerprintGenerator {
   static hasFingerprintChanged(
     current: BrowserFingerprint,
     stored: BrowserFingerprint,
-    threshold: number = 0.8
+    threshold: number = 0.8,
   ): boolean {
     const similarity = this.calculateSimilarity(current, stored);
     return similarity < threshold;
@@ -112,20 +112,31 @@ export class BrowserFingerprintGenerator {
    */
   private static calculateSimilarity(
     fp1: BrowserFingerprint,
-    fp2: BrowserFingerprint
+    fp2: BrowserFingerprint,
   ): number {
     let matches = 0;
     let total = 0;
 
     // Comparar propiedades clave
     const keyProperties: (keyof BrowserFingerprint)[] = [
-      'userAgent', 'language', 'platform', 'cookieEnabled',
-      'screen', 'timezone', 'sessionStorage', 'localStorage',
-      'indexedDb', 'hardwareConcurrency', 'deviceMemory',
-      'canvas', 'webgl', 'vendor', 'touchSupport'
+      "userAgent",
+      "language",
+      "platform",
+      "cookieEnabled",
+      "screen",
+      "timezone",
+      "sessionStorage",
+      "localStorage",
+      "indexedDb",
+      "hardwareConcurrency",
+      "deviceMemory",
+      "canvas",
+      "webgl",
+      "vendor",
+      "touchSupport",
     ];
 
-    keyProperties.forEach(prop => {
+    keyProperties.forEach((prop) => {
       total++;
       if (JSON.stringify(fp1[prop]) === JSON.stringify(fp2[prop])) {
         matches++;
@@ -140,14 +151,14 @@ export class BrowserFingerprintGenerator {
    */
   private static async getCanvasFingerprint(): Promise<string> {
     try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return 'no-canvas';
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return "no-canvas";
 
       // Texto para fingerprint
-      ctx.textBaseline = 'top';
-      ctx.font = '14px Arial';
-      ctx.fillText('BrowserFingerprint 🔒', 2, 2);
+      ctx.textBaseline = "top";
+      ctx.font = "14px Arial";
+      ctx.fillText("BrowserFingerprint 🔒", 2, 2);
 
       // Dibujo geométrico
       ctx.beginPath();
@@ -156,7 +167,7 @@ export class BrowserFingerprintGenerator {
 
       return canvas.toDataURL().slice(-50); // Solo últimos 50 chars
     } catch (error) {
-      return 'canvas-error';
+      return "canvas-error";
     }
   }
 
@@ -165,21 +176,26 @@ export class BrowserFingerprintGenerator {
    */
   private static async getWebGLFingerprint(): Promise<string> {
     try {
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      if (!gl) return 'no-webgl';
+      const canvas = document.createElement("canvas");
+      const gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      if (!gl) return "no-webgl";
 
       const webglContext = gl as WebGLRenderingContext;
-      const debugInfo = webglContext.getExtension('WEBGL_debug_renderer_info');
+      const debugInfo = webglContext.getExtension("WEBGL_debug_renderer_info");
       if (debugInfo) {
-        const vendor = webglContext.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-        const renderer = webglContext.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        const vendor = webglContext.getParameter(
+          debugInfo.UNMASKED_VENDOR_WEBGL,
+        );
+        const renderer = webglContext.getParameter(
+          debugInfo.UNMASKED_RENDERER_WEBGL,
+        );
         return `${vendor}|${renderer}`;
       }
 
-      return 'webgl-no-debug';
+      return "webgl-no-debug";
     } catch (error) {
-      return 'webgl-error';
+      return "webgl-error";
     }
   }
 
@@ -188,24 +204,44 @@ export class BrowserFingerprintGenerator {
    */
   private static async getFontFingerprint(): Promise<string[]> {
     try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
       if (!ctx) return [];
 
       const testFonts = [
-        'Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia',
-        'Palatino', 'Garamond', 'Comic Sans MS', 'Trebuchet MS', 'Arial Black',
-        'Impact', 'Lucida Console', 'Tahoma', 'Lucida Sans Unicode', 'MS Sans Serif',
-        'MS Serif', 'Helvetica', 'Geneva', 'Monaco', 'Charcoal', 'New York',
-        'Palatino', 'Chicago', 'Zapf Dingbats', 'Bookman Old Style'
+        "Arial",
+        "Verdana",
+        "Times New Roman",
+        "Courier New",
+        "Georgia",
+        "Palatino",
+        "Garamond",
+        "Comic Sans MS",
+        "Trebuchet MS",
+        "Arial Black",
+        "Impact",
+        "Lucida Console",
+        "Tahoma",
+        "Lucida Sans Unicode",
+        "MS Sans Serif",
+        "MS Serif",
+        "Helvetica",
+        "Geneva",
+        "Monaco",
+        "Charcoal",
+        "New York",
+        "Palatino",
+        "Chicago",
+        "Zapf Dingbats",
+        "Bookman Old Style",
       ];
 
       const availableFonts: string[] = [];
-      const baseWidth = ctx.measureText('mmmmmmmmmmlli').width;
+      const baseWidth = ctx.measureText("mmmmmmmmmmlli").width;
 
-      testFonts.forEach(font => {
+      testFonts.forEach((font) => {
         ctx.font = `72px '${font}'`;
-        const width = ctx.measureText('mmmmmmmmmmlli').width;
+        const width = ctx.measureText("mmmmmmmmmmlli").width;
         if (width !== baseWidth) {
           availableFonts.push(font);
         }
@@ -224,7 +260,7 @@ export class BrowserFingerprintGenerator {
     try {
       const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextCtor) {
-        return 'no-audio';
+        return "no-audio";
       }
 
       const audioContext = new AudioContextCtor();
@@ -243,12 +279,13 @@ export class BrowserFingerprintGenerator {
 
       return new Promise((resolve) => {
         scriptProcessor.onaudioprocess = (event) => {
-          const channel = event.inputBuffer.numberOfChannels > 0
-            ? event.inputBuffer.getChannelData(0)
-            : undefined;
+          const channel =
+            event.inputBuffer.numberOfChannels > 0
+              ? event.inputBuffer.getChannelData(0)
+              : undefined;
 
           if (!channel) {
-            resolve('no-audio');
+            resolve("no-audio");
             audioContext.close();
             return;
           }
@@ -266,7 +303,7 @@ export class BrowserFingerprintGenerator {
         };
       });
     } catch (error) {
-      return 'no-audio';
+      return "no-audio";
     }
   }
 
@@ -293,8 +330,8 @@ export class BrowserFingerprintGenerator {
    */
   private static checkSessionStorage(): boolean {
     try {
-      sessionStorage.setItem('test', 'test');
-      sessionStorage.removeItem('test');
+      sessionStorage.setItem("test", "test");
+      sessionStorage.removeItem("test");
       return true;
     } catch (error) {
       return false;
@@ -303,8 +340,8 @@ export class BrowserFingerprintGenerator {
 
   private static checkLocalStorage(): boolean {
     try {
-      localStorage.setItem('test', 'test');
-      localStorage.removeItem('test');
+      localStorage.setItem("test", "test");
+      localStorage.removeItem("test");
       return true;
     } catch (error) {
       return false;
@@ -312,23 +349,25 @@ export class BrowserFingerprintGenerator {
   }
 
   private static checkIndexedDB(): boolean {
-    return 'indexedDB' in window;
+    return "indexedDB" in window;
   }
 
   private static checkOpenDatabase(): boolean {
-    return 'openDatabase' in window;
+    return "openDatabase" in window;
   }
 
   private static checkTouchSupport(): boolean {
-    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    return "ontouchstart" in window || navigator.maxTouchPoints > 0;
   }
 
   private static checkAdBlock(): boolean {
     try {
-      const testAd = document.createElement('div');
-      testAd.innerHTML = '&nbsp;';
-      testAd.className = 'adsbox pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad';
-      testAd.style.cssText = 'position: absolute; top: -10px; left: -10px; height: 1px; width: 1px; visibility: hidden;';
+      const testAd = document.createElement("div");
+      testAd.innerHTML = "&nbsp;";
+      testAd.className =
+        "adsbox pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad";
+      testAd.style.cssText =
+        "position: absolute; top: -10px; left: -10px; height: 1px; width: 1px; visibility: hidden;";
       document.body.appendChild(testAd);
       const isBlocked = testAd.offsetHeight === 0;
       document.body.removeChild(testAd);
@@ -371,11 +410,12 @@ export class BrowserFingerprintGenerator {
     try {
       const userAgent = navigator.userAgent.toLowerCase();
       const platform = navigator.platform.toLowerCase();
-      
-      if (userAgent.includes('win') && !platform.includes('win')) return true;
-      if (userAgent.includes('mac') && !platform.includes('mac')) return true;
-      if (userAgent.includes('linux') && !platform.includes('linux')) return true;
-      
+
+      if (userAgent.includes("win") && !platform.includes("win")) return true;
+      if (userAgent.includes("mac") && !platform.includes("mac")) return true;
+      if (userAgent.includes("linux") && !platform.includes("linux"))
+        return true;
+
       return false;
     } catch (error) {
       return false;
@@ -388,11 +428,15 @@ export class BrowserFingerprintGenerator {
   private static hasLiedBrowser(): boolean {
     try {
       const userAgent = navigator.userAgent.toLowerCase();
-      
-      if (userAgent.includes('chrome') && !window.chrome) return true;
-      if (userAgent.includes('firefox') && typeof window.InstallTrigger === 'undefined') return true;
-      if (userAgent.includes('safari') && !window.safari) return true;
-      
+
+      if (userAgent.includes("chrome") && !window.chrome) return true;
+      if (
+        userAgent.includes("firefox") &&
+        typeof window.InstallTrigger === "undefined"
+      )
+        return true;
+      if (userAgent.includes("safari") && !window.safari) return true;
+
       return false;
     } catch (error) {
       return false;
@@ -404,14 +448,15 @@ export class BrowserFingerprintGenerator {
  * Gestor de Session Pinning
  */
 export class SessionPinningManager {
-  private static readonly STORAGE_KEY = 'cc_session_pinning';
+  private static readonly STORAGE_KEY = "cc_session_pinning";
   private static readonly VALIDITY_DURATION = 24 * 60 * 60 * 1000; // 24 horas
 
   /**
    * Inicializa el session pinning
    */
   static async initialize(): Promise<void> {
-    const currentFingerprint = await BrowserFingerprintGenerator.generateFingerprint();
+    const currentFingerprint =
+      await BrowserFingerprintGenerator.generateFingerprint();
     const storedData = this.getStoredPinningData();
 
     if (!storedData) {
@@ -421,15 +466,22 @@ export class SessionPinningManager {
     }
 
     // Verificar si el fingerprint ha cambiado
-    if (BrowserFingerprintGenerator.hasFingerprintChanged(currentFingerprint, storedData.fingerprint)) {
-      console.warn('🚨 Browser fingerprint changed - possible session hijacking');
+    if (
+      BrowserFingerprintGenerator.hasFingerprintChanged(
+        currentFingerprint,
+        storedData.fingerprint,
+      )
+    ) {
+      console.warn(
+        "🚨 Browser fingerprint changed - possible session hijacking",
+      );
       this.invalidateSession();
       return;
     }
 
     // Verificar validez temporal
     if (Date.now() - storedData.timestamp > this.VALIDITY_DURATION) {
-      console.warn('⏰ Session pinning expired');
+      console.warn("⏰ Session pinning expired");
       this.invalidateSession();
       return;
     }
@@ -466,7 +518,7 @@ export class SessionPinningManager {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error('Error saving session pinning data:', message);
+      console.error("Error saving session pinning data:", message);
     }
   }
 
@@ -483,14 +535,16 @@ export class SessionPinningManager {
   private static invalidateSession(): void {
     try {
       localStorage.removeItem(this.STORAGE_KEY);
-      
+
       // Disparar evento de sesión inválida
-      window.dispatchEvent(new CustomEvent('session-invalid', {
-        detail: { reason: 'fingerprint-mismatch' }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("session-invalid", {
+          detail: { reason: "fingerprint-mismatch" },
+        }),
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error('Error invalidating session:', message);
+      console.error("Error invalidating session:", message);
     }
   }
 
@@ -499,14 +553,20 @@ export class SessionPinningManager {
    */
   static async validateSession(): Promise<boolean> {
     try {
-      const currentFingerprint = await BrowserFingerprintGenerator.generateFingerprint();
+      const currentFingerprint =
+        await BrowserFingerprintGenerator.generateFingerprint();
       const storedData = this.getStoredPinningData();
 
       if (!storedData || !storedData.isValid) {
         return false;
       }
 
-      if (BrowserFingerprintGenerator.hasFingerprintChanged(currentFingerprint, storedData.fingerprint)) {
+      if (
+        BrowserFingerprintGenerator.hasFingerprintChanged(
+          currentFingerprint,
+          storedData.fingerprint,
+        )
+      ) {
         return false;
       }
 
@@ -517,7 +577,7 @@ export class SessionPinningManager {
       return true;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error('Error validating session:', message);
+      console.error("Error validating session:", message);
       return false;
     }
   }
@@ -530,7 +590,7 @@ export class SessionPinningManager {
       localStorage.removeItem(this.STORAGE_KEY);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error('Error clearing session pinning:', message);
+      console.error("Error clearing session pinning:", message);
     }
   }
 }

@@ -1,7 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Shield, Building, ArrowRight, LogOut, BarChart3, Users } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Shield,
+  Building,
+  ArrowRight,
+  LogOut,
+  BarChart3,
+  Users,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth/useAuth";
@@ -63,7 +76,8 @@ export const AdminSelectDashboard = () => {
             </span>
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-2">
-            Selecciona el panel al que deseas acceder para gestionar la plataforma
+            Selecciona el panel al que deseas acceder para gestionar la
+            plataforma
           </p>
           <p className="text-sm text-white/70 max-w-3xl mx-auto">
             Acceso administrativo con datos reales (producción)
@@ -78,8 +92,10 @@ export const AdminSelectDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="bg-linear-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-purple-400/50 transition-all duration-300 cursor-pointer h-full group"
-                  onClick={handleAdminPanel}>
+            <Card
+              className="bg-linear-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-purple-400/50 transition-all duration-300 cursor-pointer h-full group"
+              onClick={handleAdminPanel}
+            >
               <CardHeader>
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-linear-to-r from-indigo-500 to-violet-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
@@ -91,7 +107,8 @@ export const AdminSelectDashboard = () => {
                   Panel de Administración
                 </CardTitle>
                 <CardDescription className="text-white/70 text-base">
-                  Gestiona usuarios, moderación, analytics y configuración general de la plataforma
+                  Gestiona usuarios, moderación, analytics y configuración
+                  general de la plataforma
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -125,42 +142,42 @@ export const AdminSelectDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-              <Card
-                className="bg-linear-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-fuchsia-400/50 transition-all duration-300 cursor-pointer h-full group"
-                onClick={handleClubsDemo}
-              >
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                      <Building className="h-8 w-8 text-white" />
-                    </div>
-                    <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+            <Card
+              className="bg-linear-to-br from-purple-900/40 to-fuchsia-900/40 backdrop-blur-xl border-white/20 shadow-2xl hover:border-fuchsia-400/50 transition-all duration-300 cursor-pointer h-full group"
+              onClick={handleClubsDemo}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 bg-linear-to-r from-purple-500 to-fuchsia-500 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <Building className="h-8 w-8 text-white" />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-white">
-                    Clubs Demo
-                  </CardTitle>
-                  <CardDescription className="text-white/70 text-base">
-                    Visualiza la experiencia de clubs en entorno demo
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-white/80">
-                      <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
-                      <span className="text-sm">Vista previa de clubs</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-white/80">
-                      <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
-                      <span className="text-sm">Catálogo y filtros</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-white/80">
-                      <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
-                      <span className="text-sm">Panel demo para clubes</span>
-                    </div>
+                  <ArrowRight className="h-6 w-6 text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                </div>
+                <CardTitle className="text-2xl font-bold text-white">
+                  Clubs Demo
+                </CardTitle>
+                <CardDescription className="text-white/70 text-base">
+                  Visualiza la experiencia de clubs en entorno demo
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-white/80">
+                    <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
+                    <span className="text-sm">Vista previa de clubs</span>
                   </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
+                    <span className="text-sm">Catálogo y filtros</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-white/80">
+                    <div className="w-2 h-2 bg-fuchsia-400 rounded-full" />
+                    <span className="text-sm">Panel demo para clubes</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Analytics */}
           <motion.div

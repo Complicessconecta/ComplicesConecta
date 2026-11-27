@@ -1,13 +1,35 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription,} from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/cards/Card";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
-import { Plus, MapPin, CheckCircle, Star, Users, Calendar, Image as ImageIcon,  Shield, Sparkles } from "lucide-react";
+import {
+  Plus,
+  MapPin,
+  CheckCircle,
+  Star,
+  Users,
+  Calendar,
+  Image as ImageIcon,
+  Shield,
+  Sparkles,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
@@ -423,8 +445,8 @@ const AdminPartners = () => {
                       size="sm"
                       onClick={() => handleVerifyClub(club.id, "approved")}
                     >
-                        Verificar
-                      </Button>
+                      Verificar
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -628,7 +650,9 @@ const AdminPartners = () => {
               <label className="text-sm font-medium">Slug</label>
               <Input
                 value={clubForm.slug}
-                onChange={(e) => setClubForm({ ...clubForm, slug: e.target.value })}
+                onChange={(e) =>
+                  setClubForm({ ...clubForm, slug: e.target.value })
+                }
                 placeholder="Slug generado automáticamente"
               />
             </div>

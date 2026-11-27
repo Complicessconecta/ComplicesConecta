@@ -8,13 +8,13 @@ import { useRef } from "react";
  * @param speed - Velocidad del efecto parallax (0.1 = lento, 0.5 = rápido)
  * @param className - Clases CSS adicionales
  */
-export const ParallaxBackground = ({ 
-  children, 
-  speed = 0.2, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  speed?: number; 
+export const ParallaxBackground = ({
+  children,
+  speed = 0.2,
+  className = "",
+}: {
+  children: React.ReactNode;
+  speed?: number;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -38,11 +38,15 @@ export const ParallaxBackground = ({
  * @param layers - Array de capas con diferentes velocidades
  * @param className - Clases CSS adicionales
  */
-export const ParallaxLayers = ({ 
-  layers, 
-  className = "" 
-}: { 
-  layers: Array<{ children: React.ReactNode; speed: number; className?: string }>; 
+export const ParallaxLayers = ({
+  layers,
+  className = "",
+}: {
+  layers: Array<{
+    children: React.ReactNode;
+    speed: number;
+    className?: string;
+  }>;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -76,13 +80,13 @@ export const ParallaxLayers = ({
  * @param speed - Velocidad del efecto parallax horizontal
  * @param className - Clases CSS adicionales
  */
-export const HorizontalParallax = ({ 
-  children, 
-  speed = 0.1, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  speed?: number; 
+export const HorizontalParallax = ({
+  children,
+  speed = 0.1,
+  className = "",
+}: {
+  children: React.ReactNode;
+  speed?: number;
   className?: string;
 }) => {
   const ref = useRef(null);
@@ -108,15 +112,15 @@ export const HorizontalParallax = ({
  * @param speed - Velocidad del efecto parallax
  * @param className - Clases CSS adicionales
  */
-export const ConnectedNodesParallax = ({ 
-  children, 
-  direction = "up", 
-  speed = 0.15, 
-  className = "" 
-}: { 
-  children: React.ReactNode; 
-  direction?: "up" | "down" | "left" | "right"; 
-  speed?: number; 
+export const ConnectedNodesParallax = ({
+  children,
+  direction = "up",
+  speed = 0.15,
+  className = "",
+}: {
+  children: React.ReactNode;
+  direction?: "up" | "down" | "left" | "right";
+  speed?: number;
   className?: string;
 }) => {
   const ref = useRef(null);

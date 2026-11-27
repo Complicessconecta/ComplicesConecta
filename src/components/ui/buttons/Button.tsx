@@ -23,7 +23,15 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
 
         // Variantes profesionales para apps de citas
-        love: "bg-love-gradient text-white hover:shadow-love transform hover:scale-105 transition-all duration-300 font-bold",
+        // Ronda 15 (stream C): `bg-love-gradient` NO existe como
+        // utilidad Tailwind (`--love-gradient` es una var suelta en
+        // :root, no una clave @theme) y `hover:shadow-love` tampoco:
+        // el CSS compilado no trae ninguna de las dos, así que el
+        // botón quedaba sin fondo y el texto blanco sobre claro era
+        // ilegible (botón "Guardar Configuración" de /settings).
+        // Gradiente real con las mismas tintas del love-gradient
+        // (hsl 270 70% 60% → 260 75% 65%, púrpura/violeta).
+        love: "bg-linear-to-r from-fuchsia-600 via-purple-600 to-violet-600 text-white hover:shadow-lg transform hover:scale-105 transition-all duration-300 font-bold",
         passion:
           "bg-passion-gradient text-white hover:shadow-passion transform hover:scale-105 transition-all duration-300 font-bold",
         romance:
@@ -186,8 +194,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         {...restMotionProps}
-        {...(resolvedWhileHover !== undefined ? { whileHover: resolvedWhileHover } : {})}
-        {...(resolvedWhileTap !== undefined ? { whileTap: resolvedWhileTap } : {})}
+        {...(resolvedWhileHover !== undefined
+          ? { whileHover: resolvedWhileHover }
+          : {})}
+        {...(resolvedWhileTap !== undefined
+          ? { whileTap: resolvedWhileTap }
+          : {})}
         {...(resolvedAnimate !== undefined ? { animate: resolvedAnimate } : {})}
         transition={
           motionTransition ?? {
@@ -242,4 +254,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-

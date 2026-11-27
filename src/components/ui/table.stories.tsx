@@ -1,6 +1,15 @@
 // @ts-nocheck
 import type { Meta, StoryObj } from "@storybook/react";
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader,  TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const meta: Meta<typeof Table> = {
   title: "UI/Table",

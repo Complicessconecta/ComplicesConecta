@@ -1,4 +1,9 @@
-import { Story, CreateStoryData, StoryLike, StoryComment } from "@/components/stories/StoryTypes";
+import {
+  Story,
+  CreateStoryData,
+  StoryLike,
+  StoryComment,
+} from "@/components/stories/StoryTypes";
 import { getRandomProfileImage } from "@/lib/imageService";
 import { logger } from "@/lib/logger";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
@@ -185,7 +190,9 @@ class StoryService {
         visibility: data.visibility || "public",
         likes: [],
         comments: [],
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.location !== undefined && { location: data.location }),
       };
 
@@ -414,4 +421,3 @@ class StoryService {
 
 export const storyService = new StoryService();
 export default StoryService;
-

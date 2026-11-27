@@ -32,11 +32,7 @@ interface ConsentGuardProps {
 
   /** Tipo de consentimiento para categorización */
   consentType:
-    | "TERMS"
-    | "PRIVACY"
-    | "LEY_OLIMPIA"
-    | "WALLET_RISK"
-    | "COUPLE_AGREEMENT";
+    "TERMS" | "PRIVACY" | "LEY_OLIMPIA" | "WALLET_RISK" | "COUPLE_AGREEMENT";
 
   /** Título del consentimiento */
   title: string;

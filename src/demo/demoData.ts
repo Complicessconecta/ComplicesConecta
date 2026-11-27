@@ -4,7 +4,12 @@
  */
 
 import { generateDemoUUID } from "@/lib/demo-uuid";
-import { pickProfileImage, resetImageCounters, type ProfileType, type Gender } from "@/lib/media";
+import {
+  pickProfileImage,
+  resetImageCounters,
+  type ProfileType,
+  type Gender,
+} from "@/lib/media";
 import { getAutoInterests } from "@/lib/lifestyle-interests";
 
 /**
@@ -108,27 +113,160 @@ const DEMO_ROSTER: Array<{
   partnerAge?: number;
   location: string;
 }> = [
-  { name: "Ana", gender: "female", profileType: "single", age: 26, location: "Guadalajara" },
-  { name: "Francisco", gender: "male", profileType: "single", age: 34, location: "Ciudad de México" },
-  { name: "María & Juan", gender: "unknown", profileType: "couple", age: 29, location: "Guadalajara" },
-  { name: "Carlos", gender: "male", profileType: "single", age: 32, location: "Monterrey" },
-  { name: "Laura", gender: "female", profileType: "single", age: 27, location: "Puebla" },
-  { name: "Carmen & Roberto", gender: "unknown", profileType: "couple", age: 25, partnerAge: 28, location: "Ciudad de México" },
-  { name: "Miguel", gender: "male", profileType: "single", age: 35, location: "Tijuana" },
-  { name: "Lucía", gender: "female", profileType: "single", age: 24, location: "Mérida" },
-  { name: "Javier & Elena", gender: "unknown", profileType: "couple", age: 33, location: "Querétaro" },
-  { name: "David", gender: "male", profileType: "single", age: 30, location: "León" },
-  { name: "Cristina", gender: "female", profileType: "single", age: 28, location: "Monterrey" },
-  { name: "Alejandro", gender: "male", profileType: "single", age: 36, location: "Guadalajara" },
-  { name: "Rosa & Daniel", gender: "unknown", profileType: "couple", age: 30, location: "Puebla" },
-  { name: "Isabel", gender: "female", profileType: "single", age: 25, location: "Ciudad de México" },
-  { name: "Rafael", gender: "male", profileType: "single", age: 38, location: "Torreón" },
-  { name: "Pilar", gender: "female", profileType: "single", age: 29, location: "San Luis Potosí" },
-  { name: "Sergio & Teresa", gender: "unknown", profileType: "couple", age: 34, location: "Cuernavaca" },
-  { name: "Manuel", gender: "male", profileType: "single", age: 41, location: "Mexicali" },
-  { name: "Dolores", gender: "female", profileType: "single", age: 33, location: "Aguascalientes" },
-  { name: "Pablo & Raquel", gender: "unknown", profileType: "couple", age: 27, location: "Mérida" },
+  {
+    name: "Ana",
+    gender: "female",
+    profileType: "single",
+    age: 26,
+    location: "Guadalajara",
+  },
+  {
+    name: "Francisco",
+    gender: "male",
+    profileType: "single",
+    age: 34,
+    location: "Ciudad de México",
+  },
+  {
+    name: "María & Juan",
+    gender: "unknown",
+    profileType: "couple",
+    age: 29,
+    location: "Guadalajara",
+  },
+  {
+    name: "Carlos",
+    gender: "male",
+    profileType: "single",
+    age: 32,
+    location: "Monterrey",
+  },
+  {
+    name: "Laura",
+    gender: "female",
+    profileType: "single",
+    age: 27,
+    location: "Puebla",
+  },
+  {
+    name: "Carmen & Roberto",
+    gender: "unknown",
+    profileType: "couple",
+    age: 25,
+    partnerAge: 28,
+    location: "Ciudad de México",
+  },
+  {
+    name: "Miguel",
+    gender: "male",
+    profileType: "single",
+    age: 35,
+    location: "Tijuana",
+  },
+  {
+    name: "Lucía",
+    gender: "female",
+    profileType: "single",
+    age: 24,
+    location: "Mérida",
+  },
+  {
+    name: "Javier & Elena",
+    gender: "unknown",
+    profileType: "couple",
+    age: 33,
+    location: "Querétaro",
+  },
+  {
+    name: "David",
+    gender: "male",
+    profileType: "single",
+    age: 30,
+    location: "León",
+  },
+  {
+    name: "Cristina",
+    gender: "female",
+    profileType: "single",
+    age: 28,
+    location: "Monterrey",
+  },
+  {
+    name: "Alejandro",
+    gender: "male",
+    profileType: "single",
+    age: 36,
+    location: "Guadalajara",
+  },
+  {
+    name: "Rosa & Daniel",
+    gender: "unknown",
+    profileType: "couple",
+    age: 30,
+    location: "Puebla",
+  },
+  {
+    name: "Isabel",
+    gender: "female",
+    profileType: "single",
+    age: 25,
+    location: "Ciudad de México",
+  },
+  {
+    name: "Rafael",
+    gender: "male",
+    profileType: "single",
+    age: 38,
+    location: "Torreón",
+  },
+  {
+    name: "Pilar",
+    gender: "female",
+    profileType: "single",
+    age: 29,
+    location: "San Luis Potosí",
+  },
+  {
+    name: "Sergio & Teresa",
+    gender: "unknown",
+    profileType: "couple",
+    age: 34,
+    location: "Cuernavaca",
+  },
+  {
+    name: "Manuel",
+    gender: "male",
+    profileType: "single",
+    age: 41,
+    location: "Mexicali",
+  },
+  {
+    name: "Dolores",
+    gender: "female",
+    profileType: "single",
+    age: 33,
+    location: "Aguascalientes",
+  },
+  {
+    name: "Pablo & Raquel",
+    gender: "unknown",
+    profileType: "couple",
+    age: 27,
+    location: "Mérida",
+  },
 ];
+
+/**
+ * Edad canónica de un nombre del roster (ronda 14, stream C): la
+ * lista aleatoria de Discover reutiliza estos nombres y antes les
+ * asignaba otra edad por sorteo (Carlos 32 en el roster, 41/40/45 en
+ * la lista), así que el mismo nombre se veía con edades distintas
+ * según la superficie. La lista aleatoria usa esta edad cuando el
+ * nombre está en el roster; fuera de él, la edad es un hash estable
+ * del nombre (ver `ageForDemoName`).
+ */
+export const getDemoRosterAge = (name: string): number | undefined =>
+  DEMO_ROSTER.find((entry) => entry.name === name)?.age;
 
 /**
  * Fotos de pareja VERIFICADAS por vista, una a una: cada URL es una
@@ -154,9 +292,13 @@ export const DEMO_COUPLE_IMAGES = [
 ];
 
 /** Foto de pareja verificada, sin repetir hasta agotar la lista. */
-const pickVerifiedCoupleImage = (coupleIndex: number, used: Set<string>): string => {
+const pickVerifiedCoupleImage = (
+  coupleIndex: number,
+  used: Set<string>,
+): string => {
   const unused = DEMO_COUPLE_IMAGES.find((url) => !used.has(url));
-  const url = unused ?? DEMO_COUPLE_IMAGES[coupleIndex % DEMO_COUPLE_IMAGES.length]!;
+  const url =
+    unused ?? DEMO_COUPLE_IMAGES[coupleIndex % DEMO_COUPLE_IMAGES.length]!;
   used.add(url);
   return url;
 };
@@ -190,8 +332,7 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
     const partnerGender: Gender = gender === "male" ? "female" : "male";
 
     // Nivel de experiencia determinista por posición.
-    const experienceLevel =
-      experienceLevels[i % experienceLevels.length]!;
+    const experienceLevel = experienceLevels[i % experienceLevels.length]!;
 
     // Intereses automáticos apropiados para el lifestyle swinger
     // (getAutoInterests es determinista). Las parejas no tienen género
@@ -546,4 +687,3 @@ export const demoMatches = [
     status: "pending",
   },
 ];
-

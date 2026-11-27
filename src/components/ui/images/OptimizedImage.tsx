@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { optimizeImageUrl, generateSrcSet, createLazyLoader, type OptimizedImageProps } from "@/utils/imageOptimization";
+import {
+  optimizeImageUrl,
+  generateSrcSet,
+  createLazyLoader,
+  type OptimizedImageProps,
+} from "@/utils/imageOptimization";
 
 const OptimizedImage: React.FC<OptimizedImageProps> = ({
   src,
@@ -119,4 +124,3 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 };
 
 export default OptimizedImage;
-

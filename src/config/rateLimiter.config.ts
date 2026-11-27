@@ -115,4 +115,3 @@ export const getWaitTimeFormatted = (
   }
   return `${minutes} minuto${minutes !== 1 ? "s" : ""}`;
 };
-

@@ -1,6 +1,11 @@
 // UI Components - Main exports
 export { Button } from "@/components/ui/buttons/Button";
-export { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+export {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 export { Input } from "@/components/ui/forms/Input";
 export { Modal } from "@/components/ui/Modal";
 export { ChatBubble } from "@/components/ui/ChatBubble";

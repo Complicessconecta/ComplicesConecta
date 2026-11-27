@@ -65,7 +65,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   // nieve rosa de rutas públicas sí se mantiene (se lee bien en claro).
   // useTheme con try/catch: este fondo también se usa fuera del
   // ThemeProvider en algún montaje aislado; ahí se asume oscuro.
-  let actualTheme: "light" | "dark" = "dark";
+  let actualTheme: "light" | "dark";
   try {
     actualTheme = useTheme().actualTheme;
   } catch {
@@ -265,7 +265,9 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
       .catch((err) => {
         if (!mounted) return;
         setEngineReady(false);
-        logger.error("❌ Particles engine initialization failed:", { error: err });
+        logger.error("❌ Particles engine initialization failed:", {
+          error: err,
+        });
       });
 
     return () => {
@@ -274,13 +276,13 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   }, [forceNeon, preferences.particlesEnabled]);
 
   // ======================================================================
-// PARTÍCULAS BLANCAS (NIEVE) - CAMBIAdas A ROSA (#FF69B4)
-// ======================================================================
-// Estas partículas blancas originales se cambiaron a rosa para
-// mantener la consistencia con el tema de la app.
-// NO MODIFICAR: neonOptions y otras partículas de neón se mantienen tal cual.
-// ======================================================================
-const snowOptions = useMemo(
+  // PARTÍCULAS BLANCAS (NIEVE) - CAMBIAdas A ROSA (#FF69B4)
+  // ======================================================================
+  // Estas partículas blancas originales se cambiaron a rosa para
+  // mantener la consistencia con el tema de la app.
+  // NO MODIFICAR: neonOptions y otras partículas de neón se mantienen tal cual.
+  // ======================================================================
+  const snowOptions = useMemo(
     () => ({
       fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
@@ -314,13 +316,13 @@ const snowOptions = useMemo(
     [tier],
   );
 
-// ======================================================================
-// PARTÍCULAS DE NEÓN - MANTENIdas TAL CUAL (NO MODIFICAR)
-// ======================================================================
-// Estas partículas neón se mantienen con sus colores originales
-// (cyan, magenta, morado) para el efecto de neón lifestyle.
-// ======================================================================
-const neonOptions = useMemo(
+  // ======================================================================
+  // PARTÍCULAS DE NEÓN - MANTENIdas TAL CUAL (NO MODIFICAR)
+  // ======================================================================
+  // Estas partículas neón se mantienen con sus colores originales
+  // (cyan, magenta, morado) para el efecto de neón lifestyle.
+  // ======================================================================
+  const neonOptions = useMemo(
     () => ({
       fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
@@ -373,20 +375,31 @@ const neonOptions = useMemo(
     !isLightTheme && !engineReady && forceNeon && preferences.particlesEnabled;
 
   // LOGGING: Diagnosticar por qué no se muestran las partículas
-  if (import.meta.env.DEV) { console.log("🔍 ParticlesNeon Debug:",
-  { pathname: location.pathname, engineReady, shouldAvoidHeavyParticles, forceImageAndNeon, forceNeon, references:
-  { particlesEnabled: preferences.particlesEnabled, backgroundMode: preferences.backgroundMode }
-  , isLowEnd, reducedMotion, allowParticles, variant, showNeonParticles, showFallbackParticles, isSnowRoute,
-  inAllowedRoutes: ALLOW_HEAVY_ROUTES.has(location.pathname), isPremium: profile?.is_premium  });
+  if (import.meta.env.DEV) {
+    console.log("🔍 ParticlesNeon Debug:", {
+      pathname: location.pathname,
+      engineReady,
+      shouldAvoidHeavyParticles,
+      forceImageAndNeon,
+      forceNeon,
+      references: {
+        particlesEnabled: preferences.particlesEnabled,
+        backgroundMode: preferences.backgroundMode,
+      },
+      isLowEnd,
+      reducedMotion,
+      allowParticles,
+      variant,
+      showNeonParticles,
+      showFallbackParticles,
+      isSnowRoute,
+      inAllowedRoutes: ALLOW_HEAVY_ROUTES.has(location.pathname),
+      isPremium: profile?.is_premium,
+    });
   }
 
   // Predefined utility class sets for CSS particles (avoid inline styles)
-  const particleSizes = [
-    "w-1 h-1",
-    "w-1.5 h-1.5",
-    "w-2 h-2",
-    "w-2.5 h-2.5",
-  ];
+  const particleSizes = ["w-1 h-1", "w-1.5 h-1.5", "w-2 h-2", "w-2.5 h-2.5"];
 
   const particleDelayClasses = [
     "particle-delay-0",
@@ -464,22 +477,25 @@ const neonOptions = useMemo(
         {/* Partículas CSS ligeras para dispositivos low-end o fallback */}
         {(showCssParticles || showFallbackParticles) && (
           <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
-            {Array.from({ length: showFallbackParticles ? 80 : 60 }).map((_, i) => {
-              const sizeCls = particleSizes[i % particleSizes.length];
-              const posCls = particlePositions[i % particlePositions.length];
-              const delayCls =
-                particleDelayClasses[i % particleDelayClasses.length] ?? "";
-              const durationCls =
-                particleDurationClasses[i % particleDurationClasses.length] ?? "";
-              const colors = ["bg-cyan-400", "bg-purple-400", "bg-pink-400"];
-              const colorCls = colors[i % colors.length];
-              return (
-                <div
-                  key={i}
-                  className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls} ${delayCls} ${durationCls} particle`}
-                />
-              );
-            })}
+            {Array.from({ length: showFallbackParticles ? 80 : 60 }).map(
+              (_, i) => {
+                const sizeCls = particleSizes[i % particleSizes.length];
+                const posCls = particlePositions[i % particlePositions.length];
+                const delayCls =
+                  particleDelayClasses[i % particleDelayClasses.length] ?? "";
+                const durationCls =
+                  particleDurationClasses[i % particleDurationClasses.length] ??
+                  "";
+                const colors = ["bg-cyan-400", "bg-purple-400", "bg-pink-400"];
+                const colorCls = colors[i % colors.length];
+                return (
+                  <div
+                    key={i}
+                    className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls} ${delayCls} ${durationCls} particle`}
+                  />
+                );
+              },
+            )}
           </div>
         )}
 
@@ -507,4 +523,3 @@ const neonOptions = useMemo(
 export const PageBackground = UnifiedBackground;
 export const RandomBackground = UnifiedBackground;
 export const MasterBackground = UnifiedBackground;
-

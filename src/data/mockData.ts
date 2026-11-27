@@ -216,4 +216,3 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   nftImages: [nftImage1, nftImage2, nftImage3],
   nft_images: [nftImage1, nftImage2, nftImage3],
 };
-

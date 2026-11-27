@@ -9,10 +9,7 @@ const ResizablePanelGroup = ({
   ...props
 }: ComponentProps<typeof ResizablePrimitive.Group>) => (
   <ResizablePrimitive.Group
-    className={cn(
-      "h-full w-full",
-      className,
-    )}
+    className={cn("h-full w-full", className)}
     {...props}
   />
 );

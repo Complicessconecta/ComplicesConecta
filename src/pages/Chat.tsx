@@ -67,6 +67,7 @@ import {
   findLocalDemoAccountById,
   isAnonymousDemoProfile,
 } from "@/lib/demo-registration";
+import { generateDemoProfiles } from "@/demo/demoData";
 import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 import { EmojiPicker } from "@/components/chat/EmojiPicker";
@@ -97,6 +98,54 @@ export interface Message {
   content: string;
   timestamp: string;
   type: "text" | "image";
+}
+
+/**
+ * Ronda 21 (stream B): inicial del avatar de una sala pública.
+ * Los nombres empiezan por emoji (🌍, 💕, 💫, 🔒): `charAt(0)`
+ * sobre un emoji devuelve media unidad sustituta y se pinta "?" —
+ * por eso la pestaña Público mostraba "?" en diamante aunque las 4
+ * salas SÍ tienen `image` (las 4 URLs devuelven HTTP 200,
+ * verificadas con curl el 2026-11-26). Se toma la primera LETRA
+ * del nombre.
+ */
+function publicRoomInitial(name: string): string {
+  const firstLetter = name.replace(/^[^\p{L}\p{N}]+/u, "").charAt(0);
+  return firstLetter ? firstLetter.toUpperCase() : "S";
+}
+
+/**
+ * Ronda 21 (stream B): avatar de sala pública — la `image` de la
+ * sala; si no carga (o no hay), las iniciales, nunca "?". Mismo
+ * degradado del diamante anterior para no cambiar el diseño.
+ */
+function PublicRoomAvatar({
+  chat,
+  sizeClass,
+  textClass,
+}: {
+  chat: ChatUser;
+  sizeClass: string;
+  textClass: string;
+}) {
+  const [imageError, setImageError] = useState(false);
+  if (!chat.image || imageError) {
+    return (
+      <div
+        className={`${sizeClass} rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold ${textClass} border-2 border-slate-200 dark:border-white/20`}
+      >
+        {publicRoomInitial(chat.name)}
+      </div>
+    );
+  }
+  return (
+    <img
+      src={chat.image}
+      alt={chat.name}
+      onError={() => setImageError(true)}
+      className={`${sizeClass} rounded-full object-cover border-2 border-slate-200 dark:border-white/20`}
+    />
+  );
 }
 
 // NOTA: estos arrays viven a nivel de módulo (no dentro del componente)
@@ -839,6 +888,32 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
         loadMessages(found.id);
         return;
       }
+      // Ronda 21 (stream B, FAIL 8): el id no es de sala — resolverlo
+      // como id de PERFIL contra el roster demo (`generateDemoProfiles(20)`,
+      // el mismo que Discover). Cubre la navegación desde Discover sin
+      // state y la recarga (el state se pierde al recargar). Si no
+      // resuelve en ningún lado, quedarse en la lista (comportamiento
+      // actual).
+      const demoProfile = generateDemoProfiles(20).find(
+        (p) => p.id === chatPartnerId,
+      );
+      if (demoProfile) {
+        const chatUser: ChatUser = {
+          id: demoProfile.id,
+          name: demoProfile.name,
+          image: demoProfile.image,
+          lastMessage: "Inicio de conversación",
+          timestamp: "Ahora",
+          isOnline: demoProfile.isOnline,
+          unreadCount: 0,
+          isPrivate: true,
+          roomType: "private",
+        };
+        setSelectedChat(chatUser);
+        setActiveTab("private");
+        loadMessages(chatUser.id);
+        return;
+      }
     }
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -1448,9 +1523,11 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                     >
                       <div className="flex items-center space-x-3">
                         <div className="relative">
-                          <div className="w-12 h-12 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold text-lg border-2 border-slate-200 dark:border-white/20">
-                            {chat.name.charAt(0)}
-                          </div>
+                          <PublicRoomAvatar
+                            chat={chat}
+                            sizeClass="w-12 h-12"
+                            textClass="text-lg"
+                          />
                           <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-black/50"></div>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -1505,9 +1582,11 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                     <ArrowLeft className="h-4 w-4" />
                   </Button>
                   {selectedChat.roomType === "public" ? (
-                    <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold border-2 border-slate-200 dark:border-white/20">
-                      {selectedChat.name.charAt(0)}
-                    </div>
+                    <PublicRoomAvatar
+                      chat={selectedChat}
+                      sizeClass="w-10 h-10"
+                      textClass="text-base"
+                    />
                   ) : (
                     <img
                       src={selectedChat.image}

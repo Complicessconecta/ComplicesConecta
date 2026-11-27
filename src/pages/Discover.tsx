@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +49,7 @@ import {
 import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { areFriendsSync } from "@/lib/friends";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { logger } from "@/lib/logger";
 import { matchService } from "@/services/social/social/MatchService";
@@ -68,6 +68,55 @@ import {
   shouldShowInDiscover,
   type PrivacySettings,
 } from "@/lib/visibility";
+
+// Ronda 21 (stream B, FAIL 10): likes de Discover persistidos por
+// usuario en localStorage (`cc_discover_likes:<userId>`). Antes
+// `likesGiven` (12) y `likedProfileIds` eran `useState` pelados: al
+// recargar volvían a 12/vacío y los corazones ya dados se apagaban.
+// El contador base 12 es el valor histórico de la tarjeta de stats.
+const DISCOVER_LIKES_BASE_COUNT = 12;
+
+interface DiscoverLikesStored {
+  likedIds: string[];
+  count: number;
+}
+
+function readDiscoverLikes(userId: string): DiscoverLikesStored | null {
+  if (!userId || typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(`cc_discover_likes:${userId}`);
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      !parsed ||
+      typeof parsed !== "object" ||
+      !Array.isArray((parsed as DiscoverLikesStored).likedIds) ||
+      typeof (parsed as DiscoverLikesStored).count !== "number"
+    ) {
+      return null;
+    }
+    return {
+      likedIds: (parsed as DiscoverLikesStored).likedIds.filter(
+        (id): id is string => typeof id === "string",
+      ),
+      count: (parsed as DiscoverLikesStored).count,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeDiscoverLikes(userId: string, data: DiscoverLikesStored): void {
+  if (!userId || typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(
+      `cc_discover_likes:${userId}`,
+      JSON.stringify(data),
+    );
+  } catch {
+    // Sin almacenamiento: el like solo vive en esta sesión.
+  }
+}
 
 const normalizeGender = (value: unknown): Gender => {
   const raw = typeof value === "string" ? value.trim().toLowerCase() : "";
@@ -88,25 +137,48 @@ export const Discover = () => {
 
   // Contador "Likes" de la tarjeta de stats (regla de Wacko: marcar +1,
   // desmarcar −1). Antes era un literal 12 que nunca cambiaba.
+  // Ronda 21 (stream B, FAIL 10): se inicializa desde localStorage
+  // (`cc_discover_likes:<userId>`) y cada toggle escribe ahí: al
+  // recargar, el contador conserva su valor y los corazones ya dados
+  // siguen rojos. Sin registro guardado, arranca en 12/vacío.
   const [likedProfileIds, setLikedProfileIds] = useState<Set<string>>(
-    new Set(),
+    () => new Set(readDiscoverLikes(user?.id ?? "")?.likedIds ?? []),
   );
-  const [likesGiven, setLikesGiven] = useState(12);
+  const [likesGiven, setLikesGiven] = useState(
+    () => readDiscoverLikes(user?.id ?? "")?.count ?? DISCOVER_LIKES_BASE_COUNT,
+  );
+  // Si el usuario llega DESPUÉS del primer render (sesión async),
+  // cargar sus likes persistidos al aparecer su id. El ref evita
+  // re-leer (y pisar un toggle) en cada render posterior.
+  const likesLoadedForUserRef = useRef<string | null>(user?.id ?? null);
+  useEffect(() => {
+    if (!user?.id) return;
+    if (likesLoadedForUserRef.current === user.id) return;
+    likesLoadedForUserRef.current = user.id;
+    const stored = readDiscoverLikes(user.id);
+    if (stored) {
+      setLikedProfileIds(new Set(stored.likedIds));
+      setLikesGiven(stored.count);
+    }
+  }, [user?.id]);
 
   // Alterna el contador "Likes" al marcar/desmarcar un perfil.
   const toggleLikesGiven = (profileId: number | string) => {
     const key = String(profileId);
     const isLiking = !likedProfileIds.has(key);
-    setLikedProfileIds((prev) => {
-      const next = new Set(prev);
-      if (isLiking) {
-        next.add(key);
-      } else {
-        next.delete(key);
-      }
-      return next;
-    });
-    setLikesGiven((v) => v + (isLiking ? 1 : -1));
+    const next = new Set(likedProfileIds);
+    if (isLiking) {
+      next.add(key);
+    } else {
+      next.delete(key);
+    }
+    const nextCount = likesGiven + (isLiking ? 1 : -1);
+    setLikedProfileIds(next);
+    setLikesGiven(nextCount);
+    // Ronda 21 (stream B, FAIL 10): persistir por usuario.
+    if (user?.id) {
+      writeDiscoverLikes(user.id, { likedIds: [...next], count: nextCount });
+    }
   };
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -859,11 +931,17 @@ export const Discover = () => {
     }
     // Mantener flujo demo sin gating de match: abrir el hilo con esa
     // persona (/chat/:id del perfil), no /chat-info.
+    // Ronda 21 (stream B, FAIL 8): pasar el perfil ya resuelto en
+    // `location.state` (mismo patrón que `handleViewProfile`): sin
+    // él, Chat solo busca el id en las salas (1-4 / 101-104) y un
+    // UUID de perfil cae en la LISTA en vez del hilo.
     if (
       user?.email === "single@outlook.es" ||
       user?.email === "pareja@outlook.es"
     ) {
-      navigate(`/chat/${profileId}`);
+      navigate(`/chat/${profileId}`, {
+        state: targetProfile ? { profile: targetProfile } : undefined,
+      });
       return;
     }
 
@@ -880,7 +958,10 @@ export const Discover = () => {
         });
         return;
       }
-      navigate(`/chat/${profileId}`);
+      // Ronda 21 (stream B, FAIL 8): mismo state que en la rama demo.
+      navigate(`/chat/${profileId}`, {
+        state: targetProfile ? { profile: targetProfile } : undefined,
+      });
     } catch (error) {
       logger.error("Error verificando match antes de chatear", {
         error: error instanceof Error ? error.message : String(error),
@@ -977,8 +1058,9 @@ export const Discover = () => {
               <span className="sm:hidden">{showCouples ? "S" : "P"}</span>
             </Button>
             <Button
-              onClick={() => setShowFilters(!showFilters)}
-              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent"
+              type="button"
+              onClick={() => setShowFilters((v) => !v)}
+              className="text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-white/20 p-2 sm:px-4 bg-transparent touch-manipulation"
             >
               <Filter className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2" />
               <span className="hidden sm:inline">Filtros</span>
@@ -1033,65 +1115,73 @@ export const Discover = () => {
 
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
           {/* Panel de filtros */}
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-            >
-              <GlassCard
-                className="w-full lg:w-80 p-4 lg:p-6"
-                variant="colored"
+          {/* Ronda 21 (stream B, FAIL 9): toggle funcional (inmune a
+              cierres obsoletos) + <AnimatePresence> para que el `exit`
+              del panel corra y el montaje/desmontaje sea limpio. Sin
+              el wrapper, el `exit` nunca se ejecutaba. Verificado:
+              `DecorativeHearts` ya es `pointer-events-none` y el
+              fondo absoluto lleva `z-[-1]`: ninguno intercepta el
+              toque del botón. */}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3 }}
               >
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Sliders className="h-5 w-5 text-purple-700 dark:text-purple-300" />
-                  <span className="text-slate-900 dark:text-white drop-shadow-lg font-bold">
-                    Filtros Avanzados:
-                  </span>
-                </h3>
+                <GlassCard
+                  className="w-full lg:w-80 p-4 lg:p-6"
+                  variant="colored"
+                >
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Sliders className="h-5 w-5 text-purple-700 dark:text-purple-300" />
+                    <span className="text-slate-900 dark:text-white drop-shadow-lg font-bold">
+                      Filtros Avanzados:
+                    </span>
+                  </h3>
 
-                {/* Edad */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
-                    Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
-                  </label>
-                  <Slider
-                    value={filters.ageRange}
-                    onValueChange={(value: number[]) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        ageRange: value as [number, number],
-                      }))
-                    }
-                    min={18}
-                    max={65}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
+                  {/* Edad */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
+                      Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
+                    </label>
+                    <Slider
+                      value={filters.ageRange}
+                      onValueChange={(value: number[]) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          ageRange: value as [number, number],
+                        }))
+                      }
+                      min={18}
+                      max={65}
+                      step={1}
+                      className="w-full"
+                    />
+                  </div>
 
-                {/* Distancia */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
-                    Distancia: {filters.distance} km
-                  </label>
-                  <Slider
-                    value={[filters.distance]}
-                    onValueChange={(value: number[]) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        distance: value[0] ?? prev.distance,
-                      }))
-                    }
-                    min={1}
-                    max={100}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
+                  {/* Distancia */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
+                      Distancia: {filters.distance} km
+                    </label>
+                    <Slider
+                      value={[filters.distance]}
+                      onValueChange={(value: number[]) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          distance: value[0] ?? prev.distance,
+                        }))
+                      }
+                      min={1}
+                      max={100}
+                      step={1}
+                      className="w-full"
+                    />
+                  </div>
 
-                {/* Compatibilidad mínima — Ronda 13 (stream B, B2):
+                  {/* Compatibilidad mínima — Ronda 13 (stream B, B2):
                     el control no existía en el panel (la cadena no
                     estaba en el árbol ni en `Filters`): solo se veía
                     en escritorio ancho según el reporte, y a 886 px
@@ -1103,145 +1193,146 @@ export const Discover = () => {
                     `applyFilters` (contra `matchScore`, 0–100). El
                     0 inicial no filtra nada. Las parejas no tienen
                     `matchScore`: el filtro no las toca. */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
-                    Compatibilidad mínima: {filters.minCompatibility}%
-                  </label>
-                  <Slider
-                    value={[filters.minCompatibility]}
-                    onValueChange={(value: number[]) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        minCompatibility: value[0] ?? prev.minCompatibility,
-                      }))
-                    }
-                    min={0}
-                    max={100}
-                    step={1}
-                    aria-label="Compatibilidad mínima"
-                    className="w-full"
-                  />
-                </div>
-
-                {/* Intereses */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
-                    Intereses
-                    {isDemoOrProduction() && (
-                      <span className="ml-2 text-xs text-purple-700 dark:text-purple-300">
-                        (Demo/Producción)
-                      </span>
-                    )}
-                  </label>
-                  <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-3 bg-slate-100 dark:bg-white/20 rounded-lg border border-slate-300 dark:border-white/30">
-                    {availableInterests.map((interest: string) => (
-                      <Badge
-                        key={interest}
-                        className={`cursor-pointer text-xs font-medium transition-all duration-200 hover:scale-105 ${
-                          filters.interests.includes(interest)
-                            ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg"
-                            : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/60 dark:text-white dark:hover:border-white dark:hover:bg-white/20 border bg-transparent"
-                        }`}
-                        onClick={() => {
-                          setFilters((prev) => ({
-                            ...prev,
-                            interests: prev.interests.includes(interest)
-                              ? prev.interests.filter((i) => i !== interest)
-                              : [...prev.interests, interest],
-                          }));
-                        }}
-                      >
-                        {interest}
-                      </Badge>
-                    ))}
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
+                      Compatibilidad mínima: {filters.minCompatibility}%
+                    </label>
+                    <Slider
+                      value={[filters.minCompatibility]}
+                      onValueChange={(value: number[]) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          minCompatibility: value[0] ?? prev.minCompatibility,
+                        }))
+                      }
+                      min={0}
+                      max={100}
+                      step={1}
+                      aria-label="Compatibilidad mínima"
+                      className="w-full"
+                    />
                   </div>
-                </div>
 
-                {/* Tipo de Relación */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-slate-800 dark:text-white mb-3">
-                    Tipo de Relación
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {["Pareja", "Soltero/a", "Abierto", "Poliamoroso"].map(
-                      (type) => {
-                        const isSelected =
-                          filters.relationshipType.includes(type);
-                        return (
-                          <Badge
-                            key={type}
-                            className={`cursor-pointer text-xs p-2 text-center transition-all duration-200 ${
-                              isSelected
-                                ? "bg-purple-600 text-white border-purple-600 hover:bg-purple-700"
-                                : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/40 dark:text-white dark:hover:border-white dark:hover:bg-white/10 border bg-transparent"
-                            }`}
-                            onClick={() => {
-                              setFilters((prev) => ({
-                                ...prev,
-                                relationshipType: isSelected
-                                  ? prev.relationshipType.filter(
-                                      (t) => t !== type,
-                                    )
-                                  : [...prev.relationshipType, type],
-                              }));
-                            }}
-                          >
-                            {type}
-                          </Badge>
-                        );
-                      },
-                    )}
+                  {/* Intereses */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-slate-800 dark:text-white mb-3">
+                      Intereses
+                      {isDemoOrProduction() && (
+                        <span className="ml-2 text-xs text-purple-700 dark:text-purple-300">
+                          (Demo/Producción)
+                        </span>
+                      )}
+                    </label>
+                    <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-3 bg-slate-100 dark:bg-white/20 rounded-lg border border-slate-300 dark:border-white/30">
+                      {availableInterests.map((interest: string) => (
+                        <Badge
+                          key={interest}
+                          className={`cursor-pointer text-xs font-medium transition-all duration-200 hover:scale-105 ${
+                            filters.interests.includes(interest)
+                              ? "bg-linear-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg"
+                              : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/60 dark:text-white dark:hover:border-white dark:hover:bg-white/20 border bg-transparent"
+                          }`}
+                          onClick={() => {
+                            setFilters((prev) => ({
+                              ...prev,
+                              interests: prev.interests.includes(interest)
+                                ? prev.interests.filter((i) => i !== interest)
+                                : [...prev.interests, interest],
+                            }));
+                          }}
+                        >
+                          {interest}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Verificación: activado = se ven verificados Y no
+                  {/* Tipo de Relación */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white mb-3">
+                      Tipo de Relación
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {["Pareja", "Soltero/a", "Abierto", "Poliamoroso"].map(
+                        (type) => {
+                          const isSelected =
+                            filters.relationshipType.includes(type);
+                          return (
+                            <Badge
+                              key={type}
+                              className={`cursor-pointer text-xs p-2 text-center transition-all duration-200 ${
+                                isSelected
+                                  ? "bg-purple-600 text-white border-purple-600 hover:bg-purple-700"
+                                  : "border-slate-300 text-slate-700 hover:border-slate-500 hover:bg-slate-100 dark:border-white/40 dark:text-white dark:hover:border-white dark:hover:bg-white/10 border bg-transparent"
+                              }`}
+                              onClick={() => {
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  relationshipType: isSelected
+                                    ? prev.relationshipType.filter(
+                                        (t) => t !== type,
+                                      )
+                                    : [...prev.relationshipType, type],
+                                }));
+                              }}
+                            >
+                              {type}
+                            </Badge>
+                          );
+                        },
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Verificación: activado = se ven verificados Y no
                     verificados; desactivado = SOLO verificados. Es el
                     mismo ajuste que "Acceso a perfiles sin verificar"
                     de Privacidad; aquí se controla en vivo. */}
-                <div className="mb-4">
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-800 dark:text-white cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={!filters.verified}
-                      className="w-4 h-4 text-purple-600 border-purple-300 rounded focus:ring-purple-500"
-                      onChange={(e) => {
-                        setFilters((prev) => ({
-                          ...prev,
-                          verified: !e.target.checked,
-                        }));
-                      }}
-                    />
-                    Mostrar perfiles sin verificar
-                  </label>
-                  <p className="text-xs text-slate-500 dark:text-white/70 mt-1 ml-6">
-                    {filters.verified
-                      ? "Solo se muestran perfiles verificados."
-                      : "Se muestran perfiles verificados y sin verificar."}
-                  </p>
-                </div>
+                  <div className="mb-4">
+                    <label className="flex items-center gap-2 text-sm font-medium text-slate-800 dark:text-white cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!filters.verified}
+                        className="w-4 h-4 text-purple-600 border-purple-300 rounded focus:ring-purple-500"
+                        onChange={(e) => {
+                          setFilters((prev) => ({
+                            ...prev,
+                            verified: !e.target.checked,
+                          }));
+                        }}
+                      />
+                      Mostrar perfiles sin verificar
+                    </label>
+                    <p className="text-xs text-slate-500 dark:text-white/70 mt-1 ml-6">
+                      {filters.verified
+                        ? "Solo se muestran perfiles verificados."
+                        : "Se muestran perfiles verificados y sin verificar."}
+                    </p>
+                  </div>
 
-                {/* Boton Limpiar Filtros */}
-                <Button
-                  variant="love"
-                  className="w-full"
-                  onClick={() => {
-                    setFilters({
-                      ageRange: [18, 65],
-                      distance: 50,
-                      interests: [],
-                      verified: false,
-                      premium: false,
-                      online: false,
-                      relationshipType: [],
-                      minCompatibility: 0,
-                    });
-                  }}
-                >
-                  Limpiar Filtros
-                </Button>
-              </GlassCard>
-            </motion.div>
-          )}
+                  {/* Boton Limpiar Filtros */}
+                  <Button
+                    variant="love"
+                    className="w-full"
+                    onClick={() => {
+                      setFilters({
+                        ageRange: [18, 65],
+                        distance: 50,
+                        interests: [],
+                        verified: false,
+                        premium: false,
+                        online: false,
+                        relationshipType: [],
+                        minCompatibility: 0,
+                      });
+                    }}
+                  >
+                    Limpiar Filtros
+                  </Button>
+                </GlassCard>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Grid de perfiles */}
           <div className="flex-1">
@@ -1315,6 +1406,7 @@ export const Discover = () => {
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
+                          liked={likedProfileIds.has(String(profile.id))}
                           onLike={handleLike}
                           isViewerAnonymous={viewerIsAnonymous}
                           onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
@@ -1365,6 +1457,7 @@ export const Discover = () => {
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
+                          liked={likedProfileIds.has(String(profile.id))}
                           onLike={handleLike}
                           isViewerAnonymous={viewerIsAnonymous}
                           onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}
@@ -1412,6 +1505,7 @@ export const Discover = () => {
                           lastSeen={
                             profile.isOnline ? "En línea" : profile.lastActive
                           }
+                          liked={likedProfileIds.has(String(profile.id))}
                           onLike={handleLike}
                           isViewerAnonymous={viewerIsAnonymous}
                           onAnonymousLikeBlocked={notifyAnonymousLikeBlocked}

@@ -890,20 +890,27 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end">
-        <Button
-          onClick={() => {
-            if (isAuthFn) {
-              navigate("/settings");
-              return;
-            }
-            navigate("/auth");
-          }}
-          className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
-        >
-          {isAuthFn ? loginLabel : "Ingresar"}
-        </Button>
-      </div>
+      {/* Ronda 21 (stream C): el botón "Configuración" (a la
+          configuración propia) solo existe en el perfil propio. En un
+          perfil ajeno (/profile/:id de otro usuario) no debe aparecer:
+          `ProfileDetail` renderiza este contenido sin `isOwnProfile`
+          (default false) y los perfiles propios lo pasan en true. */}
+      {isOwnProfile && (
+        <div className="flex items-center justify-end">
+          <Button
+            onClick={() => {
+              if (isAuthFn) {
+                navigate("/settings");
+                return;
+              }
+              navigate("/auth");
+            }}
+            className="bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+          >
+            {isAuthFn ? loginLabel : "Ingresar"}
+          </Button>
+        </div>
+      )}
 
       {/* Tab Navigation */}
       <ProfileNavTabs

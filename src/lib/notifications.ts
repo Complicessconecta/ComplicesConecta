@@ -1185,4 +1185,141 @@ export class NotificationService {
   }
 }
 
+/**
+ * Ronda 21 (stream C) — fuente compartida de las 2 notificaciones demo.
+ *
+ * Antes las 2 demo vivían SOLO dentro de `NotificationBell`
+ * (`loadDemoNotifications`, estado local): la campana marcaba
+ * `unreadCount = 2` mientras `/notifications` era una página estática
+ * vacía que nunca leía esa lista. Ahora ambas superficies leen de
+ * aquí (mismo contenido, sin inventar notificaciones nuevas).
+ *
+ * La lectura/ borrado se persiste en localStorage
+ * (`cc_demo_notifications_state`): marcar una demo como leída en la
+ * página baja el distintivo de la campana (y viceversa). Cada cambio
+ * emite `DEMO_NOTIFICATIONS_CHANGED_EVENT` para que la otra
+ * superficie montada se refresque sin recargar.
+ */
+export interface DemoNotification {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  created_at: string | null;
+  sender_name?: string;
+}
+
+export const DEMO_NOTIFICATIONS_CHANGED_EVENT = "cc:demo-notifications-changed";
+
+const DEMO_NOTIFICATIONS_STATE_KEY = "cc_demo_notifications_state";
+
+interface DemoNotificationState {
+  readIds: string[];
+  deletedIds: string[];
+}
+
+const DEMO_NOTIFICATION_SEEDS: Array<{
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  sender_name: string;
+  /** ms restados a `Date.now()` para `created_at`. */
+  ageMs: number;
+}> = [
+  {
+    id: "demo-1",
+    type: "request",
+    title: "Nueva solicitud de conexión",
+    message: "Anabella & Julio quieren conectar contigo",
+    sender_name: "Anabella & Julio",
+    ageMs: 0,
+  },
+  {
+    id: "demo-2",
+    type: "email",
+    title: "Nuevo mensaje",
+    message: "Tienes un mensaje nuevo de Carmen & Roberto",
+    sender_name: "Carmen & Roberto",
+    ageMs: 3600000,
+  },
+];
+
+function readDemoNotificationState(): DemoNotificationState {
+  const empty: DemoNotificationState = { readIds: [], deletedIds: [] };
+  try {
+    if (typeof window === "undefined") return empty;
+    const raw = window.localStorage.getItem(DEMO_NOTIFICATIONS_STATE_KEY);
+    if (!raw) return empty;
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return empty;
+    const { readIds, deletedIds } = parsed as Partial<DemoNotificationState>;
+    return {
+      readIds: Array.isArray(readIds)
+        ? readIds.filter((v): v is string => typeof v === "string")
+        : [],
+      deletedIds: Array.isArray(deletedIds)
+        ? deletedIds.filter((v): v is string => typeof v === "string")
+        : [],
+    };
+  } catch {
+    return empty;
+  }
+}
+
+function writeDemoNotificationState(state: DemoNotificationState): void {
+  try {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      DEMO_NOTIFICATIONS_STATE_KEY,
+      JSON.stringify(state),
+    );
+    window.dispatchEvent(new Event(DEMO_NOTIFICATIONS_CHANGED_EVENT));
+  } catch {
+    // Sin almacenamiento: la lista sigue sirviendo en memoria.
+  }
+}
+
+export function getDemoNotifications(): DemoNotification[] {
+  const state = readDemoNotificationState();
+  return DEMO_NOTIFICATION_SEEDS.filter(
+    (seed) => !state.deletedIds.includes(seed.id),
+  ).map((seed) => ({
+    id: seed.id,
+    type: seed.type,
+    title: seed.title,
+    message: seed.message,
+    read: state.readIds.includes(seed.id),
+    created_at: new Date(Date.now() - seed.ageMs).toISOString(),
+    sender_name: seed.sender_name,
+  }));
+}
+
+export function getDemoUnreadCount(): number {
+  return getDemoNotifications().filter((n) => !n.read).length;
+}
+
+export function markDemoNotificationAsRead(id: string): void {
+  const state = readDemoNotificationState();
+  if (!state.readIds.includes(id)) {
+    state.readIds.push(id);
+    writeDemoNotificationState(state);
+  }
+}
+
+export function markAllDemoNotificationsAsRead(): void {
+  const state = readDemoNotificationState();
+  state.readIds = DEMO_NOTIFICATION_SEEDS.map((seed) => seed.id);
+  writeDemoNotificationState(state);
+}
+
+export function deleteDemoNotification(id: string): void {
+  const state = readDemoNotificationState();
+  if (!state.deletedIds.includes(id)) {
+    state.deletedIds.push(id);
+    writeDemoNotificationState(state);
+  }
+}
+
 export default NotificationService;

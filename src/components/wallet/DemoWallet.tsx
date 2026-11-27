@@ -541,8 +541,11 @@ export function DemoWallet({
                         </Badge>
                       )}
                     </div>
+                    {/* Ronda 21 (stream C): el título iba con `truncate`:
+                        "NFT Demo Minteado" se veía "NFT Demo Min…". El
+                        nombre completo cabe en dos líneas. */}
                     <h4
-                      className="font-semibold text-white text-sm truncate"
+                      className="font-semibold text-white text-sm whitespace-normal break-words"
                       title={nft.name}
                     >
                       {nft.name}

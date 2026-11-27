@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -16,6 +16,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { generateDemoProfiles } from "@/demo/demoData";
 import {
   Users,
   Shield,
@@ -75,9 +76,18 @@ interface FAQItem {
 }
 
 export const Admin = () => {
-  const { isAdmin, isAuthenticated, user: _user } = useAuth();
+  const { isAdmin, isAuthenticated, isDemo, user: _user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Ronda 21 (FAIL 2b): AdminRoute concede demo de inmediato (el panel
+  // en demo muestra datos demo/respaldo). `isDemo` se lee fresco en
+  // cada render, igual que en AdminRoute.
+  const demoActive = typeof isDemo === "function" ? isDemo() : Boolean(isDemo);
+  // El efecto re-corre cuando cambian las identidades de `isAdmin` /
+  // `isAuthenticated` (useAuth no memoiza su retorno): sin este
+  // guardián la carga demo se repetiría en cada render.
+  const demoLoadedRef = useRef(false);
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [stats, setStats] = useState<AppStats>({
@@ -105,6 +115,22 @@ export const Admin = () => {
   });
 
   useEffect(() => {
+    // Ronda 21 (FAIL 2b): en demo NO se rebota a /discover. AdminRoute
+    // ya concede demo de inmediato (el panel en demo muestra datos
+    // demo/respaldo, como el resto de la app en demo), pero este
+    // efecto re-chequeaba isAdmin() — que NUNCA es true en demo (C3:
+    // la rama demo-admin fue eliminada; el perfil demo tiene role
+    // "user") — y rebotaba a /discover con toast «Acceso Denegado».
+    // El gate real (isAdmin() + toast + /discover) queda solo para
+    // sesión NO demo.
+    if (demoActive) {
+      if (!demoLoadedRef.current) {
+        demoLoadedRef.current = true;
+        loadDemoAdminData();
+      }
+      return;
+    }
+
     // C3: el bloque demo fue eliminado. Un demo_user con role/accountType
     // "admin" en localStorage ya no redirige a /admin-production ni concede
     // acceso: solo la autenticación real + isAdmin() deciden.
@@ -126,7 +152,43 @@ export const Admin = () => {
 
     // Load admin data for authenticated admin users
     loadAdminData();
-  }, [navigate, toast, isAuthenticated, isAdmin]);
+  }, [navigate, toast, isAuthenticated, isAdmin, demoActive]);
+
+  // Ronda 21 (FAIL 2b): panel demo con datos demo/respaldo locales —
+  // stats en 0 + lista de perfiles demo local, sin llamadas a Supabase
+  // que cuelguen. El aviso visible «Panel demo — datos de respaldo»
+  // está en el render.
+  const loadDemoAdminData = () => {
+    setProfiles(
+      generateDemoProfiles(20).map((p) => ({
+        id: p.id,
+        email: "",
+        first_name: p.name,
+        display_name: p.name,
+        bio: p.bio,
+        avatar_url: p.image,
+        is_verified: p.isVerified,
+        is_premium: p.isPremium,
+        created_at: p.lastActive,
+        last_seen: p.lastActive,
+      })),
+    );
+    setStats({
+      totalUsers: 0,
+      activeUsers: 0,
+      premiumUsers: 0,
+      totalMatches: 0,
+      apkDownloads: 0,
+      dailyVisits: 0,
+      totalTokens: 0,
+      stakedTokens: 0,
+      worldIdVerified: 0,
+      rewardsDistributed: 0,
+    });
+    setFaqs([]);
+    setInvitations([]);
+    setLoading(false);
+  };
 
   const loadAdminData = async () => {
     setLoading(true);
@@ -383,6 +445,20 @@ export const Admin = () => {
         {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg">
             <p className="text-red-400 font-medium">Error: {error}</p>
+          </div>
+        )}
+        {demoActive && (
+          <div
+            className="mb-6 p-4 bg-amber-500/10 border border-amber-500/50 rounded-lg"
+            role="note"
+          >
+            <p className="text-amber-700 dark:text-amber-400 font-medium">
+              Panel demo — datos de respaldo
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Estás viendo datos de demostración. Los cambios no se guardan en
+              el servidor.
+            </p>
           </div>
         )}
         <div className="mb-8">

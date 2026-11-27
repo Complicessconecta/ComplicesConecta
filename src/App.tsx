@@ -56,6 +56,7 @@ import Events from "@/pages/Events";
 import { Discover } from "@/pages/Discover";
 import { Demo } from "@/pages/Demo";
 import { ProfileDetailRoute } from "@/pages/ProfileDetailRoute";
+import { ImperativeLazyRoute } from "@/pages/ImperativeLazyRoute";
 
 // Lazy loaded pages for performance optimization - Core features
 const Profiles = lazyWithDefault(
@@ -71,6 +72,10 @@ const ChatIntimo = lazyWithDefault(() => import("@/pages/ChatIntimo"));
 const ChatInfo = lazyWithDefault(() => import("@/pages/ChatInfo"));
 const Matches = lazyWithDefault(() => import("@/pages/Matches"));
 const Requests = lazyWithDefault(() => import("@/pages/Requests"));
+// RONDA 21 (stream A, FAIL 1): /friends era 404 — no existía la ruta
+// ni la página. Friends lista los amigos con el mismo patrón que
+// Matches / Requests.
+const Friends = lazyWithDefault(() => import("@/pages/Friends"));
 const SwingerDashboard = lazyWithDefault(
   () => import("@/pages/SwingerDashboard"),
 );
@@ -87,7 +92,13 @@ const ProjectInfo = lazyWithDefault(() => import("@/pages/ProjectInfo"));
 const Security = lazyWithDefault(() => import("@/pages/Security"));
 const Guidelines = lazyWithDefault(() => import("@/pages/Guidelines"));
 const Legal = lazyWithDefault(() => import("@/pages/Legal"));
-const LeyOlimpia = lazyWithDefault(() => import("@/pages/LeyOlimpia"));
+// RONDA 21 (stream A, FAIL 5): /ley-olimpia ya NO es un `lazy`
+// pelado. El chunk se quedaba colgado sin cota y el PageLoader
+// ("Cargando...") no tenía salida (misma exposición al retry perdido
+// del Suspense que /profile/:id en la ronda 19). ImperativeLazyRoute
+// carga el chunk con tope de 15 s y error con Reintentar; ver ese
+// archivo. LeyOlimpia se importa inline en la ruta (no hay const
+// lazy), igual que el chunk de perfiles.
 const Construction = lazyWithDefault(() => import("@/pages/Construction"));
 
 // Token system - separate chunk
@@ -101,7 +112,20 @@ const AIControlCenter = lazyWithDefault(
 );
 
 // Admin pages - separate chunk
-const Admin = lazyWithDefault(() => import("@/pages/admin/Admin"));
+// RONDA 21 (stream A, FAIL 2): /admin/dashboard ya NO es un `lazy`
+// pelado bajo el Suspense de MainLayout (misma exposición al retry
+// perdido que /profile/:id en la ronda 19: loader congelado >24 s).
+// ImperativeLazyRoute carga el chunk con tope de 15 s y error con
+// Reintentar; el `Admin` nombrado (sin default) lo resuelve el
+// wrapper (primer export), igual que lazyWithDefault. No hay const
+// lazy de Admin: se importa inline en la ruta.
+// Ronda 21 (coordinador): los importadores son consts a nivel de
+// módulo (identidad estable): una flecha inline en la ruta sería una
+// función nueva en cada render de App y el `useEffect` de
+// ImperativeLazyRoute (deps `[importer, ...]`) recargaría el chunk
+// con un flash de PageLoader en cada re-render.
+const importAdminChunk = () => import("@/pages/admin/Admin");
+const importLeyOlimpiaChunk = () => import("@/pages/LeyOlimpia");
 const AdminSelectDashboard = lazyWithDefault(
   () => import("@/pages/admin/AdminSelectDashboard"),
 );
@@ -320,6 +344,7 @@ const App = () => {
                               />
                               <Route path="/chat-info" element={<ChatInfo />} />
                               <Route path="/matches" element={<Matches />} />
+                              <Route path="/friends" element={<Friends />} />
                               <Route path="/requests" element={<Requests />} />
                               <Route path="/discover" element={<Discover />} />
                               <Route path="/stories" element={<Stories />} />
@@ -397,7 +422,13 @@ const App = () => {
                                 path="/admin/dashboard"
                                 element={
                                   <AdminRoute>
-                                    <Admin />
+                                    <ImperativeLazyRoute
+                                      importer={importAdminChunk}
+                                      chunkName="pages-admin"
+                                      errorTitle="No se pudo cargar el panel de administración"
+                                      fallbackPath="/"
+                                      fallbackLabel="Volver al inicio"
+                                    />
                                   </AdminRoute>
                                 }
                               />
@@ -432,9 +463,45 @@ const App = () => {
                                 de public/docs/legal/ se siguen sirviendo
                                 como estáticos y no pasan por el SPA. */}
                               <Route path="/docs/legal" element={<Legal />} />
+                              {/* Ronda 21 (stream A, FAIL 4): /docs/legal
+                                existía como índice pero /docs/legal/terms
+                                caía en el catch-all 404 aunque el índice
+                                lo lista (con styledRoute "/terms"). Las
+                                tres URLs directas reutilizan las páginas
+                                existentes; /docs/legal/ley-olimpia usa el
+                                mismo wrapper imperativo que /ley-olimpia
+                                (FAIL 5). */}
+                              <Route
+                                path="/docs/legal/terms"
+                                element={<Terms />}
+                              />
+                              <Route
+                                path="/docs/legal/privacy"
+                                element={<Privacy />}
+                              />
+                              <Route
+                                path="/docs/legal/ley-olimpia"
+                                element={
+                                  <ImperativeLazyRoute
+                                    importer={importLeyOlimpiaChunk}
+                                    chunkName="pages-ley-olimpia"
+                                    errorTitle="No se pudo cargar el documento"
+                                    fallbackPath="/docs/legal"
+                                    fallbackLabel="Volver a documentos legales"
+                                  />
+                                }
+                              />
                               <Route
                                 path="/ley-olimpia"
-                                element={<LeyOlimpia />}
+                                element={
+                                  <ImperativeLazyRoute
+                                    importer={importLeyOlimpiaChunk}
+                                    chunkName="pages-ley-olimpia"
+                                    errorTitle="No se pudo cargar el documento"
+                                    fallbackPath="/docs/legal"
+                                    fallbackLabel="Volver a documentos legales"
+                                  />
+                                }
                               />
                               {!import.meta.env.PROD && (
                                 <Route
@@ -517,6 +584,21 @@ const App = () => {
                                   <ModeratorRoute>
                                     <ModeratorDashboard />
                                   </ModeratorRoute>
+                                }
+                              />
+                              {/* Ronda 21 (stream A, FAIL 3): el botón
+                                «Dashboard Demo» de /moderators navegaba
+                                a /moderator-dashboard, que no existía
+                                (404). Ya apunta a /moderators/dashboard;
+                                este redirect cubre enlaces/marcadores
+                                viejos (patrón ronda 6). */}
+                              <Route
+                                path="/moderator-dashboard"
+                                element={
+                                  <Navigate
+                                    to="/moderators/dashboard"
+                                    replace
+                                  />
                                 }
                               />
                               <Route

@@ -233,7 +233,10 @@ const Requests = () => {
         to_profile: "Carlos",
         type: "profile",
         status: "pending",
-        message: "Hola, me pareces muy interesante. ¿Te gustaría conocernos?",
+        // Ronda 21 (stream C): era "¿Te gustaría conocernos?" (plural
+        // de pareja) en una invitación de Sofía (single) a Carlos
+        // (single). En singular.
+        message: "Hola, me pareces muy interesante. ¿Te gustaría conocerme?",
         created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 horas atrás
         decided_at: null,
       },

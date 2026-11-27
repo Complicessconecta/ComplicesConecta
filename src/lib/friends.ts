@@ -1382,6 +1382,35 @@ export function ensureSeededPhotoAccessRequests(
   const ensured: FriendRequest[] = [];
   for (const seed of seeds) {
     const fromId = canonicalDemoOwnerId(seed.fromId);
+    // Ronda 21 (stream B, FAIL 7): colapsar duplicados
+    // PREEXISTENTES para este par (canonizado). La siembra ya era
+    // idempotente al CREAR, pero el almacén de un navegador con
+    // sesiones viejas puede traer 2 filas para el mismo solicitante
+    // (p. ej. una sembrada pre-canonización + una real): aprobar una
+    // dejaba la otra en Pendientes y hacía falta un 2º clic. Se
+    // conserva la fila con la decisión más reciente (`respondedAt`
+    // si la hay, si no `createdAt`): una aceptación fresca gana a
+    // una pendiente duplicada, así que aprobar una vez basta.
+    const samePair = requests.filter(
+      (r) =>
+        r.kind === "photo_access" &&
+        canonicalDemoOwnerId(r.fromId) === fromId &&
+        canonicalDemoOwnerId(r.toId) === toId,
+    );
+    if (samePair.length > 1) {
+      const byDecisionMs = (r: FriendRequest): number =>
+        Date.parse(r.respondedAt ?? r.createdAt) || 0;
+      const sorted = [...samePair].sort(
+        (a, b) => byDecisionMs(b) - byDecisionMs(a),
+      );
+      // Se conserva la fila con la decisión más reciente
+      // (`sorted[0]`): solo se eliminan las demás.
+      const dropIds = new Set(sorted.slice(1).map((r) => r.id));
+      for (let i = requests.length - 1; i >= 0; i--) {
+        if (dropIds.has(requests[i]!.id)) requests.splice(i, 1);
+      }
+      changed = true;
+    }
     const existing = requests.find(
       (r) =>
         r.kind === "photo_access" &&
@@ -1391,7 +1420,20 @@ export function ensureSeededPhotoAccessRequests(
     if (existing) {
       // Concesión vencida: la semilla vuelve a estar pendiente para
       // poder concederse de nuevo (ver doc del helper).
-      if (existing.status === "accepted" && isPhotoAccessExpired(existing)) {
+      // Ronda 21 (stream B, FAIL 7): solo resetea si `respondedAt`
+      // EXISTE y tiene >24 h. Antes `isPhotoAccessExpired` usaba
+      // `respondedAt ?? createdAt`: una fila aceptada sin sello (o
+      // con `createdAt` viejo) se leía como expirada y volvía a
+      // pendiente al remontar; una aceptación fresca NUNCA debe
+      // leerse como expirada.
+      const respondedAtMs = existing.respondedAt
+        ? Date.parse(existing.respondedAt)
+        : Number.NaN;
+      if (
+        existing.status === "accepted" &&
+        !Number.isNaN(respondedAtMs) &&
+        Date.now() - respondedAtMs >= ANONYMOUS_PHOTO_ACCESS_TTL_MS
+      ) {
         existing.status = "pending";
         delete existing.respondedAt;
         existing.createdAt = new Date().toISOString();

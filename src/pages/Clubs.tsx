@@ -144,16 +144,25 @@ function mapPublicClubToClub(c: PublicClub): Club {
  * son el mismo club si uno es prefijo del otro ("club demo" ⊂ "club demo
  * cómplicesconecta"); la primera ocurrencia manda (BD antes que catálogo).
  */
+/**
+ * Ronda 21 (stream C): dos nombres son el mismo club si uno es prefijo
+ * del otro ("club demo" ⊂ "club demo cómplicesconecta"). Una sola regla
+ * para el dedupe de la lista Y para la tarjeta fija Club Demo de abajo:
+ * antes solo la usaba `dedupeClubs` y la tarjeta fija vivía fuera de la
+ * lista dedupada, así que "Club Demo CómplicesConecta" salía dos veces
+ * (tarjeta fija + tarjeta del catálogo en la lista).
+ */
+function isSameClubName(a: string, b: string): boolean {
+  const x = a.trim().toLowerCase();
+  const y = b.trim().toLowerCase();
+  return x === y || x.startsWith(y) || y.startsWith(x);
+}
+
 function dedupeClubs(list: Club[]): Club[] {
   const seen: string[] = [];
   return list.filter((club) => {
     const key = club.name.trim().toLowerCase();
-    if (
-      seen.some(
-        (prev) => prev === key || prev.startsWith(key) || key.startsWith(prev),
-      )
-    )
-      return false;
+    if (seen.some((prev) => isSameClubName(prev, key))) return false;
     seen.push(key);
     return true;
   });
@@ -1385,7 +1394,16 @@ export const Clubs = () => {
                   el mismo predicado de búsqueda/ciudad que la lista:
                   antes era incondicional (`{!slug && ...}`) y buscar
                   "Eden" la dejaba visible junto a Eden Noir. */}
+                  {/* Ronda 21 (stream C): la tarjeta fija NO se renderiza
+                  cuando la lista dedupada ya trae ese club (el catálogo
+                  trae "Club Demo CómplicesConecta" y la BD puede traer
+                  "Club Demo": `dedupeClubs` los une en la lista, pero la
+                  tarjeta fija vivía fuera de ella y el club salía dos
+                  veces). Misma regla de prefijo que `dedupeClubs`. */}
                   {!slug &&
+                    !filteredClubs.some((club) =>
+                      isSameClubName(club.name, DEMO_CLUB.name),
+                    ) &&
                     clubMatchesSearch(
                       DEMO_CLUB.name,
                       DEMO_CLUB.city,

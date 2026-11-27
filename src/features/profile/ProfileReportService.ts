@@ -128,10 +128,10 @@ export class ProfileReportService {
           });
 
         if (warningError) {
-          logger.warn(
-            "No se pudo enviar advertencia al usuario reportado",
-            { error: warningError.message, details: warningError.details },
-          );
+          logger.warn("No se pudo enviar advertencia al usuario reportado", {
+            error: warningError.message,
+            details: warningError.details,
+          });
         }
       }
 
@@ -301,7 +301,10 @@ export class ProfileReportService {
         .eq("report_type", "profile");
 
       if (error) {
-        logger.error("Error getting profile score count", { error: error.message, details: error.details });
+        logger.error("Error getting profile score count", {
+          error: error.message,
+          details: error.details,
+        });
         return 100;
       }
 

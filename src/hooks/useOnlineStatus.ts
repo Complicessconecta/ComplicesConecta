@@ -24,21 +24,24 @@ interface UseOnlineStatusOptions {
 export const useOnlineStatus = (
   roomId: string,
   userId: string,
-  options: UseOnlineStatusOptions = {}
+  options: UseOnlineStatusOptions = {},
 ) => {
   const { enabled = true, interval = 30000 } = options;
   const [members, setMembers] = useState<ChatMember[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Actualizar estado online del usuario actual
-  const updateOnlineStatus = useCallback(async (isOnline: boolean) => {
-    try {
-      await ChatRoomService.updateOnlineStatus(roomId, userId, isOnline);
-      logger.info("Estado online actualizado", { roomId, userId, isOnline });
-    } catch (error) {
-      logger.error("Error actualizando estado online:", { error });
-    }
-  }, [roomId, userId]);
+  const updateOnlineStatus = useCallback(
+    async (isOnline: boolean) => {
+      try {
+        await ChatRoomService.updateOnlineStatus(roomId, userId, isOnline);
+        logger.info("Estado online actualizado", { roomId, userId, isOnline });
+      } catch (error) {
+        logger.error("Error actualizando estado online:", { error });
+      }
+    },
+    [roomId, userId],
+  );
 
   // Cargar miembros de la sala
   const loadMembers = useCallback(async () => {
@@ -92,7 +95,7 @@ export const useOnlineStatus = (
         (payload) => {
           logger.info("Cambio en miembros detectado", { payload });
           loadMembers();
-        }
+        },
       )
       .subscribe();
 
@@ -124,7 +127,7 @@ export const useOnlineStatus = (
         lastSeen: member?.last_seen,
       };
     },
-    [members]
+    [members],
   );
 
   // Obtener lista de usuarios online

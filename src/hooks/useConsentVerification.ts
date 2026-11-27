@@ -8,7 +8,10 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { consentVerificationService, type ConsentVerification } from "@/services/ai/ConsentVerificationService";
+import {
+  consentVerificationService,
+  type ConsentVerification,
+} from "@/services/ai/ConsentVerificationService";
 import { logger } from "@/lib/logger";
 
 export interface UseConsentVerificationReturn {

@@ -65,7 +65,8 @@ export function usePersistedState<T>(
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
       setState((currentState) => {
-        const valueToStore = value instanceof Function ? value(currentState) : value;
+        const valueToStore =
+          value instanceof Function ? value(currentState) : value;
 
         // Solo actualizar localStorage en el cliente
         if (typeof window !== "undefined") {

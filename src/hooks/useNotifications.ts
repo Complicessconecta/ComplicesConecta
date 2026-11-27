@@ -10,7 +10,11 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { notificationService, type Notification, type NotificationType } from "@/services";
+import {
+  notificationService,
+  type Notification,
+  type NotificationType,
+} from "@/services";
 import { logger } from "@/lib/logger";
 
 interface UseNotificationsOptions {
@@ -184,7 +188,10 @@ export function useNotifications(
  * Hook simplificado solo para el contador
  */
 export function useUnreadCount(userId?: string): number {
-  const { unreadCount } = useNotifications({ ...(userId ? { userId } : {}), autoLoad: true });
+  const { unreadCount } = useNotifications({
+    ...(userId ? { userId } : {}),
+    autoLoad: true,
+  });
   return unreadCount;
 }
 
@@ -201,4 +208,3 @@ export function useNotificationsByType(
     ...(type ? { filter: { type } } : {}),
   });
 }
-

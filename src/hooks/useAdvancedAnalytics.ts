@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { AdvancedAnalyticsService, type AdvancedAnalyticsConfig, type AnalyticsDashboard, type PredictiveInsights, type AnalyticsAlert } from "@/services/analytics";
+import {
+  AdvancedAnalyticsService,
+  type AdvancedAnalyticsConfig,
+  type AnalyticsDashboard,
+  type PredictiveInsights,
+  type AnalyticsAlert,
+} from "@/services/analytics";
 import { logger } from "@/lib/logger";
 
 // Instance
@@ -219,7 +225,8 @@ export function useAnalyticsMetrics() {
 
   const realTimeMetrics = dashboard?.realTimeMetrics || null;
   const userBehaviorMetrics = dashboard?.userBehaviorMetrics || [];
-  const predictiveInsights: PredictiveInsights[] = dashboard?.predictiveInsights ?? [];
+  const predictiveInsights: PredictiveInsights[] =
+    dashboard?.predictiveInsights ?? [];
   const performanceMetrics = dashboard?.performanceMetrics || null;
   const alerts: AnalyticsAlert[] = dashboard?.alerts ?? [];
   const trends = dashboard?.trends || null;
@@ -241,7 +248,8 @@ export function usePredictiveInsights() {
   const { predictiveInsights, isLoading, error } = useAnalyticsMetrics();
 
   const retentionInsights = predictiveInsights.filter(
-    (insight: PredictiveInsights) => insight.predictionType === "user_retention",
+    (insight: PredictiveInsights) =>
+      insight.predictionType === "user_retention",
   );
 
   const conversionInsights = predictiveInsights.filter(
@@ -274,12 +282,22 @@ export function useAnalyticsAlerts() {
   const criticalAlerts = alerts.filter(
     (alert: AnalyticsAlert) => alert.severity === "critical",
   );
-  const highAlerts = alerts.filter((alert: AnalyticsAlert) => alert.severity === "high");
-  const mediumAlerts = alerts.filter((alert: AnalyticsAlert) => alert.severity === "medium");
-  const lowAlerts = alerts.filter((alert: AnalyticsAlert) => alert.severity === "low");
+  const highAlerts = alerts.filter(
+    (alert: AnalyticsAlert) => alert.severity === "high",
+  );
+  const mediumAlerts = alerts.filter(
+    (alert: AnalyticsAlert) => alert.severity === "medium",
+  );
+  const lowAlerts = alerts.filter(
+    (alert: AnalyticsAlert) => alert.severity === "low",
+  );
 
-  const unresolvedAlerts = alerts.filter((alert: AnalyticsAlert) => !alert.resolved);
-  const resolvedAlerts = alerts.filter((alert: AnalyticsAlert) => alert.resolved);
+  const unresolvedAlerts = alerts.filter(
+    (alert: AnalyticsAlert) => !alert.resolved,
+  );
+  const resolvedAlerts = alerts.filter(
+    (alert: AnalyticsAlert) => alert.resolved,
+  );
 
   return {
     allAlerts: alerts,

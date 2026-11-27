@@ -376,4 +376,3 @@ export const uploadProcessedImage = async (
     throw error;
   }
 };
-

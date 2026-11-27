@@ -39,7 +39,10 @@ export const useProfile = (userId: string | null) => {
         .single();
 
       if (error) {
-        logger.error("❌ Error cargando perfil:", { error: error.message, details: error.details });
+        logger.error("❌ Error cargando perfil:", {
+          error: error.message,
+          details: error.details,
+        });
         throw error;
       }
 
@@ -98,7 +101,10 @@ export const useProfiles = (filters?: {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("❌ Error cargando perfiles:", { error: error.message, details: error.details });
+        logger.error("❌ Error cargando perfiles:", {
+          error: error.message,
+          details: error.details,
+        });
         throw error;
       }
 
@@ -141,7 +147,10 @@ export const useUpdateProfile = () => {
         .single();
 
       if (error) {
-        logger.error("❌ Error actualizando perfil:", { error: error.message, details: error.details });
+        logger.error("❌ Error actualizando perfil:", {
+          error: error.message,
+          details: error.details,
+        });
         throw error;
       }
 
@@ -183,7 +192,10 @@ export const useCreateProfile = () => {
         .single();
 
       if (error) {
-        logger.error("❌ Error creando perfil:", { error: error.message, details: error.details });
+        logger.error("❌ Error creando perfil:", {
+          error: error.message,
+          details: error.details,
+        });
         throw error;
       }
 

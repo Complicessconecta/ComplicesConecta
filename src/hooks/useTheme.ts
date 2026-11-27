@@ -118,17 +118,19 @@ export const useTheme = () => {
             filter: `user_id=eq.${user.id}`,
           },
           (payload: unknown) => {
-            const theme = (payload as {
-              new: {
-                bg_url?: string;
-                particles_intensity?: number;
-                glow_level?: "low" | "medium" | "high";
-                enable_particles?: boolean;
-                enable_background_animations?: boolean;
-                animation_speed?: "slow" | "normal" | "fast";
-                enable_glass_ui?: boolean;
-              };
-            }).new;
+            const theme = (
+              payload as {
+                new: {
+                  bg_url?: string;
+                  particles_intensity?: number;
+                  glow_level?: "low" | "medium" | "high";
+                  enable_particles?: boolean;
+                  enable_background_animations?: boolean;
+                  animation_speed?: "slow" | "normal" | "fast";
+                  enable_glass_ui?: boolean;
+                };
+              }
+            ).new;
 
             const themeSafe = theme as {
               bg_url?: string;
@@ -142,7 +144,8 @@ export const useTheme = () => {
             setPrefs({
               background: themeSafe.bg_url || defaultPrefs.background,
               particlesIntensity:
-                themeSafe.particles_intensity ?? defaultPrefs.particlesIntensity,
+                themeSafe.particles_intensity ??
+                defaultPrefs.particlesIntensity,
               glowLevel: themeSafe.glow_level || defaultPrefs.glowLevel,
               isCustom: true,
               enableParticles:

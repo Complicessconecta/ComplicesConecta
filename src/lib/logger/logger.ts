@@ -65,10 +65,17 @@ export const logError = (error: Error, context?: LogContext) => {
   logger.error(error.message, { ...context, stack: error.stack });
 };
 
-export const logApiCall = (endpoint: string, method: string, metadata?: LogContext) => {
+export const logApiCall = (
+  endpoint: string,
+  method: string,
+  metadata?: LogContext,
+) => {
   logger.info(`API ${method} ${endpoint}`, metadata);
 };
 
-export const logDatabaseOperation = (operation: string, metadata?: LogContext) => {
+export const logDatabaseOperation = (
+  operation: string,
+  metadata?: LogContext,
+) => {
   logger.debug(`DB ${operation}`, metadata);
 };

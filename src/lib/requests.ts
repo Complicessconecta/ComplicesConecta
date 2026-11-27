@@ -457,4 +457,3 @@ export const RequestsService = {
  * - Tipos de estado correctos (InvitationStatus)
  * - Manejo de errores mejorado con tipos estrictos
  */
-

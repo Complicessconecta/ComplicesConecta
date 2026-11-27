@@ -28,7 +28,7 @@ export interface EncryptionKey {
 
 /**
  * Verifica soporte de Web Crypto API
- * 
+ *
  * @returns true si Web Crypto API está disponible
  */
 export function checkCryptoSupport(): boolean {
@@ -41,12 +41,12 @@ export function checkCryptoSupport(): boolean {
 
 /**
  * Genera una clave de encriptación derivada de contraseña usando PBKDF2
- * 
+ *
  * Mejoras de seguridad:
  * - Iteraciones aumentadas a 600000 (recomendado NIST 2025+)
  * - SHA-256 para hash
  * - AES-GCM 256-bit para clave final
- * 
+ *
  * @param password - Contraseña base para derivación
  * @param salt - Salt único para derivación
  * @returns CryptoKey derivada
@@ -95,7 +95,9 @@ export async function deriveKey(
  * que cualquiera con el repo derivaba la clave. Ahora no existe ninguna
  * función que genere una clave sin passphrase explícita del usuario.
  */
-export function requirePassphrase(passphrase: string | undefined | null): string {
+export function requirePassphrase(
+  passphrase: string | undefined | null,
+): string {
   if (!passphrase) {
     throw new Error(
       "Cifrado de cliente requiere una passphrase explícita del usuario; sin ella no se deriva ninguna clave (C4 fail-closed)",
@@ -137,7 +139,9 @@ export async function getEncryptionKey(
   const encryptionKey = { key, salt };
   keyCache.set(validPassphrase, encryptionKey);
 
-  logger.info("🔑 Clave de encriptación generada a partir de passphrase de usuario");
+  logger.info(
+    "🔑 Clave de encriptación generada a partir de passphrase de usuario",
+  );
 
   return encryptionKey;
 }
@@ -178,4 +182,3 @@ export async function reconstructEncryptionKey(
 export function validateEncryptionVersion(version: string): boolean {
   return version === "1.0";
 }
-

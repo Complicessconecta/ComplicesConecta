@@ -105,7 +105,7 @@ export const HARASSMENT_PATTERNS = [
   /nadies+tes+deseas+pors+ti/i,
   /nadies+tes+anhelas+pors+ti/i,
   /nadies+tes+anhelas+pors+ti/i,
-  
+
   // Patrones de amenazas
   /tes+voys+as+(matar|dañar|lastimar|destruir|acabar)/i,
   /sis+nos+(aceptas|respondes|mes+días|mes+quieres)/i,
@@ -194,7 +194,7 @@ export const HARASSMENT_PATTERNS = [
   /sés+quiéns+tes+desea/i,
   /sés+quiéns+tes+anhela/i,
   /sés+quiéns+tes+anhela/i,
-  
+
   // Patrones de manipulación emocional
   /sis+mes+quisierass+des+verdad/i,
   /sis+realmentes+mes+amas/i,
@@ -296,7 +296,7 @@ export const HARASSMENT_PATTERNS = [
   /nadietevaadesear/i,
   /nadietevaaanhelar/i,
   /nadietevaaanhelar/i,
-  
+
   // Patrones de acoso sexual
   /quieros+vertes+desnuda/i,
   /quieros+vertes+desnudo/i,
@@ -357,7 +357,7 @@ export const HARASSMENT_PATTERNS = [
   /quieros+morders+tus+culo/i,
   /quieros+morders+tuvagina/i,
   /quieros+morders+tu+pene/i,
-  
+
   // Patrones de stalking
   /tes+estoys+siguiendo/i,
   /tes+estoys+rastreando/i,
@@ -426,7 +426,7 @@ export const HARASSMENT_PATTERNS = [
   /dimeloqueyoquierohacertever/i,
   /dimeloqueyoquierohacertesentir/i,
   /dimeloqueyoquierohacertepensar/i,
-  
+
   // Patrones de gaslighting
   /estáss+loca/i,
   /estáss+loco/i,
@@ -506,7 +506,7 @@ export const HARASSMENT_PATTERNS = [
   /nadietevaacreerloquetehacesconmigo/i,
   /nadietevaacreerloquetehacesparamí/i,
   /nadietevaacreerloquetehacespormí/i,
-  
+
   // Patrones de control
   /nopuedessalirs+sins+mís+permiso/i,
   /nopuedessalirs+sins+mís+autorización/i,
@@ -635,5 +635,3 @@ export const HARASSMENT_PATTERNS = [
   /nopuedesusars+ningúns+programas+sins+mís+autorización/i,
   /nopuedesusars+ningúns+programas+sins+mís+aprobación/i,
 ];
-
-

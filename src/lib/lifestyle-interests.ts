@@ -98,6 +98,25 @@ export const EXPLICIT_INTERESTS = [
 // Lista completa (para referencia y búsqueda)
 export const ALL_INTERESTS = [...SAFE_INTERESTS, ...EXPLICIT_INTERESTS];
 
+// Títulos demo pre-cargados del perfil single y de pareja (ronda 17,
+// stream C): NO están en SAFE_INTERESTS ni en EXPLICIT_INTERESTS, pero
+// son selección válida — el perfil los muestra como fallback cuando no
+// hay nada guardado (ProfileSingle, EditProfileCouple) y el editor los
+// ofrece vía `visibleInterestOptions`. UNA sola fuente de verdad: antes
+// vivían duplicados en ProfileSingle.tsx y EditProfileCouple.tsx, y el
+// sanitizador de `profile-interests.ts` depende de esta lista para
+// decidir qué títulos pueden persistir en `profile_interests:<id>`;
+// si un título cambia aquí y no allí (o al revés), la selección se
+// perdería silenciosamente al guardar.
+export const DEMO_INTEREST_TITLES = [
+  "Lifestyle Exclusivo",
+  "Eventos VIP",
+  "Privacidad Total",
+  "Verificación Real",
+  "Chat Encriptado",
+  "Match Inteligente",
+] as const;
+
 // Mantener compatibilidad con código existente
 export const lifestyleInterests = ALL_INTERESTS;
 
@@ -149,7 +168,7 @@ export function getAutoInterests(
     interestCategories.intermedio;
 
   // Agregar intereses seguros según el tipo de usuario y género
-  let additionalInterests: string[] = [];
+  let additionalInterests: string[];
 
   if (userType === "couple") {
     // Intereses para parejas (ambos géneros)
@@ -188,4 +207,3 @@ export function getAutoInterests(
   const combined = [...new Set([...baseInterests, ...additionalInterests])];
   return combined.slice(0, 8);
 }
-

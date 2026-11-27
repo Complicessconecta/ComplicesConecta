@@ -89,4 +89,3 @@ export function suppressWalletErrors() {
   window.addEventListener("error", handleErrorEvent, true);
   window.addEventListener("unhandledrejection", handleRejectionEvent, true);
 }
-

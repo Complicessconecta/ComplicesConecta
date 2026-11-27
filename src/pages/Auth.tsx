@@ -4,7 +4,13 @@ import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Users, ArrowLeft, Sparkles, Building } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -56,10 +62,7 @@ interface FormData {
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const {
-    getCurrentLocation,
-    location,
-  } = useGeolocation();
+  const { getCurrentLocation, location } = useGeolocation();
   const { signIn, signOut, isDemoMode, isAdmin, user: authUser } = useAuth();
 
   const [showResetPassword, setShowResetPassword] = useState(false);
@@ -121,7 +124,6 @@ const Auth = () => {
     }
     // Solo al entrar con el parámetro; el cambio manual de pestaña no
     // debe re-ejecutarse por el search.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routerLocation.search]);
 
   // C4/C5 (2026-11-19): eliminado el autofill de TestSprite
@@ -177,13 +179,15 @@ const Auth = () => {
     try {
       // Determinar si el input es un ID de administrador o un correo
       const input = formData.email.trim();
-      const isAdminId = input.startsWith('admin_') && input.includes('_');
+      const isAdminId = input.startsWith("admin_") && input.includes("_");
 
       const loginEmail = formData.email;
 
       // Si es un ID de administrador, buscar el correo correspondiente
       if (isAdminId) {
-        throw new Error("Login por ID de administrador no está disponible en cliente");
+        throw new Error(
+          "Login por ID de administrador no está disponible en cliente",
+        );
       }
 
       // Usar el método signIn del hook useAuth que maneja correctamente demo y producción
@@ -238,11 +242,14 @@ const Auth = () => {
             : undefined;
 
         const accountType =
-          accountTypeFromMeta || accountTypeFromUser || formData.accountType || "single";
+          accountTypeFromMeta ||
+          accountTypeFromUser ||
+          formData.accountType ||
+          "single";
 
         // Verificar si es admin y redirigir al panel correspondiente
         const isAdminUser = isAdmin();
-        
+
         // Personalizar mensaje de bienvenida según rol
         const nickname =
           meta &&
@@ -263,7 +270,7 @@ const Auth = () => {
         const welcomeMessage = isAdminUser
           ? "Bienvenido Administrador"
           : `Bienvenido de vuelta ${nickname || firstName}`;
-        
+
         toast({
           title: "Inicio de sesión exitoso",
           description: welcomeMessage,
@@ -271,13 +278,16 @@ const Auth = () => {
 
         setAuthFeedback({
           type: "success",
-          message: isAdminUser ? "Acceso administrador verificado" : "Inicio de sesión exitoso",
+          message: isAdminUser
+            ? "Acceso administrador verificado"
+            : "Inicio de sesión exitoso",
         });
-        
+
         // Redirección inmediata para admin, sin timeout
         if (isAdminLoginMode || isAdminUser) {
           try {
-            const { data: isAdminRpc, error: rpcError } = await supabase.rpc("is_admin");
+            const { data: isAdminRpc, error: rpcError } =
+              await supabase.rpc("is_admin");
             if (rpcError) {
               logger.error("❌ Admin verification failed", {
                 error: rpcError.message,
@@ -306,7 +316,8 @@ const Auth = () => {
           // NO hacer signOut() si es admin por email de env
           // Permitir acceso basado en email de env
           const userEmail = authUser?.email?.toLowerCase();
-          const isProductionAdminCheck = userEmail && isProductionAdmin(userEmail);
+          const isProductionAdminCheck =
+            userEmail && isProductionAdmin(userEmail);
 
           // C3: el fallback demo (isDemoAdminCheck = sessionFlags.demo_authenticated)
           // fue eliminado. Una sesión demo nunca concede acceso de admin.
@@ -328,7 +339,7 @@ const Auth = () => {
           navigate("/auth");
           return;
         }
-        
+
         // Determinar navegación basada en DB, no metadata
         // RONDA 7 (punto 1): sin Supabase la RPC de arriba falla
         // contra el stub y el fallback era siempre /profile-single:
@@ -350,25 +361,32 @@ const Auth = () => {
         setTimeout(async () => {
           try {
             // Consultar account_type real desde DB usando vista unificada
-            const { data: profileData, error } = await (supabase.rpc as any)('get_profile_by_user_id', {
-              p_user_id: result.user.id
-            });
+            const { data: profileData, error } = await (supabase.rpc as any)(
+              "get_profile_by_user_id",
+              {
+                p_user_id: result.user.id,
+              },
+            );
 
             if (error) {
-              logger.error("Error obteniendo account_type de DB:", { error: error.message });
+              logger.error("Error obteniendo account_type de DB:", {
+                error: error.message,
+              });
               // Fallback a navegación por defecto
               navigateToOwnProfile();
               return;
             }
 
             // Navegar según account_type real de DB
-            if (profileData && profileData.account_type === 'couple') {
+            if (profileData && profileData.account_type === "couple") {
               navigate("/profile-couple");
             } else {
               navigate("/profile-single");
             }
           } catch (navError) {
-            logger.error("Error en navegación post-login:", { error: String(navError) });
+            logger.error("Error en navegación post-login:", {
+              error: String(navError),
+            });
             // Fallback seguro
             navigateToOwnProfile();
           }
@@ -392,12 +410,14 @@ const Auth = () => {
           errorText.includes("Invalid password") ||
           errorText.includes("Authentication failed")
         ) {
-          errorMessage = "Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e intenta nuevamente.";
+          errorMessage =
+            "Correo electrónico o contraseña incorrectos. Por favor, verifica tus datos e intenta nuevamente.";
         } else if (errorText.includes("Email not confirmed")) {
           errorMessage =
             "Por favor, confirma tu correo electrnico antes de iniciar sesión";
         } else if (errorText.includes("User not found")) {
-          errorMessage = "Usuario no encontrado. Verifica tu correo electronico";
+          errorMessage =
+            "Usuario no encontrado. Verifica tu correo electronico";
         } else {
           errorMessage = errorText;
         }
@@ -628,22 +648,30 @@ const Auth = () => {
             <div className="flex justify-center space-x-8 mt-6 mb-4">
               <div className="text-center">
                 <Shield className="h-6 w-6 text-green-400 mx-auto mb-1" />
-                <p className="text-xs text-slate-700 dark:text-white font-medium">Seguro</p>
+                <p className="text-xs text-slate-700 dark:text-white font-medium">
+                  Seguro
+                </p>
               </div>
               <div className="text-center">
                 <Users className="h-6 w-6 text-blue-400 mx-auto mb-1" />
-                <p className="text-xs text-slate-700 dark:text-white font-medium">Comunidad</p>
+                <p className="text-xs text-slate-700 dark:text-white font-medium">
+                  Comunidad
+                </p>
               </div>
               <div className="text-center">
                 <Sparkles className="h-6 w-6 text-purple-400 mx-auto mb-1" />
-                <p className="text-xs text-slate-700 dark:text-white font-medium">IA Match</p>
+                <p className="text-xs text-slate-700 dark:text-white font-medium">
+                  IA Match
+                </p>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <Tabs
               value={activeTab}
-              onValueChange={(value) => setActiveTab(value as "signin" | "signup")}
+              onValueChange={(value) =>
+                setActiveTab(value as "signin" | "signup")
+              }
               className="w-full"
             >
               <TabsList
@@ -679,23 +707,43 @@ const Auth = () => {
                   data-testid="login-form"
                 >
                   <div>
-                    <Label htmlFor="email" className="text-slate-700 dark:text-white">Correo electrónico</Label>
+                    <Label
+                      htmlFor="email"
+                      className="text-slate-700 dark:text-white"
+                    >
+                      Correo electrónico
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
                       placeholder="tu@email.com"
                       className="bg-slate-900/5 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/70"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="password" className="text-slate-700 dark:text-white">Contraseña</Label>
+                    <Label
+                      htmlFor="password"
+                      className="text-slate-700 dark:text-white"
+                    >
+                      Contraseña
+                    </Label>
                     <Input
                       id="password"
                       type="password"
                       value={formData.password}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          password: e.target.value,
+                        }))
+                      }
                       placeholder="********"
                       className="bg-slate-900/5 dark:bg-white/10 border-slate-300 dark:border-white/20 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/70"
                     />
@@ -727,14 +775,18 @@ const Auth = () => {
                     <div className="flex gap-4 justify-center mb-4">
                       <Button
                         type="button"
-                        onClick={() => handleInputChange("accountType", "single")}
+                        onClick={() =>
+                          handleInputChange("accountType", "single")
+                        }
                         className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 text-white"
                       >
                         Soltero/a
                       </Button>
                       <Button
                         type="button"
-                        onClick={() => handleInputChange("accountType", "couple")}
+                        onClick={() =>
+                          handleInputChange("accountType", "couple")
+                        }
                         className="flex-1 bg-linear-to-r from-pink-600 to-purple-600 text-white"
                       >
                         Pareja
@@ -771,10 +823,14 @@ const Auth = () => {
       {showResetPassword && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-2xl shadow-2xl border border-purple-500/40 max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-white mb-4">Recuperar Contraseña</h3>
+            <h3 className="text-xl font-bold text-white mb-4">
+              Recuperar Contraseña
+            </h3>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="reset-email" className="text-white">Correo electrónico</Label>
+                <Label htmlFor="reset-email" className="text-white">
+                  Correo electrónico
+                </Label>
                 <Input
                   id="reset-email"
                   type="email"
@@ -848,7 +904,12 @@ const Auth = () => {
         isOpen={showTermsModal}
         onClose={() => setShowTermsModal(false)}
         onAccept={(termsAccepted, privacyAccepted) => {
-          console.log("Términos aceptados:", termsAccepted, "Privacidad aceptada:", privacyAccepted);
+          console.log(
+            "Términos aceptados:",
+            termsAccepted,
+            "Privacidad aceptada:",
+            privacyAccepted,
+          );
         }}
       />
     </ResponsiveContainer>
@@ -856,4 +917,3 @@ const Auth = () => {
 };
 
 export default Auth;
-

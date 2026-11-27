@@ -1,4 +1,16 @@
-import { Heart, Users, Shield, Calendar, MessageCircle, Search, UserPlus, Crown, BarChart3, Settings, Bell } from "lucide-react";
+import {
+  Heart,
+  Users,
+  Shield,
+  Calendar,
+  MessageCircle,
+  Search,
+  UserPlus,
+  Crown,
+  BarChart3,
+  Settings,
+  Bell,
+} from "lucide-react";
 
 export const mainNavItems = [
   { title: "Descubrir", url: "/discover", icon: Search, badge: "Nuevo" },
@@ -37,7 +49,11 @@ export function getRandomCoupleProfile() {
   return generateMockCouple();
 }
 
-import { getRandomProfileImage, getRandomMexicanCoordinates, getRandomProfileImages } from "@/lib/imageService";
+import {
+  getRandomProfileImage,
+  getRandomMexicanCoordinates,
+  getRandomProfileImages,
+} from "@/lib/imageService";
 
 // Generador de perfiles mock aleatorios
 export const generateMockSingle = (includeOnlineStatus = true) => {
@@ -359,7 +375,9 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     partner1: {
       name: nombreF,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
-      profession: profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional",
+      profession:
+        profesiones[Math.floor(Math.random() * profesiones.length)] ||
+        "Profesional",
       bio: `Me encanta explorar nuevas experiencias junto a mi pareja. Soy ${(profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional").toLowerCase()} y disfruto de la vida al máximo.`,
       avatar: femaleImages[Math.floor(Math.random() * femaleImages.length)],
       interests: intereses.slice(0, 3 + Math.floor(Math.random() * 3)), // 3-5 intereses
@@ -367,7 +385,9 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     partner2: {
       name: nombreM,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
-      profession: profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional",
+      profession:
+        profesiones[Math.floor(Math.random() * profesiones.length)] ||
+        "Profesional",
       bio: `Aventurero y respetuoso, busco junto a mi pareja vivir experiencias únicas. Trabajo como ${(profesiones[Math.floor(Math.random() * profesiones.length)] || "Profesional").toLowerCase()}.`,
       avatar: maleImages[Math.floor(Math.random() * maleImages.length)],
       interests: intereses.slice(5, 8 + Math.floor(Math.random() * 3)), // 3-5 intereses diferentes
@@ -564,4 +584,3 @@ export const mockStories: Story[] = [
     isViewed: false,
   },
 ];
-

@@ -1,11 +1,27 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Building, CheckCircle, Share2, Star, ArrowLeft, Sparkles, TicketPercent, Eye } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  Building,
+  CheckCircle,
+  Share2,
+  Star,
+  ArrowLeft,
+  Sparkles,
+  TicketPercent,
+  Eye,
+  LogOut,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import { ClubProfileAdmin, ClubProfileEvents, ClubProfileGallery, ClubProfileHeader, ClubProfileReviews } from "@/components/clubs";
-import ClubAdminPanel from '@/components/admin/panels/ClubAdminPanel';
+import {
+  ClubProfileAdmin,
+  ClubProfileEvents,
+  ClubProfileGallery,
+  ClubProfileHeader,
+  ClubProfileReviews,
+} from "@/components/clubs";
+import ClubAdminPanel from "@/components/admin/panels/ClubAdminPanel";
 import type { Club as ClubEntity } from "@/entities/club";
 import {
   DEMO_CLUB_EVENTS,
@@ -14,19 +30,28 @@ import {
   type ClubDiscountItem,
   type ClubEventItem,
 } from "@/services/clubs/clubContentService";
+import {
+  clearClubDemoAdminSession,
+  closeClubDemoSession,
+  enterClubDemoAdminSession,
+  hasClubDemoAdminSession,
+} from "@/lib/clubDemoSession";
 
 const DEMO_CLUB: ClubEntity = {
   id: "demo",
   name: "Aura Club Privado",
   slug: "aura-club-privado",
-  description: "Un espacio exclusivo donde las conexiones fluyen naturalmente. Ambiente sofisticado, música cuidadosamente seleccionada y una comunidad que valora la discreción y el respeto mutuo.",
+  description:
+    "Un espacio exclusivo donde las conexiones fluyen naturalmente. Ambiente sofisticado, música cuidadosamente seleccionada y una comunidad que valora la discreción y el respeto mutuo.",
   address: "Av. Insurgentes Sur 123, Col. Condesa",
   city: "Ciudad de México",
   state: "CDMX",
   latitude: 19.4326,
   longitude: -99.1332,
-  logo_url: "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&h=400&fit=crop",
-  cover_image_url: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1920&q=80",
+  logo_url:
+    "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&h=400&fit=crop",
+  cover_image_url:
+    "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1920&q=80",
   is_featured: true,
   is_active: true,
   rating_average: 4.8,
@@ -100,14 +125,14 @@ const DEMO_GALLERY = [
 // Los eventos demo viven en clubContentService (DEMO_CLUB_EVENTS);
 // ClubsDemo los carga desde club_events con ese respaldo.
 
-
 const DEMO_REVIEWS = [
   {
     id: "rev-1",
     userId: "u1",
     userName: "Sofía & Diego",
     rating: 5,
-    comment: "Excelente ambiente y seguridad. El staff es muy atento y el lugar tiene una vibra única. Definitivamente volveremos.",
+    comment:
+      "Excelente ambiente y seguridad. El staff es muy atento y el lugar tiene una vibra única. Definitivamente volveremos.",
     checkInDate: new Date().toISOString(),
     helpfulCount: 12,
     isVerified: true,
@@ -118,7 +143,8 @@ const DEMO_REVIEWS = [
     userId: "u2",
     userName: "Luna & Max",
     rating: 4,
-    comment: "Gran vibra, el staff nos atendió perfecto. La zona VIP vale totalmente la pena.",
+    comment:
+      "Gran vibra, el staff nos atendió perfecto. La zona VIP vale totalmente la pena.",
     checkInDate: new Date(Date.now() - 86400000 * 2).toISOString(),
     helpfulCount: 8,
     isVerified: true,
@@ -129,7 +155,8 @@ const DEMO_REVIEWS = [
     userId: "u3",
     userName: "Neón Lovers",
     rating: 5,
-    comment: "Eventos top y música impecable. Cada noche es una experiencia diferente.",
+    comment:
+      "Eventos top y música impecable. Cada noche es una experiencia diferente.",
     checkInDate: new Date(Date.now() - 86400000 * 5).toISOString(),
     helpfulCount: 18,
     isVerified: true,
@@ -140,7 +167,8 @@ const DEMO_REVIEWS = [
     userId: "u4",
     userName: "Cómplices Nocturnos",
     rating: 5,
-    comment: "La discreción y el respeto que se respira aquí no lo hemos encontrado en otro lugar. Altamente recomendado.",
+    comment:
+      "La discreción y el respeto que se respira aquí no lo hemos encontrado en otro lugar. Altamente recomendado.",
     checkInDate: new Date(Date.now() - 86400000 * 8).toISOString(),
     helpfulCount: 24,
     isVerified: true,
@@ -151,7 +179,8 @@ const DEMO_REVIEWS = [
     userId: "u5",
     userName: "Aventura en Pareja",
     rating: 4,
-    comment: "Los cócteles son excelentes y la música siempre está en punto. Nos encantó la terraza.",
+    comment:
+      "Los cócteles son excelentes y la música siempre está en punto. Nos encantó la terraza.",
     checkInDate: new Date(Date.now() - 86400000 * 12).toISOString(),
     helpfulCount: 9,
     isVerified: true,
@@ -162,7 +191,8 @@ const DEMO_REVIEWS = [
     userId: "u6",
     userName: "Noche Estrellada",
     rating: 5,
-    comment: "Un oasis en la ciudad. Perfecto para conocer personas con mente abierta sin presiones.",
+    comment:
+      "Un oasis en la ciudad. Perfecto para conocer personas con mente abierta sin presiones.",
     checkInDate: new Date(Date.now() - 86400000 * 15).toISOString(),
     helpfulCount: 15,
     isVerified: true,
@@ -173,7 +203,8 @@ const DEMO_REVIEWS = [
     userId: "u7",
     userName: "Pasión CDMX",
     rating: 5,
-    comment: "Llevamos 3 años viniendo y nunca decepciona. La calidad de los eventos es constante.",
+    comment:
+      "Llevamos 3 años viniendo y nunca decepciona. La calidad de los eventos es constante.",
     checkInDate: new Date(Date.now() - 86400000 * 20).toISOString(),
     helpfulCount: 31,
     isVerified: true,
@@ -184,7 +215,8 @@ const DEMO_REVIEWS = [
     userId: "u8",
     userName: "Nuevos Exploradores",
     rating: 4,
-    comment: "Primera vez y nos sentimos muy cómodos. El personal explicó todo muy bien.",
+    comment:
+      "Primera vez y nos sentimos muy cómodos. El personal explicó todo muy bien.",
     checkInDate: new Date(Date.now() - 86400000 * 25).toISOString(),
     helpfulCount: 7,
     isVerified: true,
@@ -290,12 +322,66 @@ const ClubDiscountsCard = ({
 
 export const ClubsDemo = () => {
   const navigate = useNavigate();
-  // Demo en modo creador/administrador por defecto: entrar a un club en
-  // demo muestra la vista admin (Panel Admin, stats, eventos/descuentos/
-  // miembros) y la vista pública queda a un toque en "Ver perfil público".
-  const [showAdminPanel, setShowAdminPanel] = useState(true);
+  const location = useLocation();
+  // Ronda 14, stream E (revierte la decisión de la ronda 3): /clubs/demo
+  // abre en vista PÚBLICA por defecto — el visitante ve los demos del
+  // club y solo entra al admin si quiere publicar su club, por la acción
+  // explícita "Panel Admin". La vista admin exige la sesión demo del
+  // club (`demo_club_admin`): sin ella, una visita — también tras un
+  // logout — muestra la vista pública, no el admin.
+  // Ronda 15, stream B: la ronda 14 solo cerró la rama admin
+  // (`showAdminPanel`); la vista pública seguía renderizando
+  // <ClubProfileAdmin /> incondicional al final, así que el panel se
+  // veía al bajar sin sesión. Ya no: el panel solo vive en la rama
+  // admin de abajo.
+  const [showAdminPanel, setShowAdminPanel] = useState(() =>
+    hasClubDemoAdminSession(),
+  );
+  // "Volver" vuelve al paso anterior del flujo del que se vino: la
+  // entrada desde el directorio /clubs vuelve a /clubs; sin origen (o
+  // desde el listado público) vuelve a /clubs-public. Antes iba siempre
+  // a /clubs-public aunque se viniera de /clubs.
+  const backTarget =
+    (location.state as { from?: string } | null)?.from === "/clubs"
+      ? "/clubs"
+      : "/clubs-public";
+  // ¿Hay sesión de admin del club demo? Solo esa sesión muestra el
+  // botón "Cerrar sesión del club" en página. Ronda 15, stream B:
+  // antes se usaba `isClubDemoSessionActive()`, que también es true
+  // con la sesión demo de la app (`demo_authenticated`): cualquier
+  // usuaria demo (Sofía) veía "Cerrar sesión" en /clubs/demo y al
+  // pulsarlo `closeClubDemoSession` borraba su sesión entera.
+  const [clubAdminSessionActive, setClubAdminSessionActive] = useState(() =>
+    hasClubDemoAdminSession(),
+  );
+
+  // Entrar al admin por acción explícita: marca la sesión demo del club.
+  const enterAdmin = () => {
+    enterClubDemoAdminSession();
+    setClubAdminSessionActive(true);
+    setShowAdminPanel(true);
+  };
+  // Salir del admin a la vista pública del mismo club: cierra la sesión
+  // de admin (volver a entrar exige pasar otra vez por "Panel Admin").
+  const exitAdminToPublic = () => {
+    clearClubDemoAdminSession();
+    setClubAdminSessionActive(false);
+    setShowAdminPanel(false);
+  };
+  // Cerrar la sesión demo del club y volver al listado público. Solo
+  // cierra la sesión del club (`demo_club_admin`): la sesión demo de
+  // la app (Sofía) sobrevive — el logout de la app es el "Cerrar
+  // sesión" de la cabecera global (MainLayout, `signOut`).
+  const handleClubDemoLogout = () => {
+    closeClubDemoSession();
+    setClubAdminSessionActive(false);
+    setShowAdminPanel(false);
+    navigate("/clubs-public");
+  };
   const [isFollowing, setIsFollowing] = useState(false);
-  const [interestLevel, setInterestLevel] = useState<"neutral" | "tour" | "vip">("neutral");
+  const [interestLevel, setInterestLevel] = useState<
+    "neutral" | "tour" | "vip"
+  >("neutral");
   // Eventos y descuentos del club: se leen de club_events / club_discounts
   // (migración 20261124030000) con respaldo demo si la BD no responde o
   // la migración aún no está aplicada. Antes eran arrays en memoria.
@@ -328,9 +414,21 @@ export const ClubsDemo = () => {
                   grupo envuelve entero en vez de recortarse. */}
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <div className="flex min-w-0 flex-1 items-center gap-2">
+                  {/* Volver en admin: al paso anterior del flujo, la vista
+                      pública del mismo club. Antes no había Volver aquí:
+                      solo "Ver perfil público" (que hace lo mismo, sin
+                      ser un regreso). */}
                   <Button
                     variant="outline"
-                    onClick={() => setShowAdminPanel(false)}
+                    onClick={exitAdminToPublic}
+                    className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2 shrink-0" />
+                    Volver
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={exitAdminToPublic}
                     className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                   >
                     <Eye className="h-4 w-4 mr-2 shrink-0" />
@@ -355,17 +453,31 @@ export const ClubsDemo = () => {
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Verificado
                   </Badge>
+                  {clubAdminSessionActive && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleClubDemoLogout}
+                      className="shrink-0 whitespace-nowrap border-red-400/40 text-red-200 hover:bg-red-500/20"
+                      title="Cerrar solo la sesión demo del club y volver al listado público (tu sesión demo sigue abierta)"
+                    >
+                      <LogOut className="h-4 w-4 mr-2 shrink-0" />
+                      Cerrar sesión del club
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardContent>
           </Card>
           {/* Vista de creador: identidad del club, stats, descuentos y el
               Panel Admin (clubs registrados, eventos y miembros). La vista
-              pública completa sigue en "Ver perfil público". */}
-          <ClubProfileHeader club={club} />
+              pública completa sigue en "Ver perfil público". `isOwner`
+              marca la vista admin: sin él ClubProfileHeader no pinta la
+              insignia "Admin" (ronda 15, stream B). */}
+          <ClubProfileHeader club={club} isOwner />
           <ClubProfileAdmin analytics={DEMO_ANALYTICS} clubId={club.id} />
           <ClubDiscountsCard discounts={discounts} />
-            <ClubAdminPanel />
+          <ClubAdminPanel />
         </div>
       </div>
     );
@@ -374,12 +486,16 @@ export const ClubsDemo = () => {
   return (
     <div className="min-h-screen bg-transparent p-4 sm:p-6 relative overflow-hidden">
       {/* Fondo animado */}
-      <div className="absolute inset-0 bg-cover bg-center animate-pulse" style={{
-        backgroundImage: 'url(https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1920&q=80)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-      }} />
+      <div
+        className="absolute inset-0 bg-cover bg-center animate-pulse"
+        style={{
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1920&q=80)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+        }}
+      />
       <div className="absolute inset-0 bg-linear-to-b from-purple-900/80 to-blue-900/80" />
 
       <div className="relative z-10 max-w-7xl mx-auto space-y-6">
@@ -393,7 +509,7 @@ export const ClubsDemo = () => {
               <div className="flex min-w-0 flex-1 items-center gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/clubs-public")}
+                  onClick={() => navigate(backTarget)}
                   className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2 shrink-0" />
@@ -408,9 +524,6 @@ export const ClubsDemo = () => {
               </div>
 
               <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-                <Badge className="shrink-0 whitespace-nowrap bg-purple-500/90 text-white border border-purple-300/40">
-                  Admin
-                </Badge>
                 <Badge className="shrink-0 whitespace-nowrap bg-green-500/90 text-white">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   Verificado
@@ -418,12 +531,24 @@ export const ClubsDemo = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setShowAdminPanel(true)}
+                  onClick={enterAdmin}
                   className="shrink-0 whitespace-nowrap border-white/30 text-white hover:bg-white/10"
                   title="Panel de administración del club"
                 >
                   Panel Admin
                 </Button>
+                {clubAdminSessionActive && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClubDemoLogout}
+                    className="shrink-0 whitespace-nowrap border-red-400/40 text-red-200 hover:bg-red-500/20"
+                    title="Cerrar solo la sesión demo del club y volver al listado público (tu sesión demo sigue abierta)"
+                  >
+                    <LogOut className="h-4 w-4 mr-2 shrink-0" />
+                    Cerrar sesión del club
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -449,7 +574,8 @@ export const ClubsDemo = () => {
                   <div className="text-white font-semibold">Demo completo</div>
                 </div>
                 <div className="text-white/80 text-sm">
-                  Este demo muestra cómo se vería un Club real (galería, eventos, reseñas y panel admin de ejemplo).
+                  Este demo muestra cómo se vería un Club real (galería,
+                  eventos, reseñas y panel admin de ejemplo).
                 </div>
               </div>
 
@@ -529,7 +655,14 @@ export const ClubsDemo = () => {
           clubId={String(club.id)}
         />
 
-        <ClubProfileAdmin analytics={DEMO_ANALYTICS} clubId={club.id} />
+        {/* Ronda 15, stream B: aquí NO va <ClubProfileAdmin />. Hasta la
+            ronda 14 la vista pública lo renderizaba incondicional al
+            final, así que el "Panel de Administración" completo
+            (pestañas Editar Perfil, Imágenes, Eventos…, "Solo Dueño",
+            "Guardar Cambios") se veía al bajar en la vista pública,
+            sin sesión y sin pulsar nada — ese era el fallo del test
+            del PR #74. El panel admin solo vive en la rama admin
+            (`showAdminPanel`, arriba). */}
       </div>
     </div>
   );

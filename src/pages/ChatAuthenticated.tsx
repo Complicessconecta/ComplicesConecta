@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, Users, Lock, MessageCircle, Check, X, UserPlus } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+  Users,
+  Lock,
+  MessageCircle,
+  Check,
+  X,
+  UserPlus,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Card, CardContent } from "@/components/ui/cards/Card";

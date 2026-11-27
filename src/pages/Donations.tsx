@@ -1,8 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart, Star, Crown, Zap, Gift, Users, Shield } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  Star,
+  Crown,
+  Zap,
+  Gift,
+  Users,
+  Shield,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 const Donations = () => {
   const navigate = useNavigate();
@@ -239,7 +254,7 @@ const Donations = () => {
                 </div>
                 <span className="text-sm">OXXO Pay</span>
               </div>
-               <div className="text-center text-white">
+              <div className="text-center text-white">
                 <div className="w-12 h-8 bg-white/20 rounded mb-2 mx-auto flex items-center justify-center">
                   <span className="text-xs font-bold">Transfer</span>
                 </div>
@@ -333,4 +348,3 @@ const Donations = () => {
 };
 
 export default Donations;
-

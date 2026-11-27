@@ -1,8 +1,21 @@
 import React, { useEffect, useRef } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, Clock, Star, Crown, Shield } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Users,
+  Clock,
+  Star,
+  Crown,
+  Shield,
+} from "lucide-react";
 import "@/styles/EventsModal.css";
 
 interface EventsModalProps {
@@ -230,4 +243,3 @@ const EventsModal: React.FC<EventsModalProps> = ({
 };
 
 export default EventsModal;
-

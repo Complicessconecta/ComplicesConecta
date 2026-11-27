@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { CheckCircle, FileText, AlertTriangle, Eye } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect } from "react";
+import { CheckCircle, FileText, AlertTriangle, Eye } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 /** SHA-256 en hex. Fallback a un hash simple si crypto.subtle no está disponible. */
 async function sha256Hex(input: string): Promise<string> {
   try {
-    if (typeof crypto !== 'undefined' && crypto.subtle) {
+    if (typeof crypto !== "undefined" && crypto.subtle) {
       const data = new TextEncoder().encode(input);
-      const digest = await crypto.subtle.digest('SHA-256', data);
+      const digest = await crypto.subtle.digest("SHA-256", data);
       return Array.from(new Uint8Array(digest))
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('');
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
     }
   } catch {
     // Fallback abajo.
@@ -26,15 +32,19 @@ async function sha256Hex(input: string): Promise<string> {
     h1 = Math.imul(h1 ^ ch, 2654435761);
     h2 = Math.imul(h2 ^ ch, 1597334677);
   }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+    Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+    Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (h2 >>> 0).toString(16) + (h1 >>> 0).toString(16);
 }
 
 export interface ConsentDocument {
   id: string;
   title: string;
-  type: 'terms' | 'privacy' | 'disclaimer';
+  type: "terms" | "privacy" | "disclaimer";
   version: string;
   content: string;
   required: boolean;
@@ -86,9 +96,7 @@ export function readLocalConsents(
 ): UserConsent[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(
-      LOCAL_CONSENTS_KEY(userId, clubId),
-    );
+    const raw = window.localStorage.getItem(LOCAL_CONSENTS_KEY(userId, clubId));
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     return Array.isArray(parsed) ? (parsed as UserConsent[]) : [];
@@ -108,21 +116,24 @@ const ClubConsentManager: React.FC<ClubConsentManagerProps> = ({
   clubId,
   userId,
   onConsentComplete,
-  onConsentError
+  onConsentError,
 }) => {
   const [documents, setDocuments] = useState<ConsentDocument[]>([]);
-  const [acceptedConsents, setAcceptedConsents] = useState<Set<string>>(new Set());
+  const [acceptedConsents, setAcceptedConsents] = useState<Set<string>>(
+    new Set(),
+  );
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [currentDocument, setCurrentDocument] = useState<ConsentDocument | null>(null);
+  const [currentDocument, setCurrentDocument] =
+    useState<ConsentDocument | null>(null);
 
   // Documentos de consentimiento para clubs
   const getClubDocuments = (): ConsentDocument[] => [
     {
-      id: 'club-terms',
-      title: 'Términos y Condiciones del Club',
-      type: 'terms',
-      version: '1.0.0',
+      id: "club-terms",
+      title: "Términos y Condiciones del Club",
+      type: "terms",
+      version: "1.0.0",
       content: `
 TÉRMINOS Y CONDICIONES DEL CLUB
 
@@ -165,13 +176,13 @@ Al registrarte como administrador de un club en CómplicesConecta, aceptas estos
 
 Al aceptar estos términos, confirmas entender y cumplir con todas las obligaciones establecidas.
       `.trim(),
-      required: true
+      required: true,
     },
     {
-      id: 'club-privacy',
-      title: 'Política de Privacidad del Club',
-      type: 'privacy',
-      version: '1.0.0',
+      id: "club-privacy",
+      title: "Política de Privacidad del Club",
+      type: "privacy",
+      version: "1.0.0",
       content: `
 POLÍTICA DE PRIVACIDAD DEL CLUB
 
@@ -230,13 +241,13 @@ Recopilamos información necesaria para la administración del club:
 
 Para preguntas sobre privacidad, contacta a privacy@complicesconecta.com
       `.trim(),
-      required: true
+      required: true,
     },
     {
-      id: 'club-disclaimer',
-      title: 'Aviso Legal y Descargo de Responsabilidad',
-      type: 'disclaimer',
-      version: '1.0.0',
+      id: "club-disclaimer",
+      title: "Aviso Legal y Descargo de Responsabilidad",
+      type: "disclaimer",
+      version: "1.0.0",
       content: `
 AVISO LEGAL Y DESCARGO DE RESPONSABILIDAD
 
@@ -297,8 +308,8 @@ Domicilio: Ciudad de México, México
 
 AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
       `.trim(),
-      required: true
-    }
+      required: true,
+    },
   ];
 
   // Cargar documentos
@@ -310,7 +321,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
 
   // Manejar aceptación de documento
   const handleDocumentAccept = (documentId: string) => {
-    setAcceptedConsents(prev => {
+    setAcceptedConsents((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(documentId)) {
         newSet.delete(documentId);
@@ -323,15 +334,15 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
 
   // Ver si todos los documentos requeridos están aceptados
   const allRequiredAccepted = documents
-    .filter(doc => doc.required)
-    .every(doc => acceptedConsents.has(doc.id));
+    .filter((doc) => doc.required)
+    .every((doc) => acceptedConsents.has(doc.id));
 
   // Enviar consentimientos: guardado real en public.user_consents (con
   // club_id), no simulado. Antes solo llamaba onConsentComplete con objetos
   // locales y nunca persistía nada.
   const handleSubmitConsents = async () => {
     if (!allRequiredAccepted) {
-      onConsentError?.('Debes aceptar todos los documentos requeridos');
+      onConsentError?.("Debes aceptar todos los documentos requeridos");
       return;
     }
 
@@ -340,7 +351,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
       const consentedAt = new Date().toISOString();
       const rows = await Promise.all(
         Array.from(acceptedConsents).map(async (consentId) => {
-          const doc = documents.find(d => d.id === consentId);
+          const doc = documents.find((d) => d.id === consentId);
           if (!doc) return null;
           const consentHash = await sha256Hex(
             `${userId}|${clubId}|${doc.id}|${doc.version}|${consentedAt}`,
@@ -361,9 +372,11 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
           };
         }),
       );
-      const inserts = rows.filter((r): r is NonNullable<typeof r> => r !== null);
+      const inserts = rows.filter(
+        (r): r is NonNullable<typeof r> => r !== null,
+      );
       if (inserts.length === 0) {
-        onConsentError?.('No hay consentimientos para guardar');
+        onConsentError?.("No hay consentimientos para guardar");
         return;
       }
 
@@ -377,9 +390,9 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
       let consents: UserConsent[];
       try {
         const { data, error } = await supabase
-          .from('user_consents')
+          .from("user_consents")
           .insert(inserts)
-          .select('id, club_id, user_id, consent_type, version, consented_at');
+          .select("id, club_id, user_id, consent_type, version, consented_at");
 
         if (error) throw error;
 
@@ -390,12 +403,12 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
           consent_type: row.consent_type,
           consent_version: row.version,
           accepted_at: row.consented_at,
-          ip_address: '',
+          ip_address: "",
           user_agent: navigator.userAgent,
         }));
       } catch (dbError) {
         logger.warn(
-          'Consentimientos de club no se pudieron guardar en BD, se guardan local',
+          "Consentimientos de club no se pudieron guardar en BD, se guardan local",
           { error: String(dbError), clubId },
         );
         consents = inserts.map((row, i) => ({
@@ -405,17 +418,20 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
           consent_type: row.consent_type,
           consent_version: row.version,
           accepted_at: row.consented_at,
-          ip_address: '',
+          ip_address: "",
           user_agent: navigator.userAgent,
         }));
         saveLocalConsents(userId, clubId, consents);
       }
 
-      logger.info('Consentimientos de club guardados', { count: consents.length, clubId });
+      logger.info("Consentimientos de club guardados", {
+        count: consents.length,
+        clubId,
+      });
       onConsentComplete?.(consents);
     } catch (error) {
-      logger.error('Error submitting consents:', { error: String(error) });
-      onConsentError?.('Error al guardar consentimientos');
+      logger.error("Error submitting consents:", { error: String(error) });
+      onConsentError?.("Error al guardar consentimientos");
     } finally {
       setSubmitting(false);
     }
@@ -438,7 +454,8 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
             Consentimientos Legales del Club
           </CardTitle>
           <CardDescription>
-            Debes revisar y aceptar los siguientes documentos para continuar con la creación del club.
+            Debes revisar y aceptar los siguientes documentos para continuar con
+            la creación del club.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -456,17 +473,23 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
                 <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-3">
                   <div className="min-w-0 w-full sm:flex-1">
                     <div className="flex flex-wrap items-center gap-2 mb-2 min-w-0">
-                      <h3 className="font-semibold min-w-0 break-words">{document.title}</h3>
-                      <Badge variant={document.required ? "default" : "secondary"}>
+                      <h3 className="font-semibold min-w-0 break-words">
+                        {document.title}
+                      </h3>
+                      <Badge
+                        variant={document.required ? "default" : "secondary"}
+                      >
                         {document.required ? "Requerido" : "Opcional"}
                       </Badge>
-                      <Badge variant="outline">
-                        v{document.version}
-                      </Badge>
+                      <Badge variant="outline">v{document.version}</Badge>
                     </div>
                     <p className="text-sm text-gray-600 mb-3">
-                      Tipo: {document.type === 'terms' ? 'Términos' : 
-                            document.type === 'privacy' ? 'Privacidad' : 'Aviso Legal'}
+                      Tipo:{" "}
+                      {document.type === "terms"
+                        ? "Términos"
+                        : document.type === "privacy"
+                          ? "Privacidad"
+                          : "Aviso Legal"}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
@@ -547,9 +570,7 @@ AL USAR ESTA PLATAFORMA, ACEPTAS ESTOS TÉRMINOS EN SU TOTALIDAD.
                 </pre>
               </div>
               <div className="mt-4 flex justify-end">
-                <Button onClick={() => setCurrentDocument(null)}>
-                  Cerrar
-                </Button>
+                <Button onClick={() => setCurrentDocument(null)}>Cerrar</Button>
               </div>
             </CardContent>
           </Card>

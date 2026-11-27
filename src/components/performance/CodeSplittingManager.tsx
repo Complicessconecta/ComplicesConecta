@@ -4,7 +4,11 @@
  */
 
 import React, { ComponentType } from "react";
-import { createLazyComponent, LazyComponentLoader, PageLoader } from "@/components/performance/LazyComponentLoader";
+import {
+  createLazyComponent,
+  LazyComponentLoader,
+  PageLoader,
+} from "@/components/performance/LazyComponentLoader";
 import { logger } from "@/lib/logger";
 
 // Tipos para configuración de splitting
@@ -225,11 +229,11 @@ export class CodeSplittingManager {
 
     this.isProcessingQueue = true;
     const config = this.preloadQueue.shift();
-    
+
     if (config) {
       await this.preloadRoute(config);
     }
-    
+
     this.isProcessingQueue = false;
   }
 

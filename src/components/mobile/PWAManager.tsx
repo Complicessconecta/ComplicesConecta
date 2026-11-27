@@ -4,9 +4,22 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Download, Smartphone, Wifi, WifiOff, Bell, BellOff } from "lucide-react";
+import {
+  Download,
+  Smartphone,
+  Wifi,
+  WifiOff,
+  Bell,
+  BellOff,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
@@ -409,4 +422,3 @@ export const usePWAUpdates = () => {
 };
 
 export default PWAManager;
-

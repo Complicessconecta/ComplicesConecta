@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Heart, ThumbsDown } from "lucide-react";
 
@@ -28,7 +33,9 @@ export const CoupleLookingForSection: React.FC<
       </CardHeader>
       <CardContent className="space-y-5">
         <div>
-          <p className="text-xs text-slate-500 dark:text-white/50 mb-1.5">Buscamos</p>
+          <p className="text-xs text-slate-500 dark:text-white/50 mb-1.5">
+            Buscamos
+          </p>
           {lookingFor.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
               {lookingFor.map((tag) => (

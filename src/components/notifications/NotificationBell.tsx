@@ -3,7 +3,12 @@ import { Bell, X, Check, Mail, UserPlus, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,8 +39,21 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, profile, isDemo } = useAuth();
   const { toast } = useToast();
+
+  // Ronda 16 (stream C): la guarda demo leía `(user as any).is_demo`,
+  // pero `user` es el `User` de Supabase y el usuario mock demo de
+  // `useAuth` (sin `is_demo`) nunca la trae: solo `profile` lleva
+  // `is_demo: true`. La guarda era código muerto y la campana lanzaba
+  // la consulta real a Supabase con un UUID demo y sin sesión real;
+  // cualquier fallo (RLS, red móvil) pintaba el toast destructivo
+  // "No se pudieron cargar las notificaciones" en cada página que
+  // monta la campana (fila superior, sin dock). La señal demo real
+  // es `isDemo()` (flags de sesión demo) o `profile.is_demo`.
+  const isDemoUser =
+    (typeof isDemo === "function" && isDemo()) ||
+    (profile as { is_demo?: boolean } | null)?.is_demo === true;
 
   // Load demo notifications for demo users
   const loadDemoNotifications = () => {
@@ -69,13 +87,13 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
       return;
     }
 
-    if ((user as any).is_demo) {
+    if (isDemoUser) {
       loadDemoNotifications();
       return;
     }
 
     loadNotifications();
-    
+
     // Set up real-time subscription
     if (!supabase) {
       logger.error("Supabase no está disponible");
@@ -101,13 +119,13 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
     return () => {
       subscription.unsubscribe();
     };
-  }, [user]);
+  }, [user, isDemoUser]);
 
   const loadNotifications = async () => {
     if (!user) return;
 
     // Skip loading for demo users to prevent errors
-    if ((user as any)?.is_demo) {
+    if (isDemoUser) {
       setNotifications([]);
       setUnreadCount(0);
       return;
@@ -164,15 +182,15 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
       setNotifications(formattedNotifications);
       setUnreadCount(formattedNotifications.filter((n) => !n.read).length);
     } catch (error) {
+      // Ronda 16 (stream C): la carga inicial es en segundo plano
+      // (la campana se monta al entrar a cada página sin dock): un
+      // fallo transitorio (red móvil, RLS) no debe pintar un toast
+      // destructivo en cada página. Se registra y la campana queda en
+      // vacío ("No hay notificaciones"). Las acciones del usuario
+      // (marcar leídas, eliminar) sí avisan con toast, como antes.
       logger.error("Error loading notifications:", error as any);
-      // Only show toast for non-demo users
-      if (!(user as any)?.is_demo) {
-        toast({
-          title: "Error",
-          description: "No se pudieron cargar las notificaciones",
-          variant: "destructive",
-        });
-      }
+      setNotifications([]);
+      setUnreadCount(0);
     } finally {
       setLoading(false);
     }
@@ -537,4 +555,3 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 };
 
 export default NotificationBell;
-

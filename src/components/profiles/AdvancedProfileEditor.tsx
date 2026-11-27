@@ -10,13 +10,28 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Save, Eye, Lock, Globe, Users, X, Plus, Camera, Wand2 } from "lucide-react";
+import {
+  Save,
+  Eye,
+  Lock,
+  Globe,
+  Users,
+  X,
+  Plus,
+  Camera,
+  Wand2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 interface AdvancedProfileEditorProps {
   userId: string;
@@ -733,4 +748,3 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
 };
 
 export default AdvancedProfileEditor;
-

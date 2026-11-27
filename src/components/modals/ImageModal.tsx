@@ -1,6 +1,13 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Baby } from "lucide-react";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  MessageCircle,
+  Baby,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 
 interface ImageData {

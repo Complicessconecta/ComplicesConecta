@@ -2,7 +2,12 @@ import { Moon, Sun, Monitor, Check } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { useToast } from "@/hooks/useToast";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle({
   // "onDark": el botón vive sobre cromo oscuro de marca (dock y header

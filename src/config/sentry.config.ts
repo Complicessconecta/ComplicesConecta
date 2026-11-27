@@ -212,11 +212,14 @@ export function setUserContext(user: {
     sentryUser.username = user.username;
   }
   // NO incluir email por privacidad
-  Object.assign(sentryUser, Object.fromEntries(
-    Object.entries(user).filter(
-      ([key]) => !["email", "password", "username"].includes(key),
+  Object.assign(
+    sentryUser,
+    Object.fromEntries(
+      Object.entries(user).filter(
+        ([key]) => !["email", "password", "username"].includes(key),
+      ),
     ),
-  ));
+  );
   Sentry.setUser(sentryUser);
 }
 
@@ -254,4 +257,3 @@ export function startSpan(name: string, callback: () => void): void {
  */
 export { Sentry };
 export default Sentry;
-

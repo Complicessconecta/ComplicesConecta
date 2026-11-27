@@ -1,5 +1,17 @@
 import React from "react";
-import {Bell, Search, Sun, Moon, LayoutGrid, RefreshCw, Camera, PenTool, Film, Sparkles, ChevronDown } from "lucide-react";
+import {
+  Bell,
+  Search,
+  Sun,
+  Moon,
+  LayoutGrid,
+  RefreshCw,
+  Camera,
+  PenTool,
+  Film,
+  Sparkles,
+  ChevronDown,
+} from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 
 export type GlassHeaderLink = {
@@ -286,4 +298,3 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
     </div>
   );
 };
-

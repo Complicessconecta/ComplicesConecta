@@ -1,5 +1,7 @@
 import * as React from "react";
-import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
+import useEmblaCarousel, {
+  type UseEmblaCarouselType,
+} from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/components/ui/buttons/Button";
@@ -163,9 +165,7 @@ const CarouselContent = React.forwardRef<
       ref={carouselRef}
       className={cn(
         "overflow-hidden w-full",
-        orientation === "horizontal"
-          ? "touch-pan-y"
-          : "touch-pan-x",
+        orientation === "horizontal" ? "touch-pan-y" : "touch-pan-x",
       )}
     >
       <div

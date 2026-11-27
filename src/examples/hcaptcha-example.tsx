@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { XCircle, Shield } from "lucide-react";
 
@@ -14,11 +19,13 @@ export const HCaptchaExample: React.FC = () => {
 
   // Site key de hCaptcha (obtener de hcaptcha.com)
   const HCAPTCHA_SITE_KEY =
-    (import.meta.env as { VITE_HCAPTCHA_SITE_KEY?: string }).VITE_HCAPTCHA_SITE_KEY ||
-    "10000000-ffff-ffff-ffff-000000000001";
+    (import.meta.env as { VITE_HCAPTCHA_SITE_KEY?: string })
+      .VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001";
 
   const handleSubmit = async () => {
-    setError("El componente @hcaptcha/react-hcaptcha no está instalado. Por favor instale el paquete para usar este ejemplo.");
+    setError(
+      "El componente @hcaptcha/react-hcaptcha no está instalado. Por favor instale el paquete para usar este ejemplo.",
+    );
     setIsSubmitting(true);
     setTimeout(() => setIsSubmitting(false), 2000);
     return;

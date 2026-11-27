@@ -27,12 +27,7 @@ interface ChatAction {
 }
 
 type WizardStep =
-  | "greeting"
-  | "balance"
-  | "rewards"
-  | "staking"
-  | "confirmation"
-  | "completed";
+  "greeting" | "balance" | "rewards" | "staking" | "confirmation" | "completed";
 
 export function TokenChatBot() {
   const { profile } = useAuth();
@@ -535,4 +530,3 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     </Card>
   );
 }
-

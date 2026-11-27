@@ -7,7 +7,9 @@ interface TokensSubnavProps {
   className?: string;
 }
 
-export const TokensSubnav: React.FC<TokensSubnavProps> = ({ className = "" }) => {
+export const TokensSubnav: React.FC<TokensSubnavProps> = ({
+  className = "",
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,12 +23,15 @@ export const TokensSubnav: React.FC<TokensSubnavProps> = ({ className = "" }) =>
   ];
 
   // Determinar el tab activo basado en la ruta actual
-  const activeTab = tokensTabs.find((tab) => {
-    if (tab.path === "/tokens") {
-      return location.pathname === "/tokens";
-    }
-    return location.pathname === tab.path || location.pathname.startsWith(tab.path);
-  })?.path || "/tokens";
+  const activeTab =
+    tokensTabs.find((tab) => {
+      if (tab.path === "/tokens") {
+        return location.pathname === "/tokens";
+      }
+      return (
+        location.pathname === tab.path || location.pathname.startsWith(tab.path)
+      );
+    })?.path || "/tokens";
 
   const handleTabChange = (value: string) => {
     navigate(value);
@@ -34,7 +39,11 @@ export const TokensSubnav: React.FC<TokensSubnavProps> = ({ className = "" }) =>
 
   return (
     <div className={`w-full ${className}`}>
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="w-full"
+      >
         <TabsList className="grid w-full grid-cols-5 bg-purple-900/30 border border-purple-500/30 backdrop-blur-md">
           {tokensTabs.map((tab) => {
             const IconComponent = tab.icon;

@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -7,7 +13,9 @@ interface LoadingContextType {
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 
-export const LoadingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Mostrar loading por 3 segundos al inicio

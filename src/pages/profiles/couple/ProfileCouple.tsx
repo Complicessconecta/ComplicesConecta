@@ -1137,8 +1137,31 @@ function ProfileCouple() {
 
   useEffect(() => {
     const loadProfile = async () => {
+      // Ronda 21 (stream C): una sesión Single NO tiene perfil de
+      // pareja: su página es /profile-single (el render ya redirige
+      // con <Navigate> cuando el tipo es conocido). Sin este retorno,
+      // el efecto seguía a la RPC de pareja con el UUID demo, la
+      // consulta fallaba y pintaba el toast "Error al cargar perfil"
+      // ANTES de que la redirección se completara. Redirigir en
+      // silencio: el toast solo es para fallos REALES de carga.
+      // `getProfileType()` devuelve "single" por default cuando no
+      // puede resolver, así que se exige tipo CONOCIDO (misma
+      // condición que la redirección del render). Se calcula ANTES del
+      // `try` para que los dos `catch` también lo vean.
+      const sessionTypeKnown =
+        Boolean(authProfile) ||
+        (typeof window !== "undefined" &&
+          window.localStorage.getItem("demo_user") !== null);
+      const isExpectedSingleRedirect =
+        sessionTypeKnown && getProfileType() === "single";
+
       try {
         if (authLoading) return;
+
+        if (isExpectedSingleRedirect) {
+          navigate("/profile-single", { replace: true });
+          return;
+        }
 
         logger.info("🔍 ProfileCouple - Estado de autenticación:", {
           isAuthenticated: isAuthenticated(),
@@ -1262,13 +1285,17 @@ function ProfileCouple() {
             logger.error("❌ Error de base de datos:", {
               error: String(dbError),
             });
-            // En error de DB, mostrar mensaje pero no fallback a mock
-            shadcnToast({
-              title: "Error al cargar perfil",
-              description:
-                "No se pudieron cargar los datos del perfil. Intente nuevamente.",
-              variant: "destructive",
-            });
+            // En error de DB, mostrar mensaje pero no fallback a mock.
+            // Ronda 21 (stream C): sin toast si la redirección a
+            // /profile-single es la esperada por tipo de sesión.
+            if (!isExpectedSingleRedirect) {
+              shadcnToast({
+                title: "Error al cargar perfil",
+                description:
+                  "No se pudieron cargar los datos del perfil. Intente nuevamente.",
+                variant: "destructive",
+              });
+            }
             setLoading(false);
             return;
           }
@@ -1279,16 +1306,20 @@ function ProfileCouple() {
         navigate("/auth", { replace: true });
       } catch (error) {
         logger.error("Error loading profile:", { error: String(error) });
-        // Fallback a perfil mock
+        // Fallback a perfil mock. Ronda 21 (stream C): sin toast si la
+        // redirección a /profile-single es la esperada por tipo de
+        // sesión (ver arriba).
         const mockCoupleProfiles = generateMockCoupleProfiles();
         setProfile(mockCoupleProfiles[0] ?? null);
         setLoading(false);
 
-        shadcnToast({
-          title: "Error al cargar perfil",
-          description: "Se está mostrando un perfil de ejemplo.",
-          variant: "destructive",
-        });
+        if (!isExpectedSingleRedirect) {
+          shadcnToast({
+            title: "Error al cargar perfil",
+            description: "Se está mostrando un perfil de ejemplo.",
+            variant: "destructive",
+          });
+        }
       }
     };
 

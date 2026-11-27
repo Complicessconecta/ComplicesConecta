@@ -8,7 +8,11 @@
 
 import { CreateMLCEngine } from "@mlc-ai/web-llm";
 import { logger } from "@/lib/logger";
-import { MASTER_CONTEXT_SUMMARY, SYSTEM_PROMPT, LOCAL_MODEL_NAME } from "./ai-worker-config";
+import {
+  MASTER_CONTEXT_SUMMARY,
+  SYSTEM_PROMPT,
+  LOCAL_MODEL_NAME,
+} from "./ai-worker-config";
 export type RelationshipStatus = "ACTIVE" | "FROZEN_DISPUTE" | "DISSOLVED";
 
 export interface LegalRuntimeState {
@@ -18,12 +22,7 @@ export interface LegalRuntimeState {
 
 export interface LoadProgress {
   stage:
-    | "idle"
-    | "initializing"
-    | "downloading"
-    | "warming_up"
-    | "ready"
-    | "error";
+    "idle" | "initializing" | "downloading" | "warming_up" | "ready" | "error";
   percent: number;
   message?: string;
 }
@@ -32,7 +31,6 @@ export interface GenerateParams {
   userMessage: string;
   runtimeState?: LegalRuntimeState;
 }
-
 
 export class LocalLegalAIWorker {
   private isReady = false;
@@ -200,7 +198,9 @@ export class LocalLegalAIWorker {
 
       return "He recibido tu pregunta, pero no pude generar una respuesta estructurada con el modelo local. Intenta hacer tu pregunta de forma más directa.";
     } catch (error) {
-      logger.error("Error generando respuesta con WebLLM:", { error: String(error) });
+      logger.error("Error generando respuesta con WebLLM:", {
+        error: String(error),
+      });
       return (
         "Soy el auditor legal de Cómplices. Puedo explicarte por qué ciertas acciones (staking, compra de NFTs de pareja, desbloqueo de galería) están bloqueadas según tu contrato y el estado de disputas. " +
         'Pregúntame, por ejemplo: "¿Por qué mis activos están congelados?" o "Qué acepté en los 5 puntos de consentimiento?".'
@@ -208,4 +208,3 @@ export class LocalLegalAIWorker {
     }
   }
 }
-

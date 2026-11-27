@@ -8,8 +8,8 @@ global:
   scrape_interval: 60s
   evaluation_interval: 60s
   external_labels:
-    project: 'complicesconecta'
-    environment: 'production'
+    project: "complicesconecta"
+    environment: "production"
 
 # Alertmanager configuration
 alerting:
@@ -21,30 +21,30 @@ alerting:
 
 # Rule files to load
 rule_files:
-  - 'alerts/*.yml'
+  - "alerts/*.yml"
 
 # Scrape configurations
 scrape_configs:
   # Supabase Metrics API - ComplicesConecta
-  - job_name: 'supabase-complicesconecta'
+  - job_name: "supabase-complicesconecta"
     scrape_interval: 60s
     scrape_timeout: 30s
-    metrics_path: '/customer/v1/privileged/metrics'
+    metrics_path: "/customer/v1/privileged/metrics"
     scheme: https
     basic_auth:
-      username: 'service_role'
+      username: "service_role"
       # NOTA: Usar variable de entorno para la clave service_role
-      password: '${SUPABASE_SERVICE_ROLE_KEY}'
+      password: "${SUPABASE_SERVICE_ROLE_KEY}"
     static_configs:
       - targets:
-          - 'axtvqnozatbmllvwzuim.supabase.co:443'
+          - "axtvqnozatbmllvwzuim.supabase.co:443"
         labels:
-          project: 'complicesconecta'
-          project_ref: 'axtvqnozatbmllvwzuim'
-          environment: 'production'
-          region: 'us-east-2'
+          project: "complicesconecta"
+          project_ref: "axtvqnozatbmllvwzuim"
+          environment: "production"
+          region: "us-east-2"
 
   # Prometheus self-monitoring (opcional)
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]

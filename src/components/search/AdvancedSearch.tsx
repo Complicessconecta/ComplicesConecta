@@ -10,7 +10,16 @@
  */
 
 import React, { useState } from "react";
-import { Search, Filter, X, MapPin, Calendar, Heart, Star, Sliders } from "lucide-react";
+import {
+  Search,
+  Filter,
+  X,
+  MapPin,
+  Calendar,
+  Heart,
+  Star,
+  Sliders,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";

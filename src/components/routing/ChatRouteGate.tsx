@@ -4,11 +4,11 @@ import { useAuth } from "@/features/auth/useAuth";
 
 /**
  * ChatRouteGate - Wrapper para redirect inteligente de /chat
- * 
+ *
  * Comportamiento:
  * - Si el usuario tiene sesión → redirige a /chat (chat autenticado)
  * - Si el usuario NO tiene sesión → redirige a /chat-info (landing pública)
- * 
+ *
  * Uso en router:
  * <Route path="/chat" element={<ChatRouteGate />} />
  * <Route path="/chat-info" element={<ChatInfo />} />

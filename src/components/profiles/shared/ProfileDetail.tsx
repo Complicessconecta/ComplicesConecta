@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  MessageCircle,
+  MapPin,
+  Star,
+  Shield,
+  Camera,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +20,12 @@ import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { ReportDialog } from "@/components/dialogs/ReportDialog";
 import { toast } from "@/hooks/useToast";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { clsx } from "clsx";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { NationalityBadge } from "@/components/profiles/shared/NationalityBadge";
@@ -32,6 +45,7 @@ import {
 } from "@/lib/profileVisibility";
 import { resolveDemoOwnerIdentity } from "@/lib/visibility";
 import { areFriendsSync, canonicalDemoOwnerId } from "@/lib/friends";
+import { preloadChatPage } from "@/utils/preloadRoutes";
 import {
   ANONYMOUS_LIKE_BLOCKED_MESSAGE,
   canAnonymousChat,
@@ -196,6 +210,11 @@ const ProfileDetail = () => {
   // propios): antes el botón "Reportar perfil" solo mostraba un toast.
   const [showReportDialog, setShowReportDialog] = useState(false);
 
+  // Ronda 13, stream C (C3): estado local del like, igual que la
+  // tarjeta de Discover (AnimatedProfileCard): el botón refleja si
+  // ya se dio like (corazón rojo + "Te gusta") y se puede retirar.
+  const [isLiked, setIsLiked] = useState(false);
+
   // Verificar autenticación demo
   const demoAuth = localStorage.getItem("demo_authenticated");
   const demoUser = localStorage.getItem("demo_user");
@@ -276,11 +295,17 @@ const ProfileDetail = () => {
     };
   }, [profile?.id]);
 
+  // Ronda 13, stream C (C3): al cambiar de perfil el like vuelve a
+  // "sin like" (el estado es local por perfil, como en Discover).
+  useEffect(() => {
+    setIsLiked(false);
+  }, [profile?.id]);
+
   if (!profile) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-purple-800 to-blue-900">
+      <div className="min-h-screen bg-white dark:bg-linear-to-br dark:from-purple-900 dark:via-purple-800 dark:to-blue-900">
         <main className="container mx-auto px-4 py-8 text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
             Perfil no encontrado
           </h1>
           <Button
@@ -327,6 +352,13 @@ const ProfileDetail = () => {
   // usuario; fuera de demo devuelve el id tal cual, sin cambios.
   const isOwnProfile =
     canonicalDemoOwnerId(String(profile.id)) === canonicalDemoOwnerId(viewerId);
+  // Ronda 13, stream C (C1): la edad puede faltar (perfil anónimo
+  // sin edad): sin esta guarda la insignia y "Edad:" pintaban el
+  // literal "undefined años". Sin edad no se muestra ni la insignia
+  // ni la fila de "Edad:" (null en los dos sitios).
+  const ageLabel =
+    (profile as { ageLabel?: string }).ageLabel ??
+    (typeof profile.age === "number" ? `${profile.age} años` : null);
   const socialDemo = getSocialDemoData(profile.name);
   const countryCode =
     (profile as { country_code?: string | null }).country_code ??
@@ -354,8 +386,7 @@ const ProfileDetail = () => {
     seedVisibility: socialDemo.visibility,
     // Ronda 9 (stream A, punto 2): el perfil anónimo es privado por
     // defecto: no-amigos ven solo la tarjeta mínima + solicitud.
-    isAnonymous:
-      (profile as { is_anonymous?: unknown }).is_anonymous === true,
+    isAnonymous: (profile as { is_anonymous?: unknown }).is_anonymous === true,
   });
   // RONDA 7 (punto 18): el 4º argumento es el NOMBRE del perfil: la
   // semilla demo de amistades se keyea por nombre (ver friends.ts).
@@ -377,11 +408,11 @@ const ProfileDetail = () => {
   // (como Twitter). El dueño y los amigos aceptados ven el perfil completo.
   if (gated) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+      <div className="min-h-screen bg-white dark:bg-linear-to-br dark:from-purple-900 dark:via-fuchsia-900 dark:to-red-900 relative overflow-hidden">
         <main className="container mx-auto px-4 py-8 max-w-3xl">
           <Button
             onClick={() => navigate("/discover")}
-            className="text-white bg-white/10 border border-white/30 hover:bg-white/20 mb-6"
+            className="text-slate-900 dark:text-white bg-white dark:bg-white/10 border border-slate-300 dark:border-white/30 hover:bg-slate-100 dark:hover:bg-white/20 mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver a Discover
@@ -400,7 +431,7 @@ const ProfileDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-white dark:bg-linear-to-br dark:from-purple-900 dark:via-fuchsia-900 dark:to-red-900 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={5} />
       {/* Animated Background Elements */}
@@ -434,7 +465,7 @@ const ProfileDetail = () => {
             {/* Main Profile Info */}
             <div className="min-w-0 lg:col-span-2 space-y-6">
               {/* Profile Header */}
-              <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
+              <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border border-slate-200 dark:border-white/20 shadow-xl">
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6">
                     <div className="shrink-0">
@@ -465,9 +496,7 @@ const ProfileDetail = () => {
                               fallbackImages[
                                 nameHash % fallbackImages.length
                               ] ?? defaultFallback;
-                            if (
-                              e.currentTarget.src !== deterministicFallback
-                            ) {
+                            if (e.currentTarget.src !== deterministicFallback) {
                               e.currentTarget.src = deterministicFallback;
                             } else {
                               // Si también falla el fallback, ocultar imagen y mostrar fallback
@@ -483,7 +512,7 @@ const ProfileDetail = () => {
                         <div
                           className={`w-3 h-3 rounded-full ${profile.isOnline ? "bg-green-500" : "bg-gray-400"}`}
                         />
-                        <span className="text-sm text-white/80 ml-2">
+                        <span className="text-sm text-slate-500 dark:text-white/80 ml-2">
                           {profile.isOnline ? "En línea" : "Desconectado"}
                         </span>
                       </div>
@@ -491,14 +520,14 @@ const ProfileDetail = () => {
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-3 mb-2">
-                        <h1 className="text-3xl font-bold text-white">
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
                           {profile.name}
                         </h1>
-                        <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm whitespace-nowrap shrink-0">
-                          {(
-                            profile as { ageLabel?: string }
-                          ).ageLabel ?? `${profile.age} años`}
-                        </Badge>
+                        {ageLabel && (
+                          <Badge className="bg-slate-100 dark:bg-white/10 border-slate-300 dark:border-white/30 text-slate-900 dark:text-white backdrop-blur-sm whitespace-nowrap shrink-0">
+                            {ageLabel}
+                          </Badge>
+                        )}
                         <NationalityBadge countryCode={countryCode} />
                         <TooltipProvider>
                           <Tooltip>
@@ -515,8 +544,7 @@ const ProfileDetail = () => {
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>
-                                Score de confianza:{" "}
-                                {profileScore.score}/100
+                                Score de confianza: {profileScore.score}/100
                               </p>
                             </TooltipContent>
                           </Tooltip>
@@ -527,7 +555,7 @@ const ProfileDetail = () => {
                           su ancho mínimo (nowrap de los tres bloques)
                           empujaba la columna y la página desbordaba en
                           horizontal a 886 px (ronda 11, stream C, i). */}
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-white/80 mb-4">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-slate-500 dark:text-white/80 mb-4">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
                           <span>{profile.location}</span>
@@ -551,48 +579,52 @@ const ProfileDetail = () => {
                         </div>
                       </div>
 
-                      <p className="text-lg text-white mb-4">{profile.bio}</p>
+                      <p className="text-lg text-slate-900 dark:text-white mb-4">
+                        {profile.bio}
+                      </p>
 
                       <div className="flex items-center gap-2 mb-4">
                         <Shield className="h-4 w-4 text-green-500" />
-                        <span className="text-sm text-white/80">
+                        <span className="text-sm text-slate-500 dark:text-white/80">
                           Perfil verificado
                         </span>
                       </div>
 
-                      <p className="text-sm text-white/80">
-                        <strong className="text-white">Profesión:</strong>{" "}
+                      <p className="text-sm text-slate-500 dark:text-white/80">
+                        <strong className="text-slate-900 dark:text-white">
+                          Profesión:
+                        </strong>{" "}
                         {profile.profession}
                       </p>
 
                       <div className="space-y-4">
-                        <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4">
-                          <h3 className="font-medium text-gray-100 mb-2">
+                        <div className="bg-slate-100 dark:bg-black/20 backdrop-blur-sm rounded-xl p-4">
+                          <h3 className="font-medium text-slate-900 dark:text-gray-100 mb-2">
                             Qué busco
                           </h3>
-                          <p className="text-gray-100 font-medium">
+                          <p className="text-slate-700 dark:text-gray-100 font-medium">
                             {profile.lookingFor}
                           </p>
                         </div>
 
-                        <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4">
-                          <h3 className="font-medium text-gray-100 mb-2">
+                        <div className="bg-slate-100 dark:bg-black/20 backdrop-blur-sm rounded-xl p-4">
+                          <h3 className="font-medium text-slate-900 dark:text-gray-100 mb-2">
                             Educación
                           </h3>
-                          <p className="text-gray-100 font-medium">
+                          <p className="text-slate-700 dark:text-gray-100 font-medium">
                             {profile.education}
                           </p>
                         </div>
 
-                        <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4">
-                          <h3 className="font-medium text-gray-100 mb-2">
+                        <div className="bg-slate-100 dark:bg-black/20 backdrop-blur-sm rounded-xl p-4">
+                          <h3 className="font-medium text-slate-900 dark:text-gray-100 mb-2">
                             Idiomas
                           </h3>
                           <div className="flex flex-wrap gap-2">
                             {profile.languages.map((lang: string) => (
                               <Badge
                                 key={lang}
-                                className="border border-white/30 bg-white/10 backdrop-blur-sm text-white"
+                                className="border border-slate-300 dark:border-white/30 bg-slate-100 dark:bg-white/10 backdrop-blur-sm text-slate-900 dark:text-white"
                               >
                                 {lang}
                               </Badge>
@@ -600,8 +632,8 @@ const ProfileDetail = () => {
                           </div>
                         </div>
 
-                        <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4">
-                          <h3 className="font-medium text-gray-100 mb-2">
+                        <div className="bg-slate-100 dark:bg-black/20 backdrop-blur-sm rounded-xl p-4">
+                          <h3 className="font-medium text-slate-900 dark:text-gray-100 mb-2">
                             Hobbies
                           </h3>
                           <div className="flex flex-wrap gap-2">
@@ -632,9 +664,9 @@ const ProfileDetail = () => {
               />
 
               {/* Photo Gallery */}
-              <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
+              <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border border-slate-200 dark:border-white/20 shadow-xl">
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <Camera className="h-5 w-5" />
                     Fotos
                   </h2>
@@ -662,82 +694,136 @@ const ProfileDetail = () => {
             {/* Action Sidebar */}
             <div className="min-w-0 space-y-6">
               {/* Action Buttons */}
-              <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
+              <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border border-slate-200 dark:border-white/20 shadow-xl">
                 <CardContent className="p-6">
                   <div className="space-y-4">
-                    <Button
-                      onClick={() => {
-                        // Ronda 10 (stream A, punto A8): el like anónimo
-                        // está bloqueado con mensaje claro (sin toast de
-                        // error y sin fingir que se envió).
-                        if (isViewerAnonymous(viewerId)) {
-                          toast({
-                            title: "Like no disponible",
-                            description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
-                          });
-                          return;
-                        }
-                        logger.info("Me gusta", { profileName: profile.name });
-                        toast({
-                          title: "Like enviado",
-                          description: `¡Has dado like a ${profile.name}!`,
-                        });
-                      }}
-                      className="w-full bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
-                    >
-                      <Heart className="h-5 w-5 mr-2" />
-                      Me gusta
-                    </Button>
-
-                    {(() => {
-                      // Ronda 10 (stream A, punto A4): gate ANTES de
-                      // navegar. Si el espectador o el perfil es
-                      // anónimo, solo hay chat con amistad aceptada:
-                      // el botón muestra el estado bloqueado y NO
-                      // navega a /chat/:id. La solicitud de amistad
-                      // (FriendRequestButton, justo debajo) es el
-                      // camino para desbloquearlo.
-                      const chatCheck = canAnonymousChat({
-                        senderIsAnonymous: isViewerAnonymous(viewerId),
-                        recipientIsAnonymous:
-                          (profile as { is_anonymous?: unknown })
-                            .is_anonymous === true,
-                        areFriends: isFriend,
-                      });
-                      if (chatCheck.allowed) {
-                        return (
-                          <Button
-                            onClick={() => {
-                              logger.info("Enviando mensaje a", {
-                                profileName: profile.name,
-                              });
-                              navigate(`/chat/${profile.id}`, {
-                                state: { profile },
-                              });
-                            }}
-                            className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
-                          >
-                            <MessageCircle className="h-5 w-5 mr-2" />
-                            Enviar mensaje
-                          </Button>
-                        );
-                      }
-                      return (
+                    {/* Ronda 13, stream C (C2): en el perfil PROPIO no
+                        hay acciones de visitante: ni like ni mensaje
+                        (el dueño no se da like ni se escribe a sí
+                        mismo). FriendRequestButton, PhotoAccess y
+                        ReportBlock ya se ocultan solos con
+                        isOwnProfile. */}
+                    {!isOwnProfile && (
+                      <>
                         <Button
+                          aria-pressed={isLiked}
                           onClick={() => {
+                            // Ronda 10 (stream A, punto A8): el like anónimo
+                            // está bloqueado con mensaje claro (sin toast de
+                            // error y sin fingir que se envió).
+                            if (isViewerAnonymous(viewerId)) {
+                              toast({
+                                title: "Like no disponible",
+                                description: ANONYMOUS_LIKE_BLOCKED_MESSAGE,
+                              });
+                              return;
+                            }
+                            // Ronda 13, stream C (C3): el like alterna
+                            // como la tarjeta de Discover
+                            // (AnimatedProfileCard): corazón relleno +
+                            // "Te gusta" al darlo, y se puede retirar
+                            // con un segundo toque. Estado local por
+                            // perfil; no hay store compartido de likes
+                            // (Discover guarda sus ids solo en su página)
+                            // y createLike es solo inserción (sin unlike),
+                            // así que el servicio no se toca.
+                            const next = !isLiked;
+                            setIsLiked(next);
+                            logger.info(
+                              next ? "Me gusta" : "Me gusta retirado",
+                              {
+                                profileName: profile.name,
+                              },
+                            );
                             toast({
-                              title: "Chat bloqueado",
-                              description: chatCheck.reason,
+                              title: next ? "Like enviado" : "Like retirado",
+                              description: next
+                                ? `¡Has dado like a ${profile.name}!`
+                                : `Ya no le das like a ${profile.name}.`,
                             });
                           }}
-                          title={chatCheck.reason}
-                          className="w-full bg-slate-500/40 hover:bg-slate-500/50 text-white px-6 py-3 text-lg border border-white/20 whitespace-normal h-auto min-h-11 text-center leading-snug"
+                          className={cn(
+                            "w-full px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug",
+                            isLiked
+                              ? "bg-red-500/20 text-red-600 dark:text-red-300 border border-red-500/50 hover:bg-red-500/30"
+                              : "bg-linear-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white",
+                          )}
                         >
-                          <MessageCircle className="h-5 w-5 mr-2" />
-                          Chat bloqueado: envía solicitud de amistad
+                          <Heart
+                            className={cn(
+                              "h-5 w-5 mr-2",
+                              isLiked && "fill-current",
+                            )}
+                          />
+                          {isLiked ? "Te gusta" : "Me gusta"}
                         </Button>
-                      );
-                    })()}
+
+                        {(() => {
+                          // Ronda 10 (stream A, punto A4): gate ANTES de
+                          // navegar. Si el espectador o el perfil es
+                          // anónimo, solo hay chat con amistad aceptada:
+                          // el botón muestra el estado bloqueado y NO
+                          // navega a /chat/:id. La solicitud de amistad
+                          // (FriendRequestButton, justo debajo) es el
+                          // camino para desbloquearlo.
+                          const chatCheck = canAnonymousChat({
+                            senderIsAnonymous: isViewerAnonymous(viewerId),
+                            recipientIsAnonymous:
+                              (profile as { is_anonymous?: unknown })
+                                .is_anonymous === true,
+                            areFriends: isFriend,
+                          });
+                          if (chatCheck.allowed) {
+                            return (
+                              <Button
+                                // Ronda 16 (stream C): el primer click
+                                // no hacía nada visible en frío. La
+                                // ruta de chat es lazy y `navigate()`
+                                // va en `startTransition`: la
+                                // transición mantiene el perfil
+                                // visible hasta que llega el chunk,
+                                // sin fallback. `flushSync: true`
+                                // hace que el primer toque pinte el
+                                // `PageLoader` de inmediato, y el
+                                // hover/foco precarga el chunk antes
+                                // del click (sin precargarlo en cada
+                                // perfil que se visita).
+                                onMouseEnter={preloadChatPage}
+                                onFocus={preloadChatPage}
+                                onClick={() => {
+                                  logger.info("Enviando mensaje a", {
+                                    profileName: profile.name,
+                                  });
+                                  navigate(`/chat/${profile.id}`, {
+                                    state: { profile },
+                                    flushSync: true,
+                                  });
+                                }}
+                                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg whitespace-normal h-auto min-h-11 text-center leading-snug"
+                              >
+                                <MessageCircle className="h-5 w-5 mr-2" />
+                                Enviar mensaje
+                              </Button>
+                            );
+                          }
+                          return (
+                            <Button
+                              onClick={() => {
+                                toast({
+                                  title: "Chat bloqueado",
+                                  description: chatCheck.reason,
+                                });
+                              }}
+                              title={chatCheck.reason}
+                              className="w-full bg-slate-200 dark:bg-slate-500/40 hover:bg-slate-300 dark:hover:bg-slate-500/50 text-slate-700 dark:text-white px-6 py-3 text-lg border border-slate-300 dark:border-white/20 whitespace-normal h-auto min-h-11 text-center leading-snug"
+                            >
+                              <MessageCircle className="h-5 w-5 mr-2" />
+                              Chat bloqueado: envía solicitud de amistad
+                            </Button>
+                          );
+                        })()}
+                      </>
+                    )}
 
                     {/* Amistad y acceso a fotos (punto 4): solicitud de
                         amistad y solicitud para ver la galería. El botón
@@ -776,54 +862,75 @@ const ProfileDetail = () => {
                       showReport={false}
                     />
 
-                    <Button
-                      onClick={() => {
-                        logger.info("Reportando perfil de", {
-                          profileName: profile.name,
-                        });
-                        setShowReportDialog(true);
-                      }}
-                      className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300 whitespace-normal h-auto min-h-11 text-center leading-snug"
-                    >
-                      Reportar perfil
-                    </Button>
+                    {/* Ronda 13, stream C (C2): "Reportar perfil" también
+                        es acción de visitante: el dueño no se reporta a
+                        sí mismo (ReportBlockButtons ya se oculta solo
+                        con isOwnProfile; este botón suelto no lo hacía). */}
+                    {!isOwnProfile && (
+                      <Button
+                        onClick={() => {
+                          logger.info("Reportando perfil de", {
+                            profileName: profile.name,
+                          });
+                          setShowReportDialog(true);
+                        }}
+                        className="w-full border border-slate-300 dark:border-white/30 bg-white dark:bg-white/10 backdrop-blur-md text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300 whitespace-normal h-auto min-h-11 text-center leading-snug"
+                      >
+                        Reportar perfil
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
 
               {/* Quick Info */}
-              <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
+              <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border border-slate-200 dark:border-white/20 shadow-xl">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-white mb-4">
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
                     Información rápida
                   </h3>
                   <div className="space-y-3 text-sm">
+                    {ageLabel && (
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 dark:text-white/80">
+                          Edad:
+                        </span>
+                        <span className="text-slate-900 dark:text-white">
+                          {ageLabel}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between">
-                      <span className="text-white/80">Edad:</span>
-                      <span className="text-white">
-                        {(profile as { ageLabel?: string }).ageLabel ??
-                          `${profile.age} años`}
+                      <span className="text-slate-500 dark:text-white/80">
+                        Ubicación:
+                      </span>
+                      <span className="text-slate-900 dark:text-white">
+                        {profile.location}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/80">Ubicación:</span>
-                      <span className="text-white">{profile.location}</span>
+                      <span className="text-slate-500 dark:text-white/80">
+                        Profesión:
+                      </span>
+                      <span className="text-slate-900 dark:text-white">
+                        {profile.profession}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/80">Profesión:</span>
-                      <span className="text-white">{profile.profession}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/80">Valoración:</span>
-                      <span className="text-white flex items-center gap-1">
+                      <span className="text-slate-500 dark:text-white/80">
+                        Valoración:
+                      </span>
+                      <span className="text-slate-900 dark:text-white flex items-center gap-1">
                         <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                         {profile.rating}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-white/80">Estado:</span>
+                      <span className="text-slate-500 dark:text-white/80">
+                        Estado:
+                      </span>
                       <span
-                        className={`text-sm ${profile.isOnline ? "text-green-600" : "text-white"}`}
+                        className={`text-sm ${profile.isOnline ? "text-green-600" : "text-slate-900 dark:text-white"}`}
                       >
                         {profile.isOnline ? "En línea" : "Desconectado"}
                       </span>
@@ -833,16 +940,20 @@ const ProfileDetail = () => {
               </Card>
 
               {/* Compatibility */}
-              <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
+              <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border border-slate-200 dark:border-white/20 shadow-xl">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold text-white mb-4">
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-4">
                     Compatibilidad
                   </h3>
                   <div className="space-y-3">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-white/80">Intereses comunes</span>
-                        <span className="text-white">85%</span>
+                        <span className="text-slate-500 dark:text-white/80">
+                          Intereses comunes
+                        </span>
+                        <span className="text-slate-900 dark:text-white">
+                          85%
+                        </span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2">
                         <div className="bg-primary h-2 rounded-full w-[85%]"></div>
@@ -851,8 +962,12 @@ const ProfileDetail = () => {
 
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-white/80">Proximidad</span>
-                        <span className="text-white">92%</span>
+                        <span className="text-slate-500 dark:text-white/80">
+                          Proximidad
+                        </span>
+                        <span className="text-slate-900 dark:text-white">
+                          92%
+                        </span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2">
                         <div className="bg-primary h-2 rounded-full w-[92%]"></div>
@@ -861,8 +976,12 @@ const ProfileDetail = () => {
 
                     <div>
                       <div className="flex justify-between text-sm mb-1">
-                        <span className="text-white/80">Estilo de vida</span>
-                        <span className="text-white">78%</span>
+                        <span className="text-slate-500 dark:text-white/80">
+                          Estilo de vida
+                        </span>
+                        <span className="text-slate-900 dark:text-white">
+                          78%
+                        </span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2">
                         <div className="bg-primary h-2 rounded-full w-[78%]"></div>
@@ -874,7 +993,7 @@ const ProfileDetail = () => {
                     <p className="text-sm text-primary font-medium text-center">
                       ¡Gran compatibilidad! 🎉
                     </p>
-                    <p className="text-xs text-white/80 text-center mt-1">
+                    <p className="text-xs text-slate-500 dark:text-white/80 text-center mt-1">
                       Tienes muchas cosas en común
                     </p>
                   </div>

@@ -148,4 +148,3 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
 };
 
 export default PrivateImageRequest;
-

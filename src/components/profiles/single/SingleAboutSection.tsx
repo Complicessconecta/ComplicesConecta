@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { User } from "lucide-react";
 
@@ -69,7 +74,9 @@ export const SingleAboutSection: React.FC<SingleAboutSectionProps> = ({
               {member.name?.[0]?.toUpperCase() || "?"}
             </div>
             <div className="min-w-0">
-              <p className="font-semibold text-slate-900 dark:text-white truncate">{member.name}</p>
+              <p className="font-semibold text-slate-900 dark:text-white truncate">
+                {member.name}
+              </p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {typeof member.age === "number" && (
                   <Badge className="profile-badge badge-age">
@@ -86,15 +93,21 @@ export const SingleAboutSection: React.FC<SingleAboutSectionProps> = ({
           </div>
 
           {member.bio && (
-            <p className="text-sm text-slate-600 dark:text-white/80 mb-3">{member.bio}</p>
+            <p className="text-sm text-slate-600 dark:text-white/80 mb-3">
+              {member.bio}
+            </p>
           )}
 
           {rows.length > 0 ? (
             <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
               {rows.map(([label, value]) => (
                 <div key={label}>
-                  <dt className="text-xs text-slate-500 dark:text-white/50">{label}</dt>
-                  <dd className="text-slate-900 dark:text-white font-medium">{value}</dd>
+                  <dt className="text-xs text-slate-500 dark:text-white/50">
+                    {label}
+                  </dt>
+                  <dd className="text-slate-900 dark:text-white font-medium">
+                    {value}
+                  </dd>
                 </div>
               ))}
             </dl>

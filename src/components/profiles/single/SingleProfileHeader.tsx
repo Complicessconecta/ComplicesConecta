@@ -1,7 +1,15 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
-import { MapPin, CheckCircle, Crown, Heart, MessageCircle, Edit, User } from "lucide-react";
+import {
+  MapPin,
+  CheckCircle,
+  Crown,
+  Heart,
+  MessageCircle,
+  Edit,
+  User,
+} from "lucide-react";
 
 interface SingleProfile {
   id: string;

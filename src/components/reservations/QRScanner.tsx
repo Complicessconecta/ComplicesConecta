@@ -1,11 +1,24 @@
 // Componente de escáner QR para validación en puerta
 // Fase 5: Sistema de Reservas con QR
 
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { CheckCircle, XCircle, Loader2, User, Crown, Star, Smartphone } from 'lucide-react';
-import { reservationService } from '@/services/reservations/ReservationService';
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  CheckCircle,
+  XCircle,
+  Loader2,
+  User,
+  Crown,
+  Star,
+  Smartphone,
+} from "lucide-react";
+import { reservationService } from "@/services/reservations/ReservationService";
 
 interface QRScannerProps {
   onScanSuccess?: (reservation: any) => void;
@@ -34,17 +47,20 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
       const mockQRHash = `QR-DEMO-${Date.now()}`;
 
       // Validar QR
-      const validation = await reservationService.validateQRForCheckIn(mockQRHash);
+      const validation =
+        await reservationService.validateQRForCheckIn(mockQRHash);
 
       if (validation.valid && validation.reservation) {
         // Marcar reserva como usada
-        await reservationService.markReservationAsUsed(validation.reservation.id);
+        await reservationService.markReservationAsUsed(
+          validation.reservation.id,
+        );
 
         setScanResult({
           success: true,
-          message: '✅ Acceso Concedido',
-          userName: 'Usuario Demo',
-          membershipLevel: 'VIP',
+          message: "✅ Acceso Concedido",
+          userName: "Usuario Demo",
+          membershipLevel: "VIP",
         });
 
         if (onScanSuccess) {
@@ -69,7 +85,8 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
         setScanResult(null);
       }, 3000);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error al escanear QR';
+      const errorMessage =
+        error instanceof Error ? error.message : "Error al escanear QR";
       setScanResult({
         success: false,
         message: errorMessage,
@@ -86,7 +103,9 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
   return (
     <Card className="bg-white/10 backdrop-blur-xl border-white/20">
       <CardHeader>
-        <CardTitle className="text-white">📷 Escáner QR (Validación en Puerta)</CardTitle>
+        <CardTitle className="text-white">
+          📷 Escáner QR (Validación en Puerta)
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Mock de Cámara */}
@@ -106,8 +125,12 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
                     <div className="flex items-center gap-3 mb-3">
                       <CheckCircle className="h-12 w-12 text-green-400" />
                       <div>
-                        <p className="text-green-400 font-bold text-xl">✅ Acceso Concedido</p>
-                        <p className="text-white/60 text-sm">Usuario Verificado</p>
+                        <p className="text-green-400 font-bold text-xl">
+                          ✅ Acceso Concedido
+                        </p>
+                        <p className="text-white/60 text-sm">
+                          Usuario Verificado
+                        </p>
                       </div>
                     </div>
 
@@ -115,17 +138,23 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
                     <div className="space-y-2 mt-4">
                       <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-white/60" />
-                        <span className="text-white font-medium">{scanResult.userName}</span>
+                        <span className="text-white font-medium">
+                          {scanResult.userName}
+                        </span>
                       </div>
                       {scanResult.membershipLevel && (
                         <div className="flex items-center gap-2">
                           <Crown className="h-4 w-4 text-yellow-400" />
-                          <span className="text-yellow-300 font-medium">{scanResult.membershipLevel}</span>
+                          <span className="text-yellow-300 font-medium">
+                            {scanResult.membershipLevel}
+                          </span>
                         </div>
                       )}
                       <div className="flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-400" />
-                        <span className="text-white/60">Nivel 5 - Visitas Frecuentes</span>
+                        <span className="text-white/60">
+                          Nivel 5 - Visitas Frecuentes
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -135,7 +164,8 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
                     <div className="flex items-center gap-2">
                       <Smartphone className="h-4 w-4 text-blue-400" />
                       <p className="text-blue-300 text-xs">
-                        📱 Notificación enviada a los contactos de seguridad: "Ha ingresado al club"
+                        📱 Notificación enviada a los contactos de seguridad:
+                        "Ha ingresado al club"
                       </p>
                     </div>
                   </div>
@@ -145,8 +175,12 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
                   <div className="flex items-center gap-3">
                     <XCircle className="h-12 w-12 text-red-400" />
                     <div>
-                      <p className="text-red-400 font-bold text-xl">❌ Acceso Denegado</p>
-                      <p className="text-white/60 text-sm">{scanResult.message}</p>
+                      <p className="text-red-400 font-bold text-xl">
+                        ❌ Acceso Denegado
+                      </p>
+                      <p className="text-white/60 text-sm">
+                        {scanResult.message}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -161,7 +195,7 @@ export function QRScanner({ onScanSuccess, onScanError }: QRScannerProps) {
 
         {/* Botón de Simulación */}
         <Button onClick={handleScan} className="w-full" disabled={scanning}>
-          {scanning ? 'Escaneando...' : '📷 Simular Escaneo'}
+          {scanning ? "Escaneando..." : "📷 Simular Escaneo"}
         </Button>
       </CardContent>
     </Card>

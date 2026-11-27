@@ -7,7 +7,12 @@ import {
   IconBrandX,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
@@ -61,8 +66,7 @@ export const ShareProfile = ({
           if (ok) {
             toast({
               title: "Listo para TikTok",
-              description:
-                "Texto copiado. Pégalo al subir tu video en TikTok",
+              description: "Texto copiado. Pégalo al subir tu video en TikTok",
             });
           } else {
             logger.error("Error compartiendo en TikTok");
@@ -80,7 +84,9 @@ export const ShareProfile = ({
         );
         break;
       case "whatsapp":
-        safeOpenUrl(`https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`);
+        safeOpenUrl(
+          `https://wa.me/?text=${encodeURIComponent(text + " " + profileUrl)}`,
+        );
         break;
       case "x":
         safeOpenUrl(
@@ -163,8 +169,7 @@ export const ShareProfile = ({
                 onClick={() => handleShare("x")}
                 className="flex items-center gap-2"
               >
-                <IconBrandX className="h-4 w-4" />
-                X
+                <IconBrandX className="h-4 w-4" />X
               </Button>
 
               <Button

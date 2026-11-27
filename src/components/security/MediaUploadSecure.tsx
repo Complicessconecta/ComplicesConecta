@@ -1,11 +1,32 @@
 import React, { useState, useCallback } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Shield, CheckCircle, XCircle, AlertTriangle, FileImage, FileVideo, FileAudio, Lock, Eye, Trash2 } from "lucide-react";
-import { MultimediaSecurityService, MediaValidationResult } from "@/lib/multimediaSecurity";
+import {
+  Upload,
+  Shield,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  FileImage,
+  FileVideo,
+  FileAudio,
+  Lock,
+  Eye,
+  Trash2,
+} from "lucide-react";
+import {
+  MultimediaSecurityService,
+  MediaValidationResult,
+} from "@/lib/multimediaSecurity";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 
@@ -26,12 +47,7 @@ interface UploadedFile {
   keyId?: string;
   uploadProgress: number;
   status:
-    | "validating"
-    | "valid"
-    | "invalid"
-    | "uploading"
-    | "uploaded"
-    | "error";
+    "validating" | "valid" | "invalid" | "uploading" | "uploaded" | "error";
 }
 
 export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({

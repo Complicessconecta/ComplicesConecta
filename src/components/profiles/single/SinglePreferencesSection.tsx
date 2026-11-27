@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 
@@ -29,7 +34,9 @@ export const SinglePreferencesSection: React.FC<
       </CardHeader>
       <CardContent>
         <div className="p-4 bg-slate-900/5 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10">
-          <p className="font-semibold text-white mb-3">{name}</p>
+          <p className="font-semibold text-slate-900 dark:text-white mb-3">
+            {name}
+          </p>
 
           {empty ? (
             <p className="text-xs text-slate-500 dark:text-white/50">
@@ -39,7 +46,9 @@ export const SinglePreferencesSection: React.FC<
             <div className="space-y-3">
               {likes.length > 0 && (
                 <div>
-                  <p className="text-xs text-slate-500 dark:text-white/50 mb-1.5">Me gusta</p>
+                  <p className="text-xs text-slate-500 dark:text-white/50 mb-1.5">
+                    Me gusta
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {likes.map((tag) => (
                       <Badge

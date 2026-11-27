@@ -32,7 +32,7 @@ interface SingleProfileCardProps {
   useThemeBackground?: boolean;
   onSuperLike?: (id: string) => void;
   onDislike?: (id: string) => void;
-};
+}
 
 const SingleProfileCard = ({
   profile,

@@ -17,9 +17,18 @@ export const isWeakPin = (pin: string): boolean => {
 export const PinSettings: React.FC = () => {
   const { toast } = useToast();
   const [storedPin, setStoredPin] = usePersistedState<string>("app_pin", "");
-  const [pinCreatedAt, setPinCreatedAt] = usePersistedState<number>("pin_created_at", Date.now());
-  const [pinExpiresAt, setPinExpiresAt] = usePersistedState<number>("pin_expires_at", Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
-  const [mustChangePin, setMustChangePin] = usePersistedState<boolean>("must_change_pin", import.meta.env.PROD);
+  const [pinCreatedAt, setPinCreatedAt] = usePersistedState<number>(
+    "pin_created_at",
+    Date.now(),
+  );
+  const [pinExpiresAt, setPinExpiresAt] = usePersistedState<number>(
+    "pin_expires_at",
+    Date.now() + 30 * 24 * 60 * 60 * 1000,
+  ); // 30 días
+  const [mustChangePin, setMustChangePin] = usePersistedState<boolean>(
+    "must_change_pin",
+    import.meta.env.PROD,
+  );
   const [isSettingPin, setIsSettingPin] = useState(false);
   const [currentPin, setCurrentPin] = useState("");
   const [newPin, setNewPin] = useState("");
@@ -30,7 +39,8 @@ export const PinSettings: React.FC = () => {
   // Validar expiración y forzar cambio en producción si es PIN default
   const isExpired = Date.now() > pinExpiresAt;
   const isDefaultPin = storedPin === "1234";
-  const shouldForceChange = import.meta.env.PROD && (isExpired || isDefaultPin || mustChangePin);
+  const shouldForceChange =
+    import.meta.env.PROD && (isExpired || isDefaultPin || mustChangePin);
   const pinCreatedLabel = pinCreatedAt
     ? new Date(pinCreatedAt).toLocaleDateString("es-MX")
     : "—";
@@ -75,7 +85,7 @@ export const PinSettings: React.FC = () => {
 
     setStoredPin(newPin);
     setPinCreatedAt(Date.now());
-    setPinExpiresAt(Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
+    setPinExpiresAt(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 días
     setMustChangePin(false);
     setIsSettingPin(false);
     setNewPin("");
@@ -299,4 +309,3 @@ export const PinSettings: React.FC = () => {
     </div>
   );
 };
-

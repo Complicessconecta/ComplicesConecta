@@ -1,8 +1,19 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
-import { MapPin, CheckCircle, Crown, Heart, MessageCircle, Edit, Users } from "lucide-react";
-import type { CoupleProfileWithPartners, RelationshipType } from "@/services/social/couple/CoupleProfilesService";
+import {
+  MapPin,
+  CheckCircle,
+  Crown,
+  Heart,
+  MessageCircle,
+  Edit,
+  Users,
+} from "lucide-react";
+import type {
+  CoupleProfileWithPartners,
+  RelationshipType,
+} from "@/services/social/couple/CoupleProfilesService";
 
 interface CoupleProfileHeaderProps {
   profile: CoupleProfileWithPartners;

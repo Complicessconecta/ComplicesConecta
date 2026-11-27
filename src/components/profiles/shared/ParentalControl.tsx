@@ -1,8 +1,18 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Baby, Lock, Unlock, Shield, Clock, X } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
@@ -78,9 +88,18 @@ export const ParentalControl = ({
   // Sin PIN por defecto: en demo vale el PIN demo "1234" (ver handlePinSubmit);
   // un usuario registrado debe configurar su propio PIN en Ajustes.
   const [savedPin] = usePersistedState("app_pin", "");
-  const [pinCreatedAt] = usePersistedState<number>("pin_created_at", Date.now());
-  const [pinExpiresAt] = usePersistedState<number>("pin_expires_at", Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 días
-  const [mustChangePin] = usePersistedState<boolean>("must_change_pin", import.meta.env.PROD);
+  const [pinCreatedAt] = usePersistedState<number>(
+    "pin_created_at",
+    Date.now(),
+  );
+  const [pinExpiresAt] = usePersistedState<number>(
+    "pin_expires_at",
+    Date.now() + 30 * 24 * 60 * 60 * 1000,
+  ); // 30 días
+  const [mustChangePin] = usePersistedState<boolean>(
+    "must_change_pin",
+    import.meta.env.PROD,
+  );
   const [restrictionLevel, setRestrictionLevel] =
     usePersistedState<RestrictionLevel>("restrictionLevel", "strict");
   const [attempts, setAttempts] = useState(0);
@@ -143,8 +162,7 @@ export const ParentalControl = ({
     const isDemo = isDemoMode();
     const isDefaultPin = isDemo && pin === "1234";
     // Un PIN "1234" guardado de antes (default viejo) no vale fuera de demo.
-    const effectiveSavedPin =
-      isDemo || savedPin !== "1234" ? savedPin : "";
+    const effectiveSavedPin = isDemo || savedPin !== "1234" ? savedPin : "";
     const pinMatches = pin === effectiveSavedPin || isDefaultPin;
 
     if (pinMatches) {
@@ -279,9 +297,7 @@ export const ParentalControl = ({
               </button>
             )}
             <CardHeader className="text-center pb-4">
-              <div
-                className="mx-auto mb-4 p-3 rounded-full w-fit border-2 border-red-500/40 parental-control-icon"
-              >
+              <div className="mx-auto mb-4 p-3 rounded-full w-fit border-2 border-red-500/40 parental-control-icon">
                 <Baby className="h-6 w-6 text-red-400" />
               </div>
               <CardTitle className="text-lg font-bold text-white drop-shadow-lg">
@@ -398,9 +414,7 @@ export const ParentalControl = ({
 
   // Panel de configuración cuando está desbloqueado
   return (
-    <div
-      className="w-full space-y-6 p-6 rounded-3xl shadow-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-    >
+    <div className="w-full space-y-6 p-6 rounded-3xl shadow-2xl bg-white/5 backdrop-blur-sm border border-white/10">
       {/* Encabezado */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -498,7 +512,8 @@ export const ParentalControl = ({
           onClick={() =>
             toast({
               title: "Cambiar PIN",
-              description: "Para cambiar el PIN, ve a Configuración > Seguridad.",
+              description:
+                "Para cambiar el PIN, ve a Configuración > Seguridad.",
             })
           }
         >
@@ -558,4 +573,3 @@ export const ParentalControl = ({
     </div>
   );
 };
-

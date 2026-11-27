@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Coins, Wallet } from "lucide-react";
@@ -23,9 +28,7 @@ interface SingleSubscriptionCardProps {
  * demo usa los saldos reales que ya carga la página. El saldo solo se
  * muestra al perfil propio.
  */
-export const SingleSubscriptionCard: React.FC<
-  SingleSubscriptionCardProps
-> = ({
+export const SingleSubscriptionCard: React.FC<SingleSubscriptionCardProps> = ({
   isPremium,
   isDemoMode = false,
   validUntil,
@@ -65,7 +68,9 @@ export const SingleSubscriptionCard: React.FC<
           </Badge>
           <span className="text-sm text-slate-500 dark:text-white/70">
             Válido hasta:{" "}
-            <span className="text-slate-900 dark:text-white font-medium">{validityLabel}</span>
+            <span className="text-slate-900 dark:text-white font-medium">
+              {validityLabel}
+            </span>
           </span>
         </div>
 
@@ -80,7 +85,9 @@ export const SingleSubscriptionCard: React.FC<
                 <div className="text-lg font-bold">
                   {Number(cmpx).toLocaleString("es-MX")}
                 </div>
-                <div className="text-xs text-slate-500 dark:text-white/70">Saldo</div>
+                <div className="text-xs text-slate-500 dark:text-white/70">
+                  Saldo
+                </div>
               </div>
             )}
 
@@ -93,7 +100,9 @@ export const SingleSubscriptionCard: React.FC<
                 <div className="text-lg font-bold">
                   {Number(gtk).toLocaleString("es-MX")}
                 </div>
-                <div className="text-xs text-slate-500 dark:text-white/70">Saldo</div>
+                <div className="text-xs text-slate-500 dark:text-white/70">
+                  Saldo
+                </div>
               </div>
             )}
 
@@ -104,7 +113,9 @@ export const SingleSubscriptionCard: React.FC<
                   <span className="text-sm font-medium">NFTs</span>
                 </div>
                 <div className="text-lg font-bold">{nftCount}</div>
-                <div className="text-xs text-slate-500 dark:text-white/70">Colección</div>
+                <div className="text-xs text-slate-500 dark:text-white/70">
+                  Colección
+                </div>
               </div>
             )}
           </div>

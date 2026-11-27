@@ -6,7 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { cn } from "@/shared/lib/cn";
 import { ANONYMOUS_LIKE_BLOCKED_MESSAGE } from "@/lib/anonymous";
-import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
+import {
+  isTouchDevice,
+  getAnimationConfig,
+  addTouchSupport,
+} from "@/utils/mobile";
 
 interface ProfileCardProps {
   id: number;
@@ -109,7 +113,14 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
       }
       setIsLiked(!isLiked);
       onLike?.(profileId ?? id);
-    }, [isLiked, onLike, id, profileId, isViewerAnonymous, onAnonymousLikeBlocked]);
+    }, [
+      isLiked,
+      onLike,
+      id,
+      profileId,
+      isViewerAnonymous,
+      onAnonymousLikeBlocked,
+    ]);
 
     const nextImage = React.useCallback(() => {
       setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
@@ -392,14 +403,23 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
               >
                 <motion.div
                   animate={isLiked ? { scale: [1, 1.4, 1] } : {}}
-                  transition={{ duration: 0.4, type: "spring", stiffness: 300, damping: 15 }}
+                  transition={{
+                    duration: 0.4,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 15,
+                  }}
                 >
                   <Heart
                     className={`w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 transition-colors duration-300 ${isLiked ? "fill-current text-red-500" : ""}`}
                   />
                 </motion.div>
-                <span className="hidden sm:inline font-medium">{isLiked ? "Te Gusta" : "Me Gusta"}</span>
-                <span className="sm:hidden sr-only">{isLiked ? "Te Gusta" : "Me Gusta"}</span>
+                <span className="hidden sm:inline font-medium">
+                  {isLiked ? "Te Gusta" : "Me Gusta"}
+                </span>
+                <span className="sm:hidden sr-only">
+                  {isLiked ? "Te Gusta" : "Me Gusta"}
+                </span>
               </Button>
 
               <Button
@@ -408,7 +428,9 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 onClick={() => {
                   if (isPrivate && !canMessage) {
                     // Perfil privado: mostrar mensaje de acceso requerido
-                    alert("Este perfil es privado. Debes solicitar acceso para chatear.");
+                    alert(
+                      "Este perfil es privado. Debes solicitar acceso para chatear.",
+                    );
                     return;
                   }
                   onMessage?.(profileId ?? id);
@@ -438,7 +460,9 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                 onClick={() => {
                   if (isPrivate && !canMessage) {
                     // Perfil privado: mostrar mensaje de acceso requerido
-                    alert("Este perfil es privado. Debes solicitar acceso para ver el perfil completo.");
+                    alert(
+                      "Este perfil es privado. Debes solicitar acceso para ver el perfil completo.",
+                    );
                     return;
                   }
                   setShowViews(!showViews);
@@ -450,7 +474,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
                   "relative transition-all duration-300 px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation group",
                   isPrivate && !canMessage
                     ? "bg-yellow-500/15 text-yellow-700 hover:bg-yellow-500/25 border border-yellow-500/40 dark:bg-yellow-500/20 dark:text-yellow-300 dark:hover:bg-yellow-500/30"
-                    : "bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 active:bg-slate-900/15 border border-slate-300 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/30 dark:border-white/20"
+                    : "bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 active:bg-slate-900/15 border border-slate-300 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/30 dark:border-white/20",
                 )}
                 title={`${isPrivate && !canMessage ? "Perfil privado - Solicitar acceso" : `${viewCount} visualizaciones`}`}
               >

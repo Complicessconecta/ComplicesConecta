@@ -7,11 +7,13 @@
 - **Servidor local:** `http://localhost:5173/`
 
 ## 1) Resultado Global
+
 - **Total tests:** 20
 - **✅ Pasados:** 4
 - **❌ Fallados:** 16
 
 ## 2) Tests Pasados ✅
+
 - **TC005 Demo Mode Access Without Credentials**
   - **Ruta (test):** `testsprite_tests/tmp/TC005_Demo_Mode_Access_Without_Credentials.py`
   - **Síntoma:** N/A
@@ -115,5 +117,6 @@
   - **Solución a aplicar:** Documentar comandos (`npm run test`, `npm run test:e2e`, etc.) y/o agregar página interna de QA solo en DEV (si se desea).
 
 ## 4) Notas Importantes del Entorno
+
 - **Warnings de consola:** OneSignal/PostHog no configurados (no bloquean producción si se pretende opcional, pero ensucian logs de tests).
 - **Requisito para mejorar señal de tests:** definir data/cuentas QA o robustecer modo demo para cubrir flows.

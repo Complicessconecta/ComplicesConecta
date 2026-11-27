@@ -12,13 +12,13 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 
 ## 🔒 Proveedores Certificados
 
-| Proveedor | DPA Firmado | Cumplimiento | Certificaciones | Estado |
-| --------- | ----------- | ---------------- | --------------- | ------ |
-| Supabase  | Sí | GDPR, SOC 2 | ISO 27001, SOC 2 Type II | ✅ Activo |
-| Vercel    | Sí | SOC 2, ISO 27001 | SOC 2 Type II, ISO 27001 | ✅ Activo |
-| Stripe    | Sí | PCI DSS | PCI DSS Level 1, SOC 2 | ✅ Activo |
-| WorldID   | Sí | GDPR | GDPR, ISO 27001 | ✅ Activo |
-| Cloudflare| Sí | GDPR, SOC 2 | SOC 2 Type II, ISO 27001 | ✅ Activo |
+| Proveedor  | DPA Firmado | Cumplimiento     | Certificaciones          | Estado    |
+| ---------- | ----------- | ---------------- | ------------------------ | --------- |
+| Supabase   | Sí          | GDPR, SOC 2      | ISO 27001, SOC 2 Type II | ✅ Activo |
+| Vercel     | Sí          | SOC 2, ISO 27001 | SOC 2 Type II, ISO 27001 | ✅ Activo |
+| Stripe     | Sí          | PCI DSS          | PCI DSS Level 1, SOC 2   | ✅ Activo |
+| WorldID    | Sí          | GDPR             | GDPR, ISO 27001          | ✅ Activo |
+| Cloudflare | Sí          | GDPR, SOC 2      | SOC 2 Type II, ISO 27001 | ✅ Activo |
 
 ---
 
@@ -27,6 +27,7 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 ### Supabase (Backend & Database)
 
 **Servicios:**
+
 - PostgreSQL 15.8 con RLS (Row Level Security)
 - Autenticación JWT con firma RS256
 - Realtime subscriptions con WebSockets seguros
@@ -34,6 +35,7 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 - Storage con encriptación AES-256
 
 **Medidas de Seguridad:**
+
 - 65+ políticas RLS activas
 - Encriptación AES-256 en reposo
 - TLS 1.3 en todas las conexiones
@@ -43,6 +45,7 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 - Monitoreo 24/7 con alertas automáticas
 
 **Cumplimiento:**
+
 - ✅ GDPR
 - ✅ SOC 2 Type II
 - ✅ ISO 27001
@@ -53,12 +56,14 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 ### Vercel (Frontend Hosting)
 
 **Servicios:**
+
 - Edge Network global
 - Deployments automáticos con preview
 - Analytics y monitoreo
 - Edge Functions
 
 **Medidas de Seguridad:**
+
 - TLS 1.3 en todas las conexiones
 - DDoS protection integrada
 - Web Application Firewall (WAF)
@@ -68,6 +73,7 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 - Content Security Policy (CSP)
 
 **Cumplimiento:**
+
 - ✅ SOC 2 Type II
 - ✅ ISO 27001
 - ✅ GDPR
@@ -78,12 +84,14 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 ### Stripe (Pagos)
 
 **Servicios:**
+
 - Procesamiento de pagos con tarjetas
 - Gestión de suscripciones
 - Facturación automática
 - Dashboard de pagos
 
 **Medidas de Seguridad:**
+
 - Encriptación AES-256 en reposo
 - TLS 1.3 en todas las transacciones
 - PCI DSS Level 1 compliance
@@ -93,6 +101,7 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 - Radar para prevención de fraude
 
 **Cumplimiento:**
+
 - ✅ PCI DSS Level 1
 - ✅ SOC 2 Type II
 - ✅ GDPR
@@ -103,11 +112,13 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 ### WorldID (Verificación de Identidad)
 
 **Servicios:**
+
 - Verificación de identidad con World ID
 - Proof of Humanity
 - Autenticación sin contraseña
 
 **Medidas de Seguridad:**
+
 - Zero-Knowledge Proofs (ZKPs)
 - Encriptación de datos biométricos
 - Almacenamiento descentralizado
@@ -115,6 +126,7 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 - Verificación de liveness
 
 **Cumplimiento:**
+
 - ✅ GDPR
 - ✅ ISO 27001
 - ✅ SOC 2 Ready
@@ -124,12 +136,14 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 ### Cloudflare (CDN & DDoS Protection)
 
 **Servicios:**
+
 - Content Delivery Network (CDN)
 - DDoS protection
 - DNS management
 - Web Application Firewall (WAF)
 
 **Medidas de Seguridad:**
+
 - Protección DDoS layer 3, 4, 7
 - Web Application Firewall (WAF)
 - Bot management
@@ -139,6 +153,7 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 - Automatic threat intelligence
 
 **Cumplimiento:**
+
 - ✅ SOC 2 Type II
 - ✅ ISO 27001
 - ✅ GDPR
@@ -180,14 +195,14 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 
 ## 📊 Métricas de Seguridad
 
-| Métrica | Valor | Objetivo |
-|---------|-------|----------|
-| Uptime promedio | 99.9% | 99.99% |
-| Tiempo de respuesta | <200ms | <100ms |
-| Vulnerabilidades críticas | 0 | 0 |
-| Intentos de ataque bloqueados | 100% | 100% |
-| Incidentes de seguridad | 0 | 0 |
-| Auditorías externas | 2/año | 4/año |
+| Métrica                       | Valor  | Objetivo |
+| ----------------------------- | ------ | -------- |
+| Uptime promedio               | 99.9%  | 99.99%   |
+| Tiempo de respuesta           | <200ms | <100ms   |
+| Vulnerabilidades críticas     | 0      | 0        |
+| Intentos de ataque bloqueados | 100%   | 100%     |
+| Incidentes de seguridad       | 0      | 0        |
+| Auditorías externas           | 2/año  | 4/año    |
 
 ---
 
@@ -253,8 +268,8 @@ ComplicesConecta implementa una política de seguridad de proveedores integral p
 
 **Última actualización:** Enero 10, 2026  
 **Versión:** 2.0  
-**Estado:** ✅ IMPLEMENTADO Y ACTIVO  
+**Estado:** ✅ IMPLEMENTADO Y ACTIVO
 
 ---
 
-*Este documento es confidencial y está destinado solo para uso interno y para proveedores autorizados.*
+_Este documento es confidencial y está destinado solo para uso interno y para proveedores autorizados._

@@ -192,6 +192,7 @@ ComplicesConecta es una plataforma que **facilita la conexión entre usuarios y 
 5. **Pérdida:** Pide ayuda al personal del club
 
 ### ❌ NO dependas de la app en emergencias:
+
 - La app no reemplaza servicios de emergencia
 - El internet puede fallar cuando más lo necesites
 - El personal del club tiene más recursos para ayudarte
@@ -233,15 +234,18 @@ ComplicesConecta es una plataforma que **facilita la conexión entre usuarios y 
 ## 📞 CONTACTO Y EMERGENCIAS
 
 ### Para reportar problemas con clubs:
+
 - **Email:** support@complicesconecta.com
 - **Reporte en app:** Botón "Reportar Club"
 
 ### Para emergencias:
+
 - **Policía:** 911
 - **Cruz Roja:** 065
 - **Protección Civil:** 911
 
 ### Para asuntos legales:
+
 - **Email:** legal@complicesconecta.com
 - **Teléfono:** +52 (55) 1234-5678
 
@@ -259,12 +263,14 @@ Jurisdicción: Tribunales de la Ciudad de México.
 **ComplicesConecta es una herramienta de conexión, NO un garante de seguridad, calidad o veracidad de los clubs.**
 
 **TÚ eres responsable de:**
+
 - Tu seguridad y bienestar
 - Verificar información antes de ir
 - Tus decisiones y acciones
 - Resolver disputas directamente
 
 **NOSOTROS somos responsables de:**
+
 - Verificar que los clubs sean reales
 - Proporcionar una plataforma funcional
 - Moderar contenido inapropiado
@@ -276,4 +282,4 @@ Jurisdicción: Tribunales de la Ciudad de México.
 
 ---
 
-*Este deslinde complementa pero no reemplaza el Deslinde General de ComplicesConecta.*
+_Este deslinde complementa pero no reemplaza el Deslinde General de ComplicesConecta._

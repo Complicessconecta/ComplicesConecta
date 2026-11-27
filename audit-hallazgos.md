@@ -3,6 +3,7 @@
 ## 1. Archivos en Directorio Incorrecto
 
 ### AppLayout.tsx duplicado
+
 - **Nombre**: AppLayout.tsx
 - **Ruta Actual**: src/components/AppLayout.tsx
 - **Síntoma**: Archivo duplicado en src/layouts/AppLayout.tsx
@@ -10,6 +11,7 @@
 - **Solución Propuesta**: Eliminar src/components/AppLayout.tsx, mantener src/layouts/AppLayout.tsx. Actualizar imports en dependientes que importen de @/components/AppLayout a @/layouts/AppLayout
 
 ### ChatPrivacyService.ts duplicado (proxy innecesario)
+
 - **Nombre**: ChatPrivacyService.ts
 - **Ruta Actual**: src/services/chat/ChatPrivacyService.ts
 - **Síntoma**: Archivo solo re-exporta desde src/services/social/chat/ChatPrivacyService.ts (implementación real)
@@ -19,6 +21,7 @@
 ## 2. Problemas en Index.ts
 
 ### src/components/auth/index.ts
+
 - **Nombre**: index.ts
 - **Ruta**: src/components/auth/index.ts
 - **Síntoma**: Línea 5 exporta ThemeInfoModal de "@/components/modals/ThemeInfoModal"
@@ -26,6 +29,7 @@
 - **Solución Propuesta**: Eliminar línea 5 `export { ThemeInfoModal } from "@/components/modals/ThemeInfoModal";` de src/components/auth/index.ts
 
 ### src/lib/index.ts
+
 - **Nombre**: index.ts
 - **Ruta**: src/lib/index.ts
 - **Síntoma**: Líneas 5-8 exportan de rutas incorrectas
@@ -39,6 +43,7 @@
 ## 3. Otros Problemas Estructurales
 
 ### Directorios sin index.ts con múltiples archivos
+
 - **Nombre**: clubs/
 - **Ruta**: src/components/clubs/
 - **Síntoma**: Directorio con 6 archivos .tsx pero sin index.ts
@@ -46,6 +51,7 @@
 - **Solución Propuesta**: Crear src/components/clubs/index.ts con exports de todos los componentes
 
 ### Archivos referenciados en index.ts pero no encontrados
+
 - **Nombre**: cn, format, validation
 - **Ruta**: src/shared/lib/
 - **Síntoma**: src/lib/index.ts:17-19 exporta de @/shared/lib/cn, @/shared/lib/format, @/shared/lib/validation

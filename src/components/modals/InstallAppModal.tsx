@@ -345,4 +345,3 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
     </div>
   );
 };
-

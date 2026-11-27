@@ -1,9 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { EyeOff, Crown,Lock, Heart, MessageCircle, Star, Shield, Zap, Users } from "lucide-react";
+import {
+  EyeOff,
+  Crown,
+  Lock,
+  Heart,
+  MessageCircle,
+  Star,
+  Shield,
+  Zap,
+  Users,
+} from "lucide-react";
 import { useFeatures } from "@/hooks/useFeatures";
 import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -212,10 +227,7 @@ export const PrivateMatches: React.FC = () => {
           is_mutual: invitation.status === "accepted",
           created_at: invitation.created_at ?? new Date().toISOString(),
           status: invitation.status as
-            | "pending"
-            | "accepted"
-            | "declined"
-            | "expired",
+            "pending" | "accepted" | "declined" | "expired",
           matched_user: {
             id: invitation.matched_user?.id ?? "",
             first_name: invitation.matched_user?.first_name ?? "",

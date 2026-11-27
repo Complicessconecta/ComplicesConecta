@@ -162,7 +162,8 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                           Responsabilidad
                         </h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Eres Responsable de tu comportamiento en la Plataforma.
+                          Eres Responsable de tu comportamiento en la
+                          Plataforma.
                         </p>
                       </div>
                     </div>
@@ -225,10 +226,19 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       <li>• Soy mayor de 18 años</li>
                       <li>• He leído y acepto los términos y condiciones</li>
                       <li>• Acepto las políticas de privacidad y cookies</li>
-                      <li>• Entiendo que esta es una plataforma para adultos</li>
+                      <li>
+                        • Entiendo que esta es una plataforma para adultos
+                      </li>
                       <li>• Acepto que mi comportamiento sea respetuoso</li>
-                      <li>• Acepto es mi Responsabilidad el uso en la Plataforma</li>
-                      <li>• Acepto que el quebrantar cualquier Regla , Politca , Condicion Infrigir las Normas y uso de La Plataforma Causria Concecuecias legales y/o Penalizacoines Acorde a las Rglas establecidas.</li>
+                      <li>
+                        • Acepto es mi Responsabilidad el uso en la Plataforma
+                      </li>
+                      <li>
+                        • Acepto que el quebrantar cualquier Regla , Politca ,
+                        Condicion Infrigir las Normas y uso de La Plataforma
+                        Causria Concecuecias legales y/o Penalizacoines Acorde a
+                        las Rglas establecidas.
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -266,4 +276,3 @@ export const TermsModal: React.FC<TermsModalProps> = ({
 };
 
 export default TermsModal;
-

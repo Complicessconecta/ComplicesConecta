@@ -2,7 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import { Grid3X3, Play, Upload, Trash2, MessageCircle, Heart, Share, MoreHorizontal, Sparkles, Lock as LockIcon } from "lucide-react";
+import {
+  Grid3X3,
+  Play,
+  Upload,
+  Trash2,
+  MessageCircle,
+  Heart,
+  Share,
+  MoreHorizontal,
+  Sparkles,
+  Lock as LockIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import StoriesContainer from "@/components/stories/StoriesContainer";
 import { ComingSoonModal } from "@/components/modals/ComingSoonModal";
@@ -18,8 +29,18 @@ import {
   PhotoAccessCountdown,
 } from "@/components/profiles/shared/PhotoAccessCountdown";
 import { canonicalDemoOwnerId } from "@/lib/friends";
-import { useSmartMatching,  type UserProfile, type PersonalityTraits, type MatchingPreferences, type ActivityMetrics, type VerificationStatus } from "@/lib/ai/smartMatching";
-import { ProfileNavTabs, type TabType } from "@/components/profiles/ProfileNavTabs";
+import {
+  useSmartMatching,
+  type UserProfile,
+  type PersonalityTraits,
+  type MatchingPreferences,
+  type ActivityMetrics,
+  type VerificationStatus,
+} from "@/lib/ai/smartMatching";
+import {
+  ProfileNavTabs,
+  type TabType,
+} from "@/components/profiles/ProfileNavTabs";
 
 // Mock Data Generators for AI Matching
 const createMockPersonality = (): PersonalityTraits => ({
@@ -194,7 +215,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
     !!galleryOwnerId &&
     canonicalDemoOwnerId(galleryViewerId) ===
       canonicalDemoOwnerId(galleryOwnerId);
-  const isAuthFn = typeof isAuthenticated === "function" ? isAuthenticated() : !!isAuthenticated;
+  const isAuthFn =
+    typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : !!isAuthenticated;
   const loginLabel = "Configuración";
 
   const nftFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -233,8 +257,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         breakdown: match.breakdown,
         variant: "grid" as const,
         accountType: (candidate?.gender === "pareja" ? "couple" : "single") as
-          | "single"
-          | "couple",
+          "single" | "couple",
         verified: candidate?.verification.isVerified,
       };
     });
@@ -271,125 +294,129 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   cuando showExamplePost (es el post DE Ana: en /profile/3
                   sí, en el perfil propio o de pareja no). */}
               {showExamplePost && (
-              <Card className="bg-white/10 backdrop-blur-md border-white/20">
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white font-bold">
-                      A
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold text-white">Ana</span>
-                        <span className="text-white/60 text-sm">hace 2h</span>
+                <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                        A
                       </div>
-                      <p className="text-white/90 text-sm">
-                        Disfrutando de un día increíble y conociendo nuevos
-                        lugares ✨
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-semibold text-slate-900 dark:text-white">
+                            Ana
+                          </span>
+                          <span className="text-slate-500 dark:text-white/60 text-sm">
+                            hace 2h
+                          </span>
+                        </div>
+                        <p className="text-slate-700 dark:text-white/90 text-sm">
+                          Disfrutando de un día increíble y conociendo nuevos
+                          lugares ✨
+                        </p>
+                      </div>
+                      {isOwnProfile && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-slate-500 dark:text-white/60 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10"
+                          onClick={() => onDeletePost?.("post-1")}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
-                    {isOwnProfile && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-white/60 hover:text-white hover:bg-white/10"
-                        onClick={() => onDeletePost?.("post-1")}
+
+                    {/* Post Image */}
+                    <div className="aspect-video bg-linear-to-br from-purple-400 to-fuchsia-600 rounded-lg mb-3 overflow-hidden">
+                      <img
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=400&fit=crop"
+                        alt="Post"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&h=400&fit=crop";
+                        }}
+                      />
+                    </div>
+
+                    {/* Post Actions */}
+                    <div className="flex items-center gap-4">
+                      <motion.div
+                        whileTap={{ scale: 0.9 }}
+                        animate={isLiked ? { scale: [1, 1.2, 1] } : {}}
+                        transition={{ duration: 0.3 }}
                       >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-
-                  {/* Post Image */}
-                  <div className="aspect-video bg-linear-to-br from-purple-400 to-fuchsia-600 rounded-lg mb-3 overflow-hidden">
-                    <img
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=400&fit=crop"
-                      alt="Post"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&h=400&fit=crop";
-                      }}
-                    />
-                  </div>
-
-                  {/* Post Actions */}
-                  <div className="flex items-center gap-4">
-                    <motion.div
-                      whileTap={{ scale: 0.9 }}
-                      animate={isLiked ? { scale: [1, 1.2, 1] } : {}}
-                      transition={{ duration: 0.3 }}
-                    >
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className={`flex items-center gap-2 transition-colors ${
+                            isLiked
+                              ? "text-fuchsia-400 hover:text-fuchsia-500"
+                              : "text-slate-500 dark:text-white/60 hover:text-fuchsia-500 dark:hover:text-fuchsia-400"
+                          } hover:bg-white/10`}
+                          onClick={() => {
+                            setIsLiked(!isLiked);
+                            setLikeCount((prev) =>
+                              isLiked ? prev - 1 : prev + 1,
+                            );
+                          }}
+                        >
+                          <Heart
+                            className={`w-4 h-4 ${
+                              isLiked ? "fill-fuchsia-400" : ""
+                            }`}
+                          />
+                          <span className="text-sm">{likeCount}</span>
+                        </Button>
+                      </motion.div>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className={`flex items-center gap-2 transition-colors ${
-                          isLiked
-                            ? "text-fuchsia-400 hover:text-fuchsia-500"
-                            : "text-white/60 hover:text-fuchsia-400"
-                        } hover:bg-white/10`}
+                        className="text-slate-500 dark:text-white/60 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/10 flex items-center gap-2"
+                        onClick={() => onCommentPost?.("post-1")}
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span className="text-sm">8</span>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-slate-500 dark:text-white/60 hover:text-green-500 dark:hover:text-green-400 hover:bg-slate-100 dark:hover:bg-white/10"
                         onClick={() => {
-                          setIsLiked(!isLiked);
-                          setLikeCount((prev) =>
-                            isLiked ? prev - 1 : prev + 1,
-                          );
+                          toast({
+                            title: "Compartir",
+                            description: "🔗 Compartir post (Función demo)",
+                          });
                         }}
                       >
-                        <Heart
-                          className={`w-4 h-4 ${
-                            isLiked ? "fill-fuchsia-400" : ""
-                          }`}
-                        />
-                        <span className="text-sm">{likeCount}</span>
+                        <Share className="w-4 h-4" />
                       </Button>
-                    </motion.div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-white/60 hover:text-blue-400 hover:bg-white/10 flex items-center gap-2"
-                      onClick={() => onCommentPost?.("post-1")}
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      <span className="text-sm">8</span>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-white/60 hover:text-green-400 hover:bg-white/10"
-                      onClick={() => {
-                        toast({
-                          title: "Compartir",
-                          description: "🔗 Compartir post (Función demo)",
-                        });
-                      }}
-                    >
-                      <Share className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-white/60 hover:text-white hover:bg-white/10 ml-auto"
-                      onClick={() => {
-                        const options = window.confirm(
-                          "⚙️ MÁS OPCIONES\n\n✅ Guardar post\n✅ Reportar\n✅ Ocultar\n\n(Función demo)",
-                        );
-                        if (options) {
-                          toast({
-                            title: "Acción guardada",
-                            description: "✅ Acción guardada",
-                          });
-                        }
-                      }}
-                    >
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-slate-500 dark:text-white/60 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 ml-auto"
+                        onClick={() => {
+                          const options = window.confirm(
+                            "⚙️ MÁS OPCIONES\n\n✅ Guardar post\n✅ Reportar\n✅ Ocultar\n\n(Función demo)",
+                          );
+                          if (options) {
+                            toast({
+                              title: "Acción guardada",
+                              description: "✅ Acción guardada",
+                            });
+                          }
+                        }}
+                      >
+                        <MoreHorizontal className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
 
               {/* Post Demo Creado */}
               {demoPost && (
-                <Card className="bg-white/10 backdrop-blur-md border-white/20 mb-4">
+                <Card className="bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 mb-4">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3 mb-3">
                       <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center text-white font-bold">
@@ -397,14 +424,14 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-white">
+                          <span className="font-semibold text-slate-900 dark:text-white">
                             Demo User
                           </span>
-                          <span className="text-white/60 text-sm">
+                          <span className="text-slate-500 dark:text-white/60 text-sm">
                             hace 1 min
                           </span>
                         </div>
-                        <p className="text-white/90 text-sm">
+                        <p className="text-slate-700 dark:text-white/90 text-sm">
                           {demoPost.content}
                         </p>
                       </div>
@@ -417,7 +444,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={`flex items-center gap-2 ${demoPostLikes > 0 ? "text-fuchsia-400" : "text-white/60 hover:text-fuchsia-400"}`}
+                          className={`flex items-center gap-2 ${demoPostLikes > 0 ? "text-fuchsia-400" : "text-slate-500 dark:text-white/60 hover:text-fuchsia-500 dark:hover:text-fuchsia-400"}`}
                           onClick={() => setDemoPostLikes((prev) => prev + 1)}
                         >
                           <Heart
@@ -429,7 +456,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-white/60 hover:text-blue-400 flex items-center gap-2"
+                        className="text-slate-500 dark:text-white/60 hover:text-blue-500 dark:hover:text-blue-400 flex items-center gap-2"
                         onClick={() => {
                           setShowComments(!showComments);
                           if (!showComments) {
@@ -443,25 +470,25 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-white/60 hover:text-green-400"
+                        className="text-slate-500 dark:text-white/60 hover:text-green-500 dark:hover:text-green-400"
                       >
                         <Share className="w-4 h-4" />
                       </Button>
                     </div>
                     {showComments && (
-                      <div className="mt-4 p-3 bg-white/5 rounded-lg">
-                        <p className="text-white/70 text-sm mb-2">
+                      <div className="mt-4 p-3 bg-slate-100 dark:bg-white/5 rounded-lg">
+                        <p className="text-slate-500 dark:text-white/70 text-sm mb-2">
                           💬 Comentarios demo:
                         </p>
                         <div className="space-y-2">
-                          <div className="text-xs text-white/60">
-                            <span className="font-semibold text-white">
+                          <div className="text-xs text-slate-500 dark:text-white/60">
+                            <span className="font-semibold text-slate-900 dark:text-white">
                               Usuario 1:
                             </span>{" "}
                             ¡Me encanta! 😍
                           </div>
-                          <div className="text-xs text-white/60">
-                            <span className="font-semibold text-white">
+                          <div className="text-xs text-slate-500 dark:text-white/60">
+                            <span className="font-semibold text-slate-900 dark:text-white">
                               Usuario 2:
                             </span>{" "}
                             Genial 👏
@@ -479,8 +506,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                   Ana seguido de "No hay posts aún" (punto 13). */}
               {!demoPost && !showExamplePost && (
                 <div className="text-center py-12">
-                  <Grid3X3 className="w-12 h-12 mx-auto mb-4 text-white/40" />
-                  <p className="text-white/60 mb-4">No hay posts aún</p>
+                  <Grid3X3 className="w-12 h-12 mx-auto mb-4 text-slate-300 dark:text-white/40" />
+                  <p className="text-slate-500 dark:text-white/60 mb-4">
+                    No hay posts aún
+                  </p>
                   {isOwnProfile && allowCreatePost && (
                     <Button
                       onClick={() => {
@@ -498,9 +527,9 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     </Button>
                   )}
                   {isOwnProfile && !allowCreatePost && (
-                    <p className="text-white/60 text-sm">
-                      Las cuentas anónimas no publican posts: solo pueden
-                      crear reseñas.
+                    <p className="text-slate-500 dark:text-white/60 text-sm">
+                      Las cuentas anónimas no publican posts: solo pueden crear
+                      reseñas.
                     </p>
                   )}
                 </div>
@@ -514,8 +543,8 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
           <div className="space-y-4">
             <StoriesContainer />
             <div className="text-center py-8">
-              <Play className="w-12 h-12 mx-auto mb-4 text-white/40" />
-              <p className="text-white/60 mb-4">
+              <Play className="w-12 h-12 mx-auto mb-4 text-slate-300 dark:text-white/40" />
+              <p className="text-slate-500 dark:text-white/60 mb-4">
                 Tus historias aparecerán aquí
               </p>
               {isOwnProfile && (
@@ -538,7 +567,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 Ronda 8 (punto 14): sin NFTs en el perfil anónimo:
                 se ocultan "Crear NFT" y el minteo (queda "Subir Foto"). */}
             {isOwnProfile && (
-              <div className="flex flex-wrap gap-4 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
+              <div className="flex flex-wrap gap-4 mb-4 p-4 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10">
                 <Button
                   onClick={onUploadImage}
                   className="flex-1 bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
@@ -581,10 +610,10 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
             )}
 
             {isOwnProfile && allowNft && nftImageFile && (
-              <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
-                <div className="text-sm text-white/80">
+              <div className="p-4 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/10 space-y-3">
+                <div className="text-sm text-slate-500 dark:text-white/80">
                   Imagen seleccionada:{" "}
-                  <span className="text-white font-semibold">
+                  <span className="text-slate-900 dark:text-white font-semibold">
                     {nftImageFile.name}
                   </span>
                 </div>
@@ -615,11 +644,11 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 aún, vacío explícito en vez de contenido ajeno. */}
             {isAnonymous ? (
               <div>
-                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
                   <Upload className="w-4 h-4" />
                   Fotos Públicas
                 </h4>
-                <p className="text-center text-sm text-white/60 py-8">
+                <p className="text-center text-sm text-slate-500 dark:text-white/60 py-8">
                   {isOwnProfile
                     ? "Tu galería anónima aún no tiene fotos públicas. Sube tu primera foto con el botón de arriba."
                     : "Este perfil anónimo aún no tiene fotos públicas."}
@@ -627,7 +656,7 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               </div>
             ) : (
               <div>
-                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
                   <Upload className="w-4 h-4" />
                   Fotos Públicas
                 </h4>
@@ -671,18 +700,18 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                 ajenas. */}
             {isAnonymous ? (
               <div>
-                <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
                   <Upload className="w-4 h-4" />
                   <span className="inline-flex items-center gap-2">
                     <span>Galería limitada</span>
                     <LockIcon className="w-4 h-4" />
                   </span>
                 </h4>
-                <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+                <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-4 text-sm text-slate-500 dark:text-white/70">
                   <p>
                     Esta galería es limitada: solo se ven algunas fotos
-                    públicas. Para ver el resto, pide acceso al dueño
-                    del perfil.
+                    públicas. Para ver el resto, pide acceso al dueño del
+                    perfil.
                   </p>
                   {/* Ronda 11 (stream A, 1f): con acceso concedido y
                       vigente, la cuenta atrás EN VIVO (1 s, HH:MM:SS);
@@ -700,13 +729,13 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
                     <AnonymousOwnGalleryAccess
                       ownerId={galleryOwnerId ?? ""}
                       viewerId={galleryViewerId ?? ""}
-                      className="mt-2 font-semibold text-white"
+                      className="mt-2 font-semibold text-slate-900 dark:text-white"
                     />
                   ) : (
                     <PhotoAccessCountdown
                       viewerId={galleryViewerId ?? ""}
                       ownerId={galleryOwnerId ?? ""}
-                      className="mt-2 font-semibold text-white"
+                      className="mt-2 font-semibold text-slate-900 dark:text-white"
                       fallback={
                         <p className="mt-2">
                           1 acceso concedido expira a las 24 h; al expirar
@@ -719,72 +748,72 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               </div>
             ) : (
               <div>
-              <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
-                <Upload className="w-4 h-4" />
-                <span className="inline-flex items-center gap-2">
-                  <span>Fotos Privadas</span>
-                  <LockIcon className="w-4 h-4" />
-                </span>
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div
-                  className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
-                  onClick={() =>
-                    toast({
-                      title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadas",
-                    })
-                  }
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop"
-                    alt="Foto privada 1"
-                    className="w-full h-full object-cover filter blur-lg"
-                  />
-                  <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
-                    <LockIcon className="w-14 h-14 text-white mb-2" />
-                    <span className="text-white text-sm">
-                      Click para solicitar
-                    </span>
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-3 flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  <span className="inline-flex items-center gap-2">
+                    <span>Fotos Privadas</span>
+                    <LockIcon className="w-4 h-4" />
+                  </span>
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  <div
+                    className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
+                    onClick={() =>
+                      toast({
+                        title: "Contenido privado",
+                        description: "Solicita acceso para ver fotos privadas",
+                      })
+                    }
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop"
+                      alt="Foto privada 1"
+                      className="w-full h-full object-cover filter blur-lg"
+                    />
+                    <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
+                      <LockIcon className="w-14 h-14 text-white mb-2" />
+                      <span className="text-white text-sm">
+                        Click para solicitar
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
+                    onClick={() =>
+                      toast({
+                        title: "Contenido privado",
+                        description: "Solicita acceso para ver fotos privadas",
+                      })
+                    }
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop"
+                      alt="Foto privada 2"
+                      className="w-full h-full object-cover filter blur-lg"
+                    />
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <LockIcon className="w-14 h-14 text-white" />
+                    </div>
+                  </div>
+                  <div
+                    className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
+                    onClick={() =>
+                      toast({
+                        title: "Contenido privado",
+                        description: "Solicita acceso para ver fotos privadas",
+                      })
+                    }
+                  >
+                    <img
+                      src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop"
+                      alt="Foto privada 3"
+                      className="w-full h-full object-cover filter blur-lg"
+                    />
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <LockIcon className="w-14 h-14 text-white" />
+                    </div>
                   </div>
                 </div>
-                <div
-                  className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
-                  onClick={() =>
-                    toast({
-                      title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadas",
-                    })
-                  }
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop"
-                    alt="Foto privada 2"
-                    className="w-full h-full object-cover filter blur-lg"
-                  />
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <LockIcon className="w-14 h-14 text-white" />
-                  </div>
-                </div>
-                <div
-                  className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
-                  onClick={() =>
-                    toast({
-                      title: "Contenido privado",
-                      description: "Solicita acceso para ver fotos privadas",
-                    })
-                  }
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop"
-                    alt="Foto privada 3"
-                    className="w-full h-full object-cover filter blur-lg"
-                  />
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <LockIcon className="w-14 h-14 text-white" />
-                  </div>
-                </div>
-              </div>
               </div>
             )}
 
@@ -832,11 +861,13 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               </div>
             ) : (
               <div className="text-center py-12">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
-                  <Sparkles className="h-8 w-8 text-white/20" />
+                <div className="w-16 h-16 bg-slate-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-200 dark:border-white/10">
+                  <Sparkles className="h-8 w-8 text-slate-300 dark:text-white/20" />
                 </div>
-                <p className="text-white/60 mb-2">¡Estás al día!</p>
-                <p className="text-sm text-white/40">
+                <p className="text-slate-500 dark:text-white/60 mb-2">
+                  ¡Estás al día!
+                </p>
+                <p className="text-sm text-slate-400 dark:text-white/40">
                   Vuelve más tarde para ver nuevos matches
                 </p>
               </div>
@@ -910,4 +941,3 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
     </div>
   );
 };
-

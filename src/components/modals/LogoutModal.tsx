@@ -13,12 +13,12 @@ interface LogoutModalProps {
   userRole?: string;
 }
 
-export const LogoutModal = ({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
-  userName = "Usuario", 
-  userRole = "usuario" 
+export const LogoutModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  userName = "Usuario",
+  userRole = "usuario",
 }: LogoutModalProps) => {
   const [mounted, setMounted] = useState(false);
 
@@ -85,9 +85,9 @@ export const LogoutModal = ({
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ 
+        transition={{
           duration: 0.3,
-          ease: [0.4, 0, 0.2, 1]
+          ease: [0.4, 0, 0.2, 1],
         }}
         className="relative z-10 w-full max-w-md"
       >
@@ -143,7 +143,8 @@ export const LogoutModal = ({
                   ¿Estás seguro de cerrar tu sesión?
                 </p>
                 <p className="text-xs text-amber-700 mt-1">
-                  Serás redirigido a la página principal y deberás iniciar sesión nuevamente para acceder a tu cuenta.
+                  Serás redirigido a la página principal y deberás iniciar
+                  sesión nuevamente para acceder a tu cuenta.
                 </p>
               </div>
             </div>
@@ -179,13 +180,13 @@ export const LogoutModal = ({
               borderColor: [
                 "rgba(168, 85, 247, 0.2)",
                 "rgba(236, 72, 153, 0.2)",
-                "rgba(168, 85, 247, 0.2)"
-              ]
+                "rgba(168, 85, 247, 0.2)",
+              ],
             }}
             transition={{
               duration: 3,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "easeInOut",
             }}
           />
         </Card>

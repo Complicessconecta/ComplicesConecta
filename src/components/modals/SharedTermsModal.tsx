@@ -5,7 +5,13 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/Modal";
 import { Button } from "@/components/ui/buttons/Button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -308,4 +314,3 @@ export const SharedTermsModal: React.FC<TermsModalProps> = ({
     </Dialog>
   );
 };
-

@@ -43,7 +43,12 @@ type ConsoleObject = Record<string, ConsoleLeaf | ConsoleArray>;
 type ConsoleValue = ConsoleLeaf | ConsoleArray | ConsoleObject;
 
 function isConsoleRecord(value: ConsoleValue): value is ConsoleObject {
-  return Boolean(value) && typeof value === "object" && !Array.isArray(value) && !(value instanceof Error);
+  return (
+    Boolean(value) &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    !(value instanceof Error)
+  );
 }
 
 /**
@@ -89,7 +94,10 @@ export function setupConsoleCleanup(): void {
     // En desarrollo, mantener console normal pero con sanitización
     console.log = (...args: ConsoleValue[]) => {
       if (args.some(containsSensitiveInfo)) {
-        originalConsole.warn("🚨 Sensitive data detected in console.log:", ...sanitizeLogMessage(...args));
+        originalConsole.warn(
+          "🚨 Sensitive data detected in console.log:",
+          ...sanitizeLogMessage(...args),
+        );
       } else {
         originalConsole.log(...args);
       }
@@ -97,7 +105,10 @@ export function setupConsoleCleanup(): void {
 
     console.info = (...args: ConsoleValue[]) => {
       if (args.some(containsSensitiveInfo)) {
-        originalConsole.warn("🚨 Sensitive data detected in console.info:", ...sanitizeLogMessage(...args));
+        originalConsole.warn(
+          "🚨 Sensitive data detected in console.info:",
+          ...sanitizeLogMessage(...args),
+        );
       } else {
         originalConsole.info(...args);
       }
@@ -105,7 +116,10 @@ export function setupConsoleCleanup(): void {
 
     console.debug = (...args: ConsoleValue[]) => {
       if (args.some(containsSensitiveInfo)) {
-        originalConsole.warn("🚨 Sensitive data detected in console.debug:", ...sanitizeLogMessage(...args));
+        originalConsole.warn(
+          "🚨 Sensitive data detected in console.debug:",
+          ...sanitizeLogMessage(...args),
+        );
       } else {
         originalConsole.debug(...args);
       }
@@ -113,7 +127,10 @@ export function setupConsoleCleanup(): void {
 
     console.trace = (...args: ConsoleValue[]) => {
       if (args.some(containsSensitiveInfo)) {
-        originalConsole.warn("🚨 Sensitive data detected in console.trace:", ...sanitizeLogMessage(...args));
+        originalConsole.warn(
+          "🚨 Sensitive data detected in console.trace:",
+          ...sanitizeLogMessage(...args),
+        );
       } else {
         originalConsole.trace(...args);
       }
@@ -122,7 +139,6 @@ export function setupConsoleCleanup(): void {
     // Mantener warn y error siempre visibles
     console.warn = originalConsole.warn;
     console.error = originalConsole.error;
-
   } else {
     // En producción, deshabilitar completamente console.log/info/debug/trace
     console.log = () => {};
@@ -133,7 +149,10 @@ export function setupConsoleCleanup(): void {
     // Mantener warn y error para debugging crítico
     console.warn = (...args: ConsoleValue[]) => {
       if (args.some(containsSensitiveInfo)) {
-        originalConsole.warn('🚨 Sensitive data detected:', ...sanitizeLogMessage(...args));
+        originalConsole.warn(
+          "🚨 Sensitive data detected:",
+          ...sanitizeLogMessage(...args),
+        );
       } else {
         originalConsole.warn(...args);
       }
@@ -141,7 +160,10 @@ export function setupConsoleCleanup(): void {
 
     console.error = (...args: ConsoleValue[]) => {
       if (args.some(containsSensitiveInfo)) {
-        originalConsole.error('🚨 Sensitive data detected:', ...sanitizeLogMessage(...args));
+        originalConsole.error(
+          "🚨 Sensitive data detected:",
+          ...sanitizeLogMessage(...args),
+        );
       } else {
         originalConsole.error(...args);
       }
@@ -155,7 +177,7 @@ export function setupConsoleCleanup(): void {
 export function setupDevToolsProtection(): void {
   if (!isProduction) return;
 
-  const devtools: { open: boolean; orientation?: 'vertical' | 'horizontal' } = {
+  const devtools: { open: boolean; orientation?: "vertical" | "horizontal" } = {
     open: false,
   };
 
@@ -163,13 +185,15 @@ export function setupDevToolsProtection(): void {
 
   // Detectar si DevTools está abierto
   setInterval(() => {
-    if (window.outerHeight - window.innerHeight > threshold ||
-        window.outerWidth - window.innerWidth > threshold) {
+    if (
+      window.outerHeight - window.innerHeight > threshold ||
+      window.outerWidth - window.innerWidth > threshold
+    ) {
       if (!devtools.open) {
         devtools.open = true;
         console.clear();
-        console.warn('🚨 DevTools detected in production mode');
-        
+        console.warn("🚨 DevTools detected in production mode");
+
         // Opcional: Redirigir o mostrar advertencia
         // window.location.href = '/devtools-warning';
       }
@@ -179,7 +203,7 @@ export function setupDevToolsProtection(): void {
   }, 500);
 
   // Prevenir F12 y Ctrl+Shift+I
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener("keydown", (e) => {
     // F12
     if (e.keyCode === 123) {
       e.preventDefault();
@@ -206,7 +230,7 @@ export function setupDevToolsProtection(): void {
   });
 
   // Prevenir clic derecho
-  document.addEventListener('contextmenu', (e) => {
+  document.addEventListener("contextmenu", (e) => {
     e.preventDefault();
   });
 }
@@ -218,27 +242,23 @@ export function setupTabCloseCleanup(): void {
   const cleanup = () => {
     try {
       // Limpiar solo datos no críticos (los críticos ya están cifrados)
-      const keysToClean = [
-        'temp-data',
-        'cache-timestamp',
-        'ui-state',
-      ];
+      const keysToClean = ["temp-data", "cache-timestamp", "ui-state"];
 
-      keysToClean.forEach(key => {
+      keysToClean.forEach((key) => {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
       });
 
-      console.log('🧹 Tab cleanup completed');
+      console.log("🧹 Tab cleanup completed");
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error('Error during tab cleanup:', message);
+      console.error("Error during tab cleanup:", message);
     }
   };
 
   // Limpiar al cerrar pestaña
-  window.addEventListener('beforeunload', cleanup);
-  window.addEventListener('pagehide', cleanup);
+  window.addEventListener("beforeunload", cleanup);
+  window.addEventListener("pagehide", cleanup);
 }
 
 /**
@@ -249,11 +269,11 @@ export function setupProductionSecurity(): void {
     setupConsoleCleanup();
     setupDevToolsProtection();
     setupTabCloseCleanup();
-    
-    console.log('🛡️ Production security protections enabled');
+
+    console.log("🛡️ Production security protections enabled");
   } else {
     setupConsoleCleanup();
-    console.log('🔧 Development mode with console sanitization');
+    console.log("🔧 Development mode with console sanitization");
   }
 }
 
@@ -268,8 +288,10 @@ export function restoreOriginalConsole(): void {
  * Verifica si el console está modificado
  */
 export function isConsoleModified(): boolean {
-  return console.log !== originalConsole.log ||
-         console.info !== originalConsole.info ||
-         console.debug !== originalConsole.debug ||
-         console.trace !== originalConsole.trace;
+  return (
+    console.log !== originalConsole.log ||
+    console.info !== originalConsole.info ||
+    console.debug !== originalConsole.debug ||
+    console.trace !== originalConsole.trace
+  );
 }

@@ -26,12 +26,7 @@ export const CSP_CONFIG = {
       "'unsafe-inline'", // Tailwind CSS necesita inline styles
       "https://fonts.googleapis.com", // Google Fonts
     ],
-    "img-src": [
-      "'self'",
-      "data:",
-      "blob:",
-      "https:",
-    ],
+    "img-src": ["'self'", "data:", "blob:", "https:"],
     "font-src": ["'self'", "data:", "https://fonts.gstatic.com"],
     "connect-src": [
       "'self'",
@@ -56,21 +51,13 @@ export const CSP_CONFIG = {
       // NO incluir 'unsafe-inline' o 'unsafe-eval' en producción
       "https://va.vercel-scripts.com", // Vercel Speed Insights
     ],
-    "script-src-elem": [
-      "'self'",
-      "https://va.vercel-scripts.com",
-    ],
+    "script-src-elem": ["'self'", "https://va.vercel-scripts.com"],
     "style-src": [
       "'self'",
       "'unsafe-inline'", // Necesario para Tailwind CSS (considerar nonce)
       "https://fonts.googleapis.com", // Google Fonts
     ],
-    "img-src": [
-      "'self'",
-      "data:",
-      "blob:",
-      "https:",
-    ],
+    "img-src": ["'self'", "data:", "blob:", "https:"],
     "font-src": ["'self'", "data:", "https://fonts.gstatic.com"], // Google Fonts
     "connect-src": [
       "'self'",
@@ -100,10 +87,10 @@ export function generateCSPHeader(isProduction: boolean = false): string {
   const directives = Object.entries(config)
     .filter(([directive]) => directive !== "frame-ancestors")
     .map(([directive, sources]) => {
-      const sourceList = sources.join(' ');
+      const sourceList = sources.join(" ");
       return `${directive} ${sourceList}`;
     })
-    .join('; ');
+    .join("; ");
 
   return directives;
 }
@@ -121,34 +108,38 @@ export function getCSPMetaTag(isProduction: boolean = false): string {
  */
 export const CSP_REPORT_ENDPOINT = {
   "csp-endpoint": {
-    "group": "csp-endpoint",
-    "max_age": 10886400,
-    "endpoints": [{
-      "url": "/api/csp-violation-report"
-    }]
-  }
+    group: "csp-endpoint",
+    max_age: 10886400,
+    endpoints: [
+      {
+        url: "/api/csp-violation-report",
+      },
+    ],
+  },
 };
 
 /**
  * Función para inyectar CSP en el DOM
  */
 export function injectCSP(isProduction: boolean = false): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
 
   // Remover CSP existente si hay
-  const existingCSP = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+  const existingCSP = document.querySelector(
+    'meta[http-equiv="Content-Security-Policy"]',
+  );
   if (existingCSP) {
     existingCSP.remove();
   }
 
   // Agregar nuevo CSP
-  const meta = document.createElement('meta');
-  meta.httpEquiv = 'Content-Security-Policy';
+  const meta = document.createElement("meta");
+  meta.httpEquiv = "Content-Security-Policy";
   meta.content = generateCSPHeader(isProduction);
   document.head.appendChild(meta);
 
   // Agregar Report-To endpoint
-  const reportToScript = document.createElement('script');
+  const reportToScript = document.createElement("script");
   reportToScript.textContent = `
     if (typeof navigator !== 'undefined' && navigator.serviceWorker) {
       navigator.serviceWorker.register('/sw.js').then(() => {
@@ -180,7 +171,7 @@ export class CSPValidator {
 
     // Log en desarrollo
     if (import.meta.env.DEV) {
-      console.warn('🚨 CSP Violation:', {
+      console.warn("🚨 CSP Violation:", {
         blockedURI: violation.blockedURI,
         violatedDirective: violation.violatedDirective,
         originalPolicy: violation.originalPolicy,
@@ -193,12 +184,14 @@ export class CSPValidator {
     }
   }
 
-  private static async reportViolation(violation: SecurityPolicyViolationEvent): Promise<void> {
+  private static async reportViolation(
+    violation: SecurityPolicyViolationEvent,
+  ): Promise<void> {
     try {
-      await fetch('/api/csp-violation-report', {
-        method: 'POST',
+      await fetch("/api/csp-violation-report", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           timestamp: Date.now(),
@@ -210,7 +203,7 @@ export class CSPValidator {
         }),
       });
     } catch (error) {
-      console.error('Failed to report CSP violation:', error);
+      console.error("Failed to report CSP violation:", error);
     }
   }
 
@@ -224,8 +217,8 @@ export class CSPValidator {
 }
 
 // Configurar listener para CSP violations
-if (typeof document !== 'undefined') {
-  document.addEventListener('securitypolicyviolation', (event) => {
+if (typeof document !== "undefined") {
+  document.addEventListener("securitypolicyviolation", (event) => {
     CSPValidator.logViolation(event);
   });
 }

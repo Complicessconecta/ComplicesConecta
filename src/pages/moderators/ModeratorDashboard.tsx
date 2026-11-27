@@ -1,20 +1,60 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { logger } from "@/lib/logger";
-import { Shield, AlertTriangle, Users, Clock, CheckCircle, XCircle, Eye, Ban, MessageSquare, User, Fingerprint, Globe, Building } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/Modal";
+import {
+  Shield,
+  AlertTriangle,
+  Users,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Eye,
+  Ban,
+  MessageSquare,
+  User,
+  Fingerprint,
+  Globe,
+  Building,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/Modal";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem,SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import { ReportType, ReportStatus, ModerationAction } from "@/lib/roles";
-import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from "@/services/auth/permanentBan";
-import { loadClubEvents, loadClubMembers } from "@/services/clubs/clubContentService";
+import {
+  createPermanentBan,
+  getPermanentBans,
+  liftPermanentBan,
+  type PermanentBanData,
+} from "@/services/auth/permanentBan";
+import {
+  loadClubEvents,
+  loadClubMembers,
+} from "@/services/clubs/clubContentService";
 import { Database } from "@/types/supabase-generated";
 
 type BanSeverity = "low" | "medium" | "high" | "critical";
@@ -35,7 +75,8 @@ type UserSuspensionRow =
   Database["public"]["Tables"]["user_suspensions"]["Row"];
 type PermanentBanRow = Database["public"]["Tables"]["permanent_bans"]["Row"];
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type ClubApplicationRow = Database["public"]["Tables"]["club_applications"]["Row"];
+type ClubApplicationRow =
+  Database["public"]["Tables"]["club_applications"]["Row"];
 type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
 
 type ProfileName = Pick<ProfileRow, "name">;
@@ -93,10 +134,14 @@ const ModeratorDashboard = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [moderationLogs, setModerationLogs] = useState<ModerationLog[]>([]);
   const [suspensions, setSuspensions] = useState<UserSuspension[]>([]);
-  const [clubApplications, setClubApplications] = useState<ClubApplicationRow[]>([]);
+  const [clubApplications, setClubApplications] = useState<
+    ClubApplicationRow[]
+  >([]);
   const [clubs, setClubs] = useState<ClubRow[]>([]);
   // Conteos de eventos/miembros por club (club_events / club_members).
-  const [clubContentCounts, setClubContentCounts] = useState<Record<string, { events: number; members: number }>>({});
+  const [clubContentCounts, setClubContentCounts] = useState<
+    Record<string, { events: number; members: number }>
+  >({});
 
   useEffect(() => {
     if (clubs.length === 0) return;
@@ -205,7 +250,8 @@ const ModeratorDashboard = () => {
       return;
     }
     toast({
-      title: decision === "approved" ? "Solicitud aprobada" : "Solicitud rechazada",
+      title:
+        decision === "approved" ? "Solicitud aprobada" : "Solicitud rechazada",
       description:
         decision === "approved"
           ? "El club quedó aprobado. El alta del club en la tabla clubs es un paso aparte."
@@ -215,7 +261,10 @@ const ModeratorDashboard = () => {
   };
 
   /** Activar o desactivar un club publicado. */
-  const handleClubToggleActive = async (clubId: string, isActive: boolean | null) => {
+  const handleClubToggleActive = async (
+    clubId: string,
+    isActive: boolean | null,
+  ) => {
     if (!supabase) return;
     const { error } = await supabase
       .from("clubs")
@@ -359,8 +408,7 @@ const ModeratorDashboard = () => {
           is_permanent: !suspensionRow.ends_at,
           status: suspensionRow.is_active ? "active" : "lifted",
           user_email: userName || suspensionRow.user_id || "Usuario",
-          suspended_by_email:
-            suspendedByName || "Sistema",
+          suspended_by_email: suspendedByName || "Sistema",
           ...(userName ? { user: { name: userName } } : {}),
           ...(suspendedByName
             ? { suspended_by_user: { name: suspendedByName } }
@@ -707,7 +755,7 @@ const ModeratorDashboard = () => {
                         (log) =>
                           log.created_at &&
                           new Date(log.created_at).toDateString() ===
-                          new Date().toDateString(),
+                            new Date().toDateString(),
                       ).length
                     }
                   </p>
@@ -744,7 +792,8 @@ const ModeratorDashboard = () => {
               className="data-[state=active]:bg-white/20"
             >
               <Building className="w-4 h-4 mr-2" />
-              Clubs ({clubApplications.filter((a) => a.status === "pending").length})
+              Clubs (
+              {clubApplications.filter((a) => a.status === "pending").length})
             </TabsTrigger>
             <TabsTrigger
               value="logs"
@@ -957,9 +1006,9 @@ const ModeratorDashboard = () => {
                     <CardDescription className="text-white/70">
                       Suspendido el{" "}
                       {suspension.suspended_until
-                        ? new Date(suspension.suspended_until).toLocaleDateString(
-                            "es-ES",
-                          )
+                        ? new Date(
+                            suspension.suspended_until,
+                          ).toLocaleDateString("es-ES")
                         : "Fecha no disponible"}
                     </CardDescription>
                   </CardHeader>
@@ -1183,7 +1232,9 @@ const ModeratorDashboard = () => {
                       className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div>
-                        <p className="text-white font-semibold">{app.club_name}</p>
+                        <p className="text-white font-semibold">
+                          {app.club_name}
+                        </p>
                         <p className="text-white/60 text-sm">
                           {app.owner_name} · {app.location ?? ""}{" "}
                           {app.state ?? ""} ·{" "}
@@ -1209,7 +1260,12 @@ const ModeratorDashboard = () => {
                           <>
                             <Button
                               size="sm"
-                              onClick={() => handleClubApplicationDecision(app.id, "approved")}
+                              onClick={() =>
+                                handleClubApplicationDecision(
+                                  app.id,
+                                  "approved",
+                                )
+                              }
                               className="bg-green-600 hover:bg-green-700 text-white"
                             >
                               <CheckCircle className="h-4 w-4 mr-1" />
@@ -1218,7 +1274,12 @@ const ModeratorDashboard = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleClubApplicationDecision(app.id, "rejected")}
+                              onClick={() =>
+                                handleClubApplicationDecision(
+                                  app.id,
+                                  "rejected",
+                                )
+                              }
                               className="border-red-400/40 text-red-200 hover:bg-red-500/20"
                             >
                               <XCircle className="h-4 w-4 mr-1" />
@@ -1241,8 +1302,7 @@ const ModeratorDashboard = () => {
                   Clubs publicados
                 </CardTitle>
                 <CardDescription className="text-white/60">
-                  Desactivar un club lo quita del listado público sin
-                  borrarlo.
+                  Desactivar un club lo quita del listado público sin borrarlo.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -1254,29 +1314,33 @@ const ModeratorDashboard = () => {
                   clubs.map((club) => {
                     const counts = clubContentCounts[club.id];
                     return (
-                    <div
-                      key={club.id}
-                      className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div>
-                        <p className="text-white font-semibold">{club.name}</p>
-                        <p className="text-white/60 text-sm">
-                          {club.city}, {club.state ?? ""} ·{" "}
-                          {club.is_active ? "Activo" : "Inactivo"}
-                          {counts
-                            ? ` · ${counts.events} eventos · ${counts.members} miembros`
-                            : ""}
-                        </p>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleClubToggleActive(club.id, club.is_active)}
-                        className="border-white/30 text-white hover:bg-white/10"
+                      <div
+                        key={club.id}
+                        className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
                       >
-                        {club.is_active ? "Desactivar" : "Activar"}
-                      </Button>
-                    </div>
+                        <div>
+                          <p className="text-white font-semibold">
+                            {club.name}
+                          </p>
+                          <p className="text-white/60 text-sm">
+                            {club.city}, {club.state ?? ""} ·{" "}
+                            {club.is_active ? "Activo" : "Inactivo"}
+                            {counts
+                              ? ` · ${counts.events} eventos · ${counts.members} miembros`
+                              : ""}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            handleClubToggleActive(club.id, club.is_active)
+                          }
+                          className="border-white/30 text-white hover:bg-white/10"
+                        >
+                          {club.is_active ? "Desactivar" : "Activar"}
+                        </Button>
+                      </div>
                     );
                   })
                 )}
@@ -1451,4 +1515,3 @@ const ModeratorDashboard = () => {
 };
 
 export default ModeratorDashboard;
-

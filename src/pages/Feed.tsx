@@ -343,7 +343,7 @@ const Feed = () => {
                 className="bg-linear-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
-                Crear publicacin
+                Crear publicación
               </Button>
             </div>
           </div>

@@ -149,7 +149,7 @@ const FAQ = () => {
         {
           question: "¿Puedo rechazar una invitación?",
           answer:
-            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo.",
+            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitación. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo.",
         },
       ],
     },

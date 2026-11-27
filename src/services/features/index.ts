@@ -4,6 +4,6 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from '@/services/features/BannerManagementService';
-export * from '@/services/features/GlobalSearchService';
-export * from '@/services/features/SustainableEventsService';
+export * from "@/services/features/BannerManagementService";
+export * from "@/services/features/GlobalSearchService";
+export * from "@/services/features/SustainableEventsService";

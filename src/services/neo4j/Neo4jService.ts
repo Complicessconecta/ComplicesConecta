@@ -3,8 +3,8 @@
  * Servicio para manejar operaciones de Neo4j con optimización de rendimiento
  */
 
-import { logger } from '@/lib/logger';
-import type { Driver } from 'neo4j-driver';
+import { logger } from "@/lib/logger";
+import type { Driver } from "neo4j-driver";
 
 // Interfaces para tipos de datos
 export interface UserProfile {
@@ -46,10 +46,13 @@ export interface SimilarUser {
 class Neo4jService {
   private driver: Driver | null = null;
   private isConnected = false;
-  private cache = new Map<string, {
-    data: UserProfile | UserContext | SimilarUser[];
-    timestamp: number;
-  }>();
+  private cache = new Map<
+    string,
+    {
+      data: UserProfile | UserContext | SimilarUser[];
+      timestamp: number;
+    }
+  >();
   private metrics: PerformanceMetrics[] = [];
 
   constructor() {
@@ -62,34 +65,39 @@ class Neo4jService {
   private async initializeConnection() {
     try {
       // Usar variables de entorno para conexión
-      const uri = process.env.NEO4J_URI || 'bolt://localhost:7687';
-      const user = process.env.NEO4J_USER || 'neo4j';
+      const uri = process.env.NEO4J_URI || "bolt://localhost:7687";
+      const user = process.env.NEO4J_USER || "neo4j";
       // C4/C5 (2026-11-19): sin fallback literal de contraseña. Sin
       // NEO4J_PASSWORD del servidor no se conecta (antes: 'password').
       const password = process.env.NEO4J_PASSWORD;
 
       if (!password) {
-        logger.error('❌ Neo4j sin contraseña del servidor (NEO4J_PASSWORD). No se conecta.');
+        logger.error(
+          "❌ Neo4j sin contraseña del servidor (NEO4J_PASSWORD). No se conecta.",
+        );
         this.isConnected = false;
         return;
       }
 
       // Importación dinámica de neo4j-driver
-      const neo4j = await import('neo4j-driver');
+      const neo4j = await import("neo4j-driver");
 
       this.driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 
       // Verificar conexión
       const session = this.driver.session();
-      await session.run('RETURN 1');
+      await session.run("RETURN 1");
       session.close();
 
       this.isConnected = true;
-      logger.info('✅ Conexión a Neo4j establecida');
+      logger.info("✅ Conexión a Neo4j establecida");
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('❌ Error conectando a Neo4j:', { error: errorMsg, stack: errorStack });
+      logger.error("❌ Error conectando a Neo4j:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       this.isConnected = false;
     }
   }
@@ -111,12 +119,12 @@ class Neo4jService {
         const mockProfile: UserProfile = {
           id: userId,
           username: `user_${userId}`,
-          interests: ['matching', 'ia', 'tokens'],
-          location: 'Mexico City',
-          preferences: { privacy: 'high', matching: 'ai-driven' },
+          interests: ["matching", "ia", "tokens"],
+          location: "Mexico City",
+          preferences: { privacy: "high", matching: "ai-driven" },
           age: 25,
-          relationshipType: 'single',
-          discretionLevel: 8
+          relationshipType: "single",
+          discretionLevel: 8,
         };
 
         // Cache por 5 minutos
@@ -127,7 +135,7 @@ class Neo4jService {
       }
 
       const session = this.driver!.session();
-      const query = 'MATCH (u:User {id: $id}) RETURN u LIMIT 1';
+      const query = "MATCH (u:User {id: $id}) RETURN u LIMIT 1";
       const result = await session.run(query, { id: userId });
       session.close();
 
@@ -137,14 +145,14 @@ class Neo4jService {
       }
 
       const userProfile: UserProfile = {
-        id: record.get('u').properties.id,
-        username: record.get('u').properties.username,
-        interests: record.get('u').properties.interests || [],
-        location: record.get('u').properties.location || 'Unknown',
-        preferences: record.get('u').properties.preferences || {},
-        age: record.get('u').properties.age,
-        relationshipType: record.get('u').properties.relationshipType,
-        discretionLevel: record.get('u').properties.discretionLevel || 5,
+        id: record.get("u").properties.id,
+        username: record.get("u").properties.username,
+        interests: record.get("u").properties.interests || [],
+        location: record.get("u").properties.location || "Unknown",
+        preferences: record.get("u").properties.preferences || {},
+        age: record.get("u").properties.age,
+        relationshipType: record.get("u").properties.relationshipType,
+        discretionLevel: record.get("u").properties.discretionLevel || 5,
       };
 
       // Cache por 5 minutos
@@ -155,7 +163,10 @@ class Neo4jService {
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error obteniendo perfil de usuario:', { error: errorMsg, stack: errorStack });
+      logger.error("Error obteniendo perfil de usuario:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       throw error;
     }
   }
@@ -175,10 +186,14 @@ class Neo4jService {
       // Simular contexto si Neo4j no está conectado
       const mockContext: UserContext = {
         userId,
-        recentInteractions: ['user_2', 'user_3', 'user_4'],
-        preferences: { privacy: 'high', matching: 'ai-driven' },
-        behaviorPatterns: ['active', 'social', 'verified'],
-        compatibilityFactors: { interests: 0.8, location: 0.9, preferences: 0.7 }
+        recentInteractions: ["user_2", "user_3", "user_4"],
+        preferences: { privacy: "high", matching: "ai-driven" },
+        behaviorPatterns: ["active", "social", "verified"],
+        compatibilityFactors: {
+          interests: 0.8,
+          location: 0.9,
+          preferences: 0.7,
+        },
       };
 
       // Cache por 3 minutos
@@ -189,7 +204,10 @@ class Neo4jService {
     } catch (error: unknown) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error obteniendo contexto de usuario:', { error: errorMsg, stack: errorStack });
+      logger.error("Error obteniendo contexto de usuario:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       throw error;
     }
   }
@@ -204,34 +222,39 @@ class Neo4jService {
       location: string;
       preferences: Record<string, string | number | boolean>;
       compatibilityThreshold: number;
-    }
+    },
   ): Promise<SimilarUser[]> {
     try {
       // Simular usuarios similares
       const mockUsers: SimilarUser[] = [
         {
-          id: 'user_2',
-          username: 'match_candidate_1',
+          id: "user_2",
+          username: "match_candidate_1",
           compatibilityScore: 0.85,
-          sharedInterests: ['matching', 'ia'],
-          recommendations: ['Chat avanzado', 'Tokens premium'],
-          reasoning: 'Alta compatibilidad en intereses y preferencias'
+          sharedInterests: ["matching", "ia"],
+          recommendations: ["Chat avanzado", "Tokens premium"],
+          reasoning: "Alta compatibilidad en intereses y preferencias",
         },
         {
-          id: 'user_3',
-          username: 'match_candidate_2',
+          id: "user_3",
+          username: "match_candidate_2",
           compatibilityScore: 0.78,
-          sharedInterests: ['tokens', 'web3'],
-          recommendations: ['Staking rewards', 'NFT access'],
-          reasoning: 'Buena compatibilidad en intereses financieros'
-        }
+          sharedInterests: ["tokens", "web3"],
+          recommendations: ["Staking rewards", "NFT access"],
+          reasoning: "Buena compatibilidad en intereses financieros",
+        },
       ];
 
-      return mockUsers.filter(user => user.compatibilityScore >= criteria.compatibilityThreshold);
+      return mockUsers.filter(
+        (user) => user.compatibilityScore >= criteria.compatibilityThreshold,
+      );
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error encontrando usuarios similares:', { error: errorMsg, stack: errorStack });
+      logger.error("Error encontrando usuarios similares:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       throw error;
     }
   }
@@ -241,23 +264,28 @@ class Neo4jService {
    */
   async updateUserInteractions(
     userId: string,
-    entities: string[]
+    entities: string[],
   ): Promise<void> {
     try {
       if (!this.isConnected) {
-        logger.warn('Neo4j no está conectado, omitiendo actualización');
+        logger.warn("Neo4j no está conectado, omitiendo actualización");
         return;
       }
 
       // Simular actualización
-      logger.info(`Actualizadas ${entities.length} interacciones para usuario ${userId}`);
+      logger.info(
+        `Actualizadas ${entities.length} interacciones para usuario ${userId}`,
+      );
 
       // Invalidar cache
       this.cache.delete(`context_${userId}`);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error obteniendo relaciones:', { error: errorMsg, stack: errorStack });
+      logger.error("Error obteniendo relaciones:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       throw error;
     }
   }
@@ -291,7 +319,10 @@ class Neo4jService {
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error obteniendo métricas de rendimiento:', { error: errorMsg, stack: errorStack });
+      logger.error("Error obteniendo métricas de rendimiento:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       throw error;
     }
   }
@@ -302,16 +333,19 @@ class Neo4jService {
   async createIndexes(): Promise<void> {
     try {
       if (!this.isConnected) {
-        logger.warn('Neo4j no está conectado');
+        logger.warn("Neo4j no está conectado");
         return;
       }
 
       // Simular creación de índices
-      logger.info('✅ Índices de Neo4j creados/verificados');
+      logger.info("✅ Índices de Neo4j creados/verificados");
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error calculando compatibilidad:', { error: errorMsg, stack: errorStack });
+      logger.error("Error calculando compatibilidad:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       throw error;
     }
   }
@@ -324,12 +358,15 @@ class Neo4jService {
       if (this.driver) {
         await this.driver.close();
         this.isConnected = false;
-        logger.info('✅ Conexión a Neo4j cerrada');
+        logger.info("✅ Conexión a Neo4j cerrada");
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error cerrando conexión a Neo4j:', { error: errorMsg, stack: errorStack });
+      logger.error("Error cerrando conexión a Neo4j:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
     }
   }
 
@@ -357,4 +394,3 @@ class Neo4jService {
 // Exportar instancia singleton
 export const neo4jService = new Neo4jService();
 export default Neo4jService;
-

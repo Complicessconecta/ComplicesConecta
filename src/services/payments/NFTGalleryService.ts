@@ -429,11 +429,11 @@ export class NFTGalleryService {
       nftContractAddress: data.nft_contract_address as string | undefined,
       nftTokenId: data.nft_token_id as string | undefined,
       nftNetwork: (data.nft_network || "pending") as
-        | "ethereum"
-        | "polygon"
-        | "pending",
+        "ethereum" | "polygon" | "pending",
       mintedWithGtk: data.minted_with_gtk as number | undefined,
-      mintedAt: data.minted_at ? new Date(data.minted_at as string) : new Date(),
+      mintedAt: data.minted_at
+        ? new Date(data.minted_at as string)
+        : new Date(),
       isVerified: (data.is_verified as boolean | undefined) || false,
       isPublic: (data.is_public as boolean | undefined) || false,
       metadata: (data.metadata || Object.freeze({})) as Record<string, unknown>,
@@ -454,11 +454,11 @@ export class NFTGalleryService {
       nftContractAddress: data.nft_contract_address as string | undefined,
       nftTokenId: data.nft_token_id as string | undefined,
       nftNetwork: (data.nft_network || "pending") as
-        | "ethereum"
-        | "polygon"
-        | "pending",
+        "ethereum" | "polygon" | "pending",
       mintedWithGtk: data.minted_with_gtk as number | undefined,
-      mintedAt: data.minted_at ? new Date(data.minted_at as string) : new Date(),
+      mintedAt: data.minted_at
+        ? new Date(data.minted_at as string)
+        : new Date(),
       isVerified: (data.is_verified as boolean | undefined) || false,
       sortOrder: data.sort_order as number | undefined,
       metadata: (data.metadata || Object.freeze({})) as Record<string, unknown>,
@@ -476,4 +476,3 @@ export class NFTGalleryService {
 }
 
 export const nftGalleryService = NFTGalleryService.getInstance();
-

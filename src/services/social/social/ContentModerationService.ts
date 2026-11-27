@@ -15,7 +15,11 @@
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/types/supabase-generated";
-import type { ProfileData, TextAnalysis, ContextRules } from "@/types/content-moderation.types";
+import type {
+  ProfileData,
+  TextAnalysis,
+  ContextRules,
+} from "@/types/content-moderation.types";
 
 export interface ModerationResult {
   isAppropriate: boolean;
@@ -1098,21 +1102,22 @@ class ContentModerationService {
       requirePersonalContent: true,
     };
 
-    const rules: Partial<Record<"message" | "bio" | "profile", ContextRules>> = {
-      message: defaultRules,
-      bio: {
-        maxLength: 1000,
-        allowLinks: true,
-        allowEmojis: true,
-        requirePersonalContent: true,
-      },
-      profile: {
-        maxLength: 2000,
-        allowLinks: true,
-        allowEmojis: true,
-        requirePersonalContent: false,
-      },
-    };
+    const rules: Partial<Record<"message" | "bio" | "profile", ContextRules>> =
+      {
+        message: defaultRules,
+        bio: {
+          maxLength: 1000,
+          allowLinks: true,
+          allowEmojis: true,
+          requirePersonalContent: true,
+        },
+        profile: {
+          maxLength: 2000,
+          allowLinks: true,
+          allowEmojis: true,
+          requirePersonalContent: false,
+        },
+      };
 
     return rules[context as "message" | "bio" | "profile"] ?? defaultRules;
   }
@@ -1155,4 +1160,3 @@ class ContentModerationService {
 }
 
 export const contentModerationService = ContentModerationService.getInstance();
-

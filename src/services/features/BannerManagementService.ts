@@ -308,4 +308,3 @@ class BannerManagementServiceClass {
 }
 
 export const BannerManagementService = new BannerManagementServiceClass();
-

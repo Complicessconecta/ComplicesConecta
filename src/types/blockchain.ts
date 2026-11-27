@@ -2,8 +2,8 @@
 // Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
 // Descripción: Tipos TypeScript para las tablas blockchain
 
- import type { SupabaseClient } from "@supabase/supabase-js";
- import type { Database } from "@/types/supabase-generated";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/supabase-generated";
 
 export interface UserWallet {
   id: string;
@@ -55,7 +55,8 @@ export interface CoupleNFTRequest {
   metadata_uri: string;
   token_id: number;
   expires_at: string;
-  status: "pending" | "approved" | "minted" | "cancelled" | "expired" | (string & {});
+  status:
+    "pending" | "approved" | "minted" | "cancelled" | "expired" | (string & {});
   blockchain_status?: string | null;
   transaction_hash?: string | null;
   metadata?: Record<string, unknown> | null;

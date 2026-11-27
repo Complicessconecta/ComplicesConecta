@@ -1,5 +1,5 @@
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export interface GalleryUnlock {
   id: string;
@@ -21,23 +21,26 @@ class GalleryPrivacyService {
     return GalleryPrivacyService.instance;
   }
 
-  async hasGalleryAccess(userId: string, galleryItemId: string): Promise<boolean> {
+  async hasGalleryAccess(
+    userId: string,
+    galleryItemId: string,
+  ): Promise<boolean> {
     try {
       const { data, error } = await supabase
-        .from('gallery_unlocks')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('profile_id', galleryItemId)
+        .from("gallery_unlocks")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("profile_id", galleryItemId)
         .maybeSingle();
 
       if (error) {
-        logger.error('Error checking gallery access', { error });
+        logger.error("Error checking gallery access", { error });
         return false;
       }
 
       return !!data;
     } catch (error) {
-      logger.error('Error checking gallery access', { error });
+      logger.error("Error checking gallery access", { error });
       return false;
     }
   }
@@ -45,7 +48,7 @@ class GalleryPrivacyService {
   async unlockGallery(
     userId: string,
     galleryItemId: string,
-    creatorId: string
+    creatorId: string,
   ): Promise<{ success: boolean; error?: string }> {
     try {
       const hasAccess = await this.hasGalleryAccess(userId, galleryItemId);
@@ -55,36 +58,34 @@ class GalleryPrivacyService {
       }
 
       const { data: balance } = await supabase
-        .from('user_token_balances')
-        .select('cmpx_balance')
-        .eq('user_id', userId)
+        .from("user_token_balances")
+        .select("cmpx_balance")
+        .eq("user_id", userId)
         .single();
 
       if (!balance || balance.cmpx_balance < this.CMPX_COST) {
-        return { success: false, error: 'No tienes suficientes tokens CMPX' };
+        return { success: false, error: "No tienes suficientes tokens CMPX" };
       }
 
-      const { error } = await supabase
-        .from('gallery_unlocks')
-        .insert({
-          user_id: userId,
-          profile_id: galleryItemId,
-        });
+      const { error } = await supabase.from("gallery_unlocks").insert({
+        user_id: userId,
+        profile_id: galleryItemId,
+      });
 
       if (error) {
-        logger.error('Error unlocking gallery', { error });
-        return { success: false, error: 'Error al desbloquear galería' };
+        logger.error("Error unlocking gallery", { error });
+        return { success: false, error: "Error al desbloquear galería" };
       }
 
-      logger.info('Gallery unlocked', {
-        userId: userId.substring(0, 8) + '***',
-        galleryItemId: galleryItemId.substring(0, 8) + '***',
-        creatorId: creatorId.substring(0, 8) + '***',
+      logger.info("Gallery unlocked", {
+        userId: userId.substring(0, 8) + "***",
+        galleryItemId: galleryItemId.substring(0, 8) + "***",
+        creatorId: creatorId.substring(0, 8) + "***",
       });
       return { success: true };
     } catch (error) {
-      logger.error('Error unlocking gallery', { error });
-      return { success: false, error: 'Error al desbloquear galería' };
+      logger.error("Error unlocking gallery", { error });
+      return { success: false, error: "Error al desbloquear galería" };
     }
   }
 

@@ -40,7 +40,7 @@ export class ClubRankingService {
   calculateBayesianScore(
     averageRating: number,
     totalReviews: number,
-    globalAverage: number = 3.0
+    globalAverage: number = 3.0,
   ): number {
     const v = totalReviews;
     const R = averageRating;
@@ -57,14 +57,16 @@ export class ClubRankingService {
     try {
       // Obtener todos los clubes con sus calificaciones
       const { data: clubs, error } = await supabase
-        .from('clubs')
-        .select('id, name, average_rating, total_reviews')
-        .not('average_rating', 'is', null);
+        .from("clubs")
+        .select("id, name, average_rating, total_reviews")
+        .not("average_rating", "is", null);
 
       if (error) throw error;
 
       // Calcular promedio global
-      const globalAverage = clubs.reduce((sum, club) => sum + (club.average_rating || 0), 0) / clubs.length;
+      const globalAverage =
+        clubs.reduce((sum, club) => sum + (club.average_rating || 0), 0) /
+        clubs.length;
 
       // Calcular score bayesiano para cada club
       const rankings = clubs.map((club) => ({
@@ -75,7 +77,7 @@ export class ClubRankingService {
         bayesianScore: this.calculateBayesianScore(
           club.average_rating || 0,
           club.total_reviews || 0,
-          globalAverage
+          globalAverage,
         ),
       }));
 
@@ -90,18 +92,18 @@ export class ClubRankingService {
         const { clubId, bayesianScore } = item;
 
         await supabase
-          .from('clubs')
+          .from("clubs")
           .update({
             bayesian_score: bayesianScore,
           })
-          .eq('id', clubId);
+          .eq("id", clubId);
       }
 
-      logger.info('Ranking bayesiano recalculado exitosamente:', {
+      logger.info("Ranking bayesiano recalculado exitosamente:", {
         clubsCount: rankings.length,
       });
     } catch (error) {
-      logger.error('Error recalculando ranking bayesiano:', {
+      logger.error("Error recalculando ranking bayesiano:", {
         error: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -114,10 +116,10 @@ export class ClubRankingService {
   async getTopClubs(limit: number = 20): Promise<ClubRanking[]> {
     try {
       const { data, error } = await supabase
-        .from('clubs')
-        .select('id, name, average_rating, total_reviews, bayesian_score')
-        .not('bayesian_score', 'is', null)
-        .order('bayesian_score', { ascending: false })
+        .from("clubs")
+        .select("id, name, average_rating, total_reviews, bayesian_score")
+        .not("bayesian_score", "is", null)
+        .order("bayesian_score", { ascending: false })
         .limit(limit);
 
       if (error) throw error;
@@ -131,7 +133,7 @@ export class ClubRankingService {
         rank: index + 1,
       }));
     } catch (error) {
-      logger.error('Error obteniendo top clubes:', {
+      logger.error("Error obteniendo top clubes:", {
         error: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -144,9 +146,9 @@ export class ClubRankingService {
   async getClubRanking(clubId: string): Promise<ClubRanking | null> {
     try {
       const { data: club, error: clubError } = await supabase
-        .from('clubs')
-        .select('id, name, average_rating, total_reviews, bayesian_score')
-        .eq('id', clubId)
+        .from("clubs")
+        .select("id, name, average_rating, total_reviews, bayesian_score")
+        .eq("id", clubId)
         .single();
 
       if (clubError || !club) {
@@ -155,10 +157,10 @@ export class ClubRankingService {
 
       // Obtener el rango del club
       const { data: clubsAbove, error: rankError } = await supabase
-        .from('clubs')
-        .select('id')
-        .gt('bayesian_score', club.bayesian_score || 0)
-        .not('bayesian_score', 'is', null);
+        .from("clubs")
+        .select("id")
+        .gt("bayesian_score", club.bayesian_score || 0)
+        .not("bayesian_score", "is", null);
 
       if (rankError) throw rankError;
 
@@ -173,7 +175,7 @@ export class ClubRankingService {
         rank,
       };
     } catch (error) {
-      logger.error('Error obteniendo ranking del club:', {
+      logger.error("Error obteniendo ranking del club:", {
         error: error instanceof Error ? error.message : String(error),
         clubId,
       });
@@ -186,7 +188,7 @@ export class ClubRankingService {
    */
   async getNearbyClubs(
     clubId: string,
-    limit: number = 5
+    limit: number = 5,
   ): Promise<ClubRanking[]> {
     try {
       const clubRanking = await this.getClubRanking(clubId);
@@ -199,10 +201,10 @@ export class ClubRankingService {
 
       // Obtener clubes con rangos cercanos
       const { data, error } = await supabase
-        .from('clubs')
-        .select('id, name, average_rating, total_reviews, bayesian_score')
-        .not('bayesian_score', 'is', null)
-        .order('bayesian_score', { ascending: false })
+        .from("clubs")
+        .select("id, name, average_rating, total_reviews, bayesian_score")
+        .not("bayesian_score", "is", null)
+        .order("bayesian_score", { ascending: false })
         .limit(limit * 2);
 
       if (error) throw error;
@@ -221,7 +223,7 @@ export class ClubRankingService {
 
       return nearbyClubs;
     } catch (error) {
-      logger.error('Error obteniendo clubes cercanos:', {
+      logger.error("Error obteniendo clubes cercanos:", {
         error: error instanceof Error ? error.message : String(error),
         clubId,
       });

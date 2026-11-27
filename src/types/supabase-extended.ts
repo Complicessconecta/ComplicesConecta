@@ -34,4 +34,3 @@ type ExtendedPublic = Omit<GeneratedDatabase["public"], "Tables"> & {
 export type Database = Omit<GeneratedDatabase, "public"> & {
   public: ExtendedPublic;
 };
-

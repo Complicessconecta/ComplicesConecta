@@ -20,7 +20,11 @@
 //   sent (fail closed). No origin is hardcoded anywhere. The old wildcard
 //   `"*"` must not come back.
 
-import { createClient, type SupabaseClient, type User } from "@supabase/supabase-js";
+import {
+  createClient,
+  type SupabaseClient,
+  type User,
+} from "@supabase/supabase-js";
 
 export interface AuthSuccess {
   user: User;
@@ -113,9 +117,8 @@ export async function authenticate(
     auth: { persistSession: false },
   });
 
-  const { data: userData, error: userError } = await supabase.auth.getUser(
-    token,
-  );
+  const { data: userData, error: userError } =
+    await supabase.auth.getUser(token);
   if (userError || !userData?.user) {
     return unauthorized(req, "Invalid token");
   }

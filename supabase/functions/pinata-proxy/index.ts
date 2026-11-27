@@ -199,7 +199,8 @@ async function handleJsonCall(req: Request): Promise<Response> {
   const routeError = validateRoute(req, method, path);
   if (routeError) return routeError;
 
-  const base = typeof apiBase === "string" && apiBase ? apiBase : PINATA_API_URL;
+  const base =
+    typeof apiBase === "string" && apiBase ? apiBase : PINATA_API_URL;
   const url = `${base}${path}`;
 
   const response = await fetch(url, {

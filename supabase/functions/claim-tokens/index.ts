@@ -132,7 +132,16 @@ async function checkMonthlyLimits(
   supabaseClient: SupabaseClient,
   userId: string,
   amount: number,
-): Promise<{ canClaim: boolean; error?: string; userTokens?: { cmpx_balance: number; gtk_balance: number; monthly_earned: number; monthly_limit: number } }> {
+): Promise<{
+  canClaim: boolean;
+  error?: string;
+  userTokens?: {
+    cmpx_balance: number;
+    gtk_balance: number;
+    monthly_earned: number;
+    monthly_limit: number;
+  };
+}> {
   const { data: userTokens } = await supabaseClient
     .from("user_token_balances")
     .select("cmpx_balance, gtk_balance, monthly_earned, monthly_limit")
@@ -233,7 +242,12 @@ serve(async (req: Request) => {
     const rewardAmount =
       REWARD_LIMITS[rewardType as keyof typeof REWARD_LIMITS].amount;
 
-    let userTokens: { cmpx_balance: number; gtk_balance: number; monthly_earned: number; monthly_limit: number } | null = null;
+    let userTokens: {
+      cmpx_balance: number;
+      gtk_balance: number;
+      monthly_earned: number;
+      monthly_limit: number;
+    } | null = null;
     if (!["referral", "world_id"].includes(rewardType)) {
       const monthlyCheck = await checkMonthlyLimits(
         supabaseClient,

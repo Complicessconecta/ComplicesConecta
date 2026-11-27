@@ -402,7 +402,7 @@ const Auth = () => {
       if (errorText) {
         if (errorText.includes("Invalid API key")) {
           errorMessage =
-            "Error de configuracin. Por favor, contacta al soporte.";
+            "Error de configuración. Por favor, contacta al soporte.";
         } else if (
           errorText.includes("Invalid login credentials") ||
           errorText.includes("Invalid credentials") ||

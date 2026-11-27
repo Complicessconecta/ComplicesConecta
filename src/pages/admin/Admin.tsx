@@ -16,7 +16,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { generateDemoProfiles } from "@/demo/demoData";
+import { demoMatches, generateDemoProfiles } from "@/demo/demoData";
 import {
   Users,
   Shield,
@@ -74,6 +74,19 @@ interface FAQItem {
   priority: number;
   created_at: string;
 }
+
+// Ronda 23: «Hace N min/h» del roster demo → ms transcurridos, para
+// contar activos como la rama real (last_seen dentro de 30 días). El
+// generador demo solo produce «Hace N min» (5–54 min), así que el
+// roster entero cae dentro de la ventana; si el formato cambia, el
+// perfil no se cuenta (fail-closed).
+const demoLastActiveMsAgo = (lastActive: string): number | null => {
+  const m = /Hace (\d+)\s*(min|h|d)\b/.exec(lastActive);
+  if (!m) return null;
+  const n = Number(m[1]);
+  const unit = m[2] === "min" ? 60_000 : m[2] === "h" ? 3_600_000 : 86_400_000;
+  return n * unit;
+};
 
 export const Admin = () => {
   const {
@@ -188,12 +201,16 @@ export const Admin = () => {
   }, [navigate, toast, isAuthenticated, isAdmin, demoActive, authLoading]);
 
   // Ronda 21 (FAIL 2b): panel demo con datos demo/respaldo locales —
-  // stats en 0 + lista de perfiles demo local, sin llamadas a Supabase
-  // que cuelguen. El aviso visible «Panel demo — datos de respaldo»
-  // está en el render.
+  // lista de perfiles demo local, sin llamadas a Supabase que cuelguen.
+  // Ronda 23: las stats se COMPUTAN del roster demo (la ronda 21 las
+  // dejó en 0 «por diseño» y la 22 no las tocó: el panel listaba 20
+  // usuarios reales con todas las tarjetas en 0 — test PR #82).
+  // Sin fuente demo para descargas/visitas/recompensas/tokens — igual
+  // que la rama real, que también los deja en 0.
   const loadDemoAdminData = () => {
+    const demoProfiles = generateDemoProfiles(20);
     setProfiles(
-      generateDemoProfiles(20).map((p) => ({
+      demoProfiles.map((p) => ({
         id: p.id,
         email: "",
         first_name: p.name,
@@ -206,16 +223,20 @@ export const Admin = () => {
         last_seen: p.lastActive,
       })),
     );
+    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
     setStats({
-      totalUsers: 0,
-      activeUsers: 0,
-      premiumUsers: 0,
-      totalMatches: 0,
+      totalUsers: demoProfiles.length,
+      activeUsers: demoProfiles.filter((p) => {
+        const ago = demoLastActiveMsAgo(p.lastActive);
+        return ago !== null && ago <= thirtyDaysMs;
+      }).length,
+      premiumUsers: demoProfiles.filter((p) => p.isPremium).length,
+      totalMatches: demoMatches.length,
       apkDownloads: 0,
       dailyVisits: 0,
       totalTokens: 0,
       stakedTokens: 0,
-      worldIdVerified: 0,
+      worldIdVerified: demoProfiles.filter((p) => p.isVerified).length,
       rewardsDistributed: 0,
     });
     setFaqs([]);
@@ -236,12 +257,12 @@ export const Admin = () => {
     } catch (error: any) {
       logger.error("Error loading admin data:", { error: String(error) });
       setError(
-        error.message || "Error al cargar datos del panel de administracin",
+        error.message || "Error al cargar datos del panel de administración",
       );
       toast({
         title: "Error",
         description:
-          error.message || "Error al cargar datos del panel de administracin",
+          error.message || "Error al cargar datos del panel de administración",
         variant: "destructive",
       });
     } finally {
@@ -442,7 +463,7 @@ export const Admin = () => {
                 Acceso Denegado
               </h2>
               <p className="text-muted-foreground">
-                No tienes permisos para acceder al panel de administracin.
+                No tienes permisos para acceder al panel de administración.
               </p>
               <Button onClick={() => navigate("/")} className="w-full">
                 Volver al Inicio
@@ -507,12 +528,43 @@ export const Admin = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Resumen</TabsTrigger>
-            <TabsTrigger value="users">Usuarios</TabsTrigger>
-            <TabsTrigger value="invitations">Invitaciones</TabsTrigger>
-            <TabsTrigger value="stats">Estadsticas</TabsTrigger>
-            <TabsTrigger value="faq">FAQ</TabsTrigger>
+          {/* Ronda 23: en móvil la rejilla de 5 columnas apretaba
+              «Invitaciones» y «Estadísticas» hasta solaparlas (cada
+              celda ~72 px para etiquetas de ~90 px, con
+              whitespace-nowrap en el trigger). En móvil la lista es
+              flex con scroll horizontal; desde sm vuelve la rejilla
+              de 5 columnas iguales. */}
+          <TabsList className="flex w-full justify-start overflow-x-auto sm:grid sm:grid-cols-5">
+            <TabsTrigger
+              value="overview"
+              className="shrink-0 px-2 text-xs sm:px-3 sm:text-sm"
+            >
+              Resumen
+            </TabsTrigger>
+            <TabsTrigger
+              value="users"
+              className="shrink-0 px-2 text-xs sm:px-3 sm:text-sm"
+            >
+              Usuarios
+            </TabsTrigger>
+            <TabsTrigger
+              value="invitations"
+              className="shrink-0 px-2 text-xs sm:px-3 sm:text-sm"
+            >
+              Invitaciones
+            </TabsTrigger>
+            <TabsTrigger
+              value="stats"
+              className="shrink-0 px-2 text-xs sm:px-3 sm:text-sm"
+            >
+              Estadísticas
+            </TabsTrigger>
+            <TabsTrigger
+              value="faq"
+              className="shrink-0 px-2 text-xs sm:px-3 sm:text-sm"
+            >
+              FAQ
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -578,7 +630,7 @@ export const Admin = () => {
           <TabsContent value="users">
             <Card>
               <CardHeader>
-                <CardTitle>Gestin de Usuarios</CardTitle>
+                <CardTitle>Gestión de Usuarios</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -629,7 +681,7 @@ export const Admin = () => {
           <TabsContent value="invitations">
             <Card>
               <CardHeader>
-                <CardTitle>Gestin de Invitaciones</CardTitle>
+                <CardTitle>Gestión de Invitaciones</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -666,7 +718,7 @@ export const Admin = () => {
           <TabsContent value="stats">
             <Card>
               <CardHeader>
-                <CardTitle>Estadsticas Detalladas</CardTitle>
+                <CardTitle>Estadísticas Detalladas</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -674,7 +726,7 @@ export const Admin = () => {
                     <h3 className="text-lg font-semibold mb-4">Tokens</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span>Total en circulacin:</span>
+                        <span>Total en circulación:</span>
                         <span className="font-bold">
                           {stats.totalTokens.toLocaleString()}
                         </span>
@@ -689,7 +741,7 @@ export const Admin = () => {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Verificacin</h3>
+                    <h3 className="text-lg font-semibold mb-4">Verificación</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>WorldID verificados:</span>
@@ -713,7 +765,7 @@ export const Admin = () => {
           <TabsContent value="faq">
             <Card>
               <CardHeader>
-                <CardTitle>Gestin de FAQ</CardTitle>
+                <CardTitle>Gestión de FAQ</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4 mb-6">

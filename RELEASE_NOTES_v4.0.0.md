@@ -1,5 +1,14 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 27 Nov 2026 - 03:44 (Ronda 23 — stats admin en ceros + acentos + tabs)
+
+- **🔍 Test dirigido del PR #82 (27 nov 03:01–03:09, 8 min):** 7/8 PASS + regresión PASS. FAIL 1: stats del admin en 0 tras recargar pese a 20 usuarios listados; aprobar fotos VERIFICADO en vivo (1 clic en /profile-couple → 23:59:59). Esta ronda corrige el FAIL 1 con causa raíz leída en código (trabajo directo del coordinador; el agente de cierre completó la ronda tras cortarse el coordinador por límite de tokens, 1 commit en `fix/ronda23-2026-11-27`, sin push ni merge todavía).
+- **🛣️ Stats del admin:** `loadDemoAdminData()` ponía las stats en 0 «por diseño» desde la ronda 21 mientras la lista sí generaba 20 perfiles. Fix: las stats se COMPUTAN del roster demo (20 usuarios, 20 activos, 4 premium, 15 verificados World ID, 2 matches de `demoMatches`); pestañas con scroll horizontal en móvil (la rejilla de 5 columnas solapaba «Invitaciones»/«Estadísticas»).
+- **🎨 Acentos:** «mantn» → «mantén» y «Panel de Moderacion» → «Panel de Moderación»; barrido repo-wide de ~60 textos visibles en 14 archivos (+5 que completó el cierre). Bug real: en SwingerDashboard las comparaciones sin acento nunca coincidían con los títulos con acento y la navegación no funcionaba.
+- **✅ Verificación:** vitest 922 → 895 pasaron, 6 fallaron (conjunto conocido), 21 saltados (+4 tests nuevos con discriminación verificada: 3/4 fallan con `Admin.tsx` original, 4/4 pasan con el fix); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
 ## 📅 Bitácora 27 Nov 2026 - 01:53 (Ronda 22 — fixes del test dirigido del PR #81)
 
 - **🔍 Test dirigido del PR #81 (27 nov 00:47–01:08, 20 min):** 9/10 PASS + regresión PASS. FAIL 7 sin verificar en vivo (aprobar fotos: el panel admin perdía sus datos tras recargar). Esta ronda lo corrige con causa raíz leída en código (3 streams + integración, 1 commit en `fix/ronda22-2026-11-27`, sin push ni merge todavía).

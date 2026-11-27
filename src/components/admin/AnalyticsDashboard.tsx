@@ -9,9 +9,20 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { ChartBarIcon, ExclamationTriangleIcon, CheckCircleIcon, ClockIcon, ServerIcon, SignalIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import {
+  ChartBarIcon,
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  ServerIcon,
+  SignalIcon,
+  ShieldCheckIcon,
+} from "@heroicons/react/24/outline";
 import { performanceMonitoring } from "@/services";
-import { errorAlertService, type ErrorAlert } from "@/services/core/ErrorAlertService";
+import {
+  errorAlertService,
+  type ErrorAlert,
+} from "@/services/core/ErrorAlertService";
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertConfigPanel } from "@/components/admin/AlertConfigPanel";
@@ -620,28 +631,44 @@ export const AnalyticsDashboard: React.FC = () => {
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center">
               <div>
-                <div className="text-2xl font-bold text-white">{business.totalUsers}</div>
+                <div className="text-2xl font-bold text-white">
+                  {business.totalUsers}
+                </div>
                 <div className="text-white/60 text-xs">Usuarios</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{business.totalClubs}</div>
+                <div className="text-2xl font-bold text-white">
+                  {business.totalClubs}
+                </div>
                 <div className="text-white/60 text-xs">Clubs</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{business.pendingClubApplications}</div>
-                <div className="text-white/60 text-xs">Solicitudes club pendientes</div>
+                <div className="text-2xl font-bold text-white">
+                  {business.pendingClubApplications}
+                </div>
+                <div className="text-white/60 text-xs">
+                  Solicitudes club pendientes
+                </div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{business.totalMatches}</div>
+                <div className="text-2xl font-bold text-white">
+                  {business.totalMatches}
+                </div>
                 <div className="text-white/60 text-xs">Matches</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{business.pendingReports}</div>
+                <div className="text-2xl font-bold text-white">
+                  {business.pendingReports}
+                </div>
                 <div className="text-white/60 text-xs">Reportes pendientes</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-white">{business.worldIdVerified}</div>
-                <div className="text-white/60 text-xs">World ID verificados</div>
+                <div className="text-2xl font-bold text-white">
+                  {business.worldIdVerified}
+                </div>
+                <div className="text-white/60 text-xs">
+                  World ID verificados
+                </div>
               </div>
             </div>
           </div>

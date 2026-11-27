@@ -1,12 +1,29 @@
 import { useState, useEffect } from "react";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/forms/Input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger,  SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Modal";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -27,7 +44,22 @@ interface ProfileRow {
   email?: string | null;
   last_seen?: string | null;
 }
-import { Users, Search, Filter, MoreHorizontal, UserCheck, UserX, Mail, Calendar, Eye, Trash2, Ban, CheckCircle, AlertTriangle, Plus } from "lucide-react";
+import {
+  Users,
+  Search,
+  Filter,
+  MoreHorizontal,
+  UserCheck,
+  UserX,
+  Mail,
+  Calendar,
+  Eye,
+  Trash2,
+  Ban,
+  CheckCircle,
+  AlertTriangle,
+  Plus,
+} from "lucide-react";
 
 interface User {
   id: string;
@@ -126,36 +158,40 @@ export function UserManagementPanel() {
           variant: "destructive",
         });
       } else {
-        const processedUsers: User[] = Array.isArray(profiles) ? profiles.map((rawProfile) => {
-          const profile = rawProfile as ProfileRow;
-          const isSuspended = Boolean(profile.suspended);
-          const status: User["status"] = isSuspended ? "suspended" : "active";
+        const processedUsers: User[] = Array.isArray(profiles)
+          ? profiles.map((rawProfile) => {
+              const profile = rawProfile as ProfileRow;
+              const isSuspended = Boolean(profile.suspended);
+              const status: User["status"] = isSuspended
+                ? "suspended"
+                : "active";
 
-          const user: User = {
-            id: profile.id,
-            name: profile.display_name || profile.first_name || "Usuario",
-            email: profile.email ?? "No disponible",
-            location: profile.location ?? "No especificada",
-            is_premium: Boolean(profile.is_premium),
-            is_verified: Boolean(profile.is_verified),
-            created_at: profile.created_at ?? new Date().toISOString(),
-            status,
-            reports_count: 0,
-            account_type: profile.account_type ?? null,
-          };
+              const user: User = {
+                id: profile.id,
+                name: profile.display_name || profile.first_name || "Usuario",
+                email: profile.email ?? "No disponible",
+                location: profile.location ?? "No especificada",
+                is_premium: Boolean(profile.is_premium),
+                is_verified: Boolean(profile.is_verified),
+                created_at: profile.created_at ?? new Date().toISOString(),
+                status,
+                reports_count: 0,
+                account_type: profile.account_type ?? null,
+              };
 
-          // Agregar propiedades opcionales solo si tienen valor
-          if (profile.age != null) user.age = profile.age;
-          if (profile.gender != null) user.gender = profile.gender;
-          if (profile.bio != null) user.bio = profile.bio;
-          if (profile.last_seen != null) {
-            user.last_seen = profile.last_seen;
-          } else if (profile.updated_at != null) {
-            user.last_seen = profile.updated_at;
-          }
+              // Agregar propiedades opcionales solo si tienen valor
+              if (profile.age != null) user.age = profile.age;
+              if (profile.gender != null) user.gender = profile.gender;
+              if (profile.bio != null) user.bio = profile.bio;
+              if (profile.last_seen != null) {
+                user.last_seen = profile.last_seen;
+              } else if (profile.updated_at != null) {
+                user.last_seen = profile.updated_at;
+              }
 
-          return user;
-        }) : [];
+              return user;
+            })
+          : [];
         setUsers(processedUsers);
       }
     } catch (error) {
@@ -311,7 +347,8 @@ export function UserManagementPanel() {
         // if (error) throw error;
         toast({
           title: "Información",
-          description: "La columna is_verified no existe aún en la tabla profiles",
+          description:
+            "La columna is_verified no existe aún en la tabla profiles",
         });
       }
 

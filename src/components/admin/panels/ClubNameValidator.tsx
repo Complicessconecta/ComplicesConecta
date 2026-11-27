@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Loader2, AlertCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useEffect } from "react";
+import { CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface ClubNameValidatorProps {
   name: string;
@@ -17,11 +17,11 @@ interface ValidationResult {
 const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
   name,
   onValidationChange,
-  onNameSelect
+  onNameSelect,
 }) => {
   const [validation, setValidation] = useState<ValidationResult>({
     isValid: false,
-    message: ''
+    message: "",
   });
   const [isValidating, setIsValidating] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -31,21 +31,21 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
     if (!name || name.trim().length === 0) {
       return {
         isValid: false,
-        message: 'El nombre del club es requerido'
+        message: "El nombre del club es requerido",
       };
     }
 
     if (name.length < 3) {
       return {
         isValid: false,
-        message: 'El nombre debe tener al menos 3 caracteres'
+        message: "El nombre debe tener al menos 3 caracteres",
       };
     }
 
     if (name.length > 50) {
       return {
         isValid: false,
-        message: 'El nombre no puede exceder 50 caracteres'
+        message: "El nombre no puede exceder 50 caracteres",
       };
     }
 
@@ -54,13 +54,14 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
     if (!validPattern.test(name)) {
       return {
         isValid: false,
-        message: 'Solo se permiten letras, números, espacios y caracteres básicos'
+        message:
+          "Solo se permiten letras, números, espacios y caracteres básicos",
       };
     }
 
     return {
       isValid: true,
-      message: ''
+      message: "",
     };
   };
 
@@ -73,7 +74,7 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
     suggestions.push(`${baseName} 2026`);
 
     // Sugerencia 2: Agregar "Club"
-    if (!baseName.toLowerCase().includes('club')) {
+    if (!baseName.toLowerCase().includes("club")) {
       suggestions.push(`${baseName} Club`);
     }
 
@@ -86,7 +87,7 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
     }
 
     // Sugerencia 5: Con "The" prefix
-    if (!baseName.toLowerCase().startsWith('the')) {
+    if (!baseName.toLowerCase().startsWith("the")) {
       suggestions.push(`The ${baseName}`);
     }
 
@@ -94,53 +95,55 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
   };
 
   // Validar nombre contra "base de datos" (mock)
-  const validateNameAvailability = async (name: string): Promise<ValidationResult> => {
+  const validateNameAvailability = async (
+    name: string,
+  ): Promise<ValidationResult> => {
     // Simular delay de red
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Lista de nombres existentes (mock)
     const existingNames = [
-      'Mystic Garden',
-      'Noche VIP',
-      'Club Demo',
-      'Luna Lounge',
-      'Solar Club',
-      'Velvet Room',
-      'Neon Dreams',
-      'Crystal Palace'
+      "Mystic Garden",
+      "Noche VIP",
+      "Club Demo",
+      "Luna Lounge",
+      "Solar Club",
+      "Velvet Room",
+      "Neon Dreams",
+      "Crystal Palace",
     ];
 
     const normalizedName = name.toLowerCase().trim();
-    const isTaken = existingNames.some(existing => 
-      existing.toLowerCase() === normalizedName
+    const isTaken = existingNames.some(
+      (existing) => existing.toLowerCase() === normalizedName,
     );
 
     if (isTaken) {
       const suggestions = generateSuggestions(name);
       return {
         isValid: false,
-        message: 'Este nombre ya está en uso',
-        suggestions
+        message: "Este nombre ya está en uso",
+        suggestions,
       };
     }
 
     return {
       isValid: true,
-      message: 'Nombre disponible'
+      message: "Nombre disponible",
     };
   };
 
   // Efecto para validar cuando cambia el nombre
   useEffect(() => {
     if (!name || name.trim().length === 0) {
-      setValidation({ isValid: false, message: '' });
+      setValidation({ isValid: false, message: "" });
       onValidationChange?.(false);
       return;
     }
 
     const validate = async () => {
       setIsValidating(true);
-      
+
       // Primero validar formato
       const formatValidation = validateFormat(name);
       if (!formatValidation.isValid) {
@@ -154,9 +157,15 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
       try {
         const availabilityValidation = await validateNameAvailability(name);
         setValidation(availabilityValidation);
-        onValidationChange?.(availabilityValidation.isValid, availabilityValidation.message);
-        
-        if (availabilityValidation.suggestions && availabilityValidation.suggestions.length > 0) {
+        onValidationChange?.(
+          availabilityValidation.isValid,
+          availabilityValidation.message,
+        );
+
+        if (
+          availabilityValidation.suggestions &&
+          availabilityValidation.suggestions.length > 0
+        ) {
           setShowSuggestions(true);
         } else {
           setShowSuggestions(false);
@@ -164,9 +173,9 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
       } catch (error) {
         setValidation({
           isValid: false,
-          message: 'Error al validar el nombre'
+          message: "Error al validar el nombre",
         });
-        onValidationChange?.(false, 'Error al validar el nombre');
+        onValidationChange?.(false, "Error al validar el nombre");
       } finally {
         setIsValidating(false);
       }
@@ -199,14 +208,14 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
 
   const getStatusColor = () => {
     if (!name || name.trim().length === 0) {
-      return 'text-gray-500';
+      return "text-gray-500";
     }
 
     if (validation.isValid) {
-      return 'text-green-600';
+      return "text-green-600";
     }
 
-    return 'text-red-600';
+    return "text-red-600";
   };
 
   return (
@@ -215,33 +224,35 @@ const ClubNameValidator: React.FC<ClubNameValidatorProps> = ({
       <div className="flex items-center gap-2">
         {getStatusIcon()}
         <span className={`text-sm font-medium ${getStatusColor()}`}>
-          {validation.message || 'Escribe un nombre para validar'}
+          {validation.message || "Escribe un nombre para validar"}
         </span>
       </div>
 
       {/* Sugerencias */}
-      {showSuggestions && validation.suggestions && validation.suggestions.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 text-amber-500" />
-            <span className="text-sm font-medium text-amber-700">
-              Sugerencias disponibles:
-            </span>
+      {showSuggestions &&
+        validation.suggestions &&
+        validation.suggestions.length > 0 && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 text-amber-500" />
+              <span className="text-sm font-medium text-amber-700">
+                Sugerencias disponibles:
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {validation.suggestions.map((suggestion, index) => (
+                <Badge
+                  key={index}
+                  variant="outline"
+                  className="cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </Badge>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {validation.suggestions.map((suggestion, index) => (
-              <Badge
-                key={index}
-                variant="outline"
-                className="cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                onClick={() => handleSuggestionClick(suggestion)}
-              >
-                {suggestion}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
+        )}
 
       {/* Reglas de validación */}
       <div className="text-xs text-gray-500 space-y-1">

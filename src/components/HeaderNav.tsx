@@ -1,12 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Heart, Search, User, MessageSquare, Calendar, Building2, Shield, HelpCircle, Info, DollarSign, Settings, Menu, ShoppingBag, FileText, Lock, Crown, ChevronDown, MoreHorizontal, Scale, Image, Home, BookOpen, Users, Sparkles } from "lucide-react";
+import {
+  Heart,
+  Search,
+  User,
+  MessageSquare,
+  Calendar,
+  Building2,
+  Shield,
+  HelpCircle,
+  Info,
+  DollarSign,
+  Settings,
+  Menu,
+  ShoppingBag,
+  FileText,
+  Lock,
+  Crown,
+  ChevronDown,
+  MoreHorizontal,
+  Scale,
+  Image,
+  Home,
+  BookOpen,
+  Users,
+  Sparkles,
+} from "lucide-react";
 import { BetaBanner } from "@/components/BetaBanner";
 import { Button } from "@/components/ui/buttons/Button";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 
@@ -21,10 +59,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const getStringProp = (
-    obj: unknown,
-    key: string,
-  ): string | undefined => {
+  const getStringProp = (obj: unknown, key: string): string | undefined => {
     if (typeof obj !== "object" || obj === null) return undefined;
     const value = (obj as Record<string, unknown>)[key];
     return typeof value === "string" && value.trim().length > 0
@@ -66,7 +101,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   const chatPath = hasSession ? "/chat" : "/chat-info";
   const tokensPath = hasSession ? "/tokens" : "/tokens-info";
 
-  const isTokensRoute = location.pathname === "/tokens" || location.pathname.startsWith("/tokens-");
+  const isTokensRoute =
+    location.pathname === "/tokens" || location.pathname.startsWith("/tokens-");
 
   const isProfileRoute =
     location.pathname === "/profile" ||
@@ -86,11 +122,36 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
   // D) Dropdown "Más" con TODOS los items restantes organizados por categorías
   const secondaryNavItems = [
     // Tokens & Marketplace
-    { name: "Tokens", path: tokensPath, icon: DollarSign, category: "Tokens & Marketplace" },
-    { name: "Marketplace", path: "/marketplace", icon: ShoppingBag, category: "Tokens & Marketplace" },
-    { name: "NFTs", path: "/nfts", icon: Image, category: "Tokens & Marketplace" },
-    { name: "Premium", path: "/premium", icon: Crown, category: "Tokens & Marketplace" },
-    { name: "Shop", path: "/shop", icon: ShoppingBag, category: "Tokens & Marketplace" },
+    {
+      name: "Tokens",
+      path: tokensPath,
+      icon: DollarSign,
+      category: "Tokens & Marketplace",
+    },
+    {
+      name: "Marketplace",
+      path: "/marketplace",
+      icon: ShoppingBag,
+      category: "Tokens & Marketplace",
+    },
+    {
+      name: "NFTs",
+      path: "/nfts",
+      icon: Image,
+      category: "Tokens & Marketplace",
+    },
+    {
+      name: "Premium",
+      path: "/premium",
+      icon: Crown,
+      category: "Tokens & Marketplace",
+    },
+    {
+      name: "Shop",
+      path: "/shop",
+      icon: ShoppingBag,
+      category: "Tokens & Marketplace",
+    },
 
     // Explorar
     { name: "Stories", path: "/stories", icon: Image, category: "Explorar" },
@@ -99,26 +160,76 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     { name: "About", path: "/about", icon: Building2, category: "Explorar" },
 
     // Contenido & Empresa
-    { name: "Blog", path: "/blog", icon: BookOpen, category: "Contenido & Empresa" },
-    { name: "Noticias", path: "/news", icon: FileText, category: "Contenido & Empresa" },
-    { name: "Carreras", path: "/careers", icon: Building2, category: "Contenido & Empresa" },
-    { name: "Inversionistas", path: "/invest", icon: DollarSign, category: "Contenido & Empresa" },
-    { name: "Donaciones", path: "/donations", icon: DollarSign, category: "Contenido & Empresa" },
-    { name: "Moderadores", path: "/moderators", icon: Users, category: "Contenido & Empresa" },
-    { name: "Proyecto", path: "/project-info", icon: FileText, category: "Contenido & Empresa" },
+    {
+      name: "Blog",
+      path: "/blog",
+      icon: BookOpen,
+      category: "Contenido & Empresa",
+    },
+    {
+      name: "Noticias",
+      path: "/news",
+      icon: FileText,
+      category: "Contenido & Empresa",
+    },
+    {
+      name: "Carreras",
+      path: "/careers",
+      icon: Building2,
+      category: "Contenido & Empresa",
+    },
+    {
+      name: "Inversionistas",
+      path: "/invest",
+      icon: DollarSign,
+      category: "Contenido & Empresa",
+    },
+    {
+      name: "Donaciones",
+      path: "/donations",
+      icon: DollarSign,
+      category: "Contenido & Empresa",
+    },
+    {
+      name: "Moderadores",
+      path: "/moderators",
+      icon: Users,
+      category: "Contenido & Empresa",
+    },
+    {
+      name: "Proyecto",
+      path: "/project-info",
+      icon: FileText,
+      category: "Contenido & Empresa",
+    },
 
     // Ayuda
     { name: "FAQ", path: "/faq", icon: HelpCircle, category: "Ayuda" },
     { name: "Soporte", path: "/support", icon: HelpCircle, category: "Ayuda" },
-    { name: "Chat (Info)", path: "/chat-info", icon: MessageSquare, category: "Ayuda" },
+    {
+      name: "Chat (Info)",
+      path: "/chat-info",
+      icon: MessageSquare,
+      category: "Ayuda",
+    },
 
     // Legal
     { name: "Legal (Hub)", path: "/legal", icon: Scale, category: "Legal" },
     { name: "Términos", path: "/terms", icon: FileText, category: "Legal" },
     { name: "Privacidad", path: "/privacy", icon: Lock, category: "Legal" },
     { name: "Seguridad", path: "/security", icon: Shield, category: "Legal" },
-    { name: "Directrices", path: "/guidelines", icon: FileText, category: "Legal" },
-    { name: "Ley Olimpia", path: "/ley-olimpia", icon: Shield, category: "Legal" },
+    {
+      name: "Directrices",
+      path: "/guidelines",
+      icon: FileText,
+      category: "Legal",
+    },
+    {
+      name: "Ley Olimpia",
+      path: "/ley-olimpia",
+      icon: Shield,
+      category: "Legal",
+    },
   ];
 
   const isActive = (path: string) => {
@@ -207,8 +318,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                   />
                   {/* Partículas flotantes - corazones rosas con animación más lenta */}
                   <div className="absolute inset-0 pointer-events-none">
-                    <Heart className="absolute top-0 left-0 w-2 h-2 text-pink-300 animate-heart-particle-1" fill="currentColor" />
-                    <Heart className="absolute top-1 right-0 w-2 h-2 text-pink-400 animate-heart-particle-2" fill="currentColor" />
+                    <Heart
+                      className="absolute top-0 left-0 w-2 h-2 text-pink-300 animate-heart-particle-1"
+                      fill="currentColor"
+                    />
+                    <Heart
+                      className="absolute top-1 right-0 w-2 h-2 text-pink-400 animate-heart-particle-2"
+                      fill="currentColor"
+                    />
                   </div>
                 </div>
                 <span className="font-black text-xl lg:text-2xl hidden sm:block bg-linear-to-r from-purple-300 via-purple-200 to-blue-300 bg-clip-text text-transparent animate-gradient-x whitespace-nowrap shrink-0">
@@ -244,7 +361,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center space-x-1 xl:space-x-2 px-2 xl:px-3 py-2 rounded-lg text-xs xl:text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 shrink-0">
                     <MoreHorizontal className="h-5 w-5 shrink-0 text-white" />
-                    <span className="whitespace-nowrap hidden xl:inline">Más</span>
+                    <span className="whitespace-nowrap hidden xl:inline">
+                      Más
+                    </span>
                     <ChevronDown className="h-4 w-4 shrink-0 text-white" />
                   </button>
                 </DropdownMenuTrigger>
@@ -600,4 +719,3 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     </>
   );
 };
-

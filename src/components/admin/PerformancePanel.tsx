@@ -1,12 +1,29 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { Activity, Server, Database, Wifi, Cpu, HardDrive, RefreshCw, AlertTriangle, CheckCircle, TrendingUp, BarChart3 } from "lucide-react";
+import {
+  Activity,
+  Server,
+  Database,
+  Wifi,
+  Cpu,
+  HardDrive,
+  RefreshCw,
+  AlertTriangle,
+  CheckCircle,
+  TrendingUp,
+  BarChart3,
+} from "lucide-react";
 
 interface SystemMetrics {
   cpu: number;
@@ -195,10 +212,10 @@ export const PerformancePanel = () => {
         .limit(50);
 
       if (error) {
-        logger.warn(
-          "Error loading recent metrics from DB, using fallback:",
-          { error: error.message, details: error.details },
-        );
+        logger.warn("Error loading recent metrics from DB, using fallback:", {
+          error: error.message,
+          details: error.details,
+        });
         generateMockRecentMetrics();
         return;
       }
@@ -219,7 +236,7 @@ export const PerformancePanel = () => {
         metric_unit: m.unit || "%",
         recorded_at: m.created_at || new Date().toISOString(),
         created_at: m.created_at || new Date().toISOString(),
-        metadata: m.metadata as Record<string, unknown> || {},
+        metadata: (m.metadata as Record<string, unknown>) || {},
       }));
 
       setRecentMetrics(formattedMetrics.slice(0, 5));
@@ -248,7 +265,12 @@ export const PerformancePanel = () => {
   };
 
   const generateMockRecentMetrics = () => {
-    const metricNames = ["CPU Usage", "Memory Usage", "Disk I/O", "Network Traffic"];
+    const metricNames = [
+      "CPU Usage",
+      "Memory Usage",
+      "Disk I/O",
+      "Network Traffic",
+    ];
     const mockMetrics: SystemMetric[] = Array.from({ length: 10 }, (_, i) => ({
       id: `metric-${i}`,
       metric_name: metricNames[i % 4] || "Unknown",
@@ -446,7 +468,10 @@ export const PerformancePanel = () => {
                   <Server className="w-8 h-8 text-green-400" />
                 </div>
                 <div className="mt-2">
-                  <ProgressBar value={systemMetrics.memory} color="bg-green-400" />
+                  <ProgressBar
+                    value={systemMetrics.memory}
+                    color="bg-green-400"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -463,7 +488,10 @@ export const PerformancePanel = () => {
                   <HardDrive className="w-8 h-8 text-purple-400" />
                 </div>
                 <div className="mt-2">
-                  <ProgressBar value={systemMetrics.disk} color="bg-purple-400" />
+                  <ProgressBar
+                    value={systemMetrics.disk}
+                    color="bg-purple-400"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -480,7 +508,10 @@ export const PerformancePanel = () => {
                   <Wifi className="w-8 h-8 text-orange-400" />
                 </div>
                 <div className="mt-2">
-                  <ProgressBar value={systemMetrics.network} color="bg-orange-400" />
+                  <ProgressBar
+                    value={systemMetrics.network}
+                    color="bg-orange-400"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -683,5 +714,4 @@ export const PerformancePanel = () => {
       </Tabs>
     </div>
   );
-}
-
+};

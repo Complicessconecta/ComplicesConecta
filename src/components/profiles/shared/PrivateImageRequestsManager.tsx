@@ -68,6 +68,61 @@ interface AccessRequest {
   isLocal?: boolean;
 }
 
+/**
+ * Ronda 21 (stream B, FAIL 7): lee la bandeja DESDE EL ALMACÉN
+ * (`friend_requests_demo`, kind `photo_access`, con decididas).
+ * Es la única fuente de verdad: `loadRequests` y la re-lectura tras
+ * aprobar/denegar usan esta misma función, así que un `setRequests`
+ * optimista nunca puede quedar pisado por una fila duplicada o por
+ * una re-siembra. El nombre/avatar/mensaje se superponen desde las
+ * semillas por `fromId` (el almacén solo guarda ids).
+ */
+function readRequestsFromStore(profileId: string): AccessRequest[] {
+  const localRequests: AccessRequest[] = listIncomingRequestsSync(
+    profileId,
+    "photo_access",
+    { includeDecided: true },
+  ).map((req) => {
+    const seed = SEEDED_PHOTO_ACCESS_REQUESTS.find(
+      (s) => s.fromId === req.fromId,
+    );
+    return {
+      id: req.id,
+      requesterId: req.fromId,
+      requesterName: seed?.name ?? resolveDemoDisplayName(req.fromId),
+      requesterAvatar: seed?.avatar,
+      message:
+        req.message ??
+        seed?.message ??
+        "Solicitud para ver la galería privada.",
+      timestamp: Date.parse(req.createdAt) || Date.now(),
+      status:
+        req.status === "accepted"
+          ? "approved"
+          : req.status === "declined"
+            ? "denied"
+            : "pending",
+      isLocal: true,
+    };
+  });
+  // Orden visible: las semillas primero (en su orden fijo) y luego
+  // las reales en orden del almacén. Antes las mock se pintaban
+  // primero y las reales se añadían después; sin esto una solicitud
+  // real enviada ANTES de la primera siembra quedaría por encima de
+  // las semillas y cambiaría el orden que el test de la ronda 14
+  // asume.
+  const seedOrder = (requesterId: string): number => {
+    const idx = SEEDED_PHOTO_ACCESS_REQUESTS.findIndex(
+      (s) => s.fromId === requesterId,
+    );
+    return idx === -1 ? SEEDED_PHOTO_ACCESS_REQUESTS.length : idx;
+  };
+  localRequests.sort(
+    (a, b) => seedOrder(a.requesterId) - seedOrder(b.requesterId),
+  );
+  return localRequests;
+}
+
 interface PrivateImageRequestsManagerProps {
   profileId: string;
   profileName: string;
@@ -115,49 +170,7 @@ export const PrivateImageRequestsManager: React.FC<
         // cuenta atrás de la concesión seguía viva (bandeja y
         // galería en desacuerdo). Aceptadas y declinadas quedan
         // visibles con su estado real del almacén.
-        const localRequests: AccessRequest[] = listIncomingRequestsSync(
-          profileId,
-          "photo_access",
-          { includeDecided: true },
-        ).map((req) => {
-          const seed = SEEDED_PHOTO_ACCESS_REQUESTS.find(
-            (s) => s.fromId === req.fromId,
-          );
-          return {
-            id: req.id,
-            requesterId: req.fromId,
-            requesterName: seed?.name ?? resolveDemoDisplayName(req.fromId),
-            requesterAvatar: seed?.avatar,
-            message:
-              req.message ??
-              seed?.message ??
-              "Solicitud para ver la galería privada.",
-            timestamp: Date.parse(req.createdAt) || Date.now(),
-            status:
-              req.status === "accepted"
-                ? "approved"
-                : req.status === "declined"
-                  ? "denied"
-                  : "pending",
-            isLocal: true,
-          };
-        });
-        // Orden visible: las semillas primero (en su orden fijo) y
-        // luego las reales en orden del almacén. Antes las mock se
-        // pintaban primero y las reales se añadían después; sin
-        // esto una solicitud real enviada ANTES de la primera
-        // siembra quedaría por encima de las semillas y cambiaría
-        // el orden que el test de la ronda 14 asume.
-        const seedOrder = (requesterId: string): number => {
-          const idx = SEEDED_PHOTO_ACCESS_REQUESTS.findIndex(
-            (s) => s.fromId === requesterId,
-          );
-          return idx === -1 ? SEEDED_PHOTO_ACCESS_REQUESTS.length : idx;
-        };
-        localRequests.sort(
-          (a, b) => seedOrder(a.requesterId) - seedOrder(b.requesterId),
-        );
-        setRequests(localRequests);
+        setRequests(readRequestsFromStore(profileId));
       } catch (error) {
         logger.error("Error cargando solicitudes de acceso", {
           error,
@@ -206,11 +219,26 @@ export const PrivateImageRequestsManager: React.FC<
       });
       return;
     }
-    setRequests((prev) =>
-      prev.map((req) =>
-        req.id === requestId ? { ...req, status: "approved" } : req,
-      ),
-    );
+    // Ronda 21 (stream B, FAIL 7): NO confiar en el `setRequests`
+    // optimista — el estado se pone DESDE EL ALMACÉN tras responder
+    // (la re-lectura colapsa duplicados y refleja la decisión real)
+    // y el toast solo sale si la re-lectura confirma "approved". El
+    // síntoma de la ronda (toast sí, fila en Pendientes hasta el 2º
+    // clic) era una fila duplicada que pisaba el estado optimista.
+    const fresh = readRequestsFromStore(profileId);
+    setRequests(fresh);
+    const confirmed = fresh.find((req) => req.id === requestId);
+    if (confirmed?.status !== "approved") {
+      logger.error("Aprobación no confirmada por el almacén", {
+        requestId,
+      });
+      toast({
+        title: "Error",
+        description: "No se pudo confirmar la aprobación.",
+        variant: "destructive",
+      });
+      return;
+    }
     toast({
       title: "Solicitud aprobada",
       description: "El usuario ahora puede ver tus imágenes privadas.",
@@ -247,11 +275,23 @@ export const PrivateImageRequestsManager: React.FC<
       });
       return;
     }
-    setRequests((prev) =>
-      prev.map((req) =>
-        req.id === requestId ? { ...req, status: "denied" } : req,
-      ),
-    );
+    // Ronda 21 (stream B, FAIL 7): igual que en handleApprove — el
+    // estado se pone desde el almacén y el toast solo si la
+    // re-lectura confirma "denied".
+    const fresh = readRequestsFromStore(profileId);
+    setRequests(fresh);
+    const confirmed = fresh.find((req) => req.id === requestId);
+    if (confirmed?.status !== "denied") {
+      logger.error("Denegación no confirmada por el almacén", {
+        requestId,
+      });
+      toast({
+        title: "Error",
+        description: "No se pudo confirmar la denegación.",
+        variant: "destructive",
+      });
+      return;
+    }
     toast({
       title: "Solicitud denegada",
       description: "El usuario no podrá ver tus imágenes privadas.",

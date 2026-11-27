@@ -15,6 +15,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
+import {
+  getDemoNotifications,
+  markDemoNotificationAsRead,
+  markAllDemoNotificationsAsRead,
+  deleteDemoNotification,
+  DEMO_NOTIFICATIONS_CHANGED_EVENT,
+} from "@/lib/notifications";
 
 interface NotificationItem {
   id: string;
@@ -55,31 +62,25 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
     (typeof isDemo === "function" && isDemo()) ||
     (profile as { is_demo?: boolean } | null)?.is_demo === true;
 
-  // Load demo notifications for demo users
+  // Ronda 21 (stream C): las 2 demo se leen de la fuente compartida
+  // (`@/lib/notifications`): la misma lista que renderiza la página
+  // /notifications. La lectura se persiste en localStorage, así que
+  // marcar una como leída en la página baja este distintivo.
   const loadDemoNotifications = () => {
-    const demoNotifications: NotificationItem[] = [
-      {
-        id: "demo-1",
-        type: "request",
-        title: "Nueva solicitud de conexión",
-        message: "Anabella & Julio quieren conectar contigo",
-        read: false,
-        created_at: new Date().toISOString(),
-        sender_name: "Anabella & Julio",
-      },
-      {
-        id: "demo-2",
-        type: "email",
-        title: "Nuevo mensaje",
-        message: "Tienes un mensaje nuevo de Carmen & Roberto",
-        read: false,
-        created_at: new Date(Date.now() - 3600000).toISOString(),
-        sender_name: "Carmen & Roberto",
-      },
-    ];
+    const demoNotifications = getDemoNotifications();
     setNotifications(demoNotifications);
     setUnreadCount(demoNotifications.filter((n) => !n.read).length);
   };
+
+  // Ronda 21 (stream C): si la página /notifications marca/borra una
+  // demo mientras la campana está montada, refrescar sin recargar.
+  useEffect(() => {
+    if (!isDemoUser) return;
+    const onChanged = () => loadDemoNotifications();
+    window.addEventListener(DEMO_NOTIFICATIONS_CHANGED_EVENT, onChanged);
+    return () =>
+      window.removeEventListener(DEMO_NOTIFICATIONS_CHANGED_EVENT, onChanged);
+  }, [isDemoUser]);
 
   // Load notifications on mount and when user changes
   useEffect(() => {
@@ -197,6 +198,18 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
   };
 
   const markAsRead = async (notificationId: string) => {
+    // Ronda 21 (stream C): en demo no hay fila en Supabase (el id
+    // "demo-1" no es numérico: el update viejo fallaba en silencio y
+    // el distintivo no bajaba). Se persiste en la fuente compartida.
+    if (isDemoUser) {
+      markDemoNotificationAsRead(notificationId);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+      return;
+    }
+
     try {
       if (!supabase) {
         logger.error("Supabase no está disponible");
@@ -221,6 +234,18 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
 
   const markAllAsRead = async () => {
     if (!user) return;
+
+    // Ronda 21 (stream C): rama demo (ver markAsRead).
+    if (isDemoUser) {
+      markAllDemoNotificationsAsRead();
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      setUnreadCount(0);
+      toast({
+        title: "Éxito",
+        description: "Todas las notificaciones marcadas como leídas",
+      });
+      return;
+    }
 
     try {
       if (!supabase) {
@@ -254,6 +279,17 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
   };
 
   const deleteNotification = async (notificationId: string) => {
+    // Ronda 21 (stream C): rama demo (ver markAsRead).
+    if (isDemoUser) {
+      deleteDemoNotification(notificationId);
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+      setUnreadCount((prev) => {
+        const notification = notifications.find((n) => n.id === notificationId);
+        return notification && !notification.read ? prev - 1 : prev;
+      });
+      return;
+    }
+
     try {
       if (!supabase) {
         logger.error("Supabase no está disponible");

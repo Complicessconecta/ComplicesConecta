@@ -19,6 +19,7 @@ import {
   SOFIA_CANONICAL_PHOTO,
 } from "@/demo/demoData";
 import { generateDemoUUID } from "@/lib/demo-uuid";
+import { isDemoMatchHistoryCleared } from "@/lib/demoMatchHistory";
 
 // Professional profile images from Unsplash - Production ready
 // Removed local imports that fail in production
@@ -50,7 +51,7 @@ export interface Match {
 
 const Matches = () => {
   const navigate = useNavigate();
-  const { isAuthenticated: _isAuthenticated } = useAuth();
+  const { isAuthenticated: _isAuthenticated, user } = useAuth();
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading] = useState(false);
 
@@ -169,6 +170,18 @@ const Matches = () => {
     });
     const isDemo = demoAuth === "true";
 
+    // Ronda 21 (stream B, FAIL 6): si el usuario eliminó su
+    // historial demo desde /settings ("Eliminar historial de
+    // matches"), la lista queda vacía: la semilla NO se recarga.
+    // La marca vive en `cc_demo_matches_cleared:<userId>` (ver
+    // `src/lib/demoMatchHistory.ts`); sin ella, la semilla es la
+    // única fuente de matches demo (no hay almacén local).
+    if (user?.id && isDemoMatchHistoryCleared(user.id)) {
+      if (matches.length > 0) setMatches([]);
+      logger.info("ℹ️ Historial de matches demo eliminado: lista vacía");
+      return;
+    }
+
     // SIEMPRE usar datos demo para respetar la lógica de negocio
     // No cargar datos reales hasta que el sistema esté completamente implementado
     if (matches.length === 0) {
@@ -178,7 +191,7 @@ const Matches = () => {
         isDemo,
       });
     }
-  }, [matches.length]);
+  }, [matches.length, user?.id]);
 
   const currentMatches = matches; // Siempre usar datos demo para respetar lógica de negocio
   const filteredMatches = currentMatches.filter((match) => {

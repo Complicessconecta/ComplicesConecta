@@ -2,18 +2,34 @@ import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
+import { useAuth } from "@/features/auth/useAuth";
 
 interface ModeratorRouteProps {
   children: React.ReactNode;
 }
 
 const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
+  const { isDemo } = useAuth();
   const [isModerator, setIsModerator] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Ronda 21 (coordinador, FAIL 3 — cierre): en demo no hay sesión
+  // Supabase, así que la validación real siempre negaba el acceso y el
+  // botón «Dashboard Demo» de /moderators rebotaba a `/` tras arreglar
+  // el 404. Mismo diseño que AdminRoute: en demo el panel se concede
+  // de inmediato (datos demo/respaldo); la validación real solo aplica
+  // fuera de demo.
+  const demoActive = typeof isDemo === "function" ? isDemo() : Boolean(isDemo);
+
   useEffect(() => {
+    // Demo: acceso directo al panel (sin sesión real).
+    if (demoActive) {
+      setIsModerator(true);
+      setLoading(false);
+      return;
+    }
     checkModeratorAccess();
-  }, []);
+  }, [demoActive]);
 
   const checkModeratorAccess = async () => {
     try {

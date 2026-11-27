@@ -40,6 +40,16 @@ interface ProfileCardProps {
   lastSeen?: string;
   onLike?: (id: number | string) => void;
   /**
+   * Ronda 21 (stream B, FAIL 10): like CONTROLADO por el padre
+   * (`likedProfileIds` en Discover). Antes la tarjeta guardaba su
+   * propio `isLiked` local: el corazón se llenaba aunque el padre
+   * no se enterara (contador en 12) y al recargar se apagaba. Con
+   * la prop, UI y contador no pueden divergir: el corazón solo está
+   * rojo si el padre registró el like (y lo persistió). Sin la prop
+   * (otros llamadores), la tarjeta sigue con su estado local.
+   */
+  liked?: boolean | undefined;
+  /**
    * Ronda 10 (stream A, punto A8): el espectador es una cuenta
    * anónima. Su like está bloqueado: el botón no alterna a
    * "Te Gusta" y avisa con `onAnonymousLikeBlocked` (mensaje claro,
@@ -73,6 +83,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
     isPrivate = false,
     lastSeen,
     onLike,
+    liked,
     isViewerAnonymous = false,
     onAnonymousLikeBlocked,
     onMessage,
@@ -82,7 +93,13 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
   }) {
     const [isHovered, setIsHovered] = React.useState(false);
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-    const [isLiked, setIsLiked] = React.useState(false);
+    // Ronda 21 (stream B, FAIL 10): si el padre pasa `liked`, esa
+    // prop MANDA (única fuente de verdad); el estado local solo
+    // existe para llamadores sin prop. El toggle local nunca se
+    // ejecuta en modo controlado: si no, el corazón se llenaría
+    // antes de que el padre confirmara el like.
+    const [isLikedLocal, setIsLikedLocal] = React.useState(false);
+    const isLiked = liked ?? isLikedLocal;
     const [showViews, setShowViews] = React.useState(false);
     // Si la foto (Unsplash) no carga, no dejar el degradado borroso: mostrar
     // un avatar con la inicial. Se resetea al cambiar de foto/perfil.
@@ -111,10 +128,18 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
         onAnonymousLikeBlocked?.();
         return;
       }
-      setIsLiked(!isLiked);
+      // Ronda 21 (stream B, FAIL 10): en modo controlado (`liked`
+      // como prop) NO alternar estado local: el padre es quien
+      // alterna y re-renderiza con la prop nueva. El gate anónimo
+      // de arriba sigue bloqueando antes de alternar, igual que el
+      // gate del padre en `handleLike` de Discover (ronda 10, A8).
+      if (liked === undefined) {
+        setIsLikedLocal(!isLikedLocal);
+      }
       onLike?.(profileId ?? id);
     }, [
-      isLiked,
+      isLikedLocal,
+      liked,
       onLike,
       id,
       profileId,

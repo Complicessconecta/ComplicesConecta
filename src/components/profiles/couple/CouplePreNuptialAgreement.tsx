@@ -14,7 +14,16 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {  FileText, AlertTriangle, Users, Shield, Clock, DollarSign, CheckCircle2, XCircle } from "lucide-react";
+import {
+  FileText,
+  AlertTriangle,
+  Users,
+  Shield,
+  Clock,
+  DollarSign,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
@@ -84,7 +93,7 @@ export const CouplePreNuptialAgreement: React.FC<
         try {
           // Intento 2: ipapi.co (HTTPS required)
           const response = await fetch("https://ipapi.co/json/");
-          if (!response.ok) throw new Error("Ipapi failed");
+          if (!response.ok) throw new Error("Ipapi failed", { cause: error });
           const data = await response.json();
           setUserIP(data.ip);
         } catch (secondError) {
@@ -128,11 +137,7 @@ export const CouplePreNuptialAgreement: React.FC<
             partner1Signature: data.partner_1_signature ?? false,
             partner2Signature: data.partner_2_signature ?? false,
             status: data.status as
-              | "ACTIVE"
-              | "DISSOLVED"
-              | "PENDING"
-              | "DISPUTED"
-              | "FORFEITED",
+              "ACTIVE" | "DISSOLVED" | "PENDING" | "DISPUTED" | "FORFEITED",
             signedAt: data.signed_at,
             disputeDeadline: data.dispute_deadline,
           });
@@ -284,11 +289,7 @@ EVIDENCIA LEGAL:
               partner1Signature: data.partner_1_signature ?? false,
               partner2Signature: data.partner_2_signature ?? false,
               status: data.status as
-                | "ACTIVE"
-                | "DISSOLVED"
-                | "PENDING"
-                | "DISPUTED"
-                | "FORFEITED",
+                "ACTIVE" | "DISSOLVED" | "PENDING" | "DISPUTED" | "FORFEITED",
               signedAt: data.signed_at,
               disputeDeadline: data.dispute_deadline,
             }
@@ -573,4 +574,3 @@ EVIDENCIA LEGAL:
 };
 
 export default CouplePreNuptialAgreement;
-

@@ -62,8 +62,7 @@ vi.mock("@/features/profile/useProfileTheme", () => ({
     setNavbarStyle: vi.fn(),
   }),
   useProfileTheme: () => ({
-    backgroundClass:
-      "bg-linear-to-br from-purple-900 via-pink-900 to-red-900",
+    backgroundClass: "bg-linear-to-br from-purple-900 via-pink-900 to-red-900",
     textClass: "text-white",
   }),
   getNavbarStyles: () => ({}),

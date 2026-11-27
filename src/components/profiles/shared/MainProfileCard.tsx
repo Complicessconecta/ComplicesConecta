@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
-import { useProfileTheme, Gender, ProfileType, Theme } from "@/features/profile/useProfileTheme";
+import {
+  useProfileTheme,
+  Gender,
+  ProfileType,
+  Theme,
+} from "@/features/profile/useProfileTheme";
 import { inferProfileKind } from "@/lib/media";
 import { cn } from "@/shared/lib/cn";
 import { validateProfileCard } from "@/lib/validation/zod/zod-schemas";
@@ -358,7 +363,9 @@ const MainProfileCardComponent = ({
               className="w-5 h-5 sm:w-6 sm:h-6 mr-2 shrink-0"
               strokeWidth={2.5}
             />
-            <span className="hidden sm:inline text-sm whitespace-nowrap">Pasar</span>
+            <span className="hidden sm:inline text-sm whitespace-nowrap">
+              Pasar
+            </span>
             <span className="sm:hidden text-sm sr-only">Pasar</span>
           </Button>
           <Button
@@ -373,7 +380,9 @@ const MainProfileCardComponent = ({
               strokeWidth={2.5}
               fill="currentColor"
             />
-            <span className="hidden sm:inline text-sm whitespace-nowrap">Me Gusta</span>
+            <span className="hidden sm:inline text-sm whitespace-nowrap">
+              Me Gusta
+            </span>
             <span className="sm:hidden text-sm sr-only">Me Gusta</span>
           </Button>
         </div>
@@ -398,4 +407,3 @@ export const MainProfileCard = memo(MainProfileCardComponent);
 
 // Export alias for backward compatibility
 export { MainProfileCard as ProfileCard };
-

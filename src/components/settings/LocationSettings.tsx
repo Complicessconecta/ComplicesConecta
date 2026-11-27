@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -9,7 +14,10 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
-import { loadSettingsStateRemote, saveSettingsState } from "@/components/settings/settingsStorage";
+import {
+  loadSettingsStateRemote,
+  saveSettingsState,
+} from "@/components/settings/settingsStorage";
 
 const DEFAULT_LOCATION = {
   search_radius: 25,
@@ -25,13 +33,25 @@ export const LocationSettings = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loaded, setLoaded] = useState(false);
-  const [searchRadius, setSearchRadius] = useState([DEFAULT_LOCATION.search_radius]);
-  const [autoDetectLocation, setAutoDetectLocation] = useState(DEFAULT_LOCATION.auto_detect_location);
-  const [showDistance, setShowDistance] = useState(DEFAULT_LOCATION.show_distance);
-  const [preciseLocation, setPreciseLocation] = useState(DEFAULT_LOCATION.precise_location);
-  const [locationHistory, setLocationHistory] = useState(DEFAULT_LOCATION.location_history);
+  const [searchRadius, setSearchRadius] = useState([
+    DEFAULT_LOCATION.search_radius,
+  ]);
+  const [autoDetectLocation, setAutoDetectLocation] = useState(
+    DEFAULT_LOCATION.auto_detect_location,
+  );
+  const [showDistance, setShowDistance] = useState(
+    DEFAULT_LOCATION.show_distance,
+  );
+  const [preciseLocation, setPreciseLocation] = useState(
+    DEFAULT_LOCATION.precise_location,
+  );
+  const [locationHistory, setLocationHistory] = useState(
+    DEFAULT_LOCATION.location_history,
+  );
   const [s2Level, setS2Level] = useState([DEFAULT_LOCATION.s2_level]); // Nivel de precisión S2 (10-20)
-  const [geolocationEnabled, setGeolocationEnabled] = useState(DEFAULT_LOCATION.geolocation_enabled);
+  const [geolocationEnabled, setGeolocationEnabled] = useState(
+    DEFAULT_LOCATION.geolocation_enabled,
+  );
   const { location, error, isLoading, getCurrentLocation } = useGeolocation();
 
   // Cargar los valores guardados (localStorage en demo, BD en real).
@@ -254,7 +274,11 @@ export const LocationSettings = () => {
                   </Label>
                   <p className="text-sm text-muted-foreground">
                     Nivel {s2LevelValue}: ~
-                    {s2LevelValue <= 12 ? "100+" : s2LevelValue <= 15 ? "1" : "0.1"}
+                    {s2LevelValue <= 12
+                      ? "100+"
+                      : s2LevelValue <= 15
+                        ? "1"
+                        : "0.1"}
                     km² (más bajo = más privacidad)
                   </p>
                 </div>
@@ -321,4 +345,3 @@ export const LocationSettings = () => {
     </div>
   );
 };
-

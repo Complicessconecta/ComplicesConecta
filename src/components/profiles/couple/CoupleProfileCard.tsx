@@ -22,7 +22,7 @@ interface CoupleProfileCardProps {
   useThemeBackground?: boolean;
   onSuperLike?: (id: string) => void;
   onDislike?: (id: string) => void;
-};
+}
 
 const CoupleProfileCard = ({
   profile,
@@ -81,12 +81,12 @@ const CoupleProfileCard = ({
         "group relative rounded-2xl overflow-hidden shadow-soft hover:shadow-glow transition-all duration-500 transform hover:scale-105 cursor-pointer",
         useThemeBackground
           ? `${themeConfig.backgroundClass} ${themeConfig.textClass}`
-          // RONDA 10 (stream B, B2): `bg-card-gradient` NO existe como
-          // utilidad compilada (no hay regla en el CSS del build): la
-          // tarjeta quedaba transparente y el pie con `text-white`
-          // quedaba blanco sobre lavanda en tema claro. Fondo explícito
-          // en ambos temas; con tema de perfil activo manda themeConfig.
-          : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15",
+          : // RONDA 10 (stream B, B2): `bg-card-gradient` NO existe como
+            // utilidad compilada (no hay regla en el CSS del build): la
+            // tarjeta quedaba transparente y el pie con `text-white`
+            // quedaba blanco sobre lavanda en tema claro. Fondo explícito
+            // en ambos temas; con tema de perfil activo manda themeConfig.
+            "bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15",
       )}
       onClick={handleViewProfile}
     >
@@ -228,7 +228,9 @@ const CoupleProfileCard = ({
           <h3
             className={cn(
               "text-base sm:text-lg font-semibold group-hover:text-primary transition-colors truncate",
-              useThemeBackground ? themeConfig.textClass : "text-slate-900 dark:text-white",
+              useThemeBackground
+                ? themeConfig.textClass
+                : "text-slate-900 dark:text-white",
             )}
           >
             {profile.couple_name}
@@ -236,7 +238,9 @@ const CoupleProfileCard = ({
           <div
             className={cn(
               "flex items-center space-x-1",
-              useThemeBackground ? themeConfig.accentClass : "text-slate-600 dark:text-white",
+              useThemeBackground
+                ? themeConfig.accentClass
+                : "text-slate-600 dark:text-white",
             )}
           >
             <MapPin className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />

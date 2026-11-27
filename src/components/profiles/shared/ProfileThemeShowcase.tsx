@@ -200,7 +200,9 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
               {...(selectedTheme ? { theme: selectedTheme } : {})}
               gender={selectedGender}
               accountType={selectedProfileType}
-              {...(selectedProfileType === "couple" && selectedPartnerGender ? { partnerGender: selectedPartnerGender } : {})}
+              {...(selectedProfileType === "couple" && selectedPartnerGender
+                ? { partnerGender: selectedPartnerGender }
+                : {})}
               name={selectedProfileType === "couple" ? "Ana & Carlos" : "María"}
               className="w-full"
             />

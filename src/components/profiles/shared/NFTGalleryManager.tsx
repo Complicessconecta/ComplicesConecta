@@ -10,17 +10,45 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Modal";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Image as ImageIcon, Plus, Coins, CheckCircle, Loader2, Eye, Globe, Lock,Sparkles } from "lucide-react";
+import {
+  Image as ImageIcon,
+  Plus,
+  Coins,
+  CheckCircle,
+  Loader2,
+  Eye,
+  Globe,
+  Lock,
+  Sparkles,
+} from "lucide-react";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
-import { nftGalleryService, NFTGallery, NFTGalleryImage, tokenService } from "@/services";
+import {
+  nftGalleryService,
+  NFTGallery,
+  NFTGalleryImage,
+  tokenService,
+} from "@/services";
 import { logger } from "@/lib/logger";
 
 interface NFTGalleryManagerProps {
@@ -135,7 +163,10 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
         galleryData.profileId = profileId;
       }
 
-      const newGallery = await nftGalleryService.createGallery(userId, galleryData);
+      const newGallery = await nftGalleryService.createGallery(
+        userId,
+        galleryData,
+      );
 
       setGalleries((prev) => [newGallery, ...prev]);
       setShowCreateDialog(false);
@@ -651,4 +682,3 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
     </div>
   );
 };
-

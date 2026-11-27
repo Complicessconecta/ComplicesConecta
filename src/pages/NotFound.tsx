@@ -24,7 +24,7 @@ const NotFound = () => {
     }));
   }, []);
 
-  const isDevelopment = import.meta.env.MODE === 'development';
+  const isDevelopment = import.meta.env.MODE === "development";
   const canViewLogs = isAdmin() || isDevelopment;
 
   useEffect(() => {
@@ -199,9 +199,9 @@ const NotFound = () => {
                       {`Error: 404 Not Found
 Pathname: ${location.pathname}
 Timestamp: ${new Date().toISOString()}
-User ID: ${user?.id || 'N/A'}
-Environment: ${isDevelopment ? 'Development' : 'Production'}
-Admin Access: ${isAdmin() ? 'Yes' : 'No'}`}
+User ID: ${user?.id || "N/A"}
+Environment: ${isDevelopment ? "Development" : "Production"}
+Admin Access: ${isAdmin() ? "Yes" : "No"}`}
                     </pre>
                   </Card>
                 )}
@@ -331,4 +331,3 @@ Admin Access: ${isAdmin() ? 'Yes' : 'No'}`}
 };
 
 export default NotFound;
-

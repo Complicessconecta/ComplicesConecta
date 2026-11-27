@@ -1,6 +1,19 @@
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
-import { ArrowLeft, Shield, Lock, Eye, Database, AlertTriangle, FileText } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import {
+  ArrowLeft,
+  Shield,
+  Lock,
+  Eye,
+  Database,
+  AlertTriangle,
+  FileText,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { TokensSubnav } from "@/components/TokensSubnav";
 
@@ -333,4 +346,3 @@ export default function TokensPrivacy() {
     </div>
   );
 }
-

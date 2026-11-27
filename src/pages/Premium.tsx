@@ -1,9 +1,27 @@
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Crown, Zap, Heart, Star, Shield, Calendar, Users, Coins, Lock, Sparkles, Gift } from "lucide-react";
+import {
+  ArrowLeft,
+  Crown,
+  Zap,
+  Heart,
+  Star,
+  Shield,
+  Calendar,
+  Users,
+  Coins,
+  Lock,
+  Sparkles,
+  Gift,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { PremiumFeatures } from "@/components/premium/PremiumFeatures";
@@ -367,8 +385,8 @@ const Premium = () => {
                 Funciones Premium - Post Beta
               </h2>
               <p className="text-white mb-4">
-                Las funciones Premium avanzadías se activarn al finalizar la fase
-                beta. Los donantes tendrn acceso prioritario y beneficios
+                Las funciones Premium avanzadías se activarn al finalizar la
+                fase beta. Los donantes tendrn acceso prioritario y beneficios
                 exclusivos.
               </p>
               <Badge variant="secondary" className="bg-accent/20 text-accent">
@@ -594,4 +612,3 @@ const Premium = () => {
 };
 
 export default Premium;
-

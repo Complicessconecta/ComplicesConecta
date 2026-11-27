@@ -1,11 +1,32 @@
 import type { FC } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { motion } from "framer-motion";
-import { Shield, CheckCircle, ArrowRight, Sparkles, TrendingUp, Award, Lock, Users, Eye, Camera, Palette, Gem, Database, Verified, DollarSign } from "lucide-react";
+import {
+  Shield,
+  CheckCircle,
+  ArrowRight,
+  Sparkles,
+  TrendingUp,
+  Award,
+  Lock,
+  Users,
+  Eye,
+  Camera,
+  Palette,
+  Gem,
+  Database,
+  Verified,
+  DollarSign,
+} from "lucide-react";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 
 const NFTs: FC = () => {
@@ -185,7 +206,9 @@ const NFTs: FC = () => {
   ];
 
   return (
-    <div className={`min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden ${isActive ? "page-active" : ""}`}>
+    <div
+      className={`min-h-dvh bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-x-hidden ${isActive ? "page-active" : ""}`}
+    >
       {/* Background decorativo */}
       <DecorativeHearts count={10} />
 
@@ -586,4 +609,3 @@ const NFTs: FC = () => {
 };
 
 export default NFTs;
-

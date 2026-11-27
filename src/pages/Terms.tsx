@@ -1,6 +1,11 @@
 import type { FC } from "react";
 import { Shield, Users, Heart, Lock, FileText } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 
 const Terms: FC = () => {
@@ -277,4 +282,3 @@ const Terms: FC = () => {
 };
 
 export default Terms;
-

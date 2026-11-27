@@ -332,4 +332,3 @@ export const useScrollAnimation = (threshold: number = 0.1) => {
 
   return { ref, isVisible };
 };
-

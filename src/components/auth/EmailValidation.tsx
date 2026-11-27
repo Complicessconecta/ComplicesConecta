@@ -229,4 +229,3 @@ export const useEmailValidation = () => {
 };
 
 export default EmailValidation;
-

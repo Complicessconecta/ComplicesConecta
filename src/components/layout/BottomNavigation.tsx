@@ -8,7 +8,9 @@ interface BottomNavigationProps {
   className?: string;
 }
 
-export const BottomNavigation: React.FC<BottomNavigationProps> = ({ className = "" }) => {
+export const BottomNavigation: React.FC<BottomNavigationProps> = ({
+  className = "",
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isDemo } = useAuth();
@@ -19,11 +21,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ className = 
   // ahora la lista es explícita y no incluye /profile/<id> (perfil de
   // otro usuario) ni /edit-profile-*. (Este dock ya no se renderiza
   // desde MainLayout; se conserva alineado por si vuelve a usarse.)
-  const shouldShow = isDemo() && (
-    location.pathname === "/profile" ||
-    location.pathname === "/profile-single" ||
-    location.pathname === "/profile-couple"
-  );
+  const shouldShow =
+    isDemo() &&
+    (location.pathname === "/profile" ||
+      location.pathname === "/profile-single" ||
+      location.pathname === "/profile-couple");
 
   if (!shouldShow) return null;
 
@@ -40,15 +42,17 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ className = 
   };
 
   return (
-    <div className={cn(
-      "fixed bottom-0 left-0 right-0 z-40 bg-linear-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-xl border-t border-purple-500/40 shadow-lg shadow-purple-900/50 safe-area-inset-bottom",
-      className
-    )}>
+    <div
+      className={cn(
+        "fixed bottom-0 left-0 right-0 z-40 bg-linear-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-xl border-t border-purple-500/40 shadow-lg shadow-purple-900/50 safe-area-inset-bottom",
+        className,
+      )}
+    >
       <nav className="flex justify-around items-center h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
-          
+
           return (
             <button
               key={item.path}
@@ -57,13 +61,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ className = 
                 "flex flex-col items-center justify-center py-1 px-2 rounded-lg transition-all duration-200 min-w-0 flex-1",
                 active
                   ? "text-white bg-white/10"
-                  : "text-white/60 hover:text-white/80"
+                  : "text-white/60 hover:text-white/80",
               )}
             >
               <Icon className="h-5 w-5 mb-1" />
-              <span className="text-xs font-medium truncate">
-                {item.label}
-              </span>
+              <span className="text-xs font-medium truncate">{item.label}</span>
             </button>
           );
         })}

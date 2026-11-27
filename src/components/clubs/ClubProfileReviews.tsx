@@ -4,10 +4,7 @@ import { Card } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import {
-  ANONYMOUS_REVIEW_LABEL,
-  canAnonymousReview,
-} from "@/lib/anonymous";
+import { ANONYMOUS_REVIEW_LABEL, canAnonymousReview } from "@/lib/anonymous";
 
 interface ClubReview {
   id: string;
@@ -65,6 +62,56 @@ interface ClubProfileReviewsProps {
  */
 const USER_REVIEWS_STORAGE_PREFIX = "cc_club_reviews_v1:";
 
+/**
+ * Ronda 15 (stream C): evento que se dispara cada vez que el usuario
+ * escribe una reseña en un club. El encabezado del club
+ * (`ClubProfileHeader`) lo escucha para actualizar su conteo en vivo:
+ * antes mostraba el `rating_count` estático de la semilla (128) mientras
+ * la sección de reseñas ya decía 129 (test PR #74).
+ */
+export const USER_REVIEWS_CHANGED_EVENT = "cc:club-user-reviews-changed";
+
+/** Nº de reseñas escritas por el usuario en este club (persistidas). */
+export function countUserReviews(clubId: string | undefined): number {
+  return readUserReviews(clubId).length;
+}
+
+/**
+ * Ronda 16 (stream C): conteo VIVO de reseñas para cualquier
+ * superficie que muestre el total de un club — el encabezado
+ * (`ClubProfileHeader`) y la tarjeta de la lista (`/clubs`). Es el
+ * mismo mecanismo de la ronda 15 (stream C): semilla + reseñas del
+ * usuario en localStorage, re-leído con el evento
+ * `cc:club-user-reviews-changed` al publicar, sin recargar. Antes
+ * solo el encabezado lo usaba y la tarjeta de la lista seguía con
+ * el `rating_count` estático de la semilla (128 en la lista mientras
+ * /clubs/demo ya decía 130).
+ */
+export function useLiveReviewCount(
+  clubId: string | undefined,
+  seedCount: number,
+): number {
+  const [userReviewCount, setUserReviewCount] = useState(() =>
+    countUserReviews(clubId),
+  );
+  useEffect(() => {
+    setUserReviewCount(countUserReviews(clubId));
+    const onUserReviewsChanged = (event: Event) => {
+      const detail = (event as CustomEvent<{ clubId?: string }>).detail;
+      if (!detail?.clubId || detail.clubId === clubId) {
+        setUserReviewCount(countUserReviews(clubId));
+      }
+    };
+    window.addEventListener(USER_REVIEWS_CHANGED_EVENT, onUserReviewsChanged);
+    return () =>
+      window.removeEventListener(
+        USER_REVIEWS_CHANGED_EVENT,
+        onUserReviewsChanged,
+      );
+  }, [clubId]);
+  return seedCount + userReviewCount;
+}
+
 function readUserReviews(clubId: string | undefined): ClubReview[] {
   if (typeof window === "undefined" || !clubId) return [];
   try {
@@ -87,12 +134,20 @@ function readUserReviews(clubId: string | undefined): ClubReview[] {
   }
 }
 
-function saveUserReviews(clubId: string | undefined, reviews: ClubReview[]): void {
+function saveUserReviews(
+  clubId: string | undefined,
+  reviews: ClubReview[],
+): void {
   if (typeof window === "undefined" || !clubId) return;
   try {
     window.localStorage.setItem(
       `${USER_REVIEWS_STORAGE_PREFIX}${clubId}`,
       JSON.stringify(reviews),
+    );
+    // Ronda 15 (stream C): avisar al encabezado del club para que su
+    // conteo pase a ser el vivo (ver USER_REVIEWS_CHANGED_EVENT).
+    window.dispatchEvent(
+      new CustomEvent(USER_REVIEWS_CHANGED_EVENT, { detail: { clubId } }),
     );
   } catch {
     // Sin almacenamiento: la reseña solo vive en esta vista.
@@ -160,7 +215,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
   isAnonymous = false,
   hasInteraction = true,
 }) => {
-  const [sortBy, setSort] = useState<'recent' | 'highest' | 'lowest'>('recent');
+  const [sortBy, setSort] = useState<"recent" | "highest" | "lowest">("recent");
 
   // Ronda 10 (stream A, punto A5): formulario de reseña. Las
   // reseñas del usuario se suman a las del club y se persisten por
@@ -191,7 +246,9 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
 
   const handleSubmitReview = () => {
     if (!anonymousReviewCheck.allowed) {
-      setFormError(anonymousReviewCheck.reason ?? "No puedes reseñar este club.");
+      setFormError(
+        anonymousReviewCheck.reason ?? "No puedes reseñar este club.",
+      );
       return;
     }
     if (rating < 1 || rating > 5) {
@@ -230,9 +287,9 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
   };
 
   const sortedReviews = [...allReviews].sort((a, b) => {
-    if (sortBy === 'recent') {
+    if (sortBy === "recent") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else if (sortBy === 'highest') {
+    } else if (sortBy === "highest") {
       return b.rating - a.rating;
     } else {
       return a.rating - b.rating;
@@ -241,10 +298,10 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return date.toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -253,9 +310,7 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
       <Star
         key={i}
         className={`h-4 w-4 ${
-          i < rating
-            ? 'text-yellow-400 fill-current'
-            : 'text-gray-400'
+          i < rating ? "text-yellow-400 fill-current" : "text-gray-400"
         }`}
       />
     ));
@@ -288,7 +343,8 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
             <div>
               <h3 className="text-xl font-bold text-white">Reseñas</h3>
               <p className="text-white/60 text-sm">
-                {totalWithUserReviews} {totalWithUserReviews === 1 ? 'reseña' : 'reseñas'}
+                {totalWithUserReviews}{" "}
+                {totalWithUserReviews === 1 ? "reseña" : "reseñas"}
               </p>
             </div>
           </div>
@@ -313,10 +369,19 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
             moderación. */}
         <div className="bg-white/5 rounded-xl p-4 sm:p-5 mb-6 border border-white/10">
           <h4 className="text-white font-semibold mb-1">Escribe una reseña</h4>
-          <p className="text-white/60 text-xs mb-4">
+          <p className="text-white/60 text-xs mb-1">
             {isAnonymous
               ? "Tu reseña se publicará como «Reseña anónima» y quedará en revisión por moderación."
               : "Tu reseña se publicará con tu nombre visible."}
+          </p>
+          {/* Ronda 15, stream D (decisión D2): la guía afirmaba que
+              solo usuarios con check-in real podían reseñar, pero el
+              formulario nunca verificó ningún check-in. En beta las
+              reseñas están abiertas; la reseña verificada con
+              check-in real (50 m, WorldID) llega próximamente. */}
+          <p className="text-white/60 text-xs mb-4">
+            En beta, las reseñas están abiertas a todos los usuarios. La reseña
+            verificada con check-in real llega próximamente.
           </p>
           {!anonymousReviewCheck.allowed ? (
             <p className="text-sm text-amber-200 bg-amber-500/10 border border-amber-400/30 rounded-lg px-3 py-2">
@@ -397,7 +462,8 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
                 {renderStars(Math.round(averageRating))}
               </div>
               <p className="text-white/60 text-sm">
-                {totalWithUserReviews} {totalWithUserReviews === 1 ? 'reseña' : 'reseñas'}
+                {totalWithUserReviews}{" "}
+                {totalWithUserReviews === 1 ? "reseña" : "reseñas"}
               </p>
             </div>
 
@@ -517,4 +583,3 @@ export const ClubProfileReviews: React.FC<ClubProfileReviewsProps> = ({
     </Card>
   );
 };
-

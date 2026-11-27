@@ -95,12 +95,15 @@ export const AdminTabsContent = <T extends AdminClubData>({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
             <h3 className="text-white font-bold flex items-center gap-2 mb-4">
-              <Calculator className="h-5 w-5 text-purple-400" /> Simulador de Ganancias
+              <Calculator className="h-5 w-5 text-purple-400" /> Simulador de
+              Ganancias
             </h3>
 
             <div className="space-y-4">
               <div>
-                <Label className="text-xs text-white/50">PRECIO DE ENTRADA (USD)</Label>
+                <Label className="text-xs text-white/50">
+                  PRECIO DE ENTRADA (USD)
+                </Label>
                 <Input
                   type="number"
                   value={String(priceInput)}
@@ -110,13 +113,18 @@ export const AdminTabsContent = <T extends AdminClubData>({
               </div>
 
               <div className="flex justify-between p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                <span className="text-white/70">Tu Ganancia ({clubData.membership_tier}):</span>
-                <span className="text-green-400 font-bold">${clubTake.toFixed(2)}</span>
+                <span className="text-white/70">
+                  Tu Ganancia ({clubData.membership_tier}):
+                </span>
+                <span className="text-green-400 font-bold">
+                  ${clubTake.toFixed(2)}
+                </span>
               </div>
 
               {clubData.membership_tier === "free" && (
                 <p className="text-[10px] text-orange-400/80 italic">
-                  * Estás en Plan Free. La plataforma retiene un 20% ($ {platformTake.toFixed(2)}).
+                  * Estás en Plan Free. La plataforma retiene un 20% (${" "}
+                  {platformTake.toFixed(2)}).
                 </p>
               )}
             </div>
@@ -131,9 +139,14 @@ export const AdminTabsContent = <T extends AdminClubData>({
               <div className="flex flex-wrap gap-3">
                 <Button
                   type="button"
-                  variant={clubData.membership_tier === "free" ? "default" : "outline"}
+                  variant={
+                    clubData.membership_tier === "free" ? "default" : "outline"
+                  }
                   onClick={() =>
-                    setClubData((prev) => ({ ...prev, membership_tier: "free" }))
+                    setClubData((prev) => ({
+                      ...prev,
+                      membership_tier: "free",
+                    }))
                   }
                   className={
                     clubData.membership_tier === "free"
@@ -145,9 +158,16 @@ export const AdminTabsContent = <T extends AdminClubData>({
                 </Button>
                 <Button
                   type="button"
-                  variant={clubData.membership_tier === "premium" ? "default" : "outline"}
+                  variant={
+                    clubData.membership_tier === "premium"
+                      ? "default"
+                      : "outline"
+                  }
                   onClick={() =>
-                    setClubData((prev) => ({ ...prev, membership_tier: "premium" }))
+                    setClubData((prev) => ({
+                      ...prev,
+                      membership_tier: "premium",
+                    }))
                   }
                   className={
                     clubData.membership_tier === "premium"
@@ -259,14 +279,22 @@ export const AdminTabsContent = <T extends AdminClubData>({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-            <p className="text-white/70 text-sm font-semibold mb-1">Estado actual</p>
+            <p className="text-white/70 text-sm font-semibold mb-1">
+              Estado actual
+            </p>
             <p className="text-white">{clubData.live_status}</p>
-            <p className="text-white/50 text-xs mt-2">tier: {clubData.membership_tier}</p>
-            <p className="text-white/50 text-xs">cmpx_balance: {cmpxBalance.toFixed(2)}</p>
+            <p className="text-white/50 text-xs mt-2">
+              tier: {clubData.membership_tier}
+            </p>
+            <p className="text-white/50 text-xs">
+              cmpx_balance: {cmpxBalance.toFixed(2)}
+            </p>
           </div>
 
           <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-            <p className="text-white/70 text-sm font-semibold mb-1">Simulación rápida (USD)</p>
+            <p className="text-white/70 text-sm font-semibold mb-1">
+              Simulación rápida (USD)
+            </p>
             <Input
               type="number"
               value={String(priceInput)}
@@ -275,10 +303,14 @@ export const AdminTabsContent = <T extends AdminClubData>({
             />
             <div className="mt-3 text-xs text-white/70">
               App fee:
-              <span className="ml-1 text-red-300 font-semibold">-${platformTake.toFixed(2)}</span>
+              <span className="ml-1 text-red-300 font-semibold">
+                -${platformTake.toFixed(2)}
+              </span>
               <span className="mx-2 text-white/40">·</span>
               Club net:
-              <span className="ml-1 text-green-300 font-semibold">${clubTake.toFixed(2)}</span>
+              <span className="ml-1 text-green-300 font-semibold">
+                ${clubTake.toFixed(2)}
+              </span>
             </div>
           </div>
         </div>

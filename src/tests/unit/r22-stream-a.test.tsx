@@ -457,7 +457,7 @@ describe("/moderators/dashboard — títulos por tema en tema claro", () => {
     expect(loadingText.className).toContain("dark:text-white");
 
     const heading = await screen.findByRole("heading", {
-      name: /Panel de Moderacion/,
+      name: /Panel de Moderación/,
     });
     const headingClasses = heading.className.split(" ");
     expect(headingClasses).toContain("text-slate-900");
@@ -492,7 +492,7 @@ describe("/moderators/dashboard — títulos por tema en tema claro", () => {
       ),
     );
     expect(
-      await screen.findByRole("heading", { name: /Panel de Moderacion/ }),
+      await screen.findByRole("heading", { name: /Panel de Moderación/ }),
     ).toBeInTheDocument();
     // Estado vacío sin reportes: el panel llegó a pintar datos.
     expect(

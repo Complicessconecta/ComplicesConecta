@@ -159,9 +159,9 @@ const ModeratorRequest = () => {
                 <div className="bg-white/5 rounded-lg p-4">
                   <h3 className="text-white font-semibold mb-2">Qu sigue?</h3>
                   <ul className="text-white/70 text-sm space-y-2 text-left">
-                    <li> Revisaremos tu solicitud en 2-3 días hbiles</li>
-                    <li> Te contactaremos por email con la decisin</li>
-                    <li> Si eres aprobado, recibirs un enlace de activacin</li>
+                    <li> Revisaremos tu solicitud en 2-3 días hábiles</li>
+                    <li> Te contactaremos por email con la decisión</li>
+                    <li> Si eres aprobado, recibirs un enlace de activación</li>
                     <li>
                       {" "}
                       Podrs acceder al panel de moderación una vez activado
@@ -217,7 +217,7 @@ const ModeratorRequest = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Descripcin del programa */}
+            {/* Descripción del programa */}
             <div className="bg-linear-to-r from-purple-500/10 to-fuchsia-500/10 rounded-lg p-4 border border-purple-400/20">
               <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                 <AlertCircle className="h-5 w-5 text-blue-400" />
@@ -256,7 +256,7 @@ const ModeratorRequest = () => {
                   <li>
                     {" "}
                     <strong>Apoyo a usuarios:</strong> Resolver consultas sobre
-                    polticas de la comunidad
+                    políticas de la comunidad
                   </li>
                   <li>
                     {" "}
@@ -317,8 +317,8 @@ const ModeratorRequest = () => {
                   </li>
                   <li>
                     {" "}
-                    <strong>Experiencia:</strong> Moderación online, atencin al
-                    cliente o psicologa
+                    <strong>Experiencia:</strong> Moderación online, atención al
+                    cliente o psicología
                   </li>
                   <li>
                     {" "}
@@ -384,7 +384,7 @@ const ModeratorRequest = () => {
                   <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold">
                     2
                   </div>
-                  <p className="text-white/70">Revisin (2-3 días)</p>
+                  <p className="text-white/70">Revisión (2-3 días)</p>
                 </div>
                 <div className="text-center">
                   <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold">
@@ -469,7 +469,7 @@ const ModeratorRequest = () => {
                     value={formData.experience}
                     onChange={handleInputChange}
                     className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
-                    placeholder="Describe tu experiencia en moderación, administracin de comunidades, atencin al cliente, etc."
+                    placeholder="Describe tu experiencia en moderación, administración de comunidades, atención al cliente, etc."
                     rows={3}
                   />
                 </div>
@@ -540,10 +540,10 @@ const ModeratorRequest = () => {
                     title="Acepto los términos y condiciones"
                   />
                   <label className="text-white/80 text-sm">
-                    Acepto los trminos y condiciones del programa de moderación.
-                    Entiendo que como moderador debo mantener la
+                    Acepto los términos y condiciones del programa de
+                    moderación. Entiendo que como moderador debo mantener la
                     confidencialidad, actuar de manera imparcial y seguir las
-                    polticas de la comunidad. *
+                    políticas de la comunidad. *
                   </label>
                 </div>
               </div>

@@ -67,7 +67,11 @@ const Marketplace = () => {
       rating: 4.8,
       reviews: 892,
       badge: "Recomendado",
-      features: ["10 Super Likes", "Notificacin especial", "Mayor visibilidad"],
+      features: [
+        "10 Super Likes",
+        "Notificación especial",
+        "Mayor visibilidad",
+      ],
     },
     {
       id: 3,

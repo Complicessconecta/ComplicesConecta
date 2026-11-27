@@ -70,7 +70,7 @@ export default function ProjectInfo() {
               className="text-white"
             >
               <GitBranch className="h-4 w-4 mr-2" />
-              Notas de Versin
+              Notas de Versión
             </Button>
             <Button
               variant={activeTab === "moderators" ? "default" : "ghost"}
@@ -219,7 +219,7 @@ export default function ProjectInfo() {
                     <li> ? Neo4j Graph Database 100% operativo</li>
                     <li> ? Documentacin consolidada y actualizada</li>
                     <li> ? Gua de instalacin completa</li>
-                    <li> ? 107 tablas + 122 polticas RLS</li>
+                    <li> ? 107 tablas + 122 políticas RLS</li>
                   </ul>
 
                   <h2 className="text-2xl font-bold text-blue-400 mb-4">
@@ -249,7 +249,7 @@ export default function ProjectInfo() {
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> ?? Migracin a React 18</li>
                     <li> ?? Nuevo diseo con Tailwind CSS</li>
-                    <li> ??? Integracin con Supabase</li>
+                    <li> ??? Integración con Supabase</li>
                     <li> ?? PWA y capacidades nativas</li>
                   </ul>
                 </div>
@@ -275,7 +275,7 @@ export default function ProjectInfo() {
                   <ul className="text-white/90 mb-6 space-y-2">
                     <li> Revisar reportes de usuarios y contenido</li>
                     <li> Mantener un ambiente seguro y respetuoso</li>
-                    <li> Aplicar las polticas de la comunidad</li>
+                    <li> Aplicar las políticas de la comunidad</li>
                     <li> Asistir a usuarios con dudas o problemas</li>
                     <li> Colaborar con el equipo de desarrollo</li>
                   </ul>
@@ -342,7 +342,7 @@ export default function ProjectInfo() {
                       </p>
 
                       <h3 className="text-lg font-semibold text-green-400">
-                        Mtricas del Proyecto
+                        Métricas del Proyecto
                       </h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div>Archivos: 220+</div>
@@ -467,7 +467,7 @@ const ModeratorApplicationModal = () => {
       toast({
         variant: "destructive",
         title: "Trminos requeridos",
-        description: "Debes aceptar los trminos y condiciones",
+        description: "Debes aceptar los términos y condiciones",
       });
       return;
     }
@@ -631,10 +631,10 @@ const ModeratorApplicationModal = () => {
               htmlFor="terminos-mod"
               className="text-white/90 text-sm leading-relaxed"
             >
-              Acepto los trminos y condiciones del programa de moderadores.
+              Acepto los términos y condiciones del programa de moderadores.
               Entiendo que es una posicin de responsabilidad voluntaria y me
-              comprometo a mantener la confidencialidad y seguir las polticas de
-              la comunidad.
+              comprometo a mantener la confidencialidad y seguir las políticas
+              de la comunidad.
             </Label>
           </div>
 

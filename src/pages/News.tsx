@@ -114,20 +114,20 @@ const News: FC = () => {
       type: "major",
       icon: <BarChart3 className="h-6 w-6" />,
       highlights: [
-        "Performance Monitoring Service - Mtricas Web Vitals (LCP, FCP, FID, CLS, TTFB)",
-        "Error Alert Service - Captura automtica con categorizacin inteligente",
-        "Analytics Dashboard - 4 pestaas (Overview, Moderación, Histrico, Configuracin)",
+        "Performance Monitoring Service - Métricas Web Vitals (LCP, FCP, FID, CLS, TTFB)",
+        "Error Alert Service - Captura automática con categorización inteligente",
+        "Analytics Dashboard - 4 pestañas (Overview, Moderación, Histórico, Configuración)",
         "Historical Charts con Recharts - Line, Area, Composed, Bar charts",
         "Sistema de Webhooks - Slack, Discord, Custom con rate limiting",
-        "Integracin Sentry completa - Error tracking + Source maps + Session Replay",
+        "Integración Sentry completa - Error tracking + Source maps + Session Replay",
         "New Relic APM - Infrastructure + Browser agent integrado",
-        "Moderation Metrics - 7 KPIs completos con grficos de distribucin",
+        "Moderation Metrics - 7 KPIs completos con grficos de distribución",
       ],
       color: "from-green-500 to-emerald-600",
       stats: {
         tablas: 107,
         coverage: "98% tests",
-        qa: "96/100 puntuacin",
+        qa: "96/100 puntuación",
       },
     },
     {
@@ -183,23 +183,23 @@ const News: FC = () => {
       icon: <Shield className="h-6 w-6" />,
       highlights: [
         "Sistema de tokens CMPX/GTK completamente funcional",
-        "Auditora DevOps completa con puntuacin 96/100",
-        "Navegacin unificada y responsiva",
-        "Configuracin de storage buckets y funciones de BD",
-        "Correccin de errores TypeScript crticos",
+        "Auditoría DevOps completa con puntuación 96/100",
+        "Navegación unificada y responsiva",
+        "Configuración de storage buckets y funciones de BD",
+        "Corrección de errores TypeScript críticos",
       ],
       color: "from-orange-500 to-red-600",
     },
     {
       version: "v1.0 - v2.0",
       date: "Dic 2024 - Ene 2025",
-      title: "Fundacin y Arquitectura Base",
+      title: "Fundación y Arquitectura Base",
       type: "foundation",
       icon: <Database className="h-6 w-6" />,
       highlights: [
         "Arquitectura base con React + TypeScript + Supabase",
-        "Sistema de autenticacin y perfiles (single/pareja)",
-        "Base de datos con RLS y polticas de seguridad",
+        "Sistema de autenticación y perfiles (single/pareja)",
+        "Base de datos con RLS y políticas de seguridad",
         "UI/UX inicial con Tailwind CSS",
         "Funcionalidades core: matches, chat, galería",
       ],
@@ -223,13 +223,13 @@ const News: FC = () => {
   const getTypeLabel = (type: string) => {
     switch (type) {
       case "major":
-        return "Actualizacin Mayor";
+        return "Actualización Mayor";
       case "minor":
         return "Mejoras y Correcciones";
       case "foundation":
-        return "Versin Fundacional";
+        return "Versión Fundacional";
       default:
-        return "Actualizacin";
+        return "Actualización";
     }
   };
 
@@ -297,7 +297,7 @@ const News: FC = () => {
               <p className="text-white/90 leading-relaxed text-base sm:text-lg">
                 Descubre todas las mejoras, nuevas funcionalidades y
                 optimizaciones que hemos implementado desde el lanzamiento de
-                ComplicesConecta. Cada actualizacin est diseada para mejorar tu
+                ComplicesConecta. Cada actualización est diseada para mejorar tu
                 experiencia, la seguridad de la plataforma y el rendimiento del
                 sistema.
               </p>
@@ -413,7 +413,7 @@ const News: FC = () => {
           ))}
         </div>
 
-        {/* Estadsticas de Desarrollo mejoradas */}
+        {/* Estadísticas de Desarrollo mejoradas */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -425,7 +425,7 @@ const News: FC = () => {
                 <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                   <BarChart3 className="h-5 w-5 text-white" />
                 </div>
-                Estadsticas de Desarrollo
+                Estadísticas de Desarrollo
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -476,7 +476,7 @@ const News: FC = () => {
                 </motion.div>
               </div>
 
-              {/* Estadsticas adicionales */}
+              {/* Estadísticas adicionales */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mt-6">
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-xl sm:text-2xl font-bold text-white mb-1">
@@ -531,7 +531,7 @@ const News: FC = () => {
             <CardContent>
               <div className="space-y-3">
                 {[
-                  "Integracin MongoDB Atlas para analytics avanzados",
+                  "Integración MongoDB Atlas para analytics avanzados",
                   "Sistema de video chat P2P con WebRTC",
                   "Marketplace de productos premium",
                   "Notificaciones push nativas mejoradas",

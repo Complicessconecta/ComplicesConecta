@@ -201,7 +201,7 @@ const About = () => {
                 <div className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors">
                   <Shield className="h-8 w-8 text-green-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">
-                    Verificacin Biomtrica
+                    Verificación Biométrica
                   </h4>
                   <p className="text-gray-100 text-sm font-medium">
                     Sistema 2FA con autenticación facial y huella digital
@@ -247,7 +247,7 @@ const About = () => {
             </CardContent>
           </Card>
 
-          {/* Estadsticas y Logros */}
+          {/* Estadísticas y Logros */}
           <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-white mb-6 text-center">
@@ -258,7 +258,7 @@ const About = () => {
                   <div className="text-3xl font-bold text-white mb-2">
                     v4.0.0
                   </div>
-                  <div className="text-white/70 text-sm">Versin Actual</div>
+                  <div className="text-white/70 text-sm">Versión Actual</div>
                 </div>
                 <div className="bg-linear-to-br from-blue-500/20 to-cyan-500/20 rounded-lg p-6">
                   <div className="text-3xl font-bold text-white mb-2">107</div>
@@ -326,10 +326,10 @@ const About = () => {
                     <Users className="h-6 w-6 text-purple-400 mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-white">
-                        Verificacin Obligatoria
+                        Verificación Obligatoria
                       </h4>
                       <p className="text-white/70 text-sm">
-                        Documento oficial + selfie + verificacin telefnica
+                        Documento oficial + selfie + verificación telefónica
                       </p>
                     </div>
                   </div>

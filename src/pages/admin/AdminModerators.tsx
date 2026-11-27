@@ -182,7 +182,7 @@ const AdminModerators = () => {
         return;
       }
 
-      // Generar token de activacin
+      // Generar token de activación
       const activationToken = crypto.randomUUID();
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + 24); // 24 horas
@@ -219,7 +219,7 @@ const AdminModerators = () => {
 
       toast({
         title: "Moderador creado exitosamente",
-        description: `Se ha enviado un enlace de activacin a ${newModeratorEmail}`,
+        description: `Se ha enviado un enlace de activación a ${newModeratorEmail}`,
         duration: 5000,
       });
 
@@ -351,7 +351,7 @@ const AdminModerators = () => {
         title: `Solicitud ${action === "approved" ? "aprobada" : "rechazada"}`,
         description:
           action === "approved"
-            ? "Se ha creado el moderador y enviado enlace de activacin"
+            ? "Se ha creado el moderador y enviado enlace de activación"
             : "La solicitud ha sido rechazada",
       });
 
@@ -674,9 +674,9 @@ const AdminModerators = () => {
                   </div>
                   <div className="bg-white/5 p-3 sm:p-4 rounded-lg border border-white/10">
                     <p className="text-white/80 text-xs sm:text-sm">
-                      <strong>Nota:</strong> Se enviar un enlace de activacin al
-                      email especificado. El moderador tendr 24 horas para
-                      activar su cuenta y definir su contrasea.
+                      <strong>Nota:</strong> Se enviar un enlace de activación
+                      al email especificado. El moderador tendr 24 horas para
+                      activar su cuenta y definir su contraseña.
                     </p>
                   </div>
                   <Button

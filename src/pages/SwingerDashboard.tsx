@@ -166,7 +166,7 @@ const SwingerDashboard = () => {
                   {swingerStats.verifiedProfiles}
                 </div>
                 <p className="text-xs text-white/80">
-                  Verificacin KYC + Lifestyle
+                  Verificación KYC + Lifestyle
                 </p>
               </CardContent>
             </Card>
@@ -301,12 +301,12 @@ const SwingerDashboard = () => {
                       key={index}
                       className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl cursor-pointer hover:bg-white/10 hover:border-white/25 hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300"
                       onClick={() => {
-                        if (feature.title === "Verificacin Lifestyle KYC") {
+                        if (feature.title === "Verificación Lifestyle KYC") {
                           navigate("/profile-single");
-                        } else if (feature.title === "Chat ntimo Encriptado") {
+                        } else if (feature.title === "Chat íntimo Encriptado") {
                           navigate("/chat-info");
                         } else if (
-                          feature.title === "Encuentros Gelocalizados"
+                          feature.title === "Encuentros Geolocalizados"
                         ) {
                           navigate("/discover");
                         } else if (feature.title === "Fiestas Privadas VIP") {

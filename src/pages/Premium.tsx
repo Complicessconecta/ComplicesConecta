@@ -69,7 +69,7 @@ const Premium = () => {
     },
     {
       icon: Shield,
-      title: "Verificacin VIP",
+      title: "Verificación VIP",
       description: "Acceso a perfiles ultra-verificados",
       color: "from-purple-500 to-indigo-500",
     },

@@ -267,7 +267,7 @@ const SecurityPage = () => {
                   <li> Fotos públicas: visibles para todos los usuarios</li>
                   <li> Fotos privadas: requieren solicitud de acceso</li>
                   <li> Control total sobre quién puede ver tu contenido</li>
-                  <li> Eliminacin permanente cuando lo desees</li>
+                  <li> Eliminación permanente cuando lo desees</li>
                 </ul>
               </div>
               <div>

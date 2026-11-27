@@ -625,7 +625,7 @@ export const Discover = () => {
               id: profile.id,
               name: `${profile.first_name} ${profile.last_name || ""}`.trim(),
               age: profile.age || 25,
-              location: getLocationDisplay(location), // Ubicacin real implementada con useGeolocation
+              location: getLocationDisplay(location), // Ubicación real implementada con useGeolocation
               distance: calculateDistance(
                 location,
                 profile.latitude && profile.longitude
@@ -644,7 +644,7 @@ export const Discover = () => {
                 },
                 usedImages,
               ), // Avatar URL desde Supabase profiles
-              bio: profile.bio || "Sin descripcin",
+              bio: profile.bio || "Sin descripción",
               isOnline: profile.is_online || false,
               lastActive: profile.last_active
                 ? new Date(profile.last_active).toLocaleString("es-ES", {
@@ -1022,7 +1022,7 @@ export const Discover = () => {
 
       <div className="relative z-10"></div>
 
-      {/* Header con navegacin */}
+      {/* Header con navegación */}
       <div className="bg-white/80 dark:bg-white/10 backdrop-blur-md border-b border-slate-200 dark:border-white/20 p-4 shadow-lg relative z-10">
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center space-x-2 sm:space-x-4">

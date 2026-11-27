@@ -658,7 +658,7 @@ const ModeratorDashboard = () => {
 
     const labels: Record<ReportStatus, string> = {
       pending: "Pendiente",
-      under_review: "En revisin",
+      under_review: "En revisión",
       resolved: "Resuelto",
       dismissed: "Desestimado",
     };
@@ -695,14 +695,14 @@ const ModeratorDashboard = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
             <Shield className="h-8 w-8" />
-            Panel de Moderacion
+            Panel de Moderación
           </h1>
           <p className="text-slate-600 dark:text-white/80">
-            Gestiona reportes de usuarios y mantn la comunidad segura
+            Gestiona reportes de usuarios y mantén la comunidad segura
           </p>
         </div>
 
-        {/* Estadsticas rpidas */}
+        {/* Estadísticas rápidas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-white/10 backdrop-blur-sm border-white/20">
             <CardContent className="p-6">
@@ -873,7 +873,7 @@ const ModeratorDashboard = () => {
 
                     <div>
                       <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
-                        Razn:
+                        Razón:
                       </p>
                       <p className="text-slate-900 dark:text-white">
                         {report.reason}
@@ -883,7 +883,7 @@ const ModeratorDashboard = () => {
                     {report.description && (
                       <div>
                         <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
-                          Descripcin:
+                          Descripción:
                         </p>
                         <p className="text-slate-900 dark:text-white">
                           {report.description}
@@ -895,13 +895,13 @@ const ModeratorDashboard = () => {
                       <div className="space-y-4 p-4 bg-white/5 rounded-lg">
                         <div>
                           <label className="text-slate-900 dark:text-white text-sm mb-2 block">
-                            Razn de la decisin:
+                            Razón de la decisión:
                           </label>
                           <textarea
                             value={actionReason}
                             onChange={(e) => setActionReason(e.target.value)}
                             className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/50"
-                            placeholder="Explica la razn de tu decisin..."
+                            placeholder="Explica la razón de tu decisión..."
                             rows={3}
                           />
                         </div>
@@ -1051,7 +1051,7 @@ const ModeratorDashboard = () => {
 
                     <div>
                       <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
-                        Razn:
+                        Razón:
                       </p>
                       <p className="text-slate-900 dark:text-white">
                         {suspension.reason}
@@ -1171,7 +1171,7 @@ const ModeratorDashboard = () => {
 
                     <div>
                       <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
-                        Razn:
+                        Razón:
                       </p>
                       <p className="text-slate-900 dark:text-white">
                         {ban.ban_reason}
@@ -1461,13 +1461,13 @@ const ModeratorDashboard = () => {
             <div className="space-y-4">
               <div>
                 <label className="text-white text-sm mb-2 block">
-                  Razn del baneo permanente:
+                  Razón del baneo permanente:
                 </label>
                 <Textarea
                   value={actionReason}
                   onChange={(e) => setActionReason(e.target.value)}
                   className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
-                  placeholder="Explica la razn del baneo permanente..."
+                  placeholder="Explica la razón del baneo permanente..."
                   rows={4}
                 />
               </div>

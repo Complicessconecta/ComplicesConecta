@@ -698,11 +698,21 @@ export function DemoWallet({
             </div>
 
             <div className="space-y-4">
-              <div className="aspect-video rounded-xl overflow-hidden bg-white/10 border border-white/15">
+              {/* RONDA 22 (stream C): el arte es vertical (2:3) y el
+                  wordmark «Cómplices Conecta» va horneado en el
+                  tercio inferior: `aspect-video` + `object-cover`
+                  recortaban arriba y abajo y el texto se cortaba en
+                  el borde inferior (test dirigido PR #81). Sin
+                  aspecto fijo y con `object-contain` el arte se ve
+                  entero; el tope de alto mantiene el modal en el
+                  viewport. La miniatura de la rejilla (aspect-square
+                  + object-cover) se deja como está: es una miniatura
+                  y el recorte ahí es intencional. */}
+              <div className="rounded-xl overflow-hidden bg-black/40 border border-white/15 flex justify-center">
                 <img
                   src={selectedNft.image}
                   alt={selectedNft.name}
-                  className="w-full h-full object-cover"
+                  className="max-h-[46vh] w-auto max-w-full object-contain"
                 />
               </div>
 

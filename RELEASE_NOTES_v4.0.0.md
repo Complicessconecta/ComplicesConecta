@@ -1,5 +1,14 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 27 Nov 2026 - 01:53 (Ronda 22 — fixes del test dirigido del PR #81)
+
+- **🔍 Test dirigido del PR #81 (27 nov 00:47–01:08, 20 min):** 9/10 PASS + regresión PASS. FAIL 7 sin verificar en vivo (aprobar fotos: el panel admin perdía sus datos tras recargar). Esta ronda lo corrige con causa raíz leída en código (3 streams + integración, 1 commit en `fix/ronda22-2026-11-27`, sin push ni merge todavía).
+- **🛣️ Admin y loaders:** /admin/dashboard conserva sus datos tras recargar (espera a `authLoading` + `adminLoadedRef`; el flujo real de aprobación vive en `/profile-couple`); /requests y /moderators/dashboard con carga imperativa (tope 15 s); moderadores por tema (`bg-hero-gradient` era clase muerta en Tailwind v4).
+- **🎨 Contraste/ghost:** dropdown de /settings con la descripción encima del trigger (la lista en Portal caía donde vivía); botón «Marcar todas como leídas» con `flex-wrap` (ya no lo tapa el badge); /matches y /clubs por tema; arte NFT completo en el modal (`object-contain`); typo «Administracin» corregido (h1 + 2 paneles hermanos + subtítulo).
+- **✅ Verificación:** vitest 918 → 890 pasaron, 7 fallaron (6 conocidos + 1 flake r17 que pasa 8/8 en aislamiento), 21 saltados (+16 tests nuevos); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
 ## 📅 Bitácora 27 Nov 2026 - 00:10 (Ronda 21 — fixes del full test de producción)
 
 - **🔍 Full test de producción (master `5ad690a`, 26 nov 21:40–21:53, 13 min):** 10 FAIL + contraste + observación del toast confirmada. Esta ronda los corrige todos con causa raíz leída en código (3 streams + integración, 1 commit en `fix/ronda21-2026-11-26`, sin push ni merge todavía).

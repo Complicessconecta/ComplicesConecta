@@ -71,7 +71,6 @@ const Chat = lazyWithDefault(() => import("@/pages/Chat"));
 const ChatIntimo = lazyWithDefault(() => import("@/pages/ChatIntimo"));
 const ChatInfo = lazyWithDefault(() => import("@/pages/ChatInfo"));
 const Matches = lazyWithDefault(() => import("@/pages/Matches"));
-const Requests = lazyWithDefault(() => import("@/pages/Requests"));
 // RONDA 21 (stream A, FAIL 1): /friends era 404 — no existía la ruta
 // ni la página. Friends lista los amigos con el mismo patrón que
 // Matches / Requests.
@@ -126,6 +125,25 @@ const AIControlCenter = lazyWithDefault(
 // con un flash de PageLoader en cada re-render.
 const importAdminChunk = () => import("@/pages/admin/Admin");
 const importLeyOlimpiaChunk = () => import("@/pages/LeyOlimpia");
+// RONDA 22 (stream C): /requests ya NO es un `lazy` pelado. Misma
+// exposición al retry perdido del Suspense que /admin/dashboard y
+// /ley-olimpia en la ronda 21 (test dirigido PR #81, 2026-11-27
+// 00:47-01:08 CST): PageLoader ("Cargando...") congelado >18 s en la
+// primera carga, solo salía con recarga manual. ImperativeLazyRoute
+// carga el chunk con tope de 15 s y error con Reintentar.
+const importRequestsChunk = () => import("@/pages/Requests");
+// Ronda 22 (stream A): /moderators/dashboard usa el mismo patrón
+// imperativo que /admin/dashboard (FAIL 2 ronda 21). Su `lazy` pelado
+// bajo el Suspense de MainLayout dejaba el loader congelado >15 s en
+// la primera carga (test dirigido PR #81, 00:47–01:08 CST 27 nov).
+// Mismo tope de 15 s y panel de error con Reintentar; el importador
+// es const a nivel de módulo (identidad estable) para que el
+// `useEffect` de ImperativeLazyRoute no recargue el chunk en cada
+// re-render de App. El módulo solo exporta el default
+// (ModeratorDashboard), que el wrapper resuelve igual que
+// lazyWithDefault.
+const importModeratorDashboardChunk = () =>
+  import("@/pages/moderators/ModeratorDashboard");
 const AdminSelectDashboard = lazyWithDefault(
   () => import("@/pages/admin/AdminSelectDashboard"),
 );
@@ -182,9 +200,6 @@ const AdminModerators = lazyWithDefault(
 );
 const AdminAnalytics = lazyWithDefault(
   () => import("@/pages/admin/AdminAnalytics"),
-);
-const ModeratorDashboard = lazyWithDefault(
-  () => import("@/pages/moderators/ModeratorDashboard"),
 );
 const ModeratorRequest = lazyWithDefault(
   () => import("@/pages/ModeratorRequest"),
@@ -345,7 +360,18 @@ const App = () => {
                               <Route path="/chat-info" element={<ChatInfo />} />
                               <Route path="/matches" element={<Matches />} />
                               <Route path="/friends" element={<Friends />} />
-                              <Route path="/requests" element={<Requests />} />
+                              <Route
+                                path="/requests"
+                                element={
+                                  <ImperativeLazyRoute
+                                    importer={importRequestsChunk}
+                                    chunkName="pages-requests"
+                                    errorTitle="No se pudo cargar la página de solicitudes"
+                                    fallbackPath="/"
+                                    fallbackLabel="Volver al inicio"
+                                  />
+                                }
+                              />
                               <Route path="/discover" element={<Discover />} />
                               <Route path="/stories" element={<Stories />} />
                               <Route
@@ -582,7 +608,13 @@ const App = () => {
                                 path="/moderators/dashboard"
                                 element={
                                   <ModeratorRoute>
-                                    <ModeratorDashboard />
+                                    <ImperativeLazyRoute
+                                      importer={importModeratorDashboardChunk}
+                                      chunkName="pages-moderators-dashboard"
+                                      errorTitle="No se pudo cargar el panel de moderación"
+                                      fallbackPath="/moderators"
+                                      fallbackLabel="Volver a moderadores"
+                                    />
                                   </ModeratorRoute>
                                 }
                               />

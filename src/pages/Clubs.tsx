@@ -1130,13 +1130,13 @@ export const Clubs = () => {
               gradiente translúcido (`/40`) con texto blanco: en tema
               claro el fondo claro se transparentaba y el blanco era
               ilegible. Gradiente opaco en ambos temas. */}
-              <Card className="bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border-white/20 shadow-2xl">
+              <Card className="bg-white dark:bg-linear-to-br dark:from-purple-900 dark:to-blue-900 backdrop-blur-xl border-slate-200 dark:border-white/20 shadow-2xl">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-white flex items-center gap-3">
+                  <CardTitle className="text-2xl text-slate-900 dark:text-white flex items-center gap-3">
                     <Sparkles className="h-6 w-6" />
                     Ventajas de Estar Vinculado con ComplicesConecta
                   </CardTitle>
-                  <CardDescription className="text-white/70">
+                  <CardDescription className="text-slate-600 dark:text-white/70">
                     Descubre todos los beneficios exclusivos para clubs
                     verificados
                   </CardDescription>
@@ -1148,11 +1148,11 @@ export const Clubs = () => {
                         <div className="p-2 bg-linear-to-r from-green-500 to-emerald-600 rounded-lg">
                           <Globe className="h-5 w-5 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                           Página Pública Profesional
                         </h3>
                       </div>
-                      <p className="text-white/70 text-sm ml-11">
+                      <p className="text-slate-600 dark:text-white/70 text-sm ml-11">
                         URL única /clubs/{"{slug}"} con información completa,
                         galería de fotos y calendario de eventos
                       </p>
@@ -1163,11 +1163,11 @@ export const Clubs = () => {
                         <div className="p-2 bg-linear-to-r from-blue-500 to-cyan-600 rounded-lg">
                           <MapPin className="h-5 w-5 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                           Check-ins Verificados (próximamente)
                         </h3>
                       </div>
-                      <p className="text-white/70 text-sm ml-11">
+                      <p className="text-slate-600 dark:text-white/70 text-sm ml-11">
                         Check-in geolocalizado (radio 50 m) con WorldID —
                         próximamente
                       </p>
@@ -1178,11 +1178,11 @@ export const Clubs = () => {
                         <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-600 rounded-lg">
                           <Star className="h-5 w-5 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                           Reseñas Auténticas
                         </h3>
                       </div>
-                      <p className="text-white/70 text-sm ml-11">
+                      <p className="text-slate-600 dark:text-white/70 text-sm ml-11">
                         En beta, las reseñas están abiertas a todos los
                         usuarios; la reseña verificada con check-in real llega
                         próximamente
@@ -1194,11 +1194,11 @@ export const Clubs = () => {
                         <div className="p-2 bg-linear-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                           <Camera className="h-5 w-5 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                           Flyers Editables con IA
                         </h3>
                       </div>
-                      <p className="text-white/70 text-sm ml-11">
+                      <p className="text-slate-600 dark:text-white/70 text-sm ml-11">
                         Watermark automático, blur en imágenes sensibles y
                         moderación antes de publicar
                       </p>
@@ -1209,11 +1209,11 @@ export const Clubs = () => {
                         <div className="p-2 bg-linear-to-r from-pink-500 to-rose-600 rounded-lg">
                           <Award className="h-5 w-5 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                           Publicidad Premium
                         </h3>
                       </div>
-                      <p className="text-white/70 text-sm ml-11">
+                      <p className="text-slate-600 dark:text-white/70 text-sm ml-11">
                         Destacado en Discover, banners promocionales y promoción
                         de eventos VIP
                       </p>
@@ -1224,11 +1224,11 @@ export const Clubs = () => {
                         <div className="p-2 bg-linear-to-r from-indigo-500 to-violet-600 rounded-lg">
                           <Building className="h-5 w-5 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                           Integración con Tokens
                         </h3>
                       </div>
-                      <p className="text-white/70 text-sm ml-11">
+                      <p className="text-slate-600 dark:text-white/70 text-sm ml-11">
                         Aceptación de CMPX/GTK como pago, sistema de recompensas
                         y descuentos exclusivos
                       </p>
@@ -1245,13 +1245,13 @@ export const Clubs = () => {
               transition={{ delay: 0.4 }}
               className="mb-12"
             >
-              <Card className="bg-linear-to-r from-amber-900/40 to-orange-900/40 backdrop-blur-xl border-amber-400/30 shadow-2xl">
+              <Card className="bg-amber-50 dark:bg-linear-to-r dark:from-amber-900/40 dark:to-orange-900/40 backdrop-blur-xl border-amber-300 dark:border-amber-400/30 shadow-2xl">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-white flex items-center gap-3">
+                  <CardTitle className="text-2xl text-amber-900 dark:text-white flex items-center gap-3">
                     <Target className="h-6 w-6" />
                     🚀 Próximamente en ComplicesConecta
                   </CardTitle>
-                  <CardDescription className="text-amber-200/80">
+                  <CardDescription className="text-amber-800/80 dark:text-amber-200/80">
                     Nuevas funcionalidades exclusivas para clubs verificados
                   </CardDescription>
                 </CardHeader>
@@ -1261,10 +1261,10 @@ export const Clubs = () => {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                             Clubs en Perfiles
                           </h3>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             Los clubs verificados tendrán su propio perfil
                             profesional, similar a los perfiles de usuarios
                             (single/couple), con galería de fotos, videos,
@@ -1276,10 +1276,10 @@ export const Clubs = () => {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                             Sistema de Descuentos Premium
                           </h3>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             Descuentos en entrada con CMPX, beneficios
                             exclusivos para holders de GTK y promociones
                             especiales para usuarios premium
@@ -1290,10 +1290,10 @@ export const Clubs = () => {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                             NFTs de Clubs
                           </h3>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             Perfiles verificados como NFTs, coleccionables
                             exclusivos de clubs y mercado secundario de NFTs
                           </p>
@@ -1305,10 +1305,10 @@ export const Clubs = () => {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                             Integración con Tokens
                           </h3>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             Aceptación de CMPX como pago, sistema de recompensas
                             y staking de tokens en clubs
                           </p>
@@ -1318,10 +1318,10 @@ export const Clubs = () => {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                             Analytics Avanzados
                           </h3>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             Visitas a la página, check-ins por día/semana/mes,
                             engagement de usuarios y demografía de visitantes
                           </p>
@@ -1331,10 +1331,10 @@ export const Clubs = () => {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-green-400 shrink-0 mt-0.5" />
                         <div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                             Panel de Administración
                           </h3>
-                          <p className="text-white/70 text-sm">
+                          <p className="text-slate-600 dark:text-white/70 text-sm">
                             Edición completa del perfil, subida de contenido,
                             creación de eventos, gestión de promociones y
                             respuesta a reseñas
@@ -1345,7 +1345,7 @@ export const Clubs = () => {
                   </div>
 
                   <div className="mt-6 p-4 bg-amber-500/10 rounded-lg border border-amber-400/30">
-                    <p className="text-center text-amber-200">
+                    <p className="text-center text-amber-800 dark:text-amber-200">
                       <strong>📅 Lanzamiento estimado:</strong> Q2 2026
                     </p>
                   </div>

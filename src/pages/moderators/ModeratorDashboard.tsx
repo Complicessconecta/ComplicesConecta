@@ -674,10 +674,12 @@ const ModeratorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-hero-gradient flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white">Cargando panel de moderación...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 dark:border-white mx-auto mb-4"></div>
+          <p className="text-slate-900 dark:text-white">
+            Cargando panel de moderación...
+          </p>
         </div>
       </div>
     );
@@ -687,15 +689,15 @@ const ModeratorDashboard = () => {
   const activeSuspensions = suspensions.filter((s) => s.status === "active");
 
   return (
-    <div className="min-h-screen bg-hero-gradient">
+    <div className="min-h-screen bg-background">
       <AdminNav userRole="moderator" />
       <div className="max-w-7xl mx-auto p-6 pt-24">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
             <Shield className="h-8 w-8" />
             Panel de Moderacion
           </h1>
-          <p className="text-white/80">
+          <p className="text-slate-600 dark:text-white/80">
             Gestiona reportes de usuarios y mantn la comunidad segura
           </p>
         </div>
@@ -706,8 +708,10 @@ const ModeratorDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/80 text-sm">Reportes Pendientes</p>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-slate-600 dark:text-white/80 text-sm">
+                    Reportes Pendientes
+                  </p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {pendingReports.length}
                   </p>
                 </div>
@@ -720,8 +724,10 @@ const ModeratorDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/80 text-sm">Suspensiones Activas</p>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-slate-600 dark:text-white/80 text-sm">
+                    Suspensiones Activas
+                  </p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {activeSuspensions.length}
                   </p>
                 </div>
@@ -734,8 +740,10 @@ const ModeratorDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/80 text-sm">Total Reportes</p>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-slate-600 dark:text-white/80 text-sm">
+                    Total Reportes
+                  </p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {reports.length}
                   </p>
                 </div>
@@ -748,8 +756,10 @@ const ModeratorDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-white/80 text-sm">Acciones Hoy</p>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-slate-600 dark:text-white/80 text-sm">
+                    Acciones Hoy
+                  </p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
                     {
                       moderationLogs.filter(
                         (log) =>
@@ -808,10 +818,10 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <CheckCircle className="h-12 w-12 text-green-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
+                  <p className="text-slate-900 dark:text-white text-lg">
                     No hay reportes pendientes
                   </p>
-                  <p className="text-white/60">
+                  <p className="text-slate-500 dark:text-white/60">
                     Excelente trabajo manteniendo la comunidad segura!
                   </p>
                 </CardContent>
@@ -824,7 +834,7 @@ const ModeratorDashboard = () => {
                 >
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-white flex items-center gap-2">
+                      <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                         <AlertTriangle className="h-5 w-5 text-yellow-400" />
                         {getReportTypeLabel(report.report_type as ReportType)}
                       </CardTitle>
@@ -832,7 +842,7 @@ const ModeratorDashboard = () => {
                         (report.status || "pending") as ReportStatus,
                       )}
                     </div>
-                    <CardDescription className="text-white/70">
+                    <CardDescription className="text-slate-600 dark:text-white/70">
                       Reportado el{" "}
                       {report.created_at
                         ? new Date(report.created_at).toLocaleDateString(
@@ -844,54 +854,60 @@ const ModeratorDashboard = () => {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-white/80 text-sm mb-1">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
                           Usuario reportado:
                         </p>
-                        <p className="text-white font-medium">
+                        <p className="text-slate-900 dark:text-white font-medium">
                           {report.reported_user_email || "Email no disponible"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-white/80 text-sm mb-1">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
                           Reportado por:
                         </p>
-                        <p className="text-white font-medium">
+                        <p className="text-slate-900 dark:text-white font-medium">
                           {report.reporter_email || "Email no disponible"}
                         </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-white/80 text-sm mb-1">Razn:</p>
-                      <p className="text-white">{report.reason}</p>
+                      <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
+                        Razn:
+                      </p>
+                      <p className="text-slate-900 dark:text-white">
+                        {report.reason}
+                      </p>
                     </div>
 
                     {report.description && (
                       <div>
-                        <p className="text-white/80 text-sm mb-1">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
                           Descripcin:
                         </p>
-                        <p className="text-white">{report.description}</p>
+                        <p className="text-slate-900 dark:text-white">
+                          {report.description}
+                        </p>
                       </div>
                     )}
 
                     {selectedReport?.id === report.id ? (
                       <div className="space-y-4 p-4 bg-white/5 rounded-lg">
                         <div>
-                          <label className="text-white text-sm mb-2 block">
+                          <label className="text-slate-900 dark:text-white text-sm mb-2 block">
                             Razn de la decisin:
                           </label>
                           <textarea
                             value={actionReason}
                             onChange={(e) => setActionReason(e.target.value)}
-                            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50"
+                            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/50"
                             placeholder="Explica la razn de tu decisin..."
                             rows={3}
                           />
                         </div>
 
                         <div>
-                          <label className="text-white text-sm mb-2 block">
+                          <label className="text-slate-900 dark:text-white text-sm mb-2 block">
                             Días de suspensión (0 = permanente):
                           </label>
                           <input
@@ -900,7 +916,7 @@ const ModeratorDashboard = () => {
                             onChange={(e) =>
                               setSuspensionDays(parseInt(e.target.value) || 0)
                             }
-                            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white"
+                            className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-slate-900 dark:text-white"
                             min="0"
                             placeholder="Ingresa días de suspensión (0 = permanente)"
                             aria-label="Días de suspensión"
@@ -933,14 +949,14 @@ const ModeratorDashboard = () => {
                             onClick={() =>
                               handleReportAction(report.id, "reject")
                             }
-                            className="border-white/20 text-white hover:bg-white/10 border bg-transparent"
+                            className="border-white/20 text-slate-900 dark:text-white hover:bg-white/10 border bg-transparent"
                           >
                             <XCircle className="h-4 w-4 mr-2" />
                             Rechazar Reporte
                           </Button>
                           <Button
                             onClick={() => setSelectedReport(null)}
-                            className="text-white hover:bg-white/10 bg-transparent"
+                            className="text-slate-900 dark:text-white hover:bg-white/10 bg-transparent"
                           >
                             Cancelar
                           </Button>
@@ -954,7 +970,7 @@ const ModeratorDashboard = () => {
                             setActionReason(report.reason);
                           }}
                           variant="outline"
-                          className="bg-white/20 hover:bg-white/30 text-white"
+                          className="bg-white/20 hover:bg-white/30 text-slate-900 dark:text-white"
                         >
                           <Eye className="h-4 w-4 mr-2" />
                           Revisar Reporte
@@ -984,10 +1000,10 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
+                  <p className="text-slate-900 dark:text-white text-lg">
                     No hay suspensiones activas
                   </p>
-                  <p className="text-white/60">
+                  <p className="text-slate-500 dark:text-white/60">
                     Todos los usuarios estn en buen estado
                   </p>
                 </CardContent>
@@ -999,11 +1015,11 @@ const ModeratorDashboard = () => {
                   className="bg-white/10 backdrop-blur-sm border-white/20"
                 >
                   <CardHeader>
-                    <CardTitle className="text-white flex items-center gap-2">
+                    <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                       <Ban className="h-5 w-5 text-red-400" />
                       Usuario Suspendido
                     </CardTitle>
-                    <CardDescription className="text-white/70">
+                    <CardDescription className="text-slate-600 dark:text-white/70">
                       Suspendido el{" "}
                       {suspension.suspended_until
                         ? new Date(
@@ -1015,16 +1031,18 @@ const ModeratorDashboard = () => {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Usuario:</p>
-                        <p className="text-white font-medium">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
+                          Usuario:
+                        </p>
+                        <p className="text-slate-900 dark:text-white font-medium">
                           {suspension.user_email || "Email no disponible"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-white/80 text-sm mb-1">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
                           Suspendido por:
                         </p>
-                        <p className="text-white font-medium">
+                        <p className="text-slate-900 dark:text-white font-medium">
                           {suspension.suspended_by_email ||
                             "Email no disponible"}
                         </p>
@@ -1032,12 +1050,18 @@ const ModeratorDashboard = () => {
                     </div>
 
                     <div>
-                      <p className="text-white/80 text-sm mb-1">Razn:</p>
-                      <p className="text-white">{suspension.reason}</p>
+                      <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
+                        Razn:
+                      </p>
+                      <p className="text-slate-900 dark:text-white">
+                        {suspension.reason}
+                      </p>
                     </div>
 
                     <div>
-                      <p className="text-white/80 text-sm mb-1">Tipo:</p>
+                      <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
+                        Tipo:
+                      </p>
                       <Badge
                         className={
                           suspension.is_permanent
@@ -1051,8 +1075,10 @@ const ModeratorDashboard = () => {
 
                     {!suspension.is_permanent && suspension.suspended_until && (
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Expira:</p>
-                        <p className="text-white">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
+                          Expira:
+                        </p>
+                        <p className="text-slate-900 dark:text-white">
                           {new Date(
                             suspension.suspended_until,
                           ).toLocaleDateString("es-ES")}
@@ -1078,10 +1104,10 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <Fingerprint className="h-12 w-12 text-purple-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
+                  <p className="text-slate-900 dark:text-white text-lg">
                     No hay baneos permanentes
                   </p>
-                  <p className="text-white/60">
+                  <p className="text-slate-500 dark:text-white/60">
                     Los baneos permanentes con huella digital aparecern aqu
                   </p>
                 </CardContent>
@@ -1093,26 +1119,30 @@ const ModeratorDashboard = () => {
                   className="bg-white/10 backdrop-blur-sm border-white/20"
                 >
                   <CardHeader>
-                    <CardTitle className="text-white flex items-center gap-2">
+                    <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                       <Fingerprint className="h-5 w-5 text-purple-400" />
                       Baneo Permanente
+                      {/* Ronda 22 (stream A): el texto es explícito —
+                        antes heredaba el blanco del CardTitle; con el
+                        título por tema heredaría slate-900 en tema
+                        claro sobre fondo de color. */}
                       <Badge
                         className={`ml-auto ${
                           ban.severity && isBanSeverity(ban.severity)
                             ? ban.severity === "critical"
-                              ? "bg-red-600"
+                              ? "bg-red-600 text-white"
                               : ban.severity === "high"
-                                ? "bg-orange-600"
+                                ? "bg-orange-600 text-white"
                                 : ban.severity === "medium"
-                                  ? "bg-yellow-600"
-                                  : "bg-gray-600"
-                            : "bg-gray-600"
+                                  ? "bg-yellow-600 text-white"
+                                  : "bg-gray-600 text-white"
+                            : "bg-gray-600 text-white"
                         }`}
                       >
                         {ban.severity ? ban.severity : "unknown"}
                       </Badge>
                     </CardTitle>
-                    <CardDescription className="text-white/70">
+                    <CardDescription className="text-slate-600 dark:text-white/70">
                       Baneado el{" "}
                       {ban.banned_at
                         ? new Date(ban.banned_at).toLocaleDateString("es-ES")
@@ -1122,31 +1152,37 @@ const ModeratorDashboard = () => {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Usuario:</p>
-                        <p className="text-white font-medium">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
+                          Usuario:
+                        </p>
+                        <p className="text-slate-900 dark:text-white font-medium">
                           {ban.user?.name || ban.user_id || "Usuario"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-white/80 text-sm mb-1">
+                        <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
                           Baneado por:
                         </p>
-                        <p className="text-white font-medium">
+                        <p className="text-slate-900 dark:text-white font-medium">
                           {ban.banned_by_user?.name || "Admin"}
                         </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-white/80 text-sm mb-1">Razn:</p>
-                      <p className="text-white">{ban.ban_reason}</p>
+                      <p className="text-slate-600 dark:text-white/80 text-sm mb-1">
+                        Razn:
+                      </p>
+                      <p className="text-slate-900 dark:text-white">
+                        {ban.ban_reason}
+                      </p>
                     </div>
 
                     <div className="flex items-center gap-4 flex-wrap">
                       {(ban as PermanentBanRow).worldid_nullifier_hash && (
                         <div className="flex items-center gap-2">
                           <Globe className="h-4 w-4 text-blue-400" />
-                          <span className="text-white/70 text-sm">
+                          <span className="text-slate-600 dark:text-white/70 text-sm">
                             WorldID vinculado
                           </span>
                         </div>
@@ -1154,7 +1190,7 @@ const ModeratorDashboard = () => {
                       {ban.canvas_hash && (
                         <div className="flex items-center gap-2">
                           <Fingerprint className="h-4 w-4 text-purple-400" />
-                          <span className="text-white/70 text-sm">
+                          <span className="text-slate-600 dark:text-white/70 text-sm">
                             Canvas fingerprint
                           </span>
                         </div>
@@ -1210,11 +1246,11 @@ const ModeratorDashboard = () => {
             {/* Solicitudes de registro de club pendientes */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                   <Building className="h-5 w-5" />
                   Solicitudes de registro de club
                 </CardTitle>
-                <CardDescription className="text-white/60">
+                <CardDescription className="text-slate-500 dark:text-white/60">
                   Revisa y aprueba o rechaza las solicitudes de registro. La
                   aprobación cambia el estado a &quot;approved&quot;; el alta
                   del club en la tabla clubs es un paso aparte.
@@ -1222,7 +1258,7 @@ const ModeratorDashboard = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 {clubApplications.length === 0 ? (
-                  <p className="text-white/60 text-center py-4">
+                  <p className="text-slate-500 dark:text-white/60 text-center py-4">
                     No hay solicitudes de club.
                   </p>
                 ) : (
@@ -1232,15 +1268,15 @@ const ModeratorDashboard = () => {
                       className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div>
-                        <p className="text-white font-semibold">
+                        <p className="text-slate-900 dark:text-white font-semibold">
                           {app.club_name}
                         </p>
-                        <p className="text-white/60 text-sm">
+                        <p className="text-slate-500 dark:text-white/60 text-sm">
                           {app.owner_name} · {app.location ?? ""}{" "}
                           {app.state ?? ""} ·{" "}
                           {new Date(app.created_at).toLocaleDateString("es-MX")}
                         </p>
-                        <p className="text-white/60 text-sm">
+                        <p className="text-slate-500 dark:text-white/60 text-sm">
                           {app.email ?? app.rep_email ?? ""}
                         </p>
                       </div>
@@ -1297,17 +1333,17 @@ const ModeratorDashboard = () => {
             {/* Clubs publicados: activar / desactivar */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
                   <Building className="h-5 w-5" />
                   Clubs publicados
                 </CardTitle>
-                <CardDescription className="text-white/60">
+                <CardDescription className="text-slate-500 dark:text-white/60">
                   Desactivar un club lo quita del listado público sin borrarlo.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {clubs.length === 0 ? (
-                  <p className="text-white/60 text-center py-4">
+                  <p className="text-slate-500 dark:text-white/60 text-center py-4">
                     No hay clubs registrados.
                   </p>
                 ) : (
@@ -1319,10 +1355,10 @@ const ModeratorDashboard = () => {
                         className="flex flex-col gap-3 rounded-lg border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div>
-                          <p className="text-white font-semibold">
+                          <p className="text-slate-900 dark:text-white font-semibold">
                             {club.name}
                           </p>
-                          <p className="text-white/60 text-sm">
+                          <p className="text-slate-500 dark:text-white/60 text-sm">
                             {club.city}, {club.state ?? ""} ·{" "}
                             {club.is_active ? "Activo" : "Inactivo"}
                             {counts
@@ -1336,7 +1372,7 @@ const ModeratorDashboard = () => {
                           onClick={() =>
                             handleClubToggleActive(club.id, club.is_active)
                           }
-                          className="border-white/30 text-white hover:bg-white/10"
+                          className="border-white/30 text-slate-900 dark:text-white hover:bg-white/10"
                         >
                           {club.is_active ? "Desactivar" : "Activar"}
                         </Button>
@@ -1353,10 +1389,10 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
+                  <p className="text-slate-900 dark:text-white text-lg">
                     No hay historial de moderación
                   </p>
-                  <p className="text-white/60">
+                  <p className="text-slate-500 dark:text-white/60">
                     Las acciones de moderación aparecern aqu
                   </p>
                 </CardContent>
@@ -1372,28 +1408,28 @@ const ModeratorDashboard = () => {
                       <div className="flex items-center gap-3">
                         <User className="h-5 w-5 text-blue-400" />
                         <div>
-                          <p className="text-white font-medium">
+                          <p className="text-slate-900 dark:text-white font-medium">
                             {log.moderator_email || "Moderador"} -{" "}
                             {log.action.replace("_", " ")}
                           </p>
-                          <p className="text-white/60 text-sm">
+                          <p className="text-slate-500 dark:text-white/60 text-sm">
                             Usuario:{" "}
                             {log.target_user_email || "Email no disponible"}
                           </p>
-                          <p className="text-white/60 text-sm">
+                          <p className="text-slate-500 dark:text-white/60 text-sm">
                             Razón: {log.description || "Sin razón especificada"}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-white/60 text-sm">
+                        <p className="text-slate-500 dark:text-white/60 text-sm">
                           {log.created_at
                             ? new Date(log.created_at).toLocaleDateString(
                                 "es-ES",
                               )
                             : "Fecha no disponible"}
                         </p>
-                        <p className="text-white/60 text-xs">
+                        <p className="text-slate-500 dark:text-white/60 text-xs">
                           {log.created_at
                             ? new Date(log.created_at).toLocaleTimeString(
                                 "es-ES",

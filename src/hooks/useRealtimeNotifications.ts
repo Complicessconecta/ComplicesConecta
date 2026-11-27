@@ -1,5 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { NotificationService, RealtimeNotificationHandler } from "@/lib/notifications";
+import {
+  NotificationService,
+  RealtimeNotificationHandler,
+} from "@/lib/notifications";
 import { logger } from "@/lib/logger";
 
 export interface UseRealtimeNotificationsOptions {

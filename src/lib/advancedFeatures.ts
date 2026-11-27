@@ -169,7 +169,7 @@ export class AdvancedFeaturesService {
     const locationScore = this.calculateLocationCompatibility(
       `${user1.latitude || 0},${user1.longitude || 0}`,
       `${user2.latitude || 0},${user2.longitude || 0}`,
-      config.filters.maxDistance
+      config.filters.maxDistance,
     );
     scores.location = locationScore;
     if (locationScore > 0.8) {
@@ -1068,7 +1068,12 @@ export class AdvancedFeaturesService {
       }
 
       // Add location-based starters - latitude y longitude existen en la tabla
-      if (userProfile.latitude && userProfile.longitude && matchProfile.latitude && matchProfile.longitude) {
+      if (
+        userProfile.latitude &&
+        userProfile.longitude &&
+        matchProfile.latitude &&
+        matchProfile.longitude
+      ) {
         starters.push({
           id: crypto.randomUUID(),
           category: "interests",
@@ -1722,4 +1727,3 @@ export class AdvancedFeaturesService {
 }
 
 export default AdvancedFeaturesService;
-

@@ -16,7 +16,8 @@ const SECURE_AUTH_CONFIG: SupabaseAuthConfig = {
 };
 
 // Fallback logger si el import falla (no debería pasar, pero por seguridad)
-type SafeLogArg = string | number | boolean | bigint | symbol | object | undefined;
+type SafeLogArg =
+  string | number | boolean | bigint | symbol | object | undefined;
 const safeLogger = logger || {
   info: (...args: SafeLogArg[]) => console.log("[INFO]", ...args),
   warn: (...args: SafeLogArg[]) => console.warn("[WARN]", ...args),
@@ -103,9 +104,7 @@ let supabaseInstance: SupabaseClient<Database> | undefined;
 // Nota: Esta variable se usa para controlar la frecuencia de logs en producción
 
 declare global {
-  var __cc_supabaseClient:
-    | SupabaseClient<Database>
-    | undefined;
+  var __cc_supabaseClient: SupabaseClient<Database> | undefined;
 }
 
 // Función para crear o retornar la instancia única del cliente
@@ -170,10 +169,12 @@ function getSupabaseClient(): SupabaseClient<Database> {
           apikey: supabaseAnonKey || "placeholder-key",
           Authorization: `Bearer ${supabaseAnonKey || "placeholder-key"}`,
           // Headers de seguridad adicionales
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-Client-Version': import.meta.env.VITE_APP_VERSION || '1.0.0',
+          "X-Requested-With": "XMLHttpRequest",
+          "X-Client-Version": import.meta.env.VITE_APP_VERSION || "1.0.0",
         },
-        fetch: SecurityHelpers.createSecureFetch(supabaseAnonKey || "placeholder-key"),
+        fetch: SecurityHelpers.createSecureFetch(
+          supabaseAnonKey || "placeholder-key",
+        ),
       },
       realtime: {
         params: {
@@ -273,7 +274,10 @@ const initializeSupabase = async () => {
 
           const sessionPromise = supabase.auth.getSession();
 
-          const raceResult = await Promise.race([sessionPromise, timeoutPromise]);
+          const raceResult = await Promise.race([
+            sessionPromise,
+            timeoutPromise,
+          ]);
           if (raceResult instanceof Error) {
             safeLogger.warn("⚠️ Problema de conectividad con Supabase:", {
               error: raceResult.message,
@@ -318,7 +322,10 @@ const initializeSupabase = async () => {
         }
       } else {
         isDemoMode = true;
-        safeLogger.info("🔄 Modo demo activo - evitando conexión a Supabase", {});
+        safeLogger.info(
+          "🔄 Modo demo activo - evitando conexión a Supabase",
+          {},
+        );
       }
     }, 100); // Ejecutar después de 100ms para no bloquear el renderizado inicial
   } catch (error) {
@@ -338,4 +345,3 @@ initializeSupabase().catch((error) => {
 });
 
 export { isDemoMode };
-

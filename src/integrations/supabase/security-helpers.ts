@@ -24,7 +24,10 @@ export class SecurityHelpers {
    * Crea un fetch interceptor con seguridad mejorada
    */
   static createSecureFetch(supabaseAnonKey: string) {
-    return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    return async (
+      input: RequestInfo | URL,
+      init?: RequestInit,
+    ): Promise<Response> => {
       const url =
         typeof input === "string"
           ? input
@@ -33,7 +36,7 @@ export class SecurityHelpers {
             : input.toString();
 
       await CertificatePinning.validateRequestUrl(url);
-      
+
       // Agregar headers de seguridad.
       // C2 (2026-11-19): NO sobrescribir un Authorization que ya trae el
       // llamador. supabase-js pone el JWT de sesión en functions.invoke y
@@ -92,20 +95,22 @@ export class SecurityHelpers {
     client.auth.onAuthStateChange((event, session) => {
       logger.info("🔐 Auth state change:", { event, hasSession: !!session });
 
-      if (event === 'SIGNED_IN' && session) {
+      if (event === "SIGNED_IN" && session) {
         // Solo memoria: registrar actividad, sin persistir sesión.
         lastActivityTimestamp = Date.now();
-        logger.info("✅ Sesión iniciada (solo en memoria, sin copia en localStorage)");
+        logger.info(
+          "✅ Sesión iniciada (solo en memoria, sin copia en localStorage)",
+        );
       }
 
-      if (event === 'SIGNED_OUT') {
+      if (event === "SIGNED_OUT") {
         // Limpiar datos seguros al cerrar sesión
         lastActivityTimestamp = null;
         this.clearAllSecureData();
         logger.info("🧹 Datos seguros limpiados al cerrar sesión");
       }
 
-      if (event === 'TOKEN_REFRESHED') {
+      if (event === "TOKEN_REFRESHED") {
         // Actualizar timestamp de actividad solo en memoria
         lastActivityTimestamp = Date.now();
       }
@@ -124,19 +129,19 @@ export class SecurityHelpers {
       const keysToClean = [
         // C4/C5: clave legacy de sesión copiada a localStorage (ya no se crea;
         // se elimina aquí para limpiar navegadores con sesiones viejas).
-        'cc_secure_session',
-        'supabase.auth.token',
-        'supabase.auth.refreshToken',
-        'sb-access-token',
-        'sb-refresh-token',
-        'sb-auth-token',
-        'trust:cache:timestamp',
-        'supabase.project.ref',
-        'supabase.auth.expires_at',
-        'supabase.auth.expires_in',
+        "cc_secure_session",
+        "supabase.auth.token",
+        "supabase.auth.refreshToken",
+        "sb-access-token",
+        "sb-refresh-token",
+        "sb-auth-token",
+        "trust:cache:timestamp",
+        "supabase.project.ref",
+        "supabase.auth.expires_at",
+        "supabase.auth.expires_in",
       ];
 
-      keysToClean.forEach(key => {
+      keysToClean.forEach((key) => {
         try {
           localStorage.removeItem(key);
           sessionStorage.removeItem(key);
@@ -146,20 +151,21 @@ export class SecurityHelpers {
       });
 
       // Limpiar cookies si es posible
-      if (typeof document !== 'undefined') {
-        document.cookie.split(';').forEach(cookie => {
-          const eqPos = cookie.indexOf('=');
-          const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-          if (name.includes('sb-') || name.includes('supabase')) {
+      if (typeof document !== "undefined") {
+        document.cookie.split(";").forEach((cookie) => {
+          const eqPos = cookie.indexOf("=");
+          const name =
+            eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+          if (name.includes("sb-") || name.includes("supabase")) {
             // Limpiar cookie en todos los dominios posibles
             const domains = [
               window.location.hostname,
               `.${window.location.hostname}`,
-              'localhost',
-              '.localhost',
+              "localhost",
+              ".localhost",
             ];
 
-            domains.forEach(domain => {
+            domains.forEach((domain) => {
               document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${domain};secure`;
               document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${domain}`;
             });
@@ -168,7 +174,7 @@ export class SecurityHelpers {
       }
 
       // Limpiar variables globales
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         delete window.__supabaseUser;
         delete window.__supabaseSession;
       }
@@ -184,10 +190,15 @@ export class SecurityHelpers {
   /**
    * Verifica si hay una sesión activa y válida
    */
-  static async validateSession(client: SupabaseClient<Database>): Promise<boolean> {
+  static async validateSession(
+    client: SupabaseClient<Database>,
+  ): Promise<boolean> {
     try {
-      const { data: { session }, error } = await client.auth.getSession();
-      
+      const {
+        data: { session },
+        error,
+      } = await client.auth.getSession();
+
       if (error) {
         logger.error("❌ Error validando sesión:", {
           error: error instanceof Error ? error.message : String(error),
@@ -196,7 +207,7 @@ export class SecurityHelpers {
       }
 
       const isValid = !!session && !!session.user;
-      
+
       if (!isValid) {
         this.clearAllSecureData();
       }
@@ -243,14 +254,17 @@ export class SecurityHelpers {
 
       const now = Date.now();
       const timeSinceLastActivity = now - lastActivityTimestamp;
-      
+
       // Si la última actividad fue hace más de 1 hora, es sospechoso
       const oneHour = 60 * 60 * 1000;
       if (timeSinceLastActivity > oneHour) {
-        logger.warn("⚠️ Posible secuestro de sesión detectado - inactividad prolongada", {
-          lastActivity: new Date(lastActivityTimestamp),
-          timeSinceLastActivity: timeSinceLastActivity,
-        });
+        logger.warn(
+          "⚠️ Posible secuestro de sesión detectado - inactividad prolongada",
+          {
+            lastActivity: new Date(lastActivityTimestamp),
+            timeSinceLastActivity: timeSinceLastActivity,
+          },
+        );
         return true;
       }
 
@@ -266,7 +280,9 @@ export class SecurityHelpers {
   /**
    * Implementa timeout de sesión por inactividad
    */
-  static setupInactivityTimeout(timeoutMs: number = 30 * 60 * 1000): () => void {
+  static setupInactivityTimeout(
+    timeoutMs: number = 30 * 60 * 1000,
+  ): () => void {
     let timeoutId: NodeJS.Timeout;
 
     const resetTimeout = () => {
@@ -274,14 +290,21 @@ export class SecurityHelpers {
       timeoutId = setTimeout(() => {
         logger.warn("⏰ Sesión cerrada por inactividad");
         this.clearAllSecureData();
-        window.location.href = '/auth';
+        window.location.href = "/auth";
       }, timeoutMs);
     };
 
     // Eventos que resetean el timeout
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    
-    events.forEach(event => {
+    const events = [
+      "mousedown",
+      "mousemove",
+      "keypress",
+      "scroll",
+      "touchstart",
+      "click",
+    ];
+
+    events.forEach((event) => {
       document.addEventListener(event, resetTimeout, true);
     });
 
@@ -291,7 +314,7 @@ export class SecurityHelpers {
     // Retornar función de limpieza
     return () => {
       clearTimeout(timeoutId);
-      events.forEach(event => {
+      events.forEach((event) => {
         document.removeEventListener(event, resetTimeout, true);
       });
     };
@@ -303,7 +326,7 @@ export class SecurityHelpers {
   static isSecureEnvironment(): boolean {
     try {
       // Verificar HTTPS en producción
-      if (import.meta.env.PROD && window.location.protocol !== 'https:') {
+      if (import.meta.env.PROD && window.location.protocol !== "https:") {
         logger.warn("⚠️ Ambiente inseguro: HTTP en producción");
         return false;
       }
@@ -332,16 +355,16 @@ export class SecurityHelpers {
     try {
       // Lista de extensiones comunes que podrían ser riesgosas
       const suspiciousPatterns = [
-        'chrome-extension://',
-        'moz-extension://',
-        'safari-extension://',
+        "chrome-extension://",
+        "moz-extension://",
+        "safari-extension://",
       ];
 
       // Verificar si hay scripts de extensiones inyectados
-      const scripts = document.querySelectorAll('script');
+      const scripts = document.querySelectorAll("script");
       for (const script of scripts) {
-        const src = script.src || '';
-        if (suspiciousPatterns.some(pattern => src.includes(pattern))) {
+        const src = script.src || "";
+        if (suspiciousPatterns.some((pattern) => src.includes(pattern))) {
           return true;
         }
       }

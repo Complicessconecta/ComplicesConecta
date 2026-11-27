@@ -40,10 +40,10 @@ export const useProfileScore = (profile: any): ProfileScore => {
       score = 40;
     }
 
-    let level: ProfileScoreLevel = "new";
-    let label = "Nuevo / Creciendo";
-    let color = "text-blue-600 dark:text-blue-400";
-    let icon = "🌱";
+    let level: ProfileScoreLevel;
+    let label: string;
+    let color: string;
+    let icon: string;
 
     if (score >= 90) {
       level = "safe";
@@ -74,5 +74,10 @@ export const useProfileScore = (profile: any): ProfileScore => {
       color,
       icon,
     };
-  }, [profile?.id, profile?.is_verified, profile?.is_premium, profile?.is_demo]);
+  }, [
+    profile?.id,
+    profile?.is_verified,
+    profile?.is_premium,
+    profile?.is_demo,
+  ]);
 };

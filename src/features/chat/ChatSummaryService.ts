@@ -52,9 +52,7 @@ export class ChatSummaryService {
     this.config = {
       enabled: import.meta.env.VITE_AI_CHAT_SUMMARIES_ENABLED === "true",
       provider: (import.meta.env.VITE_AI_SUMMARY_PROVIDER || "auto") as
-        | "openai"
-        | "huggingface"
-        | "auto",
+        "openai" | "huggingface" | "auto",
       maxMessagesPerSummary: 100,
       rateLimitPerDay: 10,
     };
@@ -249,9 +247,7 @@ ${messagesText}`;
     });
     if (error) throw error;
 
-    return (
-      data?.choices?.[0]?.message?.content || "No se pudo generar resumen"
-    );
+    return data?.choices?.[0]?.message?.content || "No se pudo generar resumen";
   }
 
   /**
@@ -529,9 +525,7 @@ ${messagesText}`;
       chatId: summaryRow.chat_id || "",
       summary: summaryRow.summary || "",
       sentiment: (summaryRow.sentiment || "neutral") as
-        | "positive"
-        | "neutral"
-        | "negative",
+        "positive" | "neutral" | "negative",
       topics: (summaryRow.topics as string[]) || [],
       messageCount: summaryRow.message_count || 0,
       method: (summaryRow.method || "fallback") as "gpt4" | "bart" | "fallback",

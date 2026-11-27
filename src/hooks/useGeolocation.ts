@@ -76,28 +76,28 @@ export const useGeolocation = () => {
         }
 
         const location: any = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy,
-            altitude: position.coords.altitude,
-            altitudeAccuracy: position.coords.altitudeAccuracy,
-            heading: position.coords.heading,
-            speed: position.coords.speed,
-          };
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          altitude: position.coords.altitude,
+          altitudeAccuracy: position.coords.altitudeAccuracy,
+          heading: position.coords.heading,
+          speed: position.coords.speed,
+        };
 
-          if (s2CellId) {
-            location.s2CellId = s2CellId;
-          }
-          if (s2Level) {
-            location.s2Level = s2Level;
-          }
+        if (s2CellId) {
+          location.s2CellId = s2CellId;
+        }
+        if (s2Level) {
+          location.s2Level = s2Level;
+        }
 
-          setState({
-            location,
-            error: null,
-            isLoading: false,
-            lastUpdated: new Date(),
-          });
+        setState({
+          location,
+          error: null,
+          isLoading: false,
+          lastUpdated: new Date(),
+        });
       },
       (error) => {
         let errorMessage = "Error desconocido";
@@ -163,21 +163,21 @@ export const useGeolocation = () => {
         }
 
         const location: any = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy,
-            altitude: position.coords.altitude,
-            altitudeAccuracy: position.coords.altitudeAccuracy,
-            heading: position.coords.heading,
-            speed: position.coords.speed,
-          };
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          altitude: position.coords.altitude,
+          altitudeAccuracy: position.coords.altitudeAccuracy,
+          heading: position.coords.heading,
+          speed: position.coords.speed,
+        };
 
-          if (s2CellId) {
-            location.s2CellId = s2CellId;
-          }
-          if (s2Level) {
-            location.s2Level = s2Level;
-          }
+        if (s2CellId) {
+          location.s2CellId = s2CellId;
+        }
+        if (s2Level) {
+          location.s2Level = s2Level;
+        }
 
         setState((prev) => ({
           ...prev,

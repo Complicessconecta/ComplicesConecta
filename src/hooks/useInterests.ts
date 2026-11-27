@@ -247,7 +247,8 @@ export const useInterests = () => {
         (interest) =>
           interest.name.toLowerCase().includes(lowercaseQuery) ||
           interest.description?.toLowerCase().includes(lowercaseQuery) ||
-          (interest.category && interest.category.toLowerCase().includes(lowercaseQuery)),
+          (interest.category &&
+            interest.category.toLowerCase().includes(lowercaseQuery)),
       );
     },
     [interests],
@@ -340,4 +341,3 @@ export const useInterests = () => {
     syncProfileInterests,
   };
 };
-

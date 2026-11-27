@@ -403,4 +403,3 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 export default usePushNotifications;
-

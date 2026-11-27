@@ -330,10 +330,12 @@ describe("2. Búsqueda en /clubs filtra también la tarjeta Club Demo", () => {
     supabaseBehavior.mode = "empty";
     renderClubs("/clubs");
     await screen.findByText("Eden Noir Club", {}, { timeout: 5000 });
-    // Dos tarjetas "Club Demo": la fija (Admin, /clubs/demo) y la del
-    // catálogo. Ambas deben desaparecer con la búsqueda.
+    // Ronda 21 (stream C): UNA sola tarjeta "Club Demo": la fija
+    // (Admin, /clubs/demo) ya no se renderiza cuando la lista
+    // dedupada trae el club del catálogo (antes eran 2 y la auditoría
+    // lo marcó duplicado). Ambas deben desaparecer con la búsqueda.
     expect(screen.queryAllByText("Club Demo CómplicesConecta").length).toBe(
-      2,
+      1,
     );
     fireEvent.change(
       screen.getByPlaceholderText("Buscar clubs por nombre o ciudad..."),

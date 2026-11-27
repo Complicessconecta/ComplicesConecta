@@ -41,7 +41,7 @@ const NotFound = () => {
   }, [location.pathname, sparkles, user?.id]);
 
   return (
-    <main className="min-h-dvh grid place-items-center bg-linear-to-br from-purple-900/30 via-fuchsia-900/20 to-black relative overflow-x-hidden">
+    <main className="min-h-dvh grid place-items-center bg-linear-to-br from-purple-200/60 via-fuchsia-100/50 to-white dark:from-purple-900/30 dark:via-fuchsia-900/20 dark:to-black relative overflow-x-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -113,11 +113,13 @@ const NotFound = () => {
           className={`transition-all duration-1000 ${isVisible ? "animate-bounce-in" : "opacity-0 scale-50"}`}
         >
           <div className="relative">
-            <h1 className="text-8xl md:text-9xl font-bold text-white/20 mb-4 select-none relative z-10">
+            {/* Ronda 21 (stream C): el «404» era `text-white/20` sobre
+                fondo claro: invisible en tema claro. Ahora va por tema. */}
+            <h1 className="text-8xl md:text-9xl font-bold text-purple-700/20 dark:text-white/20 mb-4 select-none relative z-10">
               404
             </h1>
             {/* Glowing effect behind 404 */}
-            <div className="absolute inset-0 text-8xl md:text-9xl font-bold text-fuchsia-500/30 blur-lg animate-pulse-slow">
+            <div className="absolute inset-0 text-8xl md:text-9xl font-bold text-fuchsia-500/50 dark:text-fuchsia-500/30 blur-lg animate-pulse-slow">
               404
             </div>
           </div>
@@ -125,14 +127,14 @@ const NotFound = () => {
 
         {/* Main Content Card */}
         <Card
-          className={`bg-black/40 backdrop-blur-sm border-white/10 p-8 transition-all duration-1000 ${isVisible ? "animate-slide-up" : "opacity-0 translate-y-10"}`}
+          className={`bg-white dark:bg-black/40 backdrop-blur-sm border-slate-200 dark:border-white/10 p-8 transition-all duration-1000 ${isVisible ? "animate-slide-up" : "opacity-0 translate-y-10"}`}
         >
           <div className="space-y-6">
             <div className="animate-fade-in-delay">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                 Página no encontrada
               </h2>
-              <p className="text-white/80 text-lg leading-relaxed max-w-prose mx-auto">
+              <p className="text-slate-600 dark:text-white/80 text-lg leading-relaxed max-w-prose mx-auto">
                 Parece que este enlace se fue a una fiesta privada. No te
                 preocupes, te ayudamos a regresar al lugar correcto donde la
                 diversión nunca se detiene.
@@ -161,7 +163,7 @@ const NotFound = () => {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-white/20 bg-white/10 text-white hover:bg-white/20 rounded-2xl px-8 py-6 text-lg backdrop-blur-sm hover:border-fuchsia-400/50 transition-all duration-300 transform hover:scale-105 hover:-rotate-1 group font-semibold"
+                className="border-slate-300 bg-slate-100 text-slate-900 hover:bg-slate-200 rounded-2xl px-8 py-6 text-lg backdrop-blur-sm hover:border-fuchsia-400/50 transition-all duration-300 transform hover:scale-105 hover:-rotate-1 group font-semibold dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
               >
                 <Link to="/discover">
                   <Search className="mr-2 h-5 w-5 group-hover:animate-spin" />
@@ -171,7 +173,7 @@ const NotFound = () => {
             </div>
 
             {/* Additional Info */}
-            <div className="text-white/60 text-sm animate-fade-in-delay-3">
+            <div className="text-slate-500 dark:text-white/60 text-sm animate-fade-in-delay-3">
               <p>
                 Necesitas ayuda? Visita nuestro{" "}
                 <Link
@@ -185,17 +187,17 @@ const NotFound = () => {
 
             {/* Admin-only Error Details */}
             {canViewLogs && (
-              <div className="mt-6 pt-6 border-t border-white/10 animate-fade-in-delay-4">
+              <div className="mt-6 pt-6 border-t border-slate-200 dark:border-white/10 animate-fade-in-delay-4">
                 <button
                   onClick={() => setShowLogs(!showLogs)}
-                  className="flex items-center gap-2 text-white/60 hover:text-white text-sm transition-colors"
+                  className="flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:text-white/60 dark:hover:text-white text-sm transition-colors"
                 >
                   <Bug className="h-4 w-4" />
                   {showLogs ? "Ocultar" : "Ver"} detalles técnicos
                 </button>
                 {showLogs && (
-                  <Card className="mt-4 bg-black/60 border-white/10 p-4">
-                    <pre className="text-xs text-white/70 overflow-x-auto">
+                  <Card className="mt-4 bg-slate-100 dark:bg-black/60 border-slate-200 dark:border-white/10 p-4">
+                    <pre className="text-xs text-slate-700 dark:text-white/70 overflow-x-auto">
                       {`Error: 404 Not Found
 Pathname: ${location.pathname}
 Timestamp: ${new Date().toISOString()}

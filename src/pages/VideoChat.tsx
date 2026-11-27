@@ -115,15 +115,17 @@ const VideoChat = () => {
     },
   ];
 
+  // Ronda 21 (stream C): la raíz era `bg-gray-950` fija: en tema claro
+  // toda la página quedaba oscura. Ahora va por tema.
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col">
       <div className="flex-1 flex flex-col">
         <main className="flex-1 flex flex-col relative overflow-hidden">
           {/* Back Button */}
           <div className="mb-6">
             <Button
               onClick={() => navigate("/chat")}
-              className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10 transition-all duration-300 text-white"
+              className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10 transition-all duration-300 text-slate-900 dark:text-white"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Volver al Chat
@@ -134,11 +136,11 @@ const VideoChat = () => {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
               <Video className="h-12 w-12 text-purple-400 mr-3" />
-              <h1 className="text-4xl md:text-5xl font-bold text-white">
+              <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
                 Video Chat P2P
               </h1>
             </div>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-600 dark:text-white/90 max-w-3xl mx-auto">
               Llamadas de video seguras y privadas con tecnología WebRTC para
               conexiones auténticas
             </p>
@@ -150,7 +152,7 @@ const VideoChat = () => {
               {/* Video Preview */}
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center">
+                  <CardTitle className="text-slate-900 dark:text-white flex items-center">
                     <Video className="h-5 w-5 mr-2" />
                     Vista Previa
                   </CardTitle>
@@ -181,7 +183,7 @@ const VideoChat = () => {
                     <Button
                       onClick={toggleVideo}
                       variant={isVideoOn ? "default" : "destructive"}
-                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
+                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10 text-slate-900 dark:text-white"
                     >
                       {isVideoOn ? (
                         <Video className="h-4 w-4" />
@@ -192,7 +194,7 @@ const VideoChat = () => {
                     <Button
                       onClick={toggleMic}
                       variant={isMicOn ? "default" : "destructive"}
-                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
+                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10 text-slate-900 dark:text-white"
                     >
                       {isMicOn ? (
                         <Mic className="h-4 w-4" />
@@ -214,7 +216,7 @@ const VideoChat = () => {
               {/* Participants */}
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center">
+                  <CardTitle className="text-slate-900 dark:text-white flex items-center">
                     <Users className="h-5 w-5 mr-2" />
                     Participantes
                   </CardTitle>
@@ -224,7 +226,7 @@ const VideoChat = () => {
                     {participants.map((participant: any) => (
                       <div
                         key={participant.id}
-                        className="flex items-center space-x-4 p-3 bg-gray-800/50 rounded-lg"
+                        className="flex items-center space-x-4 p-3 bg-slate-100 dark:bg-gray-800/50 rounded-lg"
                       >
                         <img
                           src={participant.avatar}
@@ -232,7 +234,7 @@ const VideoChat = () => {
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div className="flex-1">
-                          <h3 className="text-white font-medium">
+                          <h3 className="text-slate-900 dark:text-white font-medium">
                             {participant.name}
                           </h3>
                           <div className="flex space-x-2 mt-1">
@@ -313,7 +315,7 @@ const VideoChat = () => {
                       onClick={toggleVideo}
                       variant={isVideoOn ? "default" : "destructive"}
                       size="lg"
-                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
+                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10 text-slate-900 dark:text-white"
                     >
                       {isVideoOn ? (
                         <Video className="h-5 w-5" />
@@ -325,7 +327,7 @@ const VideoChat = () => {
                       onClick={toggleMic}
                       variant={isMicOn ? "default" : "destructive"}
                       size="lg"
-                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
+                      className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10 text-slate-900 dark:text-white"
                     >
                       {isMicOn ? (
                         <Mic className="h-5 w-5" />
@@ -351,7 +353,7 @@ const VideoChat = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-white font-medium">
+                      <span className="text-slate-900 dark:text-white font-medium">
                         Llamada activa
                       </span>
                       <span className="text-muted-foreground">15:32</span>
@@ -359,7 +361,7 @@ const VideoChat = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="border-white/30 text-white hover:bg-white/10"
+                      className="border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Configuración
@@ -372,7 +374,7 @@ const VideoChat = () => {
 
           {/* Call History */}
           <section className="mt-16">
-            <h2 className="text-3xl font-bold text-white mb-8 text-center">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
               Historial de Llamadas
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
@@ -385,7 +387,7 @@ const VideoChat = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-3">
                         <Video className="h-5 w-5 text-purple-400" />
-                        <span className="text-white font-medium">
+                        <span className="text-slate-900 dark:text-white font-medium">
                           {call.type.toUpperCase()}
                         </span>
                       </div>
@@ -404,13 +406,13 @@ const VideoChat = () => {
                       ))}
                     </div>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-white font-medium">
+                      <span className="text-slate-900 dark:text-white font-medium">
                         {call.duration}
                       </span>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="border-white/30 text-white hover:bg-white/10"
+                        className="border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
                       >
                         Llamar de nuevo
                       </Button>

@@ -221,7 +221,7 @@ const Moderators: FC = () => {
                 Aplicar Ahora
               </Button>
               <Button
-                onClick={() => navigate("/moderator-dashboard")}
+                onClick={() => navigate("/moderators/dashboard")}
                 variant="outline"
                 className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg"
               >

@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { logger } from "@/lib/logger";
 import { dataPrivacyService } from "@/services/core/DataPrivacyService";
+import { clearDemoMatchHistory } from "@/lib/demoMatchHistory";
 import { useAuth } from "@/features/auth/useAuth";
 import {
   deleteActiveDemoSession,
@@ -101,6 +102,27 @@ export const PrivacySettings = () => {
         title: "Error",
         description: "Debes estar autenticado",
         variant: "destructive",
+      });
+      return;
+    }
+
+    // Ronda 21 (stream B, FAIL 6): en sesión demo los matches son
+    // SOLO la semilla local de /matches (`src/pages/Matches.tsx`,
+    // sin almacén ni fila en Supabase): borrarlos es marcarlos como
+    // eliminados en local (`cc_demo_matches_cleared:<userId>`) y
+    // /matches ya no recarga la semilla. El camino anterior llamaba
+    // siempre a `dataPrivacyService.deleteMatchHistory`, que consulta
+    // la tabla Supabase `matches` para un UUID demo que no existe:
+    // fallaba tras ~8 s con toast de error y el historial seguía
+    // intacto. Mismo patrón que la rama demo de `handleDeleteAccount`
+    // (ronda 15). Solo usuarios reales van al servicio Supabase.
+    if (isDemo()) {
+      setIsDeletingMatches(true);
+      const { deletedCount } = clearDemoMatchHistory(user.id);
+      setIsDeletingMatches(false);
+      toast({
+        title: "✅ Historial eliminado",
+        description: `Se eliminaron ${deletedCount} matches de tu historial`,
       });
       return;
     }

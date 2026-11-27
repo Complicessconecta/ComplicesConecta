@@ -4,6 +4,7 @@ import { vi, describe, beforeEach, test, expect } from "vitest";
 import React from "react";
 import ProfileCouple from "@/pages/profiles/couple/ProfileCouple";
 import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/features/auth/useAuth";
 import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
 
 // Mock dependencies
@@ -261,6 +262,34 @@ describe("ProfileCouple", () => {
       toasts: [],
       dismiss: vi.fn(),
     });
+
+    // Ronda 21: la sesión de este test debe ser de PAREJA. El mock
+    // global dice `getProfileType: () => "single"` con perfil no nulo:
+    // con eso, ProfileCouple redirige en silencio a /profile-single
+    // (ronda 7, punto 14a + supresión del toast de la ronda 21) y el
+    // toast de error nunca se emite — ese es el comportamiento
+    // correcto para una sesión single, no un fallo de carga de pareja.
+    // Una sesión de pareja cuya carga falla SÍ debe ver el toast.
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: "test-user-1", email: "test@example.com" },
+      profile: { id: "test-profile-1", is_demo: true },
+      isAuthenticated: vi.fn(() => true),
+      loading: false,
+      login: vi.fn(),
+      logout: vi.fn(),
+      register: vi.fn(),
+      updateProfile: vi.fn(),
+      resetPassword: vi.fn(),
+      verifyEmail: vi.fn(),
+      checkAuth: vi.fn(),
+      deleteAccount: vi.fn(),
+      error: null,
+      getProfileType: () => "couple",
+      isDemoMode: () => true,
+      isDemo: () => true,
+      isAdmin: () => false,
+      signOut: vi.fn(),
+    } as unknown as ReturnType<typeof useAuth>);
 
     // Mock failure
     vi.mocked(generateMockCoupleProfiles).mockImplementationOnce(() => {

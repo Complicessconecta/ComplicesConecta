@@ -70,7 +70,12 @@ const getDemoImages = (profileType: "single" | "couple"): GalleryImage[] => {
     },
     {
       id: "demo-3",
-      url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
+      // Ronda 21 (stream C): era un retrato masculino
+      // (photo-1500648767791-00dcc994a43e) en la galería PÚBLICA de un
+      // perfil single genérico — en la de Sofía se veía la foto de un
+      // hombre. Retrato femenino verificado (HTTP 200), del pool de
+      // retratos femeninos de @/lib/media.
+      url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop&crop=face",
       caption: "Experiencia única",
       isPublic: true,
       uploadedAt: "2024-01-13T14:00:00Z",

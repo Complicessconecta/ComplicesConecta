@@ -23,7 +23,11 @@ export function hasProperty<T extends object, K extends string>(
 /**
  * Helper para obtener una propiedad de forma segura
  */
-export function safeGetProperty<T>(obj: unknown, prop: string, defaultValue: T): T | undefined {
+export function safeGetProperty<T>(
+  obj: unknown,
+  prop: string,
+  defaultValue: T,
+): T | undefined {
   return obj && typeof obj === "object" && prop in obj
     ? (obj as Record<string, T>)[prop]
     : defaultValue;

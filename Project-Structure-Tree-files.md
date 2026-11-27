@@ -799,6 +799,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 | | demo-registration.ts
 | | demo-uuid.ts
 | | demo-wallet.ts
+| | demoMatchHistory.ts
 | | distance-utils.ts
 | | email-service.ts
 | | env-utils.ts
@@ -938,7 +939,9 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 | | Events.tsx
 | | FAQ.tsx
 | | Feed.tsx
+| | Friends.tsx
 | | Guidelines.tsx
+| | ImperativeLazyRoute.tsx
 | | Index.tsx
 | | Info.tsx
 | | Invest.tsx

@@ -1,5 +1,15 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 27 Nov 2026 - 00:10 (Ronda 21 — fixes del full test de producción)
+
+- **🔍 Full test de producción (master `5ad690a`, 26 nov 21:40–21:53, 13 min):** 10 FAIL + contraste + observación del toast confirmada. Esta ronda los corrige todos con causa raíz leída en código (3 streams + integración, 1 commit en `fix/ronda21-2026-11-26`, sin push ni merge todavía).
+- **🛣️ Rutas 404 y loaders colgados:** página nueva `/friends` (`src/pages/Friends.tsx`); `/admin/dashboard` y `/ley-olimpia` con carga imperativa (`src/pages/ImperativeLazyRoute.tsx`, tope 15 s, patrón ronda 19) + panel admin en demo con datos demo/respaldo y rama demo en `ModeratorRoute`; botón «Dashboard Demo» ahora a `/moderators/dashboard` (+ redirect del viejo `/moderator-dashboard`); rutas `/docs/legal/terms|privacy|ley-olimpia`.
+- **🎭 Estado demo:** borrar historial de matches en demo (marca local, la semilla no vive en ningún almacén); aprobar fotos en 1 clic (re-lectura del almacén + dedup de semillas); chat desde Discover abre el hilo (con `location.state` y resolución de UUIDs, cubre recarga); filtro con toggle funcional + `<AnimatePresence>`; likes persistidos por usuario; avatares públicos con imagen/iniciales (el «?» era `charAt(0)` sobre emoji).
+- **🎨 Contraste/ghost:** /notifications con la misma lista demo que la campana (fuente compartida, lectura persistida); video-chat y 404 por tema; modales y desplegables con fondo opaco; dedupe real de «Club Demo»; título NFT sin truncate; mocks de Sofía corregidos (foto femenina, «conocerme»); botón Configuración solo en perfil propio; toast «Error al cargar perfil» suprimido en la redirección esperada.
+- **✅ Verificación:** vitest 902 → 875 pasaron, 6 fallaron (conjunto conocido), 21 saltados (+14 tests nuevos); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
 ## 📅 Bitácora 26 Nov 2026 - 01:10 (Fix Causa Raíz de Pantalla Congelada en Inicio y Compatibilidad Android 16/17 API 36)
 
 - **📱 Diagnóstico y Fix Causa Raíz del Congelamiento en Pantalla de Inicio:**

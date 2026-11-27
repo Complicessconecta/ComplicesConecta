@@ -41,7 +41,7 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
             <div>
               <h3 className="text-xl font-bold text-white">Galería</h3>
               <p className="text-white/60 text-sm">
-                {images.length} {images.length === 1 ? 'foto' : 'fotos'}
+                {images.length} {images.length === 1 ? "foto" : "fotos"}
               </p>
             </div>
           </div>
@@ -173,8 +173,18 @@ export const ClubProfileGallery: React.FC<ClubProfileGalleryProps> = ({
                 className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition-all"
                 aria-label="Cerrar imagen"
               >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </motion.div>

@@ -6,4 +6,3 @@
 export { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
 export { StakingWidget } from "@/components/blockchain/StakingWidget";
 export { ConsentModal } from "@/components/modals/ConsentModal";
-

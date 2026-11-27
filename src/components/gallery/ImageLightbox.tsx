@@ -10,7 +10,17 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Share2, Flag, Lock } from "lucide-react";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
+  Download,
+  Share2,
+  Flag,
+  Lock,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { useToast } from "@/hooks/useToast";

@@ -6,12 +6,24 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/forms/Input";
 import { Badge } from "@/components/ui/badge";
-import { Star, Bug, Lightbulb, MessageCircle, Send, CheckCircle } from "lucide-react";
+import {
+  Star,
+  Bug,
+  Lightbulb,
+  MessageCircle,
+  Send,
+  CheckCircle,
+} from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
@@ -209,10 +221,7 @@ export const UserFeedbackForm = ({
                     onClick={() =>
                       setFeedbackType(
                         type.id as
-                          | "general"
-                          | "feature"
-                          | "bug"
-                          | "improvement",
+                          "general" | "feature" | "bug" | "improvement",
                       )
                     }
                     whileHover={{ scale: 1.05 }}

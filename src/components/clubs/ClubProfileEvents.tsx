@@ -32,27 +32,28 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
   isOwner = false,
   onCreateEvent,
 }) => {
-  const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('all');
+  const [filter, setFilter] = useState<"all" | "upcoming" | "past">("all");
 
   const CMPX_PER_USD = 10;
 
   const now = new Date();
-  const upcomingEvents = events.filter(e => new Date(e.date) >= now);
-  const pastEvents = events.filter(e => new Date(e.date) < now);
+  const upcomingEvents = events.filter((e) => new Date(e.date) >= now);
+  const pastEvents = events.filter((e) => new Date(e.date) < now);
 
-  const filteredEvents = filter === 'all' 
-    ? events 
-    : filter === 'upcoming' 
-    ? upcomingEvents 
-    : pastEvents;
+  const filteredEvents =
+    filter === "all"
+      ? events
+      : filter === "upcoming"
+        ? upcomingEvents
+        : pastEvents;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-MX', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString("es-MX", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -68,7 +69,8 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
             <div>
               <h3 className="text-xl font-bold text-white">Eventos</h3>
               <p className="text-white/60 text-sm">
-                {upcomingEvents.length} {upcomingEvents.length === 1 ? 'próximo' : 'próximos'}
+                {upcomingEvents.length}{" "}
+                {upcomingEvents.length === 1 ? "próximo" : "próximos"}
               </p>
             </div>
           </div>
@@ -76,17 +78,21 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
           <div className="flex gap-2">
             {/* Filter */}
             <div className="flex bg-white/10 rounded-lg p-1">
-              {(['all', 'upcoming', 'past'] as const).map((f) => (
+              {(["all", "upcoming", "past"] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
                   className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
                     filter === f
-                      ? 'bg-white/20 text-white'
-                      : 'text-white/60 hover:text-white'
+                      ? "bg-white/20 text-white"
+                      : "text-white/60 hover:text-white"
                   }`}
                 >
-                  {f === 'all' ? 'Todos' : f === 'upcoming' ? 'Próximos' : 'Pasados'}
+                  {f === "all"
+                    ? "Todos"
+                    : f === "upcoming"
+                      ? "Próximos"
+                      : "Pasados"}
                 </button>
               ))}
             </div>
@@ -108,13 +114,13 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
           <div className="text-center py-12">
             <Calendar className="h-16 w-16 text-white/40 mx-auto mb-4" />
             <p className="text-white/60">
-              {filter === 'all' 
-                ? 'No hay eventos disponibles' 
-                : filter === 'upcoming' 
-                ? 'No hay eventos próximos' 
-                : 'No hay eventos pasados'}
+              {filter === "all"
+                ? "No hay eventos disponibles"
+                : filter === "upcoming"
+                  ? "No hay eventos próximos"
+                  : "No hay eventos pasados"}
             </p>
-            {isOwner && filter === 'all' && (
+            {isOwner && filter === "all" && (
               <Button
                 onClick={onCreateEvent}
                 variant="outline"
@@ -203,7 +209,8 @@ export const ClubProfileEvents: React.FC<ClubProfileEventsProps> = ({
                     {event.price !== undefined && (
                       <div className="mt-3">
                         <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                          {event.currency || '$'}{event.price.toFixed(2)}
+                          {event.currency || "$"}
+                          {event.price.toFixed(2)}
                         </Badge>
 
                         <Badge className="ml-2 bg-purple-500/20 text-purple-200 border-purple-500/30">

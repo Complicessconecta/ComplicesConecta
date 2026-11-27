@@ -1,10 +1,21 @@
 import { useMemo } from "react";
 import { Sliders, Heart, MapPin, Briefcase, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -171,7 +182,9 @@ export const AdvancedFilters = ({
 
         {/* Intereses */}
         <div className="space-y-3">
-          <Label className="text-slate-800 dark:text-slate-100">Intereses</Label>
+          <Label className="text-slate-800 dark:text-slate-100">
+            Intereses
+          </Label>
           <div className="grid grid-cols-2 gap-2">
             {availableInterests.map((interest) => (
               <div key={interest} className="flex items-center space-x-2">
@@ -186,7 +199,10 @@ export const AdvancedFilters = ({
                     updateFilter("interests", newInterests);
                   }}
                 />
-                <Label htmlFor={interest} className="text-sm cursor-pointer text-slate-800 dark:text-slate-100">
+                <Label
+                  htmlFor={interest}
+                  className="text-sm cursor-pointer text-slate-800 dark:text-slate-100"
+                >
                   {interest}
                 </Label>
               </div>
@@ -253,7 +269,9 @@ export const AdvancedFilters = ({
 
         {/* Tipo de relación */}
         <div className="space-y-3">
-          <Label className="text-slate-800 dark:text-slate-100">Tipo de relación buscada</Label>
+          <Label className="text-slate-800 dark:text-slate-100">
+            Tipo de relación buscada
+          </Label>
           <div className="space-y-2">
             {relationshipTypes.map((type) => (
               <div key={type} className="flex items-center space-x-2">
@@ -268,7 +286,10 @@ export const AdvancedFilters = ({
                     updateFilter("relationshipType", newTypes);
                   }}
                 />
-                <Label htmlFor={type} className="text-sm cursor-pointer text-slate-800 dark:text-slate-100">
+                <Label
+                  htmlFor={type}
+                  className="text-sm cursor-pointer text-slate-800 dark:text-slate-100"
+                >
                   {type}
                 </Label>
               </div>
@@ -278,7 +299,9 @@ export const AdvancedFilters = ({
 
         {/* Estilo de vida */}
         <div className="space-y-3">
-          <Label className="text-slate-800 dark:text-slate-100">Estilo de vida</Label>
+          <Label className="text-slate-800 dark:text-slate-100">
+            Estilo de vida
+          </Label>
           <div className="grid grid-cols-2 gap-2">
             {lifestyleOptions.map((lifestyle) => (
               <div key={lifestyle} className="flex items-center space-x-2">
@@ -293,7 +316,10 @@ export const AdvancedFilters = ({
                     updateFilter("lifestyle", newLifestyle);
                   }}
                 />
-                <Label htmlFor={lifestyle} className="text-sm cursor-pointer text-slate-800 dark:text-slate-100">
+                <Label
+                  htmlFor={lifestyle}
+                  className="text-sm cursor-pointer text-slate-800 dark:text-slate-100"
+                >
                   {lifestyle}
                 </Label>
               </div>
@@ -384,4 +410,3 @@ export const AdvancedFilters = ({
     </Card>
   );
 };
-

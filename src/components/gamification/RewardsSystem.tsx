@@ -464,4 +464,3 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
     </div>
   );
 };
-

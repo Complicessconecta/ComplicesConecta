@@ -124,9 +124,12 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
         logger.info("🚫 Usuario no es admin (rpc:is_admin)");
       } catch (error) {
-        logger.error("⚠️ Error verificando admin via rpc:is_admin, usando fallback", {
-          error: error instanceof Error ? error.message : String(error),
-        });
+        logger.error(
+          "⚠️ Error verificando admin via rpc:is_admin, usando fallback",
+          {
+            error: error instanceof Error ? error.message : String(error),
+          },
+        );
       }
 
       // Fallback: consultar admin_users (RLS debe permitir ver solo si es admin)

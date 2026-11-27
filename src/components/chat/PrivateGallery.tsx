@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Shield, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { galleryPrivacyService } from '@/services/social';
-import { toast } from '@/hooks/useToast';
+import { useState } from "react";
+import { Shield, Lock } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { galleryPrivacyService } from "@/services/social";
+import { toast } from "@/hooks/useToast";
 
 interface GalleryItem {
   id: string;
@@ -28,8 +28,12 @@ export function PrivateGallery({
   unlockingItemId: externalUnlockingItemId,
   onUnlock,
 }: PrivateGalleryProps) {
-  const [internalUnlockedItems, setInternalUnlockedItems] = useState<Set<string>>(new Set());
-  const [internalUnlocking, setInternalUnlocking] = useState<string | null>(null);
+  const [internalUnlockedItems, setInternalUnlockedItems] = useState<
+    Set<string>
+  >(new Set());
+  const [internalUnlocking, setInternalUnlocking] = useState<string | null>(
+    null,
+  );
 
   const unlockedItems = externalUnlockedItems ?? internalUnlockedItems;
   const unlocking = externalUnlockingItemId ?? internalUnlocking;
@@ -43,26 +47,30 @@ export function PrivateGallery({
     setInternalUnlocking(itemId);
 
     try {
-      const result = await galleryPrivacyService.unlockGallery(currentUserId, itemId, creatorId);
+      const result = await galleryPrivacyService.unlockGallery(
+        currentUserId,
+        itemId,
+        creatorId,
+      );
 
       if (result.success) {
         setInternalUnlockedItems((prev) => new Set(prev).add(itemId));
         toast({
-          title: 'Galería desbloqueada',
-          description: 'Ahora puedes ver el contenido privado',
+          title: "Galería desbloqueada",
+          description: "Ahora puedes ver el contenido privado",
         });
       } else {
         toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error || 'Error al desbloquear',
+          variant: "destructive",
+          title: "Error",
+          description: result.error || "Error al desbloquear",
         });
       }
     } catch (error) {
       toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Error al desbloquear',
+        variant: "destructive",
+        title: "Error",
+        description: "Error al desbloquear",
       });
     } finally {
       setInternalUnlocking(null);
@@ -83,21 +91,18 @@ export function PrivateGallery({
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {galleryItems.map(item => {
+        {galleryItems.map((item) => {
           const isUnlocked = unlockedItems.has(item.id);
 
           return (
             // El blur va solo en la img: antes estaba en el wrapper y
             // desenfocaba también el overlay con el botón "Desbloquear",
             // que quedaba ilegible. La foto sigue borrosa; el botón no.
-            <div
-              key={item.id}
-              className="relative rounded-lg overflow-hidden"
-            >
+            <div key={item.id} className="relative rounded-lg overflow-hidden">
               <img
                 src={item.thumbnail_url || item.url}
-                alt={item.caption || 'Foto privada'}
-                className={`w-full h-48 object-cover ${!isUnlocked ? 'blur-sm' : ''}`}
+                alt={item.caption || "Foto privada"}
+                className={`w-full h-48 object-cover ${!isUnlocked ? "blur-sm" : ""}`}
               />
 
               {!isUnlocked && (
@@ -110,7 +115,9 @@ export function PrivateGallery({
                     disabled={unlocking === item.id}
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                   >
-                    {unlocking === item.id ? 'Desbloqueando...' : `Desbloquear (${cmpxCost} CMPX)`}
+                    {unlocking === item.id
+                      ? "Desbloqueando..."
+                      : `Desbloquear (${cmpxCost} CMPX)`}
                   </Button>
                 </div>
               )}

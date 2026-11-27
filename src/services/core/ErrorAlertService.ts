@@ -31,12 +31,7 @@ export interface ErrorAlert {
   id: string;
   severity: "low" | "medium" | "high" | "critical";
   category:
-    | "frontend"
-    | "backend"
-    | "network"
-    | "database"
-    | "auth"
-    | "unknown";
+    "frontend" | "backend" | "network" | "database" | "auth" | "unknown";
   message: string;
   error: Error | string;
   stack?: string;
@@ -708,7 +703,10 @@ export class ErrorAlertService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error("Error fetching alerts from database:", { error: error.message, details: error.details });
+        logger.error("Error fetching alerts from database:", {
+          error: error.message,
+          details: error.details,
+        });
         return [];
       }
 
@@ -745,4 +743,3 @@ export class ErrorAlertService {
 // =====================================================
 
 export const errorAlertService = ErrorAlertService.getInstance();
-

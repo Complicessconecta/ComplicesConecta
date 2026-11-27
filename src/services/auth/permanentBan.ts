@@ -2,7 +2,11 @@
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { retainIdentityAfterBan } from "@/lib/reportBlock";
-import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from "@/services/auth/digitalFingerprint";
+import {
+  generateDigitalFingerprint,
+  DigitalFingerprint,
+  checkFingerprintBanned,
+} from "@/services/auth/digitalFingerprint";
 
 export interface PermanentBanData {
   userId: string;
@@ -51,7 +55,7 @@ export const createPermanentBan = async (
         banned_by: _bannedBy,
         canvas_hash: fingerprint.canvasHash,
         worldid_nullifier_hash: banData.worldIdNullifierHash || null,
-        evidence: banData.evidence || {} as any,
+        evidence: banData.evidence || ({} as any),
       })
       .select("id")
       .single();
@@ -129,8 +133,7 @@ export const retainIdentityAfterPermanentBan = async (
       .eq("user_id", bannedBy)
       .maybeSingle();
     const reportId =
-      banData.evidence &&
-      typeof banData.evidence.report_id === "string"
+      banData.evidence && typeof banData.evidence.report_id === "string"
         ? (banData.evidence.report_id as string)
         : undefined;
     const result = await retainIdentityAfterBan({
@@ -141,8 +144,7 @@ export const retainIdentityAfterPermanentBan = async (
       // exactOptionalPropertyTypes: no pasar la clave cuando no hay
       // report_id (un `string | undefined` explícito no compila).
       ...(reportId ? { reportId } : {}),
-      bannedBy:
-        (moderatorProfile as { id?: string } | null)?.id ?? null,
+      bannedBy: (moderatorProfile as { id?: string } | null)?.id ?? null,
     });
     if (!result.ok) {
       logger.warn("No se pudo retener la identidad tras el baneo", {
@@ -198,7 +200,10 @@ export const checkUserBanned = async (
       .single();
 
     if (error && error.code !== "PGRST116") {
-      logger.error("Error obteniendo detalles de baneo:", { error: error.message, details: error.details });
+      logger.error("Error obteniendo detalles de baneo:", {
+        error: error.message,
+        details: error.details,
+      });
     }
 
     const result: BanCheckResult = {

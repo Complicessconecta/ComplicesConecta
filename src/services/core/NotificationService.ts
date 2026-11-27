@@ -184,9 +184,7 @@ export class NotificationService {
    */
   private handleNewNotification(data: any): void {
     const payload =
-      data.data &&
-      typeof data.data === "object" &&
-      !Array.isArray(data.data)
+      data.data && typeof data.data === "object" && !Array.isArray(data.data)
         ? data.data
         : {};
     const priority =
@@ -201,11 +199,8 @@ export class NotificationService {
       read: data.read || false,
       createdAt: new Date(data.created_at),
       actionUrl:
-        typeof payload.action_url === "string"
-          ? payload.action_url
-          : undefined,
-      priority:
-        priority === "low" || priority === "high" ? priority : "medium",
+        typeof payload.action_url === "string" ? payload.action_url : undefined,
+      priority: priority === "low" || priority === "high" ? priority : "medium",
       icon: data.icon,
       imageUrl: data.image_url,
     };
@@ -303,7 +298,9 @@ export class NotificationService {
    */
   async loadSound(type: NotificationType, audioUrl: string): Promise<void> {
     if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )();
     }
 
     try {
@@ -313,7 +310,11 @@ export class NotificationService {
       this.sounds.set(type, audioBuffer);
       logger.info("[NotificationService] Sound loaded:", { type, audioUrl });
     } catch (error) {
-      logger.error("[NotificationService] Error loading sound:", { error, type, audioUrl });
+      logger.error("[NotificationService] Error loading sound:", {
+        error,
+        type,
+        audioUrl,
+      });
     }
   }
 
@@ -527,4 +528,3 @@ export class NotificationService {
 }
 
 export const notificationService = NotificationService.getInstance();
-

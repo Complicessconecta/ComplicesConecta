@@ -235,18 +235,24 @@ let anomalyDetectionInterval: ReturnType<typeof setInterval> | null = null;
 
 export const startSecurityMonitorSchedulers = () => {
   if (!securityCleanupInterval) {
-    securityCleanupInterval = setInterval(() => {
-      securityMonitor.cleanup(24);
-    }, 60 * 60 * 1000);
+    securityCleanupInterval = setInterval(
+      () => {
+        securityMonitor.cleanup(24);
+      },
+      60 * 60 * 1000,
+    );
   }
 
   if (!anomalyDetectionInterval) {
-    anomalyDetectionInterval = setInterval(() => {
-      const anomalies = securityMonitor.detectAnomalies();
-      if (anomalies.length > 0) {
-        logger.warn("🚨 Security Anomalies Detected", { anomalies });
-      }
-    }, 5 * 60 * 1000);
+    anomalyDetectionInterval = setInterval(
+      () => {
+        const anomalies = securityMonitor.detectAnomalies();
+        if (anomalies.length > 0) {
+          logger.warn("🚨 Security Anomalies Detected", { anomalies });
+        }
+      },
+      5 * 60 * 1000,
+    );
   }
 };
 

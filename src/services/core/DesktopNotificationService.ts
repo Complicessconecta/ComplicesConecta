@@ -199,7 +199,9 @@ export class DesktopNotificationService {
       logger.error("Error showing notification:", { error: String(error) });
       // Agregar a la cola de notificaciones para intentar más tarde
       this.notificationQueue.push(options);
-      logger.debug("Notification queued:", { queueSize: this.notificationQueue.length });
+      logger.debug("Notification queued:", {
+        queueSize: this.notificationQueue.length,
+      });
     }
   }
 
@@ -360,4 +362,3 @@ export class DesktopNotificationService {
 
 // Exportar instancia singleton
 export const desktopNotificationService = new DesktopNotificationService();
-

@@ -77,7 +77,7 @@ export class Web3WalletService {
       return this.walletInfo;
     } catch (error) {
       logger.error("Error conectando wallet:", { error });
-      throw new Error("Error al conectar la wallet");
+      throw new Error("Error al conectar la wallet", { cause: error });
     }
   }
 
@@ -96,7 +96,7 @@ export class Web3WalletService {
       logger.info("Wallet desconectada exitosamente");
     } catch (error) {
       logger.error("Error desconectando wallet:", { error });
-      throw new Error("Error al desconectar la wallet");
+      throw new Error("Error al desconectar la wallet", { cause: error });
     }
   }
 
@@ -140,7 +140,7 @@ export class Web3WalletService {
       return balance;
     } catch (error) {
       logger.error("Error obteniendo balance:", { error });
-      throw new Error("Error al obtener el balance");
+      throw new Error("Error al obtener el balance", { cause: error });
     }
   }
 
@@ -169,7 +169,7 @@ export class Web3WalletService {
       return this.walletInfo;
     } catch (error) {
       logger.error("Error actualizando wallet:", { error });
-      throw new Error("Error al actualizar la wallet");
+      throw new Error("Error al actualizar la wallet", { cause: error });
     }
   }
 
@@ -229,8 +229,13 @@ export class Web3WalletService {
 
       return tokenBalance;
     } catch (error) {
-      logger.error("Error obteniendo balance de token:", { error, tokenAddress });
-      throw new Error("Error al obtener el balance del token");
+      logger.error("Error obteniendo balance de token:", {
+        error,
+        tokenAddress,
+      });
+      throw new Error("Error al obtener el balance del token", {
+        cause: error,
+      });
     }
   }
 
@@ -256,7 +261,7 @@ export class Web3WalletService {
       return signature;
     } catch (error) {
       logger.error("Error firmando mensaje:", { error });
-      throw new Error("Error al firmar el mensaje");
+      throw new Error("Error al firmar el mensaje", { cause: error });
     }
   }
 
@@ -275,7 +280,7 @@ export class Web3WalletService {
       return txHash;
     } catch (error) {
       logger.error("Error enviando transacción:", { error });
-      throw new Error("Error al enviar la transacción");
+      throw new Error("Error al enviar la transacción", { cause: error });
     }
   }
 

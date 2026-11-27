@@ -11,7 +11,11 @@
  */
 
 import { logger } from "@/lib/logger";
-import type { GtagParameters, MessagePayload, NotificationData } from "@/types/google.types";
+import type {
+  GtagParameters,
+  MessagePayload,
+  NotificationData,
+} from "@/types/google.types";
 
 // Configuración de servicios de Google
 interface GoogleServicesConfig {
@@ -218,10 +222,7 @@ export const logDiscretionEvent = (
  */
 export const logSafetyEvent = (
   eventType:
-    | "boundary_set"
-    | "consent_given"
-    | "safety_check"
-    | "protocol_followed",
+    "boundary_set" | "consent_given" | "safety_check" | "protocol_followed",
 ): void => {
   logSwingerEvent("safety_protocol", {
     event_type: eventType,

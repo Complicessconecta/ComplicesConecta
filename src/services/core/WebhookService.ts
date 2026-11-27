@@ -21,11 +21,7 @@ import { logger } from "@/lib/logger";
 
 export type WebhookProvider = "slack" | "discord" | "custom";
 export type WebhookEventType =
-  | "error"
-  | "alert"
-  | "report"
-  | "performance"
-  | "security";
+  "error" | "alert" | "report" | "performance" | "security";
 
 export interface WebhookConfig {
   id: string;

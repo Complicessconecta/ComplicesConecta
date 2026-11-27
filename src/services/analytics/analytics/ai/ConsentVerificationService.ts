@@ -292,17 +292,14 @@ Responde SOLO con un JSON válido en este formato exacto:
         throw new Error("Supabase no está disponible");
       }
 
-      const { data, error } = await supabase.functions.invoke(
-        "openai-proxy",
-        {
-          body: {
-            model: "gpt-4-turbo-preview",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.3,
-            max_tokens: 200,
-          },
+      const { data, error } = await supabase.functions.invoke("openai-proxy", {
+        body: {
+          model: "gpt-4-turbo-preview",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.3,
+          max_tokens: 200,
         },
-      );
+      });
       if (error) throw error;
 
       const choice = data?.choices?.[0];

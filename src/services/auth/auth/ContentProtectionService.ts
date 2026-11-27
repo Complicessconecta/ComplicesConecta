@@ -164,11 +164,19 @@ export class ContentProtectionService {
         if (this.screenshotAttempts >= this.MAX_SCREENSHOT_ATTEMPTS) {
           // Obtener usuario actual para el reporte si es posible
           const report = async () => {
-             const { data } = await supabase?.auth.getUser() || {};
-             const userId = data?.user?.id || "unknown";
-             this.reportViolation(userId, "app-shell", "screenshot_attempts_exceeded");
+            const { data } = (await supabase?.auth.getUser()) || {};
+            const userId = data?.user?.id || "unknown";
+            this.reportViolation(
+              userId,
+              "app-shell",
+              "screenshot_attempts_exceeded",
+            );
           };
-          report().catch(error => logger.error("[ContentProtection] Error reporting violation:", { error }));
+          report().catch((error) =>
+            logger.error("[ContentProtection] Error reporting violation:", {
+              error,
+            }),
+          );
         }
       }
     };
@@ -441,7 +449,10 @@ export class ContentProtectionService {
         });
 
       if (error) {
-        logger.error("[ContentProtection] Error logging access to DB:", { error: error.message, details: error.details });
+        logger.error("[ContentProtection] Error logging access to DB:", {
+          error: error.message,
+          details: error.details,
+        });
       } else {
         logger.info("[ContentProtection] Content access logged to DB", data);
       }
@@ -488,7 +499,7 @@ export class ContentProtectionService {
     contentId: string,
     reason: string,
     details?: string,
-    eventType: 'user_report' | 'system_detection' = 'user_report'
+    eventType: "user_report" | "system_detection" = "user_report",
   ): Promise<void> {
     if (!supabase) return;
 
@@ -501,7 +512,9 @@ export class ContentProtectionService {
         event_type: eventType,
       });
     } catch (error) {
-      logger.error("[ContentProtection] Error reporting violation:", { error: String(error) });
+      logger.error("[ContentProtection] Error reporting violation:", {
+        error: String(error),
+      });
     }
   }
 
@@ -542,4 +555,3 @@ export class ContentProtectionService {
 }
 
 export const contentProtectionService = ContentProtectionService.getInstance();
-

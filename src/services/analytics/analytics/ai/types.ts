@@ -67,4 +67,3 @@ export interface ProfileWithInterests {
   longitude?: number | null;
   [key: string]: any;
 }
-

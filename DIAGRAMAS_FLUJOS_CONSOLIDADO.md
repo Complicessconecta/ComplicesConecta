@@ -6,7 +6,7 @@
 #> - **Acción**: Edita
 #> - **Nombre del flujo**: Chat — persistencia de mensajes + navegación de hilo + compositor | Feed — like optimista con regla Wacko | Clubs — contenido real desde club_events/discounts/members (clubContentService) | Docs — /docs/* fuera del rewrite | Navegación — dock estable solo en perfil + botón de regreso global
 #> - **Ruta(s) afectada(s)**: `src/pages/Chat.tsx`, `src/features/chat/useRealtimeChat.ts`, `src/pages/Feed.tsx`, `src/pages/Discover.tsx`, `src/services/social/social/postsService.ts`, `src/demo/demoData.ts`, `src/services/clubs/clubContentService.ts`, `src/pages/ClubsDemo.tsx`, `src/pages/Clubs.tsx`, `src/pages/ClubsPublic.tsx`, `src/components/admin/panels/ClubAdminPanel.tsx`, `src/pages/moderators/ModeratorDashboard.tsx`, `vercel.json`, `src/components/layout/MainLayout.tsx`, `src/App.tsx`, `src/pages/Settings.tsx`
-#> - **Resumen breve**: Chat: los mensajes enviados se guardan en `localStorage` (`chat_messages:<roomId>`) en demo y en Supabase con filtro `room_id` en real (antes `loadMessages` mezclaba todas las salas); la flecha ← vuelve a la lista; a ≤500 px un solo panel. Feed: like optimista con la regla de Wacko (rojo +1 / sin color −1, persistencia demo, sin error en demo) + compositor + compartir real. Clubs: nuevo `clubContentService` lee/escribe `club_events`, `club_discounts`, `club_members` (timeout 3 s + respaldo demo; creación en demo a `localStorage`) y lo usan ClubsDemo, ClubAdminPanel (crear evento), ModeratorDashboard (conteos) y ClubsPublic (galería/eventos/descuentos/contacto); antes ningún archivo de `src/` consultaba esas tablas. Docs: `/docs/*` queda fuera del rewrite catch-all de `vercel.json` (antes servía `index.html`). Navegación: dock de 10 iconos solo en rutas de perfil (`showDock = isProfileRoute`, sin depender de `isDemo()`); `Outlet key={pathname}` fuerza remontaje por ruta; `BackButton` global en páginas sin dock.
+#> - **Resumen breve**: Chat: los mensajes enviados se guardan en `localStorage` (`chat_messages:<roomId>`) en demo y en Supabase con filtro `room_id` en real (antes `loadMessages` mezclaba todas las salas); la flecha ← vuelve a la lista; a ≤500 px un solo panel. Feed: like optimista con la regla de Wacko (rojo +1 / sin color −1, persistencia demo, sin error en demo) + compositor + compartir real. Clubs: nuevo `clubContentService` lee/escribe `club_events`, `club_discounts`, `club_members` (timeout 3 s + respaldo demo; creación en demo a `localStorage`) y lo usan ClubsDemo, ClubAdminPanel (crear evento), ModeratorDashboard (conteos) y ClubsPublic (galería/eventos/descuentos/contacto); antes ningún archivo de `src/` consultaba esas tablas. Docs: `/docs/*` queda fuera del rewrite catch-all de `vercel.json` (antes servía `index.html`). Navegación: dock de 10 iconos solo en rutas de perfil (`showDock = isProfileRoute`, sin depender de `isDemo()`); `useTransitions={false}` en el `BrowserRouter` (`src/utils/routerConfig.ts`): cada navegación es urgente, así un chunk lazy en vuelo commitea el loader (`<PageLoader />`) de inmediato y nunca retiene la vista anterior (ronda 17, fix global — la `key={pathname}` de la ronda 16 en el boundary se conserva como segunda red; el `flushSync` de "Enviar mensaje" era un no-op bajo router plano); ronda 18 — el login demo navega de inmediato (se eliminó el `setTimeout(..., 1000)` de `DemoSelector.tsx`, que retenía /demo con el toast y sin loader) y `/profile/:id` carga su chunk con tope de 15 s + panel de error con Reintentar (`src/pages/ProfileDetailRoute.tsx`, `src/utils/lazyWithTimeout.ts`; el timeout de 10 s de la ronda 17 solo cubre la consulta Supabase, que corre después de que el chunk cargue); ronda 19 — el tope de 15 s no disparaba en SPA porque (1) un bucle de telemetría (`PerformanceMonitoringService.ts`: cada recurso persistía métricas vía getUser + inserts, y cada petición era un recurso nuevo) saturaba el hilo principal (~201 getUser/s en /discover; fix: el observer ignora URLs de telemetría y `resourceLoadTime` ya no se persiste) y (2) el retry del Suspense se pierde en navegación SPA (el chunk llega en milisegundos pero el perfil no aparece hasta otro re-render; fix: `ProfileDetailRoute` carga el chunk de forma imperativa en `useEffect` con la misma carrera de 15 s, sin suspender — el loader y el panel de error son los mismos); el banner "Cuenta demo activa" ahora muestra el toast "Modo Demo Activado" al reentrar (antes hacía un `navigate(...)` pelado sin `toast()`); `BackButton` global en páginas sin dock; ronda 20 — Checks del PR #79: los 6 TS2305 de `@worldcoin/idkit` se corrigen con el rewrite v4 (`IDKitRequestWidget` + `orbLegacy`, reutilizado verbatim del commit `5877c0a` de la ronda de checks del 24 de nov; la diferencia tsc 14-vs-6 era el tsconfig, no la versión de TS); reformat mecánico repo-wide con prettier (601 archivos fallaban) + ESLint `^10.2.1` → `^9.39.5` (crash de ESLint 10 confirmado: `context.getFilename` ya no existe) + `"ES2022.Error"` en `lib` de `tsconfig.app.json`; SonarCloud ya no se bloquea por los tests (`continue-on-error` en `Run tests` — antes el scan quedaba SKIPPED y nunca corría) y el Analyzer escribe el diff con heredoc + tope de 200.000 bytes (el `echo "DIFF=$(cat pr_diff.txt)"` rompía `$GITHUB_OUTPUT` con el diff de 868 KB); el warning "notify vercel — Resource not accessible by integration" no tiene que ver con el Analyzer (permisos de la Vercel GitHub App, no corregible desde la rama); quedan 5 archivos del Format Check protegidos por reglas vigentes (`vite.config.ts`, `debug -apk.md`, 3 `.md` azules).
 #> - **Justificación**: El full test 13:07–13:21 mostró que el chat perdía los mensajes al navegar (lo más grave), el like no funcionaba en demo, el dock cambiaba de 10 a 5 iconos en el mismo perfil, varias páginas no tenían forma de regresar, las tablas de clubs de la migración 20261124030000 no tenían ningún lector/escritor (los eventos del demo vivían en memoria) y los documentos legales se servían como `index.html` (el "fin del 404" del PR #70 era falso). Sin estos cambios, el pre-lanzamiento seguiría con chat roto, clubs sin datos reales y docs inaccesibles.
 
 #> Actualización 24 Nov 2026 12:48
@@ -197,8 +197,6 @@ Unificar el acceso a acciones de cuenta dentro de un solo control visual **sin d
 - Keyframes: `@keyframes demoUserHeartbeat`
 - Archivo: `src/styles/index.css`
 
-
-
 ---
 
 ## �️ FLUJO DE SEGURIDAD
@@ -264,16 +262,16 @@ graph TD
     A[Usuario reserva servicio] --> B{¿Método de Pago?}
     B -- Tarjeta (Stripe) --> C{¿Tier del Club?}
     B -- Tokens (CMPX) --> D[Descontar Saldo Wallet]
-    
+
     C -- Free --> E[Application Fee: 20%]
     C -- Premium --> F[Application Fee: 0%]
-    
+
     E --> G[Transferencia Directa a Cuenta Connect]
     F --> G
-    
+
     D --> H[Fee 20% a Tesorería App]
     H --> I[Acreditar 80% a Wallet del Club]
-    
+
     G --> J[Generar Registro: reservations]
     I --> J
 ```
@@ -318,22 +316,22 @@ graph TD
 
 ### Fragmento de código (Campos críticos)
 
-| Tabla | Campo | Tipo | Propósito |
-|------|-------|------|-----------|
-| `clubs` | `membership_tier` | `text` | `'free'` o `'premium'` para comisiones. |
-| `clubs` | `live_status` | `text` | `🔥 On Fire`, `🍸 Chill`, etc. |
-| `reservations` | `qr_hash` | `text (unique)` | Identificador seguro para el acceso. |
-| `user_wallets` | `cmpx_balance` | `decimal` | Saldo para micro-pagos off-chain. |
-| `club_analytics` | `total_revenue` | `decimal` | Tracking de ingresos para el Admin. |
+| Tabla            | Campo             | Tipo            | Propósito                               |
+| ---------------- | ----------------- | --------------- | --------------------------------------- |
+| `clubs`          | `membership_tier` | `text`          | `'free'` o `'premium'` para comisiones. |
+| `clubs`          | `live_status`     | `text`          | `🔥 On Fire`, `🍸 Chill`, etc.          |
+| `reservations`   | `qr_hash`         | `text (unique)` | Identificador seguro para el acceso.    |
+| `user_wallets`   | `cmpx_balance`    | `decimal`       | Saldo para micro-pagos off-chain.       |
+| `club_analytics` | `total_revenue`   | `decimal`       | Tracking de ingresos para el Admin.     |
 
 ### Lógica de Negocio: Cálculo de Tokens y Comisiones
 
-| Acción | Lógica de Cálculo (Pseudocódigo) | Destino de Fondos |
-|------|-----------------------------------|-------------------|
-| Reserva (Club Free) | `total * 0.80` | 80% al Club / 20% App |
-| Reserva (Club Premium) | `total * 1.00` | 100% al Club |
-| Tip en CMPX | `tokens - (tokens * 0.20)` | Wallet Interna del Club |
-| Mint NFT VIP | `gas_fee + platform_fee` | Contrato Polygon (GTK) |
+| Acción                 | Lógica de Cálculo (Pseudocódigo) | Destino de Fondos       |
+| ---------------------- | -------------------------------- | ----------------------- |
+| Reserva (Club Free)    | `total * 0.80`                   | 80% al Club / 20% App   |
+| Reserva (Club Premium) | `total * 1.00`                   | 100% al Club            |
+| Tip en CMPX            | `tokens - (tokens * 0.20)`       | Wallet Interna del Club |
+| Mint NFT VIP           | `gas_fee + platform_fee`         | Contrato Polygon (GTK)  |
 
 ---
 
@@ -351,12 +349,12 @@ graph TD
 
 ## 2) Lógica Económica (Split de Pagos)
 
-| Entidad | Plan Free (20%) | Plan Premium (0%) |
-| :--- | :--- | :--- |
-| **Ingreso Bruto** | $100.00 | $100.00 |
-| **Fee Plataforma** | -$20.00 (Stripe Application Fee) | $0.00 |
-| **Neto Club** | $80.00 | $100.00 |
-| **Bonus CMPX** | +5 CMPX (Cashback usuario) | +10 CMPX (Cashback usuario) |
+| Entidad            | Plan Free (20%)                  | Plan Premium (0%)           |
+| :----------------- | :------------------------------- | :-------------------------- |
+| **Ingreso Bruto**  | $100.00                          | $100.00                     |
+| **Fee Plataforma** | -$20.00 (Stripe Application Fee) | $0.00                       |
+| **Neto Club**      | $80.00                           | $100.00                     |
+| **Bonus CMPX**     | +5 CMPX (Cashback usuario)       | +10 CMPX (Cashback usuario) |
 
 ## 3) Desglose del Proceso (Bajo el capó)
 
@@ -377,12 +375,12 @@ graph TD
 
 ### 2. Estructura de Pestañas Admin (Final)
 
-| Pestaña | Propósito | Funciones Clave |
-| :--- | :--- | :--- |
-| **Editar** | Perfil Básico | Nombre, Fotos, Dirección. |
+| Pestaña         | Propósito     | Funciones Clave                           |
+| :-------------- | :------------ | :---------------------------------------- |
+| **Editar**      | Perfil Básico | Nombre, Fotos, Dirección.                 |
 | **Gestión Pro** | Configuración | Tier de suscripción, Visibilidad en mapa. |
-| **Economía** | Financiero | Simulador de Stripe, Saldo CMPX, Retiros. |
-| **Acceso** | Operativo | Escáner QR, Validación Safe Arrival. |
+| **Economía**    | Financiero    | Simulador de Stripe, Saldo CMPX, Retiros. |
+| **Acceso**      | Operativo     | Escáner QR, Validación Safe Arrival.      |
 
 ### Capas de Seguridad Implementadas
 
@@ -910,20 +908,20 @@ flowchart TD
     B --> C{Formato Válido?}
     C -->|No| D[Mostrar Error]
     C -->|Sí| E[Verificar Disponibilidad]
-    
+
     E --> F[Consulta a Base de Datos]
     F --> G{Nombre Existe?}
     G -->|Sí| H[Generar Sugerencias]
     G -->|No| I[Nombre Disponible]
-    
+
     H --> J[Mostrar Alternativas]
     J --> K[Usuario Selecciona]
     K --> E
-    
+
     I --> L[Permitir Registro]
     D --> M[Usuario Corrige]
     M --> B
-    
+
     style C fill:#f59e0b
     style G fill:#ef4444
     style I fill:#10b981
@@ -937,21 +935,21 @@ flowchart TD
     A[Creación de Club] --> B[Mostrar Términos Legales]
     B --> C[Usuario Lee Documentos]
     C --> D[Términos Aceptados?]
-    
+
     D -->|No| E[Mostrar Alerta]
     D -->|Sí| F[Registrar Consentimiento]
-    
+
     F --> G[Guardar en Base de Datos]
     G --> H[Generar Registro Legal]
     H --> I[Club Creado Exitosamente]
-    
+
     E --> J[Usuario Debe Aceptar]
     J --> C
-    
+
     I --> K[Panel de Administración]
     K --> L[Gestión de Consentimientos]
     L --> M[Historial Legal]
-    
+
     style D fill:#f59e0b
     style F fill:#10b981
     style I fill:#10b981
@@ -960,6 +958,7 @@ flowchart TD
 ### 🗄️ Tablas de Base de Datos para Administración
 
 #### Tabla: admin_clubs
+
 - **id** (uuid, primary key)
 - **club_id** (uuid, NOT NULL, foreign key → clubs)
 - **admin_id** (uuid, NOT NULL, foreign key → profiles)
@@ -969,6 +968,7 @@ flowchart TD
 - **updated_at** (timestamp, NOT NULL, DEFAULT NOW())
 
 #### Tabla: club_name_validations
+
 - **id** (uuid, primary key)
 - **name** (text, NOT NULL, UNIQUE)
 - **slug** (text, NOT NULL, UNIQUE)
@@ -978,6 +978,7 @@ flowchart TD
 - **created_at** (timestamp, NOT NULL, DEFAULT NOW())
 
 #### Tabla: club_legal_consents
+
 - **id** (uuid, primary key)
 - **club_id** (uuid, NOT NULL, foreign key → clubs)
 - **user_id** (uuid, NOT NULL, foreign key → profiles)
@@ -988,6 +989,7 @@ flowchart TD
 - **user_agent** (text)
 
 #### Tabla: club_audit_logs
+
 - **id** (uuid, primary key)
 - **club_id** (uuid, NOT NULL, foreign key → clubs)
 - **admin_id** (uuid, NOT NULL, foreign key → profiles)
@@ -1000,14 +1002,17 @@ flowchart TD
 ### 🔄 Componentes Principales del Panel
 
 **Panel de Administración:**
+
 - `/src/components/admin/panels/ClubAdminPanelSimple.tsx` - Panel principal
 - `/src/pages/ClubsDemo.tsx` - Integración con demo existente
 
 **Validación y Legal:**
+
 - `/src/components/admin/panels/ClubNameValidator.tsx` - Validador de nombres únicos
 - `/src/components/legal/ClubConsentManager.tsx` - Gestor de consentimientos
 
 **Servicios Backend:**
+
 - `/src/services/admin/ClubAdminService.ts` - Lógica de administración
 - `/src/services/admin/ClubValidationService.ts` - Validaciones
 - `/src/services/legal/ConsentService.ts` - Gestión legal
@@ -1015,6 +1020,7 @@ flowchart TD
 ### 📋 Endpoints de API
 
 #### Gestión de Clubs
+
 - `GET /api/admin/clubs` - Listar todos los clubs
 - `POST /api/admin/clubs` - Crear nuevo club
 - `GET /api/admin/clubs/:id` - Obtener detalles
@@ -1024,28 +1030,33 @@ flowchart TD
 - `POST /api/admin/clubs/:id/activate` - Activar club
 
 #### Validación
+
 - `GET /api/admin/clubs/validate-name/:name` - Validar nombre
 - `GET /api/admin/clubs/suggestions/:name` - Obtener sugerencias
 
 #### Legal
+
 - `POST /api/admin/clubs/:id/consent` - Registrar consentimiento
 - `GET /api/admin/clubs/:id/consents` - Historial de consentimientos
 
 ### 🎯 Métricas y KPIs del Panel
 
 **Métricas de Operación:**
+
 - Total de clubs creados/mes
 - Tiempo promedio de aprobación
 - Tasa de suspensión
 - Actividad de administradores
 
 **Métricas de Calidad:**
+
 - Precisión de validación de nombres
 - Tasa de aceptación de términos
 - Reportes de problemas
 - Satisfacción de usuarios
 
 **Alertas y Monitoreo:**
+
 - Clubs sin actividad > 30 días
 - Nombres duplicados intentados
 - Cambios masivos no autorizados
@@ -1053,23 +1064,26 @@ flowchart TD
 
 ### � Roadmap de Implementación
 
-**Fase 1 (Semana 1):** 
+**Fase 1 (Semana 1):**
+
 - ✅ Panel básico funcional
 - ✅ Integración con demo existente
 - ⏳ Corrección inconsistencia admin_users
 
 **Fase 2 (Semana 2):**
+
 - ⏳ Conexión a datos reales de Supabase
 - ⏳ Validación de nombres únicos
 - ⏳ Sistema de consentimientos legales
 
 **Fase 3 (Semana 3):**
+
 - ⏳ Testing completo del panel
 - ⏳ Documentación de API
 - ⏳ Deploy a producción
-**Fecha:** 26 Diciembre 2025
-**Versión:** 3.8.0
-**Estado:** ✅ PRIVACY ENHANCED - UI POLISHED - CODE STANDARDIZED
+  **Fecha:** 26 Diciembre 2025
+  **Versión:** 3.8.0
+  **Estado:** ✅ PRIVACY ENHANCED - UI POLISHED - CODE STANDARDIZED
 
 ---
 
@@ -1353,13 +1367,11 @@ participant Logic as Permisos
     end
 
 - ## Todos los flujos descritos se renderizan ahora bajo un **MainLayout** unificado que controla:
-  
   - ## El sistema de fondos (`UnifiedBackground` + partículas híbridas) con gradientes nocturnos tipo Plexus.
-  
+
   - ## La navegación global fija (`AppSidebar` + header) para evitar barras duplicadas por página.
 
 - ## Las páginas de **Tokens**, **NFTs**, **Perfil Single** y **Settings** adoptan glassmorphism consistente para las cards principales, mientras que las sub-cards (proyecciones, ventajas, condiciones) usan un patrón glass ligero para marcar jerarquías visuales.
-
 
 - ## Se añade un **Centro de Control IA** (`/ai-help`) como vista dedicada donde se explica al usuario qué es CómplicesConecta, cómo funciona la IA Local sobre WebLLM (modelo Phi‑3‑mini ejecutado en el navegador) y cómo se aplican las reglas legales del Libro Maestro (`app-master-context.md`). Desde esta página, el usuario puede interactuar con el Asistente IA Legal antes de firmar contratos o realizar operaciones con tokens/NFTs.
 
@@ -1598,6 +1610,7 @@ flowchart TD
 **Componente:** `src/components/profiles/shared/ParentalControl.tsx`
 
 **Características:**
+
 - **Niveles de restricción:** Soft (360s), Medium (180s), Strict (60s)
 - **PIN de 4 dígitos:** Por defecto "1234", configurable
 - **Bloqueo temporal:** 30 segundos después de 3 intentos fallidos
@@ -1605,6 +1618,7 @@ flowchart TD
 - **Persistencia:** Estado guardado en localStorage
 
 **Integración en ProfileSingle.tsx:**
+
 - Importado y usado en sección de galería privada
 - Estado `isParentalLocked` sincronizado con localStorage
 - Toggle manual disponible para activar/desactivar control parental
@@ -1703,6 +1717,7 @@ flowchart TD
 ```
 
 **Componentes Principales:**
+
 - `/src/pages/clubs/ClubProfile.tsx` - Perfil principal del club
 - `/src/components/clubs/ClubProfileHeader.tsx` - Header con logo y rating
 - `/src/components/clubs/ClubProfileGallery.tsx` - Galería multimedia
@@ -1711,6 +1726,7 @@ flowchart TD
 - `/src/components/clubs/ClubProfileAdmin.tsx` - Panel de administración
 
 **Tablas de Base de Datos:**
+
 - `club_applications` - Solicitudes de registro
 - `club_profiles` - Perfiles de clubs verificados
 - `club_events` - Eventos del club
@@ -1721,12 +1737,14 @@ flowchart TD
 - `club_followers` - Usuarios que siguen clubs
 
 **Flujo de Descuentos:**
+
 1. Usuario selecciona descuento → Verifica balance de tokens
 2. Club acepta tipo de token → Aplica descuento
 3. Pago procesado → Transacción registrada en blockchain
 4. Usuario recibe confirmación → Descuento aplicado
 
 **Roadmap de Implementación:**
+
 - Fase 1 (Semana 1-2): Preparación - Tablas y migraciones
 - Fase 2 (Semana 3-4): Perfil Demo - UI básica y check-ins
 
@@ -1772,6 +1790,7 @@ flowchart TD
 ### 📋 Tablas Requeridas para Disolución de Parejas
 
 #### Tabla: couple_disputes
+
 - **id** (uuid, primary key)
 - **couple_id** (uuid, NOT NULL, foreign key → couples)
 - **initiated_by** (uuid, NOT NULL, foreign key → profiles)
@@ -1787,17 +1806,20 @@ flowchart TD
 - **updated_at** (timestamp, NOT NULL)
 
 #### Tablas relacionadas (Stripe):
+
 - **user_stripe_customers** - Mapeo de usuarios a clientes Stripe
 - **stripe_webhook_events** - Eventos webhook de Stripe
 - **stripe_product_mapping** - Mapeo de productos Stripe a tokens CMPX
 
 ### 🔐 Seguridad RLS para couple_disputes
+
 - **SELECT**: Solo usuarios de la pareja pueden ver sus disputas
 - **INSERT**: Solo usuarios de la pareja pueden crear disputas
 - **UPDATE**: Solo usuarios de la pareja pueden actualizar sus disputas
 - **DELETE**: Restringido (solo admin)
 
 ### ⚠️ Notas Importantes
+
 - **Columnas agregadas v3.9.2**: frozen_assets_snapshot, proposed_winner_id, proposed_at, winner_accepted_by, accepted_at
 - **Impacto crítico**: Sin estas columnas, el protocolo de disolución fallará
 - **Preservación de datos**: Scripts idempotentes, no eliminan datos existentes

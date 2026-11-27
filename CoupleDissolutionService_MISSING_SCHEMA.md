@@ -8,6 +8,7 @@ El servicio `src/services/legal/CoupleDissolutionService.ts` utiliza columnas y 
 ## 📅 Actualización v3.9.2 (15 Ene 2026)
 
 ### Advanced Features Actualizado
+
 - **🔧 Advanced Features Actualizado:** Descomentado código usando columnas existentes en Supabase
 - **📦 Import Actualizado:** Cambiado a supabase-updated.ts con columnas completas
 - **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores
@@ -17,6 +18,7 @@ El servicio `src/services/legal/CoupleDissolutionService.ts` utiliza columnas y 
 ## 📅 Actualización v3.9.1 (15 Ene 2026)
 
 ### Refactorización ContentModeration
+
 - **🔧 Modulación de Patrones:** Separación de patrones y listas en archivos modulares para mejor mantenibilidad
 - **📁 Nuevos Archivos:** Creación de `src/lib/moderation/patterns/` con 5 archivos especializados
 - **✅ TypeScript Clean:** Type-check pasa exitosamente sin errores

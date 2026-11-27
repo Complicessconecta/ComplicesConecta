@@ -29,13 +29,14 @@
     - **review_pending\conflicts_202601212350xx** (5 items)
     - **review_pending\legacy_duplicates** (9 items)
 
-
 ## ⚠️ ARCHIVOS CON CONFLICTOS
 
 ### 🔴 20251027210465_fix_reports_table.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251027210465_fix_reports_table.sql` (2231 bytes, hash: 622d3c4e...)
 - `backup_completo_2026-02-14T11-50-09\20251027210465_fix_reports_table.sql` (2231 bytes, hash: 622d3c4e...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251027210465_fix_reports_table.sql` (2185 bytes, hash: a4df5fc5...)
@@ -43,9 +44,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251103000000_fix_stories_media_columns.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251103000000_fix_stories_media_columns.sql` (4378 bytes, hash: 6a40c1e2...)
 - `backup_completo_2026-02-14T11-50-09\20251103000000_fix_stories_media_columns.sql` (4378 bytes, hash: 6a40c1e2...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251103000000_fix_stories_media_columns.sql` (4402 bytes, hash: 8731abc2...)
@@ -53,9 +56,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251113080001_fix_duplicate_triggers.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251113080001_fix_duplicate_triggers.sql` (7520 bytes, hash: 31d082db...)
 - `backup_completo_2026-02-14T11-50-09\20251113080001_fix_duplicate_triggers.sql` (7520 bytes, hash: 31d082db...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251113080001_fix_duplicate_triggers.sql` (7546 bytes, hash: 7d2cf003...)
@@ -63,9 +68,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251113080002_fix_all_blockchain_issues.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251113080002_fix_all_blockchain_issues.sql` (15026 bytes, hash: 702e91f2...)
 - `backup_completo_2026-02-14T11-50-09\20251113080002_fix_all_blockchain_issues.sql` (15026 bytes, hash: 702e91f2...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251113080002_fix_all_blockchain_issues.sql` (14818 bytes, hash: 3f6b034f...)
@@ -73,9 +80,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251115120000_fix_blockchain_tables.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251115120000_fix_blockchain_tables.sql` (16139 bytes, hash: d5c67563...)
 - `backup_completo_2026-02-14T11-50-09\20251115120000_fix_blockchain_tables.sql` (16139 bytes, hash: d5c67563...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251115120000_fix_blockchain_tables.sql` (16165 bytes, hash: d98da3bb...)
@@ -83,9 +92,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251115130000_fix_triggers.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251115130000_fix_triggers.sql` (7116 bytes, hash: 3323984c...)
 - `backup_completo_2026-02-14T11-50-09\20251115130000_fix_triggers.sql` (7116 bytes, hash: 3323984c...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251115130000_fix_triggers.sql` (7194 bytes, hash: 0587709f...)
@@ -93,9 +104,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100001_solucion_definitiva_consolidada.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100001_solucion_definitiva_consolidada.sql` (10073 bytes, hash: aba07fc9...)
 - `backup_completo_2026-02-14T11-50-09\20251216100001_solucion_definitiva_consolidada.sql` (10073 bytes, hash: aba07fc9...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100001_solucion_definitiva_consolidada.sql` (9296 bytes, hash: 1f3fe843...)
@@ -103,9 +116,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100002_ajustes_manuales_editor.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100002_ajustes_manuales_editor.sql` (13219 bytes, hash: e7d7ce4a...)
 - `backup_completo_2026-02-14T11-50-09\20251216100002_ajustes_manuales_editor.sql` (13219 bytes, hash: e7d7ce4a...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100002_ajustes_manuales_editor.sql` (12594 bytes, hash: 75b3fa3c...)
@@ -113,9 +128,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100006_20251120_security_fix_demo_isolation.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100006_20251120_security_fix_demo_isolation.sql` (5196 bytes, hash: f64ee032...)
 - `backup_completo_2026-02-14T11-50-09\20251216100006_20251120_security_fix_demo_isolation.sql` (5196 bytes, hash: f64ee032...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100006_20251120_security_fix_demo_isolation.sql` (4841 bytes, hash: 62861ff0...)
@@ -123,9 +140,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100007_2025112020_security_fix_demo_isolation.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100007_2025112020_security_fix_demo_isolation.sql` (6264 bytes, hash: b792bac2...)
 - `backup_completo_2026-02-14T11-50-09\20251216100007_2025112020_security_fix_demo_isolation.sql` (6264 bytes, hash: b792bac2...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100007_2025112020_security_fix_demo_isolation.sql` (6053 bytes, hash: 7ef2e92c...)
@@ -133,9 +152,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100011_20251123_fix_rls_infinite_recursion.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100011_20251123_fix_rls_infinite_recursion.sql` (3885 bytes, hash: 6593d576...)
 - `backup_completo_2026-02-14T11-50-09\20251216100011_20251123_fix_rls_infinite_recursion.sql` (3885 bytes, hash: 6593d576...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100011_20251123_fix_rls_infinite_recursion.sql` (3880 bytes, hash: 82d83d3a...)
@@ -143,9 +164,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100017_202512_consolidada_segura.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100017_202512_consolidada_segura.sql` (16078 bytes, hash: e1277138...)
 - `backup_completo_2026-02-14T11-50-09\20251216100017_202512_consolidada_segura.sql` (16078 bytes, hash: e1277138...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100017_202512_consolidada_segura.sql` (13543 bytes, hash: 31234bf7...)
@@ -153,9 +176,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100021_20251207c_fix_migrations.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100021_20251207c_fix_migrations.sql` (3993 bytes, hash: 26e45d1a...)
 - `backup_completo_2026-02-14T11-50-09\20251216100021_20251207c_fix_migrations.sql` (3993 bytes, hash: 26e45d1a...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100021_20251207c_fix_migrations.sql` (3010 bytes, hash: f0e33d8a...)
@@ -163,9 +188,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100026_20251209_fix_trigger_syntax.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100026_20251209_fix_trigger_syntax.sql` (955 bytes, hash: 51597e11...)
 - `backup_completo_2026-02-14T11-50-09\20251216100026_20251209_fix_trigger_syntax.sql` (955 bytes, hash: 51597e11...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100026_20251209_fix_trigger_syntax.sql` (618 bytes, hash: f95d1941...)
@@ -173,9 +200,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100028_20251213_sync_and_fix.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100028_20251213_sync_and_fix.sql` (24324 bytes, hash: 14527b55...)
 - `backup_completo_2026-02-14T11-50-09\20251216100028_20251213_sync_and_fix.sql` (24324 bytes, hash: 14527b55...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100028_20251213_sync_and_fix.sql` (19507 bytes, hash: 04b2ffee...)
@@ -183,9 +212,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100029_20251214_estabilizacion_v3816.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100029_20251214_estabilizacion_v3816.sql` (14925 bytes, hash: 7eb4bdb5...)
 - `backup_completo_2026-02-14T11-50-09\20251216100029_20251214_estabilizacion_v3816.sql` (14925 bytes, hash: 7eb4bdb5...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100029_20251214_estabilizacion_v3816.sql` (14022 bytes, hash: 0e4a5ff0...)
@@ -193,9 +224,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100032_blockchain_tables.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100032_blockchain_tables.sql` (20321 bytes, hash: 475521f6...)
 - `backup_completo_2026-02-14T11-50-09\20251216100032_blockchain_tables.sql` (20321 bytes, hash: 475521f6...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100032_blockchain_tables.sql` (19449 bytes, hash: b8e84cc7...)
@@ -203,9 +236,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100035_execute_critical_queries.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100035_execute_critical_queries.sql` (5092 bytes, hash: 89be2c8b...)
 - `backup_completo_2026-02-14T11-50-09\20251216100035_execute_critical_queries.sql` (5092 bytes, hash: 89be2c8b...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100035_execute_critical_queries.sql` (1725 bytes, hash: b8c9e6c5...)
@@ -213,9 +248,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100037_marcar_migraciones_aplicadas.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100037_marcar_migraciones_aplicadas.sql` (1431 bytes, hash: acf419e2...)
 - `backup_completo_2026-02-14T11-50-09\20251216100037_marcar_migraciones_aplicadas.sql` (1431 bytes, hash: acf419e2...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100037_marcar_migraciones_aplicadas.sql` (1452 bytes, hash: 2e60ada8...)
@@ -223,9 +260,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100038_migraci_n_de_seguridadseparaci_n_demoreal_con_rls.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100038_migraci_n_de_seguridadseparaci_n_demoreal_con_rls.sql` (6946 bytes, hash: 3272cb7f...)
 - `backup_completo_2026-02-14T11-50-09\20251216100038_migraci_n_de_seguridadseparaci_n_demoreal_con_rls.sql` (6946 bytes, hash: 3272cb7f...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100038_migraci_n_de_seguridadseparaci_n_demoreal_con_rls.sql` (6691 bytes, hash: 58c1450d...)
@@ -233,9 +272,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100043_queries_critical_analyze.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100043_queries_critical_analyze.sql` (22656 bytes, hash: da0fc6d4...)
 - `backup_completo_2026-02-14T11-50-09\20251216100043_queries_critical_analyze.sql` (22656 bytes, hash: da0fc6d4...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100043_queries_critical_analyze.sql` (9510 bytes, hash: eb769bde...)
@@ -243,9 +284,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100044_script_final_supabases.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216100044_script_final_supabases.sql` (6775 bytes, hash: d7dfaa69...)
 - `backup_completo_2026-02-14T11-50-09\20251216100044_script_final_supabases.sql` (6775 bytes, hash: d7dfaa69...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100044_script_final_supabases.sql` (6574 bytes, hash: d5fa484b...)
@@ -253,9 +296,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216120000_reconcile_history.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `20251216120000_reconcile_history.sql` (3993 bytes, hash: 37281d77...)
 - `backup_completo_2026-02-14T11-50-09\20251216120000_reconcile_history.sql` (3993 bytes, hash: 37281d77...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216120000_reconcile_history.sql` (4524 bytes, hash: 749bc419...)
@@ -263,9 +308,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251209_SCHEMA_MAESTRO_CONSOLIDADO.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251209_SCHEMA_MAESTRO_CONSOLIDADO.sql` (48968 bytes, hash: ae956ffc...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251209_SCHEMA_MAESTRO_CONSOLIDADO.sql` (62728 bytes, hash: ce61d3ef...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251209_SCHEMA_MAESTRO_CONSOLIDADO.sql` (48968 bytes, hash: ae956ffc...)
@@ -274,9 +321,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100005_20251116_rewards_system.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100005_20251116_rewards_system.sql` (17276 bytes, hash: 02b4bae8...)
 - `backup_completo_2026-02-14T11-50-09\duplicates_quarantine\20251216100005_20251116_rewards_system.sql` (17817 bytes, hash: a88ca460...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100005_20251116_rewards_system.sql` (17276 bytes, hash: 02b4bae8...)
@@ -285,9 +334,11 @@
 **Estado de migración:** migrado
 
 ### 🔴 20251216100025_20251208b_phase4_tables.sql
+
 **Problema:** Mismo nombre, contenido diferente (conflicto)
 
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100025_20251208b_phase4_tables.sql` (13376 bytes, hash: 2d511781...)
 - `backup_completo_2026-02-14T11-50-09\duplicates_quarantine\20251216100025_20251208b_phase4_tables.sql` (13917 bytes, hash: 47fc30bf...)
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100025_20251208b_phase4_tables.sql` (13376 bytes, hash: 2d511781...)
@@ -298,1287 +349,1573 @@
 ## 📋 ARCHIVOS DUPLICADOS Y HUÉRFANOS
 
 ### 🔄 20240523000000_init_report_system.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 1e0e5a2b...
 **Ubicaciones:**
+
 - `20240523000000_init_report_system.sql`
 - `backup_completo_2026-02-14T11-50-09\20240523000000_init_report_system.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250101000000_bootstrap_core_schema.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 61bcc0a5...
 **Ubicaciones:**
+
 - `20250101000000_bootstrap_core_schema.sql`
 - `backup_completo_2026-02-14T11-50-09\20250101000000_bootstrap_core_schema.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250116_create_base_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 475b98db...
 **Ubicaciones:**
+
 - `20250116_create_base_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\20250116_create_base_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250117_couple_disputes_schema_v3_9_2.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a79c0d36...
 **Ubicaciones:**
+
 - `20250117_couple_disputes_schema_v3_9_2.sql`
 - `backup_completo_2026-02-14T11-50-09\20250117_couple_disputes_schema_v3_9_2.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250119000000_create_career_applications.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 968e67d8...
 **Ubicaciones:**
+
 - `20250119000000_create_career_applications.sql`
 - `backup_completo_2026-02-14T11-50-09\20250119000000_create_career_applications.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250119000001_create_moderator_requests.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 71b1ffe8...
 **Ubicaciones:**
+
 - `20250119000001_create_moderator_requests.sql`
 - `backup_completo_2026-02-14T11-50-09\20250119000001_create_moderator_requests.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250119000002_permanent_bans_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 399291cf...
 **Ubicaciones:**
+
 - `20250119000002_permanent_bans_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20250119000002_permanent_bans_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250121000000_security_fixes_rls_and_views.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b43b7934...
 **Ubicaciones:**
+
 - `20250121000000_security_fixes_rls_and_views.sql`
 - `backup_completo_2026-02-14T11-50-09\20250121000000_security_fixes_rls_and_views.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250122000000_security_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 17bc34d9...
 **Ubicaciones:**
+
 - `20250122000000_security_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\20250122000000_security_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250123000000_profile_verification_columns.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 68382aaf...
 **Ubicaciones:**
+
 - `20250123000000_profile_verification_columns.sql`
 - `backup_completo_2026-02-14T11-50-09\20250123000000_profile_verification_columns.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20250124000000_images_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 31270795...
 **Ubicaciones:**
+
 - `20250124000000_images_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20250124000000_images_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251027210460_add_couple_profile_extended_fields.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8537ff86...
 **Ubicaciones:**
+
 - `20251027210460_add_couple_profile_extended_fields.sql`
 - `backup_completo_2026-02-14T11-50-09\20251027210460_add_couple_profile_extended_fields.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251027210462_fix_gallery_permissions_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 574c1e1d...
 **Ubicaciones:**
+
 - `20251027210462_fix_gallery_permissions_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20251027210462_fix_gallery_permissions_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251027210463_fix_invitations_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6a1f4a63...
 **Ubicaciones:**
+
 - `20251027210463_fix_invitations_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20251027210463_fix_invitations_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251027210464_fix_profiles_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** fdb91ae6...
 **Ubicaciones:**
+
 - `20251027210464_fix_profiles_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20251027210464_fix_profiles_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251027210466_verify_final_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a7ed1c9f...
 **Ubicaciones:**
+
 - `20251027210466_verify_final_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\20251027210466_verify_final_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251027210467_verify_service_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4fd12570...
 **Ubicaciones:**
+
 - `20251027210467_verify_service_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\20251027210467_verify_service_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251028060000_add_name_to_profiles.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 087845db...
 **Ubicaciones:**
+
 - `20251028060000_add_name_to_profiles.sql`
 - `backup_completo_2026-02-14T11-50-09\20251028060000_add_name_to_profiles.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251030000001_alter_referral_rewards.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 0dbed0a6...
 **Ubicaciones:**
+
 - `20251030000001_alter_referral_rewards.sql`
 - `backup_completo_2026-02-14T11-50-09\20251030000001_alter_referral_rewards.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251031000000_add_s2_geohash.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 79cdb7ee...
 **Ubicaciones:**
+
 - `20251031000000_add_s2_geohash.sql`
 - `backup_completo_2026-02-14T11-50-09\20251031000000_add_s2_geohash.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251102000000_optimize_queries_indexes.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 84c18f3d...
 **Ubicaciones:**
+
 - `20251102000000_optimize_queries_indexes.sql`
 - `backup_completo_2026-02-14T11-50-09\20251102000000_optimize_queries_indexes.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251102010000_enable_rls_matches.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d0f2a03a...
 **Ubicaciones:**
+
 - `20251102010000_enable_rls_matches.sql`
 - `backup_completo_2026-02-14T11-50-09\20251102010000_enable_rls_matches.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251103000001_fix_profiles_online_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c7344d67...
 **Ubicaciones:**
+
 - `20251103000001_fix_profiles_online_column.sql`
 - `backup_completo_2026-02-14T11-50-09\20251103000001_fix_profiles_online_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106010000_consent_enhancements.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 88f091ca...
 **Ubicaciones:**
+
 - `20251106010000_consent_enhancements.sql`
 - `backup_completo_2026-02-14T11-50-09\20251106010000_consent_enhancements.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106020000_nft_staking.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b19c615c...
 **Ubicaciones:**
+
 - `20251106020000_nft_staking.sql`
 - `backup_completo_2026-02-14T11-50-09\20251106020000_nft_staking.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106030000_graph_matching.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b6ab8af4...
 **Ubicaciones:**
+
 - `20251106030000_graph_matching.sql`
 - `backup_completo_2026-02-14T11-50-09\20251106030000_graph_matching.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106040000_virtual_events.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** f4c436a5...
 **Ubicaciones:**
+
 - `20251106040000_virtual_events.sql`
 - `backup_completo_2026-02-14T11-50-09\20251106040000_virtual_events.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106043953_add_first_last_name_to_profiles.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6bcdff9e...
 **Ubicaciones:**
+
 - `20251106043953_add_first_last_name_to_profiles.sql`
 - `backup_completo_2026-02-14T11-50-09\20251106043953_add_first_last_name_to_profiles.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106043954_add_preferences_to_couple_profiles.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 54465c09...
 **Ubicaciones:**
+
 - `20251106043954_add_preferences_to_couple_profiles.sql`
 - `backup_completo_2026-02-14T11-50-09\20251106043954_add_preferences_to_couple_profiles.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251108000003_add_chat_rooms_columns.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 29c0886d...
 **Ubicaciones:**
+
 - `20251108000003_add_chat_rooms_columns.sql`
 - `backup_completo_2026-02-14T11-50-09\20251108000003_add_chat_rooms_columns.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251108000004_add_full_name_to_profiles.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 89449965...
 **Ubicaciones:**
+
 - `20251108000004_add_full_name_to_profiles.sql`
 - `backup_completo_2026-02-14T11-50-09\20251108000004_add_full_name_to_profiles.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251208120000_fix_couple_disputes_initiator.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d7ad2ee2...
 **Ubicaciones:**
+
 - `20251208120000_fix_couple_disputes_initiator.sql`
 - `backup_completo_2026-02-14T11-50-09\20251208120000_fix_couple_disputes_initiator.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100008_20251121_couple_dissolution_protocol.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 9e00aa63...
 **Ubicaciones:**
+
 - `20251216100008_20251121_couple_dissolution_protocol.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100008_20251121_couple_dissolution_protocol.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100012_20251123_fix_rls_simple.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 36ba6e7d...
 **Ubicaciones:**
+
 - `20251216100012_20251123_fix_rls_simple.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100012_20251123_fix_rls_simple.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100013_20251123_rls_production_ready.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c7b08d17...
 **Ubicaciones:**
+
 - `20251216100013_20251123_rls_production_ready.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100013_20251123_rls_production_ready.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100015_2025112389_fix_rls_infinite_recursion.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c30f30cd...
 **Ubicaciones:**
+
 - `20251216100015_2025112389_fix_rls_infinite_recursion.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100015_2025112389_fix_rls_infinite_recursion.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100022_20251207d_add_missing_columns.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** fe59b2e7...
 **Ubicaciones:**
+
 - `20251216100022_20251207d_add_missing_columns.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100022_20251207d_add_missing_columns.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100024_20251208a_fix_uuid_function.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4c8e7e2b...
 **Ubicaciones:**
+
 - `20251216100024_20251208a_fix_uuid_function.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100024_20251208a_fix_uuid_function.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100030_audit.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 42b00d1d...
 **Ubicaciones:**
+
 - `20251216100030_audit.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100030_audit.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100031_backup_20251127_021301.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 41b805ea...
 **Ubicaciones:**
+
 - `20251216100031_backup_20251127_021301.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100031_backup_20251127_021301.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100033_cheksdesinglepareja.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 1e2c2cbe...
 **Ubicaciones:**
+
 - `20251216100033_cheksdesinglepareja.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100033_cheksdesinglepareja.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100036_fix_get_profiles_in_cells.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8813b4ca...
 **Ubicaciones:**
+
 - `20251216100036_fix_get_profiles_in_cells.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100036_fix_get_profiles_in_cells.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100039_migraciones_para_remoto.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** ef2a5db9...
 **Ubicaciones:**
+
 - `20251216100039_migraciones_para_remoto.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100039_migraciones_para_remoto.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100040_new_fix_rls_profiles_definitivo.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 3c244fc7...
 **Ubicaciones:**
+
 - `20251216100040_new_fix_rls_profiles_definitivo.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100040_new_fix_rls_profiles_definitivo.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100041_public_couple.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d7f2b7c2...
 **Ubicaciones:**
+
 - `20251216100041_public_couple.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100041_public_couple.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100042_public_security_logs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a5ac8c56...
 **Ubicaciones:**
+
 - `20251216100042_public_security_logs.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100042_public_security_logs.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100045_securytylogs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4aebb2ef...
 **Ubicaciones:**
+
 - `20251216100045_securytylogs.sql`
 - `backup_completo_2026-02-14T11-50-09\20251216100045_securytylogs.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251217140000_add_suspended_to_profiles.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 2e2b4100...
 **Ubicaciones:**
+
 - `20251217140000_add_suspended_to_profiles.sql`
 - `backup_completo_2026-02-14T11-50-09\20251217140000_add_suspended_to_profiles.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251218120003_reconcile_reports_and_add_scoring.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 92e51786...
 **Ubicaciones:**
+
 - `20251218120003_reconcile_reports_and_add_scoring.sql`
 - `backup_completo_2026-02-14T11-50-09\20251218120003_reconcile_reports_and_add_scoring.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260108000000_fix_couple_disputes_schema.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 788ba1c3...
 **Ubicaciones:**
+
 - `20260108000000_fix_couple_disputes_schema.sql`
 - `backup_completo_2026-02-14T11-50-09\20260108000000_fix_couple_disputes_schema.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260108011600_create_likes_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 11d19d3e...
 **Ubicaciones:**
+
 - `20260108011600_create_likes_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20260108011600_create_likes_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260108011800_align_matches_schema.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d758a34a...
 **Ubicaciones:**
+
 - `20260108011800_align_matches_schema.sql`
 - `backup_completo_2026-02-14T11-50-09\20260108011800_align_matches_schema.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260109_add_gallery_commissions.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6bfc3472...
 **Ubicaciones:**
+
 - `20260109_add_gallery_commissions.sql`
 - `backup_completo_2026-02-14T11-50-09\20260109_add_gallery_commissions.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260110000001_SECURITY_FIX_RLS_CRITICAL.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c458d7af...
 **Ubicaciones:**
+
 - `20260110000001_SECURITY_FIX_RLS_CRITICAL.sql`
 - `backup_completo_2026-02-14T11-50-09\20260110000001_SECURITY_FIX_RLS_CRITICAL.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260110000002_SECURITY_FIX_RLS_EXISTING_TABLES.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 92bf0443...
 **Ubicaciones:**
+
 - `20260110000002_SECURITY_FIX_RLS_EXISTING_TABLES.sql`
 - `backup_completo_2026-02-14T11-50-09\20260110000002_SECURITY_FIX_RLS_EXISTING_TABLES.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260110000003_SECURITY_HARDENING.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a1201e4e...
 **Ubicaciones:**
+
 - `20260110000003_SECURITY_HARDENING.sql`
 - `backup_completo_2026-02-14T11-50-09\20260110000003_SECURITY_HARDENING.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260110000004_create_ai_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4da6763e...
 **Ubicaciones:**
+
 - `20260110000004_create_ai_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\20260110000004_create_ai_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260113000000_stripe_wrapper_setup_no_vault.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 02d12136...
 **Ubicaciones:**
+
 - `20260113000000_stripe_wrapper_setup_no_vault.sql`
 - `backup_completo_2026-02-14T11-50-09\20260113000000_stripe_wrapper_setup_no_vault.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260113000001_stripe_wrapper_fix_views.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 5781c81d...
 **Ubicaciones:**
+
 - `20260113000001_stripe_wrapper_fix_views.sql`
 - `backup_completo_2026-02-14T11-50-09\20260113000001_stripe_wrapper_fix_views.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260113000002_security_hardening_final.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 17b3346d...
 **Ubicaciones:**
+
 - `20260113000002_security_hardening_final.sql`
 - `backup_completo_2026-02-14T11-50-09\20260113000002_security_hardening_final.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260113000003_stripe_rotation_with_vault.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b7d13fd5...
 **Ubicaciones:**
+
 - `20260113000003_stripe_rotation_with_vault.sql`
 - `backup_completo_2026-02-14T11-50-09\20260113000003_stripe_rotation_with_vault.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260114222700_ADD_PERFORMANCE_METRICS_RLS.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 884c62d2...
 **Ubicaciones:**
+
 - `20260114222700_ADD_PERFORMANCE_METRICS_RLS.sql`
 - `backup_completo_2026-02-14T11-50-09\20260114222700_ADD_PERFORMANCE_METRICS_RLS.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260114223000_ADD_STORIES_MISSING_COLUMNS.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 77eab330...
 **Ubicaciones:**
+
 - `20260114223000_ADD_STORIES_MISSING_COLUMNS.sql`
 - `backup_completo_2026-02-14T11-50-09\20260114223000_ADD_STORIES_MISSING_COLUMNS.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260114223500_ADD_NOTIFICATIONS_MISSING_COLUMNS.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** bae4ea7d...
 **Ubicaciones:**
+
 - `20260114223500_ADD_NOTIFICATIONS_MISSING_COLUMNS.sql`
 - `backup_completo_2026-02-14T11-50-09\20260114223500_ADD_NOTIFICATIONS_MISSING_COLUMNS.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260115030549_add_partner_comment_structures.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d302b14c...
 **Ubicaciones:**
+
 - `20260115030549_add_partner_comment_structures.sql`
 - `backup_completo_2026-02-14T11-50-09\20260115030549_add_partner_comment_structures.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260116021400_stripe_wrapper_dev.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** f938e105...
 **Ubicaciones:**
+
 - `20260116021400_stripe_wrapper_dev.sql`
 - `backup_completo_2026-02-14T11-50-09\20260116021400_stripe_wrapper_dev.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260117000000_two_factor_auth_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d7871fde...
 **Ubicaciones:**
+
 - `20260117000000_two_factor_auth_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20260117000000_two_factor_auth_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260117000001_check_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** e7e1755d...
 **Ubicaciones:**
+
 - `20260117000001_check_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\20260117000001_check_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170002_add_avatar_url_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** fbb5c36a...
 **Ubicaciones:**
+
 - `202601170002_add_avatar_url_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170002_add_avatar_url_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170003_add_bio_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 896f2692...
 **Ubicaciones:**
+
 - `202601170003_add_bio_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170003_add_bio_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170004_add_current_participants_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 94d983da...
 **Ubicaciones:**
+
 - `202601170004_add_current_participants_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170004_add_current_participants_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170005_add_error_type_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 84f33b12...
 **Ubicaciones:**
+
 - `202601170005_add_error_type_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170005_add_error_type_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170006_add_gender_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c2ebe944...
 **Ubicaciones:**
+
 - `202601170006_add_gender_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170006_add_gender_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170007_add_interests_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** bd897cc2...
 **Ubicaciones:**
+
 - `202601170007_add_interests_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170007_add_interests_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170008_add_invitations_columns.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 91f292d4...
 **Ubicaciones:**
+
 - `202601170008_add_invitations_columns.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170008_add_invitations_columns.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170009_add_is_verified_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4c302649...
 **Ubicaciones:**
+
 - `202601170009_add_is_verified_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170009_add_is_verified_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170010_add_location_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8afdbc5d...
 **Ubicaciones:**
+
 - `202601170010_add_location_column.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170010_add_location_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170011_add_security_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 45ad9be7...
 **Ubicaciones:**
+
 - `202601170011_add_security_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170011_add_security_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170012_create_app_metrics.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 59d7ac5c...
 **Ubicaciones:**
+
 - `202601170012_create_app_metrics.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170012_create_app_metrics.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170013_create_clubs_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4fb11bde...
 **Ubicaciones:**
+
 - `202601170013_create_clubs_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170013_create_clubs_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170014_create_consent_verifications_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 51bfbff0...
 **Ubicaciones:**
+
 - `202601170014_create_consent_verifications_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170014_create_consent_verifications_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170015_create_event_participations_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** cd38961c...
 **Ubicaciones:**
+
 - `202601170015_create_event_participations_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170015_create_event_participations_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170016_create_images_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 009017fc...
 **Ubicaciones:**
+
 - `202601170016_create_images_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170016_create_images_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170017_create_invitation_statistics_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 98663be2...
 **Ubicaciones:**
+
 - `202601170017_create_invitation_statistics_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170017_create_invitation_statistics_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170018_create_moderation_logs_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 3e14443c...
 **Ubicaciones:**
+
 - `202601170018_create_moderation_logs_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170018_create_moderation_logs_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170019_create_nft_galleries.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** e92def5f...
 **Ubicaciones:**
+
 - `202601170019_create_nft_galleries.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170019_create_nft_galleries.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170020_create_permanent_ban_function.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8293984b...
 **Ubicaciones:**
+
 - `202601170020_create_permanent_ban_function.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170020_create_permanent_ban_function.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170021_create_record_gallery_commission_rpc.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 33d64db4...
 **Ubicaciones:**
+
 - `202601170021_create_record_gallery_commission_rpc.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170021_create_record_gallery_commission_rpc.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170022_create_roles_permissions_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 11f1ed8b...
 **Ubicaciones:**
+
 - `202601170022_create_roles_permissions_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170022_create_roles_permissions_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170023_create_sensitive_data_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 1a642999...
 **Ubicaciones:**
+
 - `202601170023_create_sensitive_data_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170023_create_sensitive_data_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170024_create_summary_requests_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 374a1745...
 **Ubicaciones:**
+
 - `202601170024_create_summary_requests_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170024_create_summary_requests_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170025_create_token_analytics_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b3a19ae6...
 **Ubicaciones:**
+
 - `202601170025_create_token_analytics_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170025_create_token_analytics_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170026_create_two_factor_auth.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** fcd48ac5...
 **Ubicaciones:**
+
 - `202601170026_create_two_factor_auth.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170026_create_two_factor_auth.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170027_create_user_device_tokens_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 997cc3d8...
 **Ubicaciones:**
+
 - `202601170027_create_user_device_tokens_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170027_create_user_device_tokens_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170028_create_user_suspensions_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 60a0376d...
 **Ubicaciones:**
+
 - `202601170028_create_user_suspensions_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170028_create_user_suspensions_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202601170029_create_user_themes_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** f9616018...
 **Ubicaciones:**
+
 - `202601170029_create_user_themes_table.sql`
 - `backup_completo_2026-02-14T11-50-09\202601170029_create_user_themes_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000010_fix_admin_users_rls_recursion.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 7e99337a...
 **Ubicaciones:**
+
 - `20260120000010_fix_admin_users_rls_recursion.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000010_fix_admin_users_rls_recursion.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000020_create_invitations_and_gallery_tables_production.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 2143bde6...
 **Ubicaciones:**
+
 - `20260120000020_create_invitations_and_gallery_tables_production.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000020_create_invitations_and_gallery_tables_production.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000030_create_chat_members_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 994acb99...
 **Ubicaciones:**
+
 - `20260120000030_create_chat_members_table.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000030_create_chat_members_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000031_add_chat_rooms_columns.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 1f5926fe...
 **Ubicaciones:**
+
 - `20260120000031_add_chat_rooms_columns.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000031_add_chat_rooms_columns.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000032_add_chat_rooms_columns_remote.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 3290f86f...
 **Ubicaciones:**
+
 - `20260120000032_add_chat_rooms_columns_remote.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000032_add_chat_rooms_columns_remote.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000033_create_user_themes.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 997c28ea...
 **Ubicaciones:**
+
 - `20260120000033_create_user_themes.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000033_create_user_themes.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000034_create_exec_sql_function.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4e2a6ad0...
 **Ubicaciones:**
+
 - `20260120000034_create_exec_sql_function.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000034_create_exec_sql_function.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000035_add_chat_members_columns_remote.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8b1aeff2...
 **Ubicaciones:**
+
 - `20260120000035_add_chat_members_columns_remote.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000035_add_chat_members_columns_remote.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000036_create_cache_statistics.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 47886dd1...
 **Ubicaciones:**
+
 - `20260120000036_create_cache_statistics.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000036_create_cache_statistics.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000037_fix_admin_users_rls_recursion_v2.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 5dc01db6...
 **Ubicaciones:**
+
 - `20260120000037_fix_admin_users_rls_recursion_v2.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000037_fix_admin_users_rls_recursion_v2.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000038_fix_registration_profiles_and_couples.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 51a152fd...
 **Ubicaciones:**
+
 - `20260120000038_fix_registration_profiles_and_couples.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000038_fix_registration_profiles_and_couples.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000039_fix_profiles_sexual_orientation_array.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8da48b75...
 **Ubicaciones:**
+
 - `20260120000039_fix_profiles_sexual_orientation_array.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000039_fix_profiles_sexual_orientation_array.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260120000040_fix_couple_profiles_interested_in_array.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 64ca084e...
 **Ubicaciones:**
+
 - `20260120000040_fix_couple_profiles_interested_in_array.sql`
 - `backup_completo_2026-02-14T11-50-09\20260120000040_fix_couple_profiles_interested_in_array.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260122065739_remote_schema.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 170a949a...
 **Ubicaciones:**
+
 - `20260122065739_remote_schema.sql`
 - `backup_completo_2026-02-14T11-50-09\20260122065739_remote_schema.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124012900_enable_rls_and_policies_high_risk.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** e6085205...
 **Ubicaciones:**
+
 - `20260124012900_enable_rls_and_policies_high_risk.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124012900_enable_rls_and_policies_high_risk.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124013000_add_unique_constraint_club_name.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a84cbf37...
 **Ubicaciones:**
+
 - `20260124013000_add_unique_constraint_club_name.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124013000_add_unique_constraint_club_name.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124013100_create_club_ecosystem_tables_complete.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** ec29a68b...
 **Ubicaciones:**
+
 - `20260124013100_create_club_ecosystem_tables_complete.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124013100_create_club_ecosystem_tables_complete.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124013200_create_wallet_balances.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 79e9fc8b...
 **Ubicaciones:**
+
 - `20260124013200_create_wallet_balances.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124013200_create_wallet_balances.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124013300_create_token_transactions.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 5515f325...
 **Ubicaciones:**
+
 - `20260124013300_create_token_transactions.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124013300_create_token_transactions.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124013400_create_reservations.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 0823cdcb...
 **Ubicaciones:**
+
 - `20260124013400_create_reservations.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124013400_create_reservations.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124013500_create_club_ratings.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** e2b1a98c...
 **Ubicaciones:**
+
 - `20260124013500_create_club_ratings.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124013500_create_club_ratings.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260124013600_create_trust_contacts.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b74216dd...
 **Ubicaciones:**
+
 - `20260124013600_create_trust_contacts.sql`
 - `backup_completo_2026-02-14T11-50-09\20260124013600_create_trust_contacts.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260125000001_align_token_transactions_schema.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** badb9f0a...
 **Ubicaciones:**
+
 - `20260125000001_align_token_transactions_schema.sql`
 - `backup_completo_2026-02-14T11-50-09\20260125000001_align_token_transactions_schema.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260125090000_add_admin_users_unique_constraints.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b5377d3b...
 **Ubicaciones:**
+
 - `20260125090000_add_admin_users_unique_constraints.sql`
 - `backup_completo_2026-02-14T11-50-09\20260125090000_add_admin_users_unique_constraints.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260126090000_create_initial_admin_users.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 28986382...
 **Ubicaciones:**
+
 - `20260126090000_create_initial_admin_users.sql`
 - `backup_completo_2026-02-14T11-50-09\20260126090000_create_initial_admin_users.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260126203000_create_missing_tables_views_src_audit.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** cb6e61bc...
 **Ubicaciones:**
+
 - `20260126203000_create_missing_tables_views_src_audit.sql`
 - `backup_completo_2026-02-14T11-50-09\20260126203000_create_missing_tables_views_src_audit.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260131054400_hardening_system_policies_service_role.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** dff5526b...
 **Ubicaciones:**
+
 - `20260131054400_hardening_system_policies_service_role.sql`
 - `backup_completo_2026-02-14T11-50-09\20260131054400_hardening_system_policies_service_role.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260131054600_reservations_add_reserved_at.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 818843a0...
 **Ubicaciones:**
+
 - `20260131054600_reservations_add_reserved_at.sql`
 - `backup_completo_2026-02-14T11-50-09\20260131054600_reservations_add_reserved_at.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260203222200_add_profiles_reset_tokens.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 39f376e0...
 **Ubicaciones:**
+
 - `20260203222200_add_profiles_reset_tokens.sql`
 - `backup_completo_2026-02-14T11-50-09\20260203222200_add_profiles_reset_tokens.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260204020000_fase2_fix_rls_admin_users_recursion_final.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a5c19973...
 **Ubicaciones:**
+
 - `20260204020000_fase2_fix_rls_admin_users_recursion_final.sql`
 - `backup_completo_2026-02-14T11-50-09\20260204020000_fase2_fix_rls_admin_users_recursion_final.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260204020001_fase2_fortalecer_politicas_rls_criticas.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4843f8ec...
 **Ubicaciones:**
+
 - `20260204020001_fase2_fortalecer_politicas_rls_criticas.sql`
 - `backup_completo_2026-02-14T11-50-09\20260204020001_fase2_fortalecer_politicas_rls_criticas.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260204020002_fase2_aislamiento_demo_produccion.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 511ca306...
 **Ubicaciones:**
+
 - `20260204020002_fase2_aislamiento_demo_produccion.sql`
 - `backup_completo_2026-02-14T11-50-09\20260204020002_fase2_aislamiento_demo_produccion.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260204020003_fase3_optimizacion_performance.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 5a30f689...
 **Ubicaciones:**
+
 - `20260204020003_fase3_optimizacion_performance.sql`
 - `backup_completo_2026-02-14T11-50-09\20260204020003_fase3_optimizacion_performance.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260204020004_fase1_fix_registro_couple_duplicacion.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** cd3f58bd...
 **Ubicaciones:**
+
 - `20260204020004_fase1_fix_registro_couple_duplicacion.sql`
 - `backup_completo_2026-02-14T11-50-09\20260204020004_fase1_fix_registro_couple_duplicacion.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260204020005_fase1_rpc_get_profile_by_user_id.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** fa62b1a1...
 **Ubicaciones:**
+
 - `20260204020005_fase1_rpc_get_profile_by_user_id.sql`
 - `backup_completo_2026-02-14T11-50-09\20260204020005_fase1_rpc_get_profile_by_user_id.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260204020006_fase3_indices_couple_profiles.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 9a232472...
 **Ubicaciones:**
+
 - `20260204020006_fase3_indices_couple_profiles.sql`
 - `backup_completo_2026-02-14T11-50-09\20260204020006_fase3_indices_couple_profiles.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_couple_images_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 7f7f9db2...
 **Ubicaciones:**
+
 - `add_couple_images_column.sql`
 - `backup_completo_2026-02-14T11-50-09\add_couple_images_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_is_public_column_to_media.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** ccee37b2...
 **Ubicaciones:**
+
 - `add_is_public_column_to_media.sql`
 - `backup_completo_2026-02-14T11-50-09\add_is_public_column_to_media.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_missing_columns_club_flyers.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** fa19f29a...
 **Ubicaciones:**
+
 - `add_missing_columns_club_flyers.sql`
 - `backup_completo_2026-02-14T11-50-09\add_missing_columns_club_flyers.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_missing_columns_club_verifications.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6b199a5b...
 **Ubicaciones:**
+
 - `add_missing_columns_club_verifications.sql`
 - `backup_completo_2026-02-14T11-50-09\add_missing_columns_club_verifications.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_missing_columns_permanent_bans.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 1b2c6a56...
 **Ubicaciones:**
+
 - `add_missing_columns_permanent_bans.sql`
 - `backup_completo_2026-02-14T11-50-09\add_missing_columns_permanent_bans.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_nullifier_hash_column.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 85f52f08...
 **Ubicaciones:**
+
 - `add_nullifier_hash_column.sql`
 - `backup_completo_2026-02-14T11-50-09\add_nullifier_hash_column.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_slug_column_to_clubs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 100711da...
 **Ubicaciones:**
+
 - `add_slug_column_to_clubs.sql`
 - `backup_completo_2026-02-14T11-50-09\add_slug_column_to_clubs.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_status_column_to_worldid_verifications.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c1fb3f28...
 **Ubicaciones:**
+
 - `add_status_column_to_worldid_verifications.sql`
 - `backup_completo_2026-02-14T11-50-09\add_status_column_to_worldid_verifications.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_user_id_column_to_gallery_unlocks.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6e2910b1...
 **Ubicaciones:**
+
 - `add_user_id_column_to_gallery_unlocks.sql`
 - `backup_completo_2026-02-14T11-50-09\add_user_id_column_to_gallery_unlocks.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 add_verified_at_and_check_in_radius_to_clubs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** bb8d1ee4...
 **Ubicaciones:**
+
 - `add_verified_at_and_check_in_radius_to_clubs.sql`
 - `backup_completo_2026-02-14T11-50-09\add_verified_at_and_check_in_radius_to_clubs.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251030_create_ai_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 067c4435...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251030_create_ai_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251030_create_ai_tables.sql`
 - `review_pending\legacy_duplicates\20251030_create_ai_tables.sql`
@@ -1586,9 +1923,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251031_create_chat_summaries.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 7c6b8a9a...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251031_create_chat_summaries.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251031_create_chat_summaries.sql`
 - `review_pending\legacy_duplicates\20251031_create_chat_summaries.sql`
@@ -1596,27 +1935,33 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251106000000_create_biometric_sessions.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** ec498fee...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251106000000_create_biometric_sessions.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251106000000_create_biometric_sessions.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106000001_create_app_logs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 905ff637...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251106000001_create_app_logs.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251106000001_create_app_logs.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251116_rewards_system.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 80612794...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251116_rewards_system.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251116_rewards_system.sql`
 - `review_pending\20251116_rewards_system.sql`
@@ -1624,9 +1969,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 2025112020_security_fix_demo_isolation.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 34ad6d47...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\2025112020_security_fix_demo_isolation.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\2025112020_security_fix_demo_isolation.sql`
 - `review_pending\2025112020_security_fix_demo_isolation.sql`
@@ -1634,9 +1981,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251120_security_fix_demo_isolation.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d8eb677e...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251120_security_fix_demo_isolation.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251120_security_fix_demo_isolation.sql`
 - `review_pending\20251120_security_fix_demo_isolation.sql`
@@ -1644,9 +1993,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 2025112188_create_user_consents_evidence.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** f0c321a3...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\2025112188_create_user_consents_evidence.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\2025112188_create_user_consents_evidence.sql`
 - `review_pending\legacy_duplicates\2025112188_create_user_consents_evidence.sql`
@@ -1654,9 +2005,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251121_couple_dissolution_protocol.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 1f93efb9...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251121_couple_dissolution_protocol.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251121_couple_dissolution_protocol.sql`
 - `review_pending\20251121_couple_dissolution_protocol.sql`
@@ -1664,9 +2017,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251121_create_user_consents_evidence.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 9bbcaf2a...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251121_create_user_consents_evidence.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251121_create_user_consents_evidence.sql`
 - `review_pending\legacy_duplicates\20251121_create_user_consents_evidence.sql`
@@ -1674,9 +2029,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 2025112356_rls_production_ready.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 35c538df...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\2025112356_rls_production_ready.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\2025112356_rls_production_ready.sql`
 - `review_pending\2025112356_rls_production_ready.sql`
@@ -1684,9 +2041,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 2025112389_fix_rls_infinite_recursion.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** cde26046...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\2025112389_fix_rls_infinite_recursion.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\2025112389_fix_rls_infinite_recursion.sql`
 - `review_pending\2025112389_fix_rls_infinite_recursion.sql`
@@ -1694,9 +2053,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251123_fix_rls_infinite_recursion.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b6005608...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251123_fix_rls_infinite_recursion.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251123_fix_rls_infinite_recursion.sql`
 - `review_pending\20251123_fix_rls_infinite_recursion.sql`
@@ -1704,9 +2065,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251123_fix_rls_simple.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 61cc54e2...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251123_fix_rls_simple.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251123_fix_rls_simple.sql`
 - `review_pending\20251123_fix_rls_simple.sql`
@@ -1714,9 +2077,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251123_rls_production_ready.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c4a8f1b5...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251123_rls_production_ready.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251123_rls_production_ready.sql`
 - `review_pending\20251123_rls_production_ready.sql`
@@ -1724,9 +2089,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251126_create_global_search.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 589aae08...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251126_create_global_search.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251126_create_global_search.sql`
 - `review_pending\legacy_duplicates\20251126_create_global_search.sql`
@@ -1734,9 +2101,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251207a_create_media_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 19b53300...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251207a_create_media_table.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251207a_create_media_table.sql`
 - `review_pending\legacy_duplicates\20251207a_create_media_table.sql`
@@ -1744,9 +2113,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251207b_create_user_consents.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6c39279e...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251207b_create_user_consents.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251207b_create_user_consents.sql`
 - `review_pending\legacy_duplicates\20251207b_create_user_consents.sql`
@@ -1754,9 +2125,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251207c_fix_migrations.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a206e462...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251207c_fix_migrations.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251207c_fix_migrations.sql`
 - `review_pending\20251207c_fix_migrations.sql`
@@ -1764,9 +2137,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251207d_add_missing_columns.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 82ea3494...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251207d_add_missing_columns.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251207d_add_missing_columns.sql`
 - `review_pending\20251207d_add_missing_columns.sql`
@@ -1774,18 +2149,22 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251207_create_couple_agreements.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 3b496599...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251207_create_couple_agreements.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251207_create_couple_agreements.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251208a_fix_uuid_function.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8cedf610...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251208a_fix_uuid_function.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251208a_fix_uuid_function.sql`
 - `review_pending\20251208a_fix_uuid_function.sql`
@@ -1793,9 +2172,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251208b_phase4_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d9182420...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251208b_phase4_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251208b_phase4_tables.sql`
 - `review_pending\20251208b_phase4_tables.sql`
@@ -1803,18 +2184,22 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251208_create_missing_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 888fd867...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251208_create_missing_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251208_create_missing_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251209_fix_trigger_syntax.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** dcba5ac9...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251209_fix_trigger_syntax.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251209_fix_trigger_syntax.sql`
 - `review_pending\20251209_fix_trigger_syntax.sql`
@@ -1822,9 +2207,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251213_SYNC_AND_FIX.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 2ff1c739...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251213_SYNC_AND_FIX.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\20251213_SYNC_AND_FIX.sql`
 - `review_pending\20251213_SYNC_AND_FIX.sql`
@@ -1832,144 +2219,176 @@
 **Estado de migración:** migrado
 
 ### 🔄 20251216100003_20251030_create_ai_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 7dcd4b51...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100003_20251030_create_ai_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100003_20251030_create_ai_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100004_20251031_create_chat_summaries.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4b67448f...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100004_20251031_create_chat_summaries.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100004_20251031_create_chat_summaries.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100009_20251121_create_user_consents_evidence.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 168a92cd...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100009_20251121_create_user_consents_evidence.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100009_20251121_create_user_consents_evidence.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100010_2025112188_create_user_consents_evidence.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 91a30b24...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100010_2025112188_create_user_consents_evidence.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100010_2025112188_create_user_consents_evidence.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100014_2025112356_rls_production_ready.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 9194ff58...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100014_2025112356_rls_production_ready.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100014_2025112356_rls_production_ready.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100016_20251126_create_global_search.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 41df2bdf...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100016_20251126_create_global_search.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100016_20251126_create_global_search.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100018_20251207_create_couple_agreements.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 63f5e55a...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100018_20251207_create_couple_agreements.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100018_20251207_create_couple_agreements.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100019_20251207a_create_media_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 53eac4a0...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100019_20251207a_create_media_table.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100019_20251207a_create_media_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100020_20251207b_create_user_consents.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 128167ad...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100020_20251207b_create_user_consents.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100020_20251207b_create_user_consents.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100023_20251208_create_missing_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d30cc942...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100023_20251208_create_missing_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100023_20251208_create_missing_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100034_create_table_premium_access.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c565b94c...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100034_create_table_premium_access.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100034_create_table_premium_access.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100050_create_chat_summaries.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 83ba2533...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251216100050_create_chat_summaries.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251216100050_create_chat_summaries.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251218120001_create_couple_agreements_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 27da7710...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251218120001_create_couple_agreements_table.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251218120001_create_couple_agreements_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251218120002_create_biometric_auth_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 663e0d6c...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\20251218120002_create_biometric_auth_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\20251218120002_create_biometric_auth_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 202512_MIGRACION_CONSOLIDADA_SEGURA.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a62985f4...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\202512_MIGRACION_CONSOLIDADA_SEGURA.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\202512_MIGRACION_CONSOLIDADA_SEGURA.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 audit.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 22356615...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\audit.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\audit.sql`
 - `review_pending\audit.sql`
@@ -1977,18 +2396,22 @@
 **Estado de migración:** migrado
 
 ### 🔄 backup_20251127_021301.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** e3b0c442...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\backup_20251127_021301.sql`
 - `review_pending\backup_20251127_021301.sql`
 
 **Estado de migración:** pendiente
 
 ### 🔄 blockchain_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c128aa9c...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\blockchain_tables.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\blockchain_tables.sql`
 - `review_pending\blockchain_tables.sql`
@@ -1996,180 +2419,220 @@
 **Estado de migración:** migrado
 
 ### 🔄 cheksdesinglepareja.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 1e2c2cbe...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\cheksdesinglepareja.sql`
 - `review_pending\cheksdesinglepareja.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create table premium_access .sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c565b94c...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create table premium_access .sql`
 - `review_pending\create table premium_access .sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_cache_statistics_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 5af29569...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_cache_statistics_table.sql`
 - `create_cache_statistics_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_chat_messages_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** dc3f4dd9...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_chat_messages_table.sql`
 - `create_chat_messages_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_club_flyers_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** e7c9d18b...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_club_flyers_table.sql`
 - `create_club_flyers_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_club_verifications_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** b1415bb5...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_club_verifications_table.sql`
 - `create_club_verifications_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_cmpx_purchases_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 46d7a95b...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_cmpx_purchases_table.sql`
 - `create_cmpx_purchases_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_cmpx_shop_packages_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 74acd0c7...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_cmpx_shop_packages_table.sql`
 - `create_cmpx_shop_packages_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_gallery_unlocks_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 944b88bf...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_gallery_unlocks_table.sql`
 - `create_gallery_unlocks_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_media_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 9665fe8a...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_media_table.sql`
 - `create_media_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_missing_tables.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** fde79c88...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_missing_tables.sql`
 - `create_missing_tables.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_security_logs_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4a66c070...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_security_logs_table.sql`
 - `create_security_logs_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_summary_feedback_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 56ad9f6b...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_summary_feedback_table.sql`
 - `create_summary_feedback_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_swinger_interests_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 122863c1...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_swinger_interests_table.sql`
 - `create_swinger_interests_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_worldid_rewards_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 7c592af2...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_worldid_rewards_table.sql`
 - `create_worldid_rewards_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 create_worldid_statistics_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** ca05907f...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\create_worldid_statistics_table.sql`
 - `create_worldid_statistics_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251216100027_20251209_schema_maestro_consolidado.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8ab88d0f...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\duplicates_quarantine\20251216100027_20251209_schema_maestro_consolidado.sql`
 - `duplicates_quarantine\20251216100027_20251209_schema_maestro_consolidado.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251106050000_placeholder_remote_reverted.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 140596b6...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\duplicates_quarantine\migrations_placeholders\20251106050000_placeholder_remote_reverted.sql`
 - `duplicates_quarantine\migrations_placeholders\20251106050000_placeholder_remote_reverted.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260125000000_placeholder_remote.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** aecfac7b...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\duplicates_quarantine\migrations_placeholders\20260125000000_placeholder_remote.sql`
 - `duplicates_quarantine\migrations_placeholders\20260125000000_placeholder_remote.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 EJECUTAR_EN_SUPABASE_SQL_EDITORss.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 9218c86b...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\EJECUTAR_EN_SUPABASE_SQL_EDITORss.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\EJECUTAR_EN_SUPABASE_SQL_EDITORss.sql`
 - `review_pending\EJECUTAR_EN_SUPABASE_SQL_EDITORss.sql`
@@ -2177,9 +2640,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 execute-critical-queries.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6a7d30ba...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\execute-critical-queries.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\execute-critical-queries.sql`
 - `review_pending\execute-critical-queries.sql`
@@ -2187,9 +2652,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 fix_get_profiles_in_cells.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 20e41f9a...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\fix_get_profiles_in_cells.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\fix_get_profiles_in_cells.sql`
 - `review_pending\fix_get_profiles_in_cells.sql`
@@ -2197,9 +2664,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 MARCAR_MIGRACIONES_APLICADAS.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** c547c3bf...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\MARCAR_MIGRACIONES_APLICADAS.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\MARCAR_MIGRACIONES_APLICADAS.sql`
 - `review_pending\MARCAR_MIGRACIONES_APLICADAS.sql`
@@ -2207,9 +2676,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 migraciones-para-remoto.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 60f42ab7...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\migraciones-para-remoto.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\migraciones-para-remoto.sql`
 - `review_pending\migraciones-para-remoto.sql`
@@ -2217,9 +2688,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 MIGRACIÓN DE SEGURIDADSeparación DemoReal con RLS.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 29b31362...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\MIGRACIÓN DE SEGURIDADSeparación DemoReal con RLS.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\MIGRACIÓN DE SEGURIDADSeparación DemoReal con RLS.sql`
 - `review_pending\MIGRACIÓN DE SEGURIDADSeparación DemoReal con RLS.sql`
@@ -2227,9 +2700,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 new fix_rls_profiles_definitivo.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** acec6f7b...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\new fix_rls_profiles_definitivo.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\new fix_rls_profiles_definitivo.sql`
 - `review_pending\new fix_rls_profiles_definitivo.sql`
@@ -2237,27 +2712,33 @@
 **Estado de migración:** migrado
 
 ### 🔄 public.couple.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** d7f2b7c2...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\public.couple.sql`
 - `review_pending\public.couple.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 public.security_logs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** a5ac8c56...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\public.security_logs.sql`
 - `review_pending\public.security_logs.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 queries-critical-analyze.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 5f4c6f76...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\queries-critical-analyze.sql`
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\queries-critical-analyze.sql`
 - `review_pending\queries-critical-analyze.sql`
@@ -2265,9 +2746,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 SCRIPT_FINAL_SUPABASEs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 11407a77...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\SCRIPT_FINAL_SUPABASEs.sql`
 - `backup_completo_2026-02-14T11-50-09\SCRIPT_FINAL_SUPABASEs.sql`
 - `review_pending\SCRIPT_FINAL_SUPABASEs.sql`
@@ -2275,9 +2758,11 @@
 **Estado de migración:** migrado
 
 ### 🔄 SOLUCION_DEFINITIVA_COMPLETaaA.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 7ea3aa61...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\bck\SOLUCION_DEFINITIVA_COMPLETaaA.sql`
 - `backup_completo_2026-02-14T11-50-09\SOLUCION_DEFINITIVA_COMPLETaaA.sql`
 - `review_pending\SOLUCION_DEFINITIVA_COMPLETaaA.sql`
@@ -2285,156 +2770,186 @@
 **Estado de migración:** migrado
 
 ### 🔄 20260121235010_create_likes_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 0c677ead...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\conflicts_202601212350xx\20260121235010_create_likes_table.sql`
 - `review_pending\conflicts_202601212350xx\20260121235010_create_likes_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260121235020_create_matches_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6d7ac6c1...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\conflicts_202601212350xx\20260121235020_create_matches_table.sql`
 - `review_pending\conflicts_202601212350xx\20260121235020_create_matches_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260121235030_create_couple_agreements_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 8fd90dad...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\conflicts_202601212350xx\20260121235030_create_couple_agreements_table.sql`
 - `review_pending\conflicts_202601212350xx\20260121235030_create_couple_agreements_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260121235040_create_biometric_auth_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6f726fef...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\conflicts_202601212350xx\20260121235040_create_biometric_auth_table.sql`
 - `review_pending\conflicts_202601212350xx\20260121235040_create_biometric_auth_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20260121235050_mfa_settings_table.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** dc50544b...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\conflicts_202601212350xx\20260121235050_mfa_settings_table.sql`
 - `review_pending\conflicts_202601212350xx\20260121235050_mfa_settings_table.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 20251218_create_couple_agreements.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 6307d0d4...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\review_pending\legacy_duplicates\20251218_create_couple_agreements.sql`
 - `review_pending\legacy_duplicates\20251218_create_couple_agreements.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 securytylogs.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 4aebb2ef...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\securytylogs.sql`
 - `review_pending\securytylogs.sql`
 
 **Estado de migración:** migrado
 
 ### 🔄 verify_stripe_wrapper.sql
+
 **Problema:** Duplicado exacto en múltiples ubicaciones
 **Hash:** 224a18e7...
 **Ubicaciones:**
+
 - `backup_completo_2026-02-14T11-50-09\verify_stripe_wrapper.sql`
 - `verify_stripe_wrapper.sql`
 
 **Estado de migración:** migrado
 
 ### 🏠 20260111031111_create_swinger_interests_table.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `20260111031111_create_swinger_interests_table.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20260111031120_create_couple_profile_likes_table.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `20260111031120_create_couple_profile_likes_table.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20260111031125_create_biometric_auth_table.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `20260111031125_create_biometric_auth_table.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20260111031129_create_gallery_access_requests_table.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `20260111031129_create_gallery_access_requests_table.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20260124013700_create_rls_policies_high_risk.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `20260124013700_create_rls_policies_high_risk.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251106060000_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251106060000_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251106070000_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251106070000_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251106080000_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251106080000_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251106090000_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251106090000_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251108000001_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251108000001_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251108000002_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251108000002_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251109000000_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251109000000_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251113073956_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251113073956_placeholder_remote_reverted.sql`
 
 **Estado de migración:** pendiente
 
 ### 🏠 20251113080000_placeholder_remote_reverted.sql
+
 **Problema:** Archivo suelto fuera de directorios organizados
 **Ubicación:** `duplicates_quarantine\migrations_placeholders\20251113080000_placeholder_remote_reverted.sql`
 
@@ -5504,20 +6019,24 @@
 # 🚀 PLAN DE ORGANIZACIÓN EN FASES
 
 ## FASE 1: ANÁLISIS Y VALIDACIÓN (COMPLETADO)
+
 - ✅ Auditoría completa del directorio
 - ✅ Identificación de duplicados y conflictos
 - ✅ Validación de estado de migración
 - ✅ Reporte detallado generado
 
 ## FASE 2: CONSOLIDACIÓN DE DUPLICADOS
+
 **Archivos a procesar:** 225 duplicados exactos
 
 ### Plan de acción:
+
 1. **Mantener solo una copia** de cada duplicado exacto
 2. **Mover copias adicionales** al directorio `backup_completo_2026-02-14T11-50-09`
 3. **Actualizar referencias** si es necesario
 
 ### Archivos duplicados identificados:
+
 - **20240523000000_init_report_system.sql** (2 copias)
 - **20250101000000_bootstrap_core_schema.sql** (2 copias)
 - **20250116_create_base_tables.sql** (2 copias)
@@ -5744,17 +6263,19 @@
 - **securytylogs.sql** (2 copias)
 - **verify_stripe_wrapper.sql** (2 copias)
 
-
 ## FASE 3: RESOLUCIÓN DE CONFLICTOS
+
 **Archivos conflictivos:** 26
 
 ### Plan de acción:
+
 1. **Revisar manualmente** cada conflicto
 2. **Comparar contenidos** para determinar cuál versión es correcta
 3. **Fusionar cambios** si es necesario
 4. **Mantener backup** de versiones alternativas
 
 ### Conflictos identificados:
+
 - **20251027210465_fix_reports_table.sql** (requiere revisión manual)
 - **20251103000000_fix_stories_media_columns.sql** (requiere revisión manual)
 - **20251113080001_fix_duplicate_triggers.sql** (requiere revisión manual)
@@ -5782,26 +6303,31 @@
 - **20251216100005_20251116_rewards_system.sql** (requiere revisión manual)
 - **20251216100025_20251208b_phase4_tables.sql** (requiere revisión manual)
 
-
 ## FASE 4: LIMPIEZA DE ARCHIVOS VACÍOS
+
 **Archivos vacíos:** 8
 
 ### Plan de acción:
+
 1. **Verificar si son placeholders** válidos
 2. **Eliminar solo si son realmente innecesarios**
 3. **Documentar eliminaciones** para audit trail
 
 ## FASE 5: MIGRACIÓN DE ARCHIVOS PENDIENTES
+
 **Archivos pendientes:** 40
 
 ### Plan de acción:
+
 1. **Revisar contenido** de archivos pendientes
 2. **Validar idempotencia** (IF NOT EXISTS, etc.)
 3. **Agregar al maestro consolidado** si es seguro
 4. **Aplicar a base de datos** remota
 
 ## FASE 6: OPTIMIZACIÓN FINAL
+
 ### Plan de acción:
+
 1. **Reorganizar estructura** final de directorios
 2. **Actualizar documentación**
 3. **Verificar integridad** final
@@ -5810,12 +6336,14 @@
 ## ⚠️ RECOMENDACIONES DE SEGURIDAD
 
 ### ACCIONES PROHIBIDAS:
+
 - ❌ **NO eliminar** archivos sin backup confirmado
 - ❌ **NO fusionar** conflictos automáticamente
 - ❌ **NO mover** archivos sin validar contenido
 - ❌ **NO eliminar** archivos vacíos sin verificar propósito
 
 ### ACCIONES RECOMENDADAS:
+
 - ✅ **Crear backup** antes de cualquier cambio
 - ✅ **Documentar** todas las acciones realizadas
 - ✅ **Validar** cambios en entorno de desarrollo primero

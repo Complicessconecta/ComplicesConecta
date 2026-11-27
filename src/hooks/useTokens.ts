@@ -33,7 +33,7 @@ import { toast } from "@/hooks/useToast";
 import {
   TokenService,
   type TokenTransaction as ServiceTokenTransaction,
-} from "@/services";
+} from "@/services/payments/TokenService";
 
 // Interfaces simplificadas para demo vs real
 export interface TokenBalance {

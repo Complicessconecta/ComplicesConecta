@@ -14,6 +14,7 @@
 import { useEffect, useState } from "react";
 import { UserMinus, Users } from "lucide-react";
 import {
+  FRIEND_REQUESTS_CHANGED_EVENT,
   formatLastSeen,
   listFriendsFromSupabase,
   listFriendsSync,
@@ -66,6 +67,22 @@ export function FriendsSection({
       };
     }
     return undefined;
+  }, [lookupKey, isDemo, profileId, profileName]);
+
+  // Ronda 14 (stream F, F3): si otra vista de la misma sesión cambia el
+  // almacén de solicitudes (una aceptación crea la amistad), la lista se
+  // recarga sola en vez de esperar a remontar el perfil.
+  useEffect(() => {
+    const reload = () =>
+      setFriends(
+        listFriendsSync(
+          profileId || lookupKey,
+          isDemo ? profileName : undefined,
+        ),
+      );
+    window.addEventListener(FRIEND_REQUESTS_CHANGED_EVENT, reload);
+    return () =>
+      window.removeEventListener(FRIEND_REQUESTS_CHANGED_EVENT, reload);
   }, [lookupKey, isDemo, profileId, profileName]);
 
   const handleRemove = async (friend: Friend) => {

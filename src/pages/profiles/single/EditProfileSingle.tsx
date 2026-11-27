@@ -12,14 +12,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { getAppConfig, resolveDemoAccountType } from "@/lib/app-config";
 import type { Database } from "@/types/supabase-generated";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
+import {
+  notifyDemoUserChanged,
+  resolveSavedSingleDemoInterests,
+  saveSingleDemoInterests,
+  visibleInterestOptions,
+} from "@/lib/profile-interests";
 import { ExplicitInterestsEditor } from "@/components/settings/ExplicitInterestsEditor";
 import { logger } from "@/lib/logger";
-import { useDemoThemeConfig, useProfileTheme } from "@/features/profile/useProfileTheme";
+import {
+  useDemoThemeConfig,
+  useProfileTheme,
+} from "@/features/profile/useProfileTheme";
 import { motion } from "framer-motion";
 
 type Tables<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Row"];
-
 
 const EditProfileSingle = () => {
   const navigate = useNavigate();
@@ -48,10 +56,62 @@ const EditProfileSingle = () => {
   const [userId, setUserId] = useState<string>("");
   const [profileLoaded, setProfileLoaded] = useState(false);
 
+  // Ronda 14 (stream F, F4): las 3 casillas de "Configuración de
+  // privacidad" eran `defaultChecked` sin controlar y nunca se guardaban.
+  // Ahora son estado controlado que se persiste en el MISMO almacén que
+  // leen las secciones de perfil (`single_privacy:<userId>` en demo y
+  // `profiles.privacy_settings` en real). "Aparecer en búsquedas" es el
+  // inverso de `invisible`; "Mostrar ubicación" es `showRegion`.
+  const [privacyPrefs, setPrivacyPrefs] = useState({
+    show_age: true,
+    showRegion: true,
+    invisible: false,
+  });
+
+  /** JSON completo guardado por las secciones (no solo estas 3 claves). */
+  const readStoredPrivacy = (uid: string): Record<string, unknown> => {
+    try {
+      const raw = localStorage.getItem(`single_privacy:${uid}`);
+      const parsed: unknown = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === "object"
+        ? (parsed as Record<string, unknown>)
+        : {};
+    } catch {
+      return {};
+    }
+  };
+
+  /** Precargar las 3 preferencias desde el almacén compartido. */
+  const applyStoredPrivacy = useCallback((uid: string) => {
+    const stored = readStoredPrivacy(uid);
+    setPrivacyPrefs((prev) => ({
+      show_age:
+        typeof stored.show_age === "boolean" ? stored.show_age : prev.show_age,
+      showRegion:
+        typeof stored.showRegion === "boolean"
+          ? stored.showRegion
+          : prev.showRegion,
+      invisible:
+        typeof stored.invisible === "boolean"
+          ? stored.invisible
+          : prev.invisible,
+    }));
+  }, []);
+
   // Demo theme configuration
   const { demoTheme, setDemoTheme, navbarStyle, setNavbarStyle } =
     useDemoThemeConfig();
   const themeConfig = useProfileTheme("single", ["male"], demoTheme);
+
+  // Ronda 15 (stream C): clase única de los campos, igual que en
+  // EditProfileCouple — fondo cristal + color del tema activo y
+  // placeholder acorde (en demoTheme claro el placeholder blanco/70
+  // era invisible sobre el fondo claro). Legible en ambos temas.
+  const inputClass = `bg-white/20 border-white/30 ${themeConfig.textClass} ${
+    demoTheme === "light"
+      ? "placeholder:text-slate-500"
+      : "placeholder:text-white/70"
+  }`;
 
   // Forzar re-render cuando cambia el tema
   useEffect(() => {
@@ -59,11 +119,17 @@ const EditProfileSingle = () => {
     logger.info("Tema actualizado", { demoTheme, navbarStyle });
   }, [demoTheme, navbarStyle]);
 
-  // Usar intereses seguros desde la fuente única de verdad
-  const availableInterests = SAFE_INTERESTS;
+  // Usar intereses seguros desde la fuente única de verdad, MÁS los ya
+  // guardados (F2/F8): los títulos demo pre-cargados no están en
+  // SAFE_INTERESTS y antes no se veían como seleccionados aunque el
+  // contador dijera 3/10.
+  const availableInterests = visibleInterestOptions(
+    SAFE_INTERESTS,
+    formData.interests,
+  );
 
   // Intereses demo que muestra el perfil cuando demo_user aún no trae
-  // selección (ProfileSingle: DEMO_SINGLE_INTEREST_TITLES[0,2,4]). El
+  // selección (ProfileSingle: DEMO_INTEREST_TITLES[0,2,4]). El
   // editor debe precargarlos: antes dejaba `interests` en [] y Guardar
   // escribía [] en demo_user, con lo que el perfil perdía los intereses.
   const DEMO_SINGLE_EDITOR_INTERESTS = [
@@ -81,15 +147,11 @@ const EditProfileSingle = () => {
     const asString = (value: unknown): string =>
       typeof value === "string" ? value : "";
     const asStringArray = (value: unknown): string[] =>
-      Array.isArray(value) &&
-      value.every((item) => typeof item === "string")
+      Array.isArray(value) && value.every((item) => typeof item === "string")
         ? (value as string[])
         : [];
     // Identidad del login demo (p. ej. "Sofía" para single@outlook.es).
-    const identityName = [
-      asString(user.first_name),
-      asString(user.last_name),
-    ]
+    const identityName = [asString(user.first_name), asString(user.last_name)]
       .filter(Boolean)
       .join(" ");
     const storedName = asString(user.name) || asString(user.display_name);
@@ -105,13 +167,19 @@ const EditProfileSingle = () => {
       profession: asString(user.profession),
       // Sin selección guardada, precargar los intereses que el perfil ya
       // muestra (ver arriba): Guardar sin cambios no debe borrarlos.
-      interests: asStringArray(user.interests).length > 0
-        ? asStringArray(user.interests)
-        : [...DEMO_SINGLE_EDITOR_INTERESTS],
+      // Ronda 15, stream D: la selección durable
+      // (`profile_interests:<id>`) manda sobre `demo_user`: tras un
+      // re-login `demo_user` ya no trae intereses (el re-seed lo
+      // reconstruye sin ellos) y precargar solo de ahí volvía a los
+      // títulos demo aunque el usuario hubiera guardado otros.
+      interests: resolveSavedSingleDemoInterests(user.id, user) ?? [
+        ...DEMO_SINGLE_EDITOR_INTERESTS,
+      ],
       explicitInterests: asStringArray(user.explicitInterests),
       avatar: asString(user.avatar) || asString(user.avatar_url),
     });
     setUserId(user.id);
+    applyStoredPrivacy(user.id);
     setProfile(user);
     setProfileLoaded(true);
     setIsLoading(false);
@@ -205,11 +273,19 @@ const EditProfileSingle = () => {
               bio: profileData.bio || "",
               location: `${profileData.latitude || ""}, ${profileData.longitude || ""}`,
               profession: "",
-              interests: [],
+              // Ronda 14 (stream F, F2): antes se precargaba `[]` y
+              // Guardar escribía [] en activities_interested, borrando
+              // los intereses reales. Ahora se precarga lo guardado.
+              interests: Array.isArray(profileData.activities_interested)
+                ? profileData.activities_interested.filter(
+                    (x: unknown) => typeof x === "string",
+                  )
+                : [],
               explicitInterests: [],
               avatar: "",
             });
             setUserId(user.id);
+            applyStoredPrivacy(user.id);
             setProfile(profile);
             setProfileLoaded(true);
             return;
@@ -229,10 +305,7 @@ const EditProfileSingle = () => {
       // guardada; si no, ir a /auth. Nunca un mock aleatorio.
       try {
         const demoUser = localStorage.getItem("demo_user");
-        if (
-          localStorage.getItem("demo_authenticated") === "true" &&
-          demoUser
-        ) {
+        if (localStorage.getItem("demo_authenticated") === "true" && demoUser) {
           const user = JSON.parse(demoUser);
           if (resolveDemoAccountType(user) === "single") {
             applyDemoIdentity(user);
@@ -280,6 +353,33 @@ const EditProfileSingle = () => {
     }));
   };
 
+  // Ronda 14 (stream F, F4): persistir las 3 preferencias de privacidad
+  // del editor en el MISMO almacén que leen las secciones
+  // (`single_privacy:<userId>` en demo, `profiles.privacy_settings` en
+  // real). Se mezcla sobre el JSON completo guardado para no borrar las
+  // demás claves que guardan las secciones.
+  const persistPrivacyPrefs = useCallback(
+    async (isDemo: boolean) => {
+      if (!userId) return;
+      const merged = { ...readStoredPrivacy(userId), ...privacyPrefs };
+      try {
+        localStorage.setItem(
+          `single_privacy:${userId}`,
+          JSON.stringify(merged),
+        );
+      } catch {
+        // Sin almacenamiento: el cambio solo vive en esta sesión.
+      }
+      if (!isDemo && supabase) {
+        await (supabase as any)
+          .from("profiles")
+          .update({ privacy_settings: merged })
+          .eq("id", userId);
+      }
+    },
+    [userId, privacyPrefs],
+  );
+
   const handleSave = async () => {
     if (_isLoading) return;
 
@@ -288,7 +388,15 @@ const EditProfileSingle = () => {
     setSuccess("");
 
     try {
-      if (getAppConfig().features.demoCredentials) {
+      // Ronda 14 (stream F, F2): la rama demo se decidía con
+      // `getAppConfig().features.demoCredentials`, que es SIEMPRE true
+      // (flag estático): en sesión REAL el Guardar escribía en
+      // `demo_user` (localStorage) y NUNCA llegaba a Supabase — los
+      // intereses (y el resto) se perdían. Ahora manda la sesión demo
+      // real (`demo_authenticated`), igual que el editor de pareja.
+      const isDemoSession =
+        localStorage.getItem("demo_authenticated") === "true";
+      if (isDemoSession) {
         // Modo demo - guardar en localStorage
         const demoUser = JSON.parse(localStorage.getItem("demo_user") || "{}");
         const updatedUser = {
@@ -297,6 +405,20 @@ const EditProfileSingle = () => {
           age: parseInt(formData.age) || undefined,
         };
         localStorage.setItem("demo_user", JSON.stringify(updatedUser));
+        // Ronda 15, stream D: persistir la selección en la clave
+        // durable por cuenta (`profile_interests:<id>`): `demo_user`
+        // se borra al cerrar sesión y el re-seed del login lo
+        // reconstruye sin intereses, así que guardar solo ahí
+        // restablecía los intereses al reingresar (test PR #74).
+        // La clave sobrevive al logout como el saldo de la wallet.
+        if (typeof updatedUser.id === "string") {
+          saveSingleDemoInterests(updatedUser.id, formData.interests ?? []);
+        }
+        // Ronda 14 (stream F, F2/F3): avisar a la página de perfil para
+        // que re-lea los intereses sin recargar (antes quedaba la vista
+        // vieja hasta remontar).
+        notifyDemoUserChanged();
+        await persistPrivacyPrefs(true);
         setSuccess("Perfil guardado exitosamente (modo demo)");
         toast({
           title: "Perfil guardado",
@@ -328,6 +450,7 @@ const EditProfileSingle = () => {
             variant: "destructive",
           });
         } else {
+          await persistPrivacyPrefs(false);
           setSuccess("Perfil guardado exitosamente");
           toast({
             title: "Perfil guardado",
@@ -423,12 +546,14 @@ const EditProfileSingle = () => {
           <Button
             variant="ghost"
             onClick={() => navigate("/profile-single")}
-            className="shrink-0 whitespace-nowrap text-white hover:bg-white/20"
+            className={`shrink-0 whitespace-nowrap ${demoTheme === "light" ? "text-gray-900 hover:bg-slate-900/5" : "text-white hover:bg-white/20"}`}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver al perfil
           </Button>
-          <h1 className="order-3 w-full text-center text-base font-bold text-white sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:text-xl">
+          <h1
+            className={`order-3 w-full text-center text-base font-bold ${demoTheme === "light" ? "text-gray-900" : "text-white"} sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:text-xl`}
+          >
             Editar Perfil
           </h1>
           <Button
@@ -456,7 +581,7 @@ const EditProfileSingle = () => {
         {_success && (
           <div
             role="status"
-            className="rounded-lg border border-emerald-400/40 bg-emerald-500/15 px-4 py-3 text-sm text-emerald-200"
+            className="rounded-lg border border-emerald-400/40 bg-emerald-500/15 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-200"
           >
             ✓ {_success}
           </div>
@@ -464,7 +589,7 @@ const EditProfileSingle = () => {
         {_error && (
           <div
             role="alert"
-            className="rounded-lg border border-red-400/40 bg-red-500/15 px-4 py-3 text-sm text-red-200"
+            className="rounded-lg border border-red-400/40 bg-red-500/15 px-4 py-3 text-sm text-red-700 dark:text-red-200"
           >
             {_error}
           </div>
@@ -490,7 +615,9 @@ const EditProfileSingle = () => {
                 />
               </div>
             </div>
-            <p className="text-xs text-white/70 text-center mt-2">
+            <p
+              className={`text-xs ${themeConfig.textClass}/70 text-center mt-2`}
+            >
               Sube una foto clara de tu rostro para aumentar tus conexiones
             </p>
           </CardContent>
@@ -513,7 +640,7 @@ const EditProfileSingle = () => {
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Tu nombre completo"
-                className={`bg-white/20 border-white/30 ${themeConfig.textClass} placeholder:text-white/70`}
+                className={inputClass}
               />
             </div>
 
@@ -528,7 +655,7 @@ const EditProfileSingle = () => {
                 value={formData.age}
                 onChange={(e) => handleInputChange("age", e.target.value)}
                 placeholder="Tu edad"
-                className={`bg-white/20 border-white/30 ${themeConfig.textClass} placeholder:text-white/70`}
+                className={inputClass}
               />
             </div>
           </CardContent>
@@ -551,7 +678,7 @@ const EditProfileSingle = () => {
                 value={formData.location}
                 onChange={(e) => handleInputChange("location", e.target.value)}
                 placeholder="Ciudad donde vives"
-                className={`bg-white/20 border-white/30 ${themeConfig.textClass} placeholder:text-white/70`}
+                className={inputClass}
               />
             </div>
 
@@ -567,7 +694,7 @@ const EditProfileSingle = () => {
                   handleInputChange("profession", e.target.value)
                 }
                 placeholder="Tu profesión"
-                className={`bg-white/20 border-white/30 ${themeConfig.textClass} placeholder:text-white/70`}
+                className={inputClass}
               />
             </div>
           </CardContent>
@@ -584,7 +711,7 @@ const EditProfileSingle = () => {
               onChange={(e) => handleInputChange("bio", e.target.value)}
               placeholder="Cuéntanos sobre ti, qué buscas en el lifestyle swinger..."
               rows={4}
-              className={`resize-none bg-white/20 border-white/30 ${themeConfig.textClass} placeholder:text-white/70`}
+              className={`${inputClass} resize-none`}
             />
             <p className={`text-xs ${themeConfig.textClass}/70 mt-2`}>
               {formData.bio.length}/500 caracteres
@@ -601,7 +728,13 @@ const EditProfileSingle = () => {
             <p className={`text-sm ${themeConfig.textClass}/70 mb-4`}>
               Selecciona hasta 6 intereses que te representen en el lifestyle
             </p>
-            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-4 border border-white/30 rounded-lg bg-white/10 backdrop-blur-sm">
+            {/* Ronda 14 (stream F, F5/F8): el contenedor era bg-white/10
+                con distintivos bg-white/20 text-white: en tema claro el
+                texto blanco sobre fondo casi blanco era ilegible y el
+                fondo blanco rompía el esquema. Ahora el contenedor y los
+                distintivos no seleccionados siguen el tema (claro:
+                fondo blanco + texto oscuro; oscuro: translúcido). */}
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-4 border border-slate-300 dark:border-white/30 rounded-lg bg-white dark:bg-white/10 backdrop-blur-sm">
               {availableInterests.map((interest) => (
                 <Badge
                   key={interest}
@@ -613,7 +746,7 @@ const EditProfileSingle = () => {
                   className={`cursor-pointer transition-all ${
                     formData.interests.includes(interest)
                       ? "bg-linear-to-r from-fuchsia-500 to-purple-500 text-white shadow-md border-0"
-                      : "bg-white/20 text-white border border-white/30 hover:bg-white/30"
+                      : "bg-slate-100 text-slate-900 border border-slate-300 hover:bg-slate-200 dark:bg-white/20 dark:text-white dark:border-white/30 dark:hover:bg-white/30"
                   }`}
                   onClick={() => handleInterestToggle(interest)}
                 >
@@ -624,7 +757,7 @@ const EditProfileSingle = () => {
                 </Badge>
               ))}
             </div>
-            <p className="text-xs text-white/70 mt-2">
+            <p className={`text-xs ${themeConfig.textClass}/70 mt-2`}>
               {formData.interests.length}/6 seleccionados
             </p>
           </CardContent>
@@ -643,14 +776,18 @@ const EditProfileSingle = () => {
         {/* 🎨 Personalización Visual */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+            <h3
+              className={`font-semibold ${themeConfig.textClass} mb-4 flex items-center gap-2`}
+            >
               🎨 Personalización Visual
             </h3>
 
             {/* Selector de Tema */}
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-white/90 mb-2 block">
+                <label
+                  className={`text-sm ${themeConfig.textClass}/90 mb-2 block`}
+                >
                   Tema de Colores
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -686,7 +823,9 @@ const EditProfileSingle = () => {
                         : "border-white/30 bg-white/10 hover:bg-white/20"
                     }`}
                   >
-                    <div className="flex items-center gap-2 text-sm font-medium text-white">
+                    <div
+                      className={`flex items-center gap-2 text-sm font-medium ${demoTheme === "light" ? "text-gray-900" : "text-white"}`}
+                    >
                       <Moon className="h-4 w-4" />
                       🌙 Oscuro
                     </div>
@@ -696,7 +835,9 @@ const EditProfileSingle = () => {
 
               {/* Selector de Navbar */}
               <div>
-                <label className="text-sm text-white/90 mb-2 block">
+                <label
+                  className={`text-sm ${themeConfig.textClass}/90 mb-2 block`}
+                >
                   Estilo de Navegación
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -710,7 +851,9 @@ const EditProfileSingle = () => {
                         : "border-white/30 bg-white/10 hover:bg-white/20"
                     }`}
                   >
-                    <div className="flex items-center gap-2 text-sm font-medium text-white">
+                    <div
+                      className={`flex items-center gap-2 text-sm font-medium ${demoTheme === "light" ? "text-gray-900" : "text-white"}`}
+                    >
                       <Eye className="h-4 w-4" />
                       Transparente
                     </div>
@@ -726,7 +869,9 @@ const EditProfileSingle = () => {
                         : "border-white/30 bg-white/10 hover:bg-white/20"
                     }`}
                   >
-                    <div className="flex items-center gap-2 text-sm font-medium text-white">
+                    <div
+                      className={`flex items-center gap-2 text-sm font-medium ${demoTheme === "light" ? "text-gray-900" : "text-white"}`}
+                    >
                       <EyeOff className="h-4 w-4" />
                       Sólida
                     </div>
@@ -740,36 +885,58 @@ const EditProfileSingle = () => {
         {/* Configuración de privacidad */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-white mb-4">
+            <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>
               Configuración de privacidad
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Mostrar edad</span>
+                <span className={`text-sm ${themeConfig.textClass}`}>
+                  Mostrar edad
+                </span>
                 <input
                   type="checkbox"
-                  defaultChecked
-                  className="rounded bg-white/20 border-white/30"
+                  checked={privacyPrefs.show_age}
+                  onChange={(e) =>
+                    setPrivacyPrefs((prev) => ({
+                      ...prev,
+                      show_age: e.target.checked,
+                    }))
+                  }
+                  className="rounded bg-white/20 border-white/30 accent-fuchsia-500"
                   title="Mostrar edad en perfil"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Mostrar ubicación</span>
+                <span className={`text-sm ${themeConfig.textClass}`}>
+                  Mostrar ubicación
+                </span>
                 <input
                   type="checkbox"
-                  defaultChecked
-                  className="rounded bg-white/20 border-white/30"
+                  checked={privacyPrefs.showRegion}
+                  onChange={(e) =>
+                    setPrivacyPrefs((prev) => ({
+                      ...prev,
+                      showRegion: e.target.checked,
+                    }))
+                  }
+                  className="rounded bg-white/20 border-white/30 accent-fuchsia-500"
                   title="Mostrar ubicación en perfil"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">
+                <span className={`text-sm ${themeConfig.textClass}`}>
                   Aparecer en búsquedas
                 </span>
                 <input
                   type="checkbox"
-                  defaultChecked
-                  className="rounded bg-white/20 border-white/30"
+                  checked={!privacyPrefs.invisible}
+                  onChange={(e) =>
+                    setPrivacyPrefs((prev) => ({
+                      ...prev,
+                      invisible: !e.target.checked,
+                    }))
+                  }
+                  className="rounded bg-white/20 border-white/30 accent-fuchsia-500"
                   title="Aparecer en resultados de búsqueda"
                 />
               </div>
@@ -816,4 +983,3 @@ const EditProfileSingle = () => {
 };
 
 export default EditProfileSingle;
-

@@ -34,8 +34,10 @@ import { logger } from "@/lib/logger";
 import { safeRemoveItem, safeSetItem } from "@/lib/safe-storage";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import {
+  deleteActiveDemoSession,
   deleteLocalDemoAccount,
   findLocalAnonymousAccount,
+  getActiveDemoSession,
   listLocalDemoAccounts,
   restoreLocalDemoSession,
   type LocalDemoAccountRecord,
@@ -91,6 +93,77 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
   const anonymousCheck = canCreateAnonymousAccountOnDevice();
   const [showAnonymousForm, setShowAnonymousForm] = useState(false);
 
+  // Ronda 14, stream B: la sesión demo ACTIVA se lee directa de
+  // localStorage en cada render (mismo patrón que `anonymousAccount`
+  // arriba): así la sección "Cuenta demo activa" aparece siempre que
+  // haya sesión, también para Single/Pareja canónica, que nunca entra
+  // en el registro `cc_local_demo_accounts_v1` y por eso no aparecía
+  // en "Tus cuentas demo en este navegador" tras la primera visita.
+  // La sección solo se muestra cuando la sesión NO se puede gestionar
+  // desde la lista: la lista ya tiene Entrar + Eliminar para las
+  // cuentas registradas no canónicas (incluida la anónima), así que
+  // mostrarla también aquí duplicaría la cuenta (y su nombre) en
+  // /demo. La canónica (Sofía / Carmen & Roberto) nunca entra en el
+  // registro — ni su fila de lista tiene Eliminar (ronda 11) — así que
+  // la sección es su única gestión en /demo.
+  const activeDemoSession = getActiveDemoSession();
+  const shownActiveSession =
+    activeDemoSession !== null &&
+    !(activeDemoSession.isRegistered && !activeDemoSession.isCanonical)
+      ? activeDemoSession
+      : null;
+  const [activeSessionPendingDelete, setActiveSessionPendingDelete] =
+    useState(false);
+
+  const confirmDeleteActiveSession = () => {
+    setActiveSessionPendingDelete(false);
+    const session = getActiveDemoSession();
+    if (!session || isLoading) return;
+    const result = deleteActiveDemoSession();
+    if (!result.deleted) {
+      toast({
+        title: "No se pudo eliminar",
+        description: result.reason ?? "No se pudo eliminar esa sesión demo.",
+        variant: "destructive",
+      });
+      return;
+    }
+    // La sección se relee en el mismo render (`activeDemoSession` se
+    // calcula desde localStorage): al cerrar la sesión desaparece.
+    setLocalAccounts(listLocalDemoAccounts());
+    toast({
+      title: "Sesión demo eliminada",
+      description: session.isRegistered
+        ? `Se eliminó "${session.nickname}" de este navegador.`
+        : `Se cerró la sesión demo de "${session.nickname}".`,
+    });
+  };
+
+  /**
+   * Ronda 19, stream B: reentrar desde "Cuenta demo activa" NO
+   * mostraba el toast (test dirigido ronda 18, PR #78: 3 intentos,
+   * reentra al instante pero sin "Modo Demo Activado", mientras el
+   * "Entrar" de la lista sí lo muestra). Causa: el botón "Entrar
+   * como …" hacía un `navigate(...)` pelado, sin pasar por
+   * `handleDemoLogin` ni `handleLocalAccountLogin`, que son los
+   * únicos que disparan el toast. La sesión ya existe (el banner
+   * solo se muestra si `getActiveDemoSession()` la resuelve), así
+   * que no hace falta `signIn` ni restaurar nada: solo el toast
+   * antes de navegar, con el mismo título y la misma descripción
+   * de bienvenida que `handleLocalAccountLogin`. El toast sobrevive
+   * al cambio de ruta porque el <Toaster /> vive en MainLayout,
+   * por encima del <Outlet /> (ronda 18). La navegación no cambia.
+   */
+  const handleActiveSessionLogin = () => {
+    const session = shownActiveSession;
+    if (!session || isLoading) return;
+    toast({
+      title: "🎭 Modo Demo Activado",
+      description: `Bienvenido de nuevo, ${session.nickname}`,
+    });
+    navigate(session.type === "couple" ? "/profile-couple" : "/profile-single");
+  };
+
   /**
    * Entrada con una cuenta demo local ya registrada (un clic, sin
    * contraseña: así es el diseño demo). Restaura la sesión con los
@@ -120,9 +193,13 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
         description: `Bienvenido de nuevo, ${account.nickname}`,
       });
 
-      setTimeout(() => {
-        navigate(type === "couple" ? "/profile-couple" : "/profile-single");
-      }, 1000);
+      // Ronda 18, stream A (B1/B2): navegar DE INMEDIATO, sin el
+      // `setTimeout(..., 1000)` que había aquí. Ese segundo de retardo
+      // dejaba /demo retenida con el toast y sin loader (la ronda 17
+      // hizo urgente la navegación UNA VEZ PEDIDA, pero aquí ni se
+      // pedía); el toast sobrevive al cambio de ruta porque el
+      // <Toaster /> vive en MainLayout, por encima del <Outlet />.
+      navigate(type === "couple" ? "/profile-couple" : "/profile-single");
     } catch (error) {
       logger.error("Error entrando con cuenta demo local", {
         error: error instanceof Error ? error.message : String(error),
@@ -224,14 +301,23 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
         description: `Bienvenido al modo demo como ${type === "single" ? "Usuario Single" : "Pareja"}`,
       });
 
-      // Navegar según el tipo de cuenta
-      setTimeout(() => {
-        if (type === "couple") {
-          navigate("/profile-couple");
-        } else {
-          navigate("/profile-single");
-        }
-      }, 1000);
+      // Ronda 18, stream A (B1/B2): navegar DE INMEDIATO tras el
+      // `signIn` exitoso, sin el `setTimeout(..., 1000)` que había
+      // aquí. Ese segundo de retardo dejaba /demo retenida con el
+      // toast "Modo Demo Activado" y sin loader: la ronda 17 hizo
+      // urgente la navegación UNA VEZ PEDIDA (`useTransitions={false}`),
+      // pero aquí la navegación ni se pedía durante 1 s — no había
+      // loader que commitear. El toast sobrevive al cambio de ruta
+      // porque el <Toaster /> vive en MainLayout, por encima del
+      // <Outlet />; y la sesión no depende del retardo, porque
+      // `handleDemoAuth` ya escribió `demo_authenticated`, `demo_user`
+      // y `userType` en localStorage de forma síncrona antes de que
+      // `signIn` resolviera.
+      if (type === "couple") {
+        navigate("/profile-couple");
+      } else {
+        navigate("/profile-single");
+      }
     } catch (error) {
       logger.error("Error en demo login", {
         error: error instanceof Error ? error.message : String(error),
@@ -386,6 +472,94 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
             </p>
           </div>
 
+          {/* Ronda 14, stream B: sesión demo ACTIVA, visible en /demo
+              mientras exista y no se pueda gestionar desde la lista
+              (ver `shownActiveSession` arriba). La sesión canónica
+              Single/Pareja (Sofía / Carmen & Roberto) nunca entra en
+              el registro, así que sin esta sección no había forma de
+              gestionarla ni de eliminarla desde /demo tras la primera
+              visita: solo se veía el selector "Explorar como
+              Single/Pareja". Eliminar cierra la sesión (la canónica
+              sigue disponible para volver a entrar). */}
+          {shownActiveSession && (
+            <div className="rounded-lg border border-purple-400/40 bg-purple-500/10 p-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">
+                Cuenta demo activa
+              </h3>
+              <p className="text-slate-600 dark:text-white/70 text-xs mb-3">
+                Tienes una sesión demo abierta en este navegador.
+              </p>
+              <div className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white dark:border-white/10 dark:bg-white/5 px-3 py-2">
+                <div className="min-w-40 flex-1 basis-40">
+                  <p className="text-slate-900 dark:text-white font-medium wrap-break-word">
+                    {shownActiveSession.displayName}
+                    <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300 dark:bg-white/10 dark:text-white/80 dark:border-white/20">
+                      {shownActiveSession.type === "couple"
+                        ? "Pareja"
+                        : "Single"}
+                    </span>
+                  </p>
+                  {shownActiveSession.email && (
+                    <p className="text-slate-500 dark:text-white/60 text-xs wrap-break-word">
+                      {shownActiveSession.email}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  disabled={isLoading}
+                  onClick={handleActiveSessionLogin}
+                  className="bg-purple-600 hover:bg-purple-700 text-white shrink-0"
+                >
+                  <LogIn className="h-4 w-4 mr-1" />
+                  {`Entrar como ${shownActiveSession.nickname}`}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  disabled={isLoading}
+                  onClick={() => setActiveSessionPendingDelete(true)}
+                  title={`Eliminar la sesión demo de ${shownActiveSession.nickname}`}
+                  aria-label={`Eliminar la sesión demo de ${shownActiveSession.nickname}`}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-500/10 dark:text-red-300 dark:hover:text-red-200 shrink-0"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Eliminar
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Ronda 14, stream B: confirmación EN LA APP para eliminar
+              la sesión demo activa (mismo patrón que el diálogo de la
+              lista: sin window.confirm, que en webviews se descarta). */}
+          <AlertDialog
+            open={activeSessionPendingDelete}
+            onOpenChange={(open) => {
+              if (!open) setActiveSessionPendingDelete(false);
+            }}
+          >
+            <AlertDialogContent className="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50">
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  ¿Eliminar la sesión demo activa?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {`Se cerrará la sesión demo activa de "${shownActiveSession?.nickname ?? "Demo"}". La cuenta demo seguirá disponible para volver a entrar.`}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={confirmDeleteActiveSession}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Sí, eliminar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           {/* Ronda 9, stream D: cuentas demo locales de este navegador.
               Sin esta sección, tras cerrar sesión no había forma de
               volver a entrar con una cuenta creada por registro. */}
@@ -499,7 +673,15 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
               if (!open) setAccountPendingDelete(null);
             }}
           >
-            <AlertDialogContent>
+            <AlertDialogContent
+              // Ronda 13, stream D (D1): fondo opaco explícito. El
+              // default `bg-background` del componente es transparente
+              // en Tailwind v4 (`--background: 350 20% 99%` sin hsl()
+              // + `@theme inline` → `background-color: var(--background)`
+              // inválido) y el texto se solapaba con la página detrás.
+              // Per-site: sin tocar el @theme global.
+              className="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-50"
+            >
               <AlertDialogHeader>
                 <AlertDialogTitle>¿Eliminar cuenta demo?</AlertDialogTitle>
                 <AlertDialogDescription>

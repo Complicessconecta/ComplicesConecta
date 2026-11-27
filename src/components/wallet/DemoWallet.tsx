@@ -5,15 +5,31 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
-import { Wallet, Coins, Image as ImageIcon, Crown, Sparkles, TrendingUp, Lock, ExternalLink, X } from "lucide-react";
+import {
+  Wallet,
+  Coins,
+  Image as ImageIcon,
+  Crown,
+  Sparkles,
+  TrendingUp,
+  Lock,
+  ExternalLink,
+  X,
+} from "lucide-react";
 import {
   DEFAULT_DEMO_NFTS,
   nftService,
   DEMO_NFTS_CHANGED_EVENT,
   DEMO_MINT_LIMIT,
+  countMintedDemoNFTs,
 } from "@/services/payments/NFTService";
 import { useToast } from "@/hooks/useToast";
 import { ANONYMOUS_WALLET_BLOCKED_REASON } from "@/lib/anonymous";
@@ -34,6 +50,8 @@ interface DemoNFT {
   image: string;
   value: number;
   isCouple: boolean;
+  /** Minteado por el usuario (vs semilla): alimenta el contador X/4. */
+  mintedByUser: boolean;
 }
 
 interface DemoWalletProps {
@@ -65,7 +83,10 @@ interface DemoToken {
 /**
  * Componente de Wallet para perfiles demo
  */
-export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) {
+export function DemoWallet({
+  userId,
+  accountType = "single",
+}: DemoWalletProps) {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("0x1234...5678");
   const [balance, setBalance] = useState("0.00");
@@ -114,6 +135,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
               image: nft.image,
               value: nft.value,
               isCouple: nft.is_couple,
+              mintedByUser: false,
             })),
     [accountType, isAnonymousWallet],
   );
@@ -163,6 +185,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
               image: nft.image || getImageForRarity(rarity),
               value: typeof nft.value === "number" ? nft.value : 100,
               isCouple: nft.is_couple,
+              mintedByUser: nft.minted_by_user === true,
             };
           });
         if (normalized.length > 0) setDemoNFTs(normalized);
@@ -178,6 +201,21 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
       window.removeEventListener(DEMO_NFTS_CHANGED_EVENT, onChanged);
     };
   }, [userId, accountType, isAnonymousWallet]);
+
+  // Ronda 14 (stream F, F7): el botón "Mintear NFT Demo" no mostraba
+  // el límite: en el tope (4/4) seguía pareciendo activo y el clic solo
+  // devolvía un toast, así que el minteo "parecía desactivado". El
+  // contador es la misma cuenta canónica que usa el modal del perfil
+  // (solo minteados por el usuario; la semilla nunca cuenta). En pareja
+  // la lista ya viene filtrada a is_couple, así que la cuenta es la de
+  // la pareja (2 de semilla + hasta 4 minteados = 6 visibles).
+  const mintedNftCount = countMintedDemoNFTs(
+    demoNFTs.map((nft) => ({
+      id: nft.id,
+      minted_by_user: nft.mintedByUser,
+    })),
+  );
+  const mintLimitReached = mintedNftCount >= DEMO_MINT_LIMIT;
 
   // Minteo demo por la vía compartida (nftService.mintDemoNFT, ronda 8,
   // punto 4): el NFT nuevo es del tipo de la cuenta (isCouple en pareja)
@@ -285,15 +323,18 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
       <div className="space-y-6">
         <Card className="bg-amber-500/10 backdrop-blur-xl border-amber-400/40 shadow-2xl">
           <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-white">
+            {/* Ronda 15 (stream C): `text-white` sobre ámbar claro era
+                ilegible en tema claro; ámbar oscuro en claro, blanco
+                en oscuro. */}
+            <CardTitle className="flex items-center gap-3 text-amber-900 dark:text-white">
               <div className="p-2 bg-amber-500/20 rounded-lg">
-                <Lock className="h-6 w-6 text-amber-300" />
+                <Lock className="h-6 w-6 text-amber-600 dark:text-amber-300" />
               </div>
               Billetera desactivada en cuentas anónimas
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-white/80">
+            <p className="text-sm text-amber-800 dark:text-white/80">
               {ANONYMOUS_WALLET_BLOCKED_REASON}
             </p>
           </CardContent>
@@ -305,7 +346,13 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
   return (
     <div className="space-y-6">
       {/* Header de Wallet */}
-      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      {/* Ronda 15 (stream C): el gradiente era translúcido
+          (`from-purple-900/40 to-blue-900/40`): en tema claro el fondo
+          de la página se transparentaba y el texto blanco quedaba
+          blanco sobre claro (aviso de la wallet demo, test PR #74).
+          Gradiente opaco en ambos temas: el blanco sigue legible y en
+          oscuro el aspecto no cambia. Igual en Tokens, NFTs y Staking. */}
+      <Card className="bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
             <div className="p-2 bg-linear-to-r from-purple-500 to-blue-600 rounded-lg">
@@ -347,7 +394,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                   <Coins className="h-4 w-4 text-yellow-400" />
                   <span className="text-sm text-white/80">Balance MATIC</span>
                 </div>
-                <span className="text-sm font-semibold text-white">{balance} MATIC</span>
+                <span className="text-sm font-semibold text-white">
+                  {balance} MATIC
+                </span>
               </div>
             </div>
           )}
@@ -355,7 +404,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
       </Card>
 
       {/* Tokens */}
-      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      <Card className="bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
             <div className="p-2 bg-linear-to-r from-yellow-500 to-orange-500 rounded-lg">
@@ -376,7 +425,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-white">{token.symbol}</span>
+                    <span className="font-semibold text-white">
+                      {token.symbol}
+                    </span>
                     {token.isPremium && (
                       <Badge className="bg-yellow-500/20 text-yellow-200 border-yellow-400/40 text-xs">
                         <Crown className="h-3 w-3 mr-1" />
@@ -385,13 +436,19 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                     )}
                   </div>
                   <p className="text-xs text-white/60">
-                    {token.type === "cmpx" ? "Token de consumo" : "Token de inversión"}
+                    {token.type === "cmpx"
+                      ? "Token de consumo"
+                      : "Token de inversión"}
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="font-semibold text-white">{token.balance.toLocaleString()}</div>
-                <div className="text-xs text-white/60">${token.value.toLocaleString()}</div>
+                <div className="font-semibold text-white">
+                  {token.balance.toLocaleString()}
+                </div>
+                <div className="text-xs text-white/60">
+                  ${token.value.toLocaleString()}
+                </div>
               </div>
             </div>
           ))}
@@ -399,7 +456,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
       </Card>
 
       {/* NFTs */}
-      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      <Card className="bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
             <div className="p-2 bg-linear-to-r from-pink-500 to-purple-600 rounded-lg">
@@ -414,11 +471,21 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
         <CardContent>
           <Button
             onClick={handleMintDemoNft}
-            className="w-full mb-4 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+            disabled={mintLimitReached || !userId}
+            title={
+              !userId
+                ? "Inicia sesión demo para mintear"
+                : mintLimitReached
+                  ? `Límite demo alcanzado: ya minteaste ${DEMO_MINT_LIMIT} NFTs`
+                  : `Mintear un NFT demo (${mintedNftCount}/${DEMO_MINT_LIMIT} minteados)`
+            }
+            className="w-full mb-4 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold disabled:opacity-50"
             type="button"
           >
             <Sparkles className="mr-2 h-4 w-4" />
-            Mintear NFT Demo
+            {mintLimitReached
+              ? `Límite demo alcanzado (${mintedNftCount}/${DEMO_MINT_LIMIT})`
+              : `Mintear NFT Demo (${mintedNftCount}/${DEMO_MINT_LIMIT})`}
           </Button>
           {/* La rejilla no puede desbordar el viewport (ronda 8, punto
               3): cada tarjeta es `min-w-0` para que el contenido (fila de
@@ -440,7 +507,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                   }
                 }}
               >
-                <div className={`absolute inset-0 bg-linear-to-br ${rarityColors[nft.rarity]} opacity-20`} />
+                <div
+                  className={`absolute inset-0 bg-linear-to-br ${rarityColors[nft.rarity]} opacity-20`}
+                />
                 <div className="relative p-4 space-y-3 min-w-0">
                   <div className="aspect-square rounded-lg bg-white/10 overflow-hidden">
                     <img
@@ -460,7 +529,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                         saltan de línea en vez de recortarse, más compactas,
                         y el título lleva el nombre completo en `title`. */}
                     <div className="flex flex-wrap items-center gap-1.5 min-w-0">
-                      <Badge className={`${rarityBadges[nft.rarity]} text-white text-[10px] sm:text-xs px-2 shrink-0`}>
+                      <Badge
+                        className={`${rarityBadges[nft.rarity]} text-white text-[10px] sm:text-xs px-2 shrink-0`}
+                      >
                         {nft.rarity.toUpperCase()}
                       </Badge>
                       {nft.isCouple && (
@@ -470,11 +541,18 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                         </Badge>
                       )}
                     </div>
-                    <h4 className="font-semibold text-white text-sm truncate" title={nft.name}>{nft.name}</h4>
+                    <h4
+                      className="font-semibold text-white text-sm truncate"
+                      title={nft.name}
+                    >
+                      {nft.name}
+                    </h4>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         <Coins className="h-3 w-3 text-yellow-400" />
-                        <span className="text-xs text-white/80">{nft.value} CMPX</span>
+                        <span className="text-xs text-white/80">
+                          {nft.value} CMPX
+                        </span>
                       </div>
                       <div className="flex items-center gap-1 text-xs text-white/60">
                         <TrendingUp className="h-3 w-3 text-green-400" />
@@ -490,7 +568,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
       </Card>
 
       {/* Staking Info */}
-      <Card className="bg-linear-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-xl border-white/20 shadow-2xl">
+      <Card className="bg-linear-to-br from-purple-900 to-blue-900 backdrop-blur-xl border-white/20 shadow-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-white">
             <div className="p-2 bg-linear-to-r from-green-500 to-teal-600 rounded-lg">
@@ -513,7 +591,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Tokens bloqueados</span>
-                <span className="font-semibold text-white">{gtkStaked} GTK</span>
+                <span className="font-semibold text-white">
+                  {gtkStaked} GTK
+                </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Duración</span>
@@ -521,7 +601,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Rewards acumulados</span>
-                <span className="font-semibold text-green-400">{gtkRewards} GTK</span>
+                <span className="font-semibold text-green-400">
+                  {gtkRewards} GTK
+                </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-white/60">Fecha de liberación</span>
@@ -562,7 +644,8 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                   ⚠️ Modo Demo Activado
                 </p>
                 <p className="text-yellow-100/80 text-xs mt-2">
-                  Esta es una wallet demo con datos simulados. Para ver transacciones reales en PolygonScan, necesitas:
+                  Esta es una wallet demo con datos simulados. Para ver
+                  transacciones reales en PolygonScan, necesitas:
                 </p>
                 <ul className="text-yellow-100/80 text-xs mt-2 space-y-1 list-disc list-inside">
                   <li>Conectar tu wallet real de MetaMask</li>
@@ -579,7 +662,7 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                 </Button>
                 <Button
                   onClick={() => {
-                    safeOpenUrl('https://polygonscan.com');
+                    safeOpenUrl("https://polygonscan.com");
                     setShowPolygonModal(false);
                   }}
                   className="flex-1 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
@@ -625,7 +708,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
                   <h4 className="text-lg font-bold text-white truncate">
                     {selectedNft.name}
                   </h4>
-                  <Badge className={`${rarityBadges[selectedNft.rarity]} text-white text-xs shrink-0`}>
+                  <Badge
+                    className={`${rarityBadges[selectedNft.rarity]} text-white text-xs shrink-0`}
+                  >
                     {selectedNft.rarity.toUpperCase()}
                   </Badge>
                 </div>
@@ -647,7 +732,9 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
 
               <div className="bg-yellow-500/15 border border-yellow-500/30 rounded-lg p-4">
                 <p className="text-yellow-100/90 text-xs leading-relaxed">
-                  ⚠️ Este detalle es información simulada para modo demo. En producción, los NFTs se cargan desde la tabla <strong>user_nfts</strong>.
+                  ⚠️ Este detalle es información simulada para modo demo. En
+                  producción, los NFTs se cargan desde la tabla{" "}
+                  <strong>user_nfts</strong>.
                 </p>
               </div>
 
@@ -666,12 +753,22 @@ export function DemoWallet({ userId, accountType = "single" }: DemoWalletProps) 
       )}
 
       {/* Footer Info */}
+      {/* Ronda 16 (stream A, bloqueador 1 del test dirigido ronda 15):
+          el aviso era `text-white/80` y `text-white/70` SIN fondo propio:
+          vive fuera de las 4 tarjetas, en la raíz `space-y-6`, así que en
+          tema claro quedaba blanco sobre el fondo pálido de la página
+          (casi ilegible). La ronda 15 (stream C) opacó las tarjetas pero
+          este aviso quedó fuera del arreglo. Texto explícito claro/oscuro,
+          mismo patrón que el aviso anónimo de este componente; en oscuro
+          no cambia nada. */}
       <div className="text-center space-y-2">
-        <p className="text-xs text-white/80 font-medium">
-          Esta es una wallet demo con datos mock para familiarizarte con el ecosistema.
+        <p className="text-xs text-slate-700 dark:text-white/80 font-medium">
+          Esta es una wallet demo con datos mock para familiarizarte con el
+          ecosistema.
         </p>
-        <p className="text-xs text-white/70">
-          En producción, podrás conectar tu wallet real de MetaMask para interactuar con contratos inteligentes en Polygon.
+        <p className="text-xs text-slate-600 dark:text-white/70">
+          En producción, podrás conectar tu wallet real de MetaMask para
+          interactuar con contratos inteligentes en Polygon.
         </p>
       </div>
     </div>

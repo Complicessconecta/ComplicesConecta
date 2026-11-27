@@ -11,6 +11,7 @@ import { Check, X, Eye, Shield, Clock } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import {
+  ensureSeededPhotoAccessRequests,
   getAnonymousPhotoAccessRemainingMs,
   listIncomingRequestsSync,
   respondFriendRequest,
@@ -18,18 +19,50 @@ import {
 } from "@/lib/friends";
 import { LiveCountdown } from "@/components/profiles/shared/PhotoAccessCountdown";
 
+/**
+ * Ronda 15 (stream A): solicitudes semilla de la bandeja
+ * ("Solicitudes de Acceso"). Antes eran objetos hardcodeados con
+ * `isLocal` ausente: aprobarlas era solo `setState` — no escribía
+ * la concesión de 24 h (sin cuenta atrás HH:MM:SS) y al remontar
+ * volvían a "pendiente". Ahora son SOLO los datos de presentación
+ * (nombre/avatar/mensaje/antigüedad) de filas REALES del almacén
+ * `friend_requests_demo`: `ensureSeededPhotoAccessRequests` las
+ * escribe ahí (una por dueño, idempotente) y la bandeja se lee del
+ * almacén, igual que una solicitud creada desde el chat. El nombre
+ * y el avatar se superponen por `fromId` porque el almacén solo
+ * guarda ids y estos solicitantes semilla no son cuentas demo
+ * conocidas (`resolveDemoDisplayName("user-123")` no los resuelve).
+ */
+const SEEDED_PHOTO_ACCESS_REQUESTS = [
+  {
+    fromId: "user-123",
+    name: "María García",
+    avatar: "/assets/people/single/1.jpg",
+    message: "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
+    createdMinutesAgo: 60,
+  },
+  {
+    fromId: "user-456",
+    name: "Carlos López",
+    avatar: "/assets/people/single/2.jpg",
+    message: "Me interesa tu perfil, ¿podrías compartir tus fotos?",
+    createdMinutesAgo: 120,
+  },
+];
+
 interface AccessRequest {
   id: string;
   requesterId: string;
   requesterName: string;
-  requesterAvatar?: string;
+  requesterAvatar?: string | undefined;
   message: string;
   timestamp: number;
   status: "pending" | "approved" | "denied";
   /**
-   * Ronda 9, stream D: solicitud real del almacén local
-   * (`friend_requests_demo`, kind `photo_access`). Aprobar/denegar
-   * responde en ese almacén; sin la marca se simularía y el acceso
+   * Ronda 15 (stream A): TODAS las filas vienen del almacén local
+   * (`friend_requests_demo`, kind `photo_access`) — incluidas las
+   * semillas, que `loadRequests` siembra ahí. Sin la marca (o sin
+   * fila en el almacén) aprobar/denegar no escribe nada y el acceso
    * nunca se concedería de verdad.
    */
   isLocal?: boolean;
@@ -59,65 +92,72 @@ export const PrivateImageRequestsManager: React.FC<
         // Simular carga de solicitudes pendientes
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        // Solicitudes mock para demo
-        const mockRequests: AccessRequest[] = [
-          {
-            id: "req-1",
-            requesterId: "user-123",
-            requesterName: "María García",
-            requesterAvatar: "/assets/people/single/1.jpg",
-            message:
-              "Hola, me gustaría ver tus fotos privadas para conocerte mejor.",
-            timestamp: Date.now() - 3600000, // Hace 1 hora
-            status: "pending",
-          },
-          {
-            id: "req-2",
-            requesterId: "user-456",
-            requesterName: "Carlos López",
-            requesterAvatar: "/assets/people/single/2.jpg",
-            message: "Me interesa tu perfil, ¿podrías compartir tus fotos?",
-            timestamp: Date.now() - 7200000, // Hace 2 horas
-            status: "pending",
-          },
-        ];
+        // Ronda 15 (stream A): las 2 solicitudes semilla (María
+        // García / Carlos López) se escriben en el MISMO almacén
+        // local que una solicitud real (`friend_requests_demo`,
+        // kind `photo_access`); antes eran objetos hardcodeados
+        // fuera del almacén y aprobarlas era solo estado local: sin
+        // concesión de 24 h (sin cuenta atrás HH:MM:SS) y revertida
+        // a "pendiente" al remontar. La siembra es idempotente: si
+        // la fila ya existe (pendiente, aceptada o declinada) no se
+        // duplica; solo una aceptada ya expirada vuelve a pendiente.
+        ensureSeededPhotoAccessRequests(
+          profileId,
+          SEEDED_PHOTO_ACCESS_REQUESTS,
+        );
 
-        setRequests(mockRequests);
-
-        // Ronda 9, stream D: solicitudes REALES de ver fotos enviadas
-        // a este perfil (almacén local `friend_requests_demo`, kind
-        // `photo_access`). Antes solo se veían las 2 mock (María García
-        // y Carlos López) y una solicitud enviada de verdad —p. ej. la
-        // del perfil anónimo a la pareja— nunca aparecía aquí ni se
-        // podía conceder (test ronda 8).
-        // Ronda 12 (stream A, punto 2): `includeDecided: true` — el
-        // gestor se reconstruía SOLO con pendientes, así que una
+        // Solicitudes REALES de ver fotos enviadas a este perfil
+        // (almacén local `friend_requests_demo`, kind
+        // `photo_access`) — incluidas las semillas ya sembradas.
+        // Ronda 12 (stream A, punto 2): `includeDecided: true` —
+        // el gestor se reconstruía SOLO con pendientes, así que una
         // solicitud aceptada desaparecía al recargar mientras la
-        // cuenta atrás de la concesión seguía viva (bandeja y galería
-        // en desacuerdo). Aceptadas y declinadas quedan visibles con
-        // su estado real del almacén.
+        // cuenta atrás de la concesión seguía viva (bandeja y
+        // galería en desacuerdo). Aceptadas y declinadas quedan
+        // visibles con su estado real del almacén.
         const localRequests: AccessRequest[] = listIncomingRequestsSync(
           profileId,
           "photo_access",
           { includeDecided: true },
-        ).map((req) => ({
-          id: req.id,
-          requesterId: req.fromId,
-          requesterName: resolveDemoDisplayName(req.fromId),
-          message: req.message ?? "Solicitud para ver la galería privada.",
-          timestamp: Date.parse(req.createdAt) || Date.now(),
-          status:
-            req.status === "accepted"
-              ? "approved"
-              : req.status === "declined"
-                ? "denied"
-                : "pending",
-          isLocal: true,
-        }));
-        setRequests((prev) => {
-          const seen = new Set(prev.map((r) => r.id));
-          return [...prev, ...localRequests.filter((r) => !seen.has(r.id))];
+        ).map((req) => {
+          const seed = SEEDED_PHOTO_ACCESS_REQUESTS.find(
+            (s) => s.fromId === req.fromId,
+          );
+          return {
+            id: req.id,
+            requesterId: req.fromId,
+            requesterName: seed?.name ?? resolveDemoDisplayName(req.fromId),
+            requesterAvatar: seed?.avatar,
+            message:
+              req.message ??
+              seed?.message ??
+              "Solicitud para ver la galería privada.",
+            timestamp: Date.parse(req.createdAt) || Date.now(),
+            status:
+              req.status === "accepted"
+                ? "approved"
+                : req.status === "declined"
+                  ? "denied"
+                  : "pending",
+            isLocal: true,
+          };
         });
+        // Orden visible: las semillas primero (en su orden fijo) y
+        // luego las reales en orden del almacén. Antes las mock se
+        // pintaban primero y las reales se añadían después; sin
+        // esto una solicitud real enviada ANTES de la primera
+        // siembra quedaría por encima de las semillas y cambiaría
+        // el orden que el test de la ronda 14 asume.
+        const seedOrder = (requesterId: string): number => {
+          const idx = SEEDED_PHOTO_ACCESS_REQUESTS.findIndex(
+            (s) => s.fromId === requesterId,
+          );
+          return idx === -1 ? SEEDED_PHOTO_ACCESS_REQUESTS.length : idx;
+        };
+        localRequests.sort(
+          (a, b) => seedOrder(a.requesterId) - seedOrder(b.requesterId),
+        );
+        setRequests(localRequests);
       } catch (error) {
         logger.error("Error cargando solicitudes de acceso", {
           error,
@@ -132,117 +172,91 @@ export const PrivateImageRequestsManager: React.FC<
   }, [profileId]);
 
   const handleApprove = async (requestId: string, requesterId: string) => {
-    // Ronda 9, stream D: solicitud local real — se responde en el
-    // almacén (`friend_requests_demo`): aceptar concede el acceso a
-    // la galería en serio (lo lee `hasPhotoAccess` / el gate).
+    // Ronda 15 (stream A): TODAS las solicitudes de la bandeja son
+    // filas reales del almacén (`friend_requests_demo`) — incluidas
+    // las semillas, que `loadRequests` siembra ahí. Aprobar responde
+    // en el almacén (`respondFriendRequest`): aceptar escribe la
+    // concesión de 24 h (`respondedAt`) que lee la cuenta atrás.
+    // El camino anterior simulaba la aprobación de las mock con solo
+    // `setState` (sin escribir nada): sin contador HH:MM:SS y
+    // revertida a "pendiente" al remontar. Ese camino ya no existe:
+    // una fila sin almacén es un error, no una aprobación fingida.
     const localRequest = requests.find((r) => r.id === requestId && r.isLocal);
-    if (localRequest) {
-      const result = await respondFriendRequest(requestId, "accepted", true);
-      if (!result.ok) {
-        logger.error("Error aprobando solicitud local de acceso", {
-          error: result.error,
-          requestId,
-        });
-        toast({
-          title: "Error",
-          description: result.error ?? "No se pudo aprobar la solicitud.",
-          variant: "destructive",
-        });
-        return;
-      }
-      setRequests((prev) =>
-        prev.map((req) =>
-          req.id === requestId ? { ...req, status: "approved" } : req,
-        ),
-      );
-      toast({
-        title: "Solicitud aprobada",
-        description: "El usuario ahora puede ver tus imágenes privadas.",
+    if (!localRequest) {
+      logger.error("Error aprobando solicitud de acceso: sin almacén", {
+        requestId,
       });
-      onAccessGranted?.(requesterId);
-      return;
-    }
-
-    try {
-      // Simular aprobación (en producción sería una llamada a la API)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setRequests((prev) =>
-        prev.map((req) =>
-          req.id === requestId ? { ...req, status: "approved" } : req,
-        ),
-      );
-
-      toast({
-        title: "Solicitud aprobada",
-        description: "El usuario ahora puede ver tus imágenes privadas.",
-      });
-
-      onAccessGranted?.(requesterId);
-    } catch (error) {
-      logger.error("Error aprobando solicitud", { error, requestId });
       toast({
         title: "Error",
         description: "No se pudo aprobar la solicitud.",
         variant: "destructive",
       });
+      return;
     }
+    const result = await respondFriendRequest(requestId, "accepted", true);
+    if (!result.ok) {
+      logger.error("Error aprobando solicitud local de acceso", {
+        error: result.error,
+        requestId,
+      });
+      toast({
+        title: "Error",
+        description: result.error ?? "No se pudo aprobar la solicitud.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setRequests((prev) =>
+      prev.map((req) =>
+        req.id === requestId ? { ...req, status: "approved" } : req,
+      ),
+    );
+    toast({
+      title: "Solicitud aprobada",
+      description: "El usuario ahora puede ver tus imágenes privadas.",
+    });
+    onAccessGranted?.(requesterId);
   };
 
   const handleDeny = async (requestId: string, requesterId: string) => {
-    // Ronda 9, stream D: mismo camino real que en handleApprove.
+    // Ronda 15 (stream A): mismo camino real que en handleApprove —
+    // la denegación simulada con solo `setState` se perdía al
+    // remontar igual que la aprobación fingida.
     const localRequest = requests.find((r) => r.id === requestId && r.isLocal);
-    if (localRequest) {
-      const result = await respondFriendRequest(requestId, "declined", true);
-      if (!result.ok) {
-        logger.error("Error denegando solicitud local de acceso", {
-          error: result.error,
-          requestId,
-        });
-        toast({
-          title: "Error",
-          description: result.error ?? "No se pudo denegar la solicitud.",
-          variant: "destructive",
-        });
-        return;
-      }
-      setRequests((prev) =>
-        prev.map((req) =>
-          req.id === requestId ? { ...req, status: "denied" } : req,
-        ),
-      );
-      toast({
-        title: "Solicitud denegada",
-        description: "El usuario no podrá ver tus imágenes privadas.",
+    if (!localRequest) {
+      logger.error("Error denegando solicitud de acceso: sin almacén", {
+        requestId,
       });
-      onAccessDenied?.(requesterId);
-      return;
-    }
-
-    try {
-      // Simular denegación (en producción sería una llamada a la API)
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      setRequests((prev) =>
-        prev.map((req) =>
-          req.id === requestId ? { ...req, status: "denied" } : req,
-        ),
-      );
-
-      toast({
-        title: "Solicitud denegada",
-        description: "El usuario no podrá ver tus imágenes privadas.",
-      });
-
-      onAccessDenied?.(requesterId);
-    } catch (error) {
-      logger.error("Error denegando solicitud", { error, requestId });
       toast({
         title: "Error",
         description: "No se pudo denegar la solicitud.",
         variant: "destructive",
       });
+      return;
     }
+    const result = await respondFriendRequest(requestId, "declined", true);
+    if (!result.ok) {
+      logger.error("Error denegando solicitud local de acceso", {
+        error: result.error,
+        requestId,
+      });
+      toast({
+        title: "Error",
+        description: result.error ?? "No se pudo denegar la solicitud.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setRequests((prev) =>
+      prev.map((req) =>
+        req.id === requestId ? { ...req, status: "denied" } : req,
+      ),
+    );
+    toast({
+      title: "Solicitud denegada",
+      description: "El usuario no podrá ver tus imágenes privadas.",
+    });
+    onAccessDenied?.(requesterId);
   };
 
   const formatTimeAgo = (timestamp: number) => {
@@ -261,10 +275,10 @@ export const PrivateImageRequestsManager: React.FC<
   if (isLoading) {
     return (
       <Card
-        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+        className={`bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 ${className}`}
       >
         <CardContent className="p-6">
-          <div className="text-center text-white/60">
+          <div className="text-center text-slate-500 dark:text-white/60">
             Cargando solicitudes...
           </div>
         </CardContent>
@@ -275,10 +289,10 @@ export const PrivateImageRequestsManager: React.FC<
   if (requests.length === 0) {
     return (
       <Card
-        className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+        className={`bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 ${className}`}
       >
         <CardContent className="p-6">
-          <div className="text-center text-white/60">
+          <div className="text-center text-slate-500 dark:text-white/60">
             <Eye className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No hay solicitudes de acceso pendientes</p>
           </div>
@@ -289,15 +303,15 @@ export const PrivateImageRequestsManager: React.FC<
 
   return (
     <Card
-      className={`bg-white/10 backdrop-blur-md border-white/20 ${className}`}
+      className={`bg-white dark:bg-white/10 backdrop-blur-md border-slate-200 dark:border-white/20 ${className}`}
     >
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="text-slate-900 dark:text-white flex items-center gap-2">
             <Shield className="h-5 w-5 text-purple-400" />
             Solicitudes de Acceso
           </CardTitle>
-          <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+          <Badge className="bg-purple-500/15 text-purple-800 border-purple-500/40 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30">
             {pendingRequests.length} pendientes
           </Badge>
         </div>
@@ -307,13 +321,13 @@ export const PrivateImageRequestsManager: React.FC<
         {/* Solicitudes Pendientes */}
         {pendingRequests.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-white/70 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-slate-500 dark:text-white/70 uppercase tracking-wider">
               Pendientes
             </p>
             {pendingRequests.map((request) => (
               <div
                 key={request.id}
-                className="bg-white/5 rounded-xl p-4 border border-white/10"
+                className="bg-slate-900/5 dark:bg-white/5 rounded-xl p-4 border border-slate-200 dark:border-white/10"
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-linear-to-r from-purple-500 to-pink-500 flex items-center justify-center shrink-0 overflow-hidden">
@@ -338,16 +352,16 @@ export const PrivateImageRequestsManager: React.FC<
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-semibold text-white truncate">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
                         {request.requesterName}
                       </p>
-                      <div className="flex items-center gap-1 text-xs text-white/60">
+                      <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-white/60">
                         <Clock className="h-3 w-3" />
                         {formatTimeAgo(request.timestamp)}
                       </div>
                     </div>
                     {request.message && (
-                      <p className="text-xs text-white/70 mb-3 line-clamp-2">
+                      <p className="text-xs text-slate-600 dark:text-white/70 mb-3 line-clamp-2">
                         {request.message}
                       </p>
                     )}
@@ -368,7 +382,7 @@ export const PrivateImageRequestsManager: React.FC<
                         }
                         size="sm"
                         variant="outline"
-                        className="flex-1 border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs"
+                        className="flex-1 border-red-500/30 text-red-600 hover:bg-red-500/10 dark:text-red-400 text-xs"
                       >
                         <X className="h-3 w-3 mr-1" />
                         Denegar
@@ -384,7 +398,7 @@ export const PrivateImageRequestsManager: React.FC<
         {/* Solicitudes Aprobadas */}
         {approvedRequests.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-wider">
               Aprobadas
             </p>
             {approvedRequests.map((request) => {
@@ -408,10 +422,10 @@ export const PrivateImageRequestsManager: React.FC<
                         <Check className="h-4 w-4 text-green-400" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-slate-900 dark:text-white">
                           {request.requesterName}
                         </p>
-                        <p className="text-xs text-white/60">
+                        <p className="text-xs text-slate-500 dark:text-white/60">
                           {formatTimeAgo(request.timestamp)}
                           {remainingMs !== null && (
                             <>
@@ -423,7 +437,7 @@ export const PrivateImageRequestsManager: React.FC<
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
+                    <Badge className="bg-green-500/15 text-green-700 border-green-500/30 dark:bg-green-500/20 dark:text-green-300 dark:border-green-500/30 text-xs">
                       Acceso concedido
                     </Badge>
                   </div>
@@ -436,7 +450,7 @@ export const PrivateImageRequestsManager: React.FC<
         {/* Solicitudes Denegadas */}
         {deniedRequests.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">
+            <p className="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider">
               Denegadas
             </p>
             {deniedRequests.map((request) => (
@@ -450,15 +464,15 @@ export const PrivateImageRequestsManager: React.FC<
                       <X className="h-4 w-4 text-red-400" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-medium text-slate-900 dark:text-white">
                         {request.requesterName}
                       </p>
-                      <p className="text-xs text-white/60">
+                      <p className="text-xs text-slate-500 dark:text-white/60">
                         {formatTimeAgo(request.timestamp)}
                       </p>
                     </div>
                   </div>
-                  <Badge className="bg-red-500/20 text-red-300 border-red-500/30 text-xs">
+                  <Badge className="bg-red-500/15 text-red-700 border-red-500/30 dark:bg-red-500/20 dark:text-red-300 dark:border-red-500/30 text-xs">
                     Acceso denegado
                   </Badge>
                 </div>

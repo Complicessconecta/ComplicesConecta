@@ -1,16 +1,51 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader,  CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/buttons/Button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, Eye, EyeOff, Users, AlertTriangle, Trash2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Shield,
+  Eye,
+  EyeOff,
+  Users,
+  AlertTriangle,
+  Trash2,
+} from "lucide-react";
 import { logger } from "@/lib/logger";
-import { dataPrivacyService } from "@/services";
+import { dataPrivacyService } from "@/services/core/DataPrivacyService";
 import { useAuth } from "@/features/auth/useAuth";
+import {
+  deleteActiveDemoSession,
+  getActiveDemoSession,
+} from "@/lib/demo-registration";
 import { useToast } from "@/hooks/useToast";
-import { loadSettingsStateRemote, saveSettingsState } from "@/components/settings/settingsStorage";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  loadSettingsStateRemote,
+  saveSettingsState,
+} from "@/components/settings/settingsStorage";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const DEFAULT_PRIVACY = {
   profile_visibility: "everyone",
@@ -23,7 +58,7 @@ const DEFAULT_PRIVACY = {
 };
 
 export const PrivacySettings = () => {
-  const { user } = useAuth();
+  const { user, isDemo } = useAuth();
   const { toast } = useToast();
   const [isDeletingMatches, setIsDeletingMatches] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
@@ -105,6 +140,42 @@ export const PrivacySettings = () => {
         description: "Debes estar autenticado",
         variant: "destructive",
       });
+      return;
+    }
+
+    // Ronda 15 (stream C): en sesión demo la cuenta es LOCAL
+    // (registro `cc_local_demo_accounts_v1` en localStorage) y NO
+    // existe en Supabase. El camino anterior llamaba a
+    // `dataPrivacyService.deleteUserAccount`, que encadena ~8 idas y
+    // vueltas a Supabase para un UUID que no está allí: en el test
+    // del PR #74 el botón se quedó en "Eliminando…" más de 13 s y
+    // la cuenta siguió existiendo. Mismo camino que el Eliminar de
+    // /demo (`deleteActiveDemoSession`, síncrono, probado en
+    // r14-stream-b): borra la cuenta del registro si es registrada
+    // no canónica, o solo cierra la sesión si es canónica (Sofía /
+    // Carmen & Roberto, fixture no borrable).
+    if (isDemo()) {
+      const session = getActiveDemoSession();
+      setIsDeletingAccount(true);
+      const result = deleteActiveDemoSession();
+      setIsDeletingAccount(false);
+      if (!result.deleted) {
+        toast({
+          title: "Error",
+          description: result.reason ?? "No se pudo eliminar la cuenta demo.",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({
+        title: "✅ Cuenta eliminada",
+        description: session?.isRegistered
+          ? `Se eliminó "${session.nickname}" de este navegador.`
+          : `Se cerró la sesión demo de "${session?.nickname ?? "la cuenta demo"}".`,
+      });
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
       return;
     }
 
@@ -193,6 +264,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("show_online_status", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -209,6 +282,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("show_distance", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -225,6 +300,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("show_age", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
         </CardContent>
@@ -254,6 +331,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("auto_approve_matches", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -272,6 +351,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("block_screenshots", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
 
@@ -291,6 +372,8 @@ export const PrivacySettings = () => {
               onCheckedChange={(value) =>
                 handlePrivacyChange("incognito_mode", value)
               }
+
+              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
             />
           </div>
         </CardContent>
@@ -424,4 +507,3 @@ export const PrivacySettings = () => {
     </div>
   );
 };
-

@@ -12,6 +12,7 @@
 ## 1) Hallazgos (Nombre / Ruta / Síntoma / Acción)
 
 ### H001 - HTML dinámico sin sanitización (XSS potencial) [ALTO]
+
 - **Ruta:** `src/hooks/useScreenshotProtection.ts`
 - **Síntoma:** usa `warningDiv.innerHTML = \`...${method}...\``.
   - Aunque `method` se arma desde constantes internas, el patrón `innerHTML` es un vector XSS si en el futuro se concatena contenido externo.
@@ -20,6 +21,7 @@
   - Alternativa: si se requiere HTML, sanitizar estrictamente y **no** interpolar valores externos.
 
 ### H002 - Uso de `dangerouslySetInnerHTML` para inyectar CSS [MEDIO]
+
 - **Ruta:** `src/components/ui/charts/chart.tsx`
 - **Síntoma:** `dangerouslySetInnerHTML` inyecta un bloque `<style>` con variables CSS.
   - No parece usar input de usuario directamente; `colorConfig` viene de `config` del componente.
@@ -29,6 +31,7 @@
   - (Mejor) generar CSS via atributos/estilos controlados en React sin `dangerouslySetInnerHTML`.
 
 ### H003 - URLs externas y carga de scripts remotos (riesgo supply-chain / CSP) [MEDIO]
+
 - **Rutas:**
   - `src/services/social/notifications/OneSignalService.ts` (carga `https://cdn.onesignal.com/...`)
   - `src/config/posthog.config.ts` (carga `https://app.posthog.com/static/array.js`)
@@ -39,6 +42,7 @@
   - Verificar integridad/uso (OneSignal/PostHog están opcionales, pero generan warnings si no config).
 
 ### H004 - Uso de LocalStorage para datos demo (riesgo de exposición local) [BAJO/MEDIO]
+
 - **Ruta:** `src/services/payments/NFTService.ts`
 - **Síntoma:** `window.localStorage.getItem(getDemoNFTStorageKey(uid))` para NFTs demo.
 - **Acción a aplicar:**

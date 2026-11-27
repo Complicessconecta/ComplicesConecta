@@ -14,11 +14,11 @@ Tu tarea principal es ejecutar un PROTOCOLO DE BARRIDO PROFUNDO para sanear todo
 Contexto de archivos clave (usa esto como fuente de verdad; extiéndelo sin cambiarlo):
 
 DIAGRAMAS_FLUJOS_CONSOLIDADO.md: Contiene flujos principales (Landing → Demo/Auth → Discover → Match → Chat con Galería Privada paywall CMPX, etc.). Incluye Mermaid de flujo completo, verificación de club, moderación. Nota: Truncado, pero el núcleo es Discover → Match requerido para Chat.
-REPORTE_CONSOLIDACION_ARCHIVOS.md: Pendientes reales: src/pages/Discover.tsx (handleLike solo toast, no backend); gating de chat por match; galería privada en chat; faltan botones/flujos de Billetera y Creación de NFT en diagramas; referencias desactualizadas en CHANGES.md (database/migrations/*.md no existen); duplicidad en layouts (src/components/layout/ResponsiveLayout.tsx y src/layouts/ResponsiveLayout.tsx); actualización de referencias en reportes.
+REPORTE_CONSOLIDACION_ARCHIVOS.md: Pendientes reales: src/pages/Discover.tsx (handleLike solo toast, no backend); gating de chat por match; galería privada en chat; faltan botones/flujos de Billetera y Creación de NFT en diagramas; referencias desactualizadas en CHANGES.md (database/migrations/_.md no existen); duplicidad en layouts (src/components/layout/ResponsiveLayout.tsx y src/layouts/ResponsiveLayout.tsx); actualización de referencias en reportes.
 REPORTE_DISCREPANCIAS_FLUJOS.md: Discrepancias: Falta lógica de match (crear like, check mutuo, insert en DB); acceso a chat sin match; galería privada faltante en chat (UI + pago CMPX).
 DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md: Reglas maestras (ya listadas arriba). Kit de onboarding incluye este doc.
 DIAGRAMAS_FLUJOS_v3.5.0.md: Flujos similares a consolidado, con adiciones como blur en galería, flujo de NFT (botón "Crear NFT" → Upload → Preview → Mint).
-REPORTE_VERIFICACION_REPORTES_2025-12-27.md: Pendientes: Crear/recuperar database/migrations/*.md (MISSING_COUPLE_AGREEMENTS_TABLE.md, etc.); resolver duplicidad de ResponsiveLayout.
+REPORTE_VERIFICACION_REPORTES_2025-12-27.md: Pendientes: Crear/recuperar database/migrations/_.md (MISSING_COUPLE_AGREEMENTS_TABLE.md, etc.); resolver duplicidad de ResponsiveLayout.
 ESTADO_MAESTRO_UNIFICADO_v3.7.0.md: Estado general (95% completo), con features como NFTs, tokens CMPX, pero pendientes en recompensas y docs.
 REPORTE_ESTADO_TABLAS_Y_CORRECCIONES.md: Faltan tablas/columnas en DB (e.g., matches, likes para matches; frozen_assets_snapshot para disolución; swinger_interests para AI). Documentos generados para missing schemas.
 
@@ -40,7 +40,6 @@ Variables no utilizadas o lógica incompleta.
 Conflictos de nombres o duplicados.
 Problemas de Supabase (as any, null, etc.): Solo documenta, NO corrijas (se actualizará en fase de SB).
 
-
 Lógica de Acción:
 🔴 SI TIENE ERRORES: Documenta en la tabla del .md (nombre, ruta, síntoma, solución). No corrijas aún.
 🟢 SI ESTÁ LIMPIO: Marca el archivo como "VERIFICADO" en el .md y avanza.
@@ -54,7 +53,6 @@ El seguimiento y avance está en @BARRIDO_SRC_ESTADO.md: Sigue donde indica el .
 Creación del .md:
 Genera BARRIDO_SRC_ESTADO.md con: Fecha actual (January 08, 2026), tabla de problemáticos (| Ruta | Síntoma | Solución Propuesta |), secciones de directorios procesados, avance y notas.
 Solo después de completar la identificación y el .md, ejecuta las soluciones: Para cada entrada en la tabla, genera código corregido (TS/TSX/SQL), acumulativamente.
-
 
 Problemas a solucionar (prioriza estos en el barrido, acumulativamente):
 

@@ -15,7 +15,13 @@ declare const Deno: {
 
 interface EmailRequest {
   to: string;
-  template: "welcome" | "confirmation" | "reset-password" | "match" | "event" | "club-application";
+  template:
+    | "welcome"
+    | "confirmation"
+    | "reset-password"
+    | "match"
+    | "event"
+    | "club-application";
   data?: Record<string, unknown>;
 }
 

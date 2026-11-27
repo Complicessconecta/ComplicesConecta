@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { validateEmail } from "@/lib/validation";
 
-
 export interface EmailData {
   to: string;
   subject: string;
@@ -40,9 +39,7 @@ export class EmailService {
     // C2: send-email now requires a valid user JWT (401 with the anon key).
     // The anon key is no longer used here; auth comes from the session.
     if (!import.meta.env.VITE_SUPABASE_URL) {
-      logger.warn(
-        "Supabase URL is not defined in environment variables.",
-      );
+      logger.warn("Supabase URL is not defined in environment variables.");
     }
   }
   private static baseUrl = import.meta.env.VITE_SUPABASE_URL;

@@ -34,7 +34,10 @@ serve(async (req: Request) => {
       return new Response(
         JSON.stringify({ success: false, error: "Neo4j está deshabilitado" }),
         {
-          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+          headers: {
+            ...getCorsHeaders(req),
+            "Content-Type": "application/json",
+          },
           status: 400,
         },
       );
@@ -47,8 +50,11 @@ serve(async (req: Request) => {
     // JWT complement (2026-11-19): ownership check. El llamador solo puede
     // sincronizar sus propios datos, salvo admin activo. Sin ningún usuario
     // en el payload no hay nada que comprobar -> 400.
-    const payloadUserIds = [syncData.user1_id, syncData.user2_id, syncData.user_id]
-      .filter((id): id is string => typeof id === "string" && id.length > 0);
+    const payloadUserIds = [
+      syncData.user1_id,
+      syncData.user2_id,
+      syncData.user_id,
+    ].filter((id): id is string => typeof id === "string" && id.length > 0);
     if (payloadUserIds.length === 0) {
       return new Response(
         JSON.stringify({
@@ -56,7 +62,10 @@ serve(async (req: Request) => {
           error: "El payload debe incluir user_id (o user1_id/user2_id)",
         }),
         {
-          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+          headers: {
+            ...getCorsHeaders(req),
+            "Content-Type": "application/json",
+          },
           status: 400,
         },
       );
@@ -70,7 +79,10 @@ serve(async (req: Request) => {
             error: "Forbidden: solo puedes sincronizar tus propios datos",
           }),
           {
-            headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+            headers: {
+              ...getCorsHeaders(req),
+              "Content-Type": "application/json",
+            },
             status: 403,
           },
         );
@@ -87,7 +99,9 @@ serve(async (req: Request) => {
     // cableado, ver nota abajo — pero ya no existe ningún valor por
     // defecto que pueda usarse por accidente cuando se cablee.)
     const _neo4jPassword =
-      Deno.env.get("NEO4J_PASSWORD") || Deno.env.get("VITE_NEO4J_PASSWORD") || "";
+      Deno.env.get("NEO4J_PASSWORD") ||
+      Deno.env.get("VITE_NEO4J_PASSWORD") ||
+      "";
     if (!_neo4jPassword) {
       return new Response(
         JSON.stringify({
@@ -95,7 +109,10 @@ serve(async (req: Request) => {
           error: "NEO4J_PASSWORD no configurada en el servidor",
         }),
         {
-          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
+          headers: {
+            ...getCorsHeaders(req),
+            "Content-Type": "application/json",
+          },
           status: 500,
         },
       );

@@ -1,9 +1,5 @@
 import { serve } from "std/http/server.ts";
-import {
-  authenticate,
-  handleOptions,
-  jsonResponse,
-} from "../_shared/auth.ts";
+import { authenticate, handleOptions, jsonResponse } from "../_shared/auth.ts";
 
 interface ReferralRequest {
   referralCode: string;

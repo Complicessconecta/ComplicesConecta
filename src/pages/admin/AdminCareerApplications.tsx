@@ -298,7 +298,7 @@ const AdminCareerApplications = () => {
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center gap-2 text-center sm:text-left">
               <Users className="h-5 w-5 sm:h-6 sm:w-6" />
               <span className="hidden sm:inline">
-                Panel de Administracin -{" "}
+                Panel de Administración -{" "}
               </span>
               Solicitudes de Carrera
             </h1>

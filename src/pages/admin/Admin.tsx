@@ -76,7 +76,13 @@ interface FAQItem {
 }
 
 export const Admin = () => {
-  const { isAdmin, isAuthenticated, isDemo, user: _user } = useAuth();
+  const {
+    isAdmin,
+    isAuthenticated,
+    isDemo,
+    loading: authLoading,
+    user: _user,
+  } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -88,6 +94,13 @@ export const Admin = () => {
   // `isAuthenticated` (useAuth no memoiza su retorno): sin este
   // guardián la carga demo se repetiría en cada render.
   const demoLoadedRef = useRef(false);
+  // Ronda 22 (stream A, FAIL 7): mismo guardián para la ruta REAL.
+  // Sin él, cada re-render (identidades frescas de useAuth en cada
+  // render) re-disparaba loadAdminData(): setLoading(true) devolvía
+  // el panel a «Cargando...» y las cargas solapadas resolvían en
+  // cualquier orden, dejando el panel en ceros con las listas
+  // vacías. Con el guardián, los re-corridos del efecto son no-op.
+  const adminLoadedRef = useRef(false);
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [stats, setStats] = useState<AppStats>({
@@ -115,6 +128,22 @@ export const Admin = () => {
   });
 
   useEffect(() => {
+    // Ronda 22 (stream A, FAIL 7): NO decidir nada mientras la
+    // sesión no está restaurada. Esta instancia de useAuth arranca
+    // con session/user en null y la sesión real se hidrata en async
+    // (useAuth.ts: init con supabase.auth.getSession). Sin esta
+    // espera, el primer render tras una recarga decidía con estado
+    // sin restaurar: con flags demo obsoletos en el dispositivo,
+    // isDemo() valía true (sesión aún null) y se tomaba la rama
+    // demo — stats en 0 + invitaciones/faq vacíos POR DISEÑO — y
+    // demoLoadedRef la dejaba clavada ahí (12→0, 1247→0, 8→0, 3→0
+    // y sin secciones inferiores, persistente en los 3 intentos del
+    // test). Con sesión real, isDemo() ya vale false al asentarse.
+    // Mientras authLoading, el panel sigue en «Cargando...».
+    if (authLoading) {
+      return;
+    }
+
     // Ronda 21 (FAIL 2b): en demo NO se rebota a /discover. AdminRoute
     // ya concede demo de inmediato (el panel en demo muestra datos
     // demo/respaldo, como el resto de la app en demo), pero este
@@ -150,9 +179,13 @@ export const Admin = () => {
       return;
     }
 
-    // Load admin data for authenticated admin users
-    loadAdminData();
-  }, [navigate, toast, isAuthenticated, isAdmin, demoActive]);
+    // Load admin data for authenticated admin users (una sola vez:
+    // ver adminLoadedRef arriba).
+    if (!adminLoadedRef.current) {
+      adminLoadedRef.current = true;
+      loadAdminData();
+    }
+  }, [navigate, toast, isAuthenticated, isAdmin, demoActive, authLoading]);
 
   // Ronda 21 (FAIL 2b): panel demo con datos demo/respaldo locales —
   // stats en 0 + lista de perfiles demo local, sin llamadas a Supabase
@@ -230,9 +263,12 @@ export const Admin = () => {
       setProfiles((data ?? []) as Profile[]);
     } catch (_error) {
       logger.error("Error loading profiles:", { error: String(_error) });
-    } finally {
-      setLoading(false);
     }
+    // Ronda 22 (stream A, FAIL 7): sin `finally { setLoading(false) }`
+    // aquí — este finally apagaba «Cargando...» aunque _loadStats
+    // siguiera pendiente y el panel pintaba stats en 0. Solo el
+    // finally de loadAdminData (todos los cargadores asentados)
+    // apaga la carga.
   };
 
   const _loadStats = async () => {
@@ -306,9 +342,9 @@ export const Admin = () => {
       });
     } catch (_error) {
       logger.error("Error loading stats:", { error: String(_error) });
-    } finally {
-      setLoading(false);
     }
+    // Ronda 22 (stream A, FAIL 7): sin `finally { setLoading(false) }`
+    // aquí — ver loadProfiles: solo loadAdminData apaga la carga.
   };
 
   const _loadFAQs = async () => {
@@ -463,10 +499,10 @@ export const Admin = () => {
         )}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            Panel de Administracin
+            Panel de Administración
           </h1>
           <p className="text-muted-foreground">
-            Gestiona usuarios, estadsticas y configuraciones del sistema
+            Gestiona usuarios, estadísticas y configuraciones del sistema
           </p>
         </div>
 

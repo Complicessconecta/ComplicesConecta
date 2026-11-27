@@ -181,18 +181,30 @@ const Notifications = () => {
         {/* Ronda 21 (stream C): el título y el subtítulo eran `text-white`
             fijos: en tema claro el fondo es claro y el blanco era
             ilegible. Ahora van por tema. */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <Bell className="w-8 h-8 text-purple-500" />
+        {/* Ronda 22 (stream B): la cabecera era `flex` de una sola fila
+            con dos bloques que no encogen: el h1 (icono + título + badge)
+            y el botón (`whitespace-nowrap` en Button). En móvil (~360 px)
+            la suma supera el ancho y el botón se salía por la derecha
+            recortado por el badge («…todas com…»). Con `flex-wrap` el
+            botón baja a su propia línea con ancho completo, y `shrink-0`
+            impide que se comprima cuando sí cabe en la misma fila. */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3 min-w-0">
+            <Bell className="w-8 h-8 text-purple-500 shrink-0" />
             Notificaciones
             {unreadCount > 0 && (
-              <span className="text-sm font-semibold bg-red-500 text-white rounded-full px-2 py-0.5">
+              <span className="text-sm font-semibold bg-red-500 text-white rounded-full px-2 py-0.5 shrink-0">
                 {unreadCount}
               </span>
             )}
           </h1>
           {unreadCount > 0 && (
-            <Button variant="outline" size="sm" onClick={markAllAsRead}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={markAllAsRead}
+              className="shrink-0"
+            >
               Marcar todas como leídas
             </Button>
           )}

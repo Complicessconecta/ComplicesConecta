@@ -51,4 +51,3 @@ export interface MessageMetadata {
   messageType?: "private" | "public" | "group";
   [key: string]: unknown;
 }
-

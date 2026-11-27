@@ -17,13 +17,7 @@ export interface CreateReportParams {
   reportedUserId: string;
   reportedContentId?: string;
   contentType:
-    | "profile"
-    | "chat"
-    | "image"
-    | "post"
-    | "story"
-    | "message"
-    | "comment";
+    "profile" | "chat" | "image" | "post" | "story" | "message" | "comment";
   reason: string;
   description?: string;
   severity?: "low" | "medium" | "high" | "critical";
@@ -78,12 +72,14 @@ export class ReportService {
       }
 
       // Obtener usuario actual
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         return { success: false, error: "Usuario no autenticado" };
       }
-      
+
       const reporterId = user.id;
 
       if (reporterId === params.reportedUserId) {
@@ -125,11 +121,15 @@ export class ReportService {
   /**
    * Obtener reportes creados por el usuario actual
    */
-  async getUserReports(limit: number = 20): Promise<{ success: boolean; reports?: Report[]; error?: string }> {
+  async getUserReports(
+    limit: number = 20,
+  ): Promise<{ success: boolean; reports?: Report[]; error?: string }> {
     try {
       if (!supabase) return { success: false, error: "Supabase no disponible" };
-      
-      const { data: { user } } = await supabase.auth.getUser();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return { success: false, error: "Usuario no autenticado" };
 
       const { data, error } = await supabase
@@ -151,11 +151,17 @@ export class ReportService {
   /**
    * Obtener estadísticas de reportes del usuario
    */
-  async getUserReportStats(): Promise<{ success: boolean; stats?: any; error?: string }> {
+  async getUserReportStats(): Promise<{
+    success: boolean;
+    stats?: any;
+    error?: string;
+  }> {
     try {
       if (!supabase) return { success: false, error: "Supabase no disponible" };
-      
-      const { data: { user } } = await supabase.auth.getUser();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return { success: false, error: "Usuario no autenticado" };
 
       // Mock stats for now
@@ -165,8 +171,8 @@ export class ReportService {
           submitted: 5,
           pending: 1,
           resolved: 4,
-          successful: 3
-        }
+          successful: 3,
+        },
       };
     } catch (error) {
       logger.error("Error fetching user report stats", { error });
@@ -177,17 +183,23 @@ export class ReportService {
   /**
    * Obtener notificaciones de reportes
    */
-  async getReportNotifications(): Promise<{ success: boolean; notifications?: any[]; error?: string }> {
+  async getReportNotifications(): Promise<{
+    success: boolean;
+    notifications?: any[];
+    error?: string;
+  }> {
     try {
       if (!supabase) return { success: false, error: "Supabase no disponible" };
-      
-      const { data: { user } } = await supabase.auth.getUser();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return { success: false, error: "Usuario no autenticado" };
 
       // Mock notifications
       return {
         success: true,
-        notifications: []
+        notifications: [],
       };
     } catch (error) {
       logger.error("Error fetching report notifications", { error });
@@ -266,7 +278,9 @@ export class ReportService {
   }> {
     try {
       if (!supabase) return { success: false, error: "Supabase no disponible" };
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return { success: false, error: "Usuario no autenticado" };
 
       // Mock data
@@ -314,7 +328,9 @@ export class ReportService {
   ): Promise<{ success: boolean; error?: string }> {
     try {
       if (!supabase) return { success: false, error: "Supabase no disponible" };
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return { success: false, error: "Usuario no autenticado" };
 
       logger.info("Resolving report", { reportId, action, notes });

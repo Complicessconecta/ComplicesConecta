@@ -3,7 +3,15 @@
 // Descripción: Servicio de wallet interna con Supabase + Ethers.js + AES-256
 // Funcionalidades: Crear wallet, encriptar claves, transacciones, balance
 
-import { ethers, JsonRpcProvider,  Wallet, isAddress, formatEther, formatUnits, parseUnits } from "ethers";
+import {
+  ethers,
+  JsonRpcProvider,
+  Wallet,
+  isAddress,
+  formatEther,
+  formatUnits,
+  parseUnits,
+} from "ethers";
 import CryptoJS from "crypto-js";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -79,7 +87,10 @@ export class WalletService {
     return `demo_wallet:${userId}`;
   }
 
-  private getDemoWallet(userId: string, network: string = "mumbai"): WalletInfo {
+  private getDemoWallet(
+    userId: string,
+    network: string = "mumbai",
+  ): WalletInfo {
     const now = new Date().toISOString();
     const address = (() => {
       try {
@@ -495,11 +506,17 @@ export class WalletService {
       const signer = await this.createSigner(userId, network, passphrase);
 
       // Obtener dirección del contrato
-      const networkAddresses = WalletService.CONTRACT_ADDRESSES[network as keyof typeof WalletService.CONTRACT_ADDRESSES];
+      const networkAddresses =
+        WalletService.CONTRACT_ADDRESSES[
+          network as keyof typeof WalletService.CONTRACT_ADDRESSES
+        ];
       const contractAddress = networkAddresses?.CoupleNFT;
 
       // Si no hay contrato configurado o es address zero, usar simulación (para evitar bloqueos en dev)
-      if (!contractAddress || contractAddress === "0x0000000000000000000000000000000000000000") {
+      if (
+        !contractAddress ||
+        contractAddress === "0x0000000000000000000000000000000000000000"
+      ) {
         logger.warn("Contrato CoupleNFT no configurado, usando simulación");
         return Math.floor(Math.random() * 10000);
       }
@@ -507,14 +524,20 @@ export class WalletService {
       const coupleNFTContract = new ethers.Contract(
         contractAddress,
         COUPLE_NFT_ABI,
-        signer
+        signer,
       );
 
       logger.info(`Solicitando mint de NFT de pareja en ${network}...`);
-      if (typeof coupleNFTContract.requestCoupleMint !== 'function') {
-        throw new Error("El método requestCoupleMint no existe en el contrato.");
+      if (typeof coupleNFTContract.requestCoupleMint !== "function") {
+        throw new Error(
+          "El método requestCoupleMint no existe en el contrato.",
+        );
       }
-      const tx = await coupleNFTContract.requestCoupleMint(partner1, partner2, tokenURI);
+      const tx = await coupleNFTContract.requestCoupleMint(
+        partner1,
+        partner2,
+        tokenURI,
+      );
       logger.info(`Transacción enviada: ${tx.hash}`);
 
       const receipt = await tx.wait();
@@ -545,7 +568,9 @@ export class WalletService {
         return tokenId;
       }
 
-      logger.warn("Transacción exitosa pero no se encontró Token ID en eventos");
+      logger.warn(
+        "Transacción exitosa pero no se encontró Token ID en eventos",
+      );
       // Fallback para no romper el flujo si el evento no se detecta
       return Math.floor(Math.random() * 10000);
     } catch (error) {
@@ -603,10 +628,7 @@ export class WalletService {
    * fallback demo)
    * @returns Clave privada encriptada
    */
-  private encryptPrivateKey(
-    privateKey: string,
-    passphrase?: string,
-  ): string {
+  private encryptPrivateKey(privateKey: string, passphrase?: string): string {
     try {
       const key = requirePassphrase(passphrase);
       const encrypted = CryptoJS.AES.encrypt(privateKey, key).toString();
@@ -1124,4 +1146,3 @@ export class WalletService {
 
 // Exportar instancia singleton
 export const walletService = WalletService.getInstance();
-

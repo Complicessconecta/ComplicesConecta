@@ -261,4 +261,3 @@ export class NFTVerificationService {
 }
 
 export const nftVerificationService = NFTVerificationService.getInstance();
-

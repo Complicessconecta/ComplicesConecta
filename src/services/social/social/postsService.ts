@@ -285,8 +285,7 @@ export class PostsService {
         id: `comment-${postId}-${i + 1}`,
         user_id: `demo-comment-user-${(i % 10) + 1}`,
         profile_id: `demo-comment-profile-${(i % 10) + 1}`,
-        content:
-          commentContents[i % commentContents.length] ?? "Comentario",
+        content: commentContents[i % commentContents.length] ?? "Comentario",
         likes_count: ((i * 2) % 10) + 1,
         created_at: new Date(
           Date.now() - (i + 1) * 60 * 60 * 1000,
@@ -409,12 +408,13 @@ export class PostsService {
       // Mapear datos de stories a formato Post
       const posts: Post[] = storiesData.map((story: any) => {
         const postType = (story.content_type || story.media_type || "photo") as
-          | "text"
-          | "photo"
-          | "video";
+          "text" | "photo" | "video";
 
         const mediaUrls: string[] = Array.isArray(story.media_urls)
-          ? story.media_urls.filter((u: unknown): u is string => typeof u === "string" && u.length > 0)
+          ? story.media_urls.filter(
+              (u: unknown): u is string =>
+                typeof u === "string" && u.length > 0,
+            )
           : typeof story.media_url === "string" && story.media_url.length > 0
             ? [story.media_url]
             : [];
@@ -429,13 +429,16 @@ export class PostsService {
           post_type: postType,
           location: story.location || null,
           likes_count:
-            (Array.isArray(story.story_likes) && story.story_likes[0]?.count) || 0,
+            (Array.isArray(story.story_likes) && story.story_likes[0]?.count) ||
+            0,
           comments_count:
             (Array.isArray(story.story_comments) &&
               story.story_comments[0]?.count) ||
             0,
           shares_count:
-            (Array.isArray(story.story_shares) && story.story_shares[0]?.count) || 0,
+            (Array.isArray(story.story_shares) &&
+              story.story_shares[0]?.count) ||
+            0,
           created_at: story.created_at,
           updated_at: story.updated_at || story.created_at,
         };
@@ -486,9 +489,7 @@ export class PostsService {
                 ? record["display_name"]
                 : "Tú";
           const id =
-            typeof record["id"] === "string"
-              ? record["id"]
-              : "demo-user-id";
+            typeof record["id"] === "string" ? record["id"] : "demo-user-id";
           return { id, name };
         }
       }
@@ -572,7 +573,10 @@ export class PostsService {
         .single();
 
       if (storyError) {
-        logger.error("Error creating post in Supabase", { error: storyError.message, details: storyError.details });
+        logger.error("Error creating post in Supabase", {
+          error: storyError.message,
+          details: storyError.details,
+        });
         throw storyError;
       }
 
@@ -634,10 +638,9 @@ export class PostsService {
     // MODO DEMO (o sin cliente Supabase): toggle local, sin red.
     if (isDemoMode() || !supabase) {
       const newState = toggleDemoLikedPost(postId);
-      logger.info(
-        newState ? "✅ Demo: Like added" : "✅ Demo: Like removed",
-        { postId },
-      );
+      logger.info(newState ? "✅ Demo: Like added" : "✅ Demo: Like removed", {
+        postId,
+      });
       return newState;
     }
 
@@ -656,7 +659,10 @@ export class PostsService {
 
       if (checkError && checkError.code !== "PGRST116") {
         // PGRST116 = no rows found
-        logger.error("Error checking existing like:", { error: checkError.message, details: checkError.details });
+        logger.error("Error checking existing like:", {
+          error: checkError.message,
+          details: checkError.details,
+        });
         return false;
       }
 
@@ -669,7 +675,10 @@ export class PostsService {
           .eq("user_id", userId);
 
         if (deleteError) {
-          logger.error("Error removing like:", { error: deleteError.message, details: deleteError.details });
+          logger.error("Error removing like:", {
+            error: deleteError.message,
+            details: deleteError.details,
+          });
           return true; // Mantener estado como liked si falla
         }
 
@@ -685,7 +694,10 @@ export class PostsService {
           });
 
         if (insertError) {
-          logger.error("Error adding like:", { error: insertError.message, details: insertError.details });
+          logger.error("Error adding like:", {
+            error: insertError.message,
+            details: insertError.details,
+          });
           return false; // Mantener estado como no liked si falla
         }
 
@@ -712,9 +724,7 @@ export class PostsService {
 
       if (!supabase || isDemoMode()) {
         // MODO DEMO: quitar el like solo en localStorage.
-        const likedPosts = getDemoLikedPostIds().filter(
-          (id) => id !== postId,
-        );
+        const likedPosts = getDemoLikedPostIds().filter((id) => id !== postId);
         try {
           localStorage.setItem(
             DEMO_LIKED_POSTS_KEY,
@@ -736,7 +746,10 @@ export class PostsService {
         .eq("user_id", userId);
 
       if (error) {
-        logger.error("Error removing like:", { error: error.message, details: error.details });
+        logger.error("Error removing like:", {
+          error: error.message,
+          details: error.details,
+        });
         throw new Error(error.message);
       }
 
@@ -782,7 +795,10 @@ export class PostsService {
         .single();
 
       if (error) {
-        logger.error("❌ Error creating comment in Supabase:", { error: error.message, details: error.details });
+        logger.error("❌ Error creating comment in Supabase:", {
+          error: error.message,
+          details: error.details,
+        });
         throw new Error(error.message);
       }
 
@@ -911,7 +927,10 @@ export class PostsService {
         .eq("user_id", userId); // Asegurar que solo el dueño puede borrar
 
       if (error) {
-        logger.error("Error deleting post:", { error: error.message, details: error.details });
+        logger.error("Error deleting post:", {
+          error: error.message,
+          details: error.details,
+        });
         throw new Error(error.message);
       }
 
@@ -1237,4 +1256,3 @@ class AdvancedPostsService extends PostsService {
 }
 
 export const advancedPostsService = AdvancedPostsService.getInstance();
-

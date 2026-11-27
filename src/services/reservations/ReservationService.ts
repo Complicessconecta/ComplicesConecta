@@ -9,9 +9,9 @@ export interface CreateReservationParams {
   clubId: string;
   userId: string;
   amount: number;
-  currency?: 'usd' | 'cmpx' | 'gtk';
-  paymentMethod?: 'stripe' | 'cmpx' | 'gtk';
-  accessType?: 'general' | 'vip';
+  currency?: "usd" | "cmpx" | "gtk";
+  paymentMethod?: "stripe" | "cmpx" | "gtk";
+  accessType?: "general" | "vip";
   reservedAt?: string;
 }
 
@@ -23,7 +23,7 @@ export interface Reservation {
   amount: number;
   currency: string;
   paymentMethod: string;
-  status: 'pending' | 'paid' | 'used' | 'expired' | 'cancelled';
+  status: "pending" | "paid" | "used" | "expired" | "cancelled";
   accessType: string;
   commissionAmount: number;
   commissionPaid: boolean;
@@ -34,7 +34,7 @@ export interface Reservation {
   updatedAt: string;
 }
 
-type ReservationsRow = Database['public']['Tables']['reservations']['Row'];
+type ReservationsRow = Database["public"]["Tables"]["reservations"]["Row"];
 
 function mapReservationRow(row: ReservationsRow): Reservation {
   return {
@@ -43,10 +43,10 @@ function mapReservationRow(row: ReservationsRow): Reservation {
     userId: row.user_id,
     qrHash: row.qr_hash,
     amount: row.amount,
-    currency: row.currency ?? 'usd',
-    paymentMethod: row.payment_method ?? 'stripe',
-    status: (row.status ?? 'pending') as Reservation['status'],
-    accessType: row.access_type ?? 'general',
+    currency: row.currency ?? "usd",
+    paymentMethod: row.payment_method ?? "stripe",
+    status: (row.status ?? "pending") as Reservation["status"],
+    accessType: row.access_type ?? "general",
     commissionAmount: row.commission_amount ?? 0,
     commissionPaid: row.commission_paid ?? false,
     ...(row.stripe_payment_intent_id
@@ -71,35 +71,39 @@ export class ReservationService {
     return ReservationService.instance;
   }
 
-  
   /**
    * Crear una reserva nueva (usando Edge Function segura)
    */
-  async createReservation(params: CreateReservationParams): Promise<Reservation> {
+  async createReservation(
+    params: CreateReservationParams,
+  ): Promise<Reservation> {
     try {
-      const { data, error } = await supabase.functions.invoke('create-reservation', {
-        body: {
-          clubId: params.clubId,
-          userId: params.userId,
-          amount: params.amount,
-          currency: params.currency || 'usd',
-          paymentMethod: params.paymentMethod || 'stripe',
-          accessType: params.accessType || 'general',
-          reservedAt: params.reservedAt || null,
+      const { data, error } = await supabase.functions.invoke(
+        "create-reservation",
+        {
+          body: {
+            clubId: params.clubId,
+            userId: params.userId,
+            amount: params.amount,
+            currency: params.currency || "usd",
+            paymentMethod: params.paymentMethod || "stripe",
+            accessType: params.accessType || "general",
+            reservedAt: params.reservedAt || null,
+          },
         },
-      });
+      );
 
       if (error) {
-        logger.error('Error creando reserva via Edge Function:', {
+        logger.error("Error creando reserva via Edge Function:", {
           error: error.message,
           params,
         });
-        throw new Error(error.message || 'Error creating reservation');
+        throw new Error(error.message || "Error creating reservation");
       }
 
       const reservation = data as any;
 
-      logger.info('Reserva creada exitosamente:', {
+      logger.info("Reserva creada exitosamente:", {
         reservationId: reservation.id,
         clubId: params.clubId,
         userId: params.userId,
@@ -113,21 +117,29 @@ export class ReservationService {
         userId: reservation.user_id,
         qrHash: reservation.qr_hash,
         amount: reservation.amount,
-        currency: reservation.currency ?? 'usd',
-        paymentMethod: reservation.payment_method ?? 'stripe',
-        status: (reservation.status ?? 'pending') as Reservation['status'],
-        accessType: reservation.access_type ?? 'general',
+        currency: reservation.currency ?? "usd",
+        paymentMethod: reservation.payment_method ?? "stripe",
+        status: (reservation.status ?? "pending") as Reservation["status"],
+        accessType: reservation.access_type ?? "general",
         commissionAmount: reservation.commission_amount ?? 0,
         commissionPaid: reservation.commission_paid ?? false,
-        ...(reservation.stripe_payment_intent_id ? { stripePaymentIntentId: reservation.stripe_payment_intent_id } : {}),
-        ...(reservation.check_in_at ? { checkInAt: reservation.check_in_at } : {}),
-        ...(reservation.expires_at ? { expiresAt: reservation.expires_at } : {}),
-        ...(reservation.reserved_at ? { reservedAt: reservation.reserved_at } : {}),
+        ...(reservation.stripe_payment_intent_id
+          ? { stripePaymentIntentId: reservation.stripe_payment_intent_id }
+          : {}),
+        ...(reservation.check_in_at
+          ? { checkInAt: reservation.check_in_at }
+          : {}),
+        ...(reservation.expires_at
+          ? { expiresAt: reservation.expires_at }
+          : {}),
+        ...(reservation.reserved_at
+          ? { reservedAt: reservation.reserved_at }
+          : {}),
         createdAt: reservation.created_at ?? new Date().toISOString(),
         updatedAt: reservation.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error creando reserva:', {
+      logger.error("Error creando reserva:", {
         error: error instanceof Error ? error.message : String(error),
         params,
       });
@@ -141,9 +153,9 @@ export class ReservationService {
   async getReservationByQR(qrHash: string): Promise<Reservation | null> {
     try {
       const { data, error } = await supabase
-        .from('reservations')
-        .select('*')
-        .eq('qr_hash', qrHash)
+        .from("reservations")
+        .select("*")
+        .eq("qr_hash", qrHash)
         .single();
 
       if (error) throw error;
@@ -156,20 +168,22 @@ export class ReservationService {
         userId: row.user_id,
         qrHash: row.qr_hash,
         amount: row.amount,
-        currency: row.currency ?? 'usd',
-        paymentMethod: row.payment_method ?? 'stripe',
-        status: (row.status ?? 'pending') as Reservation['status'],
-        accessType: row.access_type ?? 'general',
+        currency: row.currency ?? "usd",
+        paymentMethod: row.payment_method ?? "stripe",
+        status: (row.status ?? "pending") as Reservation["status"],
+        accessType: row.access_type ?? "general",
         commissionAmount: row.commission_amount ?? 0,
         commissionPaid: row.commission_paid ?? false,
-        ...(row.stripe_payment_intent_id ? { stripePaymentIntentId: row.stripe_payment_intent_id } : {}),
+        ...(row.stripe_payment_intent_id
+          ? { stripePaymentIntentId: row.stripe_payment_intent_id }
+          : {}),
         ...(row.check_in_at ? { checkInAt: row.check_in_at } : {}),
         ...(row.expires_at ? { expiresAt: row.expires_at } : {}),
         createdAt: row.created_at ?? new Date().toISOString(),
         updatedAt: row.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error obteniendo reserva por QR:', {
+      logger.error("Error obteniendo reserva por QR:", {
         error: error instanceof Error ? error.message : String(error),
         qrHash,
       });
@@ -182,19 +196,19 @@ export class ReservationService {
    */
   async updateReservationStatus(
     reservationId: string,
-    status: 'pending' | 'paid' | 'used' | 'expired' | 'cancelled'
+    status: "pending" | "paid" | "used" | "expired" | "cancelled",
   ): Promise<Reservation> {
     try {
       const { data, error } = await supabase
-        .from('reservations')
+        .from("reservations")
         .update({ status })
-        .eq('id', reservationId)
+        .eq("id", reservationId)
         .select()
         .single();
 
       if (error) throw error;
 
-      logger.info('Estado de reserva actualizado:', {
+      logger.info("Estado de reserva actualizado:", {
         reservationId,
         status,
       });
@@ -206,20 +220,22 @@ export class ReservationService {
         userId: row.user_id,
         qrHash: row.qr_hash,
         amount: row.amount,
-        currency: row.currency ?? 'usd',
-        paymentMethod: row.payment_method ?? 'stripe',
-        status: (row.status ?? 'pending') as Reservation['status'],
-        accessType: row.access_type ?? 'general',
+        currency: row.currency ?? "usd",
+        paymentMethod: row.payment_method ?? "stripe",
+        status: (row.status ?? "pending") as Reservation["status"],
+        accessType: row.access_type ?? "general",
         commissionAmount: row.commission_amount ?? 0,
         commissionPaid: row.commission_paid ?? false,
-        ...(row.stripe_payment_intent_id ? { stripePaymentIntentId: row.stripe_payment_intent_id } : {}),
+        ...(row.stripe_payment_intent_id
+          ? { stripePaymentIntentId: row.stripe_payment_intent_id }
+          : {}),
         ...(row.check_in_at ? { checkInAt: row.check_in_at } : {}),
         ...(row.expires_at ? { expiresAt: row.expires_at } : {}),
         createdAt: row.created_at ?? new Date().toISOString(),
         updatedAt: row.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error actualizando estado de reserva:', {
+      logger.error("Error actualizando estado de reserva:", {
         error: error instanceof Error ? error.message : String(error),
         reservationId,
         status,
@@ -234,18 +250,18 @@ export class ReservationService {
   async markReservationAsUsed(reservationId: string): Promise<Reservation> {
     try {
       const { data, error } = await supabase
-        .from('reservations')
+        .from("reservations")
         .update({
-          status: 'used',
+          status: "used",
           check_in_at: new Date().toISOString(),
         })
-        .eq('id', reservationId)
+        .eq("id", reservationId)
         .select()
         .single();
 
       if (error) throw error;
 
-      logger.info('Reserva marcada como usada:', { reservationId });
+      logger.info("Reserva marcada como usada:", { reservationId });
 
       const row = data as ReservationsRow;
       return {
@@ -254,20 +270,22 @@ export class ReservationService {
         userId: row.user_id,
         qrHash: row.qr_hash,
         amount: row.amount,
-        currency: row.currency ?? 'usd',
-        paymentMethod: row.payment_method ?? 'stripe',
-        status: (row.status ?? 'pending') as Reservation['status'],
-        accessType: row.access_type ?? 'general',
+        currency: row.currency ?? "usd",
+        paymentMethod: row.payment_method ?? "stripe",
+        status: (row.status ?? "pending") as Reservation["status"],
+        accessType: row.access_type ?? "general",
         commissionAmount: row.commission_amount ?? 0,
         commissionPaid: row.commission_paid ?? false,
-        ...(row.stripe_payment_intent_id ? { stripePaymentIntentId: row.stripe_payment_intent_id } : {}),
+        ...(row.stripe_payment_intent_id
+          ? { stripePaymentIntentId: row.stripe_payment_intent_id }
+          : {}),
         ...(row.check_in_at ? { checkInAt: row.check_in_at } : {}),
         ...(row.expires_at ? { expiresAt: row.expires_at } : {}),
         createdAt: row.created_at ?? new Date().toISOString(),
         updatedAt: row.updated_at ?? new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error marcando reserva como usada:', {
+      logger.error("Error marcando reserva como usada:", {
         error: error instanceof Error ? error.message : String(error),
         reservationId,
       });
@@ -280,21 +298,21 @@ export class ReservationService {
    */
   async getClubReservations(
     clubId: string,
-    limit: number = 50
+    limit: number = 50,
   ): Promise<Reservation[]> {
     try {
       const { data, error } = await supabase
-        .from('reservations')
-        .select('*')
-        .eq('club_id', clubId)
-        .order('created_at', { ascending: false })
+        .from("reservations")
+        .select("*")
+        .eq("club_id", clubId)
+        .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error) throw error;
 
       return (data || []).map((r) => mapReservationRow(r as ReservationsRow));
     } catch (error) {
-      logger.error('Error obteniendo reservas del club:', {
+      logger.error("Error obteniendo reservas del club:", {
         error: error instanceof Error ? error.message : String(error),
         clubId,
       });
@@ -307,21 +325,21 @@ export class ReservationService {
    */
   async getUserReservations(
     userId: string,
-    limit: number = 50
+    limit: number = 50,
   ): Promise<Reservation[]> {
     try {
       const { data, error } = await supabase
-        .from('reservations')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
+        .from("reservations")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error) throw error;
 
       return (data || []).map((r) => mapReservationRow(r as ReservationsRow));
     } catch (error) {
-      logger.error('Error obteniendo reservas del usuario:', {
+      logger.error("Error obteniendo reservas del usuario:", {
         error: error instanceof Error ? error.message : String(error),
         userId,
       });
@@ -343,57 +361,60 @@ export class ReservationService {
       if (!reservation) {
         return {
           valid: false,
-          message: 'QR no encontrado',
+          message: "QR no encontrado",
         };
       }
 
-      if (reservation.status === 'used') {
+      if (reservation.status === "used") {
         return {
           valid: false,
-          message: 'Código ya utilizado',
+          message: "Código ya utilizado",
           reservation,
         };
       }
 
-      if (reservation.status === 'expired') {
+      if (reservation.status === "expired") {
         return {
           valid: false,
-          message: 'Código expirado',
+          message: "Código expirado",
           reservation,
         };
       }
 
-      if (reservation.status !== 'paid') {
+      if (reservation.status !== "paid") {
         return {
           valid: false,
-          message: 'Reserva no completada',
+          message: "Reserva no completada",
           reservation,
         };
       }
 
       // Verificar si ha expirado
-      if (reservation.expiresAt && new Date(reservation.expiresAt) < new Date()) {
-        await this.updateReservationStatus(reservation.id, 'expired');
+      if (
+        reservation.expiresAt &&
+        new Date(reservation.expiresAt) < new Date()
+      ) {
+        await this.updateReservationStatus(reservation.id, "expired");
         return {
           valid: false,
-          message: 'Código expirado',
+          message: "Código expirado",
           reservation,
         };
       }
 
       return {
         valid: true,
-        message: 'Código válido',
+        message: "Código válido",
         reservation,
       };
     } catch (error) {
-      logger.error('Error validando QR:', {
+      logger.error("Error validando QR:", {
         error: error instanceof Error ? error.message : String(error),
         qrHash,
       });
       return {
         valid: false,
-        message: 'Error al validar QR',
+        message: "Error al validar QR",
       };
     }
   }

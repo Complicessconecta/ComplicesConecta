@@ -54,7 +54,7 @@ describe("Neo4jService", () => {
       // Prevención de bucles infinitos
       const maxRetries = 3;
       let retries = 0;
-      let lastError: Error | null = null;
+      let lastError: Error | null;
 
       while (retries < maxRetries) {
         try {

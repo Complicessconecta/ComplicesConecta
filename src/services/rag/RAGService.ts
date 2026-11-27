@@ -3,8 +3,8 @@
  * Servicio para preguntas y respuestas con documentos del proyecto
  */
 
-import { logger } from '@/lib/logger';
-import { aiIntegrationService } from '@/services/ai/AIIntegrationService';
+import { logger } from "@/lib/logger";
+import { aiIntegrationService } from "@/services/ai/AIIntegrationService";
 
 export interface DocumentChunk {
   id: string;
@@ -22,7 +22,7 @@ export interface DocumentChunk {
 export interface SearchResult {
   chunk: DocumentChunk;
   score: number;
-  relevance: 'high' | 'medium' | 'low';
+  relevance: "high" | "medium" | "low";
 }
 
 export interface QARequest {
@@ -57,11 +57,14 @@ class RAGService {
       await this.loadProjectDocuments();
       await this.generateEmbeddings();
       this.isInitialized = true;
-      logger.info('✅ RAG Service inicializado correctamente');
+      logger.info("✅ RAG Service inicializado correctamente");
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error inicializando RAG:', { error: errorMsg, stack: errorStack });
+      logger.error("Error inicializando RAG:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       this.isInitialized = false;
     }
   }
@@ -75,12 +78,13 @@ class RAGService {
     try {
       if (!this.isInitialized) {
         return {
-          answer: 'El servicio RAG no está inicializado. Por favor, intenta más tarde.',
+          answer:
+            "El servicio RAG no está inicializado. Por favor, intenta más tarde.",
           confidence: 0.1,
           sources: [],
           relatedQuestions: [],
           processingTime: performance.now() - startTime,
-          chunksUsed: 0
+          chunksUsed: 0,
         };
       }
 
@@ -92,12 +96,13 @@ class RAGService {
 
       if (searchResults.length === 0) {
         return {
-          answer: 'No encontré información relevante para tu pregunta en la documentación disponible.',
+          answer:
+            "No encontré información relevante para tu pregunta en la documentación disponible.",
           confidence: 0.1,
           sources: [],
           relatedQuestions: [],
           processingTime: performance.now() - startTime,
-          chunksUsed: 0
+          chunksUsed: 0,
         };
       }
 
@@ -105,25 +110,35 @@ class RAGService {
       const context = this.buildContext(searchResults);
 
       // 4. Generar respuesta con IA
-      const aiResponse = await this.generateAnswer(request.question, context, request.userId);
+      const aiResponse = await this.generateAnswer(
+        request.question,
+        context,
+        request.userId,
+      );
 
       // 5. Generar preguntas relacionadas
-      const relatedQuestions = await this.generateRelatedTopics(request.question, searchResults);
+      const relatedQuestions = await this.generateRelatedTopics(
+        request.question,
+        searchResults,
+      );
 
       const endTime = performance.now();
 
       return {
         answer: aiResponse.answer,
         confidence: aiResponse.confidence,
-        sources: searchResults.map(r => r.chunk.source),
+        sources: searchResults.map((r) => r.chunk.source),
         relatedQuestions,
         processingTime: endTime - startTime,
-        chunksUsed: searchResults.length
+        chunksUsed: searchResults.length,
       };
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error procesando pregunta RAG:', { error: errorMsg, stack: errorStack });
+      logger.error("Error procesando pregunta RAG:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       throw error;
     }
   }
@@ -135,21 +150,21 @@ class RAGService {
     // Documentos clave del proyecto CómplicesConecta
     const projectDocs = [
       {
-        id: 'matching-algorithm',
+        id: "matching-algorithm",
         content: `
           El algoritmo de matching de CómplicesConecta utiliza Neo4j para analizar compatibilidad entre usuarios.
           Considera factores como intereses compartidos, ubicación, preferencias y patrones de comportamiento.
           El sistema asigna un score de compatibilidad de 0 a 1, donde 0.7+ se considera una buena coincidencia.
           La IA optimiza continuamente estos scores basándose en interacciones exitosas.
         `,
-        source: 'DIAGRAMAS_FLUJOS_CONSOLIDADO.md',
+        source: "DIAGRAMAS_FLUJOS_CONSOLIDADO.md",
         metadata: {
-          title: 'Algoritmo de Matching',
-          section: 'Core Features'
-        }
+          title: "Algoritmo de Matching",
+          section: "Core Features",
+        },
       },
       {
-        id: 'token-system',
+        id: "token-system",
         content: `
           CómplicesConecta utiliza dos tokens principales: CMPX y GTK.
           CMPX es el token de utilidad principal para staking y rewards.
@@ -157,14 +172,14 @@ class RAGService {
           El staking genera rewards basados en APY variable según las condiciones del mercado.
           Los tokens pueden ser transferidos, staked o usados para acceder a características premium.
         `,
-        source: 'TOKEN_SYSTEM_SPEC.md',
+        source: "TOKEN_SYSTEM_SPEC.md",
         metadata: {
-          title: 'Sistema de Tokens',
-          section: 'Web3 Integration'
-        }
+          title: "Sistema de Tokens",
+          section: "Web3 Integration",
+        },
       },
       {
-        id: 'privacy-security',
+        id: "privacy-security",
         content: `
           La privacidad es fundamental en CómplicesConecta.
           Todos los datos son encriptados usando AES-256.
@@ -172,63 +187,63 @@ class RAGService {
           Cumplimos con GDPR y Ley Olimpia para protección de datos.
           La IA se ejecuta localmente en el browser para máxima privacidad.
         `,
-        source: 'PRIVACY_POLICY.md',
+        source: "PRIVACY_POLICY.md",
         metadata: {
-          title: 'Privacidad y Seguridad',
-          section: 'Compliance'
-        }
+          title: "Privacidad y Seguridad",
+          section: "Compliance",
+        },
       },
       {
-        id: 'ai-features',
+        id: "ai-features",
         content: `
           La IA de CómplicesConecta incluye chatbot contextual, matching predictivo y análisis de comportamiento.
           Utilizamos Phi-3-mini para procesamiento local y WebLLM para inferencia.
           La moderación de contenido usa TensorFlow para detectar toxicidad.
           Las recomendaciones se optimizan continuamente con machine learning.
         `,
-        source: 'AI_INTEGRATION.md',
+        source: "AI_INTEGRATION.md",
         metadata: {
-          title: 'Características de IA',
-          section: 'Technology'
-        }
+          title: "Características de IA",
+          section: "Technology",
+        },
       },
       {
-        id: 'clubs-verification',
+        id: "clubs-verification",
         content: `
           Los clubs verificados en CómplicesConecta pasan por un proceso de validación riguroso.
           Se verifica la autenticidad, calidad de contenido y cumplimiento de normas.
           Los clubs verificados tienen acceso a características especiales y mayor visibilidad.
           Los usuarios pueden reportar clubs que no cumplan con los estándares.
         `,
-        source: 'CLUBS_GUIDELINES.md',
+        source: "CLUBS_GUIDELINES.md",
         metadata: {
-          title: 'Verificación de Clubs',
-          section: 'Community'
-        }
+          title: "Verificación de Clubs",
+          section: "Community",
+        },
       },
       {
-        id: 'worldid-integration',
+        id: "worldid-integration",
         content: `
           World ID proporciona verificación de identidad humana sin comprometer privacidad.
           La integración permite acceso a características premium y mayor confianza.
           Los usuarios verificados con World ID reciben beneficios exclusivos.
           El proceso es opcional y respeta completamente la privacidad del usuario.
         `,
-        source: 'WORLDID_INTEGRATION.md',
+        source: "WORLDID_INTEGRATION.md",
         metadata: {
-          title: 'Integración World ID',
-          section: 'Identity'
-        }
-      }
+          title: "Integración World ID",
+          section: "Identity",
+        },
+      },
     ];
 
-    this.documents = projectDocs.map(doc => {
+    this.documents = projectDocs.map((doc) => {
       const chunk: DocumentChunk = {
         id: doc.id,
         content: doc.content.trim(),
         source: doc.source,
         metadata: doc.metadata,
-        embedding: (doc as any).embedding || []
+        embedding: (doc as any).embedding || [],
       };
 
       return chunk as DocumentChunk;
@@ -251,11 +266,14 @@ class RAGService {
           this.embeddingsCache.set(doc.id, embedding);
         }
       }
-      logger.info('Embeddings generados para todos los documentos');
+      logger.info("Embeddings generados para todos los documentos");
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error generando embedding:', { error: errorMsg, stack: errorStack });
+      logger.error("Error generando embedding:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
     }
   }
 
@@ -268,7 +286,7 @@ class RAGService {
 
     // Normalizar el embedding
     const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-    return embedding.map(val => val / norm);
+    return embedding.map((val) => val / norm);
   }
 
   /**
@@ -277,7 +295,7 @@ class RAGService {
   private async searchDocuments(
     queryEmbedding: number[],
     maxResults: number,
-    minRelevance: number
+    minRelevance: number,
   ): Promise<SearchResult[]> {
     const results: SearchResult[] = [];
 
@@ -291,7 +309,8 @@ class RAGService {
         results.push({
           chunk: doc,
           score: similarity,
-          relevance: similarity >= 0.8 ? 'high' : similarity >= 0.6 ? 'medium' : 'low'
+          relevance:
+            similarity >= 0.8 ? "high" : similarity >= 0.6 ? "medium" : "low",
         });
       }
     }
@@ -305,7 +324,10 @@ class RAGService {
   /**
    * Calcular similitud coseno entre dos embeddings
    */
-  private cosineSimilarity(a: number[] | undefined, b: number[] | undefined): number {
+  private cosineSimilarity(
+    a: number[] | undefined,
+    b: number[] | undefined,
+  ): number {
     if (!a || !b || a.length !== b.length) return 0;
 
     let dotProduct = 0;
@@ -332,13 +354,15 @@ class RAGService {
    */
   private buildContext(searchResults: SearchResult[]): string {
     return searchResults
-      .map(result => `
+      .map(
+        (result) => `
         Fuente: ${result.chunk.source}
         Título: ${result.chunk.metadata.title}
         Contenido: ${result.chunk.content}
         Relevancia: ${result.relevance} (${(result.score * 100).toFixed(1)}%)
-      `)
-      .join('\n---\n');
+      `,
+      )
+      .join("\n---\n");
   }
 
   /**
@@ -347,7 +371,7 @@ class RAGService {
   private async generateAnswer(
     question: string,
     context: string,
-    userId: string
+    userId: string,
   ): Promise<{ answer: string; confidence: number }> {
     try {
       const prompt = `
@@ -368,19 +392,26 @@ class RAGService {
         Respuesta:
       `;
 
-      const aiResponse = await aiIntegrationService.processQuestionAnswering(prompt, userId);
+      const aiResponse = await aiIntegrationService.processQuestionAnswering(
+        prompt,
+        userId,
+      );
 
       return {
         answer: aiResponse.answer,
-        confidence: aiResponse.confidence
+        confidence: aiResponse.confidence,
       };
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      logger.error('Error generando respuesta:', { error: errorMsg, stack: errorStack });
+      logger.error("Error generando respuesta:", {
+        error: errorMsg,
+        stack: errorStack,
+      });
       return {
-        answer: 'No pude generar una respuesta basada en la documentación disponible.',
-        confidence: 0.1
+        answer:
+          "No pude generar una respuesta basada en la documentación disponible.",
+        confidence: 0.1,
       };
     }
   }
@@ -390,18 +421,18 @@ class RAGService {
    */
   private async generateRelatedTopics(
     _originalQuestion: string,
-    searchResults: SearchResult[]
+    searchResults: SearchResult[],
   ): Promise<string[]> {
     // Extraer temas clave de los resultados
-    const topics = searchResults.map(r => r.chunk.metadata.title);
+    const topics = searchResults.map((r) => r.chunk.metadata.title);
 
     // Generar preguntas relacionadas basadas en los temas
     const relatedQuestions = [
       `¿Cómo funciona ${topics[0]} en CómplicesConecta?`,
-      `¿Cuáles son los beneficios de ${topics[1] || 'la plataforma'}?`,
+      `¿Cuáles son los beneficios de ${topics[1] || "la plataforma"}?`,
       `¿Qué medidas de seguridad implementa CómplicesConecta?`,
-      `¿Cómo puedo empezar a usar ${topics[2] || 'las características principales'}?`,
-      `¿Qué requisitos necesito para ${topics[0] || 'usar la plataforma'}?`
+      `¿Cómo puedo empezar a usar ${topics[2] || "las características principales"}?`,
+      `¿Qué requisitos necesito para ${topics[0] || "usar la plataforma"}?`,
     ];
 
     // Eliminar duplicados y limitar a 5 preguntas
@@ -411,12 +442,12 @@ class RAGService {
   /**
    * Agregar nuevo documento
    */
-  async addDocument(document: Omit<DocumentChunk, 'embedding'>): Promise<void> {
+  async addDocument(document: Omit<DocumentChunk, "embedding">): Promise<void> {
     const embedding = await this.generateEmbedding(document.content);
 
     const newDoc: DocumentChunk = {
       ...document,
-      embedding
+      embedding,
     };
 
     this.documents.push(newDoc);
@@ -429,7 +460,7 @@ class RAGService {
    * Eliminar documento
    */
   removeDocument(documentId: string): boolean {
-    const index = this.documents.findIndex(doc => doc.id === documentId);
+    const index = this.documents.findIndex((doc) => doc.id === documentId);
     if (index !== -1) {
       this.documents.splice(index, 1);
       this.embeddingsCache.delete(documentId);
@@ -448,13 +479,15 @@ class RAGService {
     isInitialized: boolean;
     avgDocumentLength: number;
   } {
-    const avgLength = this.documents.reduce((sum, doc) => sum + doc.content.length, 0) / this.documents.length;
+    const avgLength =
+      this.documents.reduce((sum, doc) => sum + doc.content.length, 0) /
+      this.documents.length;
 
     return {
       totalDocuments: this.documents.length,
       cachedEmbeddings: this.embeddingsCache.size,
       isInitialized: this.isInitialized,
-      avgDocumentLength: avgLength || 0
+      avgDocumentLength: avgLength || 0,
     };
   }
 
@@ -463,10 +496,9 @@ class RAGService {
    */
   clearCache(): void {
     this.embeddingsCache.clear();
-    logger.info('Cache de embeddings limpiado');
+    logger.info("Cache de embeddings limpiado");
   }
 }
 
 export const ragService = new RAGService();
 export default RAGService;
-

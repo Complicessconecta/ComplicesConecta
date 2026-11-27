@@ -555,4 +555,3 @@ class ReportManagementService {
 }
 
 export const reportManagementService = ReportManagementService.getInstance();
-

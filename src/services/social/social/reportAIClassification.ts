@@ -180,7 +180,9 @@ export const classifyReportWithAI = async (
       .update({
         ai_classified: true,
         severity: result.severity,
-        ...(result.suggested_priority === "critical" ? { queue_position: 1 } : {}),
+        ...(result.suggested_priority === "critical"
+          ? { queue_position: 1 }
+          : {}),
       })
       .eq("id", reportId);
 

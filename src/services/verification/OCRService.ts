@@ -61,9 +61,7 @@ export class OCRService {
 
       // Para producción, usar API de OCR real
       // Por ahora, simulamos la extracción de datos
-      const simulatedData = await this.simulateDocumentExtraction(
-        documentType,
-      );
+      const simulatedData = await this.simulateDocumentExtraction(documentType);
 
       logger.info("✅ Datos de documento extraídos", {
         type: documentType,

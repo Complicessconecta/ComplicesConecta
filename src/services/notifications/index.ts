@@ -4,4 +4,4 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from '@/services/notifications/OneSignalService';
+export * from "@/services/notifications/OneSignalService";

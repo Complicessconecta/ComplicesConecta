@@ -374,10 +374,7 @@ export class AdvancedCoupleService {
         age_range_max: 65,
         looking_for: [], // No existe en DB
         experience_level: "beginner" as
-          | "beginner"
-          | "intermediate"
-          | "advanced"
-          | "expert", // Valor por defecto
+          "beginner" | "intermediate" | "advanced" | "expert", // Valor por defecto
         relationship_type: "married",
         relationship_duration: 0,
         is_active: true,
@@ -588,11 +585,7 @@ export class AdvancedCoupleService {
         title: result.title,
         description: result.description || "",
         event_type: result.event_type as
-          | "meetup"
-          | "party"
-          | "dinner"
-          | "travel"
-          | "other",
+          "meetup" | "party" | "dinner" | "travel" | "other",
         location: result.location,
         date: result.date,
         max_participants: result.max_participants || 0,
@@ -653,11 +646,7 @@ export class AdvancedCoupleService {
         title: item.title,
         description: item.description || "",
         event_type: item.event_type as
-          | "meetup"
-          | "party"
-          | "dinner"
-          | "travel"
-          | "other",
+          "meetup" | "party" | "dinner" | "travel" | "other",
         location: item.location,
         date: item.date,
         max_participants: item.max_participants || 0,
@@ -845,4 +834,3 @@ export class AdvancedCoupleService {
 }
 
 export const advancedCoupleService = AdvancedCoupleService.getInstance();
-

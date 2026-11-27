@@ -54,7 +54,9 @@
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .analytics-dashboard-card:hover {
@@ -202,7 +204,8 @@
 }
 
 @keyframes analytics-dashboard-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

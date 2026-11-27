@@ -19,7 +19,8 @@ interface AppInitializerProps {
  */
 export const AppInitializer: FC<AppInitializerProps> = ({ children }) => {
   // Hook para gestionar y solicitar permisos nativos en el arranque.
-  const { isLoading, permissionStatus, requestPermission } = useAppPermissions();
+  const { isLoading, permissionStatus, requestPermission } =
+    useAppPermissions();
 
   useEffect(() => {
     if (!isLoading) {
@@ -33,7 +34,10 @@ export const AppInitializer: FC<AppInitializerProps> = ({ children }) => {
   // Registrar notificaciones push cuando el permiso esté concedido
   useEffect(() => {
     if (permissionStatus.notifications === "granted") {
-      if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android") {
+      if (
+        Capacitor.isNativePlatform() &&
+        Capacitor.getPlatform() === "android"
+      ) {
         logger.warn(
           "PushNotifications: skipping register() on Android because Firebase is not configured",
         );
@@ -63,7 +67,9 @@ export const AppInitializer: FC<AppInitializerProps> = ({ children }) => {
     return (
       <div className="min-h-screen w-full flex items-center justify-center p-6 bg-linear-to-br from-purple-900 via-black to-blue-900">
         <div className="w-full max-w-md rounded-3xl border border-white/15 bg-white/5 backdrop-blur-md p-6">
-          <h1 className="text-white text-lg font-semibold">Permiso de ubicación requerido</h1>
+          <h1 className="text-white text-lg font-semibold">
+            Permiso de ubicación requerido
+          </h1>
           <p className="text-white/80 text-sm mt-2">
             Para continuar, necesitas autorizar la ubicación.
           </p>

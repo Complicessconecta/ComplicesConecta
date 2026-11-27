@@ -89,8 +89,8 @@ export const HeroSection = () => {
 
             <p className="text-base sm:text-lg md:text-xl leading-relaxed font-light">
               <span className="bg-linear-to-r from-pink-700 via-pink-600 to-pink-500 dark:from-pink-100 dark:via-pink-200 dark:to-pink-300 bg-clip-text text-transparent drop-shadow-md">
-                Sistema de verificación KYC, chat encriptado y eventos exclusivos
-                para la comunidad lifestyle
+                Sistema de verificación KYC, chat encriptado y eventos
+                exclusivos para la comunidad lifestyle
               </span>
             </p>
           </div>

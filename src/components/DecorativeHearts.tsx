@@ -67,19 +67,20 @@ export const DecorativeHearts: FC<DecorativeHeartsProps> = ({
         <Heart
           key={heart.id}
           className="absolute text-white animate-float-heart-slow heart-position"
-          style={{
-            '--top': heart.top || undefined,
-            '--left': heart.left || undefined,
-            '--right': heart.right || undefined,
-            '--bottom': heart.bottom || undefined,
-            '--heart-size': `${heart.size}px`,
-            '--heart-opacity': `${heart.opacity}`,
-            '--heart-delay': `${heart.delay}s`,
-            '--heart-duration': `${heart.duration}s`,
-          } as React.CSSProperties}
+          style={
+            {
+              "--top": heart.top || undefined,
+              "--left": heart.left || undefined,
+              "--right": heart.right || undefined,
+              "--bottom": heart.bottom || undefined,
+              "--heart-size": `${heart.size}px`,
+              "--heart-opacity": `${heart.opacity}`,
+              "--heart-delay": `${heart.delay}s`,
+              "--heart-duration": `${heart.duration}s`,
+            } as React.CSSProperties
+          }
         />
       ))}
     </div>
   );
 };
-

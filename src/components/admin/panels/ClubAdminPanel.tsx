@@ -1,17 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit, Trash2, Eye, Ban, CheckCircle, Loader2, Building } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect } from "react";
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  Ban,
+  CheckCircle,
+  Loader2,
+  Building,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 import {
   createClubEvent,
   loadClubEvents,
   loadClubMembers,
   type ClubEventItem,
   type ClubMemberItem,
-} from '@/services/clubs/clubContentService';
+} from "@/services/clubs/clubContentService";
 
 // Datos de respaldo cuando Supabase no devuelve clubs (tabla vacía / RLS).
 // Las fotos son las mismas del catálogo público (PUBLIC_CLUBS en
@@ -101,18 +117,18 @@ interface SimpleClub {
 const ClubAdminPanelSimple: React.FC = () => {
   const [clubs, setClubs] = useState<SimpleClub[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Eventos y miembros del club seleccionado: leen/escriben las tablas
   // club_events y club_members (migración 20261124030000) con respaldo demo.
-  const [selectedClubId, setSelectedClubId] = useState<string>('');
+  const [selectedClubId, setSelectedClubId] = useState<string>("");
   const [events, setEvents] = useState<ClubEventItem[]>([]);
   const [members, setMembers] = useState<ClubMemberItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(false);
-  const [newEventTitle, setNewEventTitle] = useState('');
-  const [newEventDate, setNewEventDate] = useState('');
-  const [newEventPrice, setNewEventPrice] = useState('');
+  const [newEventTitle, setNewEventTitle] = useState("");
+  const [newEventDate, setNewEventDate] = useState("");
+  const [newEventPrice, setNewEventPrice] = useState("");
 
   useEffect(() => {
     if (clubs.length > 0 && !selectedClubId) {
@@ -147,7 +163,9 @@ const ClubAdminPanelSimple: React.FC = () => {
     try {
       const query = supabase
         .from("clubs")
-        .select("id, slug, name, city, cover_image_url, rating_average, check_in_count, is_active, verified_at, membership_tier, created_at")
+        .select(
+          "id, slug, name, city, cover_image_url, rating_average, check_in_count, is_active, verified_at, membership_tier, created_at",
+        )
         .order("created_at", { ascending: false });
       const { data, error } = await Promise.race([
         query,
@@ -177,7 +195,9 @@ const ClubAdminPanelSimple: React.FC = () => {
         setClubs(MOCK_CLUBS);
       }
     } catch (error) {
-      logger.warn("ClubAdminPanel: usando respaldo demo", { error: String(error) });
+      logger.warn("ClubAdminPanel: usando respaldo demo", {
+        error: String(error),
+      });
       setClubs(MOCK_CLUBS);
     } finally {
       setLoading(false);
@@ -189,26 +209,30 @@ const ClubAdminPanelSimple: React.FC = () => {
   }, []);
 
   // Filtrar clubs
-  const filteredClubs = clubs.filter(club => {
-    const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         club.city.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'all' ||
-                         (statusFilter === 'active' && club.isActive) ||
-                         (statusFilter === 'inactive' && !club.isActive) ||
-                         (statusFilter === 'verified' && club.isVerified) ||
-                         (statusFilter === 'unverified' && !club.isVerified);
+  const filteredClubs = clubs.filter((club) => {
+    const matchesSearch =
+      club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      club.city.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "active" && club.isActive) ||
+      (statusFilter === "inactive" && !club.isActive) ||
+      (statusFilter === "verified" && club.isVerified) ||
+      (statusFilter === "unverified" && !club.isVerified);
 
     return matchesSearch && matchesStatus;
   });
 
   // Eliminar club (real en Supabase; el demo no se puede borrar).
   const handleDeleteClub = async (clubId: string, clubName: string) => {
-    if (!confirm(`¿Estás seguro de que deseas eliminar el club "${clubName}"?`)) {
+    if (
+      !confirm(`¿Estás seguro de que deseas eliminar el club "${clubName}"?`)
+    ) {
       return;
     }
     if (clubId.startsWith("demo-")) {
-      setClubs(clubs.filter(club => club.id !== clubId));
+      setClubs(clubs.filter((club) => club.id !== clubId));
       return;
     }
     const { error } = await supabase.from("clubs").delete().eq("id", clubId);
@@ -224,9 +248,11 @@ const ClubAdminPanelSimple: React.FC = () => {
   const handleToggleStatus = async (clubId: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
     if (clubId.startsWith("demo-")) {
-      setClubs(clubs.map(club =>
-        club.id === clubId ? { ...club, isActive: newStatus } : club
-      ));
+      setClubs(
+        clubs.map((club) =>
+          club.id === clubId ? { ...club, isActive: newStatus } : club,
+        ),
+      );
       return;
     }
     const { error } = await supabase
@@ -253,10 +279,14 @@ const ClubAdminPanelSimple: React.FC = () => {
 
   const getCategoryBadge = (category: string) => {
     const colors: Record<string, "default" | "secondary" | "destructive"> = {
-      premium: 'default',
-      standard: 'secondary',
+      premium: "default",
+      standard: "secondary",
     };
-    return <Badge variant={colors[category] || 'secondary'}>{category.toUpperCase()}</Badge>;
+    return (
+      <Badge variant={colors[category] || "secondary"}>
+        {category.toUpperCase()}
+      </Badge>
+    );
   };
 
   if (loading) {
@@ -275,12 +305,14 @@ const ClubAdminPanelSimple: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Administración de Clubs</h2>
+          <h2 className="text-3xl font-bold tracking-tight">
+            Administración de Clubs
+          </h2>
           <p className="text-muted-foreground">
             Gestiona todos los clubs de la plataforma (Modo Demo)
           </p>
         </div>
-        <Button onClick={() => alert('Crear nuevo club (Demo)')}>
+        <Button onClick={() => alert("Crear nuevo club (Demo)")}>
           <Plus className="mr-2 h-4 w-4" />
           Nuevo Club
         </Button>
@@ -304,7 +336,7 @@ const ClubAdminPanelSimple: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {clubs.filter(c => c.isActive).length}
+              {clubs.filter((c) => c.isActive).length}
             </div>
           </CardContent>
         </Card>
@@ -315,7 +347,7 @@ const ClubAdminPanelSimple: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {clubs.filter(c => c.isVerified).length}
+              {clubs.filter((c) => c.isVerified).length}
             </div>
           </CardContent>
         </Card>
@@ -326,7 +358,7 @@ const ClubAdminPanelSimple: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              {clubs.filter(c => !c.isActive).length}
+              {clubs.filter((c) => !c.isActive).length}
             </div>
           </CardContent>
         </Card>
@@ -360,9 +392,7 @@ const ClubAdminPanelSimple: React.FC = () => {
               <option value="verified">Verificados</option>
               <option value="unverified">No Verificados</option>
             </select>
-            <Button variant="outline">
-              Exportar
-            </Button>
+            <Button variant="outline">Exportar</Button>
           </div>
         </CardContent>
       </Card>
@@ -380,19 +410,38 @@ const ClubAdminPanelSimple: React.FC = () => {
             <table className="w-full min-w-[720px] border-collapse border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white">
               <thead>
                 <tr className="bg-purple-100 dark:bg-purple-950/80">
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Foto</th>
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Nombre</th>
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Ciudad</th>
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Categoría</th>
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Estado</th>
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Rating</th>
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Check-ins</th>
-                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">Acciones</th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Foto
+                  </th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Nombre
+                  </th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Ciudad
+                  </th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Categoría
+                  </th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Estado
+                  </th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Rating
+                  </th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Check-ins
+                  </th>
+                  <th className="border border-slate-200 dark:border-white/15 px-4 py-2 text-left text-slate-900 dark:text-white">
+                    Acciones
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredClubs.map((club) => (
-                  <tr key={club.id} className="hover:bg-slate-100 dark:hover:bg-white/5">
+                  <tr
+                    key={club.id}
+                    className="hover:bg-slate-100 dark:hover:bg-white/5"
+                  >
                     <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
                       {club.coverImageUrl ? (
                         <img
@@ -407,23 +456,37 @@ const ClubAdminPanelSimple: React.FC = () => {
                         </div>
                       )}
                     </td>
-                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 font-medium text-slate-900 dark:text-white">{club.name}</td>
-                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 text-slate-700 dark:text-white/90">{club.city}</td>
-                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">{getCategoryBadge(club.category)}</td>
-                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">{getStatusBadge(club)}</td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 font-medium text-slate-900 dark:text-white">
+                      {club.name}
+                    </td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 text-slate-700 dark:text-white/90">
+                      {club.city}
+                    </td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
+                      {getCategoryBadge(club.category)}
+                    </td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
+                      {getStatusBadge(club)}
+                    </td>
                     <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
                       <div className="flex items-center gap-1">
                         <span>{club.rating}</span>
-                        <span className="text-slate-500 dark:text-white/60">({club.checkIns})</span>
+                        <span className="text-slate-500 dark:text-white/60">
+                          ({club.checkIns})
+                        </span>
                       </div>
                     </td>
-                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 text-slate-700 dark:text-white/90">{club.checkIns}</td>
+                    <td className="border border-slate-200 dark:border-white/15 px-4 py-2 text-slate-700 dark:text-white/90">
+                      {club.checkIns}
+                    </td>
                     <td className="border border-slate-200 dark:border-white/15 px-4 py-2">
                       <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => alert(`Ver detalles de ${club.name} (Demo)`)}
+                          onClick={() =>
+                            alert(`Ver detalles de ${club.name} (Demo)`)
+                          }
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -437,7 +500,9 @@ const ClubAdminPanelSimple: React.FC = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleToggleStatus(club.id, club.isActive)}
+                          onClick={() =>
+                            handleToggleStatus(club.id, club.isActive)
+                          }
                         >
                           <Ban className="h-4 w-4" />
                         </Button>
@@ -464,7 +529,8 @@ const ClubAdminPanelSimple: React.FC = () => {
         <CardHeader>
           <CardTitle>Eventos y miembros</CardTitle>
           <CardDescription>
-            Eventos (club_events) y miembros (club_members) del club seleccionado
+            Eventos (club_events) y miembros (club_members) del club
+            seleccionado
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -474,7 +540,11 @@ const ClubAdminPanelSimple: React.FC = () => {
             className="w-full rounded-lg border border-slate-300 bg-white dark:border-white/20 dark:bg-purple-950/60 px-3 py-2 text-slate-900 dark:text-white"
           >
             {clubs.map((c) => (
-              <option key={c.id} value={c.id} className="bg-white text-slate-900 dark:bg-purple-950 dark:text-white">
+              <option
+                key={c.id}
+                value={c.id}
+                className="bg-white text-slate-900 dark:bg-purple-950 dark:text-white"
+              >
                 {c.name} — {c.city}
               </option>
             ))}
@@ -482,25 +552,39 @@ const ClubAdminPanelSimple: React.FC = () => {
 
           {eventsLoading ? (
             <p className="text-slate-600 dark:text-white/70 text-sm flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" /> Cargando eventos y miembros...
+              <Loader2 className="h-4 w-4 animate-spin" /> Cargando eventos y
+              miembros...
             </p>
           ) : (
             <>
               <div>
-                <h4 className="text-slate-900 dark:text-white font-semibold mb-2">Eventos ({events.length})</h4>
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-2">
+                  Eventos ({events.length})
+                </h4>
                 {events.length === 0 ? (
-                  <p className="text-slate-500 dark:text-white/60 text-sm">Sin eventos para este club.</p>
+                  <p className="text-slate-500 dark:text-white/60 text-sm">
+                    Sin eventos para este club.
+                  </p>
                 ) : (
                   <ul className="space-y-2">
                     {events.map((ev) => (
-                      <li key={ev.id} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5 px-3 py-2">
+                      <li
+                        key={ev.id}
+                        className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5 px-3 py-2"
+                      >
                         <div className="min-w-0">
-                          <p className="text-slate-900 dark:text-white font-medium truncate">{ev.title}</p>
+                          <p className="text-slate-900 dark:text-white font-medium truncate">
+                            {ev.title}
+                          </p>
                           <p className="text-slate-500 dark:text-white/60 text-xs">
-                            {new Date(ev.date).toLocaleDateString("es-MX")} {ev.startTime ? `· ${ev.startTime}` : ""} · {ev.registeredCount}/{ev.capacity} registrados
+                            {new Date(ev.date).toLocaleDateString("es-MX")}{" "}
+                            {ev.startTime ? `· ${ev.startTime}` : ""} ·{" "}
+                            {ev.registeredCount}/{ev.capacity} registrados
                           </p>
                         </div>
-                        <Badge variant="secondary">{ev.isVip ? "VIP" : `$${ev.price}`}</Badge>
+                        <Badge variant="secondary">
+                          {ev.isVip ? "VIP" : `$${ev.price}`}
+                        </Badge>
                       </li>
                     ))}
                   </ul>
@@ -511,7 +595,8 @@ const ClubAdminPanelSimple: React.FC = () => {
                 className="flex flex-wrap gap-2"
                 onSubmit={async (e) => {
                   e.preventDefault();
-                  if (!newEventTitle.trim() || !newEventDate || !selectedClubId) return;
+                  if (!newEventTitle.trim() || !newEventDate || !selectedClubId)
+                    return;
                   const created = await createClubEvent({
                     clubId: selectedClubId,
                     title: newEventTitle.trim(),
@@ -550,14 +635,23 @@ const ClubAdminPanelSimple: React.FC = () => {
               </form>
 
               <div>
-                <h4 className="text-slate-900 dark:text-white font-semibold mb-2">Miembros ({members.length})</h4>
+                <h4 className="text-slate-900 dark:text-white font-semibold mb-2">
+                  Miembros ({members.length})
+                </h4>
                 {members.length === 0 ? (
-                  <p className="text-slate-500 dark:text-white/60 text-sm">Sin miembros registrados.</p>
+                  <p className="text-slate-500 dark:text-white/60 text-sm">
+                    Sin miembros registrados.
+                  </p>
                 ) : (
                   <ul className="space-y-2">
                     {members.map((m) => (
-                      <li key={m.id} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5 px-3 py-2">
-                        <span className="text-slate-900 dark:text-white truncate">{m.displayName}</span>
+                      <li
+                        key={m.id}
+                        className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5 px-3 py-2"
+                      >
+                        <span className="text-slate-900 dark:text-white truncate">
+                          {m.displayName}
+                        </span>
                         <Badge variant="secondary">
                           {m.role} · {m.status}
                         </Badge>

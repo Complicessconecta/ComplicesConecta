@@ -3,7 +3,13 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 
 // CRÍTICO: Asegurar createContext disponible antes de usar
@@ -255,4 +261,3 @@ export const useKeyboardNavigation = () => {
 };
 
 export default AccessibilityProvider;
-

@@ -9,8 +9,19 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { PlusIcon, TrashIcon, CheckCircleIcon, XCircleIcon, CogIcon } from "@heroicons/react/24/outline";
-import { webhookService,  type WebhookConfig, type WebhookProvider, type WebhookEventType } from "@/services";
+import {
+  PlusIcon,
+  TrashIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  CogIcon,
+} from "@heroicons/react/24/outline";
+import {
+  webhookService,
+  type WebhookConfig,
+  type WebhookProvider,
+  type WebhookEventType,
+} from "@/services";
 import { toast } from "@/hooks/useToast";
 
 // =====================================================
@@ -290,10 +301,7 @@ export const WebhookConfigPanel: React.FC = () => {
                     setFormData({
                       ...formData,
                       minSeverity: e.target.value as
-                        | "low"
-                        | "medium"
-                        | "high"
-                        | "critical",
+                        "low" | "medium" | "high" | "critical",
                     })
                   }
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"

@@ -14,12 +14,7 @@ export { SecurityPanel } from "@/components/admin/SecurityPanel";
 
 // Tipos de paneles disponibles
 export type PanelType =
-  | "reports"
-  | "users"
-  | "tokens"
-  | "analytics"
-  | "performance"
-  | "security";
+  "reports" | "users" | "tokens" | "analytics" | "performance" | "security";
 
 // Configuración de paneles
 export interface PanelConfig {

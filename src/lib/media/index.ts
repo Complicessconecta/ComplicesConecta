@@ -4,4 +4,4 @@
  * Rutas absolutas "@" usadas para imports entre dominios
  */
 
-export * from '@/lib/media/media/media';
+export * from "@/lib/media/media/media";

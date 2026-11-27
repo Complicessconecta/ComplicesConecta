@@ -395,7 +395,10 @@ export const invitationService = {
         .limit(1);
 
       if (error) {
-        logger.error("❌ Error verificando acceso al chat:", { error: error.message, details: error.details });
+        logger.error("❌ Error verificando acceso al chat:", {
+          error: error.message,
+          details: error.details,
+        });
         throw error;
       }
 
@@ -440,4 +443,3 @@ export const invitationService = {
     });
   },
 };
-

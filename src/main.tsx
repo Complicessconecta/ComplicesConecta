@@ -1,9 +1,7 @@
-
 // ------------------------------------------------------------------
 // COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
-
 
 import { suppressWalletErrors } from "@/lib/wallet-silencer";
 import { startErrorCapture } from "@/utils/captureConsoleErrors";
@@ -127,7 +125,7 @@ if (typeof window !== "undefined") {
     debugLog("REACT_CONTEXT_TEST_SUCCESS", { testContext });
   } catch (error) {
     debugLog("REACT_CONTEXT_TEST_FAILED", { error });
-    throw new Error(`React context test failed: ${error}`);
+    throw new Error(`React context test failed: ${error}`, { cause: error });
   }
 
   const isIgnoredWalletError = (message: unknown): boolean => {

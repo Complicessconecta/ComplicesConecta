@@ -445,4 +445,3 @@ export const useFileValidator = () => {
 
 export { ALLOWED_MIME_TYPES, ALLOWED_EXTENSIONS, SIZE_LIMITS };
 export default FileValidator;
-

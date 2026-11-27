@@ -3,4 +3,4 @@
  * Import paths estables para migración futura
  */
 
-export { supabase } from './supabase';
+export { supabase } from "./supabase";

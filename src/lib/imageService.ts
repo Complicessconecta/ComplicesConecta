@@ -115,8 +115,12 @@ export const getRandomMexicanCoordinates = (): {
   lng: number;
   city: string;
 } => {
-  const fallbackCity: CityCoordinates =
-    MEXICAN_CITIES[0] ?? { name: "CDMX", lat: 19.4326, lng: -99.1332, range: 0.1 };
+  const fallbackCity: CityCoordinates = MEXICAN_CITIES[0] ?? {
+    name: "CDMX",
+    lat: 19.4326,
+    lng: -99.1332,
+    range: 0.1,
+  };
   const randomCity =
     MEXICAN_CITIES[Math.floor(Math.random() * MEXICAN_CITIES.length)] ??
     fallbackCity;
@@ -185,4 +189,3 @@ export const getFallbackImage = (
   const id = fallbackIds[gender];
   return `https://images.unsplash.com/photo-${id}?w=400&h=600&fit=crop&crop=face&auto=format&q=80`;
 };
-

@@ -566,7 +566,7 @@ export class MultimediaSecurityService {
       logger.error("Error in access control check:", {
         error: error instanceof Error ? error.message : String(error),
       });
-      throw new Error("Failed to encrypt file");
+      throw new Error("Failed to encrypt file", { cause: error });
     }
   }
 
@@ -611,7 +611,7 @@ export class MultimediaSecurityService {
       logger.error("Error decrypting file:", {
         error: error instanceof Error ? error.message : String(error),
       });
-      throw new Error("Failed to decrypt file");
+      throw new Error("Failed to decrypt file", { cause: error });
     }
   }
 

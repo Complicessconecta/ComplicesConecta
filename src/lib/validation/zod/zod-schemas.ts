@@ -478,7 +478,9 @@ export function validateProfileCard(props: unknown): ProfileCardProps {
       const messages = error.issues.map(
         (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
-      throw new Error(`Validación ProfileCard falló: ${messages.join(", ")}`);
+      throw new Error(`Validación ProfileCard falló: ${messages.join(", ")}`, {
+        cause: error,
+      });
     }
     throw error;
   }
@@ -495,7 +497,10 @@ export function validateThemeSelector(props: unknown): ThemeSelectorProps {
       const messages = error.issues.map(
         (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
-      throw new Error(`Validación ThemeSelector falló: ${messages.join(", ")}`);
+      throw new Error(
+        `Validación ThemeSelector falló: ${messages.join(", ")}`,
+        { cause: error },
+      );
     }
     throw error;
   }
@@ -512,7 +517,9 @@ export function validateEmail(data: unknown): EmailValidation {
       const messages = error.issues.map(
         (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
-      throw new Error(`Validación Email falló: ${messages.join(", ")}`);
+      throw new Error(`Validación Email falló: ${messages.join(", ")}`, {
+        cause: error,
+      });
     }
     throw error;
   }
@@ -533,6 +540,7 @@ export function validateTokenTransaction(
       );
       throw new Error(
         `Validación TokenTransaction falló: ${messages.join(", ")}`,
+        { cause: error },
       );
     }
     throw error;
@@ -550,7 +558,9 @@ export function validateStaking(request: unknown): StakingRequest {
       const messages = error.issues.map(
         (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
-      throw new Error(`Validación Staking falló: ${messages.join(", ")}`);
+      throw new Error(`Validación Staking falló: ${messages.join(", ")}`, {
+        cause: error,
+      });
     }
     throw error;
   }
@@ -567,7 +577,10 @@ export function validateStakingRecord(record: unknown): StakingRecord {
       const messages = error.issues.map(
         (issue) => `${issue.path.join(".")}: ${issue.message}`,
       );
-      throw new Error(`Validación StakingRecord falló: ${messages.join(", ")}`);
+      throw new Error(
+        `Validación StakingRecord falló: ${messages.join(", ")}`,
+        { cause: error },
+      );
     }
     throw error;
   }
@@ -591,4 +604,3 @@ export function safeValidate<T>(
   );
   return { success: false, errors };
 }
-

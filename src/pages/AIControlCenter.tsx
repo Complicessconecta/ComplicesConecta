@@ -1,5 +1,10 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Bot, Shield, BookOpen, ArrowRight } from "lucide-react";
 import { LegalChatBox } from "@/components/ai/LegalChatBox";
@@ -152,4 +157,3 @@ const AIControlCenter: React.FC = () => {
 };
 
 export default AIControlCenter;
-

@@ -8,10 +8,7 @@
  * =====================================================
  */
 
-import type {
-  PerformanceMetric,
-  PerformanceReport,
-} from "@/services";
+import type { PerformanceMetric, PerformanceReport } from "@/services";
 import type { ErrorAlert } from "@/services";
 import { logger } from "@/lib/logger";
 
@@ -67,7 +64,7 @@ function downloadFile(
     logger.debug("File downloaded successfully", { filename });
   } catch (error) {
     logger.error("Error downloading file:", { error: String(error) });
-    throw new Error("Failed to download file");
+    throw new Error("Failed to download file", { cause: error });
   }
 }
 
@@ -123,7 +120,7 @@ export function exportToCSV(data: ExportData, options?: ExportOptions): void {
     });
   } catch (error) {
     logger.error("❌ Error exporting to CSV:", { error: String(error) });
-    throw new Error("Failed to export to CSV");
+    throw new Error("Failed to export to CSV", { cause: error });
   }
 }
 
@@ -157,7 +154,7 @@ export function exportToJSON(data: ExportData, options?: ExportOptions): void {
     });
   } catch (error) {
     logger.error("❌ Error exporting to JSON:", { error: String(error) });
-    throw new Error("Failed to export to JSON");
+    throw new Error("Failed to export to JSON", { cause: error });
   }
 }
 
@@ -218,7 +215,7 @@ export function exportToExcel(data: ExportData, options?: ExportOptions): void {
     logger.info("✅ Excel export completed", { filename });
   } catch (error) {
     logger.error("❌ Error exporting to Excel:", { error: String(error) });
-    throw new Error("Failed to export to Excel");
+    throw new Error("Failed to export to Excel", { cause: error });
   }
 }
 

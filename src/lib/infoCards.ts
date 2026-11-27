@@ -4,12 +4,7 @@ export interface FilterDemoCard {
   title: string;
   description: string;
   filterType:
-    | "age"
-    | "distance"
-    | "interests"
-    | "verified"
-    | "premium"
-    | "online";
+    "age" | "distance" | "interests" | "verified" | "premium" | "online";
   demoValue: string;
   explanation: string;
   benefits: string[];
@@ -131,4 +126,3 @@ export const generateFilterDemoCards = (): FilterDemoCard[] => {
     },
   ];
 };
-

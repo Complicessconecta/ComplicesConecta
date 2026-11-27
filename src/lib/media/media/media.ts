@@ -136,7 +136,7 @@ export function pickProfileImage(
 
   const pool = IMAGE_POOLS[poolKey];
   const fallbackImage = IMAGE_POOLS.female[0]!;
-  let selectedImage: string = fallbackImage;
+  let selectedImage: string;
   let attempts = 0;
   const maxAttempts = pool.length * 2;
 

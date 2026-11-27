@@ -188,4 +188,3 @@ export function safeClear(): void {
     logger.error("❌ Error limpiando localStorage:", { error });
   }
 }
-

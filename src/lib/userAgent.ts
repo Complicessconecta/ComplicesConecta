@@ -33,19 +33,9 @@ export function isAndroidWebView(uaString?: string): boolean {
 // MERGED FROM UTILS (platformDetection.ts)
 
 export type Platform =
-  | "android"
-  | "ios"
-  | "windows"
-  | "macos"
-  | "linux"
-  | "unknown";
+  "android" | "ios" | "windows" | "macos" | "linux" | "unknown";
 export type Browser =
-  | "chrome"
-  | "firefox"
-  | "safari"
-  | "edge"
-  | "opera"
-  | "unknown";
+  "chrome" | "firefox" | "safari" | "edge" | "opera" | "unknown";
 
 /**
  * Detect the current platform

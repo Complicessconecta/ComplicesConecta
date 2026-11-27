@@ -268,4 +268,3 @@ export function initializeMockPremiumData() {
     `🪙 Payment method: ${import.meta.env.VITE_APP_PHASE === "beta" ? "CMPX Tokens" : "Stripe + Tokens"}`,
   );
 }
-

@@ -1,8 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
-import { Heart, MessageCircle, Share2, MoreHorizontal, MapPin, Clock, CheckCircle, Loader2, Plus, Send } from "lucide-react";
-import { postsService, getDemoLikedPostIds, type Post } from "@/services/social";
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  MoreHorizontal,
+  MapPin,
+  Clock,
+  CheckCircle,
+  Loader2,
+  Plus,
+  Send,
+} from "lucide-react";
+import {
+  postsService,
+  getDemoLikedPostIds,
+  type Post,
+} from "@/services/social";
 import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
@@ -174,9 +189,7 @@ const Feed = () => {
     const bumpShares = () =>
       setPosts((prevPosts) =>
         prevPosts.map((p) =>
-          p.id === post.id
-            ? { ...p, shares_count: p.shares_count + 1 }
-            : p,
+          p.id === post.id ? { ...p, shares_count: p.shares_count + 1 } : p,
         ),
       );
 
@@ -260,7 +273,6 @@ const Feed = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-background via-muted/30 to-secondary/20">
-
       <main className="container mx-auto px-4 py-6 max-w-2xl">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-foreground mb-2">

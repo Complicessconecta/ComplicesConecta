@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Building, CheckCircle, MapPin, Sparkles, Star } from "lucide-react";
+import {
+  ArrowLeft,
+  Building,
+  CheckCircle,
+  LogOut,
+  MapPin,
+  Sparkles,
+  Star,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/cards/Card";
@@ -14,6 +22,11 @@ import {
   type ClubDiscountItem,
   type ClubEventItem,
 } from "@/services/clubs/clubContentService";
+import { clearDemoAuth } from "@/lib/app-config";
+import {
+  clearClubDemoAdminSession,
+  isClubDemoSessionActive,
+} from "@/lib/clubDemoSession";
 
 /** Fotos de galería del club (la portada + 3 verificadas en Unsplash). */
 const CLUB_GALLERY_PHOTOS = [
@@ -157,6 +170,27 @@ export const ClubsPublic = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug?: string }>();
 
+  // Ronda 14, stream E: en la vista pública y en el listado no había
+  // forma de cerrar la sesión demo (el "Cerrar sesión" solo vivía en
+  // la cabecera de /clubs/demo, MainLayout `isClubDemoRoute`) y la
+  // sesión quedaba abierta. Con sesión demo activa se muestra
+  // "Cerrar sesión".
+  // Ronda 15, stream B: en este listado "Cerrar sesión" SÍ es el
+  // logout de la app demo (no hay vista admin aquí): cierra la sesión
+  // del club y la de la app. Es distinto del botón en página de
+  // /clubs/demo, que cierra solo la sesión del club. Por eso ya no
+  // usa `closeClubDemoSession` (que desde la ronda 15 solo borra la
+  // marca de admin del club) sino los dos barridos explícitos.
+  const [demoSessionActive, setDemoSessionActive] = useState(() =>
+    isClubDemoSessionActive(),
+  );
+  const handleClubDemoLogout = () => {
+    clearClubDemoAdminSession();
+    clearDemoAuth();
+    setDemoSessionActive(false);
+    navigate("/clubs-public");
+  };
+
   // Clubs reales de Supabase; sin datos (tabla vacía / RLS / error) se usa
   // el catálogo público. Antes la página solo mostraba el hardcode.
   const [clubs, setClubs] = useState<PublicClub[]>(PUBLIC_CLUBS);
@@ -189,9 +223,12 @@ export const ClubsPublic = () => {
           });
         }
       } catch (error) {
-        logger.warn("ClubsPublic: Supabase no disponible, usando catálogo público", {
-          error: error instanceof Error ? error.message : String(error),
-        });
+        logger.warn(
+          "ClubsPublic: Supabase no disponible, usando catálogo público",
+          {
+            error: error instanceof Error ? error.message : String(error),
+          },
+        );
       }
     })();
     return () => {
@@ -208,7 +245,9 @@ export const ClubsPublic = () => {
   // (club_events / club_discounts) con respaldo demo. Antes el detalle
   // solo mostraba la cabecera y quedaba vacío debajo.
   const [detailEvents, setDetailEvents] = useState<ClubEventItem[]>([]);
-  const [detailDiscounts, setDetailDiscounts] = useState<ClubDiscountItem[]>([]);
+  const [detailDiscounts, setDetailDiscounts] = useState<ClubDiscountItem[]>(
+    [],
+  );
   useEffect(() => {
     if (!selectedClub) return;
     let cancelled = false;
@@ -238,19 +277,33 @@ export const ClubsPublic = () => {
             onClick={() =>
               slug ? navigate("/clubs-public") : navigate("/clubs")
             }
-            className="border-white/30 text-white hover:bg-white/10"
+            className="border-slate-300 text-slate-900 hover:bg-slate-100 dark:border-white/30 dark:text-white dark:hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver
           </Button>
-          <Badge className="bg-white/10 text-white border-white/30">
-            Clubes Públicos
-          </Badge>
+          <div className="flex items-center gap-2">
+            {demoSessionActive && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClubDemoLogout}
+                className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-400/40 dark:text-red-200 dark:hover:bg-red-500/20"
+                title="Cerrar la sesión demo"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Cerrar sesión
+              </Button>
+            )}
+            <Badge className="bg-slate-900/5 text-slate-700 border-slate-300 dark:bg-white/10 dark:text-white dark:border-white/30">
+              Clubes Públicos
+            </Badge>
+          </div>
         </div>
 
         {selectedClub ? (
           <div className="space-y-6">
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20 overflow-hidden">
+            <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 overflow-hidden">
               <div className="relative h-64">
                 <img
                   src={selectedClub.coverImage}
@@ -267,16 +320,16 @@ export const ClubsPublic = () => {
               <CardContent className="p-6">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div>
-                    <h2 className="text-3xl font-bold text-white mb-2">
+                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
                       {selectedClub.name}
                     </h2>
-                    <div className="flex items-center gap-2 text-white/70 mb-4">
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-white/70 mb-4">
                       <MapPin className="h-4 w-4" />
                       <span>
                         {selectedClub.address}, {selectedClub.city}
                       </span>
                     </div>
-                    <p className="text-white/80 max-w-2xl">
+                    <p className="text-slate-600 dark:text-white/80 max-w-2xl">
                       {selectedClub.description}
                     </p>
                   </div>
@@ -292,67 +345,89 @@ export const ClubsPublic = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-4 text-center mt-6">
                   <div>
-                    <div className="text-white font-semibold">
+                    <div className="text-slate-900 dark:text-white font-semibold">
                       {selectedClub.checkIns}
                     </div>
-                    <div className="text-white/60 text-xs">Check-ins</div>
+                    <div className="text-slate-500 dark:text-white/60 text-xs">
+                      Check-ins
+                    </div>
                   </div>
                   <div>
-                    <div className="text-white font-semibold">
+                    <div className="text-slate-900 dark:text-white font-semibold">
                       {selectedClub.reviews}
                     </div>
-                    <div className="text-white/60 text-xs">Reseñas</div>
+                    <div className="text-slate-500 dark:text-white/60 text-xs">
+                      Reseñas
+                    </div>
                   </div>
                   <div>
-                    <div className="text-white font-semibold">
+                    <div className="text-slate-900 dark:text-white font-semibold">
                       {selectedClub.rating.toFixed(1)}
                     </div>
-                    <div className="text-white/60 text-xs">Rating</div>
+                    <div className="text-slate-500 dark:text-white/60 text-xs">
+                      Rating
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Galería */}
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+            <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20">
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">Galería</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                  Galería
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {/* La portada no se repite en la galería: la foto de
                       Eden Noir (1514525253161) también estaba en
                       CLUB_GALLERY_PHOTOS y salía dos veces en su detalle.
                       La comparación es por id de foto (sin el query ?w=),
                       porque la portada usa ?w=1200 y la galería ?w=800. */}
-                  {[selectedClub.coverImage, ...CLUB_GALLERY_PHOTOS.filter((u) => {
-                    const idOf = (url: string) =>
-                      url.split("photo-")[1]?.split("?")[0] ?? url;
-                    return idOf(u) !== idOf(selectedClub.coverImage);
-                  })].slice(0, 4).map((url, i) => (
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`${selectedClub.name} — foto ${i + 1}`}
-                      className="w-full h-40 object-cover rounded-xl"
-                      loading="lazy"
-                    />
-                  ))}
+                  {[
+                    selectedClub.coverImage,
+                    ...CLUB_GALLERY_PHOTOS.filter((u) => {
+                      const idOf = (url: string) =>
+                        url.split("photo-")[1]?.split("?")[0] ?? url;
+                      return idOf(u) !== idOf(selectedClub.coverImage);
+                    }),
+                  ]
+                    .slice(0, 4)
+                    .map((url, i) => (
+                      <img
+                        key={i}
+                        src={url}
+                        alt={`${selectedClub.name} — foto ${i + 1}`}
+                        className="w-full h-40 object-cover rounded-xl"
+                        loading="lazy"
+                      />
+                    ))}
                 </div>
               </CardContent>
             </Card>
 
             {/* Eventos */}
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+            <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20">
               <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4">Próximos eventos</h3>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                  Próximos eventos
+                </h3>
                 {detailEvents.length === 0 ? (
-                  <p className="text-white/60">Sin eventos publicados por ahora.</p>
+                  <p className="text-slate-500 dark:text-white/60">
+                    Sin eventos publicados por ahora.
+                  </p>
                 ) : (
                   <ul className="space-y-3">
                     {detailEvents.map((ev) => (
-                      <li key={ev.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                      <li
+                        key={ev.id}
+                        className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-900/5 dark:bg-white/5 px-4 py-3"
+                      >
                         <div className="min-w-0">
-                          <p className="text-white font-semibold truncate">{ev.title}</p>
-                          <p className="text-white/60 text-sm">
+                          <p className="text-slate-900 dark:text-white font-semibold truncate">
+                            {ev.title}
+                          </p>
+                          <p className="text-slate-500 dark:text-white/60 text-sm">
                             {new Date(ev.date).toLocaleDateString("es-MX")}
                             {ev.startTime ? ` · ${ev.startTime}` : ""}
                             {ev.location ? ` · ${ev.location}` : ""}
@@ -370,17 +445,26 @@ export const ClubsPublic = () => {
 
             {/* Descuentos + contacto */}
             <div className="grid gap-6 md:grid-cols-2">
-              <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+              <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">Descuentos</h3>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Descuentos
+                  </h3>
                   {detailDiscounts.length === 0 ? (
-                    <p className="text-white/60">Sin descuentos activos por ahora.</p>
+                    <p className="text-slate-500 dark:text-white/60">
+                      Sin descuentos activos por ahora.
+                    </p>
                   ) : (
                     <ul className="space-y-3">
                       {detailDiscounts.map((d) => (
-                        <li key={d.id} className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 px-4 py-3">
+                        <li
+                          key={d.id}
+                          className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 px-4 py-3"
+                        >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-white font-mono font-bold">{d.code}</span>
+                            <span className="text-slate-900 dark:text-white font-mono font-bold">
+                              {d.code}
+                            </span>
                             <Badge className="bg-fuchsia-600 text-white">
                               {d.discountPercent !== null
                                 ? `${d.discountPercent}% OFF`
@@ -390,7 +474,9 @@ export const ClubsPublic = () => {
                             </Badge>
                           </div>
                           {d.description && (
-                            <p className="text-white/70 text-sm mt-1">{d.description}</p>
+                            <p className="text-slate-600 dark:text-white/70 text-sm mt-1">
+                              {d.description}
+                            </p>
                           )}
                         </li>
                       ))}
@@ -398,17 +484,22 @@ export const ClubsPublic = () => {
                   )}
                 </CardContent>
               </Card>
-              <Card className="bg-white/10 backdrop-blur-xl border-white/20">
+              <Card className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">Contacto</h3>
-                  <p className="text-white/80 flex items-start gap-2">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                    Contacto
+                  </h3>
+                  <p className="text-slate-600 dark:text-white/80 flex items-start gap-2">
                     <MapPin className="h-4 w-4 mt-1 shrink-0" />
                     <span>
-                      {selectedClub.address}, {selectedClub.city}, {selectedClub.state}
+                      {selectedClub.address}, {selectedClub.city},{" "}
+                      {selectedClub.state}
                     </span>
                   </p>
-                  <p className="text-white/60 text-sm mt-3">
-                    Nivel {selectedClub.tier === "premium" ? "Premium" : "Gratuito"} · {selectedClub.vibe}
+                  <p className="text-slate-500 dark:text-white/60 text-sm mt-3">
+                    Nivel{" "}
+                    {selectedClub.tier === "premium" ? "Premium" : "Gratuito"} ·{" "}
+                    {selectedClub.vibe}
                   </p>
                   <Button
                     onClick={() => navigate("/clubs")}
@@ -425,7 +516,7 @@ export const ClubsPublic = () => {
             {clubs.map((club) => (
               <Card
                 key={club.id}
-                className="bg-white/10 backdrop-blur-xl border-white/20 overflow-hidden"
+                className="bg-white dark:bg-white/10 backdrop-blur-xl border-slate-200 dark:border-white/20 overflow-hidden"
               >
                 <div className="relative h-48">
                   <img
@@ -445,8 +536,10 @@ export const ClubsPublic = () => {
                 </div>
                 <CardContent className="p-5 space-y-3">
                   <div>
-                    <h3 className="text-xl font-bold text-white">{club.name}</h3>
-                    <div className="flex items-center gap-2 text-white/70 text-sm">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      {club.name}
+                    </h3>
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-white/70 text-sm">
                       <MapPin className="h-4 w-4" />
                       {club.city}, {club.state}
                     </div>
@@ -456,9 +549,9 @@ export const ClubsPublic = () => {
                       ("…iluminació…"). Ahora se expande/contrae. */}
                   <ExpandableClubDescription
                     text={club.description}
-                    textClassName="text-white/70 text-sm"
+                    textClassName="text-slate-600 dark:text-white/70 text-sm"
                   />
-                  <div className="flex items-center gap-3 text-white/80 text-sm">
+                  <div className="flex items-center gap-3 text-slate-700 dark:text-white/80 text-sm">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 text-yellow-300" />
                       {club.rating.toFixed(1)}
@@ -479,15 +572,15 @@ export const ClubsPublic = () => {
         )}
 
         {!selectedClub && (
-          <Card className="bg-white/5 border-white/10 backdrop-blur-xl">
+          <Card className="bg-white dark:bg-white/5 border-slate-200 dark:border-white/10 backdrop-blur-xl">
             <CardContent className="p-6 text-center">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 mb-4">
-                <Building className="h-5 w-5 text-white" />
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-900/5 dark:bg-white/10 mb-4">
+                <Building className="h-5 w-5 text-slate-700 dark:text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
                 ¿Tienes un club?
               </h3>
-              <p className="text-white/70 mb-4">
+              <p className="text-slate-600 dark:text-white/70 mb-4">
                 Solicita verificación y forma parte del ecosistema lifestyle.
               </p>
               <Button

@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, User, Flame, Users, Crown, Sparkles } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  User,
+  Flame,
+  Users,
+  Crown,
+  Sparkles,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
@@ -517,4 +525,3 @@ const MatchCard = ({
 };
 
 export default Matches;
-

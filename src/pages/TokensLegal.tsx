@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { ArrowLeft, Scale, Sparkles, AlertTriangle } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
@@ -27,9 +32,7 @@ export default function TokensLegal() {
     fetch("/docs/legal/TOKENS_LEGAL.md")
       .then(async (response) => {
         if (!response.ok) {
-          throw new Error(
-            `Documento no disponible (HTTP ${response.status})`,
-          );
+          throw new Error(`Documento no disponible (HTTP ${response.status})`);
         }
         const contentType = response.headers.get("content-type") ?? "";
         const text = await response.text();
@@ -127,10 +130,7 @@ export default function TokensLegal() {
                   <p className="text-sm text-white/80">{loadError}</p>
                   <p className="mt-2 text-sm text-white/80">
                     Puedes consultar los términos de tokens en la{" "}
-                    <Link
-                      to="/tokens-terms"
-                      className="underline text-white"
-                    >
+                    <Link to="/tokens-terms" className="underline text-white">
                       página de Términos de Tokens
                     </Link>{" "}
                     o escribir a tokens@complicesconecta.com.
@@ -174,4 +174,3 @@ export default function TokensLegal() {
     </div>
   );
 }
-

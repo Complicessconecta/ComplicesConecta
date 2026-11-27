@@ -51,8 +51,8 @@ const SecurityPage = () => {
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
                 Todos tus datos están protegidos con encriptación de nivel
-                bancario AES-256. TLS 1.3 en todas las conexiones.
-                65+ políticas RLS activas.
+                bancario AES-256. TLS 1.3 en todas las conexiones. 65+ políticas
+                RLS activas.
               </p>
             </CardContent>
           </Card>
@@ -66,8 +66,8 @@ const SecurityPage = () => {
             </CardHeader>
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
-                Rate limiting de 100 requests/minuto. Bloqueo automático de
-                IPs maliciosas. Protección Cloudflare WAF.
+                Rate limiting de 100 requests/minuto. Bloqueo automático de IPs
+                maliciosas. Protección Cloudflare WAF.
               </p>
             </CardContent>
           </Card>
@@ -126,8 +126,8 @@ const SecurityPage = () => {
             </CardHeader>
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
-                Tú decides qué información compartir. Enmascaramiento de
-                datos sensibles en logs. Derecho al olvido implementado.
+                Tú decides qué información compartir. Enmascaramiento de datos
+                sensibles en logs. Derecho al olvido implementado.
               </p>
             </CardContent>
           </Card>
@@ -154,8 +154,8 @@ const SecurityPage = () => {
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Protección XSS:</strong> Escapado de HTML en todos los
-                    outputs, Content Security Policy configurada
+                    <strong>Protección XSS:</strong> Escapado de HTML en todos
+                    los outputs, Content Security Policy configurada
                   </p>
                 </div>
                 <div className="flex items-start">
@@ -175,8 +175,9 @@ const SecurityPage = () => {
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Enmascaramiento de Datos:</strong> Emails enmascarados
-                    en logs (ab***@domain.com), datos sensibles protegidos
+                    <strong>Enmascaramiento de Datos:</strong> Emails
+                    enmascarados en logs (ab***@domain.com), datos sensibles
+                    protegidos
                   </p>
                 </div>
                 <div className="flex items-start">
@@ -350,4 +351,3 @@ const SecurityPage = () => {
 };
 
 export default SecurityPage;
-

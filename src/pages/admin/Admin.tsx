@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,9 +16,17 @@ import { useAuth } from "@/features/auth/useAuth";
 import { logger } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { Users,Shield, BarChart3, Plus, Trash2, Settings, Crown } from "lucide-react";
+import {
+  Users,
+  Shield,
+  BarChart3,
+  Plus,
+  Trash2,
+  Settings,
+  Crown,
+} from "lucide-react";
 
-// Types 
+// Types
 interface Profile {
   id: string;
   email: string;
@@ -127,10 +140,13 @@ export const Admin = () => {
       ]);
     } catch (error: any) {
       logger.error("Error loading admin data:", { error: String(error) });
-      setError(error.message || "Error al cargar datos del panel de administracin");
+      setError(
+        error.message || "Error al cargar datos del panel de administracin",
+      );
       toast({
         title: "Error",
-        description: error.message || "Error al cargar datos del panel de administracin",
+        description:
+          error.message || "Error al cargar datos del panel de administracin",
         variant: "destructive",
       });
     } finally {
@@ -185,10 +201,14 @@ export const Admin = () => {
           .from("club_applications")
           .select("*", { count: "exact", head: true })
           .eq("status", "pending"),
-        supabase.from("wallet_balances").select("cmpx_balance, gtk_balance, cmpx_locked, gtk_locked"),
+        supabase
+          .from("wallet_balances")
+          .select("cmpx_balance, gtk_balance, cmpx_locked, gtk_locked"),
       ]);
 
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const thirtyDaysAgo = new Date(
+        Date.now() - 30 * 24 * 60 * 60 * 1000,
+      ).toISOString();
       const { count: activeUsers } = await supabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
@@ -649,7 +669,9 @@ export const Admin = () => {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-linear-to-br from-purple-900 via-purple-800 to-blue-900 rounded-2xl shadow-2xl border border-purple-500/40 max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">Detalles del Perfil</h3>
+              <h3 className="text-xl font-bold text-white">
+                Detalles del Perfil
+              </h3>
               <Button
                 size="sm"
                 variant="ghost"
@@ -669,7 +691,11 @@ export const Admin = () => {
                   />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white text-2xl font-bold">
-                    {(selectedProfile.display_name || selectedProfile.first_name || "U").charAt(0)}
+                    {(
+                      selectedProfile.display_name ||
+                      selectedProfile.first_name ||
+                      "U"
+                    ).charAt(0)}
                   </div>
                 )}
                 <div>
@@ -677,23 +703,39 @@ export const Admin = () => {
                     {selectedProfile.display_name ||
                       `${selectedProfile.first_name} ${selectedProfile.last_name}`}
                   </h4>
-                  <p className="text-sm text-white/70">{selectedProfile.email}</p>
+                  <p className="text-sm text-white/70">
+                    {selectedProfile.email}
+                  </p>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-white/70">ID:</span>
-                  <span className="text-white font-mono text-sm">{selectedProfile.id}</span>
+                  <span className="text-white font-mono text-sm">
+                    {selectedProfile.id}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/70">Verificado:</span>
-                  <span className={selectedProfile.is_verified ? "text-green-400" : "text-red-400"}>
+                  <span
+                    className={
+                      selectedProfile.is_verified
+                        ? "text-green-400"
+                        : "text-red-400"
+                    }
+                  >
                     {selectedProfile.is_verified ? "Sí" : "No"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-white/70">Premium:</span>
-                  <span className={selectedProfile.is_premium ? "text-purple-400" : "text-white/70"}>
+                  <span
+                    className={
+                      selectedProfile.is_premium
+                        ? "text-purple-400"
+                        : "text-white/70"
+                    }
+                  >
                     {selectedProfile.is_premium ? "Sí" : "No"}
                   </span>
                 </div>
@@ -733,4 +775,3 @@ export const Admin = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
-

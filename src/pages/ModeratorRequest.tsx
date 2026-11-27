@@ -2,10 +2,26 @@ import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { AlertCircle, ArrowLeft, CheckCircle, Mail, Shield, User, Clock, DollarSign, MessageSquare } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  CheckCircle,
+  Mail,
+  Shield,
+  User,
+  Clock,
+  DollarSign,
+  MessageSquare,
+} from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { Link } from "react-router-dom";
 import { validateModeratorRequest } from "@/lib/validations/moderator";
@@ -566,4 +582,3 @@ const ModeratorRequest = () => {
 };
 
 export default ModeratorRequest;
-

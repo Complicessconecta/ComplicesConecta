@@ -1,7 +1,19 @@
 import React from "react";
-import { Shield, AlertTriangle, Phone, Mail, ExternalLink, ArrowLeft } from "lucide-react";
+import {
+  Shield,
+  AlertTriangle,
+  Phone,
+  Mail,
+  ExternalLink,
+  ArrowLeft,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { useNavigate } from "react-router-dom";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
 
@@ -120,14 +132,16 @@ const LeyOlimpia: React.FC = () => {
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
                       <strong>Marca de agua obligatoria:</strong> Todas las
-                      imágenes privadas incluyen marca de agua "ComplicesConecta© Privado"
+                      imágenes privadas incluyen marca de agua
+                      "ComplicesConecta© Privado"
                     </span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-cyan-400 mr-2">•</span>
                     <span>
                       <strong>Protección anti-copia:</strong> Deshabilitación de
-                      clic Derecho, Arrastrar, Guardar, Captura de Pantalla y Grabacion de Video.
+                      clic Derecho, Arrastrar, Guardar, Captura de Pantalla y
+                      Grabacion de Video.
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -174,7 +188,9 @@ const LeyOlimpia: React.FC = () => {
                   <Button
                     className="w-full bg-red-600 hover:bg-red-700 text-white"
                     onClick={() =>
-                      safeOpenUrl("mailto:reportes@complicesconecta.com?subject=Reporte Ley Olimpia")
+                      safeOpenUrl(
+                        "mailto:reportes@complicesconecta.com?subject=Reporte Ley Olimpia",
+                      )
                     }
                   >
                     <Mail className="w-4 h-4 mr-2" />
@@ -210,7 +226,9 @@ const LeyOlimpia: React.FC = () => {
                   variant="outline"
                   className="w-full text-white border-white/30 hover:bg-white/10"
                   onClick={() =>
-                    safeOpenUrl("https://www.gob.mx/inmujeres/articulos/ley-olimpia")
+                    safeOpenUrl(
+                      "https://www.gob.mx/inmujeres/articulos/ley-olimpia",
+                    )
                   }
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
@@ -277,4 +295,3 @@ const LeyOlimpia: React.FC = () => {
 };
 
 export default LeyOlimpia;
-

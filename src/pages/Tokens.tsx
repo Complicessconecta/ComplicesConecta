@@ -6,9 +6,30 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Home, Coins, Info, DollarSign, TrendingUp, Rocket, Shield, Star, BarChart3, Wallet, Gift, Sparkles, Camera, Crown } from "lucide-react";
+import {
+  ArrowLeft,
+  Home,
+  Coins,
+  Info,
+  DollarSign,
+  TrendingUp,
+  Rocket,
+  Shield,
+  Star,
+  BarChart3,
+  Wallet,
+  Gift,
+  Sparkles,
+  Camera,
+  Crown,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { TokenDashboard } from "@/components/tokens/TokenDashboard";
 import { StakingModal } from "@/components/tokens/StakingModal";
@@ -669,7 +690,9 @@ export default function Tokens() {
                   </CardHeader>
                   <CardContent className="p-6 md:p-10 space-y-3 text-sm text-slate-700 dark:text-white/90">
                     {isLoadingEvidence ? (
-                      <p className="text-slate-500 dark:text-white/70">Cargando seguridad...</p>
+                      <p className="text-slate-500 dark:text-white/70">
+                        Cargando seguridad...
+                      </p>
                     ) : (
                       <>
                         <p>
@@ -759,13 +782,17 @@ export default function Tokens() {
                       <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.cmpx.supply}
                       </div>
-                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Suministro</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">
+                        Suministro
+                      </div>
                     </div>
                     <div className="p-3 bg-slate-100 dark:bg-white/10 rounded-lg">
                       <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.cmpx.purpose}
                       </div>
-                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Propósito</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">
+                        Propósito
+                      </div>
                     </div>
                   </div>
 
@@ -843,13 +870,17 @@ export default function Tokens() {
                       <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.gtk.supply}
                       </div>
-                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Suministro</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">
+                        Suministro
+                      </div>
                     </div>
                     <div className="p-3 bg-slate-100 dark:bg-white/10 rounded-lg">
                       <div className="text-2xl font-bold text-slate-900 dark:text-white">
                         {tokenInfo.gtk.purpose}
                       </div>
-                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">Propósito</div>
+                      <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-sm">
+                        Propósito
+                      </div>
                     </div>
                   </div>
 
@@ -875,7 +906,9 @@ export default function Tokens() {
                             <div className="font-bold text-purple-700 dark:text-purple-300 text-lg">
                               {tier.apy}
                             </div>
-                            <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">APY</div>
+                            <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">
+                              APY
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -1135,4 +1168,3 @@ export default function Tokens() {
     </div>
   );
 }
-

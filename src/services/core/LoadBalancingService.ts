@@ -20,10 +20,7 @@ export interface Server {
 
 export interface LoadBalancingConfig {
   algorithm:
-    | "round_robin"
-    | "weighted_round_robin"
-    | "least_connections"
-    | "ip_hash";
+    "round_robin" | "weighted_round_robin" | "least_connections" | "ip_hash";
   healthCheckInterval: number;
   healthCheckTimeout: number;
   maxRetries: number;
@@ -538,4 +535,3 @@ export class LoadBalancingService {
 }
 
 export const loadBalancingService = new LoadBalancingService();
-

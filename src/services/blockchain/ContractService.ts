@@ -6,20 +6,20 @@
 import { web3Service } from "@/services/blockchain/Web3Service";
 import { logger } from "@/lib/logger";
 
- type AbiInput = {
-   type: string;
- };
+type AbiInput = {
+  type: string;
+};
 
- type AbiFunctionItem = {
-   name?: string;
-   inputs?: AbiInput[];
- };
+type AbiFunctionItem = {
+  name?: string;
+  inputs?: AbiInput[];
+};
 
- type AbiItem = string | AbiFunctionItem;
+type AbiItem = string | AbiFunctionItem;
 
- const isAbiFunctionItem = (item: AbiItem): item is AbiFunctionItem => {
-   return typeof item !== "string";
- };
+const isAbiFunctionItem = (item: AbiItem): item is AbiFunctionItem => {
+  return typeof item !== "string";
+};
 
 /**
  * Interfaz para configuración de contrato
@@ -131,7 +131,7 @@ export class ContractService {
   public async callReadFunction(
     contractName: string,
     functionName: string,
-    params: unknown[] = []
+    params: unknown[] = [],
   ): Promise<unknown> {
     if (!web3Service.isWeb3Connected()) {
       throw new Error("Web3 no está conectado");
@@ -143,7 +143,9 @@ export class ContractService {
     }
 
     if (!contract.address) {
-      throw new Error(`Contrato ${contractName} no tiene dirección configurada`);
+      throw new Error(
+        `Contrato ${contractName} no tiene dirección configurada`,
+      );
     }
 
     try {
@@ -158,11 +160,15 @@ export class ContractService {
         ],
       });
 
-      logger.info(`Llamada a ${contractName}.${functionName} exitosa`, { result });
+      logger.info(`Llamada a ${contractName}.${functionName} exitosa`, {
+        result,
+      });
       return result;
     } catch (error) {
-      logger.error(`Error llamando a ${contractName}.${functionName}:`, { error });
-      throw new Error(`Error al llamar a ${functionName}`);
+      logger.error(`Error llamando a ${contractName}.${functionName}:`, {
+        error,
+      });
+      throw new Error(`Error al llamar a ${functionName}`, { cause: error });
     }
   }
 
@@ -172,7 +178,7 @@ export class ContractService {
   public async callWriteFunction(
     contractName: string,
     functionName: string,
-    params: unknown[] = []
+    params: unknown[] = [],
   ): Promise<TransactionResult> {
     if (!web3Service.isWeb3Connected()) {
       throw new Error("Web3 no está conectado");
@@ -184,7 +190,9 @@ export class ContractService {
     }
 
     if (!contract.address) {
-      throw new Error(`Contrato ${contractName} no tiene dirección configurada`);
+      throw new Error(
+        `Contrato ${contractName} no tiene dirección configurada`,
+      );
     }
 
     try {
@@ -198,7 +206,9 @@ export class ContractService {
         ],
       });
 
-      logger.info(`Transacción enviada a ${contractName}.${functionName}`, { txHash });
+      logger.info(`Transacción enviada a ${contractName}.${functionName}`, {
+        txHash,
+      });
 
       // Esperar confirmación de transacción
       const receipt = await this.waitForTransaction(txHash);
@@ -210,7 +220,9 @@ export class ContractService {
         gasUsed: receipt.gasUsed,
       };
     } catch (error) {
-      logger.error(`Error en transacción ${contractName}.${functionName}:`, { error });
+      logger.error(`Error en transacción ${contractName}.${functionName}:`, {
+        error,
+      });
       return {
         hash: "",
         status: "failed",
@@ -253,7 +265,7 @@ export class ContractService {
   private encodeFunctionCall(
     functionName: string,
     params: unknown[],
-    abi: AbiItem[]
+    abi: AbiItem[],
   ): string {
     // Buscar la función en el ABI
     const funcAbi = abi.find(
@@ -331,7 +343,12 @@ export class ContractService {
   private keccak256(_data: string): string {
     // En producción, usar ethers.js o web3.js para esto
     // Por ahora, retornamos un hash simulado
-    return "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join("");
+    return (
+      "0x" +
+      Array.from({ length: 64 }, () =>
+        Math.floor(Math.random() * 16).toString(16),
+      ).join("")
+    );
   }
 
   /**
@@ -339,25 +356,33 @@ export class ContractService {
    */
   public async getCMPXBalance(address: string): Promise<string> {
     try {
-      const balance = await this.callReadFunction("CMPX", "balanceOf", [address]);
+      const balance = await this.callReadFunction("CMPX", "balanceOf", [
+        address,
+      ]);
       const balanceInTokens = parseInt(String(balance), 16) / 10 ** 18;
       return balanceInTokens.toFixed(2);
     } catch (error) {
       logger.error("Error obteniendo balance CMPX:", { error });
-      throw new Error("Error al obtener balance CMPX");
+      throw new Error("Error al obtener balance CMPX", { cause: error });
     }
   }
 
   /**
    * Aprueba tokens CMPX para un contrato
    */
-  public async approveCMPX(spenderAddress: string, amount: string): Promise<TransactionResult> {
+  public async approveCMPX(
+    spenderAddress: string,
+    amount: string,
+  ): Promise<TransactionResult> {
     try {
       const amountInWei = (parseFloat(amount) * 10 ** 18).toString(16);
-      return await this.callWriteFunction("CMPX", "approve", [spenderAddress, `0x${amountInWei}`]);
+      return await this.callWriteFunction("CMPX", "approve", [
+        spenderAddress,
+        `0x${amountInWei}`,
+      ]);
     } catch (error) {
       logger.error("Error aprobando CMPX:", { error });
-      throw new Error("Error al aprobar CMPX");
+      throw new Error("Error al aprobar CMPX", { cause: error });
     }
   }
 
@@ -367,7 +392,7 @@ export class ContractService {
   public async requestCoupleNFT(
     partnerAddress: string,
     name: string,
-    description: string
+    description: string,
   ): Promise<TransactionResult> {
     try {
       return await this.callWriteFunction("CoupleNFT", "requestCoupleNFT", [
@@ -377,7 +402,7 @@ export class ContractService {
       ]);
     } catch (error) {
       logger.error("Error solicitando NFT de pareja:", { error });
-      throw new Error("Error al solicitar NFT de pareja");
+      throw new Error("Error al solicitar NFT de pareja", { cause: error });
     }
   }
 
@@ -387,17 +412,22 @@ export class ContractService {
   public async approveCoupleNFT(requestId: number): Promise<TransactionResult> {
     try {
       const requestIdHex = requestId.toString(16).padStart(64, "0");
-      return await this.callWriteFunction("CoupleNFT", "approveCoupleNFT", [`0x${requestIdHex}`]);
+      return await this.callWriteFunction("CoupleNFT", "approveCoupleNFT", [
+        `0x${requestIdHex}`,
+      ]);
     } catch (error) {
       logger.error("Error aprobando NFT de pareja:", { error });
-      throw new Error("Error al aprobar NFT de pareja");
+      throw new Error("Error al aprobar NFT de pareja", { cause: error });
     }
   }
 
   /**
    * Stakea tokens
    */
-  public async stakeTokens(amount: string, duration: number): Promise<TransactionResult> {
+  public async stakeTokens(
+    amount: string,
+    duration: number,
+  ): Promise<TransactionResult> {
     try {
       const amountInWei = (parseFloat(amount) * 10 ** 18).toString(16);
       const durationInSeconds = (duration * 24 * 60 * 60).toString(16);
@@ -407,7 +437,7 @@ export class ContractService {
       ]);
     } catch (error) {
       logger.error("Error staking tokens:", { error });
-      throw new Error("Error al staking tokens");
+      throw new Error("Error al staking tokens", { cause: error });
     }
   }
 
@@ -417,10 +447,12 @@ export class ContractService {
   public async unstakeTokens(stakeId: number): Promise<TransactionResult> {
     try {
       const stakeIdHex = stakeId.toString(16).padStart(64, "0");
-      return await this.callWriteFunction("StakingPool", "unstakeTokens", [`0x${stakeIdHex}`]);
+      return await this.callWriteFunction("StakingPool", "unstakeTokens", [
+        `0x${stakeIdHex}`,
+      ]);
     } catch (error) {
       logger.error("Error unstaking tokens:", { error });
-      throw new Error("Error al unstaking tokens");
+      throw new Error("Error al unstaking tokens", { cause: error });
     }
   }
 
@@ -430,10 +462,12 @@ export class ContractService {
   public async claimRewards(stakeId: number): Promise<TransactionResult> {
     try {
       const stakeIdHex = stakeId.toString(16).padStart(64, "0");
-      return await this.callWriteFunction("StakingPool", "claimRewards", [`0x${stakeIdHex}`]);
+      return await this.callWriteFunction("StakingPool", "claimRewards", [
+        `0x${stakeIdHex}`,
+      ]);
     } catch (error) {
       logger.error("Error reclamando rewards:", { error });
-      throw new Error("Error al reclamar rewards");
+      throw new Error("Error al reclamar rewards", { cause: error });
     }
   }
 }

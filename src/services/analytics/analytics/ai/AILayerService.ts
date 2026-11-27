@@ -23,7 +23,11 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import type { CompatibilityFeatures, AIConfig, AIScore } from "@/services/analytics/analytics/ai/types";
+import type {
+  CompatibilityFeatures,
+  AIConfig,
+  AIScore,
+} from "@/services/analytics/analytics/ai/types";
 import { calculateDistance } from "@/services/analytics/analytics/ai/utils";
 
 /**
@@ -107,14 +111,14 @@ export class AILayerService {
       const legacyScore = await legacyScoreFn();
 
       // Weighted average: 70% AI, 30% Legacy
-      const hybridScoreValue = (aiScoreResult.score * 0.7) + (legacyScore * 0.3);
+      const hybridScoreValue = aiScoreResult.score * 0.7 + legacyScore * 0.3;
 
       const result: AIScore = {
         score: hybridScoreValue,
         confidence: Math.max(aiScoreResult.confidence, 0.8),
         method: "hybrid",
         timestamp: new Date(),
-        features: features
+        features: features,
       };
 
       this.saveToCache(cacheKey, result);

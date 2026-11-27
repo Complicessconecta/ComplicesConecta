@@ -469,4 +469,3 @@ export class QueryOptimizationService {
 }
 
 export const queryOptimizationService = new QueryOptimizationService();
-

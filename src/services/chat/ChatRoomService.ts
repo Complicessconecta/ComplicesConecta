@@ -56,7 +56,7 @@ export class ChatRoomService {
     description: string,
     tokenCost: number = 1,
     maxMembers: number = 100,
-    userId: string
+    userId: string,
   ): Promise<ChatRoom | null> {
     try {
       if (!supabase) {
@@ -84,7 +84,10 @@ export class ChatRoomService {
       // Agregar al creador como owner
       await this.addMemberToRoom(data.id, userId, true);
 
-      logger.info("Sala privada creada exitosamente", { roomId: data.id, userId });
+      logger.info("Sala privada creada exitosamente", {
+        roomId: data.id,
+        userId,
+      });
       return data;
     } catch (error) {
       logger.error("Error creando sala privada:", { error });
@@ -98,7 +101,10 @@ export class ChatRoomService {
    * @param userId ID del usuario
    * @returns true si se unió exitosamente
    */
-  static async joinPublicRoom(roomId: string, userId: string): Promise<boolean> {
+  static async joinPublicRoom(
+    roomId: string,
+    userId: string,
+  ): Promise<boolean> {
     try {
       if (!supabase) {
         logger.error("Supabase no está disponible");
@@ -136,7 +142,11 @@ export class ChatRoomService {
         .select("*", { count: "exact", head: true })
         .eq("chat_room_id", roomId);
 
-      if (count !== null && room.max_members !== null && count >= room.max_members) {
+      if (
+        count !== null &&
+        room.max_members !== null &&
+        count >= room.max_members
+      ) {
         logger.warn("Sala llena", { roomId, count, max: room.max_members });
         return false;
       }
@@ -162,7 +172,7 @@ export class ChatRoomService {
   static async joinPrivateRoom(
     roomId: string,
     userId: string,
-    isPremium: boolean = false
+    isPremium: boolean = false,
   ): Promise<boolean> {
     try {
       if (!supabase) {
@@ -207,16 +217,26 @@ export class ChatRoomService {
         .select("*", { count: "exact", head: true })
         .eq("chat_room_id", roomId);
 
-      if (count !== null && room.max_members !== null && count >= room.max_members) {
+      if (
+        count !== null &&
+        room.max_members !== null &&
+        count >= room.max_members
+      ) {
         logger.warn("Sala llena", { roomId, count, max: room.max_members });
         return false;
       }
 
       // Deducir tokens si no es premium
       if (!isPremium && room.token_cost !== null && room.token_cost > 0) {
-        const tokenDeducted = await this.deductTokensForAccess(userId, room.token_cost);
+        const tokenDeducted = await this.deductTokensForAccess(
+          userId,
+          room.token_cost,
+        );
         if (!tokenDeducted) {
-          logger.warn("No se pudieron deducir tokens", { userId, cost: room.token_cost });
+          logger.warn("No se pudieron deducir tokens", {
+            userId,
+            cost: room.token_cost,
+          });
           return false;
         }
       }
@@ -224,7 +244,11 @@ export class ChatRoomService {
       // Unirse a la sala
       await this.addMemberToRoom(roomId, userId, false);
 
-      logger.info("Usuario unido a sala privada", { roomId, userId, isPremium });
+      logger.info("Usuario unido a sala privada", {
+        roomId,
+        userId,
+        isPremium,
+      });
       return true;
     } catch (error) {
       logger.error("Error uniéndose a sala privada:", { error });
@@ -242,7 +266,7 @@ export class ChatRoomService {
   private static async addMemberToRoom(
     roomId: string,
     userId: string,
-    isOwner: boolean = false
+    isOwner: boolean = false,
   ): Promise<boolean> {
     try {
       if (!supabase) {
@@ -275,7 +299,7 @@ export class ChatRoomService {
    */
   private static async deductTokensForAccess(
     userId: string,
-    cost: number
+    cost: number,
   ): Promise<boolean> {
     try {
       // Aquí se integraría con el sistema de tokens CMPX existente
@@ -463,7 +487,10 @@ export class ChatRoomService {
    * @param userId ID del usuario
    * @returns true si se eliminó exitosamente
    */
-  static async deletePrivateRoom(roomId: string, userId: string): Promise<boolean> {
+  static async deletePrivateRoom(
+    roomId: string,
+    userId: string,
+  ): Promise<boolean> {
     try {
       if (!supabase) {
         logger.error("Supabase no está disponible");
@@ -508,7 +535,7 @@ export class ChatRoomService {
   static async updateOnlineStatus(
     roomId: string,
     userId: string,
-    isOnline: boolean
+    isOnline: boolean,
   ): Promise<void> {
     try {
       if (!supabase) {
@@ -537,7 +564,10 @@ export class ChatRoomService {
    * @param limit Límite de mensajes
    * @returns Lista de mensajes
    */
-  static async getRoomMessages(roomId: string, limit: number = 50): Promise<ChatMessage[]> {
+  static async getRoomMessages(
+    roomId: string,
+    limit: number = 50,
+  ): Promise<ChatMessage[]> {
     try {
       if (!supabase) {
         logger.error("Supabase no está disponible");
@@ -570,7 +600,7 @@ export class ChatRoomService {
   static async sendMessage(
     roomId: string,
     userId: string,
-    content: string
+    content: string,
   ): Promise<ChatMessage | null> {
     try {
       if (!supabase) {
@@ -599,4 +629,3 @@ export class ChatRoomService {
     }
   }
 }
-

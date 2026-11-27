@@ -249,4 +249,3 @@ export const saveDigitalFingerprint = async (
     throw error;
   }
 };
-

@@ -48,7 +48,7 @@ export const generateBackupCodes = (count: number = 10): string[] => {
   const codes: string[] = [];
   for (let i = 0; i < count; i++) {
     const code = Array.from({ length: 8 }, () =>
-      Math.floor(Math.random() * 10)
+      Math.floor(Math.random() * 10),
     ).join("");
     codes.push(code);
   }
@@ -62,7 +62,7 @@ export const verifyTOTPCode = (secret: string, code: string): boolean => {
     // En producción, usar librería como 'otplib' o 'speakeasy'
     const time = Math.floor(Date.now() / 1000 / 30);
     const expectedCode = generateTOTPCode(secret, time);
-    
+
     // Verificar código actual y códigos adyacentes (ventana de tiempo de ±30s)
     return (
       code === expectedCode ||
@@ -88,7 +88,7 @@ const simpleHash = (str: string): string => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convertir a entero de 32 bits
   }
   return Math.abs(hash).toString();
@@ -97,7 +97,7 @@ const simpleHash = (str: string): string => {
 // Verificar backup code
 export const verifyBackupCode = (
   backupCodes: string[],
-  code: string
+  code: string,
 ): boolean => {
   return backupCodes.includes(code);
 };
@@ -105,7 +105,7 @@ export const verifyBackupCode = (
 // Eliminar backup code después de usarlo
 export const removeBackupCode = (
   backupCodes: string[],
-  code: string
+  code: string,
 ): string[] => {
   return backupCodes.filter((c) => c !== code);
 };
@@ -125,7 +125,7 @@ export class MFAService {
 
       // Generar secreto TOTP
       const secret = this.generateSecret();
-      
+
       // Generar backup codes
       const backupCodes = generateBackupCodes(10);
 
@@ -240,16 +240,13 @@ export class MFAService {
 
       if (!isValid) {
         // Verificar backup code
-        const isValidBackup = verifyBackupCode(
-          mfaSettings.backup_codes,
-          code
-        );
+        const isValidBackup = verifyBackupCode(mfaSettings.backup_codes, code);
 
         if (isValidBackup) {
           // Eliminar backup code usado
           const newBackupCodes = removeBackupCode(
             mfaSettings.backup_codes,
-            code
+            code,
           );
 
           await supabase
@@ -285,7 +282,7 @@ export class MFAService {
       }
 
       // Deshabilitar MFA
-      
+
       const { error } = await supabase
         .from("mfa_settings")
         .update({ enabled: false })
@@ -304,7 +301,9 @@ export class MFAService {
   /**
    * Obtener estado MFA de usuario
    */
-  static async getMFAStatus(userId: string): Promise<{ enabled: boolean; qrCodeURL?: string }> {
+  static async getMFAStatus(
+    userId: string,
+  ): Promise<{ enabled: boolean; qrCodeURL?: string }> {
     try {
       if (!supabase) {
         throw new Error("Supabase no está disponible");

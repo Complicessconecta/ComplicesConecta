@@ -4,7 +4,10 @@
  */
 
 import { logger } from "@/lib/logger";
-import type { AnalyticsProperties, BrowserPerformanceMemory } from "@/types/analytics.types";
+import type {
+  AnalyticsProperties,
+  BrowserPerformanceMemory,
+} from "@/types/analytics.types";
 
 // Tipos de eventos
 interface AnalyticsEvent {
@@ -498,4 +501,3 @@ export const clearAnalyticsData = (): void => {
 
 // Guardar métricas cada 5 minutos
 setInterval(saveMetricsToStorage, 300000);
-

@@ -161,4 +161,3 @@ export function generateDummyFeatures(): CompatibilityFeatures {
     swingerTraitsScore: 0.75,
   };
 }
-

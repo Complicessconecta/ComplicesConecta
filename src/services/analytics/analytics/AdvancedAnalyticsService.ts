@@ -801,4 +801,3 @@ export class AdvancedAnalyticsService {
 }
 
 export const advancedAnalytics = AdvancedAnalyticsService.getInstance();
-

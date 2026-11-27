@@ -134,7 +134,9 @@ export class UserIdentificationService {
       const rows = (data as Array<{ numeric_id?: number }>) || [];
       const firstRow = rows[0];
       const lastId =
-        firstRow && typeof firstRow.numeric_id === "number" ? firstRow.numeric_id : 0;
+        firstRow && typeof firstRow.numeric_id === "number"
+          ? firstRow.numeric_id
+          : 0;
       return (lastId || 0) + 1;
     } catch (error) {
       logger.error("[UserIdentification] Error getting sequential number:", {
@@ -160,7 +162,9 @@ export class UserIdentificationService {
         prefix: identifier.prefix,
         numeric_id: identifier.numericId,
         created_at: identifier.createdAt.toISOString(),
-        ...(identifier.metadata ? { metadata: identifier.metadata as Json } : {}),
+        ...(identifier.metadata
+          ? { metadata: identifier.metadata as Json }
+          : {}),
       };
 
       const { error } = await supabase
@@ -196,7 +200,10 @@ export class UserIdentificationService {
 
       if (error) {
         if (error.code === "PGRST116") return null; // No results
-        logger.error("[UserIdentification] Error finding by unique ID:", { error: error.message, details: error.details });
+        logger.error("[UserIdentification] Error finding by unique ID:", {
+          error: error.message,
+          details: error.details,
+        });
         return null;
       }
 
@@ -319,7 +326,10 @@ export class UserIdentificationService {
         .eq("profile_type", profileType);
 
       if (error) {
-        logger.error("[UserIdentification] Error listing by type:", { error: error.message, details: error.details });
+        logger.error("[UserIdentification] Error listing by type:", {
+          error: error.message,
+          details: error.details,
+        });
         return [];
       }
 

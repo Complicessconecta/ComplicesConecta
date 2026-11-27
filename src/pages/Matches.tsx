@@ -264,16 +264,18 @@ const Matches = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-gray-900 via-purple-900 to-gray-900 p-4 sm:p-6">
+    <div className="min-h-screen bg-slate-100 dark:bg-linear-to-b dark:from-gray-900 dark:via-purple-900 dark:to-gray-900 p-4 sm:p-6">
       <main className="max-w-6xl mx-auto mt-6 space-y-8">
         {/* Estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Tarjeta de nuevos matches */}
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-purple-500/20">
+          <div className="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-purple-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-300">Nuevos Matches</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-sm text-slate-600 dark:text-gray-300">
+                  Nuevos Matches
+                </p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {currentMatches.filter((m) => m.status === "new").length}
                 </p>
               </div>
@@ -284,11 +286,13 @@ const Matches = () => {
           </div>
 
           {/* Tarjeta de conversaciones */}
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-blue-500/20">
+          <div className="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-blue-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-300">Conversaciones</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-sm text-slate-600 dark:text-gray-300">
+                  Conversaciones
+                </p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {currentMatches.filter((m) => m.hasUnreadMessage).length}
                 </p>
               </div>
@@ -299,11 +303,13 @@ const Matches = () => {
           </div>
 
           {/* Tarjeta de compatibilidad */}
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-yellow-500/20">
+          <div className="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-200 dark:border-yellow-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-300">Compatibilidad</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-sm text-slate-600 dark:text-gray-300">
+                  Compatibilidad
+                </p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {currentMatches.length > 0
                     ? `${Math.round(currentMatches.reduce((acc, m) => acc + m.compatibility, 0) / currentMatches.length)}%`
                     : "0%"}
@@ -360,7 +366,7 @@ const Matches = () => {
                 className={`px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
                   filter === item.id
                     ? "bg-linear-to-r from-purple-600 to-blue-600 text-white shadow-lg"
-                    : "bg-gray-800/50 text-gray-200 hover:bg-gray-700/50 border border-gray-600/50"
+                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-300 dark:bg-gray-800/50 dark:text-gray-200 dark:hover:bg-gray-700/50 dark:border-gray-600/50"
                 }`}
               >
                 <item.icon className="h-4 w-4" />
@@ -379,11 +385,11 @@ const Matches = () => {
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="bg-gray-800/30 rounded-2xl p-4 animate-pulse h-80"
+                className="bg-slate-200/60 dark:bg-gray-800/30 rounded-2xl p-4 animate-pulse h-80"
               >
-                <div className="bg-gray-700/50 rounded-lg h-48 mb-4"></div>
-                <div className="h-4 bg-gray-700/50 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-700/50 rounded w-1/2"></div>
+                <div className="bg-slate-300/60 dark:bg-gray-700/50 rounded-lg h-48 mb-4"></div>
+                <div className="h-4 bg-slate-300/60 dark:bg-gray-700/50 rounded w-3/4 mb-2"></div>
+                <div className="h-3 bg-slate-300/60 dark:bg-gray-700/50 rounded w-1/2"></div>
               </div>
             ))}
           </div>
@@ -399,14 +405,14 @@ const Matches = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-gray-800/30 rounded-2xl border border-dashed border-gray-700/50">
+          <div className="text-center py-16 bg-white dark:bg-gray-800/30 rounded-2xl border border-dashed border-slate-300 dark:border-gray-700/50">
             <div className="bg-linear-to-br from-purple-500/10 to-blue-500/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Heart className="h-10 w-10 text-purple-400/50" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
               No hay matches
             </h3>
-            <p className="text-gray-400 max-w-md mx-auto mb-6">
+            <p className="text-slate-600 dark:text-gray-400 max-w-md mx-auto mb-6">
               No se encontraron coincidencias con los filtros actuales. Intenta
               ajustar tus preferencias.
             </p>
@@ -439,7 +445,7 @@ const MatchCard = ({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 300 }}
-      className="bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-700/50 hover:border-purple-500/30 transition-all duration-300 group"
+      className="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-slate-200 dark:border-gray-700/50 hover:border-purple-500/30 transition-all duration-300 group"
     >
       {/* Imagen de perfil */}
       <div className="relative h-64 overflow-hidden">
@@ -491,13 +497,13 @@ const MatchCard = ({
           {match.mutualInterests.slice(0, 3).map((interest, i) => (
             <span
               key={i}
-              className="text-xs bg-purple-900/40 text-purple-100 px-3 py-1 rounded-full border border-purple-500/20"
+              className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-100 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-500/20"
             >
               {interest}
             </span>
           ))}
           {match.mutualInterests.length > 3 && (
-            <span className="text-xs bg-gray-700/50 text-gray-300 px-3 py-1 rounded-full">
+            <span className="text-xs bg-slate-100 text-slate-600 dark:bg-gray-700/50 dark:text-gray-300 px-3 py-1 rounded-full">
               +{match.mutualInterests.length - 3}
             </span>
           )}
@@ -510,7 +516,7 @@ const MatchCard = ({
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium transition-all ${
               match.hasUnreadMessage
                 ? "bg-linear-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg"
-                : "bg-gray-700/50 text-gray-200 hover:bg-gray-600/50 border border-gray-600/30"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 dark:bg-gray-700/50 dark:text-gray-200 dark:hover:bg-gray-600/50 dark:border-gray-600/30"
             }`}
           >
             <MessageCircle className="h-4 w-4" />
@@ -519,7 +525,7 @@ const MatchCard = ({
 
           <button
             onClick={() => onViewProfile(match.id)}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium text-white bg-gray-700/50 hover:bg-gray-600/50 border border-gray-600/30 transition-all"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium text-slate-700 dark:text-white bg-slate-100 dark:bg-gray-700/50 hover:bg-slate-200 dark:hover:bg-gray-600/50 border border-slate-300 dark:border-gray-600/30 transition-all"
           >
             <User className="h-4 w-4" />
             Ver perfil
@@ -528,7 +534,7 @@ const MatchCard = ({
 
         {/* Fecha del match */}
         <div className="mt-3 text-center">
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-slate-500 dark:text-gray-400">
             {`Conectado ${match.matchedAt.toLowerCase()}`}
           </span>
         </div>

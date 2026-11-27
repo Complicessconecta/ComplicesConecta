@@ -250,6 +250,19 @@ export const PrivacySettings = () => {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label>¿Quién puede ver tu perfil?</Label>
+            {/* Ronda 22 (stream B): la descripción vivía DEBAJO del
+                trigger. El contenido de Radix Select se monta en un Portal
+                (src/components/ui/select.tsx) con position="popper" y
+                side="bottom": al abrirse, la lista cae justo sobre el texto
+                de abajo y lo tapa. Ningún z-index ni sideOffset lo evita,
+                porque es un overlay por diseño — el fondo opaco de la
+                ronda 21 solo tapó el síntoma (ya no se transparentaba, pero
+                la descripción seguía quedando cubierta). La descripción
+                ahora va ENCIMA del trigger, fuera de la zona donde cae la
+                lista, así que sigue visible con el desplegable abierto. */}
+            <p className="text-sm text-muted-foreground">
+              Controla quién puede encontrar y ver tu perfil completo
+            </p>
             <Select
               value={privacy.profile_visibility}
               onValueChange={(value: string) =>
@@ -268,9 +281,6 @@ export const PrivacySettings = () => {
                 </SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-sm text-muted-foreground">
-              Controla quién puede encontrar y ver tu perfil completo
-            </p>
           </div>
 
           <div className="flex items-center justify-between">

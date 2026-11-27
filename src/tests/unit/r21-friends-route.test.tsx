@@ -327,7 +327,7 @@ describe("FAIL 2b — /admin/dashboard en demo: panel demo, sin rebote", () => {
       await screen.findByText("Panel demo — datos de respaldo"),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Panel de Administracin" }),
+      screen.getByRole("heading", { name: "Panel de Administración" }),
     ).toBeInTheDocument();
     // Stats en 0 (respaldo demo) y perfiles demo locales.
     expect(screen.getByText("Resumen")).toBeInTheDocument();

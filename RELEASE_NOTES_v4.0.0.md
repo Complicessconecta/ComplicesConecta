@@ -1,5 +1,15 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 28 Nov 2026 - 03:09 (Ronda 27 — segunda oportunidad del toast +50 + /profiles sin cuelgue + /discover 50)
+
+- **🔍 Test dirigido del PR #88 (28 nov 02:19–02:30, 11 min):** veredicto DO NOT MERGE — ítem 3 PASS, ítem 4 FAIL (primer inicio Single: toast de demo sí, +50 CMPX no en 10 s, saldo correcto 1,300; primer inicio Pareja: secuencia completa con +50), regresión 1 PASS (admin 20/20/4/15/2), regresión 2 PASS (moderadores con datos demo, sin banner), regresión 6 FAIL en papel pero error del criterio (pedía 20 perfiles en /discover y muestra 50 por diseño); extra: /profiles en "Cargando..." >10 s. Wacko autorizó la ronda 27 02:35.
+- **🎁 Segunda oportunidad del toast +50:** Single y Pareja comparten UNA sola función de login — no hay diferencia de código, es una carrera de tiempos en la capa de toasts en el primer inicio. Fix: marca persistente en localStorage (`cc_demo_welcome_toast_pending_v1`, fresca 60 s) que consume quien muestra el toast (entrega exactamente-una-vez); si el primer timer se pierde, MainLayout re-dispara el toast al cambiar de ruta y al montar, con el mismo diferido de 4 s y el mismo texto/saldo. Sin duplicados en remontaje ni reentrada; anonymous sin toast.
+- **📄 /profiles sin cuelgue:** la ruta era un lazy pelado sin tope y la consulta a Supabase iba sin timeout y tragaba el error; además la rama demo exigía `demo_user` y sin él caía a la rama real. Fix: `ImperativeLazyRoute` (tope 15 s + error con Reintentar), rama demo SOLO por el flag con el roster canónico (cero Supabase), consulta real con tope de 15 s y banner visible con Reintentar.
+- **🔍 /discover 50, sin cambio de código:** la cuadrícula principal son 50 perfiles aleatorios por diseño y el roster demo es 20 aparte; el "20" del test era el conteo del roster del admin. Expectativa correcta documentada para el retest.
+- **✅ Verificación:** vitest 983 → corrida 1: 956 pasaron, 6 fallaron; corrida 2: 955 pasaron, 7 fallaron (el 7º es el flake documentado de nombres, 24/24 en aislado; 0 regresiones; +13 tests nuevos con discriminación verificada); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
 ## 📅 Bitácora 28 Nov 2026 - 01:49 (Ronda 26 — toast de +50 visible + /admin/moderators con datos demo + /faq sin carrera)
 
 - **🔍 Test dirigido del PR #87 (28 nov 01:11–01:20, 9 min):** veredicto DO NOT MERGE — ítem 3 PASS, ítem 4 PARCIAL (saldos correctos Single 1,300 / Pareja 2,050 sin duplicar, pero el toast de +50 nunca se vio en 4 inicios; la vía "Tus cuentas demo" no se encontró), regresión 1 PASS (admin 20/20/4/15/2), regresión 2 FAIL (/admin/moderators sin cuelgue pero con banner de error y 0 moderadores). Wacko autorizó la ronda 26 01:23.

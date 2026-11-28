@@ -30,16 +30,16 @@ const MALE_IMAGE_IDS = [
 const FEMALE_IMAGE_IDS = [
   "1544005313-94ddf0286df2", // Mujer sonriendo
   "1580489944761-15a19d654956", // Mujer profesional
-  "1599566150163-29194dcaad36", // Mujer casual (reemplazada - la anterior devolvía 404)
+  "/assets/people/female/f8.jpg", // Foto local generada (28 nov 2026): el ID anterior (1599566150163) era un hombre con barba y gafas, el que se le veía a Gabriela
   "1508214751196-bcfd4ca60f91", // Mujer joven
   "1534528741775-53994a69daeb", // Mujer madura
 ];
 
 const COUPLE_IMAGE_IDS = [
-  "1511795409834-ef04bbd61622", // Pareja abrazada
+  "/assets/people/couple/c5.jpg", // Foto local generada (28 nov 2026): el ID anterior (1511795409834) era una mesa de cena, no una pareja
   "1606216794074-735e91aa2c92", // Pareja de boda caminando de la mano
-  "1551218808-94e220e084d2", // Pareja elegante
-  "1571019613454-1cb2f99b2d8b", // Pareja casual
+  "/assets/people/couple/c6.jpg", // Foto local generada (28 nov 2026): el ID anterior (1551218808) eran manos picando hierbas, no una pareja
+  "/assets/people/couple/c7.jpg", // Foto local generada (28 nov 2026): el ID anterior (1571019613454) era una mujer sola haciendo ejercicio, no una pareja
 ];
 
 // Coordenadas de ciudades mexicanas
@@ -93,6 +93,12 @@ export const getRandomProfileImage = (
   }
 
   const randomId = imageIds[Math.floor(Math.random() * imageIds.length)];
+
+  // Fotos locales generadas (28 nov 2026): las entradas que empiezan
+  // con "/" son rutas en public/assets/people/ y se devuelven tal cual,
+  // sin construir URL de Unsplash.
+  if (randomId && randomId.startsWith("/")) return randomId;
+
   const baseUrl = "https://images.unsplash.com/photo-";
 
   const params = new URLSearchParams({

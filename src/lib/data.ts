@@ -333,9 +333,9 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
   // Imágenes reales de Unsplash para parejas demo
   const coupleImages = [
     "https://images.unsplash.com/photo-1519741497674-611481863552?w=400",
-    "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400",
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400",
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+    "/assets/people/couple/c5.jpg", // Foto local generada (28 nov 2026): la URL anterior era un hombre solo, no una pareja
+    "/assets/people/couple/c6.jpg", // Foto local generada (28 nov 2026): la URL anterior era una mujer sola, no una pareja
+    "/assets/people/couple/c7.jpg", // Foto local generada (28 nov 2026): la URL anterior era un hombre solo, no una pareja
   ];
 
   const femaleImages = [

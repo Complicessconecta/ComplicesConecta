@@ -1,5 +1,43 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 28 Nov 2026 - 03:09 (Ronda 27 — segunda oportunidad del toast +50 + /profiles sin cuelgue + /discover 50)
+
+- **🔍 Test dirigido del PR #88 (28 nov 02:19–02:30, 11 min):** veredicto DO NOT MERGE — ítem 3 PASS, ítem 4 FAIL (primer inicio Single: toast de demo sí, +50 CMPX no en 10 s, saldo correcto 1,300; primer inicio Pareja: secuencia completa con +50), regresión 1 PASS (admin 20/20/4/15/2), regresión 2 PASS (moderadores con datos demo, sin banner), regresión 6 FAIL en papel pero error del criterio (pedía 20 perfiles en /discover y muestra 50 por diseño); extra: /profiles en "Cargando..." >10 s. Wacko autorizó la ronda 27 02:35.
+- **🎁 Segunda oportunidad del toast +50:** Single y Pareja comparten UNA sola función de login — no hay diferencia de código, es una carrera de tiempos en la capa de toasts en el primer inicio. Fix: marca persistente en localStorage (`cc_demo_welcome_toast_pending_v1`, fresca 60 s) que consume quien muestra el toast (entrega exactamente-una-vez); si el primer timer se pierde, MainLayout re-dispara el toast al cambiar de ruta y al montar, con el mismo diferido de 4 s y el mismo texto/saldo. Sin duplicados en remontaje ni reentrada; anonymous sin toast.
+- **📄 /profiles sin cuelgue:** la ruta era un lazy pelado sin tope y la consulta a Supabase iba sin timeout y tragaba el error; además la rama demo exigía `demo_user` y sin él caía a la rama real. Fix: `ImperativeLazyRoute` (tope 15 s + error con Reintentar), rama demo SOLO por el flag con el roster canónico (cero Supabase), consulta real con tope de 15 s y banner visible con Reintentar.
+- **🔍 /discover 50, sin cambio de código:** la cuadrícula principal son 50 perfiles aleatorios por diseño y el roster demo es 20 aparte; el "20" del test era el conteo del roster del admin. Expectativa correcta documentada para el retest.
+- **✅ Verificación:** vitest 983 → corrida 1: 956 pasaron, 6 fallaron; corrida 2: 955 pasaron, 7 fallaron (el 7º es el flake documentado de nombres, 24/24 en aislado; 0 regresiones; +13 tests nuevos con discriminación verificada); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
+## 📅 Bitácora 28 Nov 2026 - 01:49 (Ronda 26 — toast de +50 visible + /admin/moderators con datos demo + /faq sin carrera)
+
+- **🔍 Test dirigido del PR #87 (28 nov 01:11–01:20, 9 min):** veredicto DO NOT MERGE — ítem 3 PASS, ítem 4 PARCIAL (saldos correctos Single 1,300 / Pareja 2,050 sin duplicar, pero el toast de +50 nunca se vio en 4 inicios; la vía "Tus cuentas demo" no se encontró), regresión 1 PASS (admin 20/20/4/15/2), regresión 2 FAIL (/admin/moderators sin cuelgue pero con banner de error y 0 moderadores). Wacko autorizó la ronda 26 01:23.
+- **🎁 Toast de +50 visible:** la carrera estaba al revés de lo supuesto en la ronda 25 — en `signIn` el crédito va con `await`, así que el toast de +50 disparaba ANTES que el de "Modo Demo Activado" y `TOAST_LIMIT = 1` lo borraba al instante. Fix: el listener de MainLayout difiere el toast de +50 por 4 s (el de demo se lee entero y luego entra el +50 sus 3,5 s); arranque en frío cubierto con hueco pendiente en `demo-wallet.ts`. El crédito no cambia.
+- **🛡️ /admin/moderators en demo:** era la única página del área admin sin rama demo — en demo las consultas iban a PostgREST como `anon` y la RLS de `moderators` (`is_admin()` solo para `authenticated`) negaba la consulta (42501). Fix: rama demo espejo de `Admin.tsx` — 3 moderadores + 2 solicitudes del roster, cero Supabase, mismo aviso "Panel demo — datos de respaldo"; la rama real queda intacta con sus topes de 15 s.
+- **🔍 /faq sin carrera:** el botón "Ver guía de bienvenida" es incondicional; su ausencia en las primeras cargas fue el chunk lazy bajo Suspense (la búsqueda corrió durante `PageLoader`). Sin cambio de código; pasos corregidos para el retest.
+- **✅ Verificación:** vitest 970 → 943 pasaron, 6 fallaron (conjunto conocido, 0 regresiones; +13 tests nuevos con discriminación verificada, DOS corridas idénticas); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
+## 📅 Bitácora 28 Nov 2026 - 00:55 (Ronda 25 — crédito de bienvenida por todas las vías demo + modal reabrible)
+
+- **🔍 Retest de la ronda 24 (28 nov 00:02–00:16, 14 min):** ítem 4 SIGUE FALLANDO (Single 1,250 ×3, Pareja 2,000, sin +50 ni toast) e ítem 3 NO VERIFICABLE (el modal no reaparece nunca). GitHub marca el despliegue del head 023773aa como "success — Vercel: Deployment has completed": el preview SÍ sirve la ronda 24, así que el fallo del crédito es un BUG REAL en tiempo de ejecución. Wacko autorizó la ronda 25 00:19.
+- **🎁 Crédito de bienvenida:** causa raíz — el crédito solo vivía en `useAuth.signIn`, pero tres caminos establecen sesión demo sin pasar por `signIn` y nunca acreditaban ("Entrar" de cuenta local, "Entrar como …" de sesión activa, restauración al arrancar). Fix: helper central `ensureDemoWelcomeCredit` desde los 5 sitios, con toast "🎁 +50 CMPX de bienvenida" y log con el error real cuando falla; idempotente (1,300 / 2,050 sin duplicar); anónimo sin crédito.
+- **👋 Modal reabrible:** botón discreto "Ver guía de bienvenida" en el Centro de Ayuda (/faq) que abre el modal bajo demanda, sin tocar el flag de primera visita.
+- **✅ Verificación:** vitest 957 → 930 pasaron, 6 fallaron (conjunto conocido, 0 regresiones; +12 tests nuevos con discriminación verificada, DOS corridas idénticas); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
+## 📅 Bitácora 27 Nov 2026 - 23:23 (Ronda 24 — topes anti-atasco en admin + modal CMPX + tokens de bienvenida usables)
+
+- **🔍 Smoke post-merge del PR #83 (27 nov 22:15–22:27, 12 min):** FALLÓ en PASO 0 — `/admin/dashboard` no renderiza en producción ("Cargando..." 60–125 s y rebote a /discover). Diagnóstico estático 22:40: causa en la ronda 22 (guardián `authLoading` sin tope + `finally` quitados), no en la 23. Wacko autorizó la ronda 24 22:43 y aterrizó el alcance 22:44 (admin + modal + tokens usables).
+- **🛣️ Admin:** topes con `Promise.race` en toda la cadena — `useAuth` (sesión 8 s, perfil 10 s, fail-closed), `Admin.tsx` (tope 12 s al guardián, `decisionRef` anti-rebote, timeout global 15 s con error visible, guardián muerto corregido), `AdminModerators.tsx` (15 s + banner de error), `createSecureFetch` (`AbortController` 15 s, punto único de Supabase), `DemoSelector` sin setters de `usePersistedState` (cierra la carrera del `"true"` entrecomillado), `AdminRoute` con `grantedRef` + tope 8 s.
+- **🎁 Bienvenida y tokens:** el slide de tokens ya no repite CMPX (solo en el título, distintivo "Recompensas", cuerpo sobre los usos); nuevo `WelcomeTokensService` — bienvenida 50 una sola vez (idempotente), referido 50 + 50 con verificación, gasto real (regalo 10, chat privado 25, galería 100 conservados del código con débito real y 24 h), saldo insuficiente con ruta a `/tokens`, anónimos sin cartera. Cableado en login y registro demo.
+- **✅ Verificación:** vitest 945 → 917 pasaron, 7 fallaron (conjunto conocido de 6 + 1 flake preexistente, 0 regresiones; +23 tests nuevos con discriminación verificada); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
 ## 📅 Bitácora 27 Nov 2026 - 03:44 (Ronda 23 — stats admin en ceros + acentos + tabs)
 
 - **🔍 Test dirigido del PR #82 (27 nov 03:01–03:09, 8 min):** 7/8 PASS + regresión PASS. FAIL 1: stats del admin en 0 tras recargar pese a 20 usuarios listados; aprobar fotos VERIFICADO en vivo (1 clic en /profile-couple → 23:59:59). Esta ronda corrige el FAIL 1 con causa raíz leída en código (trabajo directo del coordinador; el agente de cierre completó la ronda tras cortarse el coordinador por límite de tokens, 1 commit en `fix/ronda23-2026-11-27`, sin push ni merge todavía).

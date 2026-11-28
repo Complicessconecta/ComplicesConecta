@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
+import { WelcomeGuideReopenButton } from "@/components/WelcomeGuideReopenButton";
 
 const FAQ = () => {
   const location = useLocation();
@@ -350,6 +351,11 @@ Fecha: ${new Date().toLocaleString()}
               Encuentra respuestas a tus preguntas y ayúdanos a mejorar tu
               experiencia en ComplicesConecta
             </p>
+            {/* Ronda 25: la guía de bienvenida solo aparece en la primera
+                visita; este botón discreto la reabre bajo demanda. */}
+            <div className="mt-5 flex justify-center">
+              <WelcomeGuideReopenButton />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

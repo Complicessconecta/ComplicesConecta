@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ArrowLeft,
   UserPlus,
@@ -25,6 +25,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/features/auth/useAuth";
+import { generateDemoProfiles } from "@/demo/demoData";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { MODERATOR_STATUS, type ModeratorStatus } from "@/lib/roles";
@@ -53,13 +55,53 @@ interface ModeratorRequest {
   rejection_reason?: string;
 }
 
+// Ronda 24 (stream A): mismo tope que Admin/useAuth. Sin él,
+// «Cargando moderadores...» se quedaba >60 s (preview y producción)
+// cuando una consulta a Supabase se colgaba en red. Al vencer, la
+// carga resuelve con error VISIBLE (banner) en vez de colgarse.
+// Mismo patrón `Promise.race` que EditProfileSingle (8 s) y
+// ProfileDetail (10 s).
+export const MODERATORS_FETCH_TIMEOUT_MS = 15_000;
+
+const withFetchTimeout = <T,>(promise: Promise<T>, label: string): Promise<T> =>
+  Promise.race([
+    promise,
+    new Promise<never>((_resolve, reject) =>
+      setTimeout(
+        () =>
+          reject(
+            new Error(`Tiempo de espera agotado al cargar ${label} (15 s)`),
+          ),
+        MODERATORS_FETCH_TIMEOUT_MS,
+      ),
+    ),
+  ]);
+
 const AdminModerators = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isDemo } = useAuth();
+
+  // Ronda 26 (stream B): rama demo, igual que Admin.tsx:114 y
+  // AdminRoute. `isDemo()` se lee fresco en cada render: con sesión
+  // real asentada vale false aunque queden flags demo obsoletos
+  // (useAuth.ts:998-1002), así que puede cambiar true→false al
+  // hidratar la sesión (caso ronda 22).
+  const demoActive = typeof isDemo === "function" ? isDemo() : Boolean(isDemo);
+  // Qué rama ya se cargó ("demo" | "real"). Sin él, el efecto de
+  // abajo re-cargaría en cada render (useAuth no memoiza su retorno
+  // y `demoActive` se re-calcula); con él, un cambio de rama (flip
+  // true→false al hidratar) recarga con la rama nueva en vez de
+  // quedarse clavado en la primera decisión.
+  const loadedBranchRef = useRef<"demo" | "real" | null>(null);
 
   const [moderators, setModerators] = useState<Moderator[]>([]);
   const [requests, setRequests] = useState<ModeratorRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  // Ronda 24: error de carga visible en el panel (no solo toast, que
+  // en el test y en webview puede no verse). Se pone cuando una de
+  // las dos consultas falla o vence su tope.
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("moderators");
 
   // Formulario para crear moderador
@@ -81,21 +123,182 @@ const AdminModerators = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    // Ronda 26 (stream B): en demo NO se toca Supabase (ver
+    // loadDemoModeratorsData). La rama real sigue por fetchData con
+    // sus topes de 15 s.
+    const branch = demoActive ? "demo" : "real";
+    if (loadedBranchRef.current === branch) return;
+    loadedBranchRef.current = branch;
+    if (demoActive) {
+      loadDemoModeratorsData();
+    } else {
+      void fetchData();
+    }
+  }, [demoActive]);
+
+  // Ronda 26 (stream B): datos demo/respaldo LOCALES, sin llamadas a
+  // Supabase — mismo patrón que loadDemoAdminData() de Admin.tsx
+  // (ronda 21) y mismo aviso «Panel demo — datos de respaldo».
+  //
+  // DIAGNÓSTICO (test dirigido PR #87, 2026-11-28 01:11–01:20 CST):
+  // la página resolvía en ~20–25 s CON el banner «No se pudieron
+  // cargar los datos de moderadores», 0 Moderadores, sin datos. La
+  // ronda 24 pasó este mismo ítem sin tocar la página después, así
+  // que el fallo es ambiental/intermitente, no una regresión de la
+  // ronda 25 — y esta página era la única del área admin SIN rama
+  // demo: en demo no hay sesión real de Supabase (la auth demo es
+  // solo localStorage), así que las dos consultas iban a PostgREST
+  // como `anon`, y al menos una fallaba hasta su tope de 15 s.
+  //
+  // Qué consulta falla y por qué (mejor explicación con la evidencia
+  // del repo; el toast con error.message no quedó registrado en el
+  // test y producción no se puede consultar desde aquí):
+  // - `moderator_requests` como anon NO puede fallar por RLS: sus
+  //   políticas (20250119000001_create_moderator_requests.sql) solo
+  //   comparan auth.uid() = user_id o un EXISTS sobre user_roles;
+  //   con auth.uid() NULL ambas son falsas y la consulta devuelve
+  //   VACÍA, sin error.
+  // - `moderators` SÍ: su política moderators_select es
+  //   `user_id = auth.uid() OR public.is_admin()`
+  //   (20251216100028_20251213_sync_and_fix.sql:414-416, marcada
+  //   «migrado» en AUDITORIA_MIGRACIONES_SUPABASE.md), y
+  //   `is_admin()` tiene `REVOKE ALL FROM PUBLIC; GRANT EXECUTE TO
+  //   authenticated` (20260120000037:49-52) — anon no puede
+  //   ejecutarla y Postgres niega la consulta (42501) al evaluar la
+  //   política. La tabla existe (misma migración:133 y ALTERs sobre
+  //   ella en 20260122065739_remote_schema.sql), así que «tabla
+  //   inexistente» (PGRST205) NO es la hipótesis principal.
+  //   Reserva: AUDITORIA_SUPABASE_COMPLETA_2026-02-04.md advierte
+  //   «Múltiples versiones de is_admin()» en producción, así que los
+  //   grants exactos en vivo no se pueden probar desde el repo.
+  // - El tiempo ~20–25 s es CONSISTENTE con los topes (15 s de
+  //   fetchData + carga del chunk/navegación), no con un cuelgue:
+  //   los topes de la ronda 24 funcionan; lo que estaba mal era
+  //   convertir cualquier fallo en banner bloqueante en demo, donde
+  //   los datos de Supabase no significan nada (anon solo vería
+  //   listas vacías en el mejor caso).
+  //
+  // Los datos demo se derivan del roster canónico
+  // (generateDemoProfiles, misma fuente que Admin.tsx); los emails
+  // son sintéticos con dominio .demo.local (no enrutable) y las
+  // fechas son ISO relativas a hoy porque formatDate() necesita
+  // fechas parseables (lastActive del roster es texto «Hace X min»).
+  const loadDemoModeratorsData = () => {
+    const demoProfiles = generateDemoProfiles(5);
+    const daysAgoIso = (days: number, hours = 0) =>
+      new Date(
+        Date.now() - days * 86_400_000 - hours * 3_600_000,
+      ).toISOString();
+    // Email demo sintético a partir del nombre del roster.
+    const demoEmailFor = (name: string) =>
+      `${name
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")}@demo.local`;
+    const [ana, francisco, mariaJuan, carlos, laura] = demoProfiles;
+    setModerators(
+      [
+        {
+          profile: ana,
+          status: MODERATOR_STATUS.ACTIVE,
+          createdDaysAgo: 45,
+          activatedDaysAgo: 44,
+          reportsHandled: 14,
+          suspensionsApplied: 3,
+        },
+        {
+          profile: francisco,
+          status: MODERATOR_STATUS.ACTIVE,
+          createdDaysAgo: 30,
+          activatedDaysAgo: 29,
+          reportsHandled: 9,
+          suspensionsApplied: 1,
+        },
+        {
+          profile: carlos,
+          status: MODERATOR_STATUS.PENDING,
+          createdDaysAgo: 12,
+          reportsHandled: 0,
+          suspensionsApplied: 0,
+        },
+      ].map((m) => ({
+        id: m.profile!.id,
+        email: demoEmailFor(m.profile!.name),
+        full_name: m.profile!.name,
+        status: m.status,
+        created_at: daysAgoIso(m.createdDaysAgo),
+        // Ronda 26 (coordinador): sin spread condicional el `undefined`
+        // explícito rompe `exactOptionalPropertyTypes` en el tsc
+        // durable (TS2345 en AdminModerators:200); la prop solo existe
+        // cuando hay fecha de activación.
+        ...(m.activatedDaysAgo
+          ? { activated_at: daysAgoIso(m.activatedDaysAgo) }
+          : {}),
+        reports_handled: m.reportsHandled,
+        suspensions_applied: m.suspensionsApplied,
+      })),
+    );
+    setRequests(
+      [
+        {
+          profile: mariaJuan,
+          createdDaysAgo: 2,
+          motivation:
+            "Quiero ayudar a moderar la comunidad y mantener un ambiente seguro y respetuoso.",
+        },
+        {
+          profile: laura,
+          createdDaysAgo: 0,
+          createdHoursAgo: 5,
+          motivation:
+            "Tengo experiencia moderando grupos y quiero apoyar al equipo.",
+        },
+      ].map((r) => ({
+        id: `solicitud-${r.profile!.id}`,
+        full_name: r.profile!.name,
+        email: demoEmailFor(r.profile!.name),
+        motivation: r.motivation,
+        status: "pending" as const,
+        created_at: daysAgoIso(r.createdDaysAgo, r.createdHoursAgo ?? 0),
+      })),
+    );
+    setLoadError(null);
+    setLoading(false);
+    logger.info("🎭 Moderadores demo cargados (datos locales, sin Supabase)");
+  };
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      await Promise.all([fetchModerators(), fetchRequests()]);
+      setLoadError(null);
+      // Ronda 24: tope global. Cada consulta ya tiene su propio tope
+      // abajo, pero si el conjunto se cuelga por otro camino, esta
+      // carrera apaga la carga con error visible en vez de dejar
+      // «Cargando moderadores...» para siempre.
+      const [moderatorsOk, requestsOk] = await withFetchTimeout(
+        Promise.all([fetchModerators(), fetchRequests()]),
+        "los datos de moderadores",
+      );
+      if (!moderatorsOk || !requestsOk) {
+        setLoadError(
+          "No se pudieron cargar los datos de moderadores. Reintenta más tarde.",
+        );
+      }
     } catch (error) {
       logger.error("? Error al cargar datos:", { error });
+      setLoadError(
+        error instanceof Error
+          ? error.message
+          : "No se pudieron cargar los datos de moderadores.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchModerators = async () => {
+  const fetchModerators = async (): Promise<boolean> => {
     try {
       if (!supabase) {
         logger.error("Supabase no est disponible");
@@ -104,17 +307,27 @@ const AdminModerators = () => {
           title: "Error",
           description: "Supabase no est disponible",
         });
-        return;
+        return false;
       }
 
-      const { data, error } = await (supabase as any)
-        .from("moderators")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // Ronda 24: tope propio a la consulta (ver withFetchTimeout).
+      // Tipo explícito: el builder de Supabase es un thenable, no un
+      // Promise, y sin él T se infiere como unknown (TS2339).
+      const { data, error } = await withFetchTimeout<{
+        data: Moderator[] | null;
+        error: { message: string } | null;
+      }>(
+        (supabase as any)
+          .from("moderators")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        "los moderadores",
+      );
 
       if (error) throw error;
       setModerators(data || []);
       logger.info("? Moderadores cargados:", { count: data?.length || 0 });
+      return true;
     } catch (error: any) {
       logger.error("? Error al cargar moderadores:", { error: error.message });
       toast({
@@ -122,10 +335,11 @@ const AdminModerators = () => {
         title: "Error al cargar moderadores",
         description: error.message,
       });
+      return false;
     }
   };
 
-  const fetchRequests = async () => {
+  const fetchRequests = async (): Promise<boolean> => {
     try {
       if (!supabase) {
         logger.error("Supabase no est disponible");
@@ -134,17 +348,27 @@ const AdminModerators = () => {
           title: "Error",
           description: "Supabase no est disponible",
         });
-        return;
+        return false;
       }
 
-      const { data, error } = await (supabase as any)
-        .from("moderator_requests")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // Ronda 24: tope propio a la consulta (ver withFetchTimeout).
+      // Tipo explícito: el builder de Supabase es un thenable, no un
+      // Promise, y sin él T se infiere como unknown (TS2339).
+      const { data, error } = await withFetchTimeout<{
+        data: ModeratorRequest[] | null;
+        error: { message: string } | null;
+      }>(
+        (supabase as any)
+          .from("moderator_requests")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        "las solicitudes de moderador",
+      );
 
       if (error) throw error;
       setRequests(data || []);
       logger.info("? Solicitudes cargadas:", { count: data?.length || 0 });
+      return true;
     } catch (error: any) {
       logger.error("? Error al cargar solicitudes:", { error: error.message });
       toast({
@@ -152,6 +376,7 @@ const AdminModerators = () => {
         title: "Error al cargar solicitudes",
         description: error.message,
       });
+      return false;
     }
   };
 
@@ -403,6 +628,32 @@ const AdminModerators = () => {
 
       {/* Content */}
       <div className="relative z-10 min-h-screen pt-20">
+        {/* Ronda 26 (stream B): aviso demo, mismo texto que Admin.tsx.
+            Solo en demo: la rama real no lo muestra. */}
+        {demoActive && (
+          <div role="note" className="max-w-7xl mx-auto px-3 sm:px-6 pt-4">
+            <div className="p-4 bg-amber-500/20 border border-amber-500/50 rounded-lg">
+              <p className="text-amber-200 font-medium">
+                Panel demo — datos de respaldo
+              </p>
+              <p className="text-amber-200/70 text-sm">
+                Estás viendo datos de demostración. Los cambios no se guardan en
+                el servidor.
+              </p>
+            </div>
+          </div>
+        )}
+        {/* Ronda 24: error de carga visible (banner, no solo toast):
+            con el tope, una red colgada resuelve aquí en ~15 s. */}
+        {loadError && (
+          <div role="alert" className="max-w-7xl mx-auto px-3 sm:px-6 pt-4">
+            <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
+              <p className="text-red-200 font-medium">
+                Error al cargar moderadores: {loadError}
+              </p>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 p-3 sm:p-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between max-w-7xl mx-auto gap-3 sm:gap-0">

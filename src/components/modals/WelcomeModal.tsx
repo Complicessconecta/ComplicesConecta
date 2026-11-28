@@ -92,7 +92,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
       title: "🪙 Sistema de Tokens CMPX",
       subtitle: "Gana recompensas por invitar amigos",
       description:
-        "Obtén 50 CMPX por cada amigo que invites + 50 CMPX de bienvenida para ellos. Usa tus tokens para desbloquear funciones premium durante la fase beta.",
+        "Invita amigos y gana 50 por cada uno; ellos reciben 50 de bienvenida. Úsalos en regalos, chats privados y funciones premium durante la beta.",
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10",
     },
@@ -271,7 +271,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                   variant="secondary"
                   className="px-4 py-2 rounded-full bg-linear-to-r from-yellow-500/30 to-yellow-600/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
-                  🪙 TOKENS CMPX
+                  🎁 Recompensas
                 </Badge>
               </div>
             )}

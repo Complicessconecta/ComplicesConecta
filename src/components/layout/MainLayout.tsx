@@ -25,6 +25,14 @@ import { Toaster } from "@/components/ui/toaster";
 // React.lazy cachea el rechazo del `import()` y remontar el boundary
 // no reintenta el chunk; el reintento recrea el lazy desde el estado.
 import { NotificationContainer } from "@/components/animations/NotificationSystem";
+import { useToast } from "@/hooks/useToast";
+import {
+  DEMO_WELCOME_CREDIT_EVENT,
+  peekPendingWelcomeToast,
+  takePendingDemoWelcomeCredit,
+  takePendingWelcomeToast,
+  type DemoWelcomeCreditEventDetail,
+} from "@/lib/demo-wallet";
 import {
   clearClubDemoAdminSession,
   hasClubDemoAdminSession,
@@ -44,11 +52,136 @@ export const PageLoader = () => (
   </div>
 );
 
+/**
+ * Ronda 26 — retardo del toast "🎁 +50 CMPX de bienvenida" tras
+ * recibir DEMO_WELCOME_CREDIT_EVENT. 4 s > TOAST_REMOVE_DELAY
+ * (3,5 s, useToast.ts): el toast "🎭 Modo Demo Activado" se lee
+ * entero y se descarta solo antes de que entre el +50 CMPX, que se
+ * queda entonces sus 3,5 s. Exportado para el test r26 (que avanza
+ * el reloj falso justo este retardo).
+ */
+export const DEMO_WELCOME_CREDIT_TOAST_DELAY_MS = 4000;
+
 export const MainLayout = () => {
   const { profile: _profile, isAuthenticated, user, signOut } = useAuth();
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const { toast } = useToast();
+
+  // Ronda 26: el toast del crédito de bienvenida va DIFERIDO
+  // (DEMO_WELCOME_CREDIT_TOAST_DELAY_MS, 4 s) — NO al recibir el
+  // evento. Por qué: en el login demo el evento se dispara DENTRO de
+  // `signIn` (useAuth lo espera: `await ensureDemoWelcomeCredit(...)`
+  // en useAuth.ts) y el toast "🎭 Modo Demo Activado" de DemoSelector
+  // llega DESPUÉS (tras resolver `signIn`); con TOAST_LIMIT=1
+  // (useToast.ts) el toast nuevo reemplaza al anterior al instante y
+  // el +50 CMPX era invisible (~0 ms: 0 de 4 logins en el test
+  // dirigido del PR #87, con los saldos correctos). Con 4 s el toast
+  // de demo se lee entero (se descarta solo a los 3,5 s,
+  // TOAST_REMOVE_DELAY en useToast.ts) y luego entra el +50 CMPX y
+  // se queda sus 3,5 s. El toast de demo NO se toca: se muestra
+  // siempre, primero. Tampoco se sube TOAST_LIMIT (apilaría toasts en
+  // toda la app y no arreglaría el evento perdido del arranque en
+  // frío) ni se fusionan los mensajes (cambiaría el texto
+  // establecido del toast de demo). El diferido no se pone en el
+  // dispatch del evento (`notifyDemoWelcomeCredit` sigue en síncrono,
+  // como lo prueban los tests r25): el retardo es presentación, no
+  // crédito, y vive aquí. El arranque en frío se cubre con el hueco
+  // pendiente de demo-wallet (ver abajo): si el crédito se disparó
+  // antes de montar este listener, el detalle se toma al montar y
+  // el toast se muestra igual.
+  //
+  // Ronda 27: el primer intento consume ADEMÁS la marca persistente
+  // de demo-wallet (`takePendingWelcomeToast`) al mostrar. Es el
+  // token de entrega exactamente-una-vez de la segunda oportunidad
+  // (efecto de abajo): si otro timer ya mostró el toast, la marca
+  // está vacía y ese no repite. Si localStorage no está disponible
+  // la marca nunca se escribió y el primer intento muestra igual
+  // el detalle programado (no depende del flag).
+  useEffect(() => {
+    const timers: Array<ReturnType<typeof setTimeout>> = [];
+    const showWelcomeCreditToast = (detail: DemoWelcomeCreditEventDetail) => {
+      timers.push(
+        setTimeout(() => {
+          takePendingWelcomeToast();
+          toast({
+            title: "🎁 +50 CMPX de bienvenida",
+            description:
+              detail.balance !== null
+                ? `Tu saldo ahora es de ${detail.balance} CMPX.`
+                : "Se acreditaron 50 CMPX a tu cartera.",
+          });
+        }, DEMO_WELCOME_CREDIT_TOAST_DELAY_MS),
+      );
+    };
+    // Evento disparado antes de montar el listener (init-restore en
+    // frío): el detalle quedó pendiente en demo-wallet y se muestra
+    // igual, con el mismo diferido.
+    const pending = takePendingDemoWelcomeCredit();
+    if (pending) showWelcomeCreditToast(pending);
+    const onWelcomeCredit = (event: Event) => {
+      const detail = (event as CustomEvent<DemoWelcomeCreditEventDetail>)
+        .detail;
+      if (!detail) return;
+      // Consumir el hueco: si no, un remontaje lo tomaría de nuevo y
+      // el toast saldría dos veces.
+      takePendingDemoWelcomeCredit();
+      showWelcomeCreditToast(detail);
+    };
+    window.addEventListener(DEMO_WELCOME_CREDIT_EVENT, onWelcomeCredit);
+    return () => {
+      window.removeEventListener(DEMO_WELCOME_CREDIT_EVENT, onWelcomeCredit);
+      timers.forEach((timer) => clearTimeout(timer));
+    };
+  }, [toast]);
+
+  // Ronda 27 — SEGUNDA OPORTUNIDAD del toast +50 CMPX. El test
+  // dirigido del PR #88 mostró que el primer intento puede perderse
+  // en el primer inicio de Single (toast de demo sí, +50 CMPX no en
+  // 10 s, saldo correcto 1,300) aunque el mecanismo funciona (la
+  // Pareja sí lo mostró en vivo): Single y Pareja comparten UNA sola
+  // función handleDemoLogin, el mismo evento y el mismo listener, así
+  // que no hay diferencia de código entre ambos — es una carrera de
+  // tiempos en la capa de toasts en el momento más cargado (primer
+  // inicio, pestaña fresca) con TOAST_LIMIT=1 y el diferido de 4 s.
+  // Si ese primer timer se pierde, la marca persistente de
+  // demo-wallet (`cc_demo_welcome_toast_pending_v1`, escrita en
+  // `notifyDemoWelcomeCredit` y consumida por quien muestra el
+  // toast) sigue ahí. Al cambiar de ruta — el login demo navega
+  // siempre a /profile-single o /profile-couple — y también al
+  // montar (un reload dentro de la ventana es otra segunda
+  // oportunidad), si la marca sigue fresca se programa el toast con
+  // el mismo diferido de 4 s (el toast de demo ya se fue a los
+  // 3,5 s). Al disparar, el timer toma la marca: si ya no está (el
+  // primer intento la consumió al mostrar) no repite. Un remontaje
+  // o una reentrada nunca repiten: la marca se consume al mostrar y
+  // el crédito ya reclamado no vuelve a escribirla (idempotente por
+  // el flag `cc_demo_welcome_claimed_v1`). La caducidad es 60 s
+  // (DEMO_WELCOME_TOAST_FRESHNESS_MS): pasado ese tiempo la marca
+  // se borra en silencio sin mostrar nada.
+  useEffect(() => {
+    const timers: Array<ReturnType<typeof setTimeout>> = [];
+    const pending = peekPendingWelcomeToast();
+    if (pending) {
+      timers.push(
+        setTimeout(() => {
+          const detail = takePendingWelcomeToast();
+          if (!detail) return;
+          toast({
+            title: "🎁 +50 CMPX de bienvenida",
+            description:
+              detail.balance !== null
+                ? `Tu saldo ahora es de ${detail.balance} CMPX.`
+                : "Se acreditaron 50 CMPX a tu cartera.",
+          });
+        }, DEMO_WELCOME_CREDIT_TOAST_DELAY_MS),
+      );
+    }
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+    };
+  }, [location.pathname, toast]);
 
   // Precarga del chunk de Chat AL MONTAR: al abrir el dock el
   // componente ya está en caché y no aparece el "Cargando…".

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ContrastFixer } from "@/components/accessibility/ContrastFixer";
 import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { generateDemoProfiles } from "@/demo/demoData";
 import { logger } from "@/lib/logger";
 import { Search, Filter, Brain, Sparkles, Heart, MapPin } from "lucide-react";
 
@@ -35,6 +36,27 @@ interface Profile {
   distance?: number;
 }
 
+// Ronda 27 (stream B): mismo tope que AdminModerators (ronda 24).
+// Sin él, «Cargando perfiles...» se quedaba para siempre cuando la
+// consulta a Supabase se colgaba en red (test dirigido PR #88:
+// /profiles en "Cargando..." >10 s). Al vencer, la carga resuelve
+// con error VISIBLE (banner con Reintentar) en vez de colgarse.
+export const PROFILES_FETCH_TIMEOUT_MS = 15_000;
+
+const withFetchTimeout = <T,>(promise: Promise<T>, label: string): Promise<T> =>
+  Promise.race([
+    promise,
+    new Promise<never>((_resolve, reject) =>
+      setTimeout(
+        () =>
+          reject(
+            new Error(`Tiempo de espera agotado al cargar ${label} (15 s)`),
+          ),
+        PROFILES_FETCH_TIMEOUT_MS,
+      ),
+    ),
+  ]);
+
 const Profiles: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
@@ -47,198 +69,40 @@ const Profiles: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [userType, setUserType] = useState<"demo" | "real" | null>(null);
+  // Ronda 27 (stream B): error de carga visible (banner con
+  // Reintentar, no solo log). Antes el error de la consulta se
+  // tragaba en loadRealProfiles (devolvía []) y la página mostraba
+  // «0 perfiles encontrados» sin explicar nada; con la consulta
+  // colgada, ni eso: «Cargando perfiles...» para siempre.
+  const [loadError, setLoadError] = useState<string | null>(null);
   const profilesPerPage = 9;
 
-  // Datos de ejemplo con coordenadas para búsqueda por distancia
-  const mockProfiles: Profile[] = [
-    {
-      id: "1",
-      name: "María Elena",
-      age: 28,
-      location: "Ciudad de México",
-      bio: "Fotógrafa profesional especializada en eventos privados y sesiones íntimas. Discreta y respetuosa, capturo momentos únicos para parejas aventureras. Experiencia en el ambiente swinger con enfoque en la elegancia y el respeto mutuo.",
-      images: [
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: [
-        "Swinger",
-        "Eventos Privados",
-        "Fotografía",
-        "Discreción",
-        "Intercambio",
-      ],
-      isOnline: true,
-      verified: true,
-      coordinates: { lat: 19.4326, lng: -99.1332 },
-    },
-    {
-      id: "2",
-      name: "Antonio",
-      age: 34,
-      location: "Ciudad de México",
-      bio: "Chef ejecutivo con experiencia en catering para eventos exclusivos del lifestyle swinger. Organizo cenas íntimas para parejas aventureras, siempre manteniendo la discreción y el profesionalismo. Busco conexiones maduras y respetuosas.",
-      images: [
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face&auto=format&q=80",
-      ],
-      interests: [
-        "Swinger",
-        "Eventos Privados",
-        "Gastronomía",
-        "Parejas",
-        "Discreción",
-      ],
-      isOnline: false,
-      verified: true,
-      coordinates: { lat: 20.6597, lng: -103.3496 },
-    },
-    {
-      id: "3",
-      name: "Gabriela",
-      age: 26,
-      location: "Monterrey",
-      bio: "Artista creativa con mente abierta al lifestyle alternativo. Discreta y respetuosa, disfruto explorando nuevas experiencias en el ambiente swinger. Busco parejas maduras para conexiones auténticas y eventos privados.",
-      images: [
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: [
-        "Swinger",
-        "Arte",
-        "Lifestyle",
-        "Discreción",
-        "Nuevas Experiencias",
-      ],
-      isOnline: true,
-      verified: true,
-      coordinates: { lat: 25.6866, lng: -100.3161 },
-    },
-    {
-      id: "4",
-      name: "Diego",
-      age: 30,
-      location: "Puebla",
-      bio: "Profesional discreto con experiencia en el lifestyle swinger. Busco parejas maduras para eventos privados y experiencias únicas. Valoro la discreción, el respeto mutuo y las conexiones auténticas en el ambiente alternativo.",
-      images: [
-        "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: [
-        "Swinger",
-        "Eventos Privados",
-        "Parejas",
-        "Discreción",
-        "Fitness",
-      ],
-      isOnline: true,
-      verified: true,
-      coordinates: { lat: 19.0414, lng: -98.2063 },
-    },
-    {
-      id: "5",
-      name: "Laura",
-      age: 29,
-      location: "Tijuana",
-      bio: "Bailarina profesional que organiza eventos privados para parejas aventureras. Discreta y respetuosa, creo experiencias únicas en el ambiente swinger. Busco conexiones maduras basadas en el respeto mutuo y la discreción.",
-      images: [
-        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: [
-        "Swinger",
-        "Eventos Privados",
-        "Danza",
-        "Parejas",
-        "Discreción",
-      ],
-      isOnline: true,
-      verified: true,
-      coordinates: { lat: 32.5149, lng: -117.0382 },
-    },
-    {
-      id: "6",
-      name: "Javier",
-      age: 27,
-      location: "Cancún",
-      bio: "Fotógrafo especializado en eventos privados del ambiente swinger. Discreto y profesional, capturo momentos únicos para parejas aventureras. Experiencia en sesiones íntimas manteniendo siempre la elegancia y el respeto.",
-      images: [
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: [
-        "Swinger",
-        "Fotografía",
-        "Eventos Privados",
-        "Discreción",
-        "Aventura",
-      ],
-      isOnline: false,
-      verified: true,
-      coordinates: { lat: 21.1619, lng: -86.8515 },
-    },
-    {
-      id: "7",
-      name: "Carmen",
-      age: 31,
-      location: "Mérida",
-      bio: "Profesional discreta con amplia experiencia en el lifestyle alternativo. Busco parejas maduras para eventos exclusivos y conexiones auténticas. Valoro la discreción, la comunicación abierta y el respeto mutuo en todas las interacciones.",
-      images: [
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: [
-        "Swinger",
-        "Eventos Privados",
-        "Parejas",
-        "Discreción",
-        "Cultura",
-      ],
-      isOnline: true,
-      verified: true,
-      coordinates: { lat: 20.9674, lng: -89.5926 },
-    },
-    {
-      id: "8",
-      name: "Pablo",
-      age: 33,
-      location: "León",
-      bio: "Emprendedor discreto que organiza eventos privados para parejas aventureras en el ambiente swinger. Profesional y respetuoso, creo experiencias únicas basadas en la discreción y el respeto mutuo. Busco conexiones maduras y auténticas.",
-      images: [
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: [
-        "Swinger",
-        "Eventos Privados",
-        "Parejas",
-        "Discreción",
-        "Networking",
-      ],
-      isOnline: true,
-      verified: true,
-      coordinates: { lat: 21.122, lng: -101.6869 },
-    },
-    {
-      id: "9",
-      name: "Isabella",
-      age: 26,
-      location: "Playa del Carmen",
-      bio: "Instructora de yoga especializada en wellness para parejas en el lifestyle swinger. Discreta y profesional, busco conexiones auténticas basadas en el respeto mutuo y la discreción. Experiencia en eventos privados y sesiones íntimas.",
-      images: [
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
-      ],
-      interests: ["Swinger", "Wellness", "Parejas", "Discreción", "Yoga"],
-      isOnline: true,
-      verified: true,
-      coordinates: { lat: 20.6296, lng: -87.0739 },
-    },
-  ];
+  // Función para cargar perfiles reales desde Supabase.
+  //
+  // Ronda 27 (stream B): la consulta corre con tope de 15 s
+  // (withFetchTimeout, patrón ronda 24) y los errores PROPAGAN en
+  // vez de tragarse devolviendo []: el llamador (initializeProfiles)
+  // los convierte en banner visible con Reintentar. Sin tope, una
+  // consulta colgada dejaba «Cargando perfiles...» para siempre; sin
+  // propagar, un error se veía igual que «0 perfiles» (test dirigido
+  // PR #88).
+  const loadRealProfiles = async (): Promise<Profile[]> => {
+    setIsLoading(true);
+    logger.info("🔄 Cargando perfiles reales desde Supabase...");
 
-  // Función para cargar perfiles reales desde Supabase
-  const loadRealProfiles = async () => {
-    try {
-      setIsLoading(true);
-      logger.info("🔄 Cargando perfiles reales desde Supabase...");
+    if (!supabase) {
+      logger.error("Supabase no está disponible");
+      throw new Error("Supabase no está disponible");
+    }
 
-      if (!supabase) {
-        logger.error("Supabase no está disponible");
-        return [];
-      }
-
-      const { data: profiles, error } = await supabase
+    // Ronda 24: tope propio a la consulta (ver withFetchTimeout).
+    // Tipo explícito: el builder de Supabase es un thenable, no un
+    // Promise, y sin él T se infiere como unknown (TS2339).
+    const { data: profiles, error } = await withFetchTimeout<{
+      data: Array<Record<string, any>> | null;
+      error: { message: string; details?: string } | null;
+    }>(
+      (supabase as any)
         .from("profiles")
         .select(
           `
@@ -257,99 +121,139 @@ const Profiles: React.FC = () => {
         `,
         )
         .eq("is_demo", false)
-        .not("first_name", "is", null);
+        .not("first_name", "is", null),
+      "los perfiles",
+    );
 
-      if (error) {
-        logger.error("❌ Error cargando perfiles reales:", {
-          error: error.message,
-          details: error.details,
-        });
-        throw error;
+    if (error) {
+      logger.error("❌ Error cargando perfiles reales:", {
+        error: error.message,
+        details: error.details,
+      });
+      // Como Error (no el objeto crudo de Supabase): el llamador
+      // muestra error.message en el banner.
+      throw new Error(error.message || "Error cargando perfiles reales");
+    }
+
+    // Convertir perfiles de Supabase al formato de Profile
+    const formattedProfiles: Profile[] =
+      profiles?.map((p: any) => ({
+        id: p.id,
+        name: p.display_name || `${p.first_name} ${p.last_name}`,
+        age: p.age || 25,
+        location: p.location || "Ciudad de México",
+        bio: p.bio || "Perfil profesional en el ambiente swinger",
+        images: p.avatar_url
+          ? [p.avatar_url]
+          : [
+              "https://ui-avatars.com/api/?name=" +
+                encodeURIComponent(p.first_name || "Usuario"),
+            ],
+        interests: Array.isArray(p.interests)
+          ? p.interests
+          : ["Swinger", "Discreción"],
+        isOnline: Math.random() > 0.5, // Simular estado online
+        verified: p.is_verified || false,
+        coordinates: { lat: 19.4326, lng: -99.1332 }, // Coordenadas por defecto
+      })) || [];
+
+    logger.info("✅ Perfiles reales cargados:", {
+      count: formattedProfiles.length,
+    });
+    return formattedProfiles;
+  };
+
+  // Función para cargar perfiles demo.
+  //
+  // Ronda 27 (stream B): rama demo LOCAL, sin llamadas a Supabase —
+  // mismo patrón que loadDemoModeratorsData() de AdminModerators
+  // (ronda 26). El roster es el canónico (generateDemoProfiles, misma
+  // fuente que Discover y Admin), mapeado al formato local de Profile:
+  // `image` → `images: [image]`, `isVerified` → `verified`. El roster
+  // demo no trae coordenadas: se usa la de Ciudad de México por
+  // defecto, igual que el mapeo real de arriba.
+  //
+  // La rama demo se decide SOLO por el flag `demo_authenticated`
+  // (sin exigir `demo_user`): antes, con el flag puesto pero sin
+  // `demo_user` legible, la rama demo se saltaba y se caía a la rama
+  // real — `isAuthenticated()` devuelve true con solo el flag
+  // (useAuth.ts:917-919) — y la consulta Supabase sin tope se
+  // colgaba en «Cargando perfiles...». En demo no hay sesión real
+  // de Supabase (la auth demo es solo localStorage), así que la
+  // consulta no tiene nada que devolver.
+  const loadDemoProfiles = (): Profile[] => {
+    logger.info("🔄 Cargando perfiles demo...");
+    return generateDemoProfiles(20).map((p) => ({
+      id: p.id,
+      name: p.name,
+      age: p.age,
+      location: p.location,
+      bio: p.bio,
+      images: [p.image],
+      interests: p.interests,
+      isOnline: p.isOnline,
+      verified: p.isVerified,
+      coordinates: { lat: 19.4326, lng: -99.1332 },
+    }));
+  };
+
+  // Detectar tipo de usuario y cargar perfiles apropiados.
+  // Fuera del efecto para que el botón Reintentar del banner de
+  // error pueda volver a llamarla (ronda 27).
+  const initializeProfiles = async () => {
+    try {
+      setIsLoading(true);
+      setLoadError(null);
+
+      // Verificar si es usuario demo: SOLO el flag (ver
+      // loadDemoProfiles). Con el flag puesto, la rama demo es local
+      // y nunca toca Supabase.
+      const isDemoAuthenticated =
+        localStorage.getItem("demo_authenticated") === "true";
+
+      // Verificar si es usuario real
+      const isRealAuthenticated = isAuthenticated() && user && profile;
+
+      let profiles: Profile[] = [];
+
+      if (isDemoAuthenticated) {
+        // Usuario demo
+        setUserType("demo");
+        profiles = loadDemoProfiles();
+        logger.info("👤 Usuario demo detectado, cargando perfiles demo");
+      } else if (isRealAuthenticated) {
+        // Usuario real
+        setUserType("real");
+        profiles = await loadRealProfiles();
+        logger.info("👤 Usuario real detectado, cargando perfiles reales");
+      } else {
+        // No autenticado, redirigir a auth
+        logger.info("❌ Usuario no autenticado, redirigiendo a /auth");
+        navigate("/auth");
+        return;
       }
 
-      // Convertir perfiles de Supabase al formato de Profile
-      const formattedProfiles: Profile[] =
-        profiles?.map((p: any) => ({
-          id: p.id,
-          name: p.display_name || `${p.first_name} ${p.last_name}`,
-          age: p.age || 25,
-          location: p.location || "Ciudad de México",
-          bio: p.bio || "Perfil profesional en el ambiente swinger",
-          images: p.avatar_url
-            ? [p.avatar_url]
-            : [
-                "https://ui-avatars.com/api/?name=" +
-                  encodeURIComponent(p.first_name || "Usuario"),
-              ],
-          interests: Array.isArray(p.interests)
-            ? p.interests
-            : ["Swinger", "Discreción"],
-          isOnline: Math.random() > 0.5, // Simular estado online
-          verified: p.is_verified || false,
-          coordinates: { lat: 19.4326, lng: -99.1332 }, // Coordenadas por defecto
-        })) || [];
-
-      logger.info("✅ Perfiles reales cargados:", {
-        count: formattedProfiles.length,
-      });
-      return formattedProfiles;
+      setAllProfiles(profiles);
+      setFilteredProfiles(profiles);
+      setIsLoading(false);
     } catch (error) {
-      logger.error("❌ Error en loadRealProfiles:", {
+      // Ronda 27: el error ya no se traga en silencio — banner
+      // visible con Reintentar (el tope de 15 s cae aquí cuando la
+      // consulta se cuelga).
+      logger.error("❌ Error inicializando perfiles:", {
         error: error instanceof Error ? error.message : String(error),
       });
-      return [];
+      setLoadError(
+        error instanceof Error
+          ? error.message
+          : "No se pudieron cargar los perfiles.",
+      );
+      setIsLoading(false);
     }
   };
 
-  // Función para cargar perfiles demo
-  const loadDemoProfiles = () => {
-    logger.info("🔄 Cargando perfiles demo...");
-    return mockProfiles;
-  };
-
-  // Detectar tipo de usuario y cargar perfiles apropiados
   useEffect(() => {
-    const initializeProfiles = async () => {
-      try {
-        // Verificar si es usuario demo
-        const isDemoAuthenticated =
-          localStorage.getItem("demo_authenticated") === "true";
-        const demoUser = localStorage.getItem("demo_user");
-
-        // Verificar si es usuario real
-        const isRealAuthenticated = isAuthenticated() && user && profile;
-
-        let profiles: Profile[] = [];
-
-        if (isDemoAuthenticated && demoUser) {
-          // Usuario demo
-          setUserType("demo");
-          profiles = loadDemoProfiles();
-          logger.info("👤 Usuario demo detectado, cargando perfiles demo");
-        } else if (isRealAuthenticated) {
-          // Usuario real
-          setUserType("real");
-          profiles = await loadRealProfiles();
-          logger.info("👤 Usuario real detectado, cargando perfiles reales");
-        } else {
-          // No autenticado, redirigir a auth
-          logger.info("❌ Usuario no autenticado, redirigiendo a /auth");
-          navigate("/auth");
-          return;
-        }
-
-        setAllProfiles(profiles);
-        setFilteredProfiles(profiles);
-        setIsLoading(false);
-      } catch (error) {
-        logger.error("❌ Error inicializando perfiles:", {
-          error: error instanceof Error ? error.message : String(error),
-        });
-        setIsLoading(false);
-      }
-    };
-
-    initializeProfiles();
+    void initializeProfiles();
   }, [isAuthenticated, user, profile, navigate]);
 
   // Función para calcular distancia entre coordenadas
@@ -687,6 +591,27 @@ const Profiles: React.FC = () => {
               <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               <span className="text-lg">Cargando perfiles...</span>
             </div>
+          </div>
+        )}
+
+        {/* Ronda 27 (stream B): error de carga visible (banner, no
+            solo log): con el tope, una consulta colgada resuelve aquí
+            en ~15 s. Reintentar vuelve a correr initializeProfiles. */}
+        {!isLoading && loadError && (
+          <div
+            role="alert"
+            className="mb-6 mx-auto max-w-2xl rounded-lg border border-red-500/50 bg-red-500/20 p-4 text-center"
+          >
+            <p className="text-red-200 font-medium">
+              No se pudieron cargar los perfiles: {loadError}
+            </p>
+            <button
+              type="button"
+              onClick={() => void initializeProfiles()}
+              className="mt-3 rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700"
+            >
+              Reintentar
+            </button>
           </div>
         )}
 

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { toast } from "@/hooks/useToast";
 import { safeOpenUrl } from "@/utils/safeOpenUrl";
 import { Link } from "react-router-dom";
+import { isFeatureEnabled } from "@/lib/features";
 
 export const Footer = () => {
   return (
@@ -90,14 +91,16 @@ export const Footer = () => {
                   Blog
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/donations"
-                  className="text-background/80 hover:text-primary transition-colors"
-                >
-                  Donaciones
-                </Link>
-              </li>
+              {isFeatureEnabled("investmentSection") && (
+                <li>
+                  <Link
+                    to="/donations"
+                    className="text-background/80 hover:text-primary transition-colors"
+                  >
+                    Donaciones
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link
                   to="/moderator-request"

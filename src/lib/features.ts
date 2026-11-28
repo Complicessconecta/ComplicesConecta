@@ -18,6 +18,10 @@ export interface FeatureFlags {
   tokens: boolean;
   referrals: boolean;
 
+  // Sección inversión / donaciones (oculta hasta Q3 + revisión legal;
+  // se enciende poniendo investmentSection en true)
+  investmentSection: boolean;
+
   // Funciones premium (deshabilitadas en beta)
   premiumChat: boolean;
   vipEvents: boolean;
@@ -46,6 +50,9 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     tokens: true,
     referrals: true,
 
+    // Sección inversión / donaciones: oculta (hasta Q3 + revisión legal)
+    investmentSection: false,
+
     // Premium (HABILITAdas EN BETA - Solo con tokens, sin Stripe)
     premiumChat: true,
     vipEvents: true,
@@ -72,6 +79,9 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     tokens: true,
     referrals: true,
 
+    // Sección inversión / donaciones: oculta (hasta Q3 + revisión legal)
+    investmentSection: false,
+
     // Premium (HABILITAdas)
     premiumChat: true,
     vipEvents: true,
@@ -95,6 +105,8 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
     requests: true,
     tokens: true,
     referrals: true,
+    // Sección inversión / donaciones: oculta (hasta Q3 + revisión legal)
+    investmentSection: false,
     premiumChat: true,
     vipEvents: true,
     prioritySupport: true,

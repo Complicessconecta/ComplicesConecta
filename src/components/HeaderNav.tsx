@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { BetaBanner } from "@/components/BetaBanner";
 import { Button } from "@/components/ui/buttons/Button";
+import { isFeatureEnabled } from "@/lib/features";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { OPEN_ANIMATION_SETTINGS_EVENT } from "@/components/animations/AnimationSettings";
 import {
@@ -232,6 +233,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     },
   ];
 
+  // Sección inversión / donaciones oculta por flag (investmentSection):
+  // sin el flag, "Inversionistas" y "Donaciones" no aparecen en el menú.
+  const visibleSecondaryNavItems = isFeatureEnabled("investmentSection")
+    ? secondaryNavItems
+    : secondaryNavItems.filter(
+        (item) => item.path !== "/invest" && item.path !== "/donations",
+      );
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
@@ -380,7 +389,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                       "Ayuda",
                       "Legal",
                     ].map((category) => {
-                      const categoryItems = secondaryNavItems.filter(
+                      const categoryItems = visibleSecondaryNavItems.filter(
                         (item) => item.category === category,
                       );
                       if (categoryItems.length === 0) return null;
@@ -570,7 +579,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
                       "Ayuda",
                       "Legal",
                     ].map((category) => {
-                      const categoryItems = secondaryNavItems.filter(
+                      const categoryItems = visibleSecondaryNavItems.filter(
                         (item) => item.category === category,
                       );
                       if (categoryItems.length === 0) return null;

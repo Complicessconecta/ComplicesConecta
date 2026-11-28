@@ -9,6 +9,7 @@ import { UserProfile } from "@/components/profiles/shared/UserProfile";
 import { CollapsedUserProfile } from "@/components/profiles/shared/CollapsedUserProfile";
 import { NavGroup } from "@/components/sidebar/NavGroup";
 import { QuickActions } from "@/components/sidebar/QuickActions";
+import { isFeatureEnabled } from "@/lib/features";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -40,7 +41,11 @@ export function AppSidebar() {
 
         <NavGroup
           label="Premium"
-          items={premiumItems}
+          items={
+            isFeatureEnabled("investmentSection")
+              ? premiumItems
+              : premiumItems.filter((item) => item.url !== "/investors")
+          }
           isCollapsed={isCollapsed}
           getNavClass={getNavClass}
         />

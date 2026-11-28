@@ -1,3 +1,28 @@
+# Reporte de Cambios - CómplicesConecta v3.9.31 (hotfix ocultar /invest)
+
+**Fecha:** 27 de Noviembre, 2026
+**Versión:** v3.9.31 (Hotfix fuera de la ronda 24: la auditoría de Stripe encontró que `/invest` cobra dinero real prometiendo un "retorno garantizado del 10% anual" con un contrato que no existe, y que ningún pago se completa jamás por el webhook apagado. Wacko autorizó 23:02 — "Sí, oculta /invest ya"; 1 commit sobre la rama `fix/ocultar-invest-2026-11-27` desde master `124ca1cc`, sin push ni merge todavía — Wacko fusiona él mismo)
+**Responsable:** Muse (hotfix directo)
+
+## Resumen Ejecutivo
+
+Se oculta la sección de inversión completa con un solo flag (`investmentSection: false`): las rutas `/donations`, `/invest` e `/investors` dejan de existir como rutas (caen al 404) y todos sus enlaces desaparecen de la navegación, el pie, la portada y el sidebar. Un test tripwire nuevo falla a propósito si alguien vuelve a encender el flag. Verificación integrada: tsc durable limpio; lint limpio en los 8 archivos tocados; build exit 0; boot / y /demo 200; vitest FULL 918 → 887 pasaron, 10 fallaron, 21 saltados (los 10 son el conjunto conocido + 4 de `emailService` y el archivo `TokenDashboard`, probados preexistentes en la base ronda 23 sin este hotfix; 0 regresiones). Sin migración nueva; nada aplicado a producción. `vite.config.ts` NO se tocó.
+
+## Registro de Cambios Detallados
+
+| Ítem | Archivo(s) | Síntoma | Acción Realizada |
+| :-- | :-- | :-- | :-- |
+| **(1) Flag `investmentSection`** | `src/lib/features.ts` | No existía forma de apagar la sección de inversión sin borrar código | **Agregado.** `investmentSection: boolean` en `FeatureFlags`, en `false` en beta, premium y vip. Un solo interruptor para las tres rutas. |
+| **(2) Rutas ocultas** | `src/App.tsx` | `/invest` cobraba dinero real sin confirmar el pago y prometiendo retorno garantizado | **Ocultas.** Las rutas `/donations`, `/invest` e `/investors` quedan envueltas en `isFeatureEnabled("investmentSection")`; con el flag apagado caen al catch-all 404. |
+| **(3) Enlaces quitados** | `src/components/HeaderNav.tsx`, `src/components/Footer.tsx`, `src/components/home/HomeBenefitsSection.tsx`, `src/components/AppSidebar.tsx` | La navegación, el pie, la portada y el sidebar enlazaban a rutas que ya no existen | **Quitado.** `HeaderNav` filtra `/invest` y `/donations` de la navegación secundaria; `Footer` envuelve el ítem Donaciones en el flag; `HomeBenefitsSection` envuelve la tarjeta "Apoya el Proyecto" → `/donations`; `AppSidebar` filtra `/investors` de los ítems premium. |
+| **(4) Test tripwire** | `src/tests/features.test.ts` (nuevo) | Nada impedía que alguien volviera a encender la sección sin darse cuenta | **Creado.** 2 pruebas que afirman que `investmentSection` está apagado; fallan a propósito si alguien lo enciende. Nota: el archivo nació en `src/lib/` y se movió a `src/tests/` porque el `include` de vitest solo cubre `src/tests/**` y `src/components/**`. |
+| **(5) E2E** | `src/tests/e2e/navigation-complete.spec.ts` | El spec e2e listaba `/investors` como ruta navegable | **Actualizado.** `/investors` fuera de la lista de rutas, con comentario. |
+
+## Nota
+
+- Verificación integrada (base `124ca1cc`): tsc durable (`tsconfig.app.json`) limpio, 0 errores; lint limpio en los 8 archivos tocados (0 errores, 0 warnings en ellos); build exit 0 (18.86 s); boot / y /demo HTTP 200 (`id="root"` presente, puerto 4182 libre); vitest FULL `--bail=0` 918 tests → 887 pasaron, 10 fallaron, 21 saltados. Los 10 fallos: conjunto conocido (NFTMintButton ×1, ProfileCouple ×3, ProfileSingle ×2) + 4 de `emailService` (variables de entorno) + el archivo `TokenDashboard` (error de colección: `safeLogger.warn is not a function`, mock incompleto preexistente en `src/integrations/supabase/client.ts:76`). Los 5 extra se reprodujeron idénticos en la base ronda 23 sin este hotfix (2 archivos, 1 test fallido de 5, mismo resultado) — no los causa este cambio. 0 regresiones.
+- Pendientes: verificación en vivo en el preview del PR (`/invest`, `/donations`, `/investors` deben dar 404 y no debe quedar ningún enlace visible); el arreglo real de Stripe (webhook, confirmación de pagos) sigue en la Fase 1 del plan de clubs; la ronda 24 corre en paralelo en su propia rama.
+
 # Reporte de Cambios - CómplicesConecta v3.9.30 (ronda 23, integrada)
 
 **Fecha:** 27 de Noviembre, 2026

@@ -1,5 +1,15 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 28 Nov 2026 - 01:49 (Ronda 26 — toast de +50 visible + /admin/moderators con datos demo + /faq sin carrera)
+
+- **🔍 Test dirigido del PR #87 (28 nov 01:11–01:20, 9 min):** veredicto DO NOT MERGE — ítem 3 PASS, ítem 4 PARCIAL (saldos correctos Single 1,300 / Pareja 2,050 sin duplicar, pero el toast de +50 nunca se vio en 4 inicios; la vía "Tus cuentas demo" no se encontró), regresión 1 PASS (admin 20/20/4/15/2), regresión 2 FAIL (/admin/moderators sin cuelgue pero con banner de error y 0 moderadores). Wacko autorizó la ronda 26 01:23.
+- **🎁 Toast de +50 visible:** la carrera estaba al revés de lo supuesto en la ronda 25 — en `signIn` el crédito va con `await`, así que el toast de +50 disparaba ANTES que el de "Modo Demo Activado" y `TOAST_LIMIT = 1` lo borraba al instante. Fix: el listener de MainLayout difiere el toast de +50 por 4 s (el de demo se lee entero y luego entra el +50 sus 3,5 s); arranque en frío cubierto con hueco pendiente en `demo-wallet.ts`. El crédito no cambia.
+- **🛡️ /admin/moderators en demo:** era la única página del área admin sin rama demo — en demo las consultas iban a PostgREST como `anon` y la RLS de `moderators` (`is_admin()` solo para `authenticated`) negaba la consulta (42501). Fix: rama demo espejo de `Admin.tsx` — 3 moderadores + 2 solicitudes del roster, cero Supabase, mismo aviso "Panel demo — datos de respaldo"; la rama real queda intacta con sus topes de 15 s.
+- **🔍 /faq sin carrera:** el botón "Ver guía de bienvenida" es incondicional; su ausencia en las primeras cargas fue el chunk lazy bajo Suspense (la búsqueda corrió durante `PageLoader`). Sin cambio de código; pasos corregidos para el retest.
+- **✅ Verificación:** vitest 970 → 943 pasaron, 6 fallaron (conjunto conocido, 0 regresiones; +13 tests nuevos con discriminación verificada, DOS corridas idénticas); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
 ## 📅 Bitácora 28 Nov 2026 - 00:55 (Ronda 25 — crédito de bienvenida por todas las vías demo + modal reabrible)
 
 - **🔍 Retest de la ronda 24 (28 nov 00:02–00:16, 14 min):** ítem 4 SIGUE FALLANDO (Single 1,250 ×3, Pareja 2,000, sin +50 ni toast) e ítem 3 NO VERIFICABLE (el modal no reaparece nunca). GitHub marca el despliegue del head 023773aa como "success — Vercel: Deployment has completed": el preview SÍ sirve la ronda 24, así que el fallo del crédito es un BUG REAL en tiempo de ejecución. Wacko autorizó la ronda 25 00:19.

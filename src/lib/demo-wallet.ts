@@ -104,11 +104,40 @@ export interface DemoWelcomeCreditEventDetail {
   balance: number | null;
 }
 
+/** Ronda 26 — último crédito de bienvenida notificado y aún no
+ * mostrado por MainLayout (ver `notifyDemoWelcomeCredit`). */
+let pendingDemoWelcomeCredit: DemoWelcomeCreditEventDetail | null = null;
+
 export function notifyDemoWelcomeCredit(
   detail: DemoWelcomeCreditEventDetail,
 ): void {
   if (typeof window === "undefined") return;
+  // Ronda 26: el detalle queda guardado ANTES de disparar el evento.
+  // MainLayout monta su listener DESPUÉS del efecto init de useAuth
+  // (mismo componente, los efectos del hook se registran primero):
+  // en un arranque en frío con restauración de sesión el evento
+  // podía dispararse antes de que el listener existiera y perderse
+  // del todo (el toast de +50 CMPX no aparecía nunca). Al montar,
+  // MainLayout toma el pendiente de aquí (`takePendingDemoWelcomeCredit`)
+  // y el toast se muestra igual; el listener lo consume al recibir el
+  // evento, así que un remontaje no lo repite. Solo vive en memoria
+  // (no en localStorage): un reload recarga el módulo vacío y el
+  // crédito ya reclamado no vuelve a disparar el evento de todos
+  // modos (idempotente por el flag `cc_demo_welcome_claimed_v1`).
+  pendingDemoWelcomeCredit = detail;
   window.dispatchEvent(new CustomEvent(DEMO_WELCOME_CREDIT_EVENT, { detail }));
+}
+
+/**
+ * Toma (y vacía) el crédito de bienvenida pendiente de mostrar.
+ * Lo usa MainLayout al montar (evento disparado antes que su
+ * listener) y su listener al recibir el evento (para que un
+ * remontaje no lo repita). Devuelve `null` si no hay nada pendiente.
+ */
+export function takePendingDemoWelcomeCredit(): DemoWelcomeCreditEventDetail | null {
+  const pending = pendingDemoWelcomeCredit;
+  pendingDemoWelcomeCredit = null;
+  return pending;
 }
 
 function readPersistedDemoWalletBalances(): Record<

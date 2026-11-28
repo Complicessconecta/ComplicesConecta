@@ -32,6 +32,8 @@ import {
   writeVisibilityLocal,
 } from "@/lib/profileVisibility";
 import { isIdentityRetainedDemo } from "@/lib/reportBlock";
+import { logger } from "@/lib/logger";
+import { welcomeTokensService } from "@/services/payments/WelcomeTokensService";
 import type { Profile } from "@/types/supabase-custom";
 
 /**
@@ -549,6 +551,29 @@ export function getActiveDemoSession(): ActiveDemoSession | null {
 }
 
 /**
+ * Ronda 25: perfil demo guardado de la sesión ACTIVA (`demo_user`),
+ * parseado con validación, o `null` si no hay sesión o el JSON está
+ * corrupto. Lo usa `DemoSelector.handleActiveSessionLogin` para
+ * resolver si la sesión activa es anónima (una cuenta anónima local
+ * NO acredita el bono de bienvenida) sin fiarse solo del resumen de
+ * `getActiveDemoSession()`, que no trae el perfil. Si devuelve
+ * `null`, el llamador NO acredita (fail-closed: el init-restore de
+ * `useAuth` lo acreditará al resolver la sesión con su propio parseo).
+ */
+export function getActiveDemoSessionProfile(): Profile | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem("demo_user");
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed as Profile;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Ronda 14, stream B: elimina la sesión demo ACTIVA desde /demo.
  *
  * - Registrada y no canónica: se borra la cuenta del navegador
@@ -728,6 +753,23 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
       ...(input.partnerBirthDate ? { birthDate2: input.partnerBirthDate } : {}),
     });
   }
+
+  // Ronda 24 (bloque C): crédito de bienvenida CMPX (50, una sola vez,
+  // idempotente). Fire-and-forget: esta función es síncrona y su firma
+  // no cambia; el login demo también lo intenta y la idempotencia
+  // evita el doble crédito. Las cuentas anónimas no reciben nada.
+  void welcomeTokensService
+    .claimWelcomeCredit({
+      userId,
+      accountType: input.accountType,
+      isAnonymous: Boolean(input.isAnonymous),
+      isDemo: true,
+    })
+    .catch((error) => {
+      logger.error("No se pudo acreditar el bono de bienvenida CMPX", {
+        error,
+      });
+    });
 
   return { userId, profile };
 }

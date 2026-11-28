@@ -15,6 +15,15 @@ import { CertificatePinning } from "@/security/certificate-pinning";
 // Última actividad de sesión, SOLO en memoria (nunca en localStorage).
 let lastActivityTimestamp: number | null = null;
 
+// Ronda 24 (stream A): tope de TODAS las peticiones Supabase.
+// `createSecureFetch` es el punto único por el que pasa cada fetch
+// del cliente (auth, PostgREST, RPC): sin tope, una petición colgada
+// en red dejaba colgados `getSession`, `loadProfile`, Admin y
+// moderadores a la vez. 15 s, igual que los topes de Admin y
+// moderadores. El `AbortController` es manual (no
+// `AbortSignal.timeout`) para no exigir una lib DOM reciente.
+export const SECURE_FETCH_TIMEOUT_MS = 15_000;
+
 /**
  * Helpers de seguridad para Supabase
  * Implementa funciones de limpieza y validación seguras
@@ -71,10 +80,37 @@ export class SecurityHelpers {
       }
 
       try {
-        return fetch(input, {
-          ...init,
-          headers: secureHeaders,
-        });
+        // Ronda 24: tope de 15 s (ver SECURE_FETCH_TIMEOUT_MS). La
+        // señal del llamador, si la trae, también aborta: se reenvía
+        // al controlador propio. El `await` dentro del try es
+        // deliberado: con `return fetch(...)` pelado, el `finally`
+        // limpiaría el timeout al devolver la promesa (antes de que
+        // el fetch asentara) y el tope no existiría.
+        const controller = new AbortController();
+        const timeoutId = setTimeout(
+          () => controller.abort(),
+          SECURE_FETCH_TIMEOUT_MS,
+        );
+        const onCallerAbort = () => controller.abort();
+        try {
+          if (init?.signal) {
+            if (init.signal.aborted) {
+              controller.abort();
+            } else {
+              init.signal.addEventListener("abort", onCallerAbort, {
+                once: true,
+              });
+            }
+          }
+          return await fetch(input, {
+            ...init,
+            headers: secureHeaders,
+            signal: controller.signal,
+          });
+        } finally {
+          clearTimeout(timeoutId);
+          init?.signal?.removeEventListener("abort", onCallerAbort);
+        }
       } catch (error) {
         logger.error("❌ Secure fetch error:", {
           error: error instanceof Error ? error.message : String(error),

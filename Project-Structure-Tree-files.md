@@ -78,6 +78,7 @@ C:\USERS\CONEJ\DOCUMENTS\CONECTA-SOCIAL-COMUNIDAD-MAIN\SRC
 | | SendRequestDialog.tsx
 | | ThemeModal.tsx
 | | TokensSubnav.tsx
+| | WelcomeGuideReopenButton.tsx
 | |  
 | +---accessibility
 | | AccessibilityAudit.tsx

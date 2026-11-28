@@ -83,6 +83,34 @@ export function notifyDemoWalletChanged(): void {
   window.dispatchEvent(new CustomEvent(DEMO_WALLET_CHANGED_EVENT));
 }
 
+/**
+ * Ronda 25 — evento del crédito de bienvenida demo. Se dispara SOLO
+ * cuando `ensureDemoWelcomeCredit` acredita de verdad
+ * (`credited === true`): re-entrar no muestra nada (idempotente por
+ * el flag `cc_demo_welcome_claimed_v1`). MainLayout lo escucha y
+ * muestra el toast "🎁 +50 CMPX de bienvenida" con el saldo. Es un
+ * evento distinto de `DEMO_WALLET_CHANGED_EVENT` a propósito: ese lo
+ * escuchan los lectores de saldo para re-renderizar (cualquier
+ * reclamo/gasto), y este solo marca "bienvenida acreditada ahora"
+ * para el toast.
+ */
+export const DEMO_WELCOME_CREDIT_EVENT = "demo-welcome-credit-credited";
+
+export interface DemoWelcomeCreditEventDetail {
+  accountType: DemoAccountType;
+  /** CMPX acreditados (siempre WELCOME_CREDIT_CMPX = 50). */
+  amount: number;
+  /** Saldo CMPX resultante (null si no se pudo leer). */
+  balance: number | null;
+}
+
+export function notifyDemoWelcomeCredit(
+  detail: DemoWelcomeCreditEventDetail,
+): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent(DEMO_WELCOME_CREDIT_EVENT, { detail }));
+}
+
 function readPersistedDemoWalletBalances(): Record<
   DemoAccountType,
   { cmpx: number; gtk: number }

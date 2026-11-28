@@ -18,7 +18,7 @@ import {
   isProductionAdmin,
   resolveDemoAccountType,
 } from "@/lib/app-config";
-import { welcomeTokensService } from "@/services/payments/WelcomeTokensService";
+import { ensureDemoWelcomeCredit } from "@/services/payments/WelcomeTokensService";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -463,6 +463,17 @@ export const useAuth = () => {
           ); // Esperar carga completa
           setLoading(false); // Solo después de que profile esté cargado
 
+          // Ronda 25: esta vía (restauración de sesión al arrancar)
+          // NO pasa por signIn y nunca acreditaba — en el retest la
+          // pestaña heredó sesión activa y las re-entradas usaron
+          // esta vía. El perfil cargado es parsedDemoUser
+          // (loadProfile lo lee del mismo demo_user).
+          await ensureDemoWelcomeCredit({
+            userId: mockUser.id,
+            accountType: resolveDemoAccountType(parsedDemoUser) ?? "single",
+            isAnonymous: isAnonymousDemoProfile(parsedDemoUser),
+          });
+
           logger.info("✅ Usuario demo inicializado:", {
             email: mockUser.email,
           });
@@ -736,22 +747,16 @@ export const useAuth = () => {
           setUser(mockUser);
           setSession(mockSession);
           await loadProfile(demoAuth.user.id);
-          // Ronda 24 (bloque C): crédito de bienvenida CMPX (50, una
-          // sola vez, idempotente). Best-effort: en demo es solo
-          // localStorage y nunca rompe el login.
-          try {
-            await welcomeTokensService.claimWelcomeCredit({
-              userId: demoAuth.user.id,
-              accountType:
-                demoAuth.user.accountType === "couple" ? "couple" : "single",
-              isAnonymous: isAnonymousDemoProfile(demoProfileData),
-              isDemo: true,
-            });
-          } catch (error) {
-            logger.error("No se pudo acreditar el bono de bienvenida CMPX", {
-              error,
-            });
-          }
+          // Ronda 25: crédito de bienvenida centralizado en
+          // ensureDemoWelcomeCredit (antes inline aquí y SOLO aquí:
+          // las otras vías de sesión demo nunca acreditaban). El
+          // helper nunca lanza y registra el error real si falla.
+          await ensureDemoWelcomeCredit({
+            userId: demoAuth.user.id,
+            accountType:
+              demoAuth.user.accountType === "couple" ? "couple" : "single",
+            isAnonymous: isAnonymousDemoProfile(demoProfileData),
+          });
           logger.info("✅ Sesión demo iniciada", { email });
           return { user: demoAuth.user, session: demoAuth.session };
         }
@@ -795,6 +800,15 @@ export const useAuth = () => {
           setUser(mockUser);
           setSession(mockSession);
           await loadProfile(localAccount.profile.id);
+          // Ronda 25: esta rama (login con cuenta demo local sin
+          // Supabase) tampoco pasaba por el crédito de la rama demo
+          // de arriba. Mismo helper, idempotente.
+          await ensureDemoWelcomeCredit({
+            userId: localAccount.profile.id,
+            accountType:
+              resolveDemoAccountType(localAccount.profile) ?? "single",
+            isAnonymous: isAnonymousDemoProfile(localAccount.profile),
+          });
           logger.info("✅ Sesión demo local restaurada", { email });
           return { user: mockUser, session: mockSession };
         }

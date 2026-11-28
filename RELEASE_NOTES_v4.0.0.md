@@ -1,5 +1,14 @@
 # RELEASE NOTES v4.0.0
 
+## 📅 Bitácora 28 Nov 2026 - 00:55 (Ronda 25 — crédito de bienvenida por todas las vías demo + modal reabrible)
+
+- **🔍 Retest de la ronda 24 (28 nov 00:02–00:16, 14 min):** ítem 4 SIGUE FALLANDO (Single 1,250 ×3, Pareja 2,000, sin +50 ni toast) e ítem 3 NO VERIFICABLE (el modal no reaparece nunca). GitHub marca el despliegue del head 023773aa como "success — Vercel: Deployment has completed": el preview SÍ sirve la ronda 24, así que el fallo del crédito es un BUG REAL en tiempo de ejecución. Wacko autorizó la ronda 25 00:19.
+- **🎁 Crédito de bienvenida:** causa raíz — el crédito solo vivía en `useAuth.signIn`, pero tres caminos establecen sesión demo sin pasar por `signIn` y nunca acreditaban ("Entrar" de cuenta local, "Entrar como …" de sesión activa, restauración al arrancar). Fix: helper central `ensureDemoWelcomeCredit` desde los 5 sitios, con toast "🎁 +50 CMPX de bienvenida" y log con el error real cuando falla; idempotente (1,300 / 2,050 sin duplicar); anónimo sin crédito.
+- **👋 Modal reabrible:** botón discreto "Ver guía de bienvenida" en el Centro de Ayuda (/faq) que abre el modal bajo demanda, sin tocar el flag de primera visita.
+- **✅ Verificación:** vitest 957 → 930 pasaron, 6 fallaron (conjunto conocido, 0 regresiones; +12 tests nuevos con discriminación verificada, DOS corridas idénticas); tsc durable 8 errores (preexistentes); CI Type Check exit 0; Lint exit 0; Build exit 0; boot / y /demo 200.
+
+---
+
 ## 📅 Bitácora 27 Nov 2026 - 23:23 (Ronda 24 — topes anti-atasco en admin + modal CMPX + tokens de bienvenida usables)
 
 - **🔍 Smoke post-merge del PR #83 (27 nov 22:15–22:27, 12 min):** FALLÓ en PASO 0 — `/admin/dashboard` no renderiza en producción ("Cargando..." 60–125 s y rebote a /discover). Diagnóstico estático 22:40: causa en la ronda 22 (guardián `authLoading` sin tope + `finally` quitados), no en la 23. Wacko autorizó la ronda 24 22:43 y aterrizó el alcance 22:44 (admin + modal + tokens usables).

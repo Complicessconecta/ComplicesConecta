@@ -53,6 +53,7 @@ import {
   isDemoWelcomeCreditClaimed,
   markDemoReferralReward,
   markDemoWelcomeCreditClaimed,
+  notifyDemoWelcomeCredit,
   type DemoAccountType,
 } from "@/lib/demo-wallet";
 import { logger } from "@/lib/logger";
@@ -618,21 +619,92 @@ export class WelcomeTokensService {
 export const welcomeTokensService = WelcomeTokensService.getInstance();
 
 /**
+ * Ronda 25 — ÚNICO punto de entrada del crédito de bienvenida DEMO.
+ *
+ * Por qué existe: el crédito solo estaba cableado en
+ * `useAuth.signIn` (rama demo), pero hay TRES caminos más que
+ * establecen sesión demo sin pasar por `signIn` (restauración al
+ * arrancar, "Entrar" de cuenta local y "Entrar como …" de sesión
+ * activa en DemoSelector) y nunca acreditaban — y el fallo era
+ * SILENCIOSO (el try/catch best-effort de `signIn` tragaba el
+ * error). Los cuatro (cinco, ver abajo) call-sites llaman aquí.
+ *
+ * - Llama a `claimWelcomeCredit` con `isDemo: true` (idempotente
+ *   por el flag `cc_demo_welcome_claimed_v1`: re-login NO duplica).
+ * - NUNCA lanza: un fallo devuelve `credited: false` con `error`
+ *   y se registra con `logger.error` CON el error real (nunca más
+ *   un fallo silencioso). La única "falla" que NO se registra como
+ *   error es el bloqueo de anónimo: es deliberado por diseño
+ *   (sin cartera, sin tokens) y `claimWelcomeCredit` ya lo deja en
+ *   `logger.info`.
+ * - Dispara `DEMO_WELCOME_CREDIT_EVENT` con `{accountType, amount,
+ *   balance}` SOLO cuando `credited === true`: MainLayout lo
+ *   escucha y muestra el toast de bienvenida.
+ */
+export async function ensureDemoWelcomeCredit(options: {
+  userId: string;
+  accountType: DemoAccountType;
+  isAnonymous: boolean;
+}): Promise<WelcomeCreditResult> {
+  const { userId, accountType, isAnonymous } = options;
+  try {
+    const result = await welcomeTokensService.claimWelcomeCredit({
+      userId,
+      accountType,
+      isAnonymous,
+      isDemo: true,
+    });
+    if (result.error && result.error !== ANONYMOUS_WALLET_BLOCKED_REASON) {
+      logger.error("No se pudo acreditar el bono de bienvenida CMPX", {
+        error: result.error,
+        userId,
+        accountType,
+      });
+    } else if (result.credited) {
+      notifyDemoWelcomeCredit({
+        accountType,
+        amount: WELCOME_CREDIT_CMPX,
+        balance: result.balance,
+      });
+    }
+    return result;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error("No se pudo acreditar el bono de bienvenida CMPX", {
+      error: message,
+      userId,
+      accountType,
+    });
+    return {
+      credited: false,
+      alreadyClaimed: false,
+      balance: null,
+      error: message,
+    };
+  }
+}
+
+/**
  * PUNTOS DE INSERCIÓN PENDIENTES DE CABLEADO (los aplica el
  * coordinador en la integración; los archivos de auth son del
  * stream A y los formularios de registro no se tocan en esta ronda):
  *
- * 1. Crédito de bienvenida, login demo — `src/features/auth/useAuth.ts`,
- *    `signIn`, rama demo, tras `_setDemoUser(demoProfileData)` (~línea 688):
- *    ```ts
- *    await welcomeTokensService.claimWelcomeCredit({
- *      userId: demoAuth.user.id,
- *      accountType: demoAuth.user.accountType === "couple" ? "couple" : "single",
- *      isAnonymous: isAnonymousDemoProfile(demoProfileData),
- *      isDemo: true,
- *    });
- *    ```
- *    (Idempotente: en logins posteriores devuelve `alreadyClaimed`.)
+ * 1. Crédito de bienvenida demo — RONDA 25: ya NO se llama a
+ *    `claimWelcomeCredit` inline. El único punto de entrada es
+ *    `ensureDemoWelcomeCredit({ userId, accountType, isAnonymous })`
+ *    (definido arriba), llamado desde los CINCO sitios donde se
+ *    establece sesión demo, porque los tres últimos NO pasan por
+ *    `signIn` y nunca acreditaban (causa raíz del retest ronda 24):
+ *    (a) `useAuth.signIn`, rama demo; (b) `useAuth` init-restore
+ *    (tras `loadProfile` con éxito, con `parsedDemoUser`);
+ *    (c) `useAuth.signIn`, rama de cuenta demo local sin Supabase;
+ *    (d) `DemoSelector.handleLocalAccountLogin`;
+ *    (e) `DemoSelector.handleActiveSessionLogin` (con el perfil de
+ *    `getActiveDemoSessionProfile()`: una sesión activa puede ser
+ *    una cuenta anónima local, que NO acredita). El helper nunca
+ *    lanza, registra el error real si falla y dispara
+ *    `DEMO_WELCOME_CREDIT_EVENT` solo al acreditar (toast en
+ *    MainLayout).
  *
  * 2. Crédito de bienvenida, registro demo — `src/lib/demo-registration.ts`,
  *    `createLocalDemoAccount`, tras crear la cuenta (retorna `{ userId }`):

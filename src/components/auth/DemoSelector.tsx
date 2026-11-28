@@ -37,11 +37,14 @@ import {
   deleteLocalDemoAccount,
   findLocalAnonymousAccount,
   getActiveDemoSession,
+  getActiveDemoSessionProfile,
+  isAnonymousDemoProfile,
   listLocalDemoAccounts,
   restoreLocalDemoSession,
   type LocalDemoAccountRecord,
 } from "@/lib/demo-registration";
 import { resolveDemoAccountType } from "@/lib/app-config";
+import { ensureDemoWelcomeCredit } from "@/services/payments/WelcomeTokensService";
 
 interface DemoSelectorProps {
   className?: string;
@@ -156,6 +159,27 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
   const handleActiveSessionLogin = () => {
     const session = shownActiveSession;
     if (!session || isLoading) return;
+    // Ronda 25: crédito de bienvenida (50 CMPX, idempotente). Esta
+    // vía NO pasa por useAuth.signIn y nunca acreditaba. La sesión
+    // activa puede ser una cuenta anónima local: se resuelve desde
+    // el demo_user guardado y NO acredita. Si el perfil guardado no
+    // se puede leer, no se acredita (fail-closed): el init-restore
+    // de useAuth lo acreditará al resolver la sesión. Fire-and-
+    // forget: el helper nunca lanza y el toast de bienvenida lo
+    // dispara MainLayout al acreditar.
+    const activeProfile = getActiveDemoSessionProfile();
+    if (session.userId && activeProfile) {
+      void ensureDemoWelcomeCredit({
+        userId: session.userId,
+        accountType: session.type,
+        isAnonymous: isAnonymousDemoProfile(activeProfile),
+      });
+    } else {
+      logger.info(
+        "Crédito de bienvenida omitido: sesión demo activa sin perfil legible",
+        { userId: session.userId },
+      );
+    }
     toast({
       title: "🎭 Modo Demo Activado",
       description: `Bienvenido de nuevo, ${session.nickname}`,
@@ -186,6 +210,18 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
       // siguiente página desde localStorage al montar.
       safeSetItem("demo_authenticated", "true", { validate: true });
       safeSetItem("userType", type, { validate: false });
+
+      // Ronda 25: crédito de bienvenida (50 CMPX, idempotente). Esta
+      // vía ("Entrar" de "Tus cuentas demo") NO pasa por
+      // useAuth.signIn y nunca acreditaba — es el camino que usaron
+      // las re-entradas del retest. Fire-and-forget: el helper nunca
+      // lanza y el toast de bienvenida lo dispara MainLayout al
+      // acreditar.
+      void ensureDemoWelcomeCredit({
+        userId: account.userId,
+        accountType: type,
+        isAnonymous: isAnonymousDemoProfile(account.profile),
+      });
 
       toast({
         title: "🎭 Modo Demo Activado",

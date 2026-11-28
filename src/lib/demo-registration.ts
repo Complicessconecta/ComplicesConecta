@@ -551,6 +551,29 @@ export function getActiveDemoSession(): ActiveDemoSession | null {
 }
 
 /**
+ * Ronda 25: perfil demo guardado de la sesión ACTIVA (`demo_user`),
+ * parseado con validación, o `null` si no hay sesión o el JSON está
+ * corrupto. Lo usa `DemoSelector.handleActiveSessionLogin` para
+ * resolver si la sesión activa es anónima (una cuenta anónima local
+ * NO acredita el bono de bienvenida) sin fiarse solo del resumen de
+ * `getActiveDemoSession()`, que no trae el perfil. Si devuelve
+ * `null`, el llamador NO acredita (fail-closed: el init-restore de
+ * `useAuth` lo acreditará al resolver la sesión con su propio parseo).
+ */
+export function getActiveDemoSessionProfile(): Profile | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem("demo_user");
+    if (!raw) return null;
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed as Profile;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Ronda 14, stream B: elimina la sesión demo ACTIVA desde /demo.
  *
  * - Registrada y no canónica: se borra la cuenta del navegador

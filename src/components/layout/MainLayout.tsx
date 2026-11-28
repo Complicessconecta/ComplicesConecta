@@ -25,6 +25,11 @@ import { Toaster } from "@/components/ui/toaster";
 // React.lazy cachea el rechazo del `import()` y remontar el boundary
 // no reintenta el chunk; el reintento recrea el lazy desde el estado.
 import { NotificationContainer } from "@/components/animations/NotificationSystem";
+import { useToast } from "@/hooks/useToast";
+import {
+  DEMO_WELCOME_CREDIT_EVENT,
+  type DemoWelcomeCreditEventDetail,
+} from "@/lib/demo-wallet";
 import {
   clearClubDemoAdminSession,
   hasClubDemoAdminSession,
@@ -49,6 +54,33 @@ export const MainLayout = () => {
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const { toast } = useToast();
+
+  // Ronda 25: toast del crédito de bienvenida CMPX. El helper
+  // `ensureDemoWelcomeCredit` dispara DEMO_WELCOME_CREDIT_EVENT
+  // SOLO cuando acredita (`credited === true`): re-entrar no
+  // muestra nada (idempotente por el flag). El <Toaster /> vive en
+  // este layout, por encima del <Outlet />, así que el toast
+  // sobrevive a la navegación que sigue al login. `useToast` es un
+  // store a nivel de módulo (no depende del contexto del layout),
+  // así que funciona aquí igual que en las páginas.
+  useEffect(() => {
+    const onWelcomeCredit = (event: Event) => {
+      const detail = (event as CustomEvent<DemoWelcomeCreditEventDetail>)
+        .detail;
+      if (!detail) return;
+      toast({
+        title: "🎁 +50 CMPX de bienvenida",
+        description:
+          detail.balance !== null
+            ? `Tu saldo ahora es de ${detail.balance} CMPX.`
+            : "Se acreditaron 50 CMPX a tu cartera.",
+      });
+    };
+    window.addEventListener(DEMO_WELCOME_CREDIT_EVENT, onWelcomeCredit);
+    return () =>
+      window.removeEventListener(DEMO_WELCOME_CREDIT_EVENT, onWelcomeCredit);
+  }, [toast]);
 
   // Precarga del chunk de Chat AL MONTAR: al abrir el dock el
   // componente ya está en caché y no aparece el "Cargando…".

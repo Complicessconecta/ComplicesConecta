@@ -5,6 +5,7 @@
  */
 
 export * from "@/services/payments/TokenService";
+export * from "@/services/payments/WelcomeTokensService";
 export * from "@/services/payments/WalletService";
 export * from "@/services/payments/WalletProtectionService";
 export * from "@/services/payments/NFTService";

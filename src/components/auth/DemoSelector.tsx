@@ -32,17 +32,19 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { safeRemoveItem, safeSetItem } from "@/lib/safe-storage";
-import { usePersistedState } from "@/hooks/usePersistedState";
 import {
   deleteActiveDemoSession,
   deleteLocalDemoAccount,
   findLocalAnonymousAccount,
   getActiveDemoSession,
+  getActiveDemoSessionProfile,
+  isAnonymousDemoProfile,
   listLocalDemoAccounts,
   restoreLocalDemoSession,
   type LocalDemoAccountRecord,
 } from "@/lib/demo-registration";
 import { resolveDemoAccountType } from "@/lib/app-config";
+import { ensureDemoWelcomeCredit } from "@/services/payments/WelcomeTokensService";
 
 interface DemoSelectorProps {
   className?: string;
@@ -157,6 +159,27 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
   const handleActiveSessionLogin = () => {
     const session = shownActiveSession;
     if (!session || isLoading) return;
+    // Ronda 25: crédito de bienvenida (50 CMPX, idempotente). Esta
+    // vía NO pasa por useAuth.signIn y nunca acreditaba. La sesión
+    // activa puede ser una cuenta anónima local: se resuelve desde
+    // el demo_user guardado y NO acredita. Si el perfil guardado no
+    // se puede leer, no se acredita (fail-closed): el init-restore
+    // de useAuth lo acreditará al resolver la sesión. Fire-and-
+    // forget: el helper nunca lanza y el toast de bienvenida lo
+    // dispara MainLayout al acreditar.
+    const activeProfile = getActiveDemoSessionProfile();
+    if (session.userId && activeProfile) {
+      void ensureDemoWelcomeCredit({
+        userId: session.userId,
+        accountType: session.type,
+        isAnonymous: isAnonymousDemoProfile(activeProfile),
+      });
+    } else {
+      logger.info(
+        "Crédito de bienvenida omitido: sesión demo activa sin perfil legible",
+        { userId: session.userId },
+      );
+    }
     toast({
       title: "🎭 Modo Demo Activado",
       description: `Bienvenido de nuevo, ${session.nickname}`,
@@ -188,6 +211,18 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
       safeSetItem("demo_authenticated", "true", { validate: true });
       safeSetItem("userType", type, { validate: false });
 
+      // Ronda 25: crédito de bienvenida (50 CMPX, idempotente). Esta
+      // vía ("Entrar" de "Tus cuentas demo") NO pasa por
+      // useAuth.signIn y nunca acreditaba — es el camino que usaron
+      // las re-entradas del retest. Fire-and-forget: el helper nunca
+      // lanza y el toast de bienvenida lo dispara MainLayout al
+      // acreditar.
+      void ensureDemoWelcomeCredit({
+        userId: account.userId,
+        accountType: type,
+        isAnonymous: isAnonymousDemoProfile(account.profile),
+      });
+
       toast({
         title: "🎭 Modo Demo Activado",
         description: `Bienvenido de nuevo, ${account.nickname}`,
@@ -215,12 +250,10 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
     }
   };
 
-  // Estado persistente para demo
-  const [, setDemoAuthenticated] = usePersistedState<boolean>(
-    "demo_authenticated",
-    false,
-  );
-  const [, setUserType] = usePersistedState<string>("userType", "");
+  // Ronda 24: las declaraciones de `usePersistedState` para
+  // `demo_authenticated`/`userType` se eliminaron con sus setters
+  // (ver `handleDemoLogin`): solo quedaba el setter y ya no se usa.
+  // Nada más de este archivo cambia.
 
   /**
    * Ronda 11 (stream A, 1h): eliminar una cuenta demo creada
@@ -288,10 +321,14 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
       // El demo es local, nunca admin; el login real es Supabase Auth.
       await signIn(demoEmail, "", type);
 
-      // Establecer estado demo SOLO si signIn fue exitoso
-      setDemoAuthenticated(true);
-      setUserType(type);
-
+      // Ronda 24 (H3 del diagnóstico): SOLO escritura en crudo
+      // (safeSetItem), como ya hace `handleLocalAccountLogin`. Los
+      // setters de `usePersistedState` serializan con JSON.stringify
+      // y dejaban `demo_authenticated` como `"true"` ENTRECOMILLADO;
+      // si React ejecutaba ese updater DESPUÉS del safeSetItem, el
+      // valor final quedaba entrecomillado, `getSessionFlags()`
+      // (compara `=== "true"`) devolvía false y `isDemo()` false →
+      // rebote a /discover con la sesión demo «activa» en apariencia.
       // Persistir flags demo
       safeSetItem("demo_authenticated", "true", { validate: true });
       safeSetItem("userType", type, { validate: false });
@@ -323,9 +360,9 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
         error: error instanceof Error ? error.message : String(error),
       });
 
-      // Rollback: evitar sesión demo a medias
-      setDemoAuthenticated(false);
-      setUserType("");
+      // Rollback: evitar sesión demo a medias (solo borrado en
+      // crudo; ver el comentario de arriba: nada de setters de
+      // `usePersistedState` para estas claves).
       safeRemoveItem("demo_authenticated");
       safeRemoveItem("demo_user");
       safeRemoveItem("userType");

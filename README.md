@@ -12,6 +12,18 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
                   📅  Noviembre del 2026
 
+## 📅 Actualización 27 de Noviembre, 2026 - 23:20
+
+**Hotfix ocultar /invest (fuera de la ronda 24; Wacko autorizó 23:02 — "Sí, oculta /invest ya"; rama `fix/ocultar-invest-2026-11-27` desde master `124ca1cc`, 1 commit, sin merge todavía — Wacko fusiona él mismo):**
+
+- ✅ Flag nuevo `investmentSection: false` en `src/lib/features.ts` (beta, premium y vip) — un solo interruptor para las tres rutas de inversión/donación.
+- ✅ Rutas `/donations`, `/invest` e `/investors` envueltas en `isFeatureEnabled("investmentSection")` en `src/App.tsx` — con el flag apagado caen al catch-all 404, no hay redirección ni página vacía.
+- ✅ Enlaces quitados: `HeaderNav.tsx` (navegación secundaria filtra `/invest` y `/donations`), `Footer.tsx` (Donaciones), `HomeBenefitsSection.tsx` (tarjeta "Apoya el Proyecto" → `/donations`), `AppSidebar.tsx` (`/investors` fuera de los ítems premium).
+- ✅ Test tripwire nuevo `src/tests/features.test.ts` (2/2): falla a propósito si alguien vuelve a encender el flag.
+- ✅ E2E `navigation-complete.spec.ts`: `/investors` fuera de la lista de rutas (ya no existe como ruta navegable).
+- Verificación integrada: tsc durable (`tsconfig.app.json`) limpio; lint limpio en los 8 archivos tocados; build exit 0 (18.86 s); boot / y /demo HTTP 200 (`id="root"`); vitest FULL 918 tests → 887 pasaron, 10 fallaron, 21 saltados — los 10 son el conjunto conocido (NFTMintButton ×1, ProfileCouple ×3, ProfileSingle ×2) + 4 de `emailService` y el archivo `TokenDashboard` que NO los causa este hotfix (probado en la base ronda 23 sin los cambios: fallan idéntico; `TokenDashboard` es un mock incompleto de `safeLogger`, preexistente). 0 regresiones. `vite.config.ts` NO se tocó.
+- Pendientes / límites honestos: la verificación en vivo de que `/invest` da 404 solo se confirma en el preview del PR (el SPA sirve el mismo HTML en cualquier ruta por `curl`); Wacko fusiona el PR él mismo.
+
 ## 📅 Actualización 27 de Noviembre, 2026 - 03:44
 
 **Ronda de corrección 23 post test dirigido del PR #82 (test 03:01–03:09 del 27 de noviembre en el teléfono de Wacko, 8 min, 7/8 PASS + regresión PASS, FAIL 1: stats del admin en 0 tras recargar; Wacko autorizó la ronda 23 03:16 — "Sí, ronda 23 con estos fixes"; trabajo directo del coordinador, sin streams paralelos porque los ítems 1 y 3 tocan el mismo Admin.tsx, 1 commit nuevo sobre la rama `fix/ronda23-2026-11-27`, sin push ni merge todavía):**

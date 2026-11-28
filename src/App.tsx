@@ -27,6 +27,7 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@/styles/android-grid.css";
+import { isFeatureEnabled } from "@/lib/features";
 import {
   BrowserRouter as Router,
   Routes,
@@ -646,11 +647,18 @@ const App = () => {
                                 path="/chat-authenticated"
                                 element={<ChatAuthenticated />}
                               />
-                              <Route
-                                path="/donations"
-                                element={<Donations />}
-                              />
-                              <Route path="/invest" element={<Invest />} />
+                              {isFeatureEnabled("investmentSection") && (
+                                <Route
+                                  path="/donations"
+                                  element={<Donations />}
+                                />
+                              )}
+                              {isFeatureEnabled("investmentSection") && (
+                                <Route
+                                  path="/invest"
+                                  element={<Invest />}
+                                />
+                              )}
                               {!import.meta.env.PROD && (
                                 <Route
                                   path="/template-demo"
@@ -662,10 +670,12 @@ const App = () => {
                                 path="/notifications"
                                 element={<Notifications />}
                               />
-                              <Route
-                                path="/investors"
-                                element={<Investors />}
-                              />
+                              {isFeatureEnabled("investmentSection") && (
+                                <Route
+                                  path="/investors"
+                                  element={<Investors />}
+                                />
+                              )}
                               <Route path="/nfts" element={<NFTs />} />
                               {/* Ronda 8 (punto 13): /404 NO existía como
                                 ruta. El ErrorBoundary raíz (main.tsx)

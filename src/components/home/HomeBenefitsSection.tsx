@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
+import { isFeatureEnabled } from "@/lib/features";
 import {
   Info,
   Briefcase,
@@ -165,32 +166,34 @@ export const HomeBenefitsSection = ({
               </CardContent>
             </Card>
 
-            {/* Donations Section */}
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <div className="flex items-center justify-center mb-4">
-                  <div className="p-3 bg-linear-to-r from-green-500 to-emerald-600 rounded-full">
-                    <DollarSign className="h-8 w-8 text-white" />
+            {/* Donations Section — oculta por el flag investmentSection */}
+            {isFeatureEnabled("investmentSection") && (
+              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+                <CardHeader>
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="p-3 bg-linear-to-r from-green-500 to-emerald-600 rounded-full">
+                      <DollarSign className="h-8 w-8 text-white" />
+                    </div>
                   </div>
-                </div>
-                <CardTitle className="text-white text-center text-xl drop-shadow-lg">
-                  Apoya el Proyecto
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-white drop-shadow-sm mb-6">
-                  Ayúdanos a crecer y mejorar la plataforma. Tu apoyo nos
-                  permite seguir innovando para la comunidad.
-                </p>
-                <Button
-                  variant="default"
-                  className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
-                  asChild
-                >
-                  <Link to="/donations">Donar Ahora</Link>
-                </Button>
-              </CardContent>
-            </Card>
+                  <CardTitle className="text-white text-center text-xl drop-shadow-lg">
+                    Apoya el Proyecto
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-white drop-shadow-sm mb-6">
+                    Ayúdanos a crecer y mejorar la plataforma. Tu apoyo nos
+                    permite seguir innovando para la comunidad.
+                  </p>
+                  <Button
+                    variant="default"
+                    className="bg-linear-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                    asChild
+                  >
+                    <Link to="/donations">Donar Ahora</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </section>

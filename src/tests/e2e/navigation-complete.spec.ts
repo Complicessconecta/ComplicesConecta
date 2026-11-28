@@ -16,7 +16,8 @@ test.describe("Navegación Completa de la Aplicación", () => {
     { path: "/legal", name: "Legal" },
     { path: "/clubs", name: "Clubs" },
     { path: "/moderators", name: "Moderators" },
-    { path: "/investors", name: "Investors" },
+    // /investors oculto tras el flag investmentSection (sección inversión
+    // / donaciones desactivada) — no debe cargar como ruta pública.
   ];
 
   routes.forEach(({ path, name }) => {

@@ -32,6 +32,8 @@ import {
   writeVisibilityLocal,
 } from "@/lib/profileVisibility";
 import { isIdentityRetainedDemo } from "@/lib/reportBlock";
+import { logger } from "@/lib/logger";
+import { welcomeTokensService } from "@/services/payments/WelcomeTokensService";
 import type { Profile } from "@/types/supabase-custom";
 
 /**
@@ -728,6 +730,23 @@ export function createLocalDemoAccount(input: LocalDemoAccountInput): {
       ...(input.partnerBirthDate ? { birthDate2: input.partnerBirthDate } : {}),
     });
   }
+
+  // Ronda 24 (bloque C): crédito de bienvenida CMPX (50, una sola vez,
+  // idempotente). Fire-and-forget: esta función es síncrona y su firma
+  // no cambia; el login demo también lo intenta y la idempotencia
+  // evita el doble crédito. Las cuentas anónimas no reciben nada.
+  void welcomeTokensService
+    .claimWelcomeCredit({
+      userId,
+      accountType: input.accountType,
+      isAnonymous: Boolean(input.isAnonymous),
+      isDemo: true,
+    })
+    .catch((error) => {
+      logger.error("No se pudo acreditar el bono de bienvenida CMPX", {
+        error,
+      });
+    });
 
   return { userId, profile };
 }

@@ -8,6 +8,7 @@ import {
   findLocalDemoAccount,
   restoreLocalDemoSession,
   seedAnonymousPrivacyDefaults,
+  isAnonymousDemoProfile,
 } from "@/lib/demo-registration";
 import {
   getAppConfig,
@@ -17,6 +18,7 @@ import {
   isProductionAdmin,
   resolveDemoAccountType,
 } from "@/lib/app-config";
+import { welcomeTokensService } from "@/services/payments/WelcomeTokensService";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -66,6 +68,32 @@ function isDemoSession(session: Session | null): boolean {
   const token = (session as { access_token?: unknown } | null)?.access_token;
   return typeof token === "string" && token.startsWith("demo-");
 }
+
+// Ronda 24 (stream A): tope a los await de autenticación del init.
+// Sin él, una red colgada deja `loading` en true para siempre y el
+// guardián `if (authLoading) return;` de Admin.tsx (ronda 22) no
+// decide nunca: «Cargando...» 60–125 s en producción y luego rebote
+// a /discover. Mismo patrón `Promise.race` que ya existe en
+// EditProfileSingle (getUser a 8 s) y ProfileDetail (consulta a 10 s).
+// Al vencer, el init cae en el catch y resuelve fail-closed a «sin
+// sesión» (nunca colgado).
+export const AUTH_SESSION_TIMEOUT_MS = 8_000;
+export const AUTH_PROFILE_TIMEOUT_MS = 10_000;
+
+const withAuthTimeout = <T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string,
+): Promise<T> =>
+  Promise.race([
+    promise,
+    new Promise<never>((_resolve, reject) =>
+      setTimeout(
+        () => reject(new Error(`Tiempo de espera agotado: ${label}`)),
+        ms,
+      ),
+    ),
+  ]);
 
 export const useAuth = () => {
   // Migración a usePersistedState para tokens y sesión
@@ -376,10 +404,11 @@ export const useAuth = () => {
   ); // Agregar dependencias correctas
 
   // Función auxiliar para determinar si usar Supabase real
-  const shouldUseRealSupabase = () => {
+  // Ronda 24: memoizada (ver isAuthenticated).
+  const shouldUseRealSupabase = useCallback(() => {
     const sessionFlags = StorageManager.getSessionFlags();
     return !sessionFlags.demo_authenticated;
-  };
+  }, []);
 
   useEffect(() => {
     if (initialized.current) return () => {};
@@ -424,7 +453,14 @@ export const useAuth = () => {
           };
 
           setUser(mockUser);
-          await loadProfile(mockUser.id); // Esperar carga completa
+          // Ronda 24: con tope (ver withAuthTimeout): si la carga del
+          // perfil demo se cuelga, el catch apaga `loading` en vez de
+          // dejar el panel en «Cargando...» para siempre.
+          await withAuthTimeout(
+            loadProfile(mockUser.id),
+            AUTH_PROFILE_TIMEOUT_MS,
+            "loadProfile (demo)",
+          ); // Esperar carga completa
           setLoading(false); // Solo después de que profile esté cargado
 
           logger.info("✅ Usuario demo inicializado:", {
@@ -452,14 +488,25 @@ export const useAuth = () => {
       // CORRECCIÓN: Esperar carga completa de sesión y perfil
       (async () => {
         try {
+          // Ronda 24: con tope (ver withAuthTimeout). Si getSession()
+          // se cuelga refrescando un token viejo, el catch apaga
+          // `loading` y se decide fail-closed a «sin sesión».
           const {
             data: { session },
-          } = await supabase.auth.getSession();
+          } = await withAuthTimeout(
+            supabase.auth.getSession(),
+            AUTH_SESSION_TIMEOUT_MS,
+            "supabase.auth.getSession",
+          );
           setSession(session);
           setUser(session?.user ?? null);
 
           if (session?.user) {
-            await loadProfile(session.user.id); // Esperar carga completa
+            await withAuthTimeout(
+              loadProfile(session.user.id),
+              AUTH_PROFILE_TIMEOUT_MS,
+              "loadProfile",
+            ); // Esperar carga completa
           }
 
           setLoading(false); // Solo después de que profile esté cargado
@@ -689,6 +736,22 @@ export const useAuth = () => {
           setUser(mockUser);
           setSession(mockSession);
           await loadProfile(demoAuth.user.id);
+          // Ronda 24 (bloque C): crédito de bienvenida CMPX (50, una
+          // sola vez, idempotente). Best-effort: en demo es solo
+          // localStorage y nunca rompe el login.
+          try {
+            await welcomeTokensService.claimWelcomeCredit({
+              userId: demoAuth.user.id,
+              accountType:
+                demoAuth.user.accountType === "couple" ? "couple" : "single",
+              isAnonymous: isAnonymousDemoProfile(demoProfileData),
+              isDemo: true,
+            });
+          } catch (error) {
+            logger.error("No se pudo acreditar el bono de bienvenida CMPX", {
+              error,
+            });
+          }
           logger.info("✅ Sesión demo iniciada", { email });
           return { user: demoAuth.user, session: demoAuth.session };
         }
@@ -827,7 +890,13 @@ export const useAuth = () => {
   };
 
   // Función para verificar si está autenticado
-  const isAuthenticated = () => {
+  // Ronda 24: memoizada con useCallback. Antes cada llamada a useAuth
+  // devolvía funciones NUEVAS y el efecto de Admin (deps
+  // isAuthenticated/isAdmin) se re-corría en cada render, lo que
+  // permitía el rebote tardío a /discover del diagnóstico. La lectura
+  // de localStorage sigue siendo fresca en cada llamada; solo la
+  // identidad de la función es estable.
+  const isAuthenticated = useCallback(() => {
     // Verificar sesión demo usando StorageManager
     const sessionFlags = StorageManager.getSessionFlags();
 
@@ -837,9 +906,10 @@ export const useAuth = () => {
 
     // Verificar sesión real
     return Boolean(effectiveUser) || Boolean(session);
-  };
+  }, [effectiveUser, session]);
 
-  const getProfileType = () => {
+  // Ronda 24: memoizado (ver isAuthenticated).
+  const getProfileType = useCallback(() => {
     // Sesión real tiene prioridad sobre flags demo obsoletos: si hay una
     // sesión de Supabase, el tipo de perfil es el real, no el del
     // `demo_user` guardado en localStorage. Sin esto, un usuario real que
@@ -874,7 +944,7 @@ export const useAuth = () => {
       return resolveDemoAccountType(parsedDemoUser) ?? "single";
     }
     return profile?.profile_type || "single";
-  };
+  }, [session, profile, demoUser]);
 
   // Función para verificar si un usuario es administrador
   // C3: la rama demo fue eliminada. Un usuario demo nunca es admin:
@@ -882,7 +952,8 @@ export const useAuth = () => {
   // y el role del perfil real cargado desde Supabase (resuelto vía
   // rpc("is_admin") en loadProfile). El JSON demo de localStorage no
   // influye en esta decisión.
-  const isAdmin = () => {
+  // Ronda 24: memoizado (ver isAuthenticated).
+  const isAdmin = useCallback(() => {
     // CRÍTICO: Verificar admin basado en EMAIL DE AUTENTICACIÓN, no perfil
     const userEmail = user?.email?.toLowerCase();
 
@@ -907,9 +978,10 @@ export const useAuth = () => {
     }
 
     return isAdminReal;
-  };
+  }, [user, profile]);
 
-  const isDemo = () => {
+  // Ronda 24: memoizado (ver isAuthenticated).
+  const isDemo = useCallback(() => {
     // Sesión real tiene prioridad: con sesión de Supabase activa no hay
     // modo demo, aunque queden flags demo obsoletos en localStorage.
     // (Ver isDemoSession: la sesión mock demo no cuenta como real.)
@@ -944,9 +1016,10 @@ export const useAuth = () => {
       (window as WindowWithDemoFlags).__demoLoggedOnce = true;
     }
     return isDemoActive;
-  };
+  }, [session, demoUser]);
 
-  const shouldUseProductionAdmin = () => {
+  // Ronda 24: memoizado (ver isAuthenticated).
+  const shouldUseProductionAdmin = useCallback(() => {
     // C3: la rama demo-admin fue eliminada. Un usuario demo nunca usa el
     // panel de producción; solo un admin real (email de producción) lo hace.
     // Si es admin real, usar panel de producción
@@ -960,16 +1033,17 @@ export const useAuth = () => {
     });
 
     return isRealAdmin;
-  };
+  }, [user]);
 
-  const isDemoMode = () => {
+  // Ronda 24: memoizado (ver isAuthenticated).
+  const isDemoMode = useCallback(() => {
     // Sesión real tiene prioridad: con sesión de Supabase activa no hay
     // modo demo, aunque queden flags demo obsoletos en localStorage.
     // (Ver isDemoSession: la sesión mock demo no cuenta como real.)
     if (session?.user && !isDemoSession(session)) return false;
     const sessionFlags = StorageManager.getSessionFlags();
     return sessionFlags.demo_authenticated;
-  };
+  }, [session]);
 
   return {
     user: effectiveUser,

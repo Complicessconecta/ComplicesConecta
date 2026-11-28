@@ -32,7 +32,6 @@ import { useAuth } from "@/features/auth/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import { safeRemoveItem, safeSetItem } from "@/lib/safe-storage";
-import { usePersistedState } from "@/hooks/usePersistedState";
 import {
   deleteActiveDemoSession,
   deleteLocalDemoAccount,
@@ -215,12 +214,10 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
     }
   };
 
-  // Estado persistente para demo
-  const [, setDemoAuthenticated] = usePersistedState<boolean>(
-    "demo_authenticated",
-    false,
-  );
-  const [, setUserType] = usePersistedState<string>("userType", "");
+  // Ronda 24: las declaraciones de `usePersistedState` para
+  // `demo_authenticated`/`userType` se eliminaron con sus setters
+  // (ver `handleDemoLogin`): solo quedaba el setter y ya no se usa.
+  // Nada más de este archivo cambia.
 
   /**
    * Ronda 11 (stream A, 1h): eliminar una cuenta demo creada
@@ -288,10 +285,14 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
       // El demo es local, nunca admin; el login real es Supabase Auth.
       await signIn(demoEmail, "", type);
 
-      // Establecer estado demo SOLO si signIn fue exitoso
-      setDemoAuthenticated(true);
-      setUserType(type);
-
+      // Ronda 24 (H3 del diagnóstico): SOLO escritura en crudo
+      // (safeSetItem), como ya hace `handleLocalAccountLogin`. Los
+      // setters de `usePersistedState` serializan con JSON.stringify
+      // y dejaban `demo_authenticated` como `"true"` ENTRECOMILLADO;
+      // si React ejecutaba ese updater DESPUÉS del safeSetItem, el
+      // valor final quedaba entrecomillado, `getSessionFlags()`
+      // (compara `=== "true"`) devolvía false y `isDemo()` false →
+      // rebote a /discover con la sesión demo «activa» en apariencia.
       // Persistir flags demo
       safeSetItem("demo_authenticated", "true", { validate: true });
       safeSetItem("userType", type, { validate: false });
@@ -323,9 +324,9 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({
         error: error instanceof Error ? error.message : String(error),
       });
 
-      // Rollback: evitar sesión demo a medias
-      setDemoAuthenticated(false);
-      setUserType("");
+      // Rollback: evitar sesión demo a medias (solo borrado en
+      // crudo; ver el comentario de arriba: nada de setters de
+      // `usePersistedState` para estas claves).
       safeRemoveItem("demo_authenticated");
       safeRemoveItem("demo_user");
       safeRemoveItem("userType");

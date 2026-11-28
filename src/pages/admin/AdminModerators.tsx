@@ -53,6 +53,28 @@ interface ModeratorRequest {
   rejection_reason?: string;
 }
 
+// Ronda 24 (stream A): mismo tope que Admin/useAuth. Sin él,
+// «Cargando moderadores...» se quedaba >60 s (preview y producción)
+// cuando una consulta a Supabase se colgaba en red. Al vencer, la
+// carga resuelve con error VISIBLE (banner) en vez de colgarse.
+// Mismo patrón `Promise.race` que EditProfileSingle (8 s) y
+// ProfileDetail (10 s).
+export const MODERATORS_FETCH_TIMEOUT_MS = 15_000;
+
+const withFetchTimeout = <T,>(promise: Promise<T>, label: string): Promise<T> =>
+  Promise.race([
+    promise,
+    new Promise<never>((_resolve, reject) =>
+      setTimeout(
+        () =>
+          reject(
+            new Error(`Tiempo de espera agotado al cargar ${label} (15 s)`),
+          ),
+        MODERATORS_FETCH_TIMEOUT_MS,
+      ),
+    ),
+  ]);
+
 const AdminModerators = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -60,6 +82,10 @@ const AdminModerators = () => {
   const [moderators, setModerators] = useState<Moderator[]>([]);
   const [requests, setRequests] = useState<ModeratorRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  // Ronda 24: error de carga visible en el panel (no solo toast, que
+  // en el test y en webview puede no verse). Se pone cuando una de
+  // las dos consultas falla o vence su tope.
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("moderators");
 
   // Formulario para crear moderador
@@ -87,15 +113,33 @@ const AdminModerators = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      await Promise.all([fetchModerators(), fetchRequests()]);
+      setLoadError(null);
+      // Ronda 24: tope global. Cada consulta ya tiene su propio tope
+      // abajo, pero si el conjunto se cuelga por otro camino, esta
+      // carrera apaga la carga con error visible en vez de dejar
+      // «Cargando moderadores...» para siempre.
+      const [moderatorsOk, requestsOk] = await withFetchTimeout(
+        Promise.all([fetchModerators(), fetchRequests()]),
+        "los datos de moderadores",
+      );
+      if (!moderatorsOk || !requestsOk) {
+        setLoadError(
+          "No se pudieron cargar los datos de moderadores. Reintenta más tarde.",
+        );
+      }
     } catch (error) {
       logger.error("? Error al cargar datos:", { error });
+      setLoadError(
+        error instanceof Error
+          ? error.message
+          : "No se pudieron cargar los datos de moderadores.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchModerators = async () => {
+  const fetchModerators = async (): Promise<boolean> => {
     try {
       if (!supabase) {
         logger.error("Supabase no est disponible");
@@ -104,17 +148,27 @@ const AdminModerators = () => {
           title: "Error",
           description: "Supabase no est disponible",
         });
-        return;
+        return false;
       }
 
-      const { data, error } = await (supabase as any)
-        .from("moderators")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // Ronda 24: tope propio a la consulta (ver withFetchTimeout).
+      // Tipo explícito: el builder de Supabase es un thenable, no un
+      // Promise, y sin él T se infiere como unknown (TS2339).
+      const { data, error } = await withFetchTimeout<{
+        data: Moderator[] | null;
+        error: { message: string } | null;
+      }>(
+        (supabase as any)
+          .from("moderators")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        "los moderadores",
+      );
 
       if (error) throw error;
       setModerators(data || []);
       logger.info("? Moderadores cargados:", { count: data?.length || 0 });
+      return true;
     } catch (error: any) {
       logger.error("? Error al cargar moderadores:", { error: error.message });
       toast({
@@ -122,10 +176,11 @@ const AdminModerators = () => {
         title: "Error al cargar moderadores",
         description: error.message,
       });
+      return false;
     }
   };
 
-  const fetchRequests = async () => {
+  const fetchRequests = async (): Promise<boolean> => {
     try {
       if (!supabase) {
         logger.error("Supabase no est disponible");
@@ -134,17 +189,27 @@ const AdminModerators = () => {
           title: "Error",
           description: "Supabase no est disponible",
         });
-        return;
+        return false;
       }
 
-      const { data, error } = await (supabase as any)
-        .from("moderator_requests")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // Ronda 24: tope propio a la consulta (ver withFetchTimeout).
+      // Tipo explícito: el builder de Supabase es un thenable, no un
+      // Promise, y sin él T se infiere como unknown (TS2339).
+      const { data, error } = await withFetchTimeout<{
+        data: ModeratorRequest[] | null;
+        error: { message: string } | null;
+      }>(
+        (supabase as any)
+          .from("moderator_requests")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        "las solicitudes de moderador",
+      );
 
       if (error) throw error;
       setRequests(data || []);
       logger.info("? Solicitudes cargadas:", { count: data?.length || 0 });
+      return true;
     } catch (error: any) {
       logger.error("? Error al cargar solicitudes:", { error: error.message });
       toast({
@@ -152,6 +217,7 @@ const AdminModerators = () => {
         title: "Error al cargar solicitudes",
         description: error.message,
       });
+      return false;
     }
   };
 
@@ -403,6 +469,17 @@ const AdminModerators = () => {
 
       {/* Content */}
       <div className="relative z-10 min-h-screen pt-20">
+        {/* Ronda 24: error de carga visible (banner, no solo toast):
+            con el tope, una red colgada resuelve aquí en ~15 s. */}
+        {loadError && (
+          <div role="alert" className="max-w-7xl mx-auto px-3 sm:px-6 pt-4">
+            <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
+              <p className="text-red-200 font-medium">
+                Error al cargar moderadores: {loadError}
+              </p>
+            </div>
+          </div>
+        )}
         {/* Header */}
         <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 p-3 sm:p-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between max-w-7xl mx-auto gap-3 sm:gap-0">

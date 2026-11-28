@@ -1,5 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { logger } from "@/lib/logger";
+import { tokenService } from "@/services/payments/TokenService";
+import { PRIVATE_CHAT_CREATE_COST_CMPX } from "@/services/payments/WelcomeTokensService";
 
 // Tipos para salas de chat
 export interface ChatRoom {
@@ -46,10 +48,15 @@ export class ChatRoomService {
    * Crear una nueva sala de chat privada
    * @param name Nombre de la sala
    * @param description Descripción de la sala
-   * @param tokenCost Costo en tokens para acceder
+   * @param tokenCost Costo en tokens para acceder (lo fija el creador;
+   *   se cobra al UNIRSE, vía `deductTokensForAccess`. NO es el costo
+   *   de creación: ese es `PRIVATE_CHAT_CREATE_COST_CMPX` y se cobra
+   *   aquí, al creador, antes del insert. Se conserva el default 1
+   *   del código.)
    * @param maxMembers Número máximo de miembros
    * @param userId ID del usuario que crea la sala
-   * @returns Sala de chat creada
+   * @returns Sala de chat creada, o null si no se pudo crear (incluido
+   *   saldo insuficiente para la tarifa de creación de 25 CMPX)
    */
   static async createPrivateRoom(
     name: string,
@@ -61,6 +68,25 @@ export class ChatRoomService {
     try {
       if (!supabase) {
         logger.error("Supabase no está disponible");
+        return null;
+      }
+
+      // Ronda 24, stream C — crear un chat privado cuesta 25 CMPX
+      // (tarifa de creación, distinta del `tokenCost` de acceso por
+      // sala). Sin saldo, la sala NO se crea: el llamador
+      // (`PrivateRoomManagement`, solo premium) recibe null.
+      const creationPaid = await tokenService.spendTokens(
+        userId,
+        "cmpx",
+        PRIVATE_CHAT_CREATE_COST_CMPX,
+        "Creación de chat privado",
+        { reason: "private_chat_create" },
+      );
+      if (!creationPaid) {
+        logger.warn("Saldo insuficiente para crear sala privada", {
+          userId,
+          cost: PRIVATE_CHAT_CREATE_COST_CMPX,
+        });
         return null;
       }
 
@@ -301,12 +327,18 @@ export class ChatRoomService {
     userId: string,
     cost: number,
   ): Promise<boolean> {
+    // Ronda 24, stream C: antes era un stub que siempre devolvía
+    // true ("TODO: Integrar con TokenService real") — el acceso a
+    // salas privadas era gratis aunque la sala tuviera `token_cost`.
+    // Ahora debita de verdad de `user_token_balances` vía TokenService.
     try {
-      // Aquí se integraría con el sistema de tokens CMPX existente
-      // Por ahora, simulamos la deducción
-      logger.info("Deduciendo tokens por acceso", { userId, cost });
-      // TODO: Integrar con TokenService real
-      return true;
+      return await tokenService.spendTokens(
+        userId,
+        "cmpx",
+        cost,
+        "Acceso a sala privada",
+        { reason: "private_room_access" },
+      );
     } catch (error) {
       logger.error("Error deduciendo tokens:", { error });
       return false;

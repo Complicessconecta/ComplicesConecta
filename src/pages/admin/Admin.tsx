@@ -88,6 +88,15 @@ const demoLastActiveMsAgo = (lastActive: string): number | null => {
   return n * unit;
 };
 
+// Ronda 24 (stream A): topes del panel. Sin ellos, una hidratación
+// de sesión o una consulta Supabase colgada deja el panel en
+// «Cargando...» para siempre (diagnóstico post-merge PR #83):
+// ADMIN_AUTH_WAIT_TIMEOUT_MS es lo máximo que el efecto espera a
+// `authLoading` antes de decidir con el estado disponible;
+// ADMIN_LOAD_TIMEOUT_MS es el tope global de la carga real.
+export const ADMIN_AUTH_WAIT_TIMEOUT_MS = 12_000;
+export const ADMIN_LOAD_TIMEOUT_MS = 15_000;
+
 export const Admin = () => {
   const {
     isAdmin,
@@ -114,6 +123,30 @@ export const Admin = () => {
   // cualquier orden, dejando el panel en ceros con las listas
   // vacías. Con el guardián, los re-corridos del efecto son no-op.
   const adminLoadedRef = useRef(false);
+  // Ronda 24 (stream A): «ya decidí». Los refs de carga solo
+  // protegían las llamadas; las ramas de redirección (/auth,
+  // /discover) NO tenían guardián: cualquier re-corrido del efecto
+  // en el que `isDemo()` ya valiera false (sesión real asentada
+  // tarde) rebotaba a /discover aunque el acceso ya estuviera
+  // concedido. Una vez decidida la concesión (demo o admin real) o
+  // la primera redirección, los re-corridos posteriores son no-op.
+  // Supuesto deliberado: la concesión no se re-valida si la sesión
+  // hidrata tarde; la rama demo solo muestra datos demo locales.
+  const decisionRef = useRef(false);
+  // Ronda 24 (stream A): `authLoading` vencido. Si la sesión no se
+  // restauró en ~12 s, el efecto decide con el estado disponible en
+  // vez de esperar indefinidamente (la ronda 22 asumía que
+  // `authLoading` siempre resolvía rápido).
+  const [authTimedOut, setAuthTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading) return;
+    const t = setTimeout(
+      () => setAuthTimedOut(true),
+      ADMIN_AUTH_WAIT_TIMEOUT_MS,
+    );
+    return () => clearTimeout(t);
+  }, [authLoading]);
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [stats, setStats] = useState<AppStats>({
@@ -153,7 +186,16 @@ export const Admin = () => {
     // y sin secciones inferiores, persistente en los 3 intentos del
     // test). Con sesión real, isDemo() ya vale false al asentarse.
     // Mientras authLoading, el panel sigue en «Cargando...».
-    if (authLoading) {
+    // Ronda 24: salvo que el tope propio haya vencido
+    // (authTimedOut): entonces se decide con el estado disponible
+    // en vez de esperar indefinidamente.
+    if (authLoading && !authTimedOut) {
+      return;
+    }
+
+    // Una decisión ya tomada (concesión o redirección) no se
+    // re-decide: un flip tardío de `isDemo()` no rebota.
+    if (decisionRef.current) {
       return;
     }
 
@@ -166,6 +208,7 @@ export const Admin = () => {
     // El gate real (isAdmin() + toast + /discover) queda solo para
     // sesión NO demo.
     if (demoActive) {
+      decisionRef.current = true;
       if (!demoLoadedRef.current) {
         demoLoadedRef.current = true;
         loadDemoAdminData();
@@ -177,12 +220,14 @@ export const Admin = () => {
     // "admin" en localStorage ya no redirige a /admin-production ni concede
     // acceso: solo la autenticación real + isAdmin() deciden.
     if (!isAuthenticated()) {
+      decisionRef.current = true;
       navigate("/auth");
       return;
     }
 
     // Check admin permissions for real users
     if (!isAdmin()) {
+      decisionRef.current = true;
       toast({
         title: "Acceso Denegado",
         description: "No tienes permisos de administrador",
@@ -195,10 +240,19 @@ export const Admin = () => {
     // Load admin data for authenticated admin users (una sola vez:
     // ver adminLoadedRef arriba).
     if (!adminLoadedRef.current) {
+      decisionRef.current = true;
       adminLoadedRef.current = true;
       loadAdminData();
     }
-  }, [navigate, toast, isAuthenticated, isAdmin, demoActive, authLoading]);
+  }, [
+    navigate,
+    toast,
+    isAuthenticated,
+    isAdmin,
+    demoActive,
+    authLoading,
+    authTimedOut,
+  ]);
 
   // Ronda 21 (FAIL 2b): panel demo con datos demo/respaldo locales —
   // lista de perfiles demo local, sin llamadas a Supabase que cuelguen.
@@ -248,11 +302,30 @@ export const Admin = () => {
     setLoading(true);
     setError(null);
     try {
-      await Promise.all([
-        loadProfiles(),
-        _loadStats(),
-        _loadFAQs(),
-        _loadInvitations(),
+      // Ronda 24: tope global propio. `loadProfiles`/`_loadStats`
+      // tragan sus errores sin re-lanzar, así que sin esta carrera
+      // una consulta colgada dejaba el panel en «Cargando...» para
+      // siempre (la ronda 22 quitó los `finally` que lo apagaban).
+      // Al vencer, el catch pone el error visible y el finally
+      // apaga la carga.
+      await Promise.race([
+        Promise.all([
+          loadProfiles(),
+          _loadStats(),
+          _loadFAQs(),
+          _loadInvitations(),
+        ]),
+        new Promise<never>((_resolve, reject) =>
+          setTimeout(
+            () =>
+              reject(
+                new Error(
+                  "Tiempo de espera agotado al cargar los datos del panel de administración (15 s)",
+                ),
+              ),
+            ADMIN_LOAD_TIMEOUT_MS,
+          ),
+        ),
       ]);
     } catch (error: any) {
       logger.error("Error loading admin data:", { error: String(error) });
@@ -452,7 +525,19 @@ export const Admin = () => {
     setSelectedProfile(null);
   };
 
-  if (!isAuthenticated || !isAdmin) {
+  // Ronda 24: guardián muerto corregido — antes comparaba las
+  // FUNCIONES (`!isAuthenticated || !isAdmin`, siempre falso porque
+  // una función es truthy) y nunca se ejecutaba. Ahora se LLAMAN.
+  // Solo aplica con la carga ya resuelta y fuera de demo: durante
+  // `loading`/`authLoading` el panel muestra «Cargando...» y el
+  // efecto es el que decide (y navega); este render es el respaldo
+  // por si la navegación no desmonta el componente.
+  if (
+    !loading &&
+    !authLoading &&
+    !demoActive &&
+    (!isAuthenticated() || !isAdmin())
+  ) {
     return (
       <div className="min-h-screen bg-linear-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="w-full max-w-md">

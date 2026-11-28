@@ -25,7 +25,15 @@ const ToastViewport = React.forwardRef<
       // (max-w-md). El fondo sólido según tema ya lo pone el Toast
       // (`bg-background text-foreground`); los toasts siguen siendo
       // transitorios (auto-cierre 3.5 s, ver hooks/useToast.ts).
-      "flex w-full max-w-md ml-auto flex-col gap-2 px-4 pt-2 empty:hidden",
+      // RONDA 28 (bloque M): `relative z-[60]` — el viewport sigue en
+      // flujo (no tapa contenido, no es `fixed`), pero PINTA POR ENCIMA
+      // de los overlays fijos z-50 (el modal "Chat Íntimo" del dock).
+      // Antes un toast disparado desde dentro del modal (p. ej. el
+      // "Sin galería privada" de Galería en sala pública) se renderizaba
+      // DEBAJO del panel del modal y era invisible: el usuario veía que
+      // el botón "no hacía nada". z-60 queda por debajo de los diálogos
+      // Radix (z-100) y de los takeovers z-9999, a propósito.
+      "flex w-full max-w-md ml-auto flex-col gap-2 px-4 pt-2 empty:hidden relative z-[60]",
       className,
     )}
     {...props}

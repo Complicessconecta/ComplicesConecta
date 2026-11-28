@@ -113,9 +113,19 @@ const TokensInfo = lazyWithDefault(() => import("@/pages/TokensInfo"));
 const TokensPrivacy = lazyWithDefault(() => import("@/pages/TokensPrivacy"));
 const TokensTerms = lazyWithDefault(() => import("@/pages/TokensTerms"));
 const TokensLegal = lazyWithDefault(() => import("@/pages/TokensLegal"));
-const AIControlCenter = lazyWithDefault(
-  () => import("@/pages/AIControlCenter"),
-);
+// RONDA 28 (bloque N): /ai-help ya NO es un `lazy` pelado. El icono
+// ✨ ("IA Ayuda") del dock abría la página y se quedaba en PageLoader
+// ("Cargando...") sin resolver (captura 433017_16, 04:09 CST): misma
+// exposición al retry perdido del Suspense que /profiles (ronda 27),
+// /requests (ronda 22) y /admin/dashboard (ronda 21) — el chunk de
+// AIControlCenter arrastra WebLLM (el más pesado de los lazy) y sin
+// tope el loader no tenía salida. ImperativeLazyRoute carga el chunk
+// con tope de 15 s y error con Reintentar; el importador es const a
+// nivel de módulo (identidad estable), igual que importProfilesChunk.
+// No hay rama demo que añadir: la página es estática + LegalChatBox
+// (IA local, sin Supabase); el modelo se descarga en segundo plano
+// dentro de la tarjeta, con su propio estado de error.
+const importAiHelpChunk = () => import("@/pages/AIControlCenter");
 
 // Admin pages - separate chunk
 // RONDA 21 (stream A, FAIL 2): /admin/dashboard ya NO es un `lazy`
@@ -450,7 +460,15 @@ const App = () => {
                               />
                               <Route
                                 path="/ai-help"
-                                element={<AIControlCenter />}
+                                element={
+                                  <ImperativeLazyRoute
+                                    importer={importAiHelpChunk}
+                                    chunkName="pages-ai-help"
+                                    errorTitle="No se pudo cargar la IA Ayuda"
+                                    fallbackPath="/"
+                                    fallbackLabel="Volver al inicio"
+                                  />
+                                }
                               />
                               <Route path="/shop" element={<Shop />} />
                               <Route

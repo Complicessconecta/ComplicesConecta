@@ -60,6 +60,7 @@ import {
   getDemoWalletBalance,
   DEMO_WALLET_CHANGED_EVENT,
 } from "@/lib/demo-wallet";
+import { saveDemoVipRequest } from "@/lib/demo-vip";
 import { cn } from "@/shared/lib/cn";
 import {
   Tooltip,
@@ -259,6 +260,18 @@ function ProfileCouple() {
   const [privateGalleryOpen, setPrivateGalleryOpen] = useState(false);
   // Espejo de Single: modal VIP de la sección "Próximas experiencias".
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
+  // RONDA 28 (bloque O3): estado de la solicitud VIP (espejo de
+  // ProfileSingle). "Solicitar Acceso" no tenía onClick (botón
+  // muerto). En demo guarda una solicitud SIMULADA en localStorage y
+  // muestra confirmación; en real no hay backend para reservar una
+  // experiencia VIP de plataforma y el modal lo dice claro.
+  const [vipRequestState, setVipRequestState] = useState<
+    "idle" | "demo-saved" | "real-unavailable"
+  >("idle");
+  const closeVipModal = () => {
+    setIsVipModalOpen(false);
+    setVipRequestState("idle");
+  };
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   // PIN persistente (full test 2026-11-24): el desbloqueo de la galería
   // privada con PIN 1234 (demo) se perdía al navegar porque el efecto de
@@ -405,6 +418,21 @@ function ProfileCouple() {
       (typeof window !== "undefined" &&
         window.localStorage.getItem("demo_authenticated") === "true")) &&
     getProfileType() === "couple";
+
+  // RONDA 28 (bloque O3): "Solicitar Acceso" del modal VIP no tenía
+  // onClick (botón muerto). Va AQUÍ, después de `isDemoMode`, para no
+  // leer la const antes de inicializarse. En demo guarda una solicitud
+  // SIMULADA en localStorage (ver src/lib/demo-vip.ts); en real no hay
+  // backend para reservar una experiencia VIP de plataforma y el modal
+  // lo dice claro (próximamente).
+  const handleVipRequest = () => {
+    if (isDemoMode) {
+      saveDemoVipRequest("profile-couple");
+      setVipRequestState("demo-saved");
+    } else {
+      setVipRequestState("real-unavailable");
+    }
+  };
 
   /**
    * Ronda 11 (stream A, 1f): sincronizar `privateImageAccess` con la
@@ -2251,9 +2279,16 @@ function ProfileCouple() {
               </CardContent>
             </Card>
 
-            {/* Sección Blockchain para Parejas - Solo para perfil propio */}
+            {/* Sección Blockchain para Parejas - Solo para perfil propio.
+                RONDA 28 (bloque F): en tema oscuro el gradiente
+                `from-fuchsia-600/20 to-purple-600/20` (20 % opaco) se
+                pintaba SOBRE la base `bg-white/80`, que seguía activa —
+                el resultado era lavanda claro con texto blanco
+                (`dark:text-white`), ilegible. El gradiente oscuro ahora
+                es opaco y cubre la base blanca. En tema claro no cambia
+                nada (fondo blanco/80 + texto slate-900). */}
             {isOwnProfile && (
-              <Card className="bg-white/80 dark:bg-linear-to-br dark:from-fuchsia-600/20 dark:to-purple-600/20 backdrop-blur-md border-slate-200 dark:border-fuchsia-400/30 text-slate-900 dark:text-white mt-6">
+              <Card className="bg-white/80 dark:bg-linear-to-br dark:from-fuchsia-950 dark:to-purple-950 backdrop-blur-md border-slate-200 dark:border-fuchsia-400/30 text-slate-900 dark:text-white mt-6">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Wallet className="w-5 h-5 text-fuchsia-400" />
@@ -2473,34 +2508,78 @@ function ProfileCouple() {
                   <ComplianceSignupForm />
                   <div className="space-y-4">
                     <FileUpload />
-                    <Modal
-                      isOpen={isVipModalOpen}
-                      onClose={() => setIsVipModalOpen(false)}
-                    >
+                    <Modal isOpen={isVipModalOpen} onClose={closeVipModal}>
                       <ModalBody>
                         <ModalContent>
                           <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-8">
                             Reserva tu Experiencia VIP
                           </h4>
-                          <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
-                            <p className="text-center">
-                              Accede a eventos exclusivos, fiestas privadas y
-                              matchmaking prioritario.
-                            </p>
-                          </div>
-                          {/* Mismo defecto que el modal de Mint de Single
-                            (punto 5): el footer flotaba fuera de la caja. */}
-                          <ModalFooter className="gap-4">
-                            <button
-                              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-                              onClick={() => setIsVipModalOpen(false)}
-                            >
-                              Cancelar
-                            </button>
-                            <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
-                              Solicitar Acceso
-                            </button>
-                          </ModalFooter>
+                          {vipRequestState === "idle" ? (
+                            <>
+                              <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
+                                <p className="text-center">
+                                  Accede a eventos exclusivos, fiestas privadas
+                                  y matchmaking prioritario.
+                                </p>
+                                {isDemoMode && (
+                                  <p className="text-center text-xs text-amber-300">
+                                    Demo: la solicitud es simulada y se guarda
+                                    solo en este dispositivo, sin reserva real
+                                    ni cargo.
+                                  </p>
+                                )}
+                              </div>
+                              {/* Mismo defecto que el modal de Mint de Single
+                                (punto 5): el footer flotaba fuera de la caja. */}
+                              <ModalFooter className="gap-4">
+                                <button
+                                  className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                                  onClick={closeVipModal}
+                                >
+                                  Cancelar
+                                </button>
+                                <button
+                                  className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
+                                  onClick={handleVipRequest}
+                                >
+                                  Solicitar Acceso
+                                </button>
+                              </ModalFooter>
+                            </>
+                          ) : (
+                            <div className="py-6 space-y-4 text-center">
+                              {vipRequestState === "demo-saved" ? (
+                                <>
+                                  <p className="font-semibold text-green-300">
+                                    Solicitud demo registrada
+                                  </p>
+                                  <p className="text-sm text-neutral-300">
+                                    Esto es una simulación: no se hizo ninguna
+                                    reserva real ni hay cargo. La solicitud
+                                    quedó guardada solo en este dispositivo.
+                                  </p>
+                                </>
+                              ) : (
+                                <>
+                                  <p className="font-semibold text-amber-300">
+                                    Reservas VIP próximamente
+                                  </p>
+                                  <p className="text-sm text-neutral-300">
+                                    Las reservas de experiencias VIP aún no
+                                    están habilitadas: se activarán cuando el
+                                    evento se publique. No se envió ninguna
+                                    solicitud.
+                                  </p>
+                                </>
+                              )}
+                              <button
+                                className="px-4 py-2 bg-purple-600 text-white text-sm rounded-md hover:bg-purple-700"
+                                onClick={closeVipModal}
+                              >
+                                Cerrar
+                              </button>
+                            </div>
+                          )}
                         </ModalContent>
                       </ModalBody>
                     </Modal>

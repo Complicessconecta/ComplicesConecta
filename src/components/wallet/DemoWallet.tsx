@@ -39,6 +39,7 @@ import {
   getDemoWalletBalance,
   DEMO_WALLET_CHANGED_EVENT,
 } from "@/lib/demo-wallet";
+import { WelcomeCreditBanner } from "@/components/wallet/WelcomeCreditBanner";
 
 /**
  * Interfaz para NFT mock
@@ -345,6 +346,13 @@ export function DemoWallet({
 
   return (
     <div className="space-y-6">
+      {/* Ronda 28 — banner persistente del crédito de bienvenida
+          +50 CMPX: si el toast no se mostró, el usuario VE su
+          crédito aquí, en la billetera, hasta descartarlo. Solo
+          aparece si la marca persistente sigue presente tras la
+          ventana del toast; nunca duplica un toast mostrado y nunca
+          en reentrada o anonymous (ver WelcomeCreditBanner). */}
+      <WelcomeCreditBanner />
       {/* Header de Wallet */}
       {/* Ronda 15 (stream C): el gradiente era translúcido
           (`from-purple-900/40 to-blue-900/40`): en tema claro el fondo

@@ -337,7 +337,10 @@ describe("F3: enviar solicitud de amistad actualiza el botón al instante", () =
 /* F4 — interruptores de /settings visibles y filas en el perfil       */
 /* ------------------------------------------------------------------ */
 describe("F4: los 6 ajustes de privacidad tienen interruptor visible", () => {
-  it("PrivacySettings renderiza los 6 interruptores con color explícito", async () => {
+  // RONDA 28 (bloque J): "Bloquear capturas de pantalla" ya no es una
+  // opción en /settings (nativo y siempre activo; la explicación vive en
+  // el FAQ). Quedan 5 interruptores.
+  it("PrivacySettings renderiza los 5 interruptores con color explícito (sin bloqueo de capturas)", async () => {
     vi.doMock("@/features/auth/useAuth", () => ({
       useAuth: () => ({ user: { id: "user-1" } }),
     }));
@@ -353,13 +356,15 @@ describe("F4: los 6 ajustes de privacidad tienen interruptor visible", () => {
       "Mostrar distancia",
       "Mostrar edad",
       "Aprobar matches automáticamente",
-      "Bloquear capturas de pantalla",
       "Modo incógnito",
     ]) {
       expect(screen.getByText(label)).toBeTruthy();
     }
+    expect(
+      screen.queryByText("Bloquear capturas de pantalla"),
+    ).not.toBeInTheDocument();
     const switches = container.querySelectorAll('[role="switch"]');
-    expect(switches.length).toBe(6);
+    expect(switches.length).toBe(5);
     // El Switch compartido usa bg-primary/bg-input/bg-background
     // (canales HSL sin hsl() → inválido → pista invisible). Las
     // secciones de perfil ya lo resuelven con clases explícitas; aquí

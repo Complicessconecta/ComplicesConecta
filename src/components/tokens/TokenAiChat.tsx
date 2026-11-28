@@ -75,10 +75,12 @@ export const TokenAiChat: React.FC = () => {
       return "Tu colección de NFTs está limitada a 4 espacios en esta versión beta. Los NFTs son generados aleatoriamente y tienen diferentes rarezas: Común, Raro, Épico y Legendario.";
     }
     if (q.includes("staking") || q.includes("invertir")) {
-      return 'El Staking te permite bloquear tus tokens CMPX para ganar un rendimiento anual (APY). Revisa la sección de "Staking" para ver las opciones disponibles.';
+      // RONDA 28 (bloque O4): sin prometer APY — el staking llega con
+      // la blockchain (próximamente) y no hay ningún APY vigente.
+      return "El staking de GTK llegará próximamente, cuando se active la blockchain. Hoy no hay ningún rendimiento (APY) vigente: los niveles se anunciarán entonces.";
     }
     if (q.includes("cmpx") || q.includes("gtk")) {
-      return "CMPX es nuestro token de utilidad principal. GTK es el token de gobernanza. Ambos son esenciales para el ecosistema Cómplices.";
+      return "CMPX es nuestro token de uso diario dentro de la app. GTK es el token de blockchain para inversión y staking (próximamente). Ambos son parte del ecosistema Cómplices.";
     }
     if (q.includes("ayuda") || q.includes("opciones")) {
       return "Puedo ayudarte con información sobre: \n- Tu balance de tokens\n- Tu colección NFT\n- Cómo hacer staking\n- Para qué sirven los tokens CMPX y GTK";

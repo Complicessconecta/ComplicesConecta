@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import {
   Card,
@@ -18,6 +18,12 @@ import {
   loadSettingsStateRemote,
   saveSettingsState,
 } from "@/components/settings/settingsStorage";
+// RONDA 28 (bloque L): el rótulo de precisión usa el mapeo único de
+// S2Service (getCellArea + formatCellAreaKm2), no un ternario local:
+// el ternario tenía solo 3 cubetas para 11 niveles (13 y 15 mostraban
+// el mismo "~1km²", 16–20 el mismo "~0.1km²") y contradecía a las
+// etiquetas de extremos (nivel 20: ~0.1 aquí vs ~0.01 allá).
+import { s2Service, formatCellAreaKm2 } from "@/services/geo/S2Service";
 
 const DEFAULT_LOCATION = {
   search_radius: 25,
@@ -26,7 +32,20 @@ const DEFAULT_LOCATION = {
   precise_location: true,
   location_history: false,
   s2_level: 15,
-  geolocation_enabled: true,
+  // RONDA 28 (bloque K): `geolocation_enabled` ELIMINADO — la
+  // geolocalización no es una opción que se pueda quitar: es parte
+  // nativa del diseño (matchs, clubs, distancias) y poder desactivarla
+  // genera desconfianza. En escritorio está activa siempre. Lo que sí
+  // decide el usuario es la PRECISIÓN (nivel S2) y el radio.
+  // RONDA 28 (bloque I-ampliación): la última ubicación detectada y el
+  // rechazo del permiso se persisten — antes vivían solo en la memoria
+  // de useGeolocation y se perdían al cambiar de pestaña (Radix
+  // desmonta el TabsContent inactivo) o recargar: el resultado
+  // "aparecía y desaparecía".
+  last_latitude: null as number | null,
+  last_longitude: null as number | null,
+  last_location_at: null as number | null,
+  location_denied: false,
 };
 
 export const LocationSettings = () => {
@@ -49,10 +68,27 @@ export const LocationSettings = () => {
     DEFAULT_LOCATION.location_history,
   );
   const [s2Level, setS2Level] = useState([DEFAULT_LOCATION.s2_level]); // Nivel de precisión S2 (10-20)
-  const [geolocationEnabled, setGeolocationEnabled] = useState(
-    DEFAULT_LOCATION.geolocation_enabled,
-  );
-  const { location, error, isLoading, getCurrentLocation } = useGeolocation();
+  // RONDA 28 (bloque I-ampliación): último resultado persistido — se
+  // muestra aunque el hook aún no tenga ubicación en esta sesión.
+  const [lastLocation, setLastLocation] = useState<{
+    latitude: number;
+    longitude: number;
+    at: number;
+  } | null>(null);
+  const [locationDenied, setLocationDenied] = useState(false);
+  // RONDA 28: red de seguridad si el navegador no responde (p. ej. el
+  // diálogo de permiso quedó pendiente: getCurrentPosition no resuelve,
+  // no da error ni agota el timeout mientras el permiso está pendiente).
+  const [detectionStuck, setDetectionStuck] = useState(false);
+  const stuckTimerRef = useRef<number | null>(null);
+  const {
+    location,
+    error,
+    isLoading,
+    getCurrentLocation,
+    startWatchingLocation,
+    stopWatchingLocation,
+  } = useGeolocation();
 
   // Cargar los valores guardados (localStorage en demo, BD en real).
   // Antes el estado siempre arrancaba en los defaults y Guardar solo
@@ -68,7 +104,18 @@ export const LocationSettings = () => {
       setPreciseLocation(stored.precise_location);
       setLocationHistory(stored.location_history);
       setS2Level([stored.s2_level]);
-      setGeolocationEnabled(stored.geolocation_enabled);
+      if (
+        stored.last_latitude != null &&
+        stored.last_longitude != null &&
+        stored.last_location_at != null
+      ) {
+        setLastLocation({
+          latitude: stored.last_latitude,
+          longitude: stored.last_longitude,
+          at: stored.last_location_at,
+        });
+      }
+      setLocationDenied(stored.location_denied === true);
       setLoaded(true);
     });
     return () => {
@@ -76,10 +123,80 @@ export const LocationSettings = () => {
     };
   }, [user?.id, loaded]);
 
+  // RONDA 28 (bloque I-ampliación): persistir el resultado EN CUANTO
+  // llega — no esperar a Guardar. La ubicación detectada y el rechazo
+  // del permiso se guardan aquí mismo; si no, el resultado solo vive
+  // en la memoria del hook y se pierde al cambiar de pestaña.
+  useEffect(() => {
+    if (!loaded || !user?.id) return;
+    if (location) {
+      const at = Date.now();
+      setLastLocation({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        at,
+      });
+      setLocationDenied(false);
+      void saveSettingsState(user.id, {
+        last_latitude: location.latitude,
+        last_longitude: location.longitude,
+        last_location_at: at,
+        location_denied: false,
+      });
+    }
+  }, [location, loaded, user?.id]);
+
+  useEffect(() => {
+    if (!loaded || !user?.id) return;
+    if (error && error.includes("denegado")) {
+      setLocationDenied(true);
+      void saveSettingsState(user.id, { location_denied: true });
+    }
+  }, [error, loaded, user?.id]);
+
+  // RONDA 28: si la detección no resuelve en 15 s (más que el timeout
+  // de 10 s de getCurrentPosition), el navegador no respondió — decirlo
+  // en vez de dejar el "Detectando..." colgado para siempre.
+  useEffect(() => {
+    if (!isLoading) {
+      if (stuckTimerRef.current !== null) {
+        window.clearTimeout(stuckTimerRef.current);
+        stuckTimerRef.current = null;
+      }
+      setDetectionStuck(false);
+      return;
+    }
+    stuckTimerRef.current = window.setTimeout(
+      () => setDetectionStuck(true),
+      15000,
+    );
+    return () => {
+      if (stuckTimerRef.current !== null) {
+        window.clearTimeout(stuckTimerRef.current);
+        stuckTimerRef.current = null;
+      }
+    };
+  }, [isLoading]);
+
+  // RONDA 28 (bloque I): "Detección automática" antes solo cambiaba el
+  // booleano — el nombre prometía actualizar la ubicación y nunca lo
+  // hacía (startWatchingLocation no se llamaba en ningún sitio). Ahora
+  // enciende/apaga el seguimiento real del hook.
+  const handleAutoDetectChange = (value: boolean) => {
+    setAutoDetectLocation(value);
+    if (value) {
+      startWatchingLocation();
+    } else {
+      stopWatchingLocation();
+    }
+  };
+
   const s2LevelValue = s2Level[0] ?? 15;
 
   const handleLocationPermission = async () => {
-    setAutoDetectLocation(true);
+    // Detectar también enciende la detección automática (comportamiento
+    // original): a partir de ahora la ubicación se actualiza sola.
+    handleAutoDetectChange(true);
     await getCurrentLocation();
   };
 
@@ -91,11 +208,22 @@ export const LocationSettings = () => {
       precise_location: preciseLocation,
       location_history: locationHistory,
       s2_level: s2Level[0],
-      geolocation_enabled: geolocationEnabled,
+      last_latitude: lastLocation?.latitude ?? null,
+      last_longitude: lastLocation?.longitude ?? null,
+      last_location_at: lastLocation?.at ?? null,
+      location_denied: locationDenied,
     };
     try {
       logger.info("Guardando configuración de ubicación:", patch);
-      await saveSettingsState(user?.id, patch);
+      const saved = await saveSettingsState(user?.id, patch);
+      if (!saved) {
+        toast({
+          title: "Error",
+          description: "No se pudo guardar: debes estar autenticado",
+          variant: "destructive",
+        });
+        return;
+      }
       logger.info("✅ Configuración de ubicación guardada");
       toast({
         title: "Configuración guardada",
@@ -134,6 +262,32 @@ export const LocationSettings = () => {
                 Longitud: {location.longitude.toFixed(6)}
               </p>
             </div>
+          ) : lastLocation ? (
+            // RONDA 28 (bloque I-ampliación): la última ubicación
+            // detectada, restaurada del almacén — el resultado ya no
+            // desaparece al cambiar de pestaña o recargar.
+            <div className="bg-muted/50 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Navigation className="h-4 w-4 text-primary" />
+                <span className="font-medium">Última ubicación detectada</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Latitud: {lastLocation.latitude.toFixed(6)}
+                <br />
+                Longitud: {lastLocation.longitude.toFixed(6)}
+                <br />
+                Detectada el {new Date(lastLocation.at).toLocaleString("es-MX")}
+              </p>
+              <Button
+                variant="love"
+                onClick={handleLocationPermission}
+                disabled={isLoading}
+                className="gap-2 mt-3"
+              >
+                <Navigation className="h-4 w-4" />
+                {isLoading ? "Detectando..." : "Volver a detectar"}
+              </Button>
+            </div>
           ) : (
             <div className="text-center py-6">
               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -163,6 +317,43 @@ export const LocationSettings = () => {
                 <span className="font-medium">Error de ubicación</span>
               </div>
               <p className="text-sm text-destructive/80 mt-1">{error}</p>
+              {error.includes("denegado") && (
+                <p className="text-sm text-destructive/80 mt-2">
+                  La ubicación es indispensable para matchs, clubs y distancias.
+                  Actívala en los ajustes del navegador para este sitio y vuelve
+                  a pulsar "Detectar Ubicación".
+                </p>
+              )}
+            </div>
+          )}
+
+          {detectionStuck && !location && (
+            <div className="bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-400/30 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
+                <AlertCircle className="h-4 w-4" />
+                <span className="font-medium">El navegador no respondió</span>
+              </div>
+              <p className="text-sm text-yellow-700 dark:text-yellow-200/80 mt-1">
+                La solicitud de ubicación lleva más de 15 segundos sin
+                respuesta. Revisa el permiso de ubicación para este sitio en los
+                ajustes del navegador e inténtalo de nuevo.
+              </p>
+            </div>
+          )}
+
+          {locationDenied && !location && !error && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-destructive">
+                <AlertCircle className="h-4 w-4" />
+                <span className="font-medium">
+                  Permiso de ubicación denegado
+                </span>
+              </div>
+              <p className="text-sm text-destructive/80 mt-1">
+                La ubicación es indispensable para matchs, clubs y distancias.
+                Actívala en los ajustes del navegador para este sitio y vuelve a
+                pulsar "Detectar Ubicación".
+              </p>
             </div>
           )}
 
@@ -176,7 +367,7 @@ export const LocationSettings = () => {
             <Switch
               id="auto-detect"
               checked={autoDetectLocation}
-              onCheckedChange={setAutoDetectLocation}
+              onCheckedChange={handleAutoDetectChange}
             />
           </div>
         </CardContent>
@@ -238,34 +429,19 @@ export const LocationSettings = () => {
                 <p className="text-sm text-muted-foreground">
                   Tu ubicación exacta nunca se comparte. Solo mostramos la
                   distancia aproximada a otros usuarios para mejorar las
-                  conexiones.
+                  conexiones. La geolocalización está siempre activa: es
+                  necesaria para matchs, clubs y distancias.
                 </p>
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="geolocation-enabled">
-                  Activar geolocalización
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  Permitir que la app use tu ubicación
-                </p>
-              </div>
-              <Switch
-                id="geolocation-enabled"
-                checked={geolocationEnabled}
-                onCheckedChange={(enabled) => {
-                  setGeolocationEnabled(enabled);
-                  if (!enabled) {
-                    logger.info("Geolocalización desactivada por usuario");
-                  }
-                }}
-              />
-            </div>
-
+            {/* RONDA 28 (bloque K): el interruptor "Activar
+                geolocalización" vivía aquí — eliminado: la geolocalización
+                no se puede desactivar desde la configuración. La precisión
+                (nivel S2) y el resto de controles quedan siempre
+                disponibles. */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -273,13 +449,9 @@ export const LocationSettings = () => {
                     Precisión de ubicación: Nivel {s2LevelValue}
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Nivel {s2LevelValue}: ~
-                    {s2LevelValue <= 12
-                      ? "100+"
-                      : s2LevelValue <= 15
-                        ? "1"
-                        : "0.1"}
-                    km² (más bajo = más privacidad)
+                    Nivel {s2LevelValue}:{" "}
+                    {formatCellAreaKm2(s2Service.getCellArea(s2LevelValue))} —
+                    más alto = más preciso y menos privado
                   </p>
                 </div>
               </div>
@@ -293,11 +465,18 @@ export const LocationSettings = () => {
                 min={10}
                 step={1}
                 className="w-full"
-                disabled={!geolocationEnabled}
               />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Nivel 10 (Bajo - ~100km²)</span>
-                <span>Nivel 20 (Alto - ~0.01km²)</span>
+                {/* Derivadas del mismo mapeo que el rótulo dinámico: no
+                    pueden volver a contradecirlo. */}
+                <span>
+                  Nivel 10 (menos preciso ·{" "}
+                  {formatCellAreaKm2(s2Service.getCellArea(10))})
+                </span>
+                <span>
+                  Nivel 20 (más preciso ·{" "}
+                  {formatCellAreaKm2(s2Service.getCellArea(20))})
+                </span>
               </div>
             </div>
 
@@ -312,7 +491,6 @@ export const LocationSettings = () => {
                 id="precise-location"
                 checked={preciseLocation}
                 onCheckedChange={setPreciseLocation}
-                disabled={!geolocationEnabled}
               />
             </div>
 
@@ -329,7 +507,6 @@ export const LocationSettings = () => {
                 id="location-history"
                 checked={locationHistory}
                 onCheckedChange={setLocationHistory}
-                disabled={!geolocationEnabled}
               />
             </div>
           </div>

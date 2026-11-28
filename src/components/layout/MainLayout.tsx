@@ -102,9 +102,22 @@ export const MainLayout = () => {
   useEffect(() => {
     const timers: Array<ReturnType<typeof setTimeout>> = [];
     const showWelcomeCreditToast = (detail: DemoWelcomeCreditEventDetail) => {
+      // Ronda 28, bloque B: diagnóstico del pipeline del toast
+      // (ver nota en demo-wallet.ts: console.info directo porque el
+      // `logger` del repo solo imprime en DEV).
+      console.info(
+        "[toast-diag] first-attempt timer scheduled",
+        detail.accountType,
+        detail.balance,
+      );
       timers.push(
         setTimeout(() => {
-          takePendingWelcomeToast();
+          const mark = takePendingWelcomeToast();
+          console.info(
+            "[toast-diag] first-attempt timer fired, mark taken:",
+            mark !== null,
+            "toast() called",
+          );
           toast({
             title: "🎁 +50 CMPX de bienvenida",
             description:
@@ -119,11 +132,23 @@ export const MainLayout = () => {
     // frío): el detalle quedó pendiente en demo-wallet y se muestra
     // igual, con el mismo diferido.
     const pending = takePendingDemoWelcomeCredit();
-    if (pending) showWelcomeCreditToast(pending);
+    if (pending) {
+      console.info(
+        "[toast-diag] pending credit taken on mount",
+        pending.accountType,
+        pending.balance,
+      );
+      showWelcomeCreditToast(pending);
+    }
     const onWelcomeCredit = (event: Event) => {
       const detail = (event as CustomEvent<DemoWelcomeCreditEventDetail>)
         .detail;
       if (!detail) return;
+      console.info(
+        "[toast-diag] event received",
+        detail.accountType,
+        detail.balance,
+      );
       // Consumir el hueco: si no, un remontaje lo tomaría de nuevo y
       // el toast saldría dos veces.
       takePendingDemoWelcomeCredit();
@@ -163,11 +188,32 @@ export const MainLayout = () => {
   useEffect(() => {
     const timers: Array<ReturnType<typeof setTimeout>> = [];
     const pending = peekPendingWelcomeToast();
+    // Ronda 28, bloque B: diagnóstico del pipeline del toast.
+    console.info(
+      "[toast-diag] second-chance peek on route/mount:",
+      pending !== null,
+      pending?.accountType ?? null,
+    );
     if (pending) {
+      console.info(
+        "[toast-diag] second-chance timer scheduled",
+        pending.accountType,
+        pending.balance,
+      );
       timers.push(
         setTimeout(() => {
           const detail = takePendingWelcomeToast();
-          if (!detail) return;
+          if (!detail) {
+            console.info(
+              "[toast-diag] second-chance timer fired, mark already taken: toast skipped",
+            );
+            return;
+          }
+          console.info(
+            "[toast-diag] second-chance timer fired, mark taken: toast() called",
+            detail.accountType,
+            detail.balance,
+          );
           toast({
             title: "🎁 +50 CMPX de bienvenida",
             description:

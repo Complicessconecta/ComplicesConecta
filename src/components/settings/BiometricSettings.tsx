@@ -166,10 +166,13 @@ export const BiometricSettings: React.FC = () => {
           <Fingerprint className="h-6 w-6 text-blue-600" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          {/* RONDA 28 (bloque H): igual que en PinSettings — el
+              encabezado iba directo sobre las partículas con texto oscuro
+              sin variante dark: invisible en tema oscuro. */}
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             Autenticación Biométrica
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-white/70">
             Configura el acceso con huella dactilar o reconocimiento facial
           </p>
         </div>

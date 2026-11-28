@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -18,33 +18,112 @@ import {
 } from "@/components/ui/select";
 import { Bell, MessageCircle, Heart, Calendar, Zap } from "lucide-react";
 import { logger } from "@/lib/logger";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import {
+  loadSettingsStateRemote,
+  saveSettingsState,
+} from "@/components/settings/settingsStorage";
+
+// RONDA 28 (bloque I): antes handleSave era solo un logger.info con un
+// `// Lógica para guardar en el backend` — ningún ajuste de Avisos se
+// guardaba jamás y todo volvía a los defaults al recargar. Ahora usa el
+// mismo almacén que Privacidad/Ubicación (`app_settings:<userId>` en
+// demo, `profiles.privacy_settings` en real). Claves con prefijo
+// `notif_` para no chocar con las de las otras pestañas.
+const DEFAULT_NOTIFICATIONS = {
+  notif_matches: true,
+  notif_messages: true,
+  notif_events: true,
+  notif_marketing: false,
+  notif_push: true,
+  notif_email: true,
+  notif_quiet_hours: false,
+  notif_quiet_start: "22:00",
+  notif_quiet_end: "08:00",
+  notif_summary_frequency: "daily",
+};
 
 export const NotificationSettings = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [loaded, setLoaded] = useState(false);
   const [notifications, setNotifications] = useState({
-    matches: true,
-    messages: true,
-    events: true,
-    marketing: false,
-    push: true,
-    email: true,
-    quiet_hours: false,
+    matches: DEFAULT_NOTIFICATIONS.notif_matches,
+    messages: DEFAULT_NOTIFICATIONS.notif_messages,
+    events: DEFAULT_NOTIFICATIONS.notif_events,
+    marketing: DEFAULT_NOTIFICATIONS.notif_marketing,
+    push: DEFAULT_NOTIFICATIONS.notif_push,
+    email: DEFAULT_NOTIFICATIONS.notif_email,
+    quiet_hours: DEFAULT_NOTIFICATIONS.notif_quiet_hours,
   });
 
   const [quietHours, setQuietHours] = useState({
-    start: "22:00",
-    end: "08:00",
+    start: DEFAULT_NOTIFICATIONS.notif_quiet_start,
+    end: DEFAULT_NOTIFICATIONS.notif_quiet_end,
   });
 
-  const [summaryFrequency, setSummaryFrequency] = useState("daily");
+  const [summaryFrequency, setSummaryFrequency] = useState(
+    DEFAULT_NOTIFICATIONS.notif_summary_frequency,
+  );
   const navigate = useNavigate();
 
-  const handleSave = () => {
-    logger.info("Notification settings saved:", {
-      ...notifications,
-      quietHours,
-      summaryFrequency,
+  // Cargar los valores guardados (localStorage en demo, BD en real).
+  useEffect(() => {
+    if (!user?.id || loaded) return;
+    let cancelled = false;
+    void loadSettingsStateRemote(user.id, DEFAULT_NOTIFICATIONS).then(
+      (stored) => {
+        if (cancelled) return;
+        setNotifications({
+          matches: stored.notif_matches,
+          messages: stored.notif_messages,
+          events: stored.notif_events,
+          marketing: stored.notif_marketing,
+          push: stored.notif_push,
+          email: stored.notif_email,
+          quiet_hours: stored.notif_quiet_hours,
+        });
+        setQuietHours({
+          start: stored.notif_quiet_start,
+          end: stored.notif_quiet_end,
+        });
+        setSummaryFrequency(stored.notif_summary_frequency);
+        setLoaded(true);
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, loaded]);
+
+  const handleSave = async () => {
+    const patch = {
+      notif_matches: notifications.matches,
+      notif_messages: notifications.messages,
+      notif_events: notifications.events,
+      notif_marketing: notifications.marketing,
+      notif_push: notifications.push,
+      notif_email: notifications.email,
+      notif_quiet_hours: notifications.quiet_hours,
+      notif_quiet_start: quietHours.start,
+      notif_quiet_end: quietHours.end,
+      notif_summary_frequency: summaryFrequency,
+    };
+    logger.info("Notification settings saved:", patch);
+    const saved = await saveSettingsState(user?.id, patch);
+    if (!saved) {
+      toast({
+        title: "Error",
+        description: "No se pudo guardar: debes estar autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: "Configuración guardada",
+      description: "Tus preferencias de avisos han sido guardadas",
     });
-    // Lógica para guardar en el backend
   };
 
   const handleNotificationChange = (key: string, value: boolean) => {

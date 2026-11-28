@@ -132,6 +132,19 @@ export function notifyDemoWelcomeCredit(
   // solo llama aquí en ese caso), nunca en reentrada (crédito ya
   // reclamado) ni para anonymous (sin billetera hasta verificar).
   writePendingWelcomeToast(detail);
+  // Ronda 28, bloque B: diagnóstico del pipeline del toast.
+  // `console.info` directo (no el `logger` del repo): ese logger
+  // solo imprime en DEV (src/lib/logger/logger.ts:39) y estos
+  // diagnósticos tienen que verse en la consola del preview, donde
+  // el toast lleva 3 rondas perdiéndose en vivo. Un log por
+  // crédito, sin PII (solo tipo de cuenta, cantidad y saldo — lo
+  // mismo que muestra el propio toast).
+  console.info(
+    "[toast-diag] notify credit",
+    detail.accountType,
+    detail.amount,
+    detail.balance,
+  );
   window.dispatchEvent(new CustomEvent(DEMO_WELCOME_CREDIT_EVENT, { detail }));
 }
 

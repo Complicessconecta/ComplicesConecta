@@ -108,6 +108,24 @@ const FAQ = () => {
           answer:
             "Sí, tienes control total sobre tu privacidad. Puedes configurar quién puede ver tu perfil, fotos privadas y contactarte.",
         },
+        {
+          // RONDA 28 (bloque J): el bloqueo de capturas dejó de ser un
+          // interruptor en /settings — es nativo y siempre activo. La
+          // explicación vive aquí, en el FAQ.
+          question: "¿Pueden hacer capturas de pantalla de mi perfil?",
+          answer:
+            "La APK no permite grabar ni capturar pantalla: el bloqueo es nativo y siempre está activo, no es una opción que se pueda activar o desactivar. En escritorio ocurre lo mismo, excepto con la herramienta de recorte de pantalla del sistema, que no se puede prohibir.",
+        },
+        {
+          // RONDA 28 (bloque K + nota de Wacko 03:59 CST): la ubicación
+          // es requisito indispensable. En la APK, si no se acepta, la
+          // app no continúa; en la web no se cierra nada — si el
+          // navegador niega el permiso, la app lo dice claro y explica
+          // cómo activarlo.
+          question: "¿Por qué la app necesita mi ubicación?",
+          answer:
+            "La ubicación es un requisito indispensable para usar la app: matchs, clubs y distancias dependen de ella. En la APK, si no aceptas la ubicación, la app no continúa. En la web, si el navegador niega el permiso, la app te lo dirá y te explicará cómo activarlo para este sitio. Tú decides qué tan aproximada es (nivel de precisión en Configuración > Ubicación), pero la ubicación en sí no se puede desactivar.",
+        },
       ],
     },
     galerias: {

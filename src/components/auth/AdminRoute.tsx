@@ -1,9 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { isProductionAdmin } from "@/lib/app-config";
 import { useAuth } from "@/features/auth/useAuth";
+
+// Ronda 24 (stream A): tope de la verificación de sesión, igual que
+// `AUTH_SESSION_TIMEOUT_MS` de useAuth (8 s). Sin él, un getSession()
+// colgado dejaba «Verificando permisos...» para siempre; al vencer,
+// la verificación niega fail-closed (el catch pone isAdmin=false).
+const ADMIN_CHECK_TIMEOUT_MS = 8_000;
+
+const withCheckTimeout = <T,>(promise: Promise<T>, label: string): Promise<T> =>
+  Promise.race([
+    promise,
+    new Promise<never>((_resolve, reject) =>
+      setTimeout(
+        () => reject(new Error(`Tiempo de espera agotado: ${label}`)),
+        ADMIN_CHECK_TIMEOUT_MS,
+      ),
+    ),
+  ]);
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -13,6 +30,15 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
   const { isDemo } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  // Ronda 24 (stream A): «ya concedí». Si el acceso se concedió por
+  // demo y `demoActive` cambia a false después (la sesión real asienta
+  // tarde y `isDemo()` pasa a false), NO re-validar de inmediato
+  // contra una sesión aún en hidratación: /admin y /admin/dashboard
+  // discrepaban justo en esa ventana (el centro cargaba y el panel
+  // rebotaba). Supuesto deliberado, igual que el `decisionRef` de
+  // Admin.tsx: la concesión no se re-valida; la rama demo solo
+  // muestra datos demo locales.
+  const grantedRef = useRef(false);
 
   // En modo demo no hay sesión Supabase: la validación real siempre
   // negaba el acceso y la cadena /admin → /auth → /dashboard sacaba al
@@ -26,8 +52,15 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
     // Demo: acceso directo al panel (datos demo/respaldo, sin sesión real).
     if (demoActive) {
+      grantedRef.current = true;
       setIsAdmin(true);
       setLoading(false);
+      return;
+    }
+
+    // Ronda 24: acceso ya concedido por demo antes del flip de
+    // `demoActive` — no re-validar (ver grantedRef arriba).
+    if (grantedRef.current) {
       return;
     }
 
@@ -38,7 +71,7 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(() => {
-      if (!isMounted) return;
+      if (!isMounted || grantedRef.current) return;
       void checkAdminAccess(0);
     });
 
@@ -65,10 +98,16 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
       }
 
       // Verificar si hay sesión activa
+      // Ronda 24: con tope (ver withCheckTimeout). Si getSession()
+      // se cuelga, el catch niega fail-closed en vez de dejar
+      // «Verificando permisos...» para siempre.
       const {
         data: { session },
         error: sessionError,
-      } = await supabase.auth.getSession();
+      } = await withCheckTimeout(
+        supabase.auth.getSession(),
+        "supabase.auth.getSession",
+      );
 
       if (sessionError) {
         logger.error("❌ Error al verificar sesión:", {

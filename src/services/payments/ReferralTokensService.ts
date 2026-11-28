@@ -591,11 +591,19 @@ export class ReferralTokensService {
       }
 
       // Crear recompensa para el referidor
+      // Ronda 24, bloque C (reconciliación de auditoría): 50 CMPX,
+      // no 100 — el monto aterrizado es 50 al invitador + 50 al
+      // invitado cuando el invitado completa registro Y verificación
+      // (ver WelcomeTokensService). Queda pendiente en este servicio:
+      // NO tiene gate de verificación y acredita en la tabla separada
+      // `user_referral_balances`; además hoy no tiene llamadores vivos
+      // (la ruta viva es WelcomeTokensService + la edge function
+      // `process-referral` / RPC `process_referral_reward`, ambas 50).
       const rewardData: CreateReferralRewardData = {
         referrer_id: referrerBalance.user_id,
         referee_id: newUserId,
         reward_type: "cmpx",
-        amount: 100, // Recompensa base
+        amount: 50, // Recompensa base (reconciliada a 50, ronda 24)
       };
 
       const reward = await this.createReferralReward(rewardData);

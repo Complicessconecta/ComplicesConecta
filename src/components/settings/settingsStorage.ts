@@ -54,8 +54,11 @@ export async function loadSettingsStateRemote<
 export async function saveSettingsState(
   userId: string | undefined,
   patch: Record<string, unknown>,
-): Promise<void> {
-  if (!userId) return;
+  // RONDA 28 (bloque I): devuelve si se guardó de verdad. Antes
+  // devolvía void y los handlers mostraban el toast de éxito aunque no
+  // hubiera usuario (retorno silencioso) — éxito falso.
+): Promise<boolean> {
+  if (!userId) return false;
   const current = loadSettingsState(userId, {});
   const merged = { ...current, ...patch };
   try {
@@ -63,7 +66,7 @@ export async function saveSettingsState(
   } catch {
     // localStorage no disponible: se sigue intentando en BD.
   }
-  if (!supabase || isDemoMode()) return;
+  if (!supabase || isDemoMode()) return true;
   try {
     const { data } = await (supabase as any)
       .from("profiles")
@@ -85,4 +88,7 @@ export async function saveSettingsState(
       error: error instanceof Error ? error.message : String(error),
     });
   }
+  // El espejo local ya se guardó: la preferencia sobrevive aunque la BD
+  // falle; el toast de éxito es honesto sobre el guardado local.
+  return true;
 }

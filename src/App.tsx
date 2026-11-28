@@ -59,9 +59,16 @@ import { ProfileDetailRoute } from "@/pages/ProfileDetailRoute";
 import { ImperativeLazyRoute } from "@/pages/ImperativeLazyRoute";
 
 // Lazy loaded pages for performance optimization - Core features
-const Profiles = lazyWithDefault(
-  () => import("@/pages/profiles/shared/Profiles"),
-);
+// RONDA 27 (stream B): /profiles ya NO es un `lazy` pelado. El
+// chunk se quedaba colgado sin cota y el PageLoader ("Cargando...")
+// no tenía salida (test dirigido PR #88: >10 s en "Cargando...").
+// Misma exposición al retry perdido del Suspense que /profile/:id
+// en la ronda 19 y /requests en la ronda 22. ImperativeLazyRoute
+// carga el chunk con tope de 15 s y error con Reintentar; el
+// importador es const a nivel de módulo (identidad estable) para
+// que el `useEffect` de ImperativeLazyRoute no recargue el chunk
+// en cada re-render de App. No hay const lazy de Profiles: se
+// importa inline en la ruta.
 // RONDA 18 (stream B): /profile/:id ya NO es un `lazy` pelado.
 // El chunk `pages-profiles` se quedaba colgado sin cota y el
 // PageLoader ("Cargando...") no tenía salida (test dirigido ronda 17,
@@ -106,9 +113,19 @@ const TokensInfo = lazyWithDefault(() => import("@/pages/TokensInfo"));
 const TokensPrivacy = lazyWithDefault(() => import("@/pages/TokensPrivacy"));
 const TokensTerms = lazyWithDefault(() => import("@/pages/TokensTerms"));
 const TokensLegal = lazyWithDefault(() => import("@/pages/TokensLegal"));
-const AIControlCenter = lazyWithDefault(
-  () => import("@/pages/AIControlCenter"),
-);
+// RONDA 28 (bloque N): /ai-help ya NO es un `lazy` pelado. El icono
+// ✨ ("IA Ayuda") del dock abría la página y se quedaba en PageLoader
+// ("Cargando...") sin resolver (captura 433017_16, 04:09 CST): misma
+// exposición al retry perdido del Suspense que /profiles (ronda 27),
+// /requests (ronda 22) y /admin/dashboard (ronda 21) — el chunk de
+// AIControlCenter arrastra WebLLM (el más pesado de los lazy) y sin
+// tope el loader no tenía salida. ImperativeLazyRoute carga el chunk
+// con tope de 15 s y error con Reintentar; el importador es const a
+// nivel de módulo (identidad estable), igual que importProfilesChunk.
+// No hay rama demo que añadir: la página es estática + LegalChatBox
+// (IA local, sin Supabase); el modelo se descarga en segundo plano
+// dentro de la tarjeta, con su propio estado de error.
+const importAiHelpChunk = () => import("@/pages/AIControlCenter");
 
 // Admin pages - separate chunk
 // RONDA 21 (stream A, FAIL 2): /admin/dashboard ya NO es un `lazy`
@@ -125,6 +142,9 @@ const AIControlCenter = lazyWithDefault(
 // con un flash de PageLoader en cada re-render.
 const importAdminChunk = () => import("@/pages/admin/Admin");
 const importLeyOlimpiaChunk = () => import("@/pages/LeyOlimpia");
+// RONDA 27 (stream B): importador de /profiles, ver comentario de
+// arriba (mismo patrón que importRequestsChunk, ronda 22).
+const importProfilesChunk = () => import("@/pages/profiles/shared/Profiles");
 // RONDA 22 (stream C): /requests ya NO es un `lazy` pelado. Misma
 // exposición al retry perdido del Suspense que /admin/dashboard y
 // /ley-olimpia en la ronda 21 (test dirigido PR #81, 2026-11-27
@@ -294,7 +314,18 @@ const App = () => {
                               <Route path="/demo" element={<Demo />} />
                               <Route path="/faq" element={<FAQ />} />
                               <Route path="/feed" element={<Feed />} />
-                              <Route path="/profiles" element={<Profiles />} />
+                              <Route
+                                path="/profiles"
+                                element={
+                                  <ImperativeLazyRoute
+                                    importer={importProfilesChunk}
+                                    chunkName="pages-profiles"
+                                    errorTitle="No se pudo cargar la página de perfiles"
+                                    fallbackPath="/"
+                                    fallbackLabel="Volver al inicio"
+                                  />
+                                }
+                              />
 
                               <Route
                                 element={
@@ -429,7 +460,15 @@ const App = () => {
                               />
                               <Route
                                 path="/ai-help"
-                                element={<AIControlCenter />}
+                                element={
+                                  <ImperativeLazyRoute
+                                    importer={importAiHelpChunk}
+                                    chunkName="pages-ai-help"
+                                    errorTitle="No se pudo cargar la IA Ayuda"
+                                    fallbackPath="/"
+                                    fallbackLabel="Volver al inicio"
+                                  />
+                                }
                               />
                               <Route path="/shop" element={<Shop />} />
                               <Route

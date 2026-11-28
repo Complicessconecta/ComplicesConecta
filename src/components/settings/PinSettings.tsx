@@ -19,15 +19,22 @@ export const PinSettings: React.FC = () => {
   const [storedPin, setStoredPin] = usePersistedState<string>("app_pin", "");
   const [pinCreatedAt, setPinCreatedAt] = usePersistedState<number>(
     "pin_created_at",
-    Date.now(),
+    // RONDA 28 (bloque H/I): el default era Date.now() — un usuario SIN
+    // PIN veía "Última actualización: hoy", falso. 0 = sin PIN (la
+    // etiqueta ya muestra "—" con 0).
+    0,
   );
   const [pinExpiresAt, setPinExpiresAt] = usePersistedState<number>(
     "pin_expires_at",
-    Date.now() + 30 * 24 * 60 * 60 * 1000,
+    // RONDA 28: mismo motivo — sin PIN no hay expiración (0 = "—").
+    0,
   ); // 30 días
   const [mustChangePin, setMustChangePin] = usePersistedState<boolean>(
     "must_change_pin",
-    import.meta.env.PROD,
+    // RONDA 28: el default era `import.meta.env.PROD` — en producción el
+    // aviso "PIN Requerido (expirado/default)" salía aunque el usuario
+    // jamás hubiera tenido PIN. Sin PIN no hay nada que cambiar.
+    false,
   );
   const [isSettingPin, setIsSettingPin] = useState(false);
   const [currentPin, setCurrentPin] = useState("");
@@ -36,8 +43,10 @@ export const PinSettings: React.FC = () => {
 
   const hasPin = !!storedPin;
 
-  // Validar expiración y forzar cambio en producción si es PIN default
-  const isExpired = Date.now() > pinExpiresAt;
+  // Validar expiración y forzar cambio en producción si es PIN default.
+  // RONDA 28: la expiración solo aplica SI hay PIN — con pinExpiresAt 0
+  // (sin PIN) `Date.now() > 0` siempre era true y el aviso salía igual.
+  const isExpired = hasPin && Date.now() > pinExpiresAt;
   const isDefaultPin = storedPin === "1234";
   const shouldForceChange =
     import.meta.env.PROD && (isExpired || isDefaultPin || mustChangePin);
@@ -131,10 +140,14 @@ export const PinSettings: React.FC = () => {
           <KeyRound className="h-6 w-6 text-purple-600" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          {/* RONDA 28 (bloque H): el encabezado iba directo sobre las
+              partículas con texto oscuro sin variante dark: invisible en
+              tema oscuro. Las tarjetas claras de abajo (bg-gray-50) sí
+              llevan texto oscuro, que ahí es correcto. */}
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             PIN de Seguridad
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-white/70">
             Configura un PIN de 4 dígitos para acceso rápido y seguridad
             adicional
           </p>

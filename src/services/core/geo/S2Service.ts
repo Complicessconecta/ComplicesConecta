@@ -46,7 +46,7 @@ export class S2Service {
   constructor(config?: Partial<S2Config>) {
     this.config = {
       defaultLevel: 15, // ~1km² (ideal para matching urbano)
-      maxLevel: 20, // ~100m² (muy preciso)
+      maxLevel: 20, // ~0.01km² (muy preciso)
       minLevel: 10, // ~100km² (búsquedas amplias)
       ...config,
     };
@@ -161,24 +161,24 @@ export class S2Service {
    * Calcula nivel óptimo según radio de búsqueda
    * Optimiza balance entre precisión y cantidad de celdas
    *
-   * Niveles S2:
+   * Niveles S2 (áreas de la escala de privacidad de getCellArea):
    * - 10: ~100km² (ciudades grandes)
-   * - 11: ~50km² (suburbios amplios)
-   * - 13: ~10km² (suburbios)
+   * - 11: ~40km² (suburbios amplios)
+   * - 13: ~6.3km² (suburbios)
    * - 15: ~1km² (matching urbano) <- DEFAULT
-   * - 17: ~250m² (muy preciso)
-   * - 20: ~100m² (ultra preciso)
+   * - 17: ~0.16km² (muy preciso)
+   * - 20: ~0.01km² (ultra preciso)
    *
    * @param radiusKm Radio de búsqueda en kilómetros
    * @returns Nivel óptimo para ese radio
    */
   getOptimalLevel(radiusKm: number): number {
-    if (radiusKm <= 0.5) return 17; // ~250m² (vecindario)
+    if (radiusKm <= 0.5) return 17; // ~0.16km² (vecindario)
     if (radiusKm <= 1) return 15; // ~1km² (barrio)
-    if (radiusKm <= 5) return 13; // ~10km² (ciudad pequeña)
-    if (radiusKm <= 20) return 11; // ~50km² (ciudad grande)
+    if (radiusKm <= 5) return 13; // ~6.3km² (ciudad pequeña)
+    if (radiusKm <= 20) return 11; // ~40km² (ciudad grande)
     if (radiusKm <= 50) return 10; // ~100km² (región)
-    return 9; // ~200km² (multi-ciudad)
+    return 9; // ~250km² (multi-ciudad)
   }
 
   /**
@@ -239,17 +239,35 @@ export class S2Service {
    * @returns Área aproximada en km²
    */
   getCellArea(level: number): number {
-    // Áreas aproximadas por nivel (S2 estándar)
+    // RONDA 28 (bloque L): tabla COMPLETA 10–20, escala logarítmica
+    // limpia (×10^-0.4 ≈ ÷2.5 por nivel): monótona decreciente, sin
+    // duplicados, extremos 100 km² (nivel 10) y 0.01 km² (nivel 20).
+    // Antes solo existían 6 niveles (10, 11, 13, 15, 17, 20) y el
+    // fallback `Math.pow(2, 20 - level)` era NO monótono (nivel 12 →
+    // 256 km², MAYOR que el nivel 10; nivel 14 → 64; nivel 16 → 16)
+    // y contradecía al rótulo de /settings (nivel 20: 0.1 aquí vs
+    // 0.01 en las etiquetas de extremos). Estos valores son la escala
+    // de PRIVACIDAD que muestra la UI (área aproximada que la celda
+    // representa para matching), no la geometría S2 exacta (una celda
+    // S2 real divide su área entre 4 por nivel).
     const areas: { [key: number]: number } = {
-      10: 100, // ~100km²
-      11: 50, // ~50km²
-      13: 10, // ~10km²
-      15: 1, // ~1km²
-      17: 0.25, // ~250m²
-      20: 0.1, // ~100m²
+      10: 100,
+      11: 40,
+      12: 16,
+      13: 6.3,
+      14: 2.5,
+      15: 1,
+      16: 0.4,
+      17: 0.16,
+      18: 0.063,
+      19: 0.025,
+      20: 0.01,
     };
 
-    return areas[level] || Math.pow(2, 20 - level); // Aproximación
+    if (areas[level] !== undefined) return areas[level];
+    // Fuera de rango: sujetar al extremo más cercano (literales, no
+    // índice, para que el tipo no sea `number | undefined`).
+    return level < 10 ? 100 : 0.01;
   }
 
   /**
@@ -276,6 +294,17 @@ export class S2Service {
 
 // Export singleton instance
 export const s2Service = new S2Service();
+
+/**
+ * Formatea un área en km² como la muestra la UI de precisión
+ * ("~100km²", "~6.3km²", "~0.063km²"): sin ceros de más.
+ * RONDA 28 (bloque L): el rótulo de /settings y las etiquetas de
+ * extremos usan ESTA función sobre getCellArea, no literales
+ * sueltos — así no pueden volver a contradecirse.
+ */
+export function formatCellAreaKm2(areaKm2: number): string {
+  return `~${Number(areaKm2.toFixed(3)).toString()}km²`;
+}
 
 // Export types
 export type { S2Config, S2Cell };

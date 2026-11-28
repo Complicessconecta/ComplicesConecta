@@ -92,7 +92,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
       title: "🪙 Sistema de Tokens CMPX",
       subtitle: "Gana recompensas por invitar amigos",
       description:
-        "Obtén 50 CMPX por cada amigo que invites + 50 CMPX de bienvenida para ellos. Usa tus tokens para desbloquear funciones premium durante la fase beta.",
+        "Invita amigos y gana 50 por cada uno; ellos reciben 50 de bienvenida. Úsalos en regalos, chats privados y funciones premium durante la beta.",
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10",
     },
@@ -137,7 +137,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
       title: "🛡️ Sistema de Moderación",
       subtitle: "Comunidad segura y protegida",
       description:
-        "Contamos con un equipo de moderadores dedicados que mantienen la comunidad segura. ¿Interesado en ayudar? Puedes aplicar para ser moderador y contribuir a crear un ambiente positivo para todos.",
+        "Próximamente contaremos con un equipo de moderadores dedicados que mantendrán la comunidad segura. ¿Interesado en ayudar? Podrás aplicar para ser moderador y contribuir a crear un ambiente positivo para todos.",
       color: "text-blue-400",
       bgColor: "bg-blue-400/10",
     },
@@ -265,97 +265,114 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             </div>
 
             {/* Special Badges */}
-            {currentStep === 1 && (
-              <div className="mb-4">
-                <Badge
-                  variant="secondary"
-                  className="px-4 py-2 rounded-full bg-linear-to-r from-yellow-500/30 to-yellow-600/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
-                >
-                  🪙 TOKENS CMPX
-                </Badge>
-              </div>
-            )}
-            {currentStep === 2 && (
-              <div className="mb-4">
-                <Badge
-                  variant="secondary"
-                  className="px-4 py-2 rounded-full bg-linear-to-r from-accent/20 to-accent/30 text-accent border-accent/40 shadow-[0_0_20px_rgba(168,85,247,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
-                >
-                  BETA EXCLUSIVA
-                </Badge>
-              </div>
-            )}
-            {currentStep === 3 && (
-              <div className="mb-4">
-                <Badge
-                  variant="secondary"
-                  className="px-4 py-2 rounded-full bg-linear-to-r from-fuchsia-600/40 to-purple-600/40 text-white border border-white/30 shadow-[0_0_25px_rgba(168,85,247,0.35)] ring-1 ring-purple-400/30 backdrop-blur-sm animate-pulse"
-                >
-                  ⚡ PREMIUM GRATIS
-                </Badge>
-              </div>
-            )}
-            {currentStep === 4 && (
-              <div className="mb-4">
-                <Badge
-                  variant="secondary"
-                  className="px-4 py-2 rounded-full bg-linear-to-r from-blue-500/20 to-blue-600/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
-                >
-                  🌍 WORLD ID PRÓXIMAMENTE
-                </Badge>
-              </div>
-            )}
-            {currentStep === 6 && (
-              <div className="mb-4">
-                <Badge
-                  variant="secondary"
-                  className="px-4 py-2 rounded-full bg-linear-to-r from-blue-400/20 to-blue-500/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(96,165,250,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
-                >
-                  🛡️ MODERACIÓN SEGURA
-                </Badge>
-              </div>
-            )}
-            {currentStep === 7 && (
-              <div className="mb-4">
-                <Badge
-                  variant="secondary"
-                  className="px-4 py-2 rounded-full bg-linear-to-r from-yellow-500/30 to-orange-500/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
-                >
-                  🎯 EXPLORA TODO
-                </Badge>
-              </div>
-            )}
+            {/* RONDA 28 (bloque D): el contenido del slide (distintivo +
+                título + subtítulo + descripción) se remonta en cada cambio
+                de diapositiva (`key={currentStep}`): las animaciones de
+                entrada de un solo disparo (`animate-slide-up`,
+                `animate-fade-in`) solo se reproducen al montar el nodo;
+                al avanzar, React actualizaba el mismo nodo en su sitio
+                y la entrada nunca se repetía — por eso los slides 3, 7
+                y 8 se veían planos frente al 2, que además tiene el
+                pulso infinito del enlace FAQ. El círculo del icono queda
+                fuera del remonte (sus animaciones son infinitas). */}
+            <div key={currentStep}>
+              {currentStep === 1 && (
+                <div className="mb-4">
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 rounded-full bg-linear-to-r from-yellow-500/30 to-yellow-600/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  >
+                    🎁 Recompensas
+                  </Badge>
+                </div>
+              )}
+              {currentStep === 2 && (
+                <div className="mb-4">
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 rounded-full bg-linear-to-r from-accent/20 to-accent/30 text-accent border-accent/40 shadow-[0_0_20px_rgba(168,85,247,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  >
+                    BETA EXCLUSIVA
+                  </Badge>
+                </div>
+              )}
+              {currentStep === 3 && (
+                <div className="mb-4">
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 rounded-full bg-linear-to-r from-fuchsia-600/40 to-purple-600/40 text-white border border-white/30 shadow-[0_0_25px_rgba(168,85,247,0.35)] ring-1 ring-purple-400/30 backdrop-blur-sm animate-pulse"
+                  >
+                    ⚡ PREMIUM GRATIS
+                  </Badge>
+                </div>
+              )}
+              {currentStep === 4 && (
+                <div className="mb-4">
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 rounded-full bg-linear-to-r from-blue-500/20 to-blue-600/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  >
+                    🌍 WORLD ID PRÓXIMAMENTE
+                  </Badge>
+                </div>
+              )}
+              {currentStep === 6 && (
+                <div className="mb-4">
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 rounded-full bg-linear-to-r from-blue-400/20 to-blue-500/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(96,165,250,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  >
+                    🛡️ MODERACIÓN SEGURA
+                  </Badge>
+                </div>
+              )}
+              {currentStep === 7 && (
+                <div className="mb-4">
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 rounded-full bg-linear-to-r from-yellow-500/30 to-orange-500/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
+                  >
+                    🎯 EXPLORA TODO
+                  </Badge>
+                </div>
+              )}
 
-            {/* Content */}
-            <div className="space-y-4 animate-slide-up">
-              {/* Title con 3 líneas separadas */}
-              <div className="space-y-1 text-center flex flex-col items-center justify-center">
-                <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow inline-flex items-center justify-center gap-2">
-                  {currentStepData.title}
-                </h2>
-                {currentStepData.titleAccent && (
-                  <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
-                    {currentStepData.titleAccent}
+              {/* Content */}
+              <div className="space-y-4 animate-slide-up">
+                {/* Title con 3 líneas separadas */}
+                <div className="space-y-1 text-center flex flex-col items-center justify-center">
+                  <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow inline-flex items-center justify-center gap-2">
+                    {currentStepData.title}
                   </h2>
-                )}
-                {currentStepData.titleAccent2 && (
-                  <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
-                    {currentStepData.titleAccent2}
-                  </h2>
-                )}
+                  {currentStepData.titleAccent && (
+                    <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+                      {currentStepData.titleAccent}
+                    </h2>
+                  )}
+                  {currentStepData.titleAccent2 && (
+                    <h2 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+                      {currentStepData.titleAccent2}
+                    </h2>
+                  )}
+                </div>
+                {/* RONDA 28 (bloque D): el subtítulo tenía dos clases de
+                  animación (`animate-fade-in animate-bounce`) que
+                  escriben la misma propiedad `animation`: una de las dos
+                  se perdía en cascada. Queda solo el fundido de entrada
+                  (discreto; se repite en cada slide por el `key`). */}
+                <h3 className="text-xl sm:text-2xl font-semibold bg-linear-to-r from-white/90 to-purple-200/90 bg-clip-text text-transparent drop-shadow-md animate-fade-in">
+                  {currentStepData.subtitle}
+                </h3>
+                <p className="text-white/95 font-medium leading-relaxed drop-shadow-md backdrop-blur-sm bg-black/10 rounded-lg p-4 border border-white/10">
+                  {currentStepData.description}
+                  {currentStep === 1 && (
+                    <span className="inline-flex items-center gap-1 ml-2 text-purple-300 font-semibold drop-shadow-sm hover:text-purple-200 transition-colors cursor-pointer animate-pulse">
+                      <HelpCircle className="w-4 h-4" />
+                      FAQ
+                    </span>
+                  )}
+                </p>
               </div>
-              <h3 className="text-xl sm:text-2xl font-semibold bg-linear-to-r from-white/90 to-purple-200/90 bg-clip-text text-transparent drop-shadow-md animate-fade-in animate-bounce">
-                {currentStepData.subtitle}
-              </h3>
-              <p className="text-white/95 font-medium leading-relaxed drop-shadow-md backdrop-blur-sm bg-black/10 rounded-lg p-4 border border-white/10">
-                {currentStepData.description}
-                {currentStep === 1 && (
-                  <span className="inline-flex items-center gap-1 ml-2 text-purple-300 font-semibold drop-shadow-sm hover:text-purple-200 transition-colors cursor-pointer animate-pulse">
-                    <HelpCircle className="w-4 h-4" />
-                    FAQ
-                  </span>
-                )}
-              </p>
             </div>
 
             {/* Progress Indicators */}

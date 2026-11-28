@@ -1968,17 +1968,30 @@ const Chat = ({ embedded = false }: { embedded?: boolean } = {}) => {
                         <UserPlus className="h-3 w-3 mr-1" />
                         <span className="truncate">Solicitudes</span>
                       </Button>
-                      <Button
-                        onClick={togglePrivateGallery}
-                        aria-expanded={showPrivateGallery}
-                        variant="outline"
-                        className="flex-1 border-green-400/50 text-green-700 hover:bg-green-500/10 dark:text-green-300 dark:hover:bg-green-500/20 text-xs py-2"
+                      {/* RONDA 28 (bloque M): esto es un INDICADOR del
+                          tipo de sala, no una acción. Antes era un Button
+                          con onClick={togglePrivateGallery}: en sala
+                          pública disparaba el mismo toast "Sin galería
+                          privada" que Galería (una etiqueta que se lee
+                          como botón y responde con un error es el mismo
+                          defecto que reportó Wacko en Galería); en sala
+                          privada duplicaba a Galería. Sin onClick, sin
+                          fingir acción. */}
+                      <span
+                        aria-label={
+                          selectedChat?.roomType === "private"
+                            ? "Sala privada"
+                            : "Sala pública"
+                        }
+                        className="flex-1 min-w-0 inline-flex items-center justify-center gap-1 rounded-md border border-green-400/50 text-green-700 dark:text-green-300 text-xs py-2 px-2 sm:px-3"
                       >
                         <Globe className="h-3 w-3 mr-1" />
-                        {selectedChat?.roomType === "private"
-                          ? "Privada"
-                          : "Pública"}
-                      </Button>
+                        <span className="truncate">
+                          {selectedChat?.roomType === "private"
+                            ? "Privada"
+                            : "Pública"}
+                        </span>
+                      </span>
                     </div>
 
                     {/* Barra de herramientas del compositor: emoji, adjuntar, audio */}

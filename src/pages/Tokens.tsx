@@ -33,7 +33,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import { TokenDashboard } from "@/components/tokens/TokenDashboard";
 import { StakingModal } from "@/components/tokens/StakingModal";
-import { TokenChatBot } from "@/components/tokens/TokenChatBot";
+// RONDA 28 (bloque O1): TokenChatBot ELIMINADO de la página — era el
+// PRIMER asistente ("👋 ¡Hola Usuario! Bienvenido a tu asistente de
+// tokens Beta...", captura 433057_17) y duplicaba al segundo, la
+// tarjeta "Asistente Token IA [BETA]" (TokenAiChat, dentro de
+// TokenDashboard, captura 433056_18). Queda 1 asistente, no 2. El
+// archivo TokenChatBot.tsx queda sin uso (no se borra en esta ronda:
+// push-files no puede borrar archivos del remoto).
 import { useAuth } from "@/features/auth/useAuth";
 import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { isViewerAnonymous } from "@/lib/anonymous";
@@ -280,14 +286,33 @@ export default function Tokens() {
           desc: "Temas exclusivos y elementos visuales",
         },
       ],
-      distribution: [
-        { percentage: "60%", purpose: "Venta directa (ingresos recurrentes)" },
+      // RONDA 28 (bloque O2): la "Distribución" anterior con % (60%
+      // venta directa / 25% referidos / 10% eventos / 5% reserva) está
+      // marcada DESACTUALIZADA en el anexo del modelo de tokens
+      // (FLUJO_TRABAJO_TOKENS_CMPX_GTK.md §11.2): "pendiente de nueva
+      // distribución" y "no debe usarse ninguna de ellas... hasta que
+      // el propietario defina la nueva distribución". No se inventan
+      // cifras nuevas: los % se quitan y quedan solo los flujos reales
+      // de cómo circula CMPX (qué se hace con él, a quién va, qué
+      // significa), con la nota de que los % se publicarán cuando se
+      // defina la nueva distribución.
+      circulation: [
         {
-          percentage: "25%",
-          purpose: "Recompensas por referidos y actividades",
+          title: "Venta directa a usuarios",
+          desc: "CMPX se compra con dinero real (MXN, USD o criptomonedas) y se gasta dentro de la app.",
         },
-        { percentage: "10%", purpose: "Eventos especiales y promociones" },
-        { percentage: "5%", purpose: "Reserva para desarrollo y marketing" },
+        {
+          title: "Recompensas por referidos y actividades",
+          desc: "CMPX que la plataforma entrega como recompensa por invitar usuarios y por actividades dentro de la app.",
+        },
+        {
+          title: "Eventos especiales y promociones",
+          desc: "CMPX destinado a premios y promociones en eventos de la comunidad.",
+        },
+        {
+          title: "Reserva para desarrollo y marketing",
+          desc: "CMPX que la plataforma reserva para seguir desarrollando la app y darla a conocer.",
+        },
       ],
     },
     gtk: {
@@ -297,24 +322,29 @@ export default function Tokens() {
         "Suministro limitado para staking, inversión y futuro blockchain",
       supply: "Limitado",
       purpose: "Inversión y Staking",
+      // RONDA 28 (bloque O4): las cifras de APY de esta lista estaban
+      // desactualizadas según el anexo del modelo de tokens (§11.2):
+      // el 15-35% y el 8-18% del encabezado están AMBOS marcados
+      // "pendiente de nueva distribución" y además se contradicen
+      // entre sí. No se promete ningún rendimiento: el staking llega
+      // con la blockchain (próximamente) y los niveles se anunciarán
+      // cuando se defina la cadena.
       features: [
-        "Token de staking para ingresos pasivos",
-        "Próxima integración blockchain (Q2-Q4 2026)",
-        "APY: 15-35% según duración de staking",
-        "Potencial de apreciación a largo plazo",
-        "Acceso a funcionalidades blockchain exclusivas",
+        "Staking próximamente: se activará con la blockchain, sin rendimiento prometido",
+        "Integración blockchain próximamente (2027): la cadena aún no está decidida",
+        "Suministro limitado: su valor futuro dependerá de la adopción y del mercado, sin garantía de apreciación",
+        "Acceso a funcionalidades blockchain exclusivas (próximamente)",
       ],
-      stakingTiers: [
-        { duration: "30 días", apy: "15%", minAmount: "1,000 GTK" },
-        { duration: "90 días", apy: "20%", minAmount: "5,000 GTK" },
-        { duration: "180 días", apy: "25%", minAmount: "10,000 GTK" },
-        { duration: "270 días", apy: "30%", minAmount: "20,000 GTK" },
-        { duration: "365 días", apy: "35%", minAmount: "25,000 GTK" },
-      ],
+      // RONDA 28 (bloque O4): los tiers con APY 15-35% se quitan por
+      // la misma razón (§11.2: desactualizado, pendiente de nueva
+      // distribución). El bloque de la página se sustituye por una
+      // nota de "próximamente" (ver el render de Staking más abajo).
+      // Roadmap 2026 → 2027 por indicación de Wacko (las fechas 2026
+      // ya no son realistas); son fechas objetivo, no compromisos.
       roadmap: [
-        { phase: "Q2 2026", milestone: "Preparación y auditoría de contratos" },
-        { phase: "Q3 2026", milestone: "IDO en Uniswap/PancakeSwap" },
-        { phase: "Q4 2026", milestone: "Funcionalidades blockchain completas" },
+        { phase: "Q2 2027", milestone: "Preparación y auditoría de contratos" },
+        { phase: "Q3 2027", milestone: "IDO en Uniswap/PancakeSwap" },
+        { phase: "Q4 2027", milestone: "Funcionalidades blockchain completas" },
       ],
     },
   };
@@ -345,32 +375,48 @@ export default function Tokens() {
     },
   ];
 
+  // RONDA 28 (bloque O4) — criterio de Wacko (04:20 y 04:32 CST):
+  // "creíble = se queda; promesa falsa = se cambia; especulación =
+  // solo condicionada a adopción y competencia". NO se venden
+  // promesas falsas; NO "la primera" — "entre las pioneras".
   const investorAdvantages = [
     {
-      title: "Token GTK con Potencial de Apreciación",
+      // CAMBIA: "valor creciente" e "ingresos pasivos" eran promesas
+      // de rendimiento. Ahora es potencial condicionado a la adopción.
+      title: "Token GTK con Potencial a Largo Plazo",
       description:
-        "Suministro limitado = escasez = valor creciente. Staking genera ingresos pasivos.",
+        "Suministro limitado. Si la adopción crece, la escasez puede darle valor, pero eso depende de la adopción y de la competencia: no hay apreciación garantizada. Staking próximamente, sin rendimiento prometido.",
       icon: <TrendingUp className="h-6 w-6" />,
       color: "from-green-500 to-emerald-600",
     },
     {
+      // CAMBIA: "genera ingresos recurrentes" era promesa. Ahora dice
+      // para qué sirve cada token, no lo que genera.
       title: "Economía Dual Sostenible",
       description:
-        "CMPX genera ingresos recurrentes. GTK crea comunidad de inversores a largo plazo.",
+        "CMPX es la moneda de uso diario: se compra con dinero real y se gasta en regalos, eventos y funciones premium. GTK es el token de blockchain para staking e inversión (próximamente).",
       icon: <Coins className="h-6 w-6" />,
       color: "from-blue-500 to-cyan-600",
     },
     {
-      title: "First Mover Advantage",
+      // SE QUEDA en ángulo (la ventaja real: tokens nativos, pionera),
+      // con dos correcciones de Wacko 04:32: NO "la primera" sino
+      // "entre las pioneras", y SIN el "40M+ usuarios potenciales"
+      // (hype sin base). Se añade su objetivo: impulsar la adopción
+      // de criptomonedas en apps.
+      title: "Entre las Pioneras con Token Nativo",
       description:
-        "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
+        "Entre las pioneras en aplicar tokens nativos en una app social en México, impulsando la adopción de criptomonedas en apps y aportando a la blockchain. La adopción es el objetivo a futuro, no una cifra prometida.",
       icon: <Rocket className="h-6 w-6" />,
       color: "from-purple-500 to-fuchsia-600",
     },
     {
+      // CAMBIA: blockchain y NFTs se listaban como flujos actuales y
+      // aún no existen. Ahora solo lo que existe hoy, con el resto en
+      // "próximamente".
       title: "Diversificación de Ingresos",
       description:
-        "Múltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
+        "Varias vías dentro de la app: tokens CMPX, eventos y funciones premium. Blockchain y NFTs se suman próximamente: hoy no son flujos activos.",
       icon: <BarChart3 className="h-6 w-6" />,
       color: "from-orange-500 to-red-600",
     },
@@ -502,8 +548,8 @@ export default function Tokens() {
             </h1>
             <p className="text-xl text-slate-600 dark:text-white/80 max-w-3xl mx-auto mb-8">
               Dos tokens, dos propósitos: CMPX para consumo diario y GTK para
-              inversión blockchain. Economía digital única con staking del 8-18%
-              APY.
+              inversión blockchain (próximamente). Economía digital con tokens
+              nativos.
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -517,7 +563,7 @@ export default function Tokens() {
               </Badge>
               <Badge className="bg-linear-to-r from-green-500/20 to-emerald-500/20 text-green-700 dark:text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
-                8-18% APY
+                Staking · Próximamente
               </Badge>
             </div>
 
@@ -824,23 +870,27 @@ export default function Tokens() {
 
                   <div>
                     <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
-                      Distribución:
+                      Cómo circula CMPX:
                     </h4>
                     <div className="space-y-2">
-                      {tokenInfo.cmpx.distribution.map((item, index) => (
+                      {tokenInfo.cmpx.circulation.map((item, index) => (
                         <div
                           key={index}
-                          className="flex justify-between items-center p-2 bg-slate-50 dark:bg-white/5 rounded"
+                          className="p-3 bg-slate-50 dark:bg-white/5 rounded"
                         >
-                          <span className="text-slate-600 dark:text-slate-600 dark:text-white/80 text-sm">
-                            {item.purpose}
-                          </span>
-                          <span className="font-bold text-blue-700 dark:text-blue-300">
-                            {item.percentage}
-                          </span>
+                          <div className="font-semibold text-slate-900 dark:text-white text-sm">
+                            {item.title}
+                          </div>
+                          <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">
+                            {item.desc}
+                          </div>
                         </div>
                       ))}
                     </div>
+                    <p className="mt-3 text-xs text-slate-500 dark:text-white/60">
+                      Los porcentajes de reparto se publicarán cuando se defina
+                      la nueva distribución: la anterior está desactualizada.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -886,33 +936,14 @@ export default function Tokens() {
 
                   <div>
                     <h4 className="font-semibold text-slate-900 dark:text-white mb-3">
-                      Staking Tiers:
+                      Staking (próximamente):
                     </h4>
-                    <div className="space-y-2">
-                      {tokenInfo.gtk.stakingTiers.map((tier, index) => (
-                        <div
-                          key={index}
-                          className="flex justify-between items-center p-3 bg-slate-50 dark:bg-white/5 rounded-lg"
-                        >
-                          <div>
-                            <div className="font-semibold text-slate-900 dark:text-white text-sm">
-                              {tier.duration}
-                            </div>
-                            <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">
-                              Min: {tier.minAmount}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-bold text-purple-700 dark:text-purple-300 text-lg">
-                              {tier.apy}
-                            </div>
-                            <div className="text-slate-500 dark:text-slate-500 dark:text-white/70 text-xs">
-                              APY
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="text-sm text-slate-600 dark:text-white/80 leading-relaxed p-3 bg-slate-50 dark:bg-white/5 rounded-lg">
+                      El staking de GTK se activará cuando se defina la cadena y
+                      se desplieguen los contratos. Los niveles, mínimos y
+                      rendimientos se anunciarán entonces: hoy no hay ningún APY
+                      vigente.
+                    </p>
                   </div>
 
                   <div>
@@ -934,6 +965,10 @@ export default function Tokens() {
                         </div>
                       ))}
                     </div>
+                    <p className="mt-3 text-xs text-slate-500 dark:text-white/60">
+                      Fechas objetivo: la cadena aún no está decidida y las
+                      fechas pueden cambiar sin previo aviso.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -1099,11 +1134,11 @@ export default function Tokens() {
                   </div>
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-4 w-4" />
-                    <span>8-18% APY Staking</span>
+                    <span>Staking GTK · Próximamente</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Rocket className="h-4 w-4" />
-                    <span>Blockchain Ready</span>
+                    <span>Blockchain · Próximamente</span>
                   </div>
                 </div>
               </CardContent>
@@ -1152,6 +1187,16 @@ export default function Tokens() {
               </Button>
             )}
           </motion.div>
+
+          {/* RONDA 28 (bloque O5): descargo clásico, discreto, por
+              indicación de Wacko — como en televisión: las cifras,
+              porcentajes y fechas pueden cambiar sin previo aviso. */}
+          <p className="mt-10 text-center text-xs text-slate-500 dark:text-white/50 max-w-2xl mx-auto">
+            Aviso: las cifras, porcentajes y fechas de esta página pueden
+            cambiar sin previo aviso. CMPX y GTK están en desarrollo: las
+            funciones blockchain (staking, IDO y NFTs en cadena) se activarán
+            próximamente.
+          </p>
         </div>
       </div>
 
@@ -1163,8 +1208,8 @@ export default function Tokens() {
         />
       )}
 
-      {/* ChatBot de Tokens */}
-      <TokenChatBot />
+      {/* RONDA 28 (bloque O1): TokenChatBot eliminado — duplicaba al
+          asistente de TokenDashboard. Ver el import, arriba. */}
     </div>
   );
 }

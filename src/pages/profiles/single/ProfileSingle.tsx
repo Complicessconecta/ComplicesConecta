@@ -76,6 +76,7 @@ import {
   getDemoWalletBalance,
   DEMO_WALLET_CHANGED_EVENT,
 } from "@/lib/demo-wallet";
+import { saveDemoVipRequest } from "@/lib/demo-vip";
 import { isAnonymousDemoProfile } from "@/lib/demo-registration";
 import { getAnonymousExpiryInfo } from "@/lib/anonymous";
 import { LiveCountdown } from "@/components/profiles/shared/PhotoAccessCountdown";
@@ -439,6 +440,26 @@ const ProfileSingle: FC = () => {
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
+  // RONDA 28 (bloque O3): estado de la solicitud VIP. "Solicitar
+  // Acceso" no tenía onClick (botón muerto). En demo guarda una
+  // solicitud SIMULADA en localStorage (ver src/lib/demo-vip.ts) y
+  // muestra confirmación; en real no hay backend para reservar una
+  // experiencia VIP de plataforma y el modal lo dice claro.
+  const [vipRequestState, setVipRequestState] = useState<
+    "idle" | "demo-saved" | "real-unavailable"
+  >("idle");
+  const handleVipRequest = () => {
+    if (isDemoMode()) {
+      saveDemoVipRequest("profile-single");
+      setVipRequestState("demo-saved");
+    } else {
+      setVipRequestState("real-unavailable");
+    }
+  };
+  const closeVipModal = () => {
+    setIsVipModalOpen(false);
+    setVipRequestState("idle");
+  };
   // Menú "Compartir" (punto 17): TikTok, Facebook, WhatsApp y X.
   const [isShareOpen, setIsShareOpen] = useState(false);
   // Galería privada COLAPSADA por defecto (punto 14, regresión ronda 4):
@@ -2461,35 +2482,78 @@ const ProfileSingle: FC = () => {
                 <ComplianceSignupForm />
                 <div className="space-y-4">
                   <FileUpload />
-                  <Modal
-                    isOpen={isVipModalOpen}
-                    onClose={() => setIsVipModalOpen(false)}
-                  >
+                  <Modal isOpen={isVipModalOpen} onClose={closeVipModal}>
                     <ModalBody>
                       <ModalContent>
                         <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-8">
                           Reserva tu Experiencia VIP
                         </h4>
-                        <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
-                          <p className="text-center">
-                            Accede a eventos exclusivos, fiestas privadas y
-                            matchmaking prioritario.
-                          </p>
-                          {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
-                        </div>
-                        {/* Mismo defecto que el modal de Mint (punto 5):
-                          el footer flotaba fuera de la caja. */}
-                        <ModalFooter className="gap-4">
-                          <button
-                            className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
-                            onClick={() => setIsVipModalOpen(false)}
-                          >
-                            Cancelar
-                          </button>
-                          <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
-                            Solicitar Acceso
-                          </button>
-                        </ModalFooter>
+                        {vipRequestState === "idle" ? (
+                          <>
+                            <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
+                              <p className="text-center">
+                                Accede a eventos exclusivos, fiestas privadas y
+                                matchmaking prioritario.
+                              </p>
+                              {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
+                              {isDemoMode() && (
+                                <p className="text-center text-xs text-amber-300">
+                                  Demo: la solicitud es simulada y se guarda
+                                  solo en este dispositivo, sin reserva real ni
+                                  cargo.
+                                </p>
+                              )}
+                            </div>
+                            {/* Mismo defecto que el modal de Mint (punto 5):
+                              el footer flotaba fuera de la caja. */}
+                            <ModalFooter className="gap-4">
+                              <button
+                                className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                                onClick={closeVipModal}
+                              >
+                                Cancelar
+                              </button>
+                              <button
+                                className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
+                                onClick={handleVipRequest}
+                              >
+                                Solicitar Acceso
+                              </button>
+                            </ModalFooter>
+                          </>
+                        ) : (
+                          <div className="py-6 space-y-4 text-center">
+                            {vipRequestState === "demo-saved" ? (
+                              <>
+                                <p className="font-semibold text-green-300">
+                                  Solicitud demo registrada
+                                </p>
+                                <p className="text-sm text-neutral-300">
+                                  Esto es una simulación: no se hizo ninguna
+                                  reserva real ni hay cargo. La solicitud quedó
+                                  guardada solo en este dispositivo.
+                                </p>
+                              </>
+                            ) : (
+                              <>
+                                <p className="font-semibold text-amber-300">
+                                  Reservas VIP próximamente
+                                </p>
+                                <p className="text-sm text-neutral-300">
+                                  Las reservas de experiencias VIP aún no están
+                                  habilitadas: se activarán cuando el evento se
+                                  publique. No se envió ninguna solicitud.
+                                </p>
+                              </>
+                            )}
+                            <button
+                              className="px-4 py-2 bg-purple-600 text-white text-sm rounded-md hover:bg-purple-700"
+                              onClick={closeVipModal}
+                            >
+                              Cerrar
+                            </button>
+                          </div>
+                        )}
                       </ModalContent>
                     </ModalBody>
                   </Modal>

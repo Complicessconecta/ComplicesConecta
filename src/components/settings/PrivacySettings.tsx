@@ -54,7 +54,15 @@ const DEFAULT_PRIVACY = {
   show_distance: true,
   show_age: true,
   auto_approve_matches: true,
-  block_screenshots: false,
+  // RONDA 28 (bloque J): `block_screenshots` ELIMINADO — el bloqueo de
+  // capturas no es una opción del usuario: es nativo y siempre activo
+  // por diseño (la APK no permite grabar ni capturar pantalla). El
+  // interruptor solo persistía un flag que nadie leía en todo src
+  // (ContentProtectionService.initialize() nunca se llamaba) y en web
+  // no se pueden bloquear capturas del sistema. La explicación vive
+  // ahora en el FAQ (Privacidad y Seguridad). La misma opción sigue en
+  // Single/CouplePrivacySection (perfil propio) — pendiente de decisión,
+  // fuera del alcance de esta ronda.
   incognito_mode: false,
 };
 
@@ -87,9 +95,17 @@ export const PrivacySettings = () => {
     setPrivacy((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     logger.info("Privacy settings saved:", privacy);
-    void saveSettingsState(user?.id, privacy);
+    const saved = await saveSettingsState(user?.id, privacy);
+    if (!saved) {
+      toast({
+        title: "Error",
+        description: "No se pudo guardar: debes estar autenticado",
+        variant: "destructive",
+      });
+      return;
+    }
     toast({
       title: "Configuración guardada",
       description: "Tus preferencias de privacidad han sido guardadas",
@@ -368,25 +384,8 @@ export const PrivacySettings = () => {
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="block-screenshots">
-                Bloquear capturas de pantalla
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                Intentar prevenir capturas de pantalla de tu perfil
-              </p>
-            </div>
-            <Switch
-              id="block-screenshots"
-              checked={privacy.block_screenshots}
-              onCheckedChange={(value) =>
-                handlePrivacyChange("block_screenshots", value)
-              }
-
-              className="shrink-0 data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-slate-300 dark:data-[state=unchecked]:bg-white/25 [&>span]:bg-white"
-            />
-          </div>
+          {/* RONDA 28 (bloque J): el interruptor "Bloquear capturas de
+              pantalla" vivía aquí — eliminado, ver DEFAULT_PRIVACY. */}
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
